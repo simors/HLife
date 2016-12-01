@@ -1,0 +1,3 @@
+rootProject.name = 'HLife'
+
+include ':app'
