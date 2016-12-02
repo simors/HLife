@@ -5,8 +5,8 @@ import {Actions, Scene, Switch, ActionConst, Modal} from 'react-native-router-fl
 import Launch from '../components/Launch'
 import Home from '../components/Home'
 import Login from '../components/Login'
-import Regist from '../components/Regist'
-import Reg4VerifyCode from '../components/Regist/Reg4VerifyCode'
+import Regist from '../components/Login/Regist'
+import Reg4VerifyCode from '../components/Login/Reg4VerifyCode'
 
 export const scenes = Actions.create(
   <Scene key="root" hideNavBar={true}>
