@@ -6,7 +6,7 @@ import Launch from '../components/Launch'
 import Home from '../components/Home'
 import Login from '../components/Login'
 import Regist from '../components/Login/Regist'
-import Reg4VerifyCode from '../components/Login/Reg4VerifyCode'
+import RegVerifyCode from '../components/Login/RegVerifyCode'
 
 export const scenes = Actions.create(
   <Scene key="root" hideNavBar={true}>
@@ -14,6 +14,6 @@ export const scenes = Actions.create(
     <Scene key="HOME" component={Home} />
     <Scene key="LOGIN" component={Login} />
     <Scene key="REGIST" component={Regist} />
-    <Scene key="REG4VERIFYCODE" component={Reg4VerifyCode} />
+    <Scene key="REG4VERIFYCODE" component={RegVerifyCode} />
   </Scene>
 )
