@@ -17,8 +17,9 @@ export default class Launch extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      Actions.HOME()
-    }, 3000)
+      //Actions.HOME()
+      Actions.LOGIN()
+    }, 1000)
   }
 
   render() {
