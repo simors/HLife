@@ -41,6 +41,10 @@ class Login extends Component {
     Alert.alert('Button has been pressed!');
   }
 
+  retrievePassword = () => {
+    Actions.RetrivevePassword()
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -78,7 +82,7 @@ class Login extends Component {
             onPress={this.onButtonPress}
             title="登录"
           />
-          <Text style={styles.forgetPwd}>忘记密码？</Text>
+          <Text style={styles.forgetPwd} onPress={this.retrievePassword}>忘记密码？</Text>
           <SnsLogin />
         </View>
       </View>

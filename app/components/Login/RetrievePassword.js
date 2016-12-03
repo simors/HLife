@@ -1,3 +1,6 @@
+/**
+ * Created by wanpeng on 2016/12/2.
+ */
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -13,71 +16,61 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
+import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
 } from 'react-native-elements'
 
-const PAGE_WIDTH=Dimensions.get('window').width
-const PAGE_HEIGHT=Dimensions.get('window').height
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
-class RegVerifyCode extends Component {
+class RetrievePassword extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userName: "",
-      password: ""
+      Verify_code: "",
     }
-  }
-
-  changeUserState(key, value) {
-    this.setState({
-      key: value
-    })
-  }
-
-  onButtonPress = () => {
-    Alert.alert('Button has been pressed!')
   }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Icon          
+          <Icon
             name='ios-arrow-back'
-            style={styles.chevronLeft} />
-          <Text style={styles.title}>验证手机号</Text>  
+            style={styles.chevronLeft}/>
+          <Text style={styles.title}>找回密码</Text>
         </View>
         <View style={styles.body}>
-          <View style={styles.tipInfoBox}>
-            <Text style={styles.tipInfo}>请填写验证码</Text>
-          </View>
           <TextInput
-                placeholder={'验证码'}
-                style={styles.inputField}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                onChangeText={(text) => {
-                  this.changeUserState('userName', text)
-                }}
-              /> 
+            placeholder={'输入验证码'}
+            style={styles.inputField}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            onChangeText={(text) => {
+              this.changeUserState('userName', text)
+            }}
+          />
+          <TouchableOpacity style={styles.resendCodeBox} >
+            <Text style={styles.resendCode}>点击重新发送验证码</Text>
+          </TouchableOpacity>
+          <TextInput
+            placeholder={'重新设置密码'}
+            style={styles.inputField}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            onChangeText={(text) => {
+              this.changeUserState('userName', text)
+            }}
+          />
           <Button
             buttonStyle={styles.btn}
             onPress={this.onButtonPress}
-            title="注册"
+            title="开始使用"
           />
-          <TouchableOpacity style={styles.resendCodeBox} onPress={() => Actions.LOGIN()} >
-            <Text style={styles.resendCode}>点击重新发送验证码</Text>  
-          </TouchableOpacity>
-
-          <View style={styles.protocalBox}>
-            <Text style={styles.protocalTipTxt}>点击注册表示您同意</Text>
-            <TouchableOpacity style={styles.protocalLinkBox} onPress={() => Actions.LOGIN()} >
-              <Text style={styles.protocalLink}>服务条款及协议</Text>  
-            </TouchableOpacity>
-          </View>
         </View>
+
       </View>
     )
   }
@@ -86,17 +79,13 @@ class RegVerifyCode extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    'userName': 'Z',
-    'password': '1',
-    'isLogin': true
+    Verify_code: "8888",
   }
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  
-}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegVerifyCode)
+export default connect(mapStateToProps, mapDispatchToProps)(RetrievePassword)
 
 const styles = StyleSheet.create({
   container: {
@@ -163,15 +152,13 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(22)
   },
   resendCodeBox: {
-    marginBottom: normalizeH(187)
+    marginBottom: normalizeH(40)
   },
   resendCode: {
     color: '#50E3C2',
     fontSize: em(18),
   },
-  protocalBox: {
-    
-  },
+  protocalBox: {},
   protocalTipTxt: {
     color: '#7a7a7a',
     fontSize: em(18),
