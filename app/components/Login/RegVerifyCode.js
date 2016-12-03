@@ -13,7 +13,6 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
@@ -22,7 +21,7 @@ import {
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
-class Reg4VerifyCode extends Component {
+class RegVerifyCode extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -97,7 +96,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Reg4VerifyCode)
+export default connect(mapStateToProps, mapDispatchToProps)(RegVerifyCode)
 
 const styles = StyleSheet.create({
   container: {
