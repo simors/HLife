@@ -15,9 +15,9 @@ export const scenes = Actions.create(
     <Scene key="LAUNCH" component={Launch} />
     <Scene key="HOME" component={Home} />
     <Scene key="LOGIN" component={Login} />
-    <Scene key="REGIST" component={Regist} />
+    <Scene key="REGIST" component={Regist} initial={true}/>
     <Scene key="REG4VERIFYCODE" component={RegVerifyCode} />
-    <Scene key="RetrivevePassword" component={RetrivevePassword}/>
-    <Scene key="SETPSW" component={SetPsw} initial={true}/>
+    <Scene key="RetrivevePassword" component={RetrivevePassword} />
+    <Scene key="SETPSW" component={SetPsw} />
   </Scene>
 )

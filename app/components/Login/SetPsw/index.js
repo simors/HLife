@@ -43,13 +43,13 @@ export default class register_1 extends Component {
           <Icon
             name='ios-arrow-back'
             style={styles.chevronLeft}/>
-          <Text style={styles.title}>设置密码</Text>
+          <Text style={styles.title}>找回密码</Text>
 
         </View>
         <View style={styles.pswView}>
-          {/*<Text style={styles.pswText}>密码</Text>*/}
+          {/*<Text style={styles.pswText}></Text>*/}
           <TextInput
-            placeholder={'密码'}
+            placeholder={'重设密码（6～10位数字或密码）'}
             style={styles.pswText}
             autoCapitalize={'none'}
             autoCorrect={false}

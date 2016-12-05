@@ -43,8 +43,9 @@ class RetrievePassword extends Component {
           <Text style={styles.title}>找回密码</Text>
         </View>
         <View style={styles.body}>
+          <Text style={styles.titleinfo}>填写注册时的手机号码并验证</Text>
           <TextInput
-            placeholder={'输入验证码'}
+            placeholder={'输入手机号'}
             style={styles.inputField}
             autoCapitalize={'none'}
             autoCorrect={false}
@@ -52,22 +53,25 @@ class RetrievePassword extends Component {
               this.changeUserState('userName', text)
             }}
           />
-          <TouchableOpacity style={styles.resendCodeBox} >
-            <Text style={styles.resendCode}>点击重新发送验证码</Text>
-          </TouchableOpacity>
-          <TextInput
-            placeholder={'重新设置密码'}
-            style={styles.inputField}
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            onChangeText={(text) => {
-              this.changeUserState('userName', text)
-            }}
-          />
+          <View style={styles.content}>
+            <TextInput
+              placeholder={'输入验证码'}
+              style={styles.inputField}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              onChangeText={(text) => {
+                this.changeUserState('userName', text)
+              }}
+            />
+            <TouchableOpacity style={styles.verifyGetbtn}>
+              <Text style={styles.rightTxt}>获取验证码</Text>
+            </TouchableOpacity>
+          </View>
+
           <Button
             buttonStyle={styles.btn}
             onPress={this.onButtonPress}
-            title="开始使用"
+            title="下一步"
           />
         </View>
 
@@ -116,11 +120,23 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   body: {
-    paddingTop: normalizeH(65),
+    paddingTop: normalizeH(64),
+    width: PAGE_WIDTH,
+    paddingLeft: normalizeW(18),
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    borderWidth: 1,
+    borderColor: 'blue',
+  },
+  content: {
     width: PAGE_WIDTH,
     justifyContent: 'center',
-    alignItems: 'center'
-  },
+    alignItems: 'center',
+    marginLeft: 0,
+    borderWidth: 1,
+    borderColor: 'red',
+  }
+  ,
   tipInfoBox: {
     width: normalizeW(120),
     marginBottom: normalizeH(64),
@@ -132,10 +148,8 @@ const styles = StyleSheet.create({
   },
   inputField: {
     height: normalizeH(50),
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
-    marginBottom: normalizeH(31),
     paddingLeft: normalizeW(10),
+    marginBottom: normalizeH(31),
     paddingRight: normalizeW(10),
     borderWidth: 1,
     borderColor: '#E9E9E9',
@@ -144,17 +158,27 @@ const styles = StyleSheet.create({
     fontSize: em(14)
   },
   btn: {
-    width: PAGE_WIDTH - normalizeW(34),
+    width: PAGE_WIDTH,
     height: normalizeH(50),
-    marginLeft: normalizeW(17),
+    marginLeft: 0,
     marginRight: normalizeW(17),
     backgroundColor: '#50E3C2',
-    marginBottom: normalizeH(22)
+    marginBottom: normalizeH(22),
+    borderWidth: 1,
+    borderColor: 'black'
+  },
+  verifyGetbtn: {
+    marginTop: 0,
+    paddingTop: 0,
+    height: normalizeH(50),
+    backgroundColor: '#50E3C2',
+    borderWidth: 1,
+    borderColor: 'yellow'
   },
   resendCodeBox: {
     marginBottom: normalizeH(40)
   },
-  resendCode: {
+  trips: {
     color: '#50E3C2',
     fontSize: em(18),
   },
@@ -170,5 +194,12 @@ const styles = StyleSheet.create({
     color: '#50E3C2',
     fontSize: em(18),
     textAlign: 'center'
+  },
+  titleinfo: {
+    color: '#50E3C2',
+    fontSize: em(18),
+    alignSelf: 'flex-start',
+    marginBottom: normalizeH(35)
   }
+
 })
