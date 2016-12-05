@@ -10,12 +10,12 @@ export const InputRecord = Record({
   dataValid: false,             // 数据是否有效
   invalidMsg: '输入不能为空',     // 错误提示
   validCallback: undefined,     // 判断数据有效性回调函数
-  data: Map({})                 // 保存的数据
+  data: {}                      // 保存的数据
 })
 
 export const InputFormRecord = Record({
   formKey: undefined,           // 表单的唯一标示
   dataReady: false,             // 数据是否可以提交
   error: '输入不能为空',         // 错误提示
-  inputs: Map({})                // 输入组件列表
+  inputs: Map({})               // 输入组件列表
 })

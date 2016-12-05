@@ -21,7 +21,8 @@ class CommonTextInput extends Component {
     let formInfo = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      type: this.props.type
+      type: this.props.type,
+      initValue: this.props.initValue
     }
     this.props.initInputForm(formInfo)
   }
@@ -30,7 +31,7 @@ class CommonTextInput extends Component {
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      text: text
+      data: {text}
     }
     this.props.inputFormUpdate(inputForm)
   }
@@ -45,6 +46,7 @@ class CommonTextInput extends Component {
           placeholderTextColor={this.props.placeholderTextColor}
           maxLength={this.props.maxLength}
           underlineColorAndroid="transparent"
+          value={this.props.data}
         />
       </View>
     )
@@ -56,7 +58,8 @@ CommonTextInput.defaultProps = {
   placeholderTextColor: '#c8c8c8',
   maxLength: 16,
   autoFocus: false,
-  editable: true
+  editable: true,
+  initValue: ""
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -64,7 +67,9 @@ const mapStateToProps = (state, ownProps) => {
   console.log("inputData", inputData)
   let formData = getInputFormData(state, ownProps.formKey)
   console.log("formData", formData)
-  return {inputData, formData}
+  return {
+    data: inputData.text
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

@@ -24,7 +24,8 @@ let commonForm = Symbol('commonForm')
 const nameInput = {
   formKey: commonForm,
   stateKey: Symbol('nameInput'),
-  type: "nameInput"
+  type: "nameInput",
+  initValue: "yangyang"
 }
 const pwdInput = {
   formKey: commonForm,

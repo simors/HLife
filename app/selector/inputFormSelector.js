@@ -13,7 +13,7 @@ export function getInputData(state, formKey, stateKey) {
   let data = undefined
   if (input) {
     data = input.get('data')
-    return data.toJS()
+    return data
   }
   return {}
 }

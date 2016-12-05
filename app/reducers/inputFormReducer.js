@@ -30,7 +30,24 @@ function inputFromInit(state, action) {
     state = state.setIn([formKey], form)
   }
   let stateKey = payload.stateKey
-  let input = new InputRecord({formKey: formKey, stateKey: stateKey, type: payload.type})
+  let input
+  if (payload.initValue && 0 < payload.initValue.length) {
+    input = new InputRecord({
+      formKey: formKey,
+      stateKey: stateKey,
+      type: payload.type,
+      data: {
+        initValue: payload.initValue,
+        text: payload.initValue
+      }
+    })
+  } else {
+    input = new InputRecord({
+      formKey: formKey,
+      stateKey: stateKey,
+      type: payload.type
+    })
+  }
   let inputs = form.get("inputs")
   inputs = inputs.setIn([stateKey], input)
   form = form.set("inputs", inputs)
@@ -43,8 +60,8 @@ function inputFormOnChange(state, action) {
   let formKey = payload.formKey
   let stateKey = payload.stateKey
 
-  let path = [formKey, "inputs", stateKey, 'data', 'text']
-  state = state.updateIn(path, {}, text => payload.text)
+  let path = [formKey, "inputs", stateKey, 'data']
+  state = state.updateIn(path, {}, text => payload.data)
   return state
 }
 
