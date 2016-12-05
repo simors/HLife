@@ -9,7 +9,7 @@ import { FormInput } from 'react-native-elements'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
-import {getInputData} from '../../../selector/inputFormSelector'
+import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 
 class CommonTextInput extends Component {
 
@@ -20,7 +20,9 @@ class CommonTextInput extends Component {
   componentDidMount() {
     let formInfo = {
       formKey: this.props.formKey,
-      stateKey: this.props.stateKey
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: this.props.initValue
     }
     this.props.initInputForm(formInfo)
   }
@@ -29,7 +31,7 @@ class CommonTextInput extends Component {
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      text: text
+      data: {text}
     }
     this.props.inputFormUpdate(inputForm)
   }
@@ -44,6 +46,7 @@ class CommonTextInput extends Component {
           placeholderTextColor={this.props.placeholderTextColor}
           maxLength={this.props.maxLength}
           underlineColorAndroid="transparent"
+          value={this.props.data}
         />
       </View>
     )
@@ -55,13 +58,18 @@ CommonTextInput.defaultProps = {
   placeholderTextColor: '#c8c8c8',
   maxLength: 16,
   autoFocus: false,
-  editable: true
+  editable: true,
+  initValue: ""
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let obj = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  console.log("obj", obj)
-  return {obj}
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  console.log("inputData", inputData)
+  let formData = getInputFormData(state, ownProps.formKey)
+  console.log("formData", formData)
+  return {
+    data: inputData.text
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

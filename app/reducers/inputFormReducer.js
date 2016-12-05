@@ -14,6 +14,8 @@ export default function inputFormReducer(state = initialState, action) {
       return inputFromInit(state, action)
     case uiTypes.INPUTFORM_ON_CHANGE:
       return inputFormOnChange(state, action)
+    case uiTypes.INPUTFORM_DESTROY:
+      return inputFormOnDestroy(state, action)
     default:
       return state
   }
@@ -28,7 +30,24 @@ function inputFromInit(state, action) {
     state = state.setIn([formKey], form)
   }
   let stateKey = payload.stateKey
-  let input = new InputRecord({formKey: formKey, stateKey: stateKey})
+  let input
+  if (payload.initValue && 0 < payload.initValue.length) {
+    input = new InputRecord({
+      formKey: formKey,
+      stateKey: stateKey,
+      type: payload.type,
+      data: {
+        initValue: payload.initValue,
+        text: payload.initValue
+      }
+    })
+  } else {
+    input = new InputRecord({
+      formKey: formKey,
+      stateKey: stateKey,
+      type: payload.type
+    })
+  }
   let inputs = form.get("inputs")
   inputs = inputs.setIn([stateKey], input)
   form = form.set("inputs", inputs)
@@ -40,14 +59,14 @@ function inputFormOnChange(state, action) {
   let payload = action.payload
   let formKey = payload.formKey
   let stateKey = payload.stateKey
-  let form = state.get(formKey)
-  let inputs = form.get("inputs")
-  let input = inputs.get(stateKey)
-  let data = input.get('data')
-  data = data.setIn(["text"], payload.text)
-  input = input.set('data', data)
-  inputs = inputs.setIn([stateKey], input)
-  form = form.set('inputs', inputs)
-  state = state.setIn([formKey], form)
+
+  let path = [formKey, "inputs", stateKey, 'data']
+  state = state.updateIn(path, {}, text => payload.data)
+  return state
+}
+
+function inputFormOnDestroy(state, action) {
+  let formKey = action.payload.formKey
+  state = state.delete(formKey)
   return state
 }
