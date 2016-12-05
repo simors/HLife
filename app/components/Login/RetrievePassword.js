@@ -15,8 +15,6 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {Actions} from 'react-native-router-flux'
-import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
@@ -53,27 +51,29 @@ class RetrievePassword extends Component {
               this.changeUserState('userName', text)
             }}
           />
-          <View style={styles.content}>
+          <View style={styles.inputField}>
             <TextInput
               placeholder={'输入验证码'}
-              style={styles.inputField}
+              style={styles.inputverifycode}
               autoCapitalize={'none'}
               autoCorrect={false}
               onChangeText={(text) => {
                 this.changeUserState('userName', text)
               }}
             />
-            <TouchableOpacity style={styles.verifyGetbtn}>
-              <Text style={styles.rightTxt}>获取验证码</Text>
-            </TouchableOpacity>
+            <Button
+              buttonStyle={styles.getverifycodebtn}
+              onPress={this.onButtonPress}
+              title="获取验证码"
+            />
           </View>
 
-          <Button
-            buttonStyle={styles.btn}
-            onPress={this.onButtonPress}
-            title="下一步"
-          />
         </View>
+        <Button
+          buttonStyle={styles.btn}
+          onPress={this.onButtonPress}
+          title="下一步"
+        />
 
       </View>
     )
@@ -123,28 +123,9 @@ const styles = StyleSheet.create({
     paddingTop: normalizeH(64),
     width: PAGE_WIDTH,
     paddingLeft: normalizeW(18),
+    paddingRight: normalizeW(17),
     justifyContent: 'center',
     alignItems: 'flex-start',
-    borderWidth: 1,
-    borderColor: 'blue',
-  },
-  content: {
-    width: PAGE_WIDTH,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 0,
-    borderWidth: 1,
-    borderColor: 'red',
-  }
-  ,
-  tipInfoBox: {
-    width: normalizeW(120),
-    marginBottom: normalizeH(64),
-  },
-  tipInfo: {
-    fontSize: em(20),
-    fontWeight: 'bold',
-    textAlign: 'center'
   },
   inputField: {
     height: normalizeH(50),
@@ -155,45 +136,25 @@ const styles = StyleSheet.create({
     borderColor: '#E9E9E9',
     backgroundColor: '#F3F3F3',
     color: '#666',
-    fontSize: em(14)
+    fontSize: em(16),flexDirection:'row',
   },
   btn: {
-    width: PAGE_WIDTH,
     height: normalizeH(50),
-    marginLeft: 0,
+    marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
     backgroundColor: '#50E3C2',
-    marginBottom: normalizeH(22),
-    borderWidth: 1,
-    borderColor: 'black'
+    marginBottom: normalizeH(24)
   },
-  verifyGetbtn: {
-    marginTop: 0,
-    paddingTop: 0,
-    height: normalizeH(50),
-    backgroundColor: '#50E3C2',
-    borderWidth: 1,
-    borderColor: 'yellow'
+  inputverifycode:{
+    height:normalizeH(50),
+    width:normalizeW(196),
   },
-  resendCodeBox: {
-    marginBottom: normalizeH(40)
-  },
-  trips: {
-    color: '#50E3C2',
-    fontSize: em(18),
-  },
-  protocalBox: {},
-  protocalTipTxt: {
-    color: '#7a7a7a',
-    fontSize: em(18),
-  },
-  protocalLinkBox: {
-    marginTop: normalizeH(18)
-  },
-  protocalLink: {
-    color: '#50E3C2',
-    fontSize: em(18),
-    textAlign: 'center'
+  getverifycodebtn:{
+    marginLeft:0,
+    marginTop:0,
+    height:normalizeH(50),
+    width:normalizeW(134),
+    backgroundColor:'#50E3C2',
   },
   titleinfo: {
     color: '#50E3C2',
