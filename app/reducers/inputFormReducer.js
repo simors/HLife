@@ -14,6 +14,8 @@ export default function inputFormReducer(state = initialState, action) {
       return inputFromInit(state, action)
     case uiTypes.INPUTFORM_ON_CHANGE:
       return inputFormOnChange(state, action)
+    case uiTypes.INPUTFORM_DESTROY:
+      return inputFormOnDestroy(state, action)
     default:
       return state
   }
@@ -43,5 +45,11 @@ function inputFormOnChange(state, action) {
 
   let path = [formKey, "inputs", stateKey, 'data', 'text']
   state = state.updateIn(path, {}, text => payload.text)
+  return state
+}
+
+function inputFormOnDestroy(state, action) {
+  let formKey = action.payload.formKey
+  state = state.delete(formKey)
   return state
 }

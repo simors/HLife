@@ -11,8 +11,11 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Symbol from 'es6-symbol'
+import {Button} from 'react-native-elements'
 
 import CommonTextInput from '../common/Input/CommonTextInput'
+
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -34,6 +37,10 @@ class FindPwdVerifyCode extends Component {
     super(props)
   }
 
+  submit() {
+    this.props.inputFormOnDestroy({formKey: commonForm})
+  }
+
   render() {
     return (
       <View style={styles.rootContainer}>
@@ -43,7 +50,9 @@ class FindPwdVerifyCode extends Component {
             <CommonTextInput {...nameInput} placeholder="输入用户名" />
             <CommonTextInput {...pwdInput} placeholder="输入密码" />
           </View>
-          <View style={styles.inputView}></View>
+          <View style={styles.inputView}>
+            <Button title="submit" onPress={() => this.submit()} />
+          </View>
         </View>
       </View>
     )
@@ -54,7 +63,9 @@ const mapStateToProps = (state, ownProps) => {
   return {}
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  inputFormOnDestroy
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(FindPwdVerifyCode)
 
