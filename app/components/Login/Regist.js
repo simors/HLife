@@ -45,12 +45,12 @@ class Regist extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Icon          
+          <Icon
             name='ios-arrow-back'
             style={styles.chevronLeft} />
-          <Text style={styles.title}>注册</Text>  
+          <Text style={styles.title}>注册</Text>
           <TouchableOpacity style={styles.rightBox} onPress={() => Actions.LOGIN()} >
-            <Text style={styles.rightTxt}>登录</Text>  
+            <Text style={styles.rightTxt}>登录</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.body}>
@@ -63,15 +63,50 @@ class Regist extends Component {
                 onChangeText={(text) => {
                   this.changeUserState('userName', text)
                 }}
-              /> 
-          <Button
-            buttonStyle={styles.btn}
+              />
+          <View style={styles.inputField}>
+            <TextInput
+              placeholder={'输入验证码'}
+              style={styles.inputverifycode}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              onChangeText={(text) => {
+                this.changeUserState('userName', text)
+              }}
+            />
+            <Button
+            buttonStyle={styles.getverifycodebtn}
             onPress={this.onButtonPress}
             title="获取验证码"
           />
+            </View>
+          <View style={styles.inputField}>
+          <TextInput
+            placeholder={'设置密码（6～10位数字或字母'}
+            style={styles.pswText}
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            onChangeText={(text) => {
+              this.changeUserState('userName', text)
+            }}
+          />
+            <Image source={require('../../assets/images/code_close_eye.png')} style={styles.pswEye}></Image>
+
+          </View>
+          <Button
+            buttonStyle={styles.btn}
+            onPress={this.onButtonPress}
+            title="开始使用"
+          />
+          <View style={styles.agreementview}>
+            <Image source={require('../../assets/images/code_close_eye.png')} style={styles.check}></Image>
+            <Text style={styles.agreementtext} onPress={this.retrievePassword}>服务条款及协议</Text>
+
+          </View>
           <SnsLogin />
         </View>
       </View>
+
     )
   }
 
@@ -116,7 +151,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     lineHeight: 44,
-    fontSize: em(17),
+    fontSize: em(16),
     color: '#030303',
     textAlign: 'center'
   },
@@ -132,12 +167,13 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   body: {
-    paddingTop: normalizeH(65),
+    //paddingTop: normalizeH(65),
     width: PAGE_WIDTH,
   },
   logo: {
     marginLeft: normalizeW(PAGE_WIDTH / 2 - 54),
-    marginBottom: normalizeH(44),
+    marginBottom: normalizeH(25),
+    marginTop:normalizeH(25),
     width: 108,
     height: normalizeH(47),
   },
@@ -145,20 +181,67 @@ const styles = StyleSheet.create({
     height: normalizeH(50),
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
-    marginBottom: normalizeH(31),
+    marginBottom: normalizeH(25),
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     borderWidth: 1,
     borderColor: '#E9E9E9',
     backgroundColor: '#F3F3F3',
     color: '#666',
-    fontSize: em(14)
+    fontSize: em(14),
+    flexDirection:'row',
+  },
+  pswText: {
+
+    marginLeft: normalizeW(3),
+    padding:normalizeH(5),
+    fontSize:em(14),
+    width:normalizeW(233),
+
+    backgroundColor: '#F3F3F3',
+    color: '#666',
+    fontSize: em(14),
+    //flex:5,
+  },
+  inputverifycode:{
+    height:normalizeH(50),
+    width:normalizeW(196),
+  },
+  pswEye: {
+    left: normalizeW(27),
+    top: normalizeH(19),
+    width: normalizeW(35),
+    height: normalizeH(12),
+    //color:'#50E3C2'
+    //flex:1,
+  },
+  getverifycodebtn:{
+    marginLeft:0,
+    marginTop:0,
+    height:normalizeH(50),
+    width:normalizeW(134),
+    backgroundColor:'#50E3C2',
   },
   btn: {
     height: normalizeH(50),
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
     backgroundColor: '#50E3C2',
-    marginBottom: normalizeH(149)
-  }
+    marginBottom: normalizeH(24)
+  },
+  agreementview:{
+    height:normalizeH(17),
+    flexDirection:'row',
+    justifyContent:'center',
+    marginBottom:normalizeH(59),
+  },
+  check:{
+    width:normalizeW(18),
+    height:normalizeH(16),
+  },
+  agreementtext:{
+    fontSize:em(14),
+    color:'#50E3C2',
+
+  },
 })
