@@ -20,11 +20,13 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 let commonForm = Symbol('commonForm')
 const nameInput = {
   formKey: commonForm,
-  stateKey: Symbol('nameInput')
+  stateKey: Symbol('nameInput'),
+  type: "nameInput"
 }
 const pwdInput = {
   formKey: commonForm,
-  stateKey: Symbol('pwdInput')
+  stateKey: Symbol('pwdInput'),
+  type: "pwdInput"
 }
 
 class FindPwdVerifyCode extends Component {

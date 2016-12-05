@@ -9,7 +9,7 @@ import { FormInput } from 'react-native-elements'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
-import {getInputData} from '../../../selector/inputFormSelector'
+import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 
 class CommonTextInput extends Component {
 
@@ -20,7 +20,8 @@ class CommonTextInput extends Component {
   componentDidMount() {
     let formInfo = {
       formKey: this.props.formKey,
-      stateKey: this.props.stateKey
+      stateKey: this.props.stateKey,
+      type: this.props.type
     }
     this.props.initInputForm(formInfo)
   }
@@ -59,9 +60,11 @@ CommonTextInput.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let obj = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  console.log("obj", obj)
-  return {obj}
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  console.log("inputData", inputData)
+  let formData = getInputFormData(state, ownProps.formKey)
+  console.log("formData", formData)
+  return {inputData, formData}
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
