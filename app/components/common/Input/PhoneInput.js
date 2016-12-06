@@ -43,6 +43,7 @@ class PhoneInput extends Component {
   }
 
   inputChange(text) {
+  	let _text = removeSpace(text)
     phoneFormInfo.data = {text}
     this.props.inputFormUpdate(phoneFormInfo)
   }
@@ -51,7 +52,7 @@ class PhoneInput extends Component {
 		const {
 	    containerStyle,
 	    inputStyle,
-	    text,
+	    data,
 	    autoCapitalize,
 	    autoCorrect,
 	    autoFocus,
@@ -131,7 +132,7 @@ class PhoneInput extends Component {
 	        selectionState={selectionState}
 	        editable={editable}
 	        selectionColor={selectionColor}
-	        value={formatPhone(text)}
+	        value={data}
 	        style={[styles.input, inputStyle && inputStyle]} />
 	    </View>)
 	}
@@ -150,7 +151,7 @@ const mapStateToProps = (state, ownProps) => {
 	let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   //let formData = getInputFormData(state, ownProps.formKey)
   return {
-    ...inputData
+    data: formatPhone(inputData.text)
   }
 }
 
