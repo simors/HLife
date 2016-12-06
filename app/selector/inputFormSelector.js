@@ -30,3 +30,9 @@ export function getInputFormData(state, formKey) {
   }
   return formData.toJS()
 }
+
+export function isInputFormValid(state, formKey) {
+  let form = state.UI.INPUTFORM.get(formKey)
+  let isValid = form.get('dataReady')
+  return isValid
+}

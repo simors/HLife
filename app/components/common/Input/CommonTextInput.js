@@ -4,12 +4,13 @@
 import React, {Component} from 'react'
 import {
   View,
+  StyleSheet,
 } from 'react-native'
 import { FormInput } from 'react-native-elements'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
-import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 class CommonTextInput extends Component {
 
@@ -22,9 +23,17 @@ class CommonTextInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: this.props.initValue
+      initValue: {text: this.props.initValue},
+      checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
+  }
+
+  validInput(data) {
+    if (data.text && data.text.length > 0) {
+      return true
+    }
+    return false
   }
 
   inputChange(text) {
@@ -59,14 +68,11 @@ CommonTextInput.defaultProps = {
   maxLength: 16,
   autoFocus: false,
   editable: true,
-  initValue: ""
+  initValue: "",
 }
 
 const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  console.log("inputData", inputData)
-  let formData = getInputFormData(state, ownProps.formKey)
-  console.log("formData", formData)
   return {
     data: inputData.text
   }
@@ -78,3 +84,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommonTextInput)
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row'
+  },
+})

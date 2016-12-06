@@ -15,7 +15,7 @@ import {Button} from 'react-native-elements'
 
 import CommonTextInput from '../common/Input/CommonTextInput'
 
-import {inputFormOnDestroy} from '../../action/inputFormActions'
+import {submitInputForm} from '../../action/inputFormActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -39,7 +39,7 @@ class FindPwdVerifyCode extends Component {
   }
 
   submit() {
-    this.props.inputFormOnDestroy({formKey: commonForm})
+    this.props.submitInputForm({formKey: commonForm})
   }
 
   render() {
@@ -65,7 +65,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  inputFormOnDestroy
+  submitInputForm
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(FindPwdVerifyCode)
