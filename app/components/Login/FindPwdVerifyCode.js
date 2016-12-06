@@ -15,6 +15,7 @@ import {Button} from 'react-native-elements'
 
 import CommonTextInput from '../common/Input/CommonTextInput'
 import PhoneInput from '../common/Input/PhoneInput'
+import PasswordInput from '../common/Input/PasswordInput'
 
 import {inputFormOnDestroy} from '../../action/inputFormActions'
 
@@ -56,7 +57,8 @@ class FindPwdVerifyCode extends Component {
           <View style={styles.inputTips}>
             <CommonTextInput {...nameInput} placeholder="输入用户名" />
             <CommonTextInput {...pwdInput} placeholder="输入密码" />
-            <PhoneInput {...phoneInput} placeholder="输入手机号" />
+            <PhoneInput {...phoneInput}/>
+            <PasswordInput {...pwdInput}/>
           </View>
           <View style={styles.inputView}>
             <Button title="submit" onPress={() => this.submit()} />
