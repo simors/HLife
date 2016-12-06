@@ -14,6 +14,7 @@ import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {removeSpace, formatPhone} from '../../../util/numberUtils'
+import THEME from '../../../constants/themes/theme1'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -138,20 +139,10 @@ class PhoneInput extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
-    marginBottom: normalizeH(12),
-    marginTop: normalizeH(12),
+    ...THEME.base.inputContainer
   },
   input: {
-    height: normalizeH(50),
-    paddingLeft: normalizeW(10),
-    paddingRight: normalizeW(10),
-    borderWidth: 1,
-    borderColor: '#E9E9E9',
-    backgroundColor: '#F3F3F3',
-    color: '#666',
-    fontSize: em(14)
+    ...THEME.base.input
   }
 })
 
