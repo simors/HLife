@@ -14,6 +14,7 @@ import Symbol from 'es6-symbol'
 import {Button} from 'react-native-elements'
 
 import CommonTextInput from '../common/Input/CommonTextInput'
+import PhoneInput from '../common/Input/PhoneInput'
 
 import {inputFormOnDestroy} from '../../action/inputFormActions'
 
@@ -33,6 +34,11 @@ const pwdInput = {
   type: "pwdInput"
 }
 
+const phoneInput = {
+  formKey: commonForm,
+  stateKey: Symbol('phoneInput')
+}
+
 class FindPwdVerifyCode extends Component {
   constructor(props) {
     super(props)
@@ -50,6 +56,7 @@ class FindPwdVerifyCode extends Component {
           <View style={styles.inputTips}>
             <CommonTextInput {...nameInput} placeholder="输入用户名" />
             <CommonTextInput {...pwdInput} placeholder="输入密码" />
+            <PhoneInput {...phoneInput} placeholder="输入手机号" />
           </View>
           <View style={styles.inputView}>
             <Button title="submit" onPress={() => this.submit()} />
