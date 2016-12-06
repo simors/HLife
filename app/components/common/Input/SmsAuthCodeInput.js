@@ -17,7 +17,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
-const PAGE_WIDTH = Dimensions.get('window').width
+import {normalizeW, normalizeH} from '../../../util/Responsive'
 
 class SmsAuthCodeInput extends Component {
 
@@ -62,7 +62,11 @@ class SmsAuthCodeInput extends Component {
       )
     } else {
       this.interval && clearInterval(this.interval)
-      return <Text style={smsStyles.smsCodeText}>获取验证码</Text>
+      return (
+        <Text style={smsStyles.smsCodeText}>
+          获取验证码
+        </Text>
+      )
     }
   }
 
@@ -80,7 +84,9 @@ class SmsAuthCodeInput extends Component {
 
   renderGetSmsButtonEnabled = () => {
     return (
-      <TouchableOpacity style={smsStyles.smsCodeTextContainer}
+      <TouchableOpacity style={[smsStyles.smsCodeTextContainer,
+                              {height:this.props.height,
+                                width:this.props.buttonWidth}]}
                         onPress={this.state.countDown ? ()=> {
                         } : this.getSmsAuthCode}
       >
@@ -91,7 +97,11 @@ class SmsAuthCodeInput extends Component {
 
   renderGetSmsButtonDisabled = () => {
     return (
-      <View style={smsStyles.smsCodeTextContainerDisable}>
+      <View style={[smsStyles.smsCodeTextContainerDisable,
+                  {height:this.props.height,
+                    width:this.props.buttonWidth}]}
+            height={this.props.height}
+      >
       <View>{this.renderCodeFetcher()}</View>
         </View>
     )
@@ -99,9 +109,13 @@ class SmsAuthCodeInput extends Component {
 
   render() {
     return (
-      <View style={[smsStyles.smsMainContainer, this.props.style]}>
+      <View style={{height:this.props.height,
+                    marginLeft:this.props.marginLeft,
+                    marginRight:this.props.marginRight,
+                    marginBottom:this.props.marginBottom}}>
         <View style={smsStyles.smsInputContainerBg}/>
-        <View style={smsStyles.smsInputContainer}>
+        <View style={smsStyles.smsInputContainer}
+              marginTop={-this.props.height}>
           <TextInput
             style={smsStyles.smsTextInput}
             autoFocus={this.props.autoFocus}
@@ -123,15 +137,16 @@ SmsAuthCodeInput.defaultProps = {
     placeholder: '请输入6位验证码',
     placeholderTextColor: 'rgba(178,178,178,0.6)',
     maxLength: 6,
+    height:normalizeH(50),
     autoFocus: false,
     countTimes:60,
+    buttonWidth:normalizeW(120),
+    marginLeft:normalizeW(17),
+    marginRight:normalizeW(17),
+    marginBottom:normalizeH(25),
 }
 
 const smsStyles = StyleSheet.create({
-  smsMainContainer: {
-    width: PAGE_WIDTH,
-    height: 44,
-  },
   smsInputContainerBg: {
     flex: 1,
     borderRadius: 4,
@@ -140,28 +155,23 @@ const smsStyles = StyleSheet.create({
   },
   smsInputContainer: {
     flex: 1,
-    marginTop: -44,
     borderRadius: 4,
     flexDirection: 'row',
     alignItems: 'center',
   },
   smsTextInput: {
     flex: 1,
-    paddingLeft: 16,
+    paddingLeft: normalizeW(16),
     fontSize: 14,
     color: '#b2b2b2',
     backgroundColor: '#f3f3f3',
   },
   smsCodeTextContainer: {
-    height: 44,
-    width: 120,
     justifyContent: 'center',
     alignItems:'center',
     backgroundColor: '#50e3c2',
   },
   smsCodeTextContainerDisable: {
-    height: 44,
-    width: 120,
     justifyContent: 'center',
     alignItems:'center',
     backgroundColor: '#b2b2b2',
