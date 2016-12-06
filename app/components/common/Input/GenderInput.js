@@ -3,18 +3,30 @@
  */
 import React, {Component} from 'react'
 import {
+  StyleSheet,
   View,
+  TouchableWithoutFeedback,
+  Text,
+  Keyboard,
+  Image,
+  Dimensions,
 } from 'react-native'
-import { FormInput } from 'react-native-elements'
+
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 
-class CommonTextInput extends Component {
+class GenderInput extends Component {
 
   constructor(props) {
     super(props)
+    this.state = {gender: '-1'}
+  }
+
+  static defaultProps = {
+    autoFocus: false,
+    genderText: '0'
   }
 
   componentDidMount() {
@@ -25,6 +37,16 @@ class CommonTextInput extends Component {
       initValue: this.props.initValue
     }
     this.props.initInputForm(formInfo)
+  }
+
+  selectMale = () => {
+    this.setState({gender: '1'})
+    this.inputChange('1')
+  }
+
+  selectFemale = () => {
+    this.setState({gender: '0'})
+    this.inputChange('0')
   }
 
   inputChange(text) {
@@ -38,29 +60,82 @@ class CommonTextInput extends Component {
 
   render() {
     return (
-      <View>
-        <FormInput
-          onChangeText={(text) => this.inputChange(text)}
-          autoFocus={this.props.autoFocus}
-          placeholder={this.props.placeholder}
-          placeholderTextColor={this.props.placeholderTextColor}
-          maxLength={this.props.maxLength}
-          underlineColorAndroid="transparent"
-          value={this.props.data}
-        />
+      <View style={[genderStyles.genderMainContainer, this.props.style]}>
+        <View style={genderStyles.genderContainer}>
+          <TouchableWithoutFeedback onPress={() => {
+            this.selectMale()
+          }}>
+            <View style={this.state.gender == '1' ? genderStyles.genderBgSel : genderStyles.genderBg}>
+              <Image style={genderStyles.genderImage} source={require('../../../assets/images/comments_select.png')}/>
+            </View>
+          </TouchableWithoutFeedback>
+          <Text style={this.state.gender == '1' ? genderStyles.genderTextSel : genderStyles.genderText}>男</Text>
+        </View>
+
+        <View style={{width: 40}}/>
+
+        <View style={genderStyles.genderContainer}>
+          <TouchableWithoutFeedback onPress={() => {
+            this.selectFemale()
+          }}>
+            <View style={this.state.gender == '0' ? genderStyles.genderBgSel : genderStyles.genderBg}>
+              <Image style={genderStyles.genderImage} source={require('../../../assets/images/find_chat.png')}/>
+            </View>
+          </TouchableWithoutFeedback>
+          <Text style={this.state.gender == '0' ? genderStyles.genderTextSel : genderStyles.genderText}>女</Text>
+        </View>
       </View>
     )
   }
 }
 
-CommonTextInput.defaultProps = {
-  placeholder: '请输入文字',
-  placeholderTextColor: '#c8c8c8',
-  maxLength: 16,
-  autoFocus: false,
-  editable: true,
-  initValue: ""
-}
+const genderStyles = StyleSheet.create({
+  genderMainContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
+  },
+  genderContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  genderBgSel: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  genderBg: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.2,
+  },
+  genderImage: {
+    resizeMode: 'cover'
+  },
+  genderTextSel: {
+    marginTop: 16,
+    fontSize: 14,
+    color: '#ffffff',
+    backgroundColor: 'transparent'
+  },
+  genderText: {
+    marginTop: 16,
+    fontSize: 14,
+    color: '#ffffff',
+    opacity: 0.5,
+    backgroundColor: 'transparent'
+  }
+})
 
 const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
@@ -77,4 +152,4 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormUpdate
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommonTextInput)
+export default connect(mapStateToProps, mapDispatchToProps)(GenderInput)
