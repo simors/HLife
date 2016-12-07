@@ -25,12 +25,12 @@ class ImageInput extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={this.props.containerStyle}>
+        <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
           <TouchableOpacity style={{flex: 1}} onPress={this.selectImg()}>
             <View style={styles.addImageViewStyle}>
-              <Image style={this.props.addImageBtnStyle}
-                     source={require('../../../assets/images/home_more.png')}/>
-              <Text style={this.props.addImageTextStyle}>{this.props.prompt}</Text>
+              <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
+                     source={require('../../../assets/images/default_picture.png')}/>
+              <Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -40,26 +40,11 @@ class ImageInput extends Component {
 }
 
 ImageInput.defaultProps = {
-  containerStyle: {
-    height: 100,
-    width: 100,
-    borderColor: '#E9E9E9',
-    borderWidth: 1,
-    backgroundColor: '#F3F3F3',
-  },
-  addImageBtnStyle: {
-    position: 'absolute',
-    top: 20,
-    left: 25,
-    width: 50,
-    height: 50,
-  },
-  addImageTextStyle: {
-    fontSize: 12,
-    position: 'absolute',
-    bottom: 6,
-    left: 25,
-  },
+  containerStyle: {},
+  addImageViewStyle: {},
+  addImageBtnStyle: {},
+  addImageTextStyle: {},
+  addImage: '../../../assets/images/home_more.png',
   prompt: "选择图片",
 }
 
@@ -84,5 +69,25 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  defaultContainerStyle: {
+    height: 100,
+    width: 100,
+    borderColor: '#E9E9E9',
+    borderWidth: 1,
+    backgroundColor: '#F3F3F3',
+  },
+  defaultAddImageBtnStyle: {
+    position: 'absolute',
+    top: 20,
+    left: 25,
+    width: 50,
+    height: 50,
+  },
+  defaultAddImageTextStyle: {
+    fontSize: 12,
+    position: 'absolute',
+    bottom: 6,
+    left: 25,
   },
 })

@@ -57,7 +57,7 @@ class FindPwdVerifyCode extends Component {
           <View style={styles.header}></View>
           <View style={styles.inputTips}>
             <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 17}}>
-              <ImageInput/>
+              <ImageInput containerStyle={{borderRadius: 50}} />
             </View>
             <View style={{marginTop: 17}}>
               <CommonTextInput {...nameInput} placeholder="输入用户名" />
