@@ -26,27 +26,29 @@ class PasswordInput extends Component {
 		autoFocus: false
 	}
 
-	static phoneFormInfo = {}
 
 	constructor(props) {
 		super(props)
-		phoneFormInfo = {
+		this.state = {showPwd: false}
+	}
+
+	componentDidMount() {
+		let formInfo = {
 			formKey: this.props.formKey,
 	    stateKey: this.props.stateKey,
 	    type: "passwordInput",
 		  initValue: ""
 		}
-
-		this.state = {showPwd: false}
-	}
-
-	componentDidMount() {
-    this.props.initInputForm(phoneFormInfo)
+    this.props.initInputForm(formInfo)
   }
 
   inputChange(text) {
-    phoneFormInfo.data = {text}
-    this.props.inputFormUpdate(phoneFormInfo)
+  	let formInfo = {
+			formKey: this.props.formKey,
+	    stateKey: this.props.stateKey,
+		  data: {text}
+		}
+    this.props.inputFormUpdate(formInfo)
   }
 
   onShowPwdClicked = () => {
