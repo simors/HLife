@@ -33,7 +33,7 @@ function inputFromInit(state, action) {
   }
   let stateKey = payload.stateKey
   let input
-  if (payload.initValue.text && 0 < payload.initValue.text.length) {
+  if (payload.initValue && payload.initValue.text && 0 < payload.initValue.text.length) {
     input = new InputRecord({
       formKey: formKey,
       stateKey: stateKey,
@@ -54,7 +54,7 @@ function inputFromInit(state, action) {
   form = form.set("inputs", inputs)
   state = state.setIn([formKey], form)
 
-  if (payload.initValue.text && 0 < payload.initValue.text.length) {
+  if (payload.initValue && payload.initValue.text && 0 < payload.initValue.text.length) {
     state = checkInputValid(state, formKey, stateKey, payload.initValue)
   }
   return state
