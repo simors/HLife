@@ -18,10 +18,24 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
 } from 'react-native-elements'
-import  PhoneInput from '../common/Input/PhoneInput'
+import PhoneInput from '../common/Input/PhoneInput'
+import PasswordInput from '../common/Input/PasswordInput'
+import Symbol from 'es6-symbol'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
+
+let commonForm = Symbol('commonForm')
+
+const phoneInput = {
+  formKey: commonForm,
+  stateKey: Symbol('phoneInput')
+}
+const pwdInput = {
+  formKey: commonForm,
+  stateKey: Symbol('pwdInput'),
+  type: "pwdInput"
+}
 
 class Login extends Component {
   constructor(props) {
@@ -60,24 +74,10 @@ class Login extends Component {
         </View>
         <View style={styles.body}>
           <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo}></Image>
-          <TextInput
-                placeholder={'输入手机号'}
-                style={styles.inputField}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                onChangeText={(text) => {
-                  this._changeUserState('userName', text)
-                }}
-              />
-          <TextInput
-                placeholder={'输入密码'}
-                style={styles.inputField}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                onChangeText={(text) => {
-                  this.changeUserState('userName', text)
-                }}
-              /> 
+          <View>
+            <PhoneInput {...phoneInput}/>
+            <PasswordInput {...pwdInput}/>
+          </View>
           <Button
             buttonStyle={styles.btn}
             onPress={this.onButtonPress}
