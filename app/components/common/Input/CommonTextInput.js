@@ -125,6 +125,7 @@ CommonTextInput.defaultProps = {
     borderBottomWidth: 0,
     marginLeft: 0,
     marginRight: 0,
+    width: PAGE_WIDTH,
   },
   inputStyle: {
     flex: 1,
@@ -157,6 +158,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: PAGE_WIDTH,
   },
 })
