@@ -21,6 +21,8 @@ import {
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
+import AV from 'leancloud-storage'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -53,7 +55,8 @@ class Login extends Component {
   }
 
   onButtonPress = () => {
-    Alert.alert('Button has been pressed!');
+    //Alert.alert('Button has been pressed!');
+
   }
 
   retrievePassword = () => {
