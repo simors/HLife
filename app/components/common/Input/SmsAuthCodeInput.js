@@ -18,7 +18,7 @@ import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
-import {THEME_COLOR} from '../../../constants/themes/color'
+import THEME from '../../../constants/themes/theme1'
 
 class SmsAuthCodeInput extends Component {
 
@@ -43,7 +43,7 @@ class SmsAuthCodeInput extends Component {
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      text: text
+      text: {text}
     }
     this.props.inputFormUpdate(inputForm)
   }
@@ -112,12 +112,7 @@ class SmsAuthCodeInput extends Component {
 
   render() {
     return (
-      <View style={[{height:this.props.height,
-                     marginLeft:this.props.marginLeft,
-                     marginRight:this.props.marginRight,
-                     marginBottom:this.props.marginBottom},
-                     this.props.style]}
-      >
+      <View style={[{height:this.props.height}, this.props.style]}>
         <View style={smsStyles.smsInputContainerBg}/>
         <View style={smsStyles.smsInputContainer}
               marginTop={-this.props.height}>
@@ -139,7 +134,12 @@ class SmsAuthCodeInput extends Component {
 }
 
 SmsAuthCodeInput.defaultProps = {
-    style: undefined,
+    style: {
+      marginLeft:0,
+      marginRight:0,
+      marginBottom:0
+    },
+
     placeholder: '请输入6位验证码',
     getSmsAuthText: '获取验证码',
     placeholderTextColor: 'rgba(178,178,178,0.6)',
@@ -148,10 +148,7 @@ SmsAuthCodeInput.defaultProps = {
     autoFocus: false,
     countTimes:60,
     buttonWidth:normalizeW(120),
-    marginLeft:normalizeW(17),
-    marginRight:normalizeW(17),
-    marginBottom:normalizeH(25),
-    buttonColor: THEME_COLOR,
+    buttonColor:THEME.colors.green,
     disableColor:"#b2b2b2"
 }
 
