@@ -18,6 +18,7 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
 } from 'react-native-elements'
+import  PhoneInput from '../common/Input/PhoneInput'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height

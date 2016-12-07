@@ -4,6 +4,7 @@
 import React, {Component} from 'react'
 import {
   View,
+  StyleSheet,
 } from 'react-native'
 import { FormInput } from 'react-native-elements'
 import {bindActionCreators} from 'redux'
@@ -20,16 +21,26 @@ class CommonTextInput extends Component {
   componentDidMount() {
     let formInfo = {
       formKey: this.props.formKey,
-      stateKey: this.props.stateKey
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: {text: this.props.initValue},
+      checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
+  }
+
+  validInput(data) {
+    if (data.text && data.text.length > 0) {
+      return true
+    }
+    return false
   }
 
   inputChange(text) {
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      text: text
+      data: {text}
     }
     this.props.inputFormUpdate(inputForm)
   }
@@ -44,6 +55,7 @@ class CommonTextInput extends Component {
           placeholderTextColor={this.props.placeholderTextColor}
           maxLength={this.props.maxLength}
           underlineColorAndroid="transparent"
+          value={this.props.data}
         />
       </View>
     )
@@ -55,13 +67,15 @@ CommonTextInput.defaultProps = {
   placeholderTextColor: '#c8c8c8',
   maxLength: 16,
   autoFocus: false,
-  editable: true
+  editable: true,
+  initValue: "",
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let obj = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  console.log("obj", obj)
-  return {obj}
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  return {
+    data: inputData.text
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -70,3 +84,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommonTextInput)
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row'
+  },
+})

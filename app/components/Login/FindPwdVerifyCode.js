@@ -11,8 +11,13 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Symbol from 'es6-symbol'
+import {Button} from 'react-native-elements'
 
 import CommonTextInput from '../common/Input/CommonTextInput'
+import PhoneInput from '../common/Input/PhoneInput'
+import PasswordInput from '../common/Input/PasswordInput'
+
+import {submitInputForm} from '../../action/inputFormActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -20,16 +25,28 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 let commonForm = Symbol('commonForm')
 const nameInput = {
   formKey: commonForm,
-  stateKey: Symbol('nameInput')
+  stateKey: Symbol('nameInput'),
+  type: "nameInput",
+  initValue: "yangyang"
 }
 const pwdInput = {
   formKey: commonForm,
-  stateKey: Symbol('pwdInput')
+  stateKey: Symbol('pwdInput'),
+  type: "pwdInput"
+}
+
+const phoneInput = {
+  formKey: commonForm,
+  stateKey: Symbol('phoneInput')
 }
 
 class FindPwdVerifyCode extends Component {
   constructor(props) {
     super(props)
+  }
+
+  submit() {
+    this.props.submitInputForm({formKey: commonForm})
   }
 
   render() {
@@ -38,10 +55,12 @@ class FindPwdVerifyCode extends Component {
         <View style={styles.mainContainer}>
           <View style={styles.header}></View>
           <View style={styles.inputTips}>
-            <CommonTextInput {...nameInput} placeholder="输入用户名" />
-            <CommonTextInput {...pwdInput} placeholder="输入密码" />
+            <PhoneInput {...phoneInput}/>
+            <PasswordInput {...pwdInput}/>
           </View>
-          <View style={styles.inputView}></View>
+          <View style={styles.inputView}>
+            <Button title="submit" onPress={() => this.submit()} />
+          </View>
         </View>
       </View>
     )
@@ -52,7 +71,9 @@ const mapStateToProps = (state, ownProps) => {
   return {}
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitInputForm
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(FindPwdVerifyCode)
 
