@@ -67,9 +67,9 @@ class CommonTextInput extends Component {
   renderClearBtn() {
     if (this.state.showClear) {
       return (
-        <View style={{position: 'absolute', right: normalizeW(25), top: normalizeH(8)}}>
+        <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
           <TouchableOpacity onPress={() => this.clearInput()}>
-            <Image source={require('../../../assets/images/home_more.png')} />
+            <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
           </TouchableOpacity>
         </View>
       )
@@ -101,8 +101,8 @@ class CommonTextInput extends Component {
           maxLength={this.props.maxLength}
           underlineColorAndroid="transparent"
           value={this.props.data}
-          containerStyle={this.props.containerStyle}
-          inputStyle={this.props.inputStyle}
+          containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
+          inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
         />
         {this.renderClearBtn()}
       </View>
@@ -117,26 +117,9 @@ CommonTextInput.defaultProps = {
   autoFocus: false,
   editable: true,
   initValue: "",
-  containerStyle: {
-    flex: 1,
-    paddingLeft: normalizeW(17),
-    paddingRight: normalizeW(17),
-    height: normalizeH(50),
-    borderBottomWidth: 0,
-    marginLeft: 0,
-    marginRight: 0,
-    width: PAGE_WIDTH,
-  },
-  inputStyle: {
-    flex: 1,
-    paddingLeft: normalizeW(10),
-    paddingRight: normalizeW(10),
-    backgroundColor: '#F3F3F3',
-    borderWidth: 1,
-    borderColor: '#E9E9E9',
-    fontSize: em(16),
-    color: '#B2B2B2'
-  },
+  containerStyle: {flex: 1},
+  inputStyle: {flex: 1},
+  clearBtnStyle: {},
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -158,5 +141,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  defaultContainerStyle: {
+    flex: 1,
+    paddingLeft: normalizeW(17),
+    paddingRight: normalizeW(17),
+    height: normalizeH(50),
+    borderBottomWidth: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    width: PAGE_WIDTH,
+  },
+  defaultInputStyle: {
+    flex: 1,
+    paddingLeft: normalizeW(10),
+    paddingRight: normalizeW(10),
+    backgroundColor: '#F3F3F3',
+    borderWidth: 1,
+    borderColor: '#E9E9E9',
+    fontSize: em(16),
+    color: '#B2B2B2'
+  },
+  defaultClearBtnStyle: {
+    position: 'absolute',
+    right: normalizeW(25),
+    top: normalizeH(12)
   },
 })
