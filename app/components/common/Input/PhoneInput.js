@@ -1,15 +1,12 @@
 import React, {Component} from 'react'
 import {
 	StyleSheet,
-	Text,
-	View,
-	TouchableOpacity,
 	Dimensions,
-	Platform,
-	TextInput
+	Platform
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import { FormInput } from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
@@ -19,123 +16,54 @@ import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
 
 class PhoneInput extends Component {
-	static defaultProps = {
-		placeholder: '请输入手机号',
-		maxLength: 13, //11位手机号+2位空格
-		autoFocus: false,
-		keyboardType: "phone-pad"
-	}
-
-	static phoneFormInfo = {}
 
 	constructor(props) {
 		super(props)
-		phoneFormInfo = {
+	}
+
+	componentDidMount() {
+		let formInfo = {
 			formKey: this.props.formKey,
 	    stateKey: this.props.stateKey,
 	    type: "phoneInput",
 		  initValue: ""
 		}
-	}
-
-	componentDidMount() {
-    this.props.initInputForm(phoneFormInfo)
+    this.props.initInputForm(formInfo)
   }
 
   inputChange(text) {
   	let _text = removeSpace(text)
-    phoneFormInfo.data = {text: _text}
-    this.props.inputFormUpdate(phoneFormInfo)
+  	let formInfo = {
+			formKey: this.props.formKey,
+	    stateKey: this.props.stateKey,
+	    data: {text: _text}
+		}
+    this.props.inputFormUpdate(formInfo)
   }
 
 	render() {
-		const {
-	    containerStyle,
-	    inputStyle,
-	    data,
-	    autoCapitalize,
-	    autoCorrect,
-	    autoFocus,
-	    blurOnSubmit,
-	    defaultValue,
-	    editable,
-	    keyboardType,
-	    maxLength,
-	    multiline,
-	    onBlur,
-	    onChange,
-	    onChangeText,
-	    onContentSizeChange,
-	    onEndEditing,
-	    onFocus,
-	    onLayout,
-	    onSelectionChange,
-	    onSubmitEditing,
-	    placeholder,
-	    placeholderTextColor,
-	    returnKeyType,
-	    secureTextEntry,
-	    selectTextOnFocus,
-	    selectionColor,
-	    inlineImageLeft,
-	    inlineImagePadding,
-	    numberOfLines,
-	    returnKeyLabel,
-	    underlineColorAndroid,
-	    clearButtonMode,
-	    clearTextOnFocus,
-	    dataDetectorTypes,
-	    enablesReturnKeyAutomatically,
-	    keyboardAppearance,
-	    onKeyPress,
-	    selectionState,
-	    textInputRef,
-	    containerRef,
-	  } = this.props
 		return (
-      <View ref={containerRef} style={[styles.container, containerStyle && containerStyle]}>
-	      <TextInput
-	        ref={textInputRef}
-	        autoCapitalize={autoCapitalize}
-	        autoCorrect={autoCorrect}
-	        autoFocus={autoFocus}
-	        blurOnSubmit={blurOnSubmit}
-	        defaultValue={defaultValue}
-	        keyboardType={keyboardType}
-	        maxLength={maxLength}
-	        multiline={multiline}
-	        onBlur={onBlur}
-	        onChange={onChange}
-	        onChangeText={(text) => this.inputChange(text)}
-	        onContentSizeChange={onContentSizeChange}
-	        onEndEditing={onEndEditing}
-	        onFocus={onFocus}
-	        onLayout={onLayout}
-	        onSelectionChange={onSelectionChange}
-	        onSubmitEditing={onSubmitEditing}
-	        placeholder={placeholder}
-	        placeholderTextColor={placeholderTextColor}
-	        returnKeyType={returnKeyType}
-	        secureTextEntry={secureTextEntry}
-	        selectTextOnFocus={selectTextOnFocus}
-	        inlineImageLeft={inlineImageLeft}
-	        inlineImagePadding={inlineImagePadding}
-	        numberOfLines={numberOfLines}
-	        returnKeyLabel={returnKeyLabel}
-	        underlineColorAndroid={underlineColorAndroid}
-	        clearButtonMode={clearButtonMode}
-	        clearTextOnFocus={clearTextOnFocus}
-	        dataDetectorTypes={dataDetectorTypes}
-	        enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
-	        keyboardAppearance={keyboardAppearance}
-	        onKeyPress={onKeyPress}
-	        selectionState={selectionState}
-	        editable={editable}
-	        selectionColor={selectionColor}
-	        value={formatPhone(data)}
-	        style={[styles.input, inputStyle && inputStyle]} />
-	    </View>)
+      <FormInput
+        onChangeText={(text) => this.inputChange(text)}
+        autoFocus={this.props.autoFocus}
+        placeholder={this.props.placeholder}
+        placeholderTextColor={this.props.placeholderTextColor}
+        maxLength={this.props.maxLength}
+        underlineColorAndroid="transparent"
+        value={formatPhone(this.props.data)}
+        containerStyle={[styles.container, this.props.containerStyle && this.props.containerStyle]}
+        inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
+      />)
 	}
+}
+
+PhoneInput.defaultProps = {
+	placeholder: '请输入手机号',
+	maxLength: 13, //11位手机号+2位空格
+	autoFocus: false,
+	keyboardType: "phone-pad",
+  placeholderTextColor: '#B2B2B2',
+  editable: true
 }
 
 const styles = StyleSheet.create({
