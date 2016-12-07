@@ -78,7 +78,7 @@ class Regist extends Component {
             buttonStyle={styles.getverifycodebtn}
             onPress={this.onButtonPress}
             title="获取验证码"
-          />
+            />
             </View>
           <View style={styles.inputField}>
           <TextInput

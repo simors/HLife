@@ -15,8 +15,6 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {Actions} from 'react-native-router-flux'
-import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
@@ -43,8 +41,9 @@ class RetrievePassword extends Component {
           <Text style={styles.title}>找回密码</Text>
         </View>
         <View style={styles.body}>
+          <Text style={styles.titleinfo}>填写注册时的手机号码并验证</Text>
           <TextInput
-            placeholder={'输入验证码'}
+            placeholder={'输入手机号'}
             style={styles.inputField}
             autoCapitalize={'none'}
             autoCorrect={false}
@@ -52,24 +51,29 @@ class RetrievePassword extends Component {
               this.changeUserState('userName', text)
             }}
           />
-          <TouchableOpacity style={styles.resendCodeBox} >
-            <Text style={styles.resendCode}>点击重新发送验证码</Text>
-          </TouchableOpacity>
-          <TextInput
-            placeholder={'重新设置密码'}
-            style={styles.inputField}
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            onChangeText={(text) => {
-              this.changeUserState('userName', text)
-            }}
-          />
-          <Button
-            buttonStyle={styles.btn}
-            onPress={this.onButtonPress}
-            title="开始使用"
-          />
+          <View style={styles.inputField}>
+            <TextInput
+              placeholder={'输入验证码'}
+              style={styles.inputverifycode}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              onChangeText={(text) => {
+                this.changeUserState('userName', text)
+              }}
+            />
+            <Button
+              buttonStyle={styles.getverifycodebtn}
+              onPress={this.onButtonPress}
+              title="获取验证码"
+            />
+          </View>
+
         </View>
+        <Button
+          buttonStyle={styles.btn}
+          onPress={this.onButtonPress}
+          title="下一步"
+        />
 
       </View>
     )
@@ -116,59 +120,47 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   body: {
-    paddingTop: normalizeH(65),
+    paddingTop: normalizeH(64),
     width: PAGE_WIDTH,
+    paddingLeft: normalizeW(18),
+    paddingRight: normalizeW(17),
     justifyContent: 'center',
-    alignItems: 'center'
-  },
-  tipInfoBox: {
-    width: normalizeW(120),
-    marginBottom: normalizeH(64),
-  },
-  tipInfo: {
-    fontSize: em(20),
-    fontWeight: 'bold',
-    textAlign: 'center'
+    alignItems: 'flex-start',
   },
   inputField: {
     height: normalizeH(50),
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
-    marginBottom: normalizeH(31),
     paddingLeft: normalizeW(10),
+    marginBottom: normalizeH(31),
     paddingRight: normalizeW(10),
     borderWidth: 1,
     borderColor: '#E9E9E9',
     backgroundColor: '#F3F3F3',
     color: '#666',
-    fontSize: em(14)
+    fontSize: em(16),flexDirection:'row',
   },
   btn: {
-    width: PAGE_WIDTH - normalizeW(34),
     height: normalizeH(50),
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
     backgroundColor: '#50E3C2',
-    marginBottom: normalizeH(22)
+    marginBottom: normalizeH(24)
   },
-  resendCodeBox: {
-    marginBottom: normalizeH(40)
+  inputverifycode:{
+    height:normalizeH(50),
+    width:normalizeW(196),
   },
-  resendCode: {
+  getverifycodebtn:{
+    marginLeft:0,
+    marginTop:0,
+    height:normalizeH(50),
+    width:normalizeW(134),
+    backgroundColor:'#50E3C2',
+  },
+  titleinfo: {
     color: '#50E3C2',
     fontSize: em(18),
-  },
-  protocalBox: {},
-  protocalTipTxt: {
-    color: '#7a7a7a',
-    fontSize: em(18),
-  },
-  protocalLinkBox: {
-    marginTop: normalizeH(18)
-  },
-  protocalLink: {
-    color: '#50E3C2',
-    fontSize: em(18),
-    textAlign: 'center'
+    alignSelf: 'flex-start',
+    marginBottom: normalizeH(35)
   }
+
 })
