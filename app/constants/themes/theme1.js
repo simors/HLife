@@ -21,10 +21,11 @@ export default THEME = {
     	color: '#B2B2B2'
 		},
 		inputContainer: {
-			marginLeft: normalizeW(17),
-	    marginRight: normalizeW(17),
-	    marginBottom: normalizeH(12),
-	    marginTop: normalizeH(12)
+			marginLeft: 0,
+	    marginRight: 0,
+	    marginBottom: 0,
+	    marginTop: 0,
+	    borderBottomWidth: 0
 		}
 	},
 	colors: {
