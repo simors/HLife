@@ -21,14 +21,14 @@ import {
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
-import AV from 'leancloud-storage'
+import auth from '../../api/leancloud/auth'
+import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
-
 const phoneInput = {
   formKey: commonForm,
   stateKey: Symbol('phoneInput')
@@ -42,10 +42,6 @@ const pwdInput = {
 class Login extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      userName: "",
-      password: ""
-    }
   }
 
   changeUserState(key, value) {
@@ -55,8 +51,15 @@ class Login extends Component {
   }
 
   onButtonPress = () => {
-    //Alert.alert('Button has been pressed!');
+    this.props.submitFormData({
+      formKey: commonForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
+      success:this.submitSuccess
+    })
+  }
 
+  submitSuccess() {
+    Alert.alert('regist success!');
   }
 
   retrievePassword = () => {
@@ -77,10 +80,8 @@ class Login extends Component {
         </View>
         <View style={styles.body}>
           <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo}></Image>
-          <View>
-            <PhoneInput {...phoneInput}/>
-            <PasswordInput {...pwdInput}/>
-          </View>
+          <PhoneInput {...phoneInput}/>
+          <PasswordInput {...pwdInput}/>
           <Button
             buttonStyle={styles.btn}
             onPress={this.onButtonPress}
@@ -96,15 +97,11 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-    'userName': 'Z',
-    'password': '1',
-    'isLogin': true
-  }
+  return {}
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  
+  submitFormData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

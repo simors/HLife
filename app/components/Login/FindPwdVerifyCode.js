@@ -55,6 +55,12 @@ class FindPwdVerifyCode extends Component {
         <View style={styles.mainContainer}>
           <View style={styles.header}></View>
           <View style={styles.inputTips}>
+            <View style={{marginTop: 17}}>
+              <CommonTextInput {...nameInput} placeholder="输入用户名" />
+            </View>
+            <View style={{marginTop: 17}}>
+              <CommonTextInput {...pwdInput} placeholder="输入密码" />
+            </View>
             <PhoneInput {...phoneInput}/>
             <PasswordInput {...pwdInput}/>
           </View>
