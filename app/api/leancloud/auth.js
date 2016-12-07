@@ -10,7 +10,7 @@ export function loginWithPwd(payload) {
   return AV.User.logInWithMobilePhone(phone, password).then((loginedUser) => {
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
     userInfo = userInfo.set('token', loginedUser.getSessionToken())
-    return loginedUser.fetch({include: ['detail', 'detail.corpus']}, {}).then((user)=> {
+    return loginedUser.fetch({include: ['detail']}, {}).then((user)=> {
       let detail = user.get('detail')
       let userDetail = {}
       if (detail) {
@@ -32,8 +32,11 @@ export function register(payload) {
   user.setUsername(payload.phone)
   user.setPassword(payload.password)
   user.setMobilePhoneNumber(payload.phone)
+  console.log('user=', user)
   return user.signUp().then((loginedUser) => {
+  	//console.log('loginedUser=', loginedUser)
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+  	//console.log('userInfo=', userInfo)
     return {
       userInfo: userInfo,
       token: user.getSessionToken()
