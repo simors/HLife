@@ -1,41 +1,24 @@
-import React, {Component} from 'react'
 import Toast from 'react-native-root-toast'
-import {endToast} from '../../action/toastActions'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
 
-class CustomToast extends Component {
-  delayedEndToast = () => {
-    setTimeout(()=> {
-      this.props.endToast()
-    }, 1500)
-  }
-
-  render() {
-    if (this.props.text) this.delayedEndToast()
-    return (
-      <Toast
-        visible={this.props.text != undefined}
-        position={Toast.positions.CENTER}
-        shadow={true}
-        animation={true}
-        hideOnPress={true}
-      >
-        {this.props.text}
-      </Toast>
-    )
-  }
-
+export function show(text, options) {
+  Toast.show(text, {
+    duration: 1500,
+    position: Toast.positions.CENTER,
+    shadow: true,
+    animation: true,
+    hideOnPress: true,
+    delay: 0,
+    onShow: () => {
+        // calls on toast\`s appear animation start
+    },
+    onShown: () => {
+        // calls on toast\`s appear animation end.
+    },
+    onHide: () => {
+        // calls on toast\`s hide animation start.
+    },
+    onHidden: () => {
+        // calls on toast\`s hide animation end.
+    }
+  })
 }
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    ...(state.TOAST).toJS()
-  }
-}
-
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  endToast
-}, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(CustomToast)

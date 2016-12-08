@@ -24,7 +24,7 @@ import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
 import auth from '../../api/leancloud/auth'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
-import * as Toast from '../common/RootToast'
+import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height

@@ -13,7 +13,6 @@ import configureStore from './app/store/configureStore'
 import persist from './app/store/persistStore'
 import {scenes} from './app/scenes/scenes'
 import AV from 'leancloud-storage'
-import CustomToast from './app/components/common/Toast'
 
 const RouterWithRedux = connect()(Router)
 const store = configureStore()
@@ -43,7 +42,6 @@ export default class HLifeEntry extends Component {
     return (
       <Provider store={store}>
         <View style={{flex: 1}}>
-          <CustomToast text='hello HLife'/>
           <RouterWithRedux scenes={scenes} store={store} sceneStyle={getSceneStyle}/>
         </View>
       </Provider>

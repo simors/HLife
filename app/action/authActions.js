@@ -1,10 +1,10 @@
 
 import {createAction} from 'redux-actions'
 import * as authTypes from '../constants/authActionTypes'
-import * as toastActions from './toastActions'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as auth from '../api/leancloud/auth'
+import * as Toast from '../components/common/Toast'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -38,7 +38,7 @@ function handleLoginWithPwd(payload, formData) {
     console.log('loginPayload=', loginPayload)
     auth.loginWithPwd(loginPayload).then((userInfos) => {
     	console.log('userInfos=', userInfos)
-    	dispatch(toastActions.showToast({text: '登录成功'}))
+    	//dispatch(toastActions.showToast({text: '登录成功'}))
       // let loginAction = createAction(authTypes.LOGIN_SUCCESS)
       // dispatch(loginAction({...userInfos}))
       // dispatch(initMessenger())
@@ -47,7 +47,7 @@ function handleLoginWithPwd(payload, formData) {
       // Actions.popTo('root')
     }).catch((error) => {
       console.log('login error is', error)
-      dispatch(showToast({text: error.message}))
+      //dispatch(showToast({text: error.message}))
     })
   }
 }
@@ -91,12 +91,12 @@ function registerWithPhoneNum(formData) {
       password: formData.passwordInput.text
     }
     auth.register(regPayload).then((user) => {
-    	dispatch(toastActions.showToast({text: '注册成功'}))
+    	//dispatch(toastActions.showToast({text: '注册成功'}))
       // let regAction = createAction(authTypes.REGISTER_SUCCESS)
       // dispatch(regAction(user))
       // Actions.SUPPLEMENT_INFO_VIEW()
     }).catch((error) => {
-      dispatch(toastActions.showToast({text: error.message}))
+      //dispatch(toastActions.showToast({text: error.message}))
       console.log('register using phone num failed:', error)
     })
   }
