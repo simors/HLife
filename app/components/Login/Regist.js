@@ -50,10 +50,6 @@ const passwordInput = {
 class Regist extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      userName: "",
-      password: ""
-    }
   }
 
   changeUserState(key, value) {
@@ -115,15 +111,10 @@ class Regist extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-    'userName': 'Z',
-    'password': '1',
-    'isLogin': true
-  }
+  return {}
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Regist)

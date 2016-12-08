@@ -41,9 +41,6 @@ const smsAuthCodeInput = {
 class RetrievePassword extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      Verify_code: "",
-    }
   }
 
   onButtonPress = () => {
@@ -81,16 +78,14 @@ class RetrievePassword extends Component {
       </View>
     )
   }
-
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-    Verify_code: "8888",
-  }
+  return {}
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(RetrievePassword)
 
