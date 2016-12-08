@@ -21,6 +21,7 @@ import {
 
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
+import Header from '../common/Header'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -58,15 +59,15 @@ class Regist extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon
-            name='ios-arrow-back'
-            style={styles.chevronLeft} />
-          <Text style={styles.title}>注册</Text>
-          <TouchableOpacity style={styles.rightBox} onPress={() => Actions.LOGIN()} >
-            <Text style={styles.rightTxt}>登录</Text>
-          </TouchableOpacity>
-        </View>
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.LOGIN()}
+          title="注册"
+          rightType="text"
+          rightText="登录"
+          rightPress={() => Actions.LOGIN()}
+        />
         <View style={styles.body}>
           <Image source={require('../../assets/images/login_weixin@1x.png')} style={styles.logo}></Image>
           <PhoneInput {...phoneInput}/>

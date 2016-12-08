@@ -19,6 +19,8 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
 } from 'react-native-elements'
+import {Actions} from 'react-native-router-flux'
+import Header from '../common/Header'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -34,12 +36,13 @@ class RetrievePassword extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon
-            name='ios-arrow-back'
-            style={styles.chevronLeft}/>
-          <Text style={styles.title}>找回密码</Text>
-        </View>
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.REGIST()}
+          title="找回密码"
+          rightType=""
+        />
         <View style={styles.body}>
           <Text style={styles.titleinfo}>填写注册时的手机号码并验证</Text>
           <TextInput
