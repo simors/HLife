@@ -80,8 +80,12 @@ class Login extends Component {
         </View>
         <View style={styles.body}>
           <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo}></Image>
-          <PhoneInput {...phoneInput}/>
-          <PasswordInput {...pwdInput}/>
+          <View style={styles.inputBox}>
+            <PhoneInput {...phoneInput}/>
+          </View>
+          <View style={styles.inputBox}>
+            <PasswordInput {...pwdInput}/>
+          </View>
           <Button
             buttonStyle={styles.btn}
             onPress={this.onButtonPress}
@@ -109,6 +113,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  inputBox: {
+    marginLeft: normalizeW(17),
+    marginRight: normalizeW(17),
+    marginBottom: normalizeW(25)
   },
   header: {
     backgroundColor: '#f3f3f3',

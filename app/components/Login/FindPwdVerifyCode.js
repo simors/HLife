@@ -16,6 +16,7 @@ import {Button} from 'react-native-elements'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
+import ImageInput from '../common/Input/ImageInput'
 
 import {submitInputForm} from '../../action/inputFormActions'
 
@@ -55,6 +56,9 @@ class FindPwdVerifyCode extends Component {
         <View style={styles.mainContainer}>
           <View style={styles.header}></View>
           <View style={styles.inputTips}>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 17}}>
+              <ImageInput containerStyle={{borderRadius: 50}} />
+            </View>
             <View style={{marginTop: 17}}>
               <CommonTextInput {...nameInput} placeholder="输入用户名" />
             </View>

@@ -19,8 +19,22 @@ import {
   Button
 } from 'react-native-elements'
 
+import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
+import PhoneInput from '../common/Input/PhoneInput'
+
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
+
+let commonForm = Symbol('commonForm')
+const phoneInput = {
+  formKey: commonForm,
+  stateKey: Symbol('phoneInput')
+}
+
+const smsAuthCodeInput = {
+  formKey: commonForm,
+  stateKey: Symbol('smsAuthCodeInput')
+}
 
 class Regist extends Component {
   constructor(props) {
@@ -55,31 +69,11 @@ class Regist extends Component {
         </View>
         <View style={styles.body}>
           <Image source={require('../../assets/images/login_weixin@1x.png')} style={styles.logo}></Image>
-          <TextInput
-                placeholder={'输入手机号'}
-                style={styles.inputField}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                onChangeText={(text) => {
-                  this.changeUserState('userName', text)
-                }}
-              />
-          <View style={styles.inputField}>
-            <TextInput
-              placeholder={'输入验证码'}
-              style={styles.inputverifycode}
-              autoCapitalize={'none'}
-              autoCorrect={false}
-              onChangeText={(text) => {
-                this.changeUserState('userName', text)
-              }}
-            />
-            <Button
-            buttonStyle={styles.getverifycodebtn}
-            onPress={this.onButtonPress}
-            title="获取验证码"
-            />
-            </View>
+          <PhoneInput {...phoneInput}/>
+          <SmsAuthCodeInput {...smsAuthCodeInput}
+                            style={{marginLeft:normalizeW(17),
+                                    marginRight:normalizeW(17),
+                                    marginBottom:normalizeH(25)}}/>
           <View style={styles.inputField}>
           <TextInput
             placeholder={'设置密码（6～10位数字或字母'}

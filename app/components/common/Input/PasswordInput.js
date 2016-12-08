@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import { FormInput } from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 import {removeSpace, formatPhone} from '../../../util/numberUtils'
@@ -56,91 +57,20 @@ class PasswordInput extends Component {
 	}
 
 	render() {
-		const {
-	    containerStyle,
-	    inputStyle,
-	    data,
-	    autoCapitalize,
-	    autoCorrect,
-	    autoFocus,
-	    blurOnSubmit,
-	    defaultValue,
-	    editable,
-	    keyboardType,
-	    maxLength,
-	    multiline,
-	    onBlur,
-	    onChange,
-	    onChangeText,
-	    onContentSizeChange,
-	    onEndEditing,
-	    onFocus,
-	    onLayout,
-	    onSelectionChange,
-	    onSubmitEditing,
-	    placeholder,
-	    placeholderTextColor,
-	    returnKeyType,
-	    secureTextEntry,
-	    selectTextOnFocus,
-	    selectionColor,
-	    inlineImageLeft,
-	    inlineImagePadding,
-	    numberOfLines,
-	    returnKeyLabel,
-	    underlineColorAndroid,
-	    clearButtonMode,
-	    clearTextOnFocus,
-	    dataDetectorTypes,
-	    enablesReturnKeyAutomatically,
-	    keyboardAppearance,
-	    onKeyPress,
-	    selectionState,
-	    textInputRef,
-	    containerRef,
-	  } = this.props
 		return (
-      <View ref={containerRef} style={[styles.container, containerStyle && containerStyle]}>
-	      <TextInput
-	        ref={textInputRef}
-	        autoCapitalize={autoCapitalize}
-	        autoCorrect={autoCorrect}
-	        autoFocus={autoFocus}
-	        blurOnSubmit={blurOnSubmit}
-	        defaultValue={defaultValue}
-	        keyboardType={keyboardType}
-	        maxLength={maxLength}
-	        multiline={multiline}
-	        onBlur={onBlur}
-	        onChange={onChange}
+      <View style={[styles.container, this.props.containerStyle && this.props.containerStyle]}>
+	      <FormInput
 	        onChangeText={(text) => this.inputChange(text)}
-	        onContentSizeChange={onContentSizeChange}
-	        onEndEditing={onEndEditing}
-	        onFocus={onFocus}
-	        onLayout={onLayout}
-	        onSelectionChange={onSelectionChange}
-	        onSubmitEditing={onSubmitEditing}
-	        placeholder={placeholder}
-	        placeholderTextColor={placeholderTextColor}
-	        returnKeyType={returnKeyType}
+	        autoFocus={this.props.autoFocus}
+	        placeholder={this.props.placeholder}
+	        placeholderTextColor={this.props.placeholderTextColor}
+	        maxLength={this.props.maxLength}
 	        secureTextEntry={!this.state.showPwd}
-	        selectTextOnFocus={selectTextOnFocus}
-	        inlineImageLeft={inlineImageLeft}
-	        inlineImagePadding={inlineImagePadding}
-	        numberOfLines={numberOfLines}
-	        returnKeyLabel={returnKeyLabel}
-	        underlineColorAndroid={underlineColorAndroid}
-	        clearButtonMode={clearButtonMode}
-	        clearTextOnFocus={clearTextOnFocus}
-	        dataDetectorTypes={dataDetectorTypes}
-	        enablesReturnKeyAutomatically={enablesReturnKeyAutomatically}
-	        keyboardAppearance={keyboardAppearance}
-	        onKeyPress={onKeyPress}
-	        selectionState={selectionState}
-	        editable={editable}
-	        selectionColor={selectionColor}
-	        value={data}
-	        style={[styles.input, inputStyle && inputStyle]} />
+	        underlineColorAndroid="transparent"
+	        containerStyle={{marginLeft:0, marginRight: 0,borderBottomWidth:0}}
+	        value={this.props.data}
+	        inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
+	      />
         <TouchableWithoutFeedback onPress={this.onShowPwdClicked}>
 					<View style={this.state.showPwd ? styles.eyeOpenIcon  : styles.eyeCloseIcon}>
 						<Image source={this.state.showPwd ?
@@ -150,6 +80,14 @@ class PasswordInput extends Component {
 				</TouchableWithoutFeedback>
 	    </View>)
 	}
+}
+
+PasswordInput.defaultProps = {
+	placeholder: '设置密码(6-16位数字或字母)',
+	maxLength: 16, //6-16位数字或字母
+	autoFocus: false,
+  placeholderTextColor: '#B2B2B2',
+  editable: true
 }
 
 const styles = StyleSheet.create({
