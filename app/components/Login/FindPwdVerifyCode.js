@@ -11,12 +11,12 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Symbol from 'es6-symbol'
-import {Button} from 'react-native-elements'
 
 import CommonTextInput from '../common/Input/CommonTextInput'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import ImageInput from '../common/Input/ImageInput'
+import CommonButton from '../common/CommonButton'
 
 import {submitInputForm} from '../../action/inputFormActions'
 
@@ -65,11 +65,15 @@ class FindPwdVerifyCode extends Component {
             <View style={{marginTop: 17}}>
               <CommonTextInput {...pwdInput} placeholder="输入密码" />
             </View>
-            <PhoneInput {...phoneInput}/>
-            <PasswordInput {...pwdInput}/>
+            <View style={{marginTop: 17}}>
+              <PhoneInput {...phoneInput}/>
+            </View>
+            <View style={{marginTop: 17}}>
+              <PasswordInput {...pwdInput}/>
+            </View>
           </View>
-          <View style={styles.inputView}>
-            <Button title="submit" onPress={() => this.submit()} />
+          <View style={styles.btnView}>
+            <CommonButton title="提交" onPress={() => this.submit()} />
           </View>
         </View>
       </View>
@@ -107,5 +111,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#B2B2B2'
   },
   inputTips: {},
-  inputView: {},
+  btnView: {
+    marginTop: 17,
+  },
 })
