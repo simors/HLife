@@ -15,6 +15,8 @@ import {
   TextInput,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
+import Header from '../../common/Header'
+import {Actions} from 'react-native-router-flux'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width;
@@ -36,16 +38,13 @@ export default class register_1 extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/*<View style={styles.top}>*/}
-        {/*</View>*/}
-        <View style={styles.setPsw}>
-
-          <Icon
-            name='ios-arrow-back'
-            style={styles.chevronLeft}/>
-          <Text style={styles.title}>找回密码</Text>
-
-        </View>
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.RETRIEVE_PASSWORD()}
+          title="找回密码"
+          rightType=""
+        />
         <View style={styles.pswView}>
           {/*<Text style={styles.pswText}></Text>*/}
           <TextInput
