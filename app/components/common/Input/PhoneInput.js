@@ -2,6 +2,9 @@ import React, {Component} from 'react'
 import {
 	StyleSheet,
 	Dimensions,
+  View,
+  Image,
+  TouchableOpacity,
 	Platform
 } from 'react-native'
 import {bindActionCreators} from 'redux'
@@ -19,16 +22,22 @@ class PhoneInput extends Component {
 
 	constructor(props) {
 		super(props)
+    this.state = {
+      showClear: false,
+    }
 	}
 
 	componentDidMount() {
 		let formInfo = {
 			formKey: this.props.formKey,
 	    stateKey: this.props.stateKey,
-	    type: "phoneInput",
-		  initValue: ""
+	    type: this.props.type,
+		  initValue: {text: this.props.initValue}
 		}
     this.props.initInputForm(formInfo)
+    if (formInfo.initValue.text && formInfo.initValue.text.length > 0) {
+      this.setState({showClear: true})
+    }
   }
 
   inputChange(text) {
@@ -39,21 +48,57 @@ class PhoneInput extends Component {
 	    data: {text: _text}
 		}
     this.props.inputFormUpdate(formInfo)
+
+    if (text.length > 0) {
+      this.setState({showClear: true})
+    } else {
+      this.setState({showClear: false})
+    }
+  }
+
+  renderClearBtn() {
+    if (this.state.showClear) {
+      return (
+        <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
+          <TouchableOpacity onPress={() => this.clearInput()}>
+            <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return (
+        <View />
+      )
+    }
+  }
+
+  clearInput() {
+    let inputForm = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      data: {text: ''}
+    }
+    this.props.inputFormUpdate(inputForm)
+    this.setState({showClear: false})
   }
 
 	render() {
 		return (
-      <FormInput
-        onChangeText={(text) => this.inputChange(text)}
-        autoFocus={this.props.autoFocus}
-        placeholder={this.props.placeholder}
-        placeholderTextColor={this.props.placeholderTextColor}
-        maxLength={this.props.maxLength}
-        underlineColorAndroid="transparent"
-        value={formatPhone(this.props.data)}
-        containerStyle={[styles.container, this.props.containerStyle && this.props.containerStyle]}
-        inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
-      />)
+      <View style={styles.containerWrap}>
+        <FormInput
+          onChangeText={(text) => this.inputChange(text)}
+          autoFocus={this.props.autoFocus}
+          placeholder={this.props.placeholder}
+          placeholderTextColor={this.props.placeholderTextColor}
+          maxLength={this.props.maxLength}
+          underlineColorAndroid="transparent"
+          value={formatPhone(this.props.data)}
+          containerStyle={[styles.container, this.props.containerStyle && this.props.containerStyle]}
+          inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
+        /> 
+        {this.renderClearBtn()}
+      </View>
+      )
 	}
 }
 
@@ -67,6 +112,24 @@ PhoneInput.defaultProps = {
 }
 
 const styles = StyleSheet.create({
+  containerWrap: {
+    
+  },
+  defaultContainerStyle: {
+    flex: 1,
+    paddingLeft: normalizeW(17),
+    paddingRight: normalizeW(17),
+    height: normalizeH(50),
+    borderBottomWidth: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    width: PAGE_WIDTH,
+  },
+  defaultClearBtnStyle: {
+    position: 'absolute',
+    right: normalizeW(12),
+    top: normalizeH(12)
+  },
   container: {
     ...THEME.base.inputContainer
   },
