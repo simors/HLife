@@ -77,20 +77,9 @@ class Regist extends Component {
         <View style={styles.body}>
           <Image source={require('../../assets/images/login_weixin@1x.png')} style={styles.logo} />
 
-          <PhoneInput {...phoneInput}
-                      containerStyle={{marginLeft:normalizeH(17),
-                        marginRight:normalizeH(17),
-                        marginBottom:normalizeH(25)}}/>
-
-          <SmsAuthCodeInput {...smsAuthCodeInput}
-                            containerStyle={{marginLeft:normalizeH(17),
-                              marginRight:normalizeH(17),
-                              marginBottom:normalizeH(25)}}/>
-
-          <PasswordInput {...passwordInput}
-                            containerStyle={{marginLeft:normalizeH(17),
-                              marginRight:normalizeH(17),
-                              marginBottom:normalizeH(25)}}/>
+          <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
+          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}/>
+          <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
 
           <Button
             buttonStyle={styles.btn}
@@ -125,6 +114,11 @@ const styles = StyleSheet.create({
   },
   body: {
     width: PAGE_WIDTH,
+  },
+  inputBox: {
+    marginLeft: normalizeW(17),
+    marginRight: normalizeW(17),
+    marginBottom: normalizeW(25)
   },
   logo: {
     marginLeft: normalizeW(PAGE_WIDTH / 2 - 54),

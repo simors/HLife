@@ -52,10 +52,7 @@ export class RetrievePwd extends Component {
           rightType=""
         />
         <View style={styles.body}>
-          <PasswordInput {...passwordInput}
-                         containerStyle={{marginLeft:normalizeH(17),
-                           marginRight:normalizeH(17),
-                           marginBottom:normalizeH(25)}}/>
+          <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
           <Button
             buttonStyle={styles.btn}
             onPress={this.onButtonPress}
@@ -76,6 +73,11 @@ const styles = StyleSheet.create({
   body: {
     paddingTop: normalizeH(64),
     width: PAGE_WIDTH,
+  },
+  inputBox: {
+    marginLeft: normalizeW(17),
+    marginRight: normalizeW(17),
+    marginBottom: normalizeW(25)
   },
   btn: {
     height: normalizeH(50),

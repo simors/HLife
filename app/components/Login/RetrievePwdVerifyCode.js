@@ -59,15 +59,8 @@ class RetrievePassword extends Component {
         />
         <View style={styles.body}>
           <Text style={styles.titleInfo}>填写注册时的手机号码并验证</Text>
-          <PhoneInput {...phoneInput}
-                      containerStyle={{marginLeft:normalizeH(17),
-                        marginRight:normalizeH(17),
-                        marginBottom:normalizeH(25)}}/>
-
-          <SmsAuthCodeInput {...smsAuthCodeInput}
-                            containerStyle={{marginLeft:normalizeH(17),
-                              marginRight:normalizeH(17),
-                              marginBottom:normalizeH(25)}}/>
+          <PhoneInput {...phoneInput} containerStyle={styles.inputBox}/>
+          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}/>
         </View>
         <Button
           buttonStyle={styles.btn}
@@ -103,6 +96,11 @@ const styles = StyleSheet.create({
   body: {
     paddingTop: normalizeH(64),
     width: PAGE_WIDTH,
+  },
+  inputBox: {
+    marginLeft: normalizeW(17),
+    marginRight: normalizeW(17),
+    marginBottom: normalizeW(25)
   },
   btn: {
     height: normalizeH(50),
