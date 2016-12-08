@@ -1,3 +1,8 @@
+/**
+ * Created by lilu on 2016/12/2.
+ * Modified by wuxingyu on 2016/12/8.
+ */
+
 import React, {Component} from 'react'
 import {
   StyleSheet,
