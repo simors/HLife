@@ -12,6 +12,8 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import  ImagePicker from 'react-native-image-crop-picker'
+import ActionSheet from 'react-native-actionsheet'
 
 class ImageInput extends Component {
   constructor(props) {
