@@ -19,6 +19,7 @@ import {
   Button
 } from 'react-native-elements'
 import PhoneInput from '../common/Input/PhoneInput'
+import Header from '../common/Header'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
 import auth from '../../api/leancloud/auth'
@@ -69,15 +70,15 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon          
-            name='ios-arrow-back'
-            style={styles.chevronLeft} />
-          <Text style={styles.title}>登录</Text>  
-          <TouchableOpacity style={styles.rightBox} onPress={() => Actions.REGIST()} >
-            <Text style={styles.rightTxt}>快速注册</Text>  
-          </TouchableOpacity>
-        </View>
+        <Header 
+          leftType="icon" 
+          leftIconName="ios-arrow-back" 
+          leftPress={() => Actions.REGIST()}
+          title="登录" 
+          rightType="text" 
+          rightText="快速注册"
+          rightPress={() => Actions.REGIST()}
+        />
         <View style={styles.body}>
           <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo}></Image>
           <View style={styles.inputBox}>
