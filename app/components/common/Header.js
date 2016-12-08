@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
@@ -108,7 +109,11 @@ Header.defaultProps = {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: '#f3f3f3',
-    paddingTop: normalizeH(20),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(20)
+      }
+    }),
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
