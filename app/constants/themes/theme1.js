@@ -25,7 +25,9 @@ export default THEME = {
 	    marginRight: 0,
 	    marginBottom: 0,
 	    marginTop: 0,
-	    borderBottomWidth: 0
+	    borderBottomWidth: 0,
+			paddingLeft: normalizeW(17),
+			paddingRight: normalizeW(17),
 		}
 	},
 	colors: {
@@ -34,5 +36,6 @@ export default THEME = {
 		dark: '#333',
 		light: '#B2B2B2',
 		green: '#50E3C2',
-	}
+    gray: '#929292'
+	},
 }

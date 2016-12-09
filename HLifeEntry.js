@@ -19,13 +19,13 @@ const store = configureStore()
 persist(store)
 
 const KM_Dev = {
-  appId: 'hgC5HbKrvE4Xm2jOOxCSCpAE-gzGzoHsz',
-  appKey: 'VKx8wilEpnPWEEqfpSSStuKz',
+  appId: 'K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz',
+  appKey: 'UseC5jvqLT7TIiQWI8nRPmEl',
 }
 
 const KM_PRO = {
-  appId: 'hgC5HbKrvE4Xm2jOOxCSCpAE-gzGzoHsz',
-  appKey: 'VKx8wilEpnPWEEqfpSSStuKz',
+  appId: 'K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz',
+  appKey: 'UseC5jvqLT7TIiQWI8nRPmEl',
 }
 
 //AV.setProduction(false)

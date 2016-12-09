@@ -17,16 +17,16 @@ export default class Launch extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      //Actions.HOME()
-      Actions.LOGIN()
+      Actions.HOME()
+      //Actions.LOGIN()
     }, 1000)
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={{flex:1, borderWidth: 5}}>
-          Welcome
+        <Text style={{}}>
+          Welcome HLife
         </Text>
       </View>
     )
