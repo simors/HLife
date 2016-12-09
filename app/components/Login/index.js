@@ -22,9 +22,10 @@ import PhoneInput from '../common/Input/PhoneInput'
 import Header from '../common/Header'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
-import auth from '../../api/leancloud/auth'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
+import CommonButton from '../common/CommonButton'
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -33,12 +34,13 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 let commonForm = Symbol('commonForm')
 const phoneInput = {
   formKey: commonForm,
-  stateKey: Symbol('phoneInput')
+  stateKey: Symbol('phoneInput'),
+  type: "phoneInput"
 }
 const pwdInput = {
   formKey: commonForm,
-  stateKey: Symbol('pwdInput'),
-  type: "pwdInput"
+  stateKey: Symbol('passwordInput'),
+  type: "passwordInput"
 }
 
 class Login extends Component {
@@ -46,27 +48,22 @@ class Login extends Component {
     super(props)
   }
 
-  changeUserState(key, value) {
-    this.setState({
-      key: value
-    })
-  }
-
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: commonForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
-      success:this.submitSuccess
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
     })
   }
 
-  submitSuccess() {
-    Toast.show('regist success!')
-    //Alert.alert('regist success!');
+  submitSuccessCallback(userInfos) {
+    //console.log('userInfos=' + JSON.stringify(userInfos))
+    Toast.show('登录成功!')
   }
-
-  retrievePassword = () => {
-    Actions.RetrivevePassword()
+  
+  submitErrorCallback(error) {
+    Toast.show(error.message)
   }
 
   render() {
@@ -75,25 +72,22 @@ class Login extends Component {
         <Header 
           leftType="icon" 
           leftIconName="ios-arrow-back" 
-          leftPress={() => Actions.REGIST()}
+          leftPress={() => Actions.pop()}
           title="登录" 
           rightType="text" 
           rightText="快速注册"
           rightPress={() => Actions.REGIST()}
         />
         <View style={styles.body}>
-          <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo}></Image>
+          <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo} />
           <View style={styles.inputBox}>
             <PhoneInput {...phoneInput}/>
           </View>
           <View style={styles.inputBox}>
             <PasswordInput {...pwdInput}/>
           </View>
-          <Button
-            buttonStyle={styles.btn}
-            onPress={this.onButtonPress}
-            title="登录"
-          />
+          <CommonButton title="登录" onPress={() => this.onButtonPress()}/>
+
           <Text style={styles.forgetPwd} onPress={this.retrievePassword}>忘记密码？</Text>
           <SnsLogin />
         </View>
@@ -108,7 +102,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData
+  submitFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
@@ -118,8 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputBox: {
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
     marginBottom: normalizeW(25)
   },
   body: {

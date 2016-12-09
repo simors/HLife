@@ -36,7 +36,9 @@ export default class Launch extends Component {
         <View style={styles.body}>
          <View style={styles.forhealth}>
            <View style={styles.fastask}>
-
+             <Text style={{textAlign:'center'}}>
+               Welcome HLife Home
+             </Text>
            </View>
 
            <View style={styles.findtreat}>

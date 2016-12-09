@@ -57,14 +57,15 @@ class SmsAuthCodeInput extends Component {
   renderCodeFetcher = () => {
     if (this.state.countDown) {
       return (
-        <Text style={smsStyles.smsCodeText}>
+        <Text style={[smsStyles.smsCodeText,
+          this.props.codeText && this.props.codeText]}>
           {this.state.countDown + 's后重新获取'}
         </Text>
       )
     } else {
       this.interval && clearInterval(this.interval)
       return (
-        <Text style={smsStyles.smsCodeText}>
+        <Text style={[smsStyles.smsCodeText, this.props.codeText && this.props.codeText]}>
           {this.props.getSmsAuthText}
         </Text>
       )
@@ -86,13 +87,11 @@ class SmsAuthCodeInput extends Component {
   renderGetSmsButtonEnabled = () => {
     return (
       <TouchableOpacity style={[smsStyles.smsCodeTextContainer,
-                              {height:this.props.height,
-                                width:this.props.buttonWidth,
-                                backgroundColor: this.props.buttonColor}]}
+                               this.props.codeTextContainer && this.props.codeTextContainer]}
                         onPress={this.state.countDown ? ()=> {
                         } : this.getSmsAuthCode}
       >
-        <View>{this.renderCodeFetcher()}</View>
+        {this.renderCodeFetcher()}
       </TouchableOpacity>
     )
   }
@@ -100,24 +99,19 @@ class SmsAuthCodeInput extends Component {
   renderGetSmsButtonDisabled = () => {
     return (
       <View style={[smsStyles.smsCodeTextContainerDisable,
-                  {height:this.props.height,
-                    width:this.props.buttonWidth,
-                    backgroundColor: this.props.disableColor}]}
-            height={this.props.height}
+        this.props.codeTextContainerDisable && this.props.codeTextContainerDisable]}
       >
-      <View>{this.renderCodeFetcher()}</View>
+      {this.renderCodeFetcher()}
         </View>
     )
   }
 
   render() {
     return (
-      <View style={[{height:this.props.height}, this.props.style]}>
-        <View style={smsStyles.smsInputContainerBg}/>
-        <View style={smsStyles.smsInputContainer}
-              marginTop={-this.props.height}>
+      <View style={[smsStyles.smsContainer, this.props.containerStyle && this.props.containerStyle]}>
+        <View style={[smsStyles.smsInputContainer, this.props.inputContainer && this.props.inputContainer]}>
           <TextInput
-            style={smsStyles.smsTextInput}
+            style={[smsStyles.smsTextInput, this.props.textInput && this.props.textInput]}
             autoFocus={this.props.autoFocus}
             placeholder={this.props.placeholder}
             placeholderTextColor={this.props.placeholderTextColor}
@@ -134,54 +128,57 @@ class SmsAuthCodeInput extends Component {
 }
 
 SmsAuthCodeInput.defaultProps = {
-    style: {
-      marginLeft:0,
-      marginRight:0,
-      marginBottom:0
-    },
+  // style
+  containerStyle:{},
+  inputContainer:{},
+  textInput:{},
+  codeTextContainer:{},
+  codeTextContainerDisable:{},
+  smsCodeText:{},
 
-    placeholder: '请输入6位验证码',
-    getSmsAuthText: '获取验证码',
-    placeholderTextColor: 'rgba(178,178,178,0.6)',
-    maxLength: 6,
-    height:normalizeH(50),
-    autoFocus: false,
-    countTimes:60,
-    buttonWidth:normalizeW(120),
-    buttonColor:THEME.colors.green,
-    disableColor:"#b2b2b2"
+  //button
+  getSmsAuthText: '获取验证码',
+
+  //text input
+  placeholder: '请输入6位验证码',
+  placeholderTextColor: 'rgba(178,178,178, 1)',
+  maxLength: 6,
+  autoFocus: false,
+  countTimes:60,
 }
 
 const smsStyles = StyleSheet.create({
-  smsInputContainerBg: {
-    flex: 1,
-    borderRadius: 4,
-    backgroundColor: '#000000',
-    opacity: 0.2,
+  smsContainer: {
+    height:normalizeH(50),
   },
   smsInputContainer: {
     flex: 1,
     borderRadius: 4,
+    paddingLeft:normalizeW(17),
+    paddingRight:normalizeW(17),
     flexDirection: 'row',
     alignItems: 'center',
   },
   smsTextInput: {
-    flex: 1,
-    paddingLeft: normalizeW(16),
-    fontSize: em(14),
-    color: '#b2b2b2',
-    backgroundColor: '#f3f3f3',
+    ...THEME.base.input,
+     flex: 1,
   },
   smsCodeTextContainer: {
+    width:normalizeW(120),
+    height:normalizeH(50),
     justifyContent: 'center',
     alignItems:'center',
+    backgroundColor: THEME.colors.green
   },
   smsCodeTextContainerDisable: {
+    width:normalizeW(120),
+    height:normalizeH(50),
     justifyContent: 'center',
     alignItems:'center',
+    backgroundColor: THEME.colors.light
   },
   smsCodeText: {
-    fontSize: em(14),
+    fontSize: em(16),
     color: '#ffffff',
     backgroundColor: 'transparent',
   }

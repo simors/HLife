@@ -1,9 +1,12 @@
 import AV from 'leancloud-storage'
 import {UserInfo, UserDetail} from '../../models/userModels'
+import ERROR from '../../constants/errorCode'
 
 /**
-*
-*/
+ * 用户名和密码登录
+ * @param payload
+ * @returns {IPromise<U>|*|AV.Promise}
+ */
 export function loginWithPwd(payload) {
   let phone = payload.phone
   let password = payload.password
@@ -22,17 +25,23 @@ export function loginWithPwd(payload) {
       }
     })
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : err.message
     throw err
   })
 }
 
+/**
+ * 用户名和密码注册
+ * @param payload
+ * @returns {IPromise<U>|*|AV.Promise}
+ */
 export function register(payload) {
   let user = new AV.User()
   user.set('type', 'normal')
   user.setUsername(payload.phone)
   user.setPassword(payload.password)
   user.setMobilePhoneNumber(payload.phone)
-  console.log('user=', user)
+  //console.log('user=', user)
   return user.signUp().then((loginedUser) => {
   	//console.log('loginedUser=', loginedUser)
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
@@ -42,6 +51,7 @@ export function register(payload) {
       token: user.getSessionToken()
     }
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : err.message
     throw err
   })
 }
