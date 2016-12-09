@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="format-detection" content="telephone=no" />
+  <meta content="email=no" name="format-detection" />
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+  <title>Document</title>
+  <script type="text/javascript" src="jquery.min.js"></script>
+  <script type="text/javascript" src="module.js"></script>
+  <script type="text/javascript" src="hotkeys.js"></script>
+  <script type="text/javascript" src="simditor.js"></script>
+  <link rel="stylesheet" href="simditor.css">
+</head>
+<body>
+<section id="page">
+  <div id="txt-content" contenteditable="false" ></div>
+</section>
+<script>
+  var editor = new Simditor({
+    textarea: $('#txt-content'),
+    toolbar: [
+      'bold',
+      'blockquote',
+      'image',
+      'indent'
+    ],
+    toolbarHidden: true
+  });
+
+  var simditorBody = $('.simditor-body');
+  editor.on('valuechanged', function(event,src) {
+    var TEXT = simditorBody.text();
+    var COUNTER = TEXT.length;
+    var CONTENTS = simditorBody.html();
+    WebViewBridge.send('COUNTER_' + COUNTER);
+    WebViewBridge.send('CONTENTS_' + CONTENTS);
+    WebViewBridge.send('HEIGHT_' + $(document).height());
+  });
+
+  function set_any(type) {
+    editor.toolbar.findButton(type).command();
+  };
+
+  function set_editImg(src) {
+    editor.toolbar.findButton('image').command(src);
+  };
+
+  simditorBody.focus(function () {
+    WebViewBridge.send('GET_FOCUS');
+  });
+
+  function lose_focus() {
+    simditorBody.blur();
+    WebViewBridge.send('LOSE_FOCUS');
+  };
+
+  function set_editStr(postStr) {
+    var editorObj = $('.simditor-body');
+    editorObj.html(postStr);
+  };
+</script>
+</body>
+</html>
