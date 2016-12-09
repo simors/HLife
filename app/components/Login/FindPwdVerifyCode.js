@@ -6,7 +6,9 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  Platform
+  Platform,
+  Text,
+  DatePickerIOS
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -17,6 +19,7 @@ import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import ImageInput from '../common/Input/ImageInput'
 import CommonButton from '../common/CommonButton'
+import CommonDateTimeInput from '../common/Input/CommonDateTimeInput'
 
 import {submitInputForm} from '../../action/inputFormActions'
 
@@ -41,9 +44,15 @@ const phoneInput = {
   stateKey: Symbol('phoneInput')
 }
 
+const dtPicker = {
+  fromKeys: commonForm,
+  stateKey: Symbol('datetimePicker')
+}
+
 class FindPwdVerifyCode extends Component {
   constructor(props) {
     super(props)
+
   }
 
   submit() {
@@ -73,7 +82,16 @@ class FindPwdVerifyCode extends Component {
             </View>
           </View>
           <View style={styles.btnView}>
-            <CommonButton title="提交" onPress={() => this.submit()} />
+          <CommonButton title="提交" onPress={() => this.submit()} />
+          </View>
+          <View style={styles.datetimeView}>
+            <CommonDateTimeInput {...dtPicker} />
+          </View>
+          <View style={styles.datepickeriosView}>
+            <DatePickerIOS
+              date={new Date()}
+              mode="datetime"
+            />
           </View>
         </View>
       </View>
@@ -114,4 +132,10 @@ const styles = StyleSheet.create({
   btnView: {
     marginTop: 17,
   },
+  datetimeView: {
+    marginTop: 17,
+  },
+  datepickeriosView: {
+    marginTop: 17,
+  }
 })

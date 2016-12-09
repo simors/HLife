@@ -19,7 +19,7 @@ export const scenes = Actions.create(
     <Scene key="REGIST" component={Regist} />
     <Scene key="REGVERIFYCODE" component={RegVerifyCode} />
     <Scene key="RETRIEVE_PASSWORD" component={RetrivevePassword} />
-    <Scene key="SETPSW" component={SetPsw} initial={true}/>
-    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
+    <Scene key="SETPSW" component={SetPsw} />
+    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode} initial={true}/>
   </Scene>
 )

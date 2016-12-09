@@ -25,6 +25,8 @@ import Symbol from 'es6-symbol'
 import auth from '../../api/leancloud/auth'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
+import CommonButton from '../common/CommonButton'
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -89,11 +91,8 @@ class Login extends Component {
           <View style={styles.inputBox}>
             <PasswordInput {...pwdInput}/>
           </View>
-          <Button
-            buttonStyle={styles.btn}
-            onPress={this.onButtonPress}
-            title="登录"
-          />
+          <CommonButton title="登录" onPress={() => this.onButtonPress()}/>
+
           <Text style={styles.forgetPwd} onPress={this.retrievePassword}>忘记密码？</Text>
           <SnsLogin />
         </View>
@@ -108,7 +107,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData
+  submitFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
