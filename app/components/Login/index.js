@@ -50,13 +50,20 @@ class Login extends Component {
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
-      success:this.submitSuccess
+      submitType: INPUT_FORM_SUBMIT_TYPE.REGISTER,
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
     })
   }
 
-  submitSuccess() {
+  submitSuccessCallback(userInfos) {
+    //console.log('userInfos=' + JSON.stringify(userInfos))
     Toast.show('regist success!')
+    //Alert.alert('regist success!');
+  }
+  
+  submitErrorCallback(error) {
+    Toast.show('注册失败:' + error.message)
     //Alert.alert('regist success!');
   }
 
