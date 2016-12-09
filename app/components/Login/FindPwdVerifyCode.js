@@ -8,7 +8,6 @@ import {
   Dimensions,
   Platform,
   Text,
-  DatePickerIOS
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -45,7 +44,7 @@ const phoneInput = {
 }
 
 const dtPicker = {
-  fromKeys: commonForm,
+  formKey: commonForm,
   stateKey: Symbol('datetimePicker')
 }
 
@@ -86,12 +85,6 @@ class FindPwdVerifyCode extends Component {
           </View>
           <View style={styles.datetimeView}>
             <CommonDateTimeInput {...dtPicker} />
-          </View>
-          <View style={styles.datepickeriosView}>
-            <DatePickerIOS
-              date={new Date()}
-              mode="datetime"
-            />
           </View>
         </View>
       </View>
@@ -134,8 +127,7 @@ const styles = StyleSheet.create({
   },
   datetimeView: {
     marginTop: 17,
+
   },
-  datepickeriosView: {
-    marginTop: 17,
-  }
+
 })

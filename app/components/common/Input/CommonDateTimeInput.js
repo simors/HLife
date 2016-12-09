@@ -13,16 +13,32 @@ import DatePicker from 'react-native-datepicker'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import THEME from '../../../constants/themes/theme1'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
 export class CommonDateTimeInput extends Component {
   constructor(props) {
     super(props)
+    this.state = {date:"2016-05-15"}
+  }
+
+  componentDidMount() {
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey
+    }
+    this.props.initInputForm(formInfo)
   }
 
   dateChange(date) {
-
+    this.setState({date: date})
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      date: {date}
+    }
+    this.props.inputFormUpdate(formInfo)
   }
   render() {
     return (
@@ -30,7 +46,7 @@ export class CommonDateTimeInput extends Component {
         <DatePicker
           style = {[styles.defaultPickerStyle, this.props.PickerStyle]}
           mode = {this.props.mode}
-          date = {this.props.date}
+          date = {this.state.date}
           placeholder = '选择日期'
           format = {this.props.format}
           minDate = {this.props.minDate}
@@ -77,6 +93,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initInputForm,
+  inputFormUpdate
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommonDateTimeInput)
@@ -84,10 +102,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(CommonDateTimeInput)
 const styles = StyleSheet.create({
   container: {
     ...THEME.base.inputContainer,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   defaultPickerStyle: {
-    width: PAGE_WIDTH,
+    width: PAGE_WIDTH - normalizeW(34),
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     backgroundColor: '#F3F3F3',
