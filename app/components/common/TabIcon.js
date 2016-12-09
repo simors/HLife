@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FAFAFA',
     height: 50,
-    width: PAGE_WIDTH / 5,
+    width: PAGE_WIDTH / 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
