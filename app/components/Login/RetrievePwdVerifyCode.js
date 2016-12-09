@@ -98,8 +98,6 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
   },
   inputBox: {
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
     marginBottom: normalizeW(25)
   },
   btn: {

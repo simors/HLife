@@ -154,6 +154,8 @@ const smsStyles = StyleSheet.create({
   smsInputContainer: {
     flex: 1,
     borderRadius: 4,
+    paddingLeft:normalizeW(17),
+    paddingRight:normalizeW(17),
     flexDirection: 'row',
     alignItems: 'center',
   },
