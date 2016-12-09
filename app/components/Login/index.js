@@ -22,7 +22,6 @@ import PhoneInput from '../common/Input/PhoneInput'
 import Header from '../common/Header'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
-import auth from '../../api/leancloud/auth'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 
@@ -50,7 +49,7 @@ class Login extends Component {
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.REGISTER,
+      submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
       success:this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -58,17 +57,11 @@ class Login extends Component {
 
   submitSuccessCallback(userInfos) {
     //console.log('userInfos=' + JSON.stringify(userInfos))
-    Toast.show('regist success!')
-    //Alert.alert('regist success!');
+    Toast.show('登录成功!')
   }
   
   submitErrorCallback(error) {
-    Toast.show('注册失败:' + error.message)
-    //Alert.alert('regist success!');
-  }
-
-  retrievePassword = () => {
-    Actions.RetrivevePassword()
+    Toast.show(error.message)
   }
 
   render() {

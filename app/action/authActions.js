@@ -1,5 +1,6 @@
 
 import {createAction} from 'redux-actions'
+import {Actions} from 'react-native-router-flux'
 import * as AuthTypes from '../constants/authActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
@@ -35,21 +36,15 @@ function handleLoginWithPwd(payload, formData) {
       phone: formData.phoneInput.text,
       password: formData.passwordInput.text,
     }
-    console.log('loginPayload=', loginPayload)
+    //console.log('loginPayload=', loginPayload)
     lcAuth.loginWithPwd(loginPayload).then((userInfos) => {
+      //console.log('userInfos=', userInfos)
       if(payload.success){
         payload.success(userInfos)
-      }else{
-        Toast.show('登录成功')
       }
-    	console.log('userInfos=', userInfos)
-    	//dispatch(toastActions.showToast({text: '登录成功'}))
-      // let loginAction = createAction(authTypes.LOGIN_SUCCESS)
-      // dispatch(loginAction({...userInfos}))
-      // dispatch(initMessenger())
-      // dispatch(getUserPermissions())
-      // dispatch(updateDeviceTokenAfterLogin({userId: userInfos.userInfo.id}))
-      // Actions.popTo('root')
+      let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+      dispatch(loginAction({...userInfos}))
+      //Actions.popTo('root')
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
