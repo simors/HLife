@@ -68,7 +68,7 @@ class Regist extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.LOGIN()}
+          leftPress={() => Actions.pop()}
           title="注册"
           rightType="text"
           rightText="登录"

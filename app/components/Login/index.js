@@ -70,7 +70,7 @@ class Login extends Component {
         <Header 
           leftType="icon" 
           leftIconName="ios-arrow-back" 
-          leftPress={() => Actions.REGIST()}
+          leftPress={() => Actions.pop()}
           title="登录" 
           rightType="text" 
           rightText="快速注册"

@@ -1,3 +1,6 @@
+/**
+ * Created by zachary on 2016/12/9.
+ */
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -16,17 +19,14 @@ export default class Launch extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      Actions.HOME()
-      //Actions.LOGIN()
-    }, 1000)
+    
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={{}}>
-          Welcome HLife
+          Welcome HLife Mine Page
         </Text>
       </View>
     )
