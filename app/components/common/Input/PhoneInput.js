@@ -115,16 +115,6 @@ const styles = StyleSheet.create({
   containerWrap: {
     
   },
-  defaultContainerStyle: {
-    flex: 1,
-    paddingLeft: normalizeW(17),
-    paddingRight: normalizeW(17),
-    height: normalizeH(50),
-    borderBottomWidth: 0,
-    marginLeft: 0,
-    marginRight: 0,
-    width: PAGE_WIDTH,
-  },
   defaultClearBtnStyle: {
     position: 'absolute',
     right: normalizeW(12),

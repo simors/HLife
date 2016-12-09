@@ -33,23 +33,18 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 let commonForm = Symbol('commonForm')
 const phoneInput = {
   formKey: commonForm,
-  stateKey: Symbol('phoneInput')
+  stateKey: Symbol('phoneInput'),
+  type: "phoneInput"
 }
 const pwdInput = {
   formKey: commonForm,
-  stateKey: Symbol('pwdInput'),
-  type: "pwdInput"
+  stateKey: Symbol('passwordInput'),
+  type: "passwordInput"
 }
 
 class Login extends Component {
   constructor(props) {
     super(props)
-  }
-
-  changeUserState(key, value) {
-    this.setState({
-      key: value
-    })
   }
 
   onButtonPress = () => {
@@ -82,7 +77,7 @@ class Login extends Component {
           rightPress={() => Actions.REGIST()}
         />
         <View style={styles.body}>
-          <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo}></Image>
+          <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo} />
           <View style={styles.inputBox}>
             <PhoneInput {...phoneInput}/>
           </View>
@@ -118,8 +113,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputBox: {
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
     marginBottom: normalizeW(25)
   },
   body: {

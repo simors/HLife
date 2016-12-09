@@ -60,24 +60,32 @@ class PasswordInput extends Component {
 		return (
       <View style={[styles.container, this.props.containerStyle && this.props.containerStyle]}>
 	      <FormInput
-	        onChangeText={(text) => this.inputChange(text)}
-	        autoFocus={this.props.autoFocus}
-	        placeholder={this.props.placeholder}
-	        placeholderTextColor={this.props.placeholderTextColor}
-	        maxLength={this.props.maxLength}
-	        secureTextEntry={!this.state.showPwd}
-	        underlineColorAndroid="transparent"
-	        containerStyle={{marginLeft:0, marginRight: 0,borderBottomWidth:0}}
-	        value={this.props.data}
-	        inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
+		      onChangeText={(text) => this.inputChange(text)}
+		      autoFocus={this.props.autoFocus}
+		      placeholder={this.props.placeholder}
+		      placeholderTextColor={this.props.placeholderTextColor}
+		      maxLength={this.props.maxLength}
+		      secureTextEntry={!this.state.showPwd}
+		      underlineColorAndroid="transparent"
+		      containerStyle={{marginLeft:0, marginRight: 0,borderBottomWidth:0}}
+		      value={this.props.data}
+		      inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
 	      />
-        <TouchableWithoutFeedback onPress={this.onShowPwdClicked}>
-					<View style={this.state.showPwd ? styles.eyeOpenIcon  : styles.eyeCloseIcon}>
-						<Image source={this.state.showPwd ?
-							require('../../../assets/images/code_open_eye.png') : require('../../../assets/images/code_close_eye.png')}
-						/>
-					</View>
-				</TouchableWithoutFeedback>
+	      <View style={[this.state.showPwd ? styles.eyeOpenIcon  : styles.eyeCloseIcon,
+	              {right:
+	               (this.props.containerStyle && this.props.containerStyle.paddingRight)
+	               ? (this.props.inputStyle && this.props.inputStyle.marginRight)
+	                  ? this.props.containerStyle.paddingRight + this.props.inputStyle.marginRight + 15
+	                  : this.props.containerStyle.paddingRight + 15
+	               : (this.props.inputStyle && this.props.inputStyle.marginRight)
+	                  ? THEME.base.inputContainer.paddingRight + this.props.inputStyle.marginRight + 15
+	                  : THEME.base.inputContainer.paddingRight + 15}]}>
+		      <TouchableWithoutFeedback onPress={this.onShowPwdClicked}>
+			      <Image source={this.state.showPwd ?
+								require('../../../assets/images/code_open_eye.png') : require('../../../assets/images/code_close_eye.png')}
+			      />
+		      </TouchableWithoutFeedback>
+	      </View>
 	    </View>)
 	}
 }
