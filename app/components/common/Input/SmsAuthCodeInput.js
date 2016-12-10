@@ -36,8 +36,16 @@ class SmsAuthCodeInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: "smsAuthCodeInput",
+      checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
+  }
+
+  validInput(data) {
+    if(!data.text){
+      return {isVal:false, errMsg:"请输入验证码"}
+    }
+    return {isVal:true, errMsg:"ok"}
   }
 
   inputChange(text) {

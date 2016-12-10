@@ -43,16 +43,14 @@ class PhoneInput extends Component {
 
   validInput(data) {
     if(!data.text){
-      //return "未填写手机号"
-      return false
+      return {isVal:false, errMsg:"手机号不能为空"}
     }
 
     let phoneNum = data.text
     if (!(/^1[34578]\d{9}$/.test(phoneNum))) {
-      //return "手机号码有误，请重填"
-      return false
+      return {isVal:false, errMsg:"手机号码格式有误，请重填"}
     }
-    return true
+    return {isVal:true, errMsg:"ok"}
   }
 
   inputChange(text) {

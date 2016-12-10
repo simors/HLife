@@ -2,6 +2,7 @@
 import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as AuthTypes from '../constants/authActionTypes'
+import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
@@ -19,6 +20,15 @@ export const INPUT_FORM_SUBMIT_TYPE = {
 
 export function submitFormData(payload) {
   return (dispatch, getState) => {
+    let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+    dispatch(formCheck({formKey: payload.formKey}))
+    let isFormValid = isInputFormValid(getState(), payload.formKey)
+    if (!isFormValid.isValid) {
+      if (payload.error) {
+        payload.error({message: isFormValid.errMsg})
+      }
+      return
+    }
   	const formData = getInputFormData(getState(), payload.formKey)
 		switch (payload.submitType) {
 			case INPUT_FORM_SUBMIT_TYPE.REGISTER:
@@ -87,6 +97,7 @@ function handleRegister(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
+
     lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
       dispatch(registerWithPhoneNum(payload, formData))
     }).catch((error) => {

@@ -40,12 +40,12 @@ class PasswordInput extends Component {
 
 	validInput(data) {
 		if(!data.text){
-			return false
+			return {isVal:false, errMsg:"未填写密码"}
 		}
 		if (!(/^([0-9a-zA-Z]){6,16}$/.test(data.text))) {
-			return false
+			return {isVal:false, errMsg:"密码须为6-16位大小写和数字字符"}
 		}
-		return true
+		return {isVal:true, errMsg:"ok"}
 	}
 
   inputChange(text) {
