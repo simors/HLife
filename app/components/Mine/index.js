@@ -66,14 +66,54 @@ export default class Launch extends Component {
           </View>
         </View>
         <View style={styles.bzone}>
+          <View style={styles.bheader}>
+            <View style={{marginTop: normalizeH(8), marginLeft: normalizeW(19), marginBottom: normalizeH(3)}}>
+              <Text style={styles.atext}>我的互动</Text>
+            </View>
 
+          </View>
+          <View style={styles.bbody}>
+            <View style={styles.bindex}>
+              <Image source={require('../../assets/images/mine_promote.png')}></Image>
+              <Text style={styles.btext}>提问</Text>
+            </View>
+            <View style={styles.bindex}>
+              <Image source={require('../../assets/images/mine_promote.png')}></Image>
+              <Text style={styles.btext}>关注</Text>
+            </View>
+            <View style={styles.bindex}>
+              <Image source={require('../../assets/images/mine_promote.png')}></Image>
+              <Text style={styles.btext}>帖子</Text>
+            </View>
+            <View style={styles.bindex}>
+              <Image source={require('../../assets/images/mine_promote.png')}></Image>
+              <Text style={styles.btext}>评论</Text>
+            </View>
+
+          </View>
         </View>
         <View style={styles.czone}>
-
+          <View style={styles.cindex}>
+            <Image source={require('../../assets/images/mine_wallet.png')}></Image>
+            <Text style={styles.ctext}>钱包</Text>
+          </View>
+          <View style={styles.cindex}>
+            <Image source={require('../../assets/images/mine_collection.png')}></Image>
+            <Text style={styles.ctext}>收藏</Text>
+          </View>
+          <View style={styles.cindex}>
+            <Image source={require('../../assets/images/mine_signin.png')}></Image>
+            <Text style={styles.ctext}>每日签到</Text>
+          </View>
+          <View style={styles.cindex}>
+            <Image source={require('../../assets/images/mine_service.png')}></Image>
+            <Text style={styles.ctext}>联系客服</Text>
+          </View>
+          <View style={styles.cindex}>
+            <Image source={require('../../assets/images/mine_feedback.png')}></Image>
+            <Text style={styles.ctext}>意见反馈</Text>
+          </View>
         </View>
-        <Text style={{}}>
-          Welcome HLife Mine Page
-        </Text>
       </View>
     )
   }
@@ -145,18 +185,53 @@ const styles = StyleSheet.create({
     letterSpacing: 0.34,
   },
   bzone: {
-    flexDirection: 'row',
     width: PAGE_WIDTH,
     height: normalizeH(119),
-    borderWidth: 2,
-    borderColor: 'blue',
+  },
+  bheader: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F4F4F4',
+  },
+  bbody: {
+    flexDirection: 'row',
+
+
+  },
+  bindex: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalizeH(7),
+    marginBottom: normalizeH(11),
+    borderRightWidth: 1,
+    borderRightColor: '#F4F4F4',
+  },
+  btext: {
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: 16,
+    color: '#636363',
+    letterSpacing: 0.19,
   },
   czone: {
     width: PAGE_WIDTH,
     marginTop: normalizeH(15),
     height: normalizeH(206),
-    borderWidth: 2,
-    borderColor: 'red',
-  }
+  },
+  cindex: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingLeft: normalizeW(25),
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F7F7F7',
+  },
+  ctext: {
+    paddingLeft: normalizeW(20),
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: 12,
+    color: '#686868',
+    letterSpacing: 0.34,
+  },
+
 })
 
