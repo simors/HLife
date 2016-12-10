@@ -9,6 +9,7 @@ import {
   Platform,
   Keyboard,
   Text,
+  DatePickerIOS
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -173,6 +174,7 @@ class FindPwdVerifyCode extends Component {
                 <DatePickerIOS
                   date={new Date()}
                   mode="datetime"
+                  onDateChange={()=>{}}
                 />
               </View>
             </View>
