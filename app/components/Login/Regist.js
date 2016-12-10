@@ -22,7 +22,8 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {
   Button
 } from 'react-native-elements'
-
+import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import * as Toast from '../common/Toast'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
@@ -34,17 +35,21 @@ const PAGE_WIDTH=Dimensions.get('window').width
 let commonForm = Symbol('commonForm')
 const phoneInput = {
   formKey: commonForm,
-  stateKey: Symbol('phoneInput')
+  stateKey: Symbol('phoneInput'),
+  type: "phoneInput"
 }
 
 const smsAuthCodeInput = {
   formKey: commonForm,
-  stateKey: Symbol('smsAuthCodeInput')
+  stateKey: Symbol('smsAuthCodeInput'),
+  type: "smsAuthCodeInput",
+
 }
 
 const passwordInput = {
   formKey: commonForm,
-  stateKey: Symbol('passwordInput')
+  stateKey: Symbol('passwordInput'),
+  type: "passwordInput"
 }
 
 class Regist extends Component {
@@ -52,14 +57,21 @@ class Regist extends Component {
     super(props)
   }
 
-  changeUserState(key, value) {
-    this.setState({
-      key: value
+  onButtonPress = () => {
+    this.props.submitFormData({
+      formKey: commonForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.REGISTER,
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
     })
   }
 
-  onButtonPress = () => {
-    Actions.REG4VERIFYCODE()
+  submitSuccessCallback(userInfos) {
+    Toast.show('注册成功!')
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
   }
 
   render() {
@@ -78,7 +90,15 @@ class Regist extends Component {
           <Image source={require('../../assets/images/login_weixin@1x.png')} style={styles.logo} />
 
           <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
-          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}/>
+          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
+                            getSmsAuCode={() => {
+          this.props.submitFormData({
+            formKey: commonForm,
+            submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
+            success:() => {},
+            error: (error) => {Toast.show(error.message)}
+          })
+        }}/>
           <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
 
           <Button
@@ -104,6 +124,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Regist)

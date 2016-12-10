@@ -9,6 +9,7 @@ import * as Toast from '../components/common/Toast'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
+  GET_SMS_CODE:'GET_SMS_CODE',
   LOGIN_WITH_SMS: 'LOGIN_WITH_SMS',
   LOGIN_WITH_PWD: 'LOGIN_WITH_PWD',
   FORGET_PASSWORD: 'FORGET_PASSWORD',
@@ -18,15 +19,17 @@ export const INPUT_FORM_SUBMIT_TYPE = {
 export function submitFormData(payload) {
   return (dispatch, getState) => {
   	const formData = getInputFormData(getState(), payload.formKey)
-  	console.log('formData=', formData)
 		switch (payload.submitType) {
 			case INPUT_FORM_SUBMIT_TYPE.REGISTER:
         dispatch(handleRegister(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
         dispatch(handleLoginWithPwd(payload, formData))
-        break  
-		}
+        break
+      case INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE:
+        dispatch(handleGetSmsCode(payload, formData))
+        break
+    }
   }
 }
 
@@ -57,34 +60,32 @@ function handleLoginWithPwd(payload, formData) {
   }
 }
 
+function handleGetSmsCode(payload, formData) {
+  return (dispatch, getState) => {
+    let getSmsPayload = {
+      phone: formData.phoneInput.text,
+    }
+    console.log('phone=', formData.phoneInput.text)
+    lcAuth.requestSmsAuthCode(getSmsPayload).then(() => {
+      let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
+      dispatch(succeedAction({stateKey: payload.stateKey}))
+    }).catch((error) => {
+      Toast.show(error.message)
+    })}
+}
 
 function handleRegister(payload, formData) {
   return (dispatch, getState) => {
-  	dispatch(registerWithPhoneNum(payload, formData))
-    // var query = dbOpers.createQuery('_User')
-    // query.equalTo('mobilePhoneNumber', formData.phoneInput.text)
-    // dbOpers.retrieveObj(query).then((result)=> {
-    //   return result.length === 0 ? false : true
-    // }).then((isRegistered)=> {
-    // 	console.log('isRegistered=', isRegistered)
-    // 	dispatch(registerWithPhoneNum(formData))
-    //   // if (isRegistered) {
-    //   //   dispatch(showToast({text: "该号码已被注册"}))
-    //   // } else {
-    //   //   let verifyRegSmsPayload = {
-    //   //     smsType: 'register',
-    //   //     phone: formData.phone.text,
-    //   //     randCode: formData.randCode.text,
-    //   //   }
-    //   //   verifySmsCode(verifyRegSmsPayload).then(() => {
-    //   //     dispatch(registerWithPhoneNum(formData))
-    //   //   }).catch((error) => {
-    //   //     dispatch(showToast({text: "无效的短信验证码"}))
-    //   //   })
-    //   // }
-    // }).catch((err)=> {
-    //   console.log('error is ', err)
-    // })
+    let verifyRegSmsPayload = {
+      smsType: 'register',
+      phone: formData.phoneInput.text,
+      randCode: formData.smsAuthCodeInput.text,
+    }
+    lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
+      dispatch(registerWithPhoneNum(payload, formData))
+    }).catch((error) => {
+      Toast.show(error.message)
+    })
   }
 }
 
