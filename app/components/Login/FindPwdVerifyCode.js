@@ -22,7 +22,7 @@ import ImageInput from '../common/Input/ImageInput'
 import CommonButton from '../common/CommonButton'
 import RichTextInput from '../common/Input/RichTextInput'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import CommonDateTimeInput from '../common/Input/CommonDateTimeInput'
+import DateTimeInput from '../common/Input/DateTimeInput'
 
 import {submitInputForm} from '../../action/inputFormActions'
 
@@ -55,7 +55,8 @@ const richTextInput ={
 
 const dtPicker = {
   formKey: commonForm,
-  stateKey: Symbol('datetimePicker')
+  stateKey: Symbol('datetimePicker'),
+  type: 'dtPicker'
 }
 
 class FindPwdVerifyCode extends Component {
@@ -155,6 +156,9 @@ class FindPwdVerifyCode extends Component {
               <View style={{marginTop: 17}}>
                 <CommonTextInput {...pwdInput} placeholder="输入密码" />
               </View>
+              <View style={styles.datetimeView}>
+                <DateTimeInput {...dtPicker} value="2016-05-18" />
+              </View>
               <View style={{marginTop: 17}}>
                 <PhoneInput {...phoneInput}/>
               </View>
@@ -166,16 +170,6 @@ class FindPwdVerifyCode extends Component {
               </View>
               <View style={styles.btnView}>
                 <CommonButton title="提交" onPress={() => this.submit()} />
-              </View>
-              <View style={styles.datetimeView}>
-                <CommonDateTimeInput {...dtPicker} />
-              </View>
-              <View style={styles.datepickeriosView}>
-                <DatePickerIOS
-                  date={new Date()}
-                  mode="datetime"
-                  onDateChange={()=>{}}
-                />
               </View>
             </View>
           </View>
