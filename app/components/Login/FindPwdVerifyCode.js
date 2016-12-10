@@ -169,12 +169,7 @@ class FindPwdVerifyCode extends Component {
               <View style={styles.datetimeView}>
                 <CommonDateTimeInput {...dtPicker} />
               </View>
-              <View style={styles.datepickeriosView}>
-                <DatePickerIOS
-                  date={new Date()}
-                  mode="datetime"
-                />
-              </View>
+
             </View>
           </View>
         </KeyboardAwareScrollView>
