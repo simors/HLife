@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
 
 export const scenes = Actions.create(
   <Scene key="root" hideNavBar={true}>
-    <Scene key="LAUNCH" component={Launch} initial={true}/>
-    <Scene key="LOGIN" component={Login}/>
+    <Scene key="LAUNCH" component={Launch} />
+    <Scene key="LOGIN" component={Login} />
     <Scene key="REGIST" component={Regist}/>
     <Scene key="RETRIEVE_PASSWORD" component={RetrievePwdVerifyCode}/>
     <Scene key="SETPSW" component={RetrievePwd}/>
-    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
+    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode} initial={true}/>
 
     <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
       <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
