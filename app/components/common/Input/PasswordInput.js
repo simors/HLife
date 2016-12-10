@@ -21,12 +21,6 @@ import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
 
 class PasswordInput extends Component {
-	static defaultProps = {
-		placeholder: '设置密码(6-16位数字或字母)',
-		maxLength: 16, //6-16位数字或字母
-		autoFocus: false
-	}
-
 
 	constructor(props) {
 		super(props)
