@@ -21,12 +21,6 @@ import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
 
 class PasswordInput extends Component {
-	static defaultProps = {
-		placeholder: '设置密码(6-16位数字或字母)',
-		maxLength: 16, //6-16位数字或字母
-		autoFocus: false
-	}
-
 
 	constructor(props) {
 		super(props)
@@ -38,10 +32,21 @@ class PasswordInput extends Component {
 			formKey: this.props.formKey,
 	    stateKey: this.props.stateKey,
 	    type: "passwordInput",
-		  initValue: ""
+		  initValue: "",
+			checkValid: this.validInput
 		}
     this.props.initInputForm(formInfo)
   }
+
+	validInput(data) {
+		if(!data.text){
+			return false
+		}
+		if (!(/^([0-9a-zA-Z]){6,16}$/.test(data.text))) {
+			return false
+		}
+		return true
+	}
 
   inputChange(text) {
   	let formInfo = {

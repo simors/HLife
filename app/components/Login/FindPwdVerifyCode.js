@@ -9,6 +9,7 @@ import {
   Platform,
   Keyboard,
   Text,
+  DatePickerIOS
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -170,8 +171,6 @@ class FindPwdVerifyCode extends Component {
               <View style={styles.btnView}>
                 <CommonButton title="提交" onPress={() => this.submit()} />
               </View>
-
-
             </View>
           </View>
         </KeyboardAwareScrollView>

@@ -34,7 +34,8 @@ class SmsAuthCodeInput extends Component {
   componentDidMount() {
     let formInfo = {
       formKey: this.props.formKey,
-      stateKey: this.props.stateKey
+      stateKey: this.props.stateKey,
+      type: "smsAuthCodeInput",
     }
     this.props.initInputForm(formInfo)
   }
@@ -43,7 +44,7 @@ class SmsAuthCodeInput extends Component {
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      text: {text}
+      data: {text}
     }
     this.props.inputFormUpdate(inputForm)
   }
@@ -72,17 +73,14 @@ class SmsAuthCodeInput extends Component {
     }
   }
 
-  requestSmsCode = () => { return '' }
+  requestSmsCode = () => { return this.props.getSmsAuCode() }
 
   getSmsAuthCode = () => {
-    let result = this.requestSmsCode()
-    if (result) {
-      result = ''
-    } else {
+      this.requestSmsCode()
       this.setState({countDown: this.props.countTimes})
       this.countDown()
     }
-  }
+
 
   renderGetSmsButtonEnabled = () => {
     return (
