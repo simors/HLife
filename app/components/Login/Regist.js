@@ -67,7 +67,8 @@ class Regist extends Component {
   }
 
   submitSuccessCallback(userInfos) {
-    Toast.show('注册成功!')
+    Toast.show('注册成功, 请登录')
+    Actions.LOGIN()
   }
 
   submitErrorCallback(error) {

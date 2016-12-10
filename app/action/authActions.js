@@ -10,6 +10,7 @@ import * as Toast from '../components/common/Toast'
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
   GET_SMS_CODE:'GET_SMS_CODE',
+  RESET_PWD_SMS_CODE:'RESET_PWD_SMS_CODE',
   LOGIN_WITH_SMS: 'LOGIN_WITH_SMS',
   LOGIN_WITH_PWD: 'LOGIN_WITH_PWD',
   FORGET_PASSWORD: 'FORGET_PASSWORD',
@@ -28,6 +29,12 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE:
         dispatch(handleGetSmsCode(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE:
+        dispatch(handleRequestResetPwdSmsCode(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
+        dispatch(handleResetPwdSmsCode(payload, formData))
         break
     }
   }
@@ -65,7 +72,6 @@ function handleGetSmsCode(payload, formData) {
     let getSmsPayload = {
       phone: formData.phoneInput.text,
     }
-    console.log('phone=', formData.phoneInput.text)
     lcAuth.requestSmsAuthCode(getSmsPayload).then(() => {
       let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
       dispatch(succeedAction({stateKey: payload.stateKey}))
@@ -79,7 +85,7 @@ function handleRegister(payload, formData) {
     let verifyRegSmsPayload = {
       smsType: 'register',
       phone: formData.phoneInput.text,
-      randCode: formData.smsAuthCodeInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
     }
     lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
       dispatch(registerWithPhoneNum(payload, formData))
@@ -104,17 +110,44 @@ function registerWithPhoneNum(payload, formData) {
       }else{
         Toast.show('注册成功')
       }
-    	//dispatch(toastActions.showToast({text: '注册成功'}))
-      // let regAction = createAction(authTypes.REGISTER_SUCCESS)
-      // dispatch(regAction(user))
-      // Actions.SUPPLEMENT_INFO_VIEW()
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
       }else{
         Toast.show(error.message)
       }
-      console.log('register using phone num failed:', error.code + error.message)
     })
   }
+}
+
+function handleRequestResetPwdSmsCode(payload, formData) {
+  return (dispatch, getState) => {
+    let getSmsPayload = {
+      phone: formData.phoneInput.text,
+    }
+    lcAuth.requestResetPwdSmsCode(getSmsPayload).then(() => {
+      let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
+      dispatch(succeedAction({stateKey: payload.stateKey}))
+    }).catch((error) => {
+      Toast.show(error.message)
+    })}
+}
+
+function handleResetPwdSmsCode(payload, formData) {
+  return (dispatch, getState) => {
+    let resetPwdPayload = {
+      password: formData.passwordInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    lcAuth.resetPwdBySmsCode(resetPwdPayload).then(() => {
+      if(payload.success){
+        let regAction = createAction(AuthTypes.FORGOT_PASSWORD_SUCCESS)
+        dispatch(regAction())
+        payload.success()
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })}
 }

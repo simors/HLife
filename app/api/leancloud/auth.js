@@ -86,9 +86,9 @@ export function requestSmsAuthCode(payload) {
 
 
 export function verifySmsCode(payload) {
-  let randCode = payload.randCode
+  let smsAuthCode = payload.smsAuthCode
   let phone = payload.phone
-  return AV.Cloud.verifySmsCode(randCode, phone).then(function (success) {
+  return AV.Cloud.verifySmsCode(smsAuthCode, phone).then(function (success) {
     // do nothing
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : err.message
@@ -96,4 +96,21 @@ export function verifySmsCode(payload) {
   })
 }
 
+export function requestResetPwdSmsCode(payload) {
+  let phone = payload.phone
+  return AV.User.requestPasswordResetBySmsCode(phone).then((success) => {
+    // do nothing
+  }, (err) => {
+    throw err
+  })
+}
 
+export function resetPwdBySmsCode(payload) {
+  let smsAuthCode = payload.smsAuthCode
+  let password = payload.password
+  return AV.User.resetPasswordBySmsCode(smsAuthCode, password).then((success) => {
+    return success
+  }, (err) => {
+    throw err
+  })
+}

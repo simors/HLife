@@ -66,6 +66,10 @@ class Login extends Component {
     Toast.show(error.message)
   }
 
+  retrievePassword() {
+    Actions.RETRIEVE_PWD()
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -88,7 +92,7 @@ class Login extends Component {
           </View>
           <CommonButton title="登录" onPress={() => this.onButtonPress()}/>
 
-          <Text style={styles.forgetPwd} onPress={this.retrievePassword}>忘记密码？</Text>
+          <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
           <SnsLogin />
         </View>
       </View>

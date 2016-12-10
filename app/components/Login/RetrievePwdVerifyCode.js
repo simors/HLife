@@ -24,18 +24,29 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
+import PasswordInput from '../common/Input/PasswordInput'
+import * as Toast from '../common/Toast'
+
+import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 
 const PAGE_WIDTH = Dimensions.get('window').width
-
 let commonForm = Symbol('commonForm')
 const phoneInput = {
   formKey: commonForm,
-  stateKey: Symbol('phoneInput')
+  stateKey: Symbol('phoneInput'),
+  type: "phoneInput"
 }
 
 const smsAuthCodeInput = {
   formKey: commonForm,
-  stateKey: Symbol('smsAuthCodeInput')
+  stateKey: Symbol('smsAuthCodeInput'),
+  type: "smsAuthCodeInput",
+
+}
+const passwordInput = {
+  formKey: commonForm,
+  stateKey: Symbol('passwordInput'),
+  type: "passwordInput"
 }
 
 class RetrievePassword extends Component {
@@ -44,7 +55,15 @@ class RetrievePassword extends Component {
   }
 
   onButtonPress = () => {
-    Actions.REG4VERIFYCODE()
+    this.props.submitFormData({
+      formKey: commonForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD,
+      success:() => {
+        Toast.show('密码重置成功，请登录')
+        Actions.LOGIN()
+      },
+      error: (error) => {Toast.show(error.message)}
+    })
   }
 
   render() {
@@ -53,19 +72,29 @@ class RetrievePassword extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.REGIST()}
+          leftPress={() => Actions.pop()}
           title="找回密码"
           rightType=""
         />
         <View style={styles.body}>
-          <Text style={styles.titleInfo}>填写注册时的手机号码并验证</Text>
-          <PhoneInput {...phoneInput} containerStyle={styles.inputBox}/>
-          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}/>
+          <PhoneInput {...phoneInput} containerStyle={styles.inputBox}
+                      placeholder='请输入注册的手机号'/>
+          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
+                            getSmsAuCode={() => {
+                            this.props.submitFormData({
+                              formKey: commonForm,
+                              submitType: INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE,
+                              success:() => {},
+                              error:(error) => {Toast.show(error.message)}
+                            })}}
+          />
+          <PasswordInput {...passwordInput} containerStyle={styles.inputBox}
+                         placeholder='设置新密码(6-16位数字或字母)'/>
         </View>
         <Button
           buttonStyle={styles.btn}
           onPress={this.onButtonPress}
-          title="下一步"
+          title="重设密码"
         />
 
       </View>
@@ -78,6 +107,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(RetrievePassword)
