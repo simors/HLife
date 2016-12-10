@@ -2,6 +2,7 @@ import AV from 'leancloud-storage'
 import {UserInfo, UserDetail} from '../../models/userModels'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
+import * as cfAuth from './cloudFuncs/Auth'
 /**
  * 用户名和密码登录
  * @param payload
@@ -59,6 +60,7 @@ export function register(payload) {
       oPrs.updateObj(updatePayload)
     })
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    cfAuth.modifyMobilePhoneVerified({id: loginedUser.id})
     return {
       userInfo: userInfo,
       token: user.getSessionToken()
