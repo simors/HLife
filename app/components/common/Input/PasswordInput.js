@@ -38,10 +38,21 @@ class PasswordInput extends Component {
 			formKey: this.props.formKey,
 	    stateKey: this.props.stateKey,
 	    type: "passwordInput",
-		  initValue: ""
+		  initValue: "",
+			checkValid: this.validInput
 		}
     this.props.initInputForm(formInfo)
   }
+
+	validInput(data) {
+		if(!data.text){
+			return false
+		}
+		if (!(/^([0-9a-zA-Z]){6,16}$/.test(data.text))) {
+			return false
+		}
+		return true
+	}
 
   inputChange(text) {
   	let formInfo = {
