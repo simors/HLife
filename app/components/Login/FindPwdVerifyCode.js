@@ -140,12 +140,12 @@ class FindPwdVerifyCode extends Component {
             flex: 0,
             width: PAGE_WIDTH, paddingTop: 0, backgroundColor: '#ffffff'
           },
-            this.state.rteFocused ? {height: PAGE_HEIGHT - this.state.keyboardPadding} : {height: PAGE_HEIGHT,}]}
+            this.state.rteFocused ? {height: 0} : {}]}
           keyboardDismissMode='on-drag'
         >
           <View style={styles.mainContainer}>
             <View style={styles.header}></View>
-            <View style={styles.inputTips}>
+            <View style={this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}}>
               <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 17}}>
                 <ImageInput containerStyle={{borderRadius: 50}} />
               </View>
@@ -161,24 +161,25 @@ class FindPwdVerifyCode extends Component {
               <View style={{marginTop: 17}}>
                 <PasswordInput {...pwdInput}/>
               </View>
-              <View style={{marginTop: 17}}>
-                {this.renderRichText()}
-              </View>
               <View style={styles.btnView}>
                 <CommonButton title="提交" onPress={() => this.submit()} />
               </View>
-              <View style={styles.datetimeView}>
-                <CommonDateTimeInput {...dtPicker} />
-              </View>
-              <View style={styles.datepickeriosView}>
-                <DatePickerIOS
-                  date={new Date()}
-                  mode="datetime"
-                />
-              </View>
+              {/*<View style={styles.datetimeView}>*/}
+                {/*<CommonDateTimeInput {...dtPicker} />*/}
+              {/*</View>*/}
+              {/*<View style={styles.datepickeriosView}>*/}
+                {/*<DatePickerIOS*/}
+                  {/*date={new Date()}*/}
+                  {/*mode="datetime"*/}
+                {/*/>*/}
+              {/*</View>*/}
             </View>
+
           </View>
         </KeyboardAwareScrollView>
+        <View style={{marginTop: 17}}>
+          {this.renderRichText()}
+        </View>
       </View>
     )
   }

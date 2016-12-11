@@ -21,6 +21,7 @@ var toolDefault = [
   require('../../../assets/images/blockquote.png'),
   require('../../../assets/images/publish_tool_image.png'),
 ]
+
 var toolSelect = [
   require('../../../assets/images/indent.png'),
   require('../../../assets/images/bold_sel.png'),
@@ -61,22 +62,27 @@ class RichTextInput extends Component {
   }
 
   renderWebView() {
-    console.log(RNFS.MainBundlePath + "/richTextEdit.html")
+    // console.log(RNFS.MainBundlePath + "/richTextEdit.html")
     const source = Platform.OS == 'ios' ?
     {uri: RNFS.MainBundlePath + "/richTextEdit.html"} : {uri: "file:///android_asset/richTextEdit.html"}
 
+    // const height = PAGE_HEIGHT - navBarPadding - this.props.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
+    const height = PAGE_HEIGHT
+    console.log('richtext height: ' + height + ", when page height: " + PAGE_HEIGHT)
+
     return (
-      <WebViewBridge
-        ref={(web) => {
-          this.webView = web
-        }}
-        onBridgeMessage={this.onBridgeMessage.bind(this)}
-        injectedJavaScript={injectedJavaScript}
-        hideKeyboardAccessoryView={true}
-        automaticallyAdjustContentInsets={true}
-        source={source}
-        style={{width: Dimensions.get('window').width, flex: 1, backgroundColor: 'white'}}
-      />
+      <View style={{width: PAGE_WIDTH, borderWidth: 3, borderColor: 'blue', height: height}}>
+        <WebViewBridge
+          ref={(web) => {
+            this.webView = web
+          }}
+          onBridgeMessage={this.onBridgeMessage.bind(this)}
+          injectedJavaScript={injectedJavaScript}
+          hideKeyboardAccessoryView={true}
+          automaticallyAdjustContentInsets={true}
+          source={source}
+        />
+      </View>
     )
   }
 
@@ -93,40 +99,37 @@ class RichTextInput extends Component {
 
   renderEditToolView() {
     return (
-      <View>
-        <View style={{height: 1, backgroundColor: '#eeeeee'}}/>
-        <View style={styles.editToolView}>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            {tools.map((tool, index) => {
-              return (
-                <EditToolView
-                  key={"tool_" + index}
-                  click={() => {
-                    this.toolToBridge(tool.type, index)
-                  }}
-                  icon={this.state.toolSelect[index].select ?
-                    toolSelect[index] : toolDefault[index]
-                  }
-                />
-              )
-            })}
-          </View>
-          {Platform.OS == 'ios' ? this.renderHideEditToolView() : <View />}
+      <View style={[styles.editToolView, {bottom: this.props.keyboardPadding+185}]}>
+        <View style={{flexDirection: 'row', borderWidth: 2, borderColor: 'red'}}>
+          {tools.map((tool, index) => {
+            return (
+              <EditToolView
+                key={"tool_" + index}
+                click={() => {
+                  this.toolToBridge(tool.type, index)
+                }}
+                icon={this.state.toolSelect[index].select ?
+                  toolSelect[index] : toolDefault[index]
+                }
+              />
+            )
+          })}
         </View>
+        {Platform.OS == 'ios' ? this.renderHideEditToolView() : <View />}
       </View>
     )
   }
 
   render() {
-    const height = PAGE_HEIGHT - navBarPadding - this.props.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
     const styleFocused = [
       Platform.OS == 'android' ? styles.mainContainerFocusedAndroid : styles.mainContainerFocusedIOS,
-      {height: height}
     ]
-    const styleNormal = [styles.mainContainer, {height: this.state.webViewHeight}]
+    const styleNormal = [styles.mainContainer]
     return (
-      <View style={this.props.shouldFocus ? styleFocused : styleNormal}>
-        {this.renderWebView()}
+      <View style={{flex: 1}}>
+        <View style={this.props.shouldFocus ? styleFocused : styleNormal}>
+          {this.renderWebView()}
+        </View>
         {this.props.shouldFocus ? this.renderEditToolView() : <View />}
       </View>
     )
@@ -156,9 +159,9 @@ class RichTextInput extends Component {
           // this.inputOnChangeWithPayload({content: content})
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
-          this.setState({
-            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) : MIN_RTE_HEIGHT,
-          })
+          // this.setState({
+          //   webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 100 : MIN_RTE_HEIGHT,
+          // })
         }
         break
     }
@@ -222,6 +225,7 @@ class RichTextInput extends Component {
 }
 
 class EditToolView extends Component {
+
   render() {
     return (
       <View style={styles.editToolImgView}>
@@ -295,41 +299,45 @@ export default connect(mapStateToProps, mapDispatchToProps)(RichTextInput)
 
 const styles = StyleSheet.create({
   mainContainer: {
+    flex: 1,
     flexDirection: 'column',
-    width: PAGE_WIDTH,
+    // width: PAGE_WIDTH,
   },
   mainContainerFocusedIOS: {
-    position: 'absolute',
-    // flex: 0,
-    top: 0,
-    width: PAGE_WIDTH,
+    // width: PAGE_WIDTH,
+    flex: 1,
     backgroundColor: '#ffffff'
   },
   mainContainerFocusedAndroid: {
-    // position: 'absolute',
-    // flex: 0,
-    // top: 0,
-    width: PAGE_WIDTH,
+    // width: PAGE_WIDTH,
+    flex: 1,
     backgroundColor: '#ffffff'
   },
   editToolView: {
     flexDirection: 'row',
     backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderColor: '#eeeeee',
+    position: 'absolute',
+    left: 0,
+    // bottom: 45,
   },
   editToolImgView: {
-    flex: 1,
+    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   editToolImg: {
     flex: 1,
-    marginTop: 15,
-    marginBottom: 15,
+    // marginTop: 15,
+    // marginBottom: 15,
+    // width: 30,
+    // height: 30,
   },
   editToolKeyboardHide: {
     alignItems: "center",
     justifyContent: 'center',
-    paddingLeft: 25,
-    paddingRight: 25,
+    // paddingLeft: 35,
+    // paddingRight: 35,
   }
 })
