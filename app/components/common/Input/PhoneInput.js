@@ -32,12 +32,25 @@ class PhoneInput extends Component {
 			formKey: this.props.formKey,
 	    stateKey: this.props.stateKey,
 	    type: this.props.type,
-		  initValue: {text: this.props.initValue}
+		  initValue: {text: this.props.initValue},
+      checkValid: this.validInput
 		}
     this.props.initInputForm(formInfo)
     if (formInfo.initValue.text && formInfo.initValue.text.length > 0) {
       this.setState({showClear: true})
     }
+  }
+
+  validInput(data) {
+    if(!data.text){
+      return {isVal:false, errMsg:"手机号不能为空"}
+    }
+
+    let phoneNum = data.text
+    if (!(/^1[34578]\d{9}$/.test(phoneNum))) {
+      return {isVal:false, errMsg:"手机号码格式有误，请重填"}
+    }
+    return {isVal:true, errMsg:"ok"}
   }
 
   inputChange(text) {

@@ -83,12 +83,18 @@ function checkInputValid(state, formKey, stateKey, data) {
   let input = state.getIn([formKey, 'inputs', stateKey])
   let validCallback = input.get('validCallback')
   let isValid = false
+  let errMsg = ''
   if (validCallback) {
-    isValid = validCallback(data)
+    let valid = validCallback(data)
+    isValid = valid.isVal
+    errMsg = valid.errMsg
   }
   if (isValid) {
     state = state.updateIn([formKey, "inputs", stateKey, 'dataValid'], val => true)
     state = state.updateIn([formKey, "inputs", stateKey, 'invalidMsg'], val => '校验通过')
+  }
+  else {
+    state = state.updateIn([formKey, "inputs", stateKey, 'invalidMsg'], val => errMsg)
   }
   return state
 }
@@ -100,13 +106,20 @@ function checkInputFormValid(state, action) {
     return state
   }
   let originalLen = inputs.size
+  let invalidMsg = ''
   inputs = inputs.filter((val, key) => {
-    let inputValid = val.get('dataValid')
-    return inputValid
+        let inputValid = val.get('dataValid')
+        if(invalidMsg == '' && !inputValid) {
+          invalidMsg = val.get('invalidMsg')
+        }
+        return inputValid
   })
   if (inputs.size === originalLen) {
     state = state.updateIn([formKey, 'dataReady'], val => true)
     state = state.updateIn([formKey, 'error'], val => '表单数据校验通过')
+  }
+  else{
+    state = state.updateIn([formKey, 'error'], val => invalidMsg)
   }
   return state
 }

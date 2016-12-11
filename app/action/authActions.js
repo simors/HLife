@@ -2,6 +2,7 @@
 import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as AuthTypes from '../constants/authActionTypes'
+import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
@@ -9,6 +10,8 @@ import * as Toast from '../components/common/Toast'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
+  GET_SMS_CODE:'GET_SMS_CODE',
+  RESET_PWD_SMS_CODE:'RESET_PWD_SMS_CODE',
   LOGIN_WITH_SMS: 'LOGIN_WITH_SMS',
   LOGIN_WITH_PWD: 'LOGIN_WITH_PWD',
   FORGET_PASSWORD: 'FORGET_PASSWORD',
@@ -17,16 +20,33 @@ export const INPUT_FORM_SUBMIT_TYPE = {
 
 export function submitFormData(payload) {
   return (dispatch, getState) => {
+    let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+    dispatch(formCheck({formKey: payload.formKey}))
+    let isFormValid = isInputFormValid(getState(), payload.formKey)
+    if (!isFormValid.isValid) {
+      if (payload.error) {
+        payload.error({message: isFormValid.errMsg})
+      }
+      return
+    }
   	const formData = getInputFormData(getState(), payload.formKey)
-  	console.log('formData=', formData)
 		switch (payload.submitType) {
 			case INPUT_FORM_SUBMIT_TYPE.REGISTER:
         dispatch(handleRegister(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
         dispatch(handleLoginWithPwd(payload, formData))
-        break  
-		}
+        break
+      case INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE:
+        dispatch(handleGetSmsCode(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE:
+        dispatch(handleRequestResetPwdSmsCode(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
+        dispatch(handleResetPwdSmsCode(payload, formData))
+        break
+    }
   }
 }
 
@@ -57,34 +77,32 @@ function handleLoginWithPwd(payload, formData) {
   }
 }
 
+function handleGetSmsCode(payload, formData) {
+  return (dispatch, getState) => {
+    let getSmsPayload = {
+      phone: formData.phoneInput.text,
+    }
+    lcAuth.requestSmsAuthCode(getSmsPayload).then(() => {
+      let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
+      dispatch(succeedAction({stateKey: payload.stateKey}))
+    }).catch((error) => {
+      Toast.show(error.message)
+    })}
+}
 
 function handleRegister(payload, formData) {
   return (dispatch, getState) => {
-  	dispatch(registerWithPhoneNum(payload, formData))
-    // var query = dbOpers.createQuery('_User')
-    // query.equalTo('mobilePhoneNumber', formData.phoneInput.text)
-    // dbOpers.retrieveObj(query).then((result)=> {
-    //   return result.length === 0 ? false : true
-    // }).then((isRegistered)=> {
-    // 	console.log('isRegistered=', isRegistered)
-    // 	dispatch(registerWithPhoneNum(formData))
-    //   // if (isRegistered) {
-    //   //   dispatch(showToast({text: "该号码已被注册"}))
-    //   // } else {
-    //   //   let verifyRegSmsPayload = {
-    //   //     smsType: 'register',
-    //   //     phone: formData.phone.text,
-    //   //     randCode: formData.randCode.text,
-    //   //   }
-    //   //   verifySmsCode(verifyRegSmsPayload).then(() => {
-    //   //     dispatch(registerWithPhoneNum(formData))
-    //   //   }).catch((error) => {
-    //   //     dispatch(showToast({text: "无效的短信验证码"}))
-    //   //   })
-    //   // }
-    // }).catch((err)=> {
-    //   console.log('error is ', err)
-    // })
+    let verifyRegSmsPayload = {
+      smsType: 'register',
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+
+    lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
+      dispatch(registerWithPhoneNum(payload, formData))
+    }).catch((error) => {
+      Toast.show(error.message)
+    })
   }
 }
 
@@ -103,17 +121,44 @@ function registerWithPhoneNum(payload, formData) {
       }else{
         Toast.show('注册成功')
       }
-    	//dispatch(toastActions.showToast({text: '注册成功'}))
-      // let regAction = createAction(authTypes.REGISTER_SUCCESS)
-      // dispatch(regAction(user))
-      // Actions.SUPPLEMENT_INFO_VIEW()
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
       }else{
         Toast.show(error.message)
       }
-      console.log('register using phone num failed:', error.code + error.message)
     })
   }
+}
+
+function handleRequestResetPwdSmsCode(payload, formData) {
+  return (dispatch, getState) => {
+    let getSmsPayload = {
+      phone: formData.phoneInput.text,
+    }
+    lcAuth.requestResetPwdSmsCode(getSmsPayload).then(() => {
+      let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
+      dispatch(succeedAction({stateKey: payload.stateKey}))
+    }).catch((error) => {
+      Toast.show(error.message)
+    })}
+}
+
+function handleResetPwdSmsCode(payload, formData) {
+  return (dispatch, getState) => {
+    let resetPwdPayload = {
+      password: formData.passwordInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    lcAuth.resetPwdBySmsCode(resetPwdPayload).then(() => {
+      if(payload.success){
+        let regAction = createAction(AuthTypes.FORGOT_PASSWORD_SUCCESS)
+        dispatch(regAction())
+        payload.success()
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })}
 }

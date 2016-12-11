@@ -13,17 +13,40 @@ import DatePicker from 'react-native-datepicker'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import THEME from '../../../constants/themes/theme1'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-export class CommonDateTimeInput extends Component {
+class DateTimeInput extends Component {
   constructor(props) {
     super(props)
   }
 
-  dateChange(date) {
-
+  componentDidMount() {
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: {text: this.props.value},
+      checkValid: this.validDate
+    }
+    this.props.initInputForm(formInfo)
   }
+
+  validDate() {
+    return true
+  }
+
+  dateChange(date) {
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      data: {text: date}
+    }
+    this.props.inputFormUpdate(formInfo)
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -47,9 +70,9 @@ export class CommonDateTimeInput extends Component {
   }
 }
 
-CommonDateTimeInput.defaultProps = {
+DateTimeInput.defaultProps = {
   mode: 'date',
-  date: "2016-12-08",
+  // date: "2016-12-08",
   format: "YYYY-MM-DD",
   minDate: "2001-01-01",
   maxDate: "2020-12-31",
@@ -72,22 +95,26 @@ CommonDateTimeInput.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   return {
+    date: inputData.text
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initInputForm,
+  inputFormUpdate
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommonDateTimeInput)
+export default connect(mapStateToProps, mapDispatchToProps)(DateTimeInput)
 
 const styles = StyleSheet.create({
   container: {
     ...THEME.base.inputContainer,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   defaultPickerStyle: {
-    width: PAGE_WIDTH,
+    width: PAGE_WIDTH - normalizeW(34),
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     backgroundColor: '#F3F3F3',
