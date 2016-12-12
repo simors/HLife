@@ -2,7 +2,6 @@ import AV from 'leancloud-storage'
 import {UserInfo, UserDetail} from '../../models/userModels'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
-import * as cfAuth from './cloudFuncs/Auth'
 /**
  * 用户名和密码登录
  * @param payload
@@ -60,7 +59,7 @@ export function register(payload) {
       oPrs.updateObj(updatePayload)
     })
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
-    cfAuth.modifyMobilePhoneVerified({id: loginedUser.id})
+    modifyMobilePhoneVerified({id: loginedUser.id})
     return {
       userInfo: userInfo,
       token: user.getSessionToken()
@@ -112,6 +111,14 @@ export function resetPwdBySmsCode(payload) {
   let password = payload.password
   return AV.User.resetPasswordBySmsCode(smsAuthCode, password).then((success) => {
     return success
+  }, (err) => {
+    throw err
+  })
+}
+
+export function modifyMobilePhoneVerified(payload) {
+  return AV.Cloud.run('hLifeModifyMobilePhoneVerified', payload).then((result)=>{
+    return result
   }, (err) => {
     throw err
   })

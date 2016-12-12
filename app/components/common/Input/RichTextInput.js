@@ -15,25 +15,26 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import RNFS from 'react-native-fs'
 import WebViewBridge from 'react-native-webview-bridge'
+import {selectPhotoTapped} from '../../../util/ImageSelector'
 
 var toolDefault = [
-  require('../../../assets/images/indent.png'),
   require('../../../assets/images/bold.png'),
-  require('../../../assets/images/blockquote.png'),
+  require('../../../assets/images/italics.png'),
+  require('../../../assets/images/underline.png'),
   require('../../../assets/images/publish_tool_image.png'),
 ]
 
 var toolSelect = [
-  require('../../../assets/images/indent.png'),
   require('../../../assets/images/bold_sel.png'),
+  require('../../../assets/images/indent.png'),
   require('../../../assets/images/blockquote_sel.png'),
   require('../../../assets/images/publish_tool_image.png'),
 ]
 
 var tools = [
-  {type: 'indent', icon: toolDefault[0]},
-  {type: 'bold', icon: toolDefault[1]},
-  {type: 'blockquote', icon: toolDefault[2]},
+  {type: 'bold', icon: toolDefault[0]},
+  {type: 'italic', icon: toolDefault[1]},
+  {type: 'underline', icon: toolDefault[2]},
   {type: 'image', icon: toolDefault[3]},
 ]
 
@@ -84,8 +85,6 @@ class RichTextInput extends Component {
   }
 
   keyboardWillShow = (e) => {
-    console.log("keyboard event: ", e)
-    console.log("page height: ", Dimensions)
     this.setState({
       keyboardPadding: e.endCoordinates.height,
     })
@@ -221,12 +220,12 @@ class RichTextInput extends Component {
     })
     if (toolIndex == tools.length - 1) {
       this.webView.sendToBridge("preInsertImg_")
-      // selectPhotoTapped({
-      //   start: this.pickAvatarStart,
-      //   failed: this.pickAvatarFailed,
-      //   cancelled: this.pickAvatarCancelled,
-      //   succeed: this.pickImageSucceed
-      // })
+      selectPhotoTapped({
+        start: this.pickAvatarStart,
+        failed: this.pickAvatarFailed,
+        cancelled: this.pickAvatarCancelled,
+        succeed: this.pickImageSucceed
+      })
     } else {
       this.webView.sendToBridge(type)
     }
@@ -367,6 +366,8 @@ const styles = StyleSheet.create({
   editToolImg: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 20,
+    height: 20,
   },
   editToolKeyboardHide: {
     alignItems: "center",
