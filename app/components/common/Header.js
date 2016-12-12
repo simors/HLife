@@ -54,7 +54,7 @@ export default class Header extends Component {
       )
   	}else {
       return (
-        <View />
+        <View style={styles.rightWrap}/>
       )
     }
   }
@@ -94,7 +94,7 @@ export default class Header extends Component {
       )
   	}else {
       return (
-        <View />
+        <View style={styles.rightWrap}/>
       )
     }
   }

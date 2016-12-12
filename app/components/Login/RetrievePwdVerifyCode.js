@@ -116,15 +116,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    backgroundColor: '#f3f3f3',
-    paddingTop: normalizeH(20),
-    flexDirection: 'row',
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: '#B2B2B2'
-  },
   body: {
-    paddingTop: normalizeH(64),
+    paddingTop: normalizeH(108),
     width: PAGE_WIDTH,
   },
   inputBox: {
