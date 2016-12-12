@@ -91,7 +91,6 @@ class Login extends Component {
             <PasswordInput {...pwdInput}/>
           </View>
           <CommonButton title="登录" onPress={() => this.onButtonPress()}/>
-
           <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
           <SnsLogin />
         </View>
@@ -120,12 +119,14 @@ const styles = StyleSheet.create({
   },
   body: {
     paddingTop: normalizeH(65),
-    width: PAGE_WIDTH,
+    flex: 1,
+    alignItems: 'stretch'
   },
   logo: {
-    marginLeft: normalizeW(PAGE_WIDTH / 2 - 54),
+    marginTop: normalizeH(65),
     marginBottom: normalizeH(44),
-    width: 108,
+    alignSelf: 'center',
+    width: normalizeW(108),
     height: normalizeH(47),
   },
   btn: {
@@ -139,6 +140,6 @@ const styles = StyleSheet.create({
     color: '#50E3C2',
     textAlign: 'center',
     marginTop: normalizeH(23),
-    marginBottom: normalizeH(49)
+    marginBottom: normalizeH(80)
   }
 })
