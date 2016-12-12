@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: normalizeW(25)
   },
   logo: {
-    marginLeft: normalizeW(PAGE_WIDTH / 2 - 54),
+    alignSelf: 'center',
     marginBottom: normalizeH(25),
     marginTop:normalizeH(25),
     width: normalizeH(108),
