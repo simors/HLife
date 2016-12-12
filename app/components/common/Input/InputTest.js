@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
-  Keyboard,
   Text,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
@@ -40,42 +39,9 @@ class InputTest extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      keyboardPadding: 0,
       closeTips: false,
       rteFocused: false,    // 富文本获取到焦点
     }
-  }
-
-  componentDidMount() {
-    if (Platform.OS == 'ios') {
-      Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
-      Keyboard.addListener('keyboardWillHide', this.keyboardWillHide)
-    } else {
-      Keyboard.addListener('keyboardDidShow', this.keyboardWillShow)
-      Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
-    }
-  }
-
-  componentWillUnmount() {
-    if (Platform.OS == 'ios') {
-      Keyboard.removeListener('keyboardWillShow', this.keyboardWillShow)
-      Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide)
-    } else {
-      Keyboard.removeListener('keyboardDidShow', this.keyboardWillShow)
-      Keyboard.removeListener('keyboardDidHide', this.keyboardWillHide)
-    }
-  }
-
-  keyboardWillShow = (e) => {
-    this.setState({
-      keyboardPadding: e.endCoordinates.height,
-    })
-  }
-
-  keyboardWillHide = (e) => {
-    this.setState({
-      keyboardPadding: 0,
-    })
   }
 
   onRteFocusChanged = (val) => {
@@ -90,15 +56,12 @@ class InputTest extends Component {
   }
 
   renderRichText() {
-    const shouldFocus = this.state.rteFocused && (this.state.keyboardPadding > 0)
-    console.log("shouldFocus:", shouldFocus)
-    console.log("kayboardPadding:", this.state.keyboardPadding)
+    const shouldFocus = this.state.rteFocused
     return (
       <RichTextInput
         {...articleContent}
         onFocus={this.onRteFocusChanged}
         shouldFocus={shouldFocus}
-        keyboardPadding={this.state.keyboardPadding}
       />
     )
   }
@@ -117,12 +80,12 @@ class InputTest extends Component {
               width: PAGE_WIDTH, paddingTop: 0, backgroundColor: '#ffffff'
             }}
           >
-            {/*<View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>*/}
-            <View style={{marginTop: 20}}>
+            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>
+            {/*<View style={{marginTop: 20}}>*/}
               <ImageInput containerStyle={{height: 100, width: PAGE_WIDTH - 34}} />
             </View>
-            {/*<View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>*/}
-            <View style={{marginTop: 20}}>
+            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>
+            {/*<View style={{marginTop: 20}}>*/}
               <CommonTextInput {...articleName} placeholder="输入文章标题" />
             </View>
             <View style={{flex: 1}}>
