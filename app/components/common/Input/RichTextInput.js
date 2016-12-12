@@ -15,6 +15,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import RNFS from 'react-native-fs'
 import WebViewBridge from 'react-native-webview-bridge'
+import {selectPhotoTapped} from '../../../util/ImageSelector'
 
 var toolDefault = [
   require('../../../assets/images/bold.png'),
@@ -219,14 +220,13 @@ class RichTextInput extends Component {
     })
     if (toolIndex == tools.length - 1) {
       this.webView.sendToBridge("preInsertImg_")
-      // selectPhotoTapped({
-      //   start: this.pickAvatarStart,
-      //   failed: this.pickAvatarFailed,
-      //   cancelled: this.pickAvatarCancelled,
-      //   succeed: this.pickImageSucceed
-      // })
+      selectPhotoTapped({
+        start: this.pickAvatarStart,
+        failed: this.pickAvatarFailed,
+        cancelled: this.pickAvatarCancelled,
+        succeed: this.pickImageSucceed
+      })
     } else {
-      console.log("tool type: ", type)
       this.webView.sendToBridge(type)
     }
   }
