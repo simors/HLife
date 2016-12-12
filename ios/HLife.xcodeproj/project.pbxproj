@@ -23,6 +23,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1A4791078863403F97272F63 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F66B9CB97E874077B48688EE /* Entypo.ttf */; };
 		2430CE727A3E46CEA8129183 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434350BD25E54527AF164E64 /* libimageCropPicker.a */; };
+		3281026B7F0A46FEAAEEC070 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6481AB4090240EDA663BB5C /* libRNImagePicker.a */; };
 		40C3F6E5D4274A2D862E9C6A /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B01BCA03472F4A6180024FAC /* libRNFS.a */; };
 		5A313ABB12AF49588B369AFC /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9B50AAF3C82549A7A9B12DC9 /* Octicons.ttf */; };
 		5EDD4532D22D449181A36545 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5411B72DE67B4E9281A6AA8E /* EvilIcons.ttf */; };
@@ -200,6 +201,13 @@
 			remoteGlobalIDString = 4114DC4C1C187C3A003CD988;
 			remoteInfo = "React-Native-Webview-Bridge";
 		};
+		DDC7CA3F1DFE98490020E889 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
+			remoteInfo = RNImagePicker;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -238,6 +246,8 @@
 		89409FA3FBBE46EA9C711FF5 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		9B50AAF3C82549A7A9B12DC9 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		B01BCA03472F4A6180024FAC /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
+		C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
+		C6481AB4090240EDA663BB5C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		DD0B3ABA1DF9C2A200AE8D91 /* bootstrap.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = bootstrap.min.css; path = resources/bootstrap.min.css; sourceTree = "<group>"; };
 		DD0B3ABB1DF9C2A200AE8D91 /* font-awesome.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "font-awesome.min.css"; path = "resources/font-awesome.min.css"; sourceTree = "<group>"; };
 		DD0B3ABC1DF9C2A200AE8D91 /* hotkeys.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = hotkeys.js; path = resources/hotkeys.js; sourceTree = "<group>"; };
@@ -278,6 +288,7 @@
 				40C3F6E5D4274A2D862E9C6A /* libRNFS.a in Frameworks */,
 				2430CE727A3E46CEA8129183 /* libimageCropPicker.a in Frameworks */,
 				80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */,
+				3281026B7F0A46FEAAEEC070 /* libRNImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +422,7 @@
 				89409FA3FBBE46EA9C711FF5 /* RNFS.xcodeproj */,
 				6FAB3247E1CA49E3A696C6E2 /* ImageCropPicker.xcodeproj */,
 				3FFC8626CB984754B04F9CF8 /* React-Native-Webview-Bridge.xcodeproj */,
+				C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -491,6 +503,14 @@
 				DD0B3AC11DF9C2A200AE8D91 /* simditor.js */,
 			);
 			name = resources;
+			sourceTree = "<group>";
+		};
+		DDC7CA281DFE98490020E889 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDC7CA401DFE98490020E889 /* libRNImagePicker.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		E8FD9E3014EE4F3A966FC343 /* Resources */ = {
@@ -626,6 +646,10 @@
 				{
 					ProductGroup = DD0B3A981DF9C1EE00AE8D91 /* Products */;
 					ProjectRef = 89409FA3FBBE46EA9C711FF5 /* RNFS.xcodeproj */;
+				},
+				{
+					ProductGroup = DDC7CA281DFE98490020E889 /* Products */;
+					ProjectRef = C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */;
 				},
 				{
 					ProductGroup = DD0B3A671DF9B72200AE8D91 /* Products */;
@@ -788,6 +812,13 @@
 			remoteRef = DD0B3AB71DF9C1EE00AE8D91 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		DDC7CA401DFE98490020E889 /* libRNImagePicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImagePicker.a;
+			remoteRef = DDC7CA3F1DFE98490020E889 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -901,6 +932,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HLife.app/HLife";
@@ -917,6 +949,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -941,6 +974,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -967,6 +1001,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1022,6 +1057,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1066,6 +1102,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

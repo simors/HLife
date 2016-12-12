@@ -8,7 +8,7 @@ import {
   Dimensions,
   Text,
 } from 'react-native'
-import {em, normalizeW, normalizeH} from '../../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import DatePicker from 'react-native-datepicker'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     backgroundColor: '#F3F3F3',
-    borderWidth: 1,
+    borderWidth: normalizeBorder(),
     borderColor: '#E9E9E9',
   },
 })

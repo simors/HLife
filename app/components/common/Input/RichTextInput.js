@@ -9,29 +9,32 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
+  Keyboard
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import RNFS from 'react-native-fs'
 import WebViewBridge from 'react-native-webview-bridge'
+import {selectPhotoTapped} from '../../../util/ImageSelector'
 
 var toolDefault = [
-  require('../../../assets/images/indent.png'),
   require('../../../assets/images/bold.png'),
-  require('../../../assets/images/blockquote.png'),
+  require('../../../assets/images/italics.png'),
+  require('../../../assets/images/underline.png'),
   require('../../../assets/images/publish_tool_image.png'),
 ]
+
 var toolSelect = [
-  require('../../../assets/images/indent.png'),
   require('../../../assets/images/bold_sel.png'),
+  require('../../../assets/images/indent.png'),
   require('../../../assets/images/blockquote_sel.png'),
   require('../../../assets/images/publish_tool_image.png'),
 ]
 
 var tools = [
-  {type: 'indent', icon: toolDefault[0]},
-  {type: 'bold', icon: toolDefault[1]},
-  {type: 'blockquote', icon: toolDefault[2]},
+  {type: 'bold', icon: toolDefault[0]},
+  {type: 'italic', icon: toolDefault[1]},
+  {type: 'underline', icon: toolDefault[2]},
   {type: 'image', icon: toolDefault[3]},
 ]
 
@@ -44,7 +47,7 @@ const HEIGHT = 'HEIGHT'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-const MIN_RTE_HEIGHT = 400
+const MIN_RTE_HEIGHT = 200
 // const navBarPadding = (Platform.OS == 'android' ? 50 : 64)
 const navBarPadding = 0
 
@@ -57,46 +60,90 @@ class RichTextInput extends Component {
         return {select: false, index: index}
       }),
       webViewHeight: MIN_RTE_HEIGHT,
+      keyboardPadding: 0,
     }
   }
 
+  componentDidMount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.keyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.keyboardWillShow)
+      Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.keyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.keyboardWillShow)
+      Keyboard.removeListener('keyboardDidHide', this.keyboardWillHide)
+    }
+  }
+
+  keyboardWillShow = (e) => {
+    this.setState({
+      keyboardPadding: e.endCoordinates.height,
+    })
+  }
+
+  keyboardWillHide = (e) => {
+    this.setState({
+      keyboardPadding: 0,
+    })
+  }
+
   renderWebView() {
-    console.log(RNFS.MainBundlePath + "/richTextEdit.html")
     const source = Platform.OS == 'ios' ?
     {uri: RNFS.MainBundlePath + "/richTextEdit.html"} : {uri: "file:///android_asset/richTextEdit.html"}
 
+    // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
+    const height = this.state.webViewHeight
+    console.log('richtext height: ' + height + ", when page height: " + PAGE_HEIGHT)
+
     return (
-      <WebViewBridge
-        ref={(web) => {
-          this.webView = web
-        }}
-        onBridgeMessage={this.onBridgeMessage.bind(this)}
-        injectedJavaScript={injectedJavaScript}
-        hideKeyboardAccessoryView={true}
-        automaticallyAdjustContentInsets={true}
-        source={source}
-        style={{width: Dimensions.get('window').width, flex: 1, backgroundColor: 'white'}}
-      />
+      <View style={{flex: 1, height: height, paddingTop: 10}}>
+        <WebViewBridge
+          ref={(web) => {
+            this.webView = web
+          }}
+          onBridgeMessage={this.onBridgeMessage.bind(this)}
+          injectedJavaScript={injectedJavaScript}
+          hideKeyboardAccessoryView={true}
+          automaticallyAdjustContentInsets={true}
+          source={source}
+        />
+      </View>
     )
   }
 
   renderHideEditToolView = () => {
-    return ([
-      <View style={{width: 1, backgroundColor: '#eeeeee'}}/>,
-      <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
-        this.webView.sendToBridge('keyboard_hide')
-      }}>
-        <Image source={require('../../../assets/images/keyboad_down.png')}/>
-      </TouchableOpacity>
-    ])
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{width: 1, backgroundColor: '#eeeeee'}}/>
+        <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
+          this.webView.sendToBridge('keyboard_hide')
+        }}>
+          <Image source={require('../../../assets/images/keyboad_down.png')}/>
+        </TouchableOpacity>
+      </View>
+    )
   }
 
   renderEditToolView() {
     return (
-      <View>
-        <View style={{height: 1, backgroundColor: '#eeeeee'}}/>
-        <View style={styles.editToolView}>
-          <View style={{flex: 1, flexDirection: 'row'}}>
+      <View style={[styles.editToolView,
+        {
+          position: 'absolute',
+          left: 0,
+          bottom: this.state.keyboardPadding + 40,
+        }]}
+      >
+        <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
+          <View style={{flexDirection: 'row', flex: 4}}>
             {tools.map((tool, index) => {
               return (
                 <EditToolView
@@ -118,15 +165,13 @@ class RichTextInput extends Component {
   }
 
   render() {
-    const height = PAGE_HEIGHT - navBarPadding - this.props.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
-    const styleFocused = [
-      Platform.OS == 'android' ? styles.mainContainerFocusedAndroid : styles.mainContainerFocusedIOS,
-      {height: height}
-    ]
-    const styleNormal = [styles.mainContainer, {height: this.state.webViewHeight}]
+    const styleFocused = styles.mainContainerFocused
+    const styleNormal = styles.mainContainer
     return (
-      <View style={this.props.shouldFocus ? styleFocused : styleNormal}>
-        {this.renderWebView()}
+      <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
+        <View style={this.props.shouldFocus ? styleFocused : styleNormal}>
+          {this.renderWebView()}
+        </View>
         {this.props.shouldFocus ? this.renderEditToolView() : <View />}
       </View>
     )
@@ -157,7 +202,7 @@ class RichTextInput extends Component {
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
           this.setState({
-            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) : MIN_RTE_HEIGHT,
+            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 100 : MIN_RTE_HEIGHT,
           })
         }
         break
@@ -175,12 +220,12 @@ class RichTextInput extends Component {
     })
     if (toolIndex == tools.length - 1) {
       this.webView.sendToBridge("preInsertImg_")
-      // selectPhotoTapped({
-      //   start: this.pickAvatarStart,
-      //   failed: this.pickAvatarFailed,
-      //   cancelled: this.pickAvatarCancelled,
-      //   succeed: this.pickImageSucceed
-      // })
+      selectPhotoTapped({
+        start: this.pickAvatarStart,
+        failed: this.pickAvatarFailed,
+        cancelled: this.pickAvatarCancelled,
+        succeed: this.pickImageSucceed
+      })
     } else {
       this.webView.sendToBridge(type)
     }
@@ -222,6 +267,7 @@ class RichTextInput extends Component {
 }
 
 class EditToolView extends Component {
+
   render() {
     return (
       <View style={styles.editToolImgView}>
@@ -295,26 +341,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(RichTextInput)
 
 const styles = StyleSheet.create({
   mainContainer: {
+    flex: 1,
     flexDirection: 'column',
-    width: PAGE_WIDTH,
   },
-  mainContainerFocusedIOS: {
-    position: 'absolute',
-    // flex: 0,
-    top: 0,
-    width: PAGE_WIDTH,
-    backgroundColor: '#ffffff'
-  },
-  mainContainerFocusedAndroid: {
-    // position: 'absolute',
-    // flex: 0,
-    // top: 0,
-    width: PAGE_WIDTH,
+  mainContainerFocused: {
+    flex: 1,
     backgroundColor: '#ffffff'
   },
   editToolView: {
     flexDirection: 'row',
     backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#eeeeee',
+    paddingTop: 5,
+    paddingBottom: 5,
+    height: 30,
   },
   editToolImgView: {
     flex: 1,
@@ -322,14 +364,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   editToolImg: {
-    flex: 1,
-    marginTop: 15,
-    marginBottom: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
   },
   editToolKeyboardHide: {
     alignItems: "center",
     justifyContent: 'center',
-    paddingLeft: 25,
-    paddingRight: 25,
   }
 })

@@ -12,7 +12,7 @@ import {connect} from 'react-redux'
 import { FormInput } from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
-import {em, normalizeW, normalizeH} from '../../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import {removeSpace, formatPhone} from '../../../util/numberUtils'
 import THEME from '../../../constants/themes/theme1'
 
