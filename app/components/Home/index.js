@@ -9,7 +9,7 @@ import {
   Dimensions
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     height:normalizeH(63),
     width:PAGE_WIDTH,
     borderBottomColor:'#E5E5E5',
-    borderBottomWidth:normalizeH(3),
+    borderBottomWidth:normalizeBorder(),
   },
   findtreat:{
     paddingTop:normalizeH(18),

@@ -1,4 +1,4 @@
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default THEME = {
 	base: {
@@ -15,7 +15,7 @@ export default THEME = {
 			paddingLeft: normalizeW(10),
 			paddingRight: normalizeW(10),
 			backgroundColor: '#F3F3F3',
-			borderWidth: 1,
+			borderWidth: normalizeBorder(),
     	borderColor: '#E9E9E9',
     	fontSize: em(16),
     	color: '#B2B2B2'

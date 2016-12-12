@@ -18,7 +18,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import SnsLogin from '../common/SnsLogin'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {
   Button
 } from 'react-native-elements'

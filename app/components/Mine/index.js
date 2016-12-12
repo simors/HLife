@@ -9,7 +9,7 @@ import {
 
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     height: normalizeH(119),
   },
   bheader: {
-    borderBottomWidth: 1,
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#F4F4F4',
   },
   bbody: {
