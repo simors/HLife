@@ -16,7 +16,7 @@ import {
 
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {
   Button,
 } from 'react-native-elements'
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f3f3',
     paddingTop: normalizeH(20),
     flexDirection: 'row',
-    borderBottomWidth: 1,
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2'
   },
   body: {

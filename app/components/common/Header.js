@@ -11,7 +11,7 @@ import {
   Platform
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class Header extends Component {
   constructor(props) {
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     }),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomWidth: 1,
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2'
   },
   leftContainer: {

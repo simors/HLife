@@ -10,7 +10,7 @@ import {
   Dimensions
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class SnsLogin extends Component {
   constructor(props) {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(17),
     marginTop: normalizeH(9),
     paddingTop: normalizeH(20),
-    borderTopWidth: 1,
+    borderTopWidth: normalizeBorder(),
     borderTopColor: '#e9e9e9',
     flexDirection: 'row',
     justifyContent: 'space-around',
