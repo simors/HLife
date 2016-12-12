@@ -46,7 +46,7 @@ const HEIGHT = 'HEIGHT'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-const MIN_RTE_HEIGHT = 400
+const MIN_RTE_HEIGHT = 200
 // const navBarPadding = (Platform.OS == 'android' ? 50 : 64)
 const navBarPadding = 0
 
@@ -84,6 +84,8 @@ class RichTextInput extends Component {
   }
 
   keyboardWillShow = (e) => {
+    console.log("keyboard event: ", e)
+    console.log("page height: ", Dimensions)
     this.setState({
       keyboardPadding: e.endCoordinates.height,
     })
@@ -104,7 +106,7 @@ class RichTextInput extends Component {
     console.log('richtext height: ' + height + ", when page height: " + PAGE_HEIGHT)
 
     return (
-      <View style={{width: PAGE_WIDTH, borderWidth: 1, borderColor: 'blue', height: height, paddingTop: 30}}>
+      <View style={{flex: 1, height: height, paddingTop: 10}}>
         <WebViewBridge
           ref={(web) => {
             this.webView = web
@@ -121,7 +123,7 @@ class RichTextInput extends Component {
 
   renderHideEditToolView = () => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <View style={{width: 1, backgroundColor: '#eeeeee'}}/>
         <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
           this.webView.sendToBridge('keyboard_hide')
@@ -138,7 +140,7 @@ class RichTextInput extends Component {
         {
           position: 'absolute',
           left: 0,
-          top: 0,
+          bottom: this.state.keyboardPadding + 40,
         }]}
       >
         <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
@@ -164,12 +166,10 @@ class RichTextInput extends Component {
   }
 
   render() {
-    const styleFocused = [
-      Platform.OS == 'android' ? styles.mainContainerFocusedAndroid : styles.mainContainerFocusedIOS,
-    ]
-    const styleNormal = [styles.mainContainer]
+    const styleFocused = styles.mainContainerFocused
+    const styleNormal = styles.mainContainer
     return (
-      <View style={{flex: 1}}>
+      <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
         <View style={this.props.shouldFocus ? styleFocused : styleNormal}>
           {this.renderWebView()}
         </View>
@@ -344,15 +344,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    // width: PAGE_WIDTH,
   },
-  mainContainerFocusedIOS: {
-    // width: PAGE_WIDTH,
-    flex: 1,
-    backgroundColor: '#ffffff'
-  },
-  mainContainerFocusedAndroid: {
-    // width: PAGE_WIDTH,
+  mainContainerFocused: {
     flex: 1,
     backgroundColor: '#ffffff'
   },
@@ -364,9 +357,7 @@ const styles = StyleSheet.create({
     borderColor: '#eeeeee',
     paddingTop: 5,
     paddingBottom: 5,
-    // position: 'absolute',
-    // left: 0,
-    // bottom: 45,
+    height: 30,
   },
   editToolImgView: {
     flex: 1,
@@ -374,16 +365,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   editToolImg: {
-    // flex: 1,
-    // marginTop: 15,
-    // marginBottom: 15,
-    // width: 30,
-    // height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   editToolKeyboardHide: {
     alignItems: "center",
     justifyContent: 'center',
-    // paddingLeft: 35,
-    // paddingRight: 35,
   }
 })

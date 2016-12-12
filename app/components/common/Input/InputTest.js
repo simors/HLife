@@ -80,15 +80,15 @@ class InputTest extends Component {
               width: PAGE_WIDTH, paddingTop: 0, backgroundColor: '#ffffff'
             }}
           >
-            {/*<View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>*/}
-            <View style={{marginTop: 20}}>
+            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>
+            {/*<View style={{marginTop: 20}}>*/}
               <ImageInput containerStyle={{height: 100, width: PAGE_WIDTH - 34}} />
             </View>
-            {/*<View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>*/}
-            <View style={{marginTop: 20}}>
+            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>
+            {/*<View style={{marginTop: 20}}>*/}
               <CommonTextInput {...articleName} placeholder="输入文章标题" />
             </View>
-            <View style={{flex: 1, marginTop: 20}}>
+            <View style={{flex: 1}}>
               {this.renderRichText()}
             </View>
           </KeyboardAwareScrollView>
