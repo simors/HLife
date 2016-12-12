@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
+  Keyboard
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -58,20 +59,52 @@ class RichTextInput extends Component {
         return {select: false, index: index}
       }),
       webViewHeight: MIN_RTE_HEIGHT,
+      keyboardPadding: 0,
     }
   }
 
+  componentDidMount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.keyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.keyboardWillShow)
+      Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.keyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.keyboardWillShow)
+      Keyboard.removeListener('keyboardDidHide', this.keyboardWillHide)
+    }
+  }
+
+  keyboardWillShow = (e) => {
+    this.setState({
+      keyboardPadding: e.endCoordinates.height,
+    })
+  }
+
+  keyboardWillHide = (e) => {
+    this.setState({
+      keyboardPadding: 0,
+    })
+  }
+
   renderWebView() {
-    // console.log(RNFS.MainBundlePath + "/richTextEdit.html")
     const source = Platform.OS == 'ios' ?
     {uri: RNFS.MainBundlePath + "/richTextEdit.html"} : {uri: "file:///android_asset/richTextEdit.html"}
 
-    // const height = PAGE_HEIGHT - navBarPadding - this.props.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
-    const height = PAGE_HEIGHT
+    // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
+    const height = this.state.webViewHeight
     console.log('richtext height: ' + height + ", when page height: " + PAGE_HEIGHT)
 
     return (
-      <View style={{width: PAGE_WIDTH, borderWidth: 1, borderColor: 'blue', height: height}}>
+      <View style={{width: PAGE_WIDTH, borderWidth: 1, borderColor: 'blue', height: height, paddingTop: 30}}>
         <WebViewBridge
           ref={(web) => {
             this.webView = web
@@ -105,7 +138,7 @@ class RichTextInput extends Component {
         {
           position: 'absolute',
           left: 0,
-          bottom: this.props.keyboardPadding+200
+          top: 0,
         }]}
       >
         <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
