@@ -123,6 +123,11 @@ Header.defaultProps = {
 
 const styles = StyleSheet.create({
   header: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 100,
     backgroundColor: '#f3f3f3',
     ...Platform.select({
       ios: {
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2',
-    height: 64
+    height: normalizeH(64)
   },
   leftWrap: {
     flex: 1,
