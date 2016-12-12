@@ -71,7 +71,7 @@ class RichTextInput extends Component {
     console.log('richtext height: ' + height + ", when page height: " + PAGE_HEIGHT)
 
     return (
-      <View style={{width: PAGE_WIDTH, borderWidth: 3, borderColor: 'blue', height: height}}>
+      <View style={{width: PAGE_WIDTH, borderWidth: 1, borderColor: 'blue', height: height}}>
         <WebViewBridge
           ref={(web) => {
             this.webView = web
@@ -87,35 +87,45 @@ class RichTextInput extends Component {
   }
 
   renderHideEditToolView = () => {
-    return ([
-      <View style={{width: 1, backgroundColor: '#eeeeee'}}/>,
-      <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
-        this.webView.sendToBridge('keyboard_hide')
-      }}>
-        <Image source={require('../../../assets/images/keyboad_down.png')}/>
-      </TouchableOpacity>
-    ])
+    return (
+      <View style={{flex: 1}}>
+        <View style={{width: 1, backgroundColor: '#eeeeee'}}/>
+        <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
+          this.webView.sendToBridge('keyboard_hide')
+        }}>
+          <Image source={require('../../../assets/images/keyboad_down.png')}/>
+        </TouchableOpacity>
+      </View>
+    )
   }
 
   renderEditToolView() {
     return (
-      <View style={[styles.editToolView, {bottom: this.props.keyboardPadding+185}]}>
-        <View style={{flexDirection: 'row', borderWidth: 2, borderColor: 'red'}}>
-          {tools.map((tool, index) => {
-            return (
-              <EditToolView
-                key={"tool_" + index}
-                click={() => {
-                  this.toolToBridge(tool.type, index)
-                }}
-                icon={this.state.toolSelect[index].select ?
-                  toolSelect[index] : toolDefault[index]
-                }
-              />
-            )
-          })}
+      <View style={[styles.editToolView,
+        {
+          position: 'absolute',
+          left: 0,
+          bottom: this.props.keyboardPadding+200
+        }]}
+      >
+        <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
+          <View style={{flexDirection: 'row', flex: 4}}>
+            {tools.map((tool, index) => {
+              return (
+                <EditToolView
+                  key={"tool_" + index}
+                  click={() => {
+                    this.toolToBridge(tool.type, index)
+                  }}
+                  icon={this.state.toolSelect[index].select ?
+                    toolSelect[index] : toolDefault[index]
+                  }
+                />
+              )
+            })}
+          </View>
+          {Platform.OS == 'ios' ? this.renderHideEditToolView() : <View />}
         </View>
-        {Platform.OS == 'ios' ? this.renderHideEditToolView() : <View />}
       </View>
     )
   }
@@ -159,9 +169,9 @@ class RichTextInput extends Component {
           // this.inputOnChangeWithPayload({content: content})
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
-          // this.setState({
-          //   webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 100 : MIN_RTE_HEIGHT,
-          // })
+          this.setState({
+            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 100 : MIN_RTE_HEIGHT,
+          })
         }
         break
     }
@@ -317,18 +327,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'white',
     borderTopWidth: 1,
+    borderBottomWidth: 1,
     borderColor: '#eeeeee',
-    position: 'absolute',
-    left: 0,
+    paddingTop: 5,
+    paddingBottom: 5,
+    // position: 'absolute',
+    // left: 0,
     // bottom: 45,
   },
   editToolImgView: {
-    // flex: 1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   editToolImg: {
-    flex: 1,
+    // flex: 1,
     // marginTop: 15,
     // marginBottom: 15,
     // width: 30,
