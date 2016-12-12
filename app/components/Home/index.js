@@ -9,7 +9,9 @@ import {
   Dimensions
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
+
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import Header from '../common/Header'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -22,17 +24,16 @@ export default class Launch extends Component {
   render() {
     return (
       <View style={styles.container}>
-       <View style={styles.header}>
-         <View style={styles.leftbox}>
-
-         </View>
-         <View style={styles.title}>
-
-         </View>
-         <View style={styles.rightbox}>
-
-         </View>
-       </View>
+        <Header
+          leftType="image"
+          leftImageSource={require("../../assets/images/local_unselect.png")}
+          leftImageLabel="长沙"
+          leftPress={() => Actions.pop()}
+          title="近来"
+          rightType="image"
+          rightImageSource={require("../../assets/images/home_message.png")}
+          rightPress={() => Actions.REGIST()}
+        />
         <View style={styles.body}>
          <View style={styles.forhealth}>
            <View style={styles.fastask}>
@@ -68,11 +69,8 @@ export default class Launch extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
-    width: PAGE_WIDTH,
-    height: PAGE_HEIGHT
+    alignItems: 'stretch',
+    backgroundColor: '#F5FCFF'
   },
   body:{
     backgroundColor:'#E5E5E5'

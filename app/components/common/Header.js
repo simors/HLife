@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import THEME from '../../constants/themes/theme1'
 
 export default class Header extends Component {
   constructor(props) {
@@ -21,26 +22,32 @@ export default class Header extends Component {
   renderLeft() {
   	if(this.props.leftType == 'icon'){
   		return (
-        <View style={[styles.leftContainer, this.props.leftContainerStyle]}>
-          <TouchableOpacity onPress={() => this.props.leftPress()}>
-            <Icon          
-		          name={this.props.leftIconName}
-		          style={[styles.left, this.props.leftStyle]} />
+        <View style={styles.leftWrap}>
+          <TouchableOpacity style={[styles.leftContainer, this.props.leftContainerStyle]} onPress={() => this.props.leftPress()}>
+            <Icon
+              name={this.props.leftIconName}
+              style={[styles.left, this.props.leftStyle]} />
+            {this.props.leftIconLabel
+              ? <Text style={[styles.leftIconLabel, this.props.leftIconLabelStyle]}>{this.props.leftIconLabel}</Text>
+              : <View/>}
           </TouchableOpacity>
         </View>
       )
   	}else if(this.props.leftType == 'image') {
 			return (
-        <View style={[styles.leftContainer, this.props.leftContainerStyle]}>
-          <TouchableOpacity onPress={() => this.props.leftPress()}>
-            <Image source={require(this.props.imageSource)} style={[styles.left, this.props.leftStyle]}></Image>
+        <View style={styles.leftWrap}>
+          <TouchableOpacity style={[styles.leftContainer, this.props.leftContainerStyle]} onPress={() => this.props.leftPress()}>
+            <Image source={this.props.leftImageSource} style={[styles.leftImage, this.props.leftStyle]}></Image>
+            {this.props.leftImageLabel
+              ? <Text style={[styles.leftImageLabel, this.props.leftImageLabelStyle]}>{this.props.leftImageLabel}</Text>
+              : <View/>}
           </TouchableOpacity>
         </View>
       )
   	}else if(this.props.leftType == 'text') {
 			return (
-        <View style={[styles.leftContainer, this.props.leftContainerStyle]}>
-          <TouchableOpacity onPress={() => this.props.leftPress()}>
+        <View style={styles.leftWrap}>
+          <TouchableOpacity style={[styles.leftContainer, this.props.leftContainerStyle]} onPress={() => this.props.leftPress()}>
           	<Text style={[styles.left, this.props.leftStyle]}>{this.props.leftText}</Text>  
           </TouchableOpacity>
         </View>
@@ -55,26 +62,32 @@ export default class Header extends Component {
   renderRight() {
   	if(this.props.rightType == 'icon'){
   		return (
-        <View style={[styles.rightContainer, this.props.rightContainerStyle]}>
-          <TouchableOpacity onPress={() => this.props.rightPress()}>
-            <Icon          
-		          name={this.props.rightIconName}
-		          style={[styles.right, this.props.rightStyle]} />
-          </TouchableOpacity>
-        </View>
-      )
+      <View style={styles.rightWrap}>
+        <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]} onPress={() => this.props.rightPress()}>
+          <Icon
+            name={this.props.rightIconName}
+            style={[styles.right, this.props.rightStyle]} />
+          {this.props.rightIconLabel
+            ? <Text style={[styles.rightIconLabel, this.props.rightIconLabelStyle]}>{this.props.rightIconLabel}</Text>
+            : <View/>}
+        </TouchableOpacity>
+      </View>
+    )
   	}else if(this.props.rightType == 'image') {
 			return (
-        <View style={[styles.rightContainer, this.props.rightContainerStyle]}>
-          <TouchableOpacity onPress={() => this.props.rightPress()}>
-            <Image source={require(this.props.imageSource)} style={[styles.right, this.props.rightStyle]}></Image>
+        <View style={styles.rightWrap}>
+          <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]} onPress={() => this.props.rightPress()}>
+            {this.props.rightImageLabel
+              ? <Text style={[styles.rightImageLabel, this.props.rightImageLabelStyle]}>{this.props.rightImageLabel}</Text>
+              : <View/>}
+            <Image source={this.props.rightImageSource} style={[styles.rightImage, this.props.rightStyle]}></Image>
           </TouchableOpacity>
         </View>
       )
   	}else if(this.props.rightType == 'text') {
 			return (
-        <View style={[styles.rightContainer, this.props.rightContainerStyle]}>
-          <TouchableOpacity onPress={() => this.props.rightPress()}>
+        <View style={styles.rightWrap}>
+          <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]} onPress={() => this.props.rightPress()}>
           	<Text style={[styles.right, this.props.rightStyle]}>{this.props.rightText}</Text>  
           </TouchableOpacity>
         </View>
@@ -90,7 +103,9 @@ export default class Header extends Component {
     return (
       <View style={styles.header}>
       	{this.renderLeft()}
-        <Text style={[styles.title, this.props.titleStyle]}>{this.props.title}</Text>  
+        <View style={styles.titleWrap}>
+          <Text style={[styles.title, this.props.titleStyle]}>{this.props.title}</Text>
+        </View>
         {this.renderRight()}
       </View>
     )
@@ -116,37 +131,56 @@ const styles = StyleSheet.create({
     }),
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'stretch',
     borderBottomWidth: normalizeBorder(),
-    borderBottomColor: '#B2B2B2'
+    borderBottomColor: '#B2B2B2',
+    height: 64
+  },
+  leftWrap: {
+    flex: 1,
+    paddingLeft: 12
   },
   leftContainer: {
-  	position: 'absolute',
-    left: 9,
-    bottom: 14,
-    width: 13,
-    height: 21,
-    zIndex: 10
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   left: {
     fontSize: em(24),
     color: '#50E3C2',
   },
+  leftImage: {
+    marginRight: 3
+  },
+  leftImageLabel: {
+    color: THEME.colors.gray
+  },
+  titleWrap: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'stretch'
+  },
   title: {
-    flex: 1,
-    lineHeight: 44,
     fontSize: em(17),
     color: '#030303',
-    textAlign: 'center'
+    alignSelf: 'center'
+  },
+  rightWrap: {
+    flex: 1,
+    paddingRight: 12
   },
   rightContainer: {
-    position: 'absolute',
-    right: 9,
-    bottom: 14,
-    zIndex: 10,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   right: {
     fontSize: em(17),
     color: '#50E3C2',
-    textAlign: 'right',
+  },
+  rightImage: {
+    marginLeft: 3
   }
 })
