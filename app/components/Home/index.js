@@ -9,13 +9,15 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
-  Image
+  Image,
+  Platform
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
 import Thumbnail from '../common/Thumbnail'
+import Banner from '../common/Banner'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -23,6 +25,40 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export default class Home extends Component {
   constructor(props) {
     super(props)
+
+    this.banners = [
+      {
+        image: 'http://www.qq745.com/uploads/allimg/141106/1-141106153Q5.png',
+      },
+      {
+        image: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
+      },
+      {
+        image: 'http://img1.3lian.com/2015/a1/53/d/198.jpg',
+      },
+      {
+        image: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
+      },
+    ];
+
+    this.iosMarginTop = Platform.OS == 'ios' ? {marginTop: 20} : {};
+
+    this.state = {
+      clickTitle: 'You can try clicking beauty',
+      defaultIndex: 0,
+    }
+    this.defaultIndex = 0
+  }
+
+  clickListener(index) {
+    this.setState({
+      clickTitle: this.banners[index].title ? `you click ${this.banners[index].title}` : 'this banner has no title',
+    })
+  }
+
+  onMomentumScrollEnd(event, state) {
+    console.log(`--->onMomentumScrollEnd page index:${state.index}, total:${state.total}`)
+    this.defaultIndex = state.index
   }
 
   render() {
@@ -77,7 +113,12 @@ export default class Home extends Component {
             </View>
 
             <View style={styles.announcementModule}>
-
+              <Banner
+                banners={this.banners}
+                defaultIndex={this.defaultIndex}
+                onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
+                intent={this.clickListener.bind(this)}
+              />
             </View>
 
             <View style={styles.advertisementModule}>
@@ -140,7 +181,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   announcementModule: {
-    height: normalizeH(40),
+    height: normalizeH(136),
     marginTop: normalizeH(15),
     flexDirection: 'row',
   },

@@ -119,6 +119,12 @@ class RichTextInput extends Component {
     this.props.inputFormUpdate(inputForm)
   }
 
+  loadDraft = () => {
+    if (this.props.initValue) {
+      this.webView.sendToBridge('editStr_' + this.props.initValue)
+    }
+  }
+
   validInput(data) {
     return true
   }
@@ -228,7 +234,7 @@ class RichTextInput extends Component {
         this.props.onFocus(false)
         break
       case LOAD_DRAFT:
-        // this.loadDraft()
+        this.loadDraft()
         break
       default:
         if (message.indexOf(COUNTER) == 0) {
@@ -325,47 +331,47 @@ class EditToolView extends Component {
 }
 
 const injectedJavaScript = `
-    $(document).ready(function(event) {
+  $(document).ready(function(event) {
+    setTimeout(function(){
+      if (WebViewBridge) {
+        WebViewBridge.onMessage = function (message) {
+          if(message == 'keyboard_hide'){
+            lose_focus();
+          }else if(message.indexOf('editImg_') == 0){
+            var editImg = message.substr(message.indexOf('_') + 1, message.length);
+            set_editImg(editImg);
+          }else if(message.indexOf('editStr_') == 0){
+            var editStr = message.substr(message.indexOf('_') + 1, message.length);
+            set_editStr(editStr);
+          }else if(message.indexOf('preInsertImg_') == 0){
+            lostFocus();
+          }else{
+            set_any(message);
+          }
+        };
+        WebViewBridge.send('LOAD_DRAFT');
+      } else {
         setTimeout(function(){
           if (WebViewBridge) {
             WebViewBridge.onMessage = function (message) {
               if(message == 'keyboard_hide'){
-                lose_focus();
+                set_blur();
               }else if(message.indexOf('editImg_') == 0){
                 var editImg = message.substr(message.indexOf('_') + 1, message.length);
                 set_editImg(editImg);
               }else if(message.indexOf('editStr_') == 0){
                 var editStr = message.substr(message.indexOf('_') + 1, message.length);
                 set_editStr(editStr);
-              }else if(message.indexOf('preInsertImg_') == 0){
-                lostFocus();
               }else{
                 set_any(message);
               }
             };
             WebViewBridge.send('LOAD_DRAFT');
-          } else {
-            setTimeout(function(){
-              if (WebViewBridge) {
-                WebViewBridge.onMessage = function (message) {
-                  if(message == 'keyboard_hide'){
-                    set_blur();
-                  }else if(message.indexOf('editImg_') == 0){
-                    var editImg = message.substr(message.indexOf('_') + 1, message.length);
-                    set_editImg(editImg);
-                  }else if(message.indexOf('editStr_') == 0){
-                    var editStr = message.substr(message.indexOf('_') + 1, message.length);
-                    set_editStr(editStr);
-                  }else{
-                    set_any(message);
-                  }
-                };
-                WebViewBridge.send('LOAD_DRAFT');
-              }
-            }, 3000)
           }
-        }, 300)
-      });
+        }, 3000)
+      }
+    }, 300)
+  });
 `;
 
 const mapStateToProps = (state, ownProps) => {
