@@ -36,7 +36,7 @@ export default class Channels extends Component {
         </View>
         <View style={styles.channelWrap}>
           <TouchableOpacity onPress={()=>{}}>
-            <Image source={require("../../assets/images/home_baby&mother.png")}/>
+            <Image source={require("../../assets/images/home_baby_mother.png")}/>
             <Text style={styles.channelText}>母婴</Text>
           </TouchableOpacity>
         </View>
