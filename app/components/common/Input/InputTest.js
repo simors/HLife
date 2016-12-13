@@ -32,7 +32,8 @@ const articleName = {
 const articleContent ={
   formKey: articleForm,
   stateKey: Symbol('articleContent'),
-  type: 'articleContent'
+  type: 'articleContent',
+  initValue: '\<p\>这是个初始加载内容\<\/p\>'
 }
 
 class InputTest extends Component {
