@@ -15,9 +15,12 @@ import {
 import {Actions} from 'react-native-router-flux'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
-import Thumbnail from '../common/Thumbnail'
 import Banner from '../common/Banner'
+import Health from './Health'
+import DailyChosen from './DailyChosen'
+import Channels from './Channels'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -50,7 +53,8 @@ export default class Home extends Component {
     this.defaultIndex = 0
   }
 
-  clickListener(index) {
+  clickListener(index, banners) {
+    console.log(`--->clickListener page index:${index}:  banners=${banners.length}`)
     this.setState({
       clickTitle: this.banners[index].title ? `you click ${this.banners[index].title}` : 'this banner has no title',
     })
@@ -82,37 +86,14 @@ export default class Home extends Component {
         >
           <View style={styles.body}>
             <View style={styles.healthModule}>
-              <View style={styles.healthTop}>
-                <View style={styles.fastTask}>
-                  <Thumbnail
-                    sourceImage={require("../../assets/images/home_question.png")}
-                    thumbnailTitle="快速问诊"
-                    thumbnailIntro="专业医生免费为您解答疑问"
-                    onPress={()=>{Actions.LOGIN()}}
-                  />
-                </View>
-              </View>
-              <View style={styles.healthBottom}>
-                <View style={styles.findDoctor}>
-                  <Thumbnail
-                    sourceImage={require("../../assets/images/home_doctor.png")}
-                    thumbnailTitle="找名医"
-                    thumbnailIntro="一对一对症咨询"
-                    onPress={()=>{Actions.LOGIN()}}
-                  />
-                </View>
-                <View style={styles.findHospital}>
-                  <Thumbnail
-                    sourceImage={require("../../assets/images/home_hospital.png")}
-                    thumbnailTitle="找医院"
-                    thumbnailIntro="找对对症的好医院"
-                    onPress={()=>{Actions.LOGIN()}}
-                  />
-                </View>
-              </View>
+              <Health />
             </View>
 
             <View style={styles.announcementModule}>
+
+            </View>
+
+            <View style={styles.advertisementModule}>
               <Banner
                 banners={this.banners}
                 defaultIndex={this.defaultIndex}
@@ -121,16 +102,12 @@ export default class Home extends Component {
               />
             </View>
 
-            <View style={styles.advertisementModule}>
-
-            </View>
-
             <View style={styles.channelModule}>
-
+              <Channels />
             </View>
 
             <View style={styles.dayChosenModule}>
-
+              <DailyChosen />
             </View>
           </View>
         </ScrollView>
@@ -155,48 +132,23 @@ const styles = StyleSheet.create({
   },
   healthModule: {
     height: normalizeH(128),
-    backgroundColor: '#fff',
-  },
-  healthTop: {
-    flex: 1,
-  },
-  healthBottom: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'stretch'
-  },
-  fastTask: {
-    flex: 1,
-    borderBottomColor: '#E5E5E5',
-    borderBottomWidth: normalizeBorder(3),
-  },
-  findDoctor: {
-    flex: 1,
-    marginTop: normalizeH(19),
-    marginBottom: normalizeH(19),
-    borderRightWidth: normalizeBorder(3),
-    borderRightColor: '#E5E5E5',
-  },
-  findHospital: {
-    flex: 1,
   },
   announcementModule: {
-    height: normalizeH(136),
+    height: normalizeH(40),
     marginTop: normalizeH(15),
-    flexDirection: 'row',
   },
   advertisementModule: {
-    width: PAGE_WIDTH,
     height: normalizeH(136),
     marginTop: normalizeH(15),
   },
   channelModule: {
-
-  },
-  dayChosenModule: {
     height: normalizeH(84),
-    width: PAGE_WIDTH,
-    backgroundColor: '#FFFFFF',
+    marginTop: normalizeH(15),
+  },
+  
+  dayChosenModule: {
+    height: normalizeH(220),
+    backgroundColor: '#fff',
     marginTop: normalizeH(15),
 
   },

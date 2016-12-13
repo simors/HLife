@@ -42,7 +42,7 @@ export default class Banner extends React.Component {
           key={'b_image_'+index}
           onPress={
             () => {
-              this.props.intent && this.props.intent(index, this.banners)
+              this.props.intent && this.props.intent(index, this.props.banners)
               // this.props.banners[index].intent && this.props.banners[index].intent(index)
             }
           }
