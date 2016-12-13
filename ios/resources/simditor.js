@@ -4514,7 +4514,6 @@
     };
 
     ImageButton.prototype.loadImage = function($img, src, callback) {
-      console.log('src', src)
       var $mask, img, positionMask;
       positionMask = (function(_this) {
         return function() {
@@ -4529,6 +4528,7 @@
           }).show();
         };
       })(this);
+
       $img.addClass('loading');
       $mask = $img.data('mask');
       if (!$mask) {
