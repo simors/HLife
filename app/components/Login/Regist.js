@@ -27,7 +27,7 @@ import * as Toast from '../common/Toast'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
-
+import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -135,16 +135,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    width: PAGE_WIDTH,
+    paddingTop: normalizeH(65),
+    flex: 1,
+    alignItems: 'stretch'
   },
   inputBox: {
     marginBottom: normalizeW(25)
   },
   logo: {
     alignSelf: 'center',
+    marginTop: normalizeH(25),
     marginBottom: normalizeH(25),
-    marginTop:normalizeH(25),
-    width: normalizeH(108),
+    alignSelf: 'center',
+    width: normalizeW(108),
     height: normalizeH(47),
   },
   btn: {

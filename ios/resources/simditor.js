@@ -15,10 +15,10 @@
 }(this, function ($, SimpleModule, simpleHotkeys, simpleUploader) {
 
   var AlignmentButton, BlockquoteButton, BoldButton, Button, Clipboard, CodeButton, CodePopover, ColorButton, FontScaleButton, Formatter, HrButton, ImageButton, ImagePopover, IndentButton, Indentation, InputManager, ItalicButton, Keystroke, LinkButton, LinkPopover, ListButton, OrderListButton, OutdentButton, Popover, Selection, Simditor, StrikethroughButton, TableButton, TitleButton, Toolbar, UnderlineButton, UndoManager, UnorderListButton, Util,
-      extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-      hasProp = {}.hasOwnProperty,
-      indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
-      slice = [].slice;
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    hasProp = {}.hasOwnProperty,
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+    slice = [].slice;
 
   Selection = (function(superClass) {
     extend(Selection, superClass);
@@ -1738,23 +1738,23 @@
     Util.prototype.dataURLtoBlob = function(dataURL) {
       var BlobBuilder, arrayBuffer, bb, blobArray, byteString, hasArrayBufferViewSupport, hasBlobConstructor, i, intArray, k, mimeString, ref, supportBlob;
       hasBlobConstructor = window.Blob && (function() {
-            var e;
-            try {
-              return Boolean(new Blob());
-            } catch (_error) {
-              e = _error;
-              return false;
-            }
-          })();
+          var e;
+          try {
+            return Boolean(new Blob());
+          } catch (_error) {
+            e = _error;
+            return false;
+          }
+        })();
       hasArrayBufferViewSupport = hasBlobConstructor && window.Uint8Array && (function() {
-            var e;
-            try {
-              return new Blob([new Uint8Array(100)]).size === 100;
-            } catch (_error) {
-              e = _error;
-              return false;
-            }
-          })();
+          var e;
+          try {
+            return new Blob([new Uint8Array(100)]).size === 100;
+          } catch (_error) {
+            e = _error;
+            return false;
+          }
+        })();
       BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder;
       supportBlob = hasBlobConstructor || BlobBuilder;
       if (!(supportBlob && window.atob && window.ArrayBuffer && window.Uint8Array)) {
@@ -3919,68 +3919,68 @@
       var $option, k, lang, len, ref;
       this._tpl = "<div class=\"code-settings\">\n  <div class=\"settings-field\">\n    <select class=\"select-lang\">\n      <option value=\"-1\">" + (this._t('selectLanguage')) + "</option>\n    </select>\n  </div>\n</div>";
       this.langs = this.editor.opts.codeLanguages || [
-            {
-              name: 'Bash',
-              value: 'bash'
-            }, {
-              name: 'C++',
-              value: 'c++'
-            }, {
-              name: 'C#',
-              value: 'cs'
-            }, {
-              name: 'CSS',
-              value: 'css'
-            }, {
-              name: 'Erlang',
-              value: 'erlang'
-            }, {
-              name: 'Less',
-              value: 'less'
-            }, {
-              name: 'Sass',
-              value: 'sass'
-            }, {
-              name: 'Diff',
-              value: 'diff'
-            }, {
-              name: 'CoffeeScript',
-              value: 'coffeescript'
-            }, {
-              name: 'HTML,XML',
-              value: 'html'
-            }, {
-              name: 'JSON',
-              value: 'json'
-            }, {
-              name: 'Java',
-              value: 'java'
-            }, {
-              name: 'JavaScript',
-              value: 'js'
-            }, {
-              name: 'Markdown',
-              value: 'markdown'
-            }, {
-              name: 'Objective C',
-              value: 'oc'
-            }, {
-              name: 'PHP',
-              value: 'php'
-            }, {
-              name: 'Perl',
-              value: 'parl'
-            }, {
-              name: 'Python',
-              value: 'python'
-            }, {
-              name: 'Ruby',
-              value: 'ruby'
-            }, {
-              name: 'SQL',
-              value: 'sql'
-            }
-          ];
+          {
+            name: 'Bash',
+            value: 'bash'
+          }, {
+            name: 'C++',
+            value: 'c++'
+          }, {
+            name: 'C#',
+            value: 'cs'
+          }, {
+            name: 'CSS',
+            value: 'css'
+          }, {
+            name: 'Erlang',
+            value: 'erlang'
+          }, {
+            name: 'Less',
+            value: 'less'
+          }, {
+            name: 'Sass',
+            value: 'sass'
+          }, {
+            name: 'Diff',
+            value: 'diff'
+          }, {
+            name: 'CoffeeScript',
+            value: 'coffeescript'
+          }, {
+            name: 'HTML,XML',
+            value: 'html'
+          }, {
+            name: 'JSON',
+            value: 'json'
+          }, {
+            name: 'Java',
+            value: 'java'
+          }, {
+            name: 'JavaScript',
+            value: 'js'
+          }, {
+            name: 'Markdown',
+            value: 'markdown'
+          }, {
+            name: 'Objective C',
+            value: 'oc'
+          }, {
+            name: 'PHP',
+            value: 'php'
+          }, {
+            name: 'Perl',
+            value: 'parl'
+          }, {
+            name: 'Python',
+            value: 'python'
+          }, {
+            name: 'Ruby',
+            value: 'ruby'
+          }, {
+            name: 'SQL',
+            value: 'sql'
+          }
+        ];
       this.el.addClass('code-popover').append(this._tpl);
       this.selectEl = this.el.find('.select-lang');
       ref = this.langs;
@@ -4514,6 +4514,7 @@
     };
 
     ImageButton.prototype.loadImage = function($img, src, callback) {
+      console.log('src', src)
       var $mask, img, positionMask;
       positionMask = (function(_this) {
         return function() {
@@ -4583,7 +4584,7 @@
       range = this.editor.selection.range();
       range.deleteContents();
       this.editor.selection.range(range);
-      $img = $('<img/>').attr('src', 'http://file.quweiwu.com/news/20150526102555652.jpg');
+      $img = $('<img/>').attr('src', 'http://ac-k5rltwmf.clouddn.com/5ff4269976107abe4b38.gif');
       range.insertNode($img[0]);
       this.editor.selection.setRangeAfter($img, range);
       this.editor.trigger('valuechanged');

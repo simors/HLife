@@ -16,19 +16,20 @@ import {connect} from 'react-redux'
 import RNFS from 'react-native-fs'
 import WebViewBridge from 'react-native-webview-bridge'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
+import {uploadFile} from '../../../api/leancloud/fileUploader'
 
 var toolDefault = [
   require('../../../assets/images/bold.png'),
   require('../../../assets/images/italics.png'),
   require('../../../assets/images/underline.png'),
-  require('../../../assets/images/publish_tool_image.png'),
+  require('../../../assets/images/insert_picture.png'),
 ]
 
 var toolSelect = [
-  require('../../../assets/images/bold_sel.png'),
-  require('../../../assets/images/indent.png'),
-  require('../../../assets/images/blockquote_sel.png'),
-  require('../../../assets/images/publish_tool_image.png'),
+  require('../../../assets/images/bold_selected.png'),
+  require('../../../assets/images/italics_selected.png'),
+  require('../../../assets/images/underline_selected.png'),
+  require('../../../assets/images/insert_picture.png'),
 ]
 
 var tools = [
@@ -102,7 +103,6 @@ class RichTextInput extends Component {
 
     // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
     const height = this.state.webViewHeight
-    console.log('richtext height: ' + height + ", when page height: " + PAGE_HEIGHT)
 
     return (
       <View style={{flex: 1, height: height, paddingTop: 10}}>
@@ -127,7 +127,7 @@ class RichTextInput extends Component {
         <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
           this.webView.sendToBridge('keyboard_hide')
         }}>
-          <Image source={require('../../../assets/images/keyboad_down.png')}/>
+          <Image style={{width: 30, height: 30}} source={require('../../../assets/images/close_keyboard.png')}/>
         </TouchableOpacity>
       </View>
     )
@@ -245,24 +245,25 @@ class RichTextInput extends Component {
   }
 
   uploadImg = (source) => {
-    // let fileUri = ''
-    // if (Platform.OS === 'ios') {
-    //   fileUri = fileUri.concat('file://')
-    // }
-    // fileUri = fileUri.concat(source.uri)
-    //
-    // let fileName = source.uri.split('/').pop()
-    // let uploadPayload = {
-    //   fileUri: fileUri,
-    //   fileName: fileName
-    // }
-    // uploadFile(uploadPayload).then((saved) => {
-    //   let leanImgUrl = saved.savedPos
-    //   var imgDom = leanImgUrl
-    //   this.webView.sendToBridge('editImg_' + imgDom)
-    // }).catch((error) => {
-    //   console.log('upload failed:', error)
-    // })
+    let fileUri = ''
+    if (Platform.OS === 'ios') {
+      fileUri = fileUri.concat('file://')
+    }
+    fileUri = fileUri.concat(source.uri)
+
+    let fileName = source.uri.split('/').pop()
+    let uploadPayload = {
+      fileUri: fileUri,
+      fileName: fileName
+    }
+
+    uploadFile(uploadPayload).then((saved) => {
+      let leanImgUrl = saved.savedPos
+      console.log("image url", leanImgUrl)
+      this.webView.sendToBridge('editImg_' + leanImgUrl)
+    }).catch((error) => {
+      console.log('upload failed:', error)
+    })
   }
 }
 
@@ -356,7 +357,7 @@ const styles = StyleSheet.create({
     borderColor: '#eeeeee',
     paddingTop: 5,
     paddingBottom: 5,
-    height: 30,
+    height: 40,
   },
   editToolImgView: {
     flex: 1,
@@ -366,8 +367,8 @@ const styles = StyleSheet.create({
   editToolImg: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
   },
   editToolKeyboardHide: {
     alignItems: "center",
