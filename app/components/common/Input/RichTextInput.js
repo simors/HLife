@@ -183,7 +183,7 @@ class RichTextInput extends Component {
         {
           position: 'absolute',
           left: 0,
-          bottom: this.state.keyboardPadding + 40,
+          bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 42 : 75),
         }]}
       >
         <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
@@ -202,7 +202,8 @@ class RichTextInput extends Component {
               )
             })}
           </View>
-          {Platform.OS == 'ios' ? this.renderHideEditToolView() : <View />}
+          {this.renderHideEditToolView()}
+          {/*{Platform.OS == 'ios' ? this.renderHideEditToolView() : <View />}*/}
         </View>
       </View>
     )
@@ -216,7 +217,7 @@ class RichTextInput extends Component {
         <View style={this.props.shouldFocus ? styleFocused : styleNormal}>
           {this.renderWebView()}
         </View>
-        {this.props.shouldFocus ? this.renderEditToolView() : <View />}
+        {(this.props.shouldFocus && this.state.keyboardPadding > 0) ? this.renderEditToolView() : <View />}
       </View>
     )
   }
