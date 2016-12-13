@@ -101,7 +101,7 @@ export default class Header extends Component {
 
   render() {
     return (
-      <View style={styles.header}>
+      <View style={[styles.header, this.props.headerContainerStyle]}>
       	{this.renderLeft()}
         <View style={styles.titleWrap}>
           <Text style={[styles.title, this.props.titleStyle]}>{this.props.title}</Text>

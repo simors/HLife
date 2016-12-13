@@ -12,6 +12,7 @@ import {
   Image
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
+import Carousel from 'react-native-looped-carousel'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
@@ -77,9 +78,7 @@ export default class Home extends Component {
             </View>
 
             <View style={styles.announcementModule}>
-              <View style={styles.announcementConter}>
-                
-              </View>
+
             </View>
 
             <View style={styles.advertisementModule}>
