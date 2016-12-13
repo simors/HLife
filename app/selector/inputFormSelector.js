@@ -35,9 +35,10 @@ export function isInputValid(state, formKey, stateKey) {
   let input = getInputByKey(state, formKey, stateKey)
   if (input) {
     let isValid = input.get('dataValid')
-    return isValid
+    let errMsg = input.get('invalidMsg')
+    return {isValid:isValid, errMsg:errMsg}
   }
-  return false
+  return {isValid:false, errMsg:"输入不能为空"}
 }
 
 export function isInputFormValid(state, formKey) {

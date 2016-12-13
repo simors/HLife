@@ -22,7 +22,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import {
   Button
 } from 'react-native-elements'
-import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
@@ -93,8 +93,9 @@ class Regist extends Component {
           <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
           <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
                             getSmsAuCode={() => {
-          this.props.submitFormData({
+          this.props.submitInputData({
             formKey: commonForm,
+            stateKey:phoneInput.stateKey,
             submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
             success:() => {},
             error: (error) => {Toast.show(error.message)}
@@ -125,7 +126,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData
+  submitFormData,
+  submitInputData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Regist)

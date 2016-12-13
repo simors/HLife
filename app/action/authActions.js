@@ -3,7 +3,7 @@ import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as AuthTypes from '../constants/authActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
-import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
+import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
 import * as Toast from '../components/common/Toast'
@@ -37,12 +37,6 @@ export function submitFormData(payload) {
       case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
         dispatch(handleLoginWithPwd(payload, formData))
         break
-      case INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE:
-        dispatch(handleGetSmsCode(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE:
-        dispatch(handleRequestResetPwdSmsCode(payload, formData))
-        break
       case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
         dispatch(handleResetPwdSmsCode(payload, formData))
         break
@@ -50,6 +44,29 @@ export function submitFormData(payload) {
   }
 }
 
+export function submitInputData(payload) {
+  return (dispatch, getState) => {
+    let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+    dispatch(formCheck({formKey: payload.formKey}))
+    let isValid = isInputValid(getState(), payload.formKey, payload.stateKey)
+    if (!isValid.isValid) {
+      if (payload.error) {
+        payload.error({message: isValid.errMsg})
+      }
+      return
+    }
+
+    const data = getInputData(getState(), payload.formKey, payload.stateKey)
+    switch (payload.submitType) {
+      case INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE:
+        dispatch(handleGetSmsCode(payload, data))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE:
+        dispatch(handleRequestResetPwdSmsCode(payload, data))
+        break
+    }
+  }
+}
 function handleLoginWithPwd(payload, formData) {
   return (dispatch, getState) => {
     let loginPayload = {
@@ -77,10 +94,10 @@ function handleLoginWithPwd(payload, formData) {
   }
 }
 
-function handleGetSmsCode(payload, formData) {
+function handleGetSmsCode(payload, data) {
   return (dispatch, getState) => {
     let getSmsPayload = {
-      phone: formData.phoneInput.text,
+      phone: data.text,
     }
     lcAuth.requestSmsAuthCode(getSmsPayload).then(() => {
       let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
@@ -131,10 +148,10 @@ function registerWithPhoneNum(payload, formData) {
   }
 }
 
-function handleRequestResetPwdSmsCode(payload, formData) {
+function handleRequestResetPwdSmsCode(payload, data) {
   return (dispatch, getState) => {
     let getSmsPayload = {
-      phone: formData.phoneInput.text,
+      phone: data.text,
     }
     lcAuth.requestResetPwdSmsCode(getSmsPayload).then(() => {
       let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
