@@ -40,14 +40,13 @@ const styles = StyleSheet.create({
     color: '#BBBABA',
     fontSize: em(14),
     textAlign: 'center',
-    paddingBottom: normalizeH(10),
+    paddingBottom: normalizeH(7),
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
   },
   snsLoginBox: {
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
-    marginTop: normalizeH(9),
     paddingTop: normalizeH(20),
     borderTopWidth: normalizeBorder(),
     borderTopColor: '#e9e9e9',
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   snsIcon: {
-    width: 48,
-    height: 50
+    width: normalizeW(48),
+    height: normalizeH(50)
   }
 })

@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {bindActionCreators} from 'redux'
@@ -119,7 +120,14 @@ const styles = StyleSheet.create({
     marginBottom: normalizeW(25)
   },
   body: {
-    paddingTop: normalizeH(65),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(65),
+      },
+      android: {
+        paddingTop: normalizeH(45)
+      }
+    }),
     flex: 1,
     alignItems: 'stretch'
   },
@@ -137,10 +145,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#50E3C2'
   },
   forgetPwd: {
-    fontSize: em(18),
+    fontSize: em(14),
     color: '#50E3C2',
     textAlign: 'center',
-    marginTop: normalizeH(23),
+    height: normalizeH(17),
+    marginTop: normalizeH(18),
     marginBottom: normalizeH(80)
   }
 })

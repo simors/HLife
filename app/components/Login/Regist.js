@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -29,6 +30,7 @@ import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -137,9 +139,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    paddingTop: normalizeH(65),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(65),
+      },
+      android: {
+        paddingTop: normalizeH(45)
+      }
+    }),
     flex: 1,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    height:1000
   },
   inputBox: {
     marginBottom: normalizeW(25)
