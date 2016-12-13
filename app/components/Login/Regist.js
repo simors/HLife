@@ -27,7 +27,7 @@ import * as Toast from '../common/Toast'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
-
+import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 
 const PAGE_WIDTH=Dimensions.get('window').width

@@ -26,6 +26,7 @@ import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import * as Toast from '../common/Toast'
+import Symbol from 'es6-symbol'
 
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 
