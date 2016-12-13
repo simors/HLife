@@ -12,7 +12,6 @@ import {
   Image
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import Carousel from 'react-native-looped-carousel'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'

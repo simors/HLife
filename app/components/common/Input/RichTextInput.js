@@ -100,6 +100,7 @@ class RichTextInput extends Component {
   renderWebView() {
     const source = Platform.OS == 'ios' ?
     {uri: RNFS.MainBundlePath + "/richTextEdit.html"} : {uri: "file:///android_asset/richTextEdit.html"}
+    // const source = {uri: "http://localhost/richtext/richTextEdit.html"}
 
     // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
     const height = this.state.webViewHeight
