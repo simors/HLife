@@ -28,6 +28,7 @@
     "react-native-vector-icons": "^3.0.0",
     "react-native-webview-bridge": "^0.33.0",
     "react-redux": "^4.4.6",
+    "react-timer-mixin": "^0.13.3",
     "redux": "^3.6.0",
     "redux-actions": "^1.1.0",
     "redux-batched-actions": "^0.1.4",
