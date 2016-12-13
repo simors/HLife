@@ -23,13 +23,13 @@
       'bold',
       'italic',
       'underline',
-      'image'
+      'image',
     ],
     toolbarHidden: true
   });
 
   var simditorBody = $('.simditor-body');
-  editor.on('valuechanged', function(event,src) {
+  editor.on('valuechanged', function(event, src) {
     var TEXT = simditorBody.text();
     var COUNTER = TEXT.length;
     var CONTENTS = simditorBody.html();
