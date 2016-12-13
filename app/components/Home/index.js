@@ -6,17 +6,21 @@ import {
   StyleSheet,
   View,
   Text,
-  Dimensions
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+  Image
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
+import Thumbnail from '../common/Thumbnail'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-export default class Launch extends Component {
+export default class Home extends Component {
   constructor(props) {
     super(props)
   }
@@ -34,37 +38,64 @@ export default class Launch extends Component {
           rightImageSource={require("../../assets/images/home_message.png")}
           rightPress={() => Actions.REGIST()}
         />
-        <View style={styles.body}>
-          <View style={styles.forhealth}>
-            <View style={styles.fastask}>
-              <Text style={{textAlign:'center'}}>
-                Welcome HLife Home
-              </Text>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.contentContainerStyle}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+          <View style={styles.body}>
+            <View style={styles.healthModule}>
+              <View style={styles.healthTop}>
+                <View style={styles.fastTask}>
+                  <Thumbnail
+                    sourceImage={require("../../assets/images/home_question.png")}
+                    thumbnailTitle="快速问诊"
+                    thumbnailIntro="专业医生免费为您解答疑问"
+                    onPress={()=>{Actions.LOGIN()}}
+                  />
+                </View>
+              </View>
+              <View style={styles.healthBottom}>
+                <View style={styles.findDoctor}>
+                  <Thumbnail
+                    sourceImage={require("../../assets/images/home_doctor.png")}
+                    thumbnailTitle="找名医"
+                    thumbnailIntro="一对一对症咨询"
+                    onPress={()=>{Actions.LOGIN()}}
+                  />
+                </View>
+                <View style={styles.findHospital}>
+                  <Thumbnail
+                    sourceImage={require("../../assets/images/home_hospital.png")}
+                    thumbnailTitle="找医院"
+                    thumbnailIntro="找对对症的好医院"
+                    onPress={()=>{Actions.LOGIN()}}
+                  />
+                </View>
+              </View>
             </View>
 
-            <View style={styles.findtreat}>
-              <View style={styles.finddoctor}></View>
+            <View style={styles.announcementModule}>
+              <View style={styles.announcementConter}>
+                
+              </View>
+            </View>
 
-              <View style={styles.findhospital}></View>
+            <View style={styles.advertisementModule}>
+
+            </View>
+
+            <View style={styles.channelModule}>
+
+            </View>
+
+            <View style={styles.dayChosenModule}>
+
             </View>
           </View>
+        </ScrollView>
 
-          <View style={styles.annouce}>
-
-          </View>
-
-          <View style={styles.adverticement}>
-
-          </View>
-
-          <View style={styles.buttonarray}>
-
-          </View>
-
-          <View style={styles.daychoosen}>
-
-          </View>
-        </View>
       </View>
     )
   }
@@ -77,77 +108,58 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF'
   },
   body: {
+    paddingTop: normalizeH(65),
     flex: 1,
     alignItems: 'stretch',
-    backgroundColor: '#E5E5E5'
+    backgroundColor: '#E5E5E5',
+    height:1000
   },
-  forhealth: {
+  healthModule: {
     height: normalizeH(128),
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
   },
-  fastask: {
-    height: normalizeH(63),
-    width: PAGE_WIDTH,
-    borderBottomColor: '#E5E5E5',
-    borderBottomWidth: normalizeBorder(),
+  healthTop: {
+    flex: 1,
   },
-  findtreat: {
-    paddingTop: normalizeH(18),
-    paddingBottom: normalizeH(9),
-    width: PAGE_WIDTH,
+  healthBottom: {
+    flex: 1,
     flexDirection: 'row',
+    alignItems: 'stretch'
   },
-  finddoctor: {
-    borderRightWidth: normalizeW(3),
+  fastTask: {
+    flex: 1,
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: normalizeBorder(3),
+  },
+  findDoctor: {
+    flex: 1,
+    marginTop: normalizeH(19),
+    marginBottom: normalizeH(19),
+    borderRightWidth: normalizeBorder(3),
     borderRightColor: '#E5E5E5',
-    width: normalizeW(186),
-    height: normalizeH(32),
   },
-  findhospital: {
-    width: normalizeW(186),
-    height: normalizeH(32),
+  findHospital: {
+    flex: 1,
   },
-  annouce: {
+  announcementModule: {
     height: normalizeH(40),
     marginTop: normalizeH(15),
     flexDirection: 'row',
   },
-  adverticement: {
+  advertisementModule: {
     width: PAGE_WIDTH,
     height: normalizeH(136),
     marginTop: normalizeH(15),
+  },
+  channelModule: {
 
   },
-  buttonarray: {
+  dayChosenModule: {
     height: normalizeH(84),
     width: PAGE_WIDTH,
     backgroundColor: '#FFFFFF',
     marginTop: normalizeH(15),
 
   },
-  leftbox: {
-    // left:normalizeW(12),
-    // top:normalizeH(17),
-    // width:normalizeW(40),
-    // height:normalizeH(18),
-    flexDirection: 'row',
-    flex: 1,
-    //justifyContent:'flex-start',
-  },
-  title: {
-    flex: 1,
-    //justifyContent:'center',
-    flexDirection: 'row',
-  },
-  rightbox: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  daychoosen: {
-    backgroundColor: '#FFFFFF',
-    width: PAGE_WIDTH,
-  },
-
 
 })
