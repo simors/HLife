@@ -17,6 +17,8 @@ import RNFS from 'react-native-fs'
 import WebViewBridge from 'react-native-webview-bridge'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 var toolDefault = [
   require('../../../assets/images/bold.png'),
@@ -63,6 +65,8 @@ class RichTextInput extends Component {
       webViewHeight: MIN_RTE_HEIGHT,
       keyboardPadding: 0,
     }
+    this.lastText = ""
+    this.lastWordCnt = 0
   }
 
   componentDidMount() {
@@ -73,6 +77,15 @@ class RichTextInput extends Component {
       Keyboard.addListener('keyboardDidShow', this.keyboardWillShow)
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
+
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: {text: this.props.initValue},
+      checkValid: this.validInput
+    }
+    this.props.initInputForm(formInfo)
   }
 
   componentWillUnmount() {
@@ -83,6 +96,31 @@ class RichTextInput extends Component {
       Keyboard.removeListener('keyboardDidShow', this.keyboardWillShow)
       Keyboard.removeListener('keyboardDidHide', this.keyboardWillHide)
     }
+  }
+
+  articleContentChange(data) {
+    let updateData = {
+      text: this.lastText,
+      wordCount: this.lastWordCnt
+    }
+    if (data.text) {
+      updateData.text = data.text
+      this.lastText = data.text
+    }
+    if (data.wordCount) {
+      updateData.wordCount = data.wordCount
+      this.lastWordCnt = data.wordCount
+    }
+    let inputForm = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      data: updateData
+    }
+    this.props.inputFormUpdate(inputForm)
+  }
+
+  validInput(data) {
+    return true
   }
 
   keyboardWillShow = (e) => {
@@ -100,7 +138,6 @@ class RichTextInput extends Component {
   renderWebView() {
     const source = Platform.OS == 'ios' ?
     {uri: RNFS.MainBundlePath + "/richTextEdit.html"} : {uri: "file:///android_asset/richTextEdit.html"}
-    // const source = {uri: "http://localhost/richtext/richTextEdit.html"}
 
     // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
     const height = this.state.webViewHeight
@@ -196,10 +233,10 @@ class RichTextInput extends Component {
       default:
         if (message.indexOf(COUNTER) == 0) {
           let number = message.substr(message.lastIndexOf('_') + 1, message.length)
-          // this.inputOnChangeWithPayload({wordCount: number})
+          this.articleContentChange({wordCount: number})
         } else if (message.indexOf(CONTENTS) == 0) {
           let content = message.substr(message.lastIndexOf('_') + 1, message.length)
-          // this.inputOnChangeWithPayload({content: content})
+          this.articleContentChange({text: content})
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
           this.setState({
@@ -260,7 +297,6 @@ class RichTextInput extends Component {
 
     uploadFile(uploadPayload).then((saved) => {
       let leanImgUrl = saved.savedPos
-      console.log("image url", leanImgUrl)
       this.webView.sendToBridge('editImg_' + leanImgUrl)
     }).catch((error) => {
       console.log('upload failed:', error)
@@ -337,6 +373,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initInputForm,
+  inputFormUpdate
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(RichTextInput)
