@@ -38,11 +38,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
