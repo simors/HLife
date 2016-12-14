@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch'
   },
   logo: {
+    alignSelf: 'center',
     marginTop: normalizeH(65),
     marginBottom: normalizeH(44),
     alignSelf: 'center',

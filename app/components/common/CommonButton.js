@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Text
 } from 'react-native'
+
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 
 const PAGE_WIDTH=Dimensions.get('window').width

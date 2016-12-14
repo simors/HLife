@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: normalizeW(25)
   },
   logo: {
+    alignSelf: 'center',
     marginTop: normalizeH(25),
     marginBottom: normalizeH(25),
     alignSelf: 'center',
