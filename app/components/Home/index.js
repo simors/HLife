@@ -128,7 +128,14 @@ const styles = StyleSheet.create({
     paddingBottom: 49
   },
   body: {
-    paddingTop: normalizeH(65),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(65),
+      },
+      android: {
+        paddingTop: normalizeH(45)
+      }
+    }),
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: '#E5E5E5',
