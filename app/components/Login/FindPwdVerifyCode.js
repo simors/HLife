@@ -172,9 +172,7 @@ class FindPwdVerifyCode extends Component {
 
           </View>
         </KeyboardAwareScrollView>
-        <View style={{marginTop: 17}}>
-          {this.renderRichText()}
-        </View>
+
       </View>
     )
   }

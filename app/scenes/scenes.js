@@ -36,8 +36,8 @@ export const scenes = Actions.create(
     <Scene key="LOGIN" component={Login}/>
     <Scene key="REGIST" component={Regist} />
     <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
-    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
-    <Scene key="INPUT_TEST" component={InputTest} initial={true} />
+    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode} initial={true}/>
+    <Scene key="INPUT_TEST" component={InputTest}  />
 
     <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
       <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
