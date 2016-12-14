@@ -139,6 +139,7 @@ class RichTextInput extends Component {
     this.setState({
       keyboardPadding: 0,
     })
+    this.webView.sendToBridge('keyboard_hide')
   }
 
   renderWebView() {
@@ -183,7 +184,7 @@ class RichTextInput extends Component {
         {
           position: 'absolute',
           left: 0,
-          bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 42 : 75),
+          bottom: this.state.keyboardPadding + 42,
         }]}
       >
         <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
@@ -203,7 +204,6 @@ class RichTextInput extends Component {
             })}
           </View>
           {this.renderHideEditToolView()}
-          {/*{Platform.OS == 'ios' ? this.renderHideEditToolView() : <View />}*/}
         </View>
       </View>
     )
