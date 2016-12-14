@@ -103,10 +103,11 @@ export default class Home extends Component {
             </View>
 
             <View style={styles.channelModule}>
-              <Channels />
+              <Channels/>
             </View>
 
             <View style={styles.dayChosenModule}>
+              <DailyChosen showBadge={true} containerStyle={{marginBottom: 15}}/>
               <DailyChosen />
             </View>
           </View>
@@ -123,12 +124,14 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: '#F5FCFF'
   },
+  contentContainerStyle: {
+    paddingBottom: 49
+  },
   body: {
     paddingTop: normalizeH(65),
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: '#E5E5E5',
-    height:1000
   },
   healthModule: {
     height: normalizeH(128),
@@ -144,13 +147,11 @@ const styles = StyleSheet.create({
   channelModule: {
     height: normalizeH(84),
     marginTop: normalizeH(15),
+    marginBottom: normalizeH(5),
   },
   
   dayChosenModule: {
-    height: normalizeH(220),
-    backgroundColor: '#fff',
     marginTop: normalizeH(15),
-
   },
 
 })
