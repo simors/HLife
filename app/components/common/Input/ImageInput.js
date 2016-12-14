@@ -87,7 +87,6 @@ class ImageInput extends Component {
 
   render() {
     if (this.props.data) {
-      console.log('image url: ', this.props.data)
       return (
         <View style={styles.container}>
           <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
