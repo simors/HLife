@@ -32,11 +32,11 @@ const styles = StyleSheet.create({
 
 export const scenes = Actions.create(
   <Scene key="root" hideNavBar={true}>
-    <Scene key="LAUNCH" component={Launch} />
+    <Scene key="LAUNCH" component={Launch} initial={true}/>
     <Scene key="LOGIN" component={Login}/>
     <Scene key="REGIST" component={Regist} />
     <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
-    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode} initial={true}/>
+    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode} />
     <Scene key="INPUT_TEST" component={InputTest}  />
 
     <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
