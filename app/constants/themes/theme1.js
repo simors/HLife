@@ -33,8 +33,9 @@ export default THEME = {
 	colors: {
 		white: '#fff',
 		black: '#000',
-		dark: '#333',
+		dark: '#636363',
 		light: '#B2B2B2',
+		lighter: '#B5B5B5',
 		green: '#50E3C2',
     gray: '#929292'
 	},

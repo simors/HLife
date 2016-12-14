@@ -9,35 +9,109 @@ import {
   Image,
   StyleSheet,
   Dimensions,
+  Platform,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import  ImagePicker from 'react-native-image-crop-picker'
-import ActionSheet from 'react-native-actionsheet'
+import {selectPhotoTapped} from '../../../util/ImageSelector'
+import {uploadFile} from '../../../api/leancloud/fileUploader'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 class ImageInput extends Component {
   constructor(props) {
     super(props)
   }
 
-  selectImg() {
+  componentDidMount() {
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: this.props.initValue
+    }
+    this.props.initInputForm(formInfo)
+  }
 
+  selectImg() {
+    selectPhotoTapped({
+      start: this.pickAvatarStart,
+      failed: this.pickAvatarFailed,
+      cancelled: this.pickAvatarCancelled,
+      succeed: this.pickImageSucceed
+    })
+  }
+
+  pickAvatarStart = () => {
+  }
+
+  pickAvatarFailed = () => {
+  }
+
+  pickAvatarCancelled = () => {
+  }
+
+  pickImageSucceed = (source) => {
+    this.uploadImg(source)
+  }
+
+  imageSelectedChange(url) {
+    let inputForm = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      data: {text: url}
+    }
+    this.props.inputFormUpdate(inputForm)
+  }
+
+  uploadImg = (source) => {
+    let fileUri = ''
+    if (Platform.OS === 'ios') {
+      fileUri = fileUri.concat('file://')
+    }
+    fileUri = fileUri.concat(source.uri)
+
+    let fileName = source.uri.split('/').pop()
+    let uploadPayload = {
+      fileUri: fileUri,
+      fileName: fileName
+    }
+
+    uploadFile(uploadPayload).then((saved) => {
+      let leanImgUrl = saved.savedPos
+      this.imageSelectedChange(leanImgUrl)
+    }).catch((error) => {
+      console.log('upload failed:', error)
+    })
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-          <TouchableOpacity style={{flex: 1}} onPress={this.selectImg()}>
-            <View style={styles.addImageViewStyle}>
-              <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
-                     source={require('../../../assets/images/default_picture.png')}/>
-              <Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>
-            </View>
-          </TouchableOpacity>
+    if (this.props.data) {
+      return (
+        <View style={styles.container}>
+          <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
+              <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: this.props.data}}/>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    )
+      )
+    } else {
+      return (
+        <View style={styles.container}>
+          <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
+              <View>
+                <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
+                       source={this.props.addImage}/>
+                {/*<Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>*/}
+              </View>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+      )
+    }
   }
 }
 
@@ -46,16 +120,21 @@ ImageInput.defaultProps = {
   addImageViewStyle: {},
   addImageBtnStyle: {},
   addImageTextStyle: {},
-  addImage: '../../../assets/images/home_more.png',
+  choosenImageStyle:{},
+  addImage: require('../../../assets/images/default_picture.png'),
   prompt: "选择图片",
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   return {
+    data: inputData.text
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initInputForm,
+  inputFormUpdate
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageInput)
@@ -72,12 +151,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  choosenImageStyle:{
+  //  position: 'absolute',
+    //top: 20,
+    //left: 25,
+    width: 100,
+    height: 100,
+    flex:1,
+
+  },
   defaultContainerStyle: {
     height: 100,
     width: 100,
     borderColor: '#E9E9E9',
     borderWidth: 1,
     backgroundColor: '#F3F3F3',
+    overflow:'hidden',
   },
   defaultAddImageBtnStyle: {
     position: 'absolute',

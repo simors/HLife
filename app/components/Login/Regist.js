@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -22,13 +23,14 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import {
   Button
 } from 'react-native-elements'
-import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -93,8 +95,9 @@ class Regist extends Component {
           <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
           <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
                             getSmsAuCode={() => {
-          this.props.submitFormData({
+          this.props.submitInputData({
             formKey: commonForm,
+            stateKey:phoneInput.stateKey,
             submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
             success:() => {},
             error: (error) => {Toast.show(error.message)}
@@ -125,7 +128,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData
+  submitFormData,
+  submitInputData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Regist)
@@ -135,9 +139,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    paddingTop: normalizeH(65),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(65),
+      },
+      android: {
+        paddingTop: normalizeH(45)
+      }
+    }),
     flex: 1,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    height:1000
   },
   inputBox: {
     marginBottom: normalizeW(25)

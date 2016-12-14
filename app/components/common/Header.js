@@ -131,7 +131,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f3f3',
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(20)
+        paddingTop: normalizeH(20),
+        height: normalizeH(64)
+      },
+      android: {
+        height: normalizeH(44)
       }
     }),
     flexDirection: 'row',
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2',
-    height: normalizeH(64)
+
   },
   leftWrap: {
     flex: 1,
