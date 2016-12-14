@@ -8,12 +8,17 @@ import {
   Text,
   Dimensions,
   ScrollView,
+  ListView,
   TouchableOpacity,
   Image,
   Platform
 } from 'react-native'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
+import {getBanner} from '../../selector/configSelector'
+import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
@@ -25,24 +30,9 @@ import Channels from './Channels'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-export default class Home extends Component {
+class Home extends Component {
   constructor(props) {
     super(props)
-
-    this.banners = [
-      {
-        image: 'http://www.qq745.com/uploads/allimg/141106/1-141106153Q5.png',
-      },
-      {
-        image: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
-      },
-      {
-        image: 'http://img1.3lian.com/2015/a1/53/d/198.jpg',
-      },
-      {
-        image: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
-      },
-    ];
 
     this.iosMarginTop = Platform.OS == 'ios' ? {marginTop: 20} : {};
 
@@ -78,6 +68,7 @@ export default class Home extends Component {
           rightImageSource={require("../../assets/images/home_message.png")}
           rightPress={() => Actions.REGIST()}
         />
+        
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.contentContainerStyle}
@@ -95,7 +86,7 @@ export default class Home extends Component {
 
             <View style={styles.advertisementModule}>
               <Banner
-                banners={this.banners}
+                banners={this.props.banners}
                 defaultIndex={this.defaultIndex}
                 onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
                 intent={this.clickListener.bind(this)}
@@ -117,6 +108,27 @@ export default class Home extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  let ds = undefined
+  if(ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+
+  const banners = getBanner(state, 'home')
+
+  return {
+    banners: banners
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
 
 const styles = StyleSheet.create({
   container: {
