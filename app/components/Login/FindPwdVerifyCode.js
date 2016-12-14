@@ -59,6 +59,12 @@ const dtPicker = {
   type: 'dtPicker'
 }
 
+const imagePicker = {
+  formKey: commonForm,
+  stateKey: Symbol('imagePicker'),
+  type: 'imagePicker'
+}
+
 class FindPwdVerifyCode extends Component {
   constructor(props) {
     super(props)
@@ -148,7 +154,7 @@ class FindPwdVerifyCode extends Component {
             <View style={styles.header}></View>
             <View style={this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}}>
               <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 17}}>
-                <ImageInput containerStyle={{borderRadius: 50}} />
+                <ImageInput containerStyle={{borderRadius: 50}} {...imagePicker} />
               </View>
               <View style={{marginTop: 17}}>
                 <CommonTextInput {...nameInput} placeholder="输入用户名" />

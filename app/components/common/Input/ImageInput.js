@@ -15,13 +15,14 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
-//import  ImagePicker from 'react-native-image-crop-picker'
-//import ActionSheet from 'react-native-actionsheet'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 class ImageInput extends Component {
   constructor(props) {
     super(props)
   }
+
   componentDidMount() {
     let formInfo = {
       formKey: this.props.formKey,
@@ -40,6 +41,7 @@ class ImageInput extends Component {
       succeed: this.pickImageSucceed
     })
   }
+
   pickAvatarStart = () => {
   }
 
@@ -51,6 +53,15 @@ class ImageInput extends Component {
 
   pickImageSucceed = (source) => {
     this.uploadImg(source)
+  }
+
+  imageSelectedChange(url) {
+    let inputForm = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      data: {text: url}
+    }
+    this.props.inputFormUpdate(inputForm)
   }
 
   uploadImg = (source) => {
@@ -68,45 +79,38 @@ class ImageInput extends Component {
 
     uploadFile(uploadPayload).then((saved) => {
       let leanImgUrl = saved.savedPos
-      this.webView.sendToBridge('editImg_' + leanImgUrl)
+      this.imageSelectedChange(leanImgUrl)
     }).catch((error) => {
       console.log('upload failed:', error)
     })
   }
 
   render() {
-    if (this.pickImageSucceed())
-    {
-    return (
-      <View style={styles.container}>
-        <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-          <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
-             <View>
-              <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
-                     source={this.}/>
-              <Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>
+    if (this.props.data) {
+      console.log('image url: ', this.props.data)
+      return (
+        <View style={styles.container}>
+          <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
+              <Image style={{flex: 1}} source={{uri: this.props.data}}/>
+            </TouchableOpacity>
           </View>
-          </TouchableOpacity>
-
         </View>
-      </View>
       )
-    }
-    else {
+    } else {
       return (
         <View style={styles.container}>
           <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
             <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
               <View>
                 <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
-                       source={[require('../../../assets/images/default_picture.png'),]}/>
+                       source={this.props.addImage}/>
                 <Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>
               </View>
             </TouchableOpacity>
 
           </View>
         </View>
-
       )
     }
   }
@@ -117,16 +121,20 @@ ImageInput.defaultProps = {
   addImageViewStyle: {},
   addImageBtnStyle: {},
   addImageTextStyle: {},
-  addImage: '../../../assets/images/home_more.png',
+  addImage: require('../../../assets/images/default_picture.png'),
   prompt: "选择图片",
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   return {
+    data: inputData.text
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initInputForm,
+  inputFormUpdate
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageInput)
