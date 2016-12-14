@@ -1,7 +1,7 @@
 /**
  * Created by zachary on 2016/12/13.
  */
-import React, {Component} from "react";
+import React, {Component} from "react"
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   RefreshControl,
   ProgressBarAndroid,
   ActivityIndicator,
-} from "react-native";
+} from "react-native"
 
 export default class CommonListView extends Component {
 
@@ -23,14 +23,16 @@ export default class CommonListView extends Component {
    */
   constructor(props) {
     super(props)
-    this.setState({
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
       hasMore: true,
       headerLoadRefresh: props.headerLoadRefresh === true,
       hideHeader: props.hideHeader === true,
       hideFooter: props.hideFooter === true,
       separatorStyle: props.separatorStyle ? props.separatorStyle : styles.separator,
       hideSeparator: props.hideSeparator === true,
-    })
+      dataSource: ds.cloneWithRows(['row 1', 'row 2']),
+    }
   }
 
   // componentDidMount() {
@@ -40,7 +42,7 @@ export default class CommonListView extends Component {
   render() {
     return (
       <ListView
-        {...this.props}
+        ref="listView"
         enableEmptySections={true}
         automaticallyAdjustContentInsets={false}
         showsHorizontalScrollIndicator={false}
@@ -55,6 +57,7 @@ export default class CommonListView extends Component {
           this.state.hideHeader ?
             null : this.showRefreshControl()
         }
+        {...this.props}
       />
     )
   }

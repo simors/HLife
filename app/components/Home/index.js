@@ -1,5 +1,13 @@
 /**
  * Created by yangyang on 2016/12/1.
+ *
+ *bugs:
+ * renderRow={(rowData, rowId) => {this.renderRow(rowData, rowId)}}
+ * StaticRenderer.render(): A valid React element(or null) must be returned.
+ *
+ * 解决:
+ * renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+ * remove {} of this.renderRow(rowData, rowId)
  */
 import React, {Component} from 'react'
 import {
@@ -55,6 +63,78 @@ class Home extends Component {
     this.defaultIndex = state.index
   }
 
+  renderRow(rowData, rowId) {
+    switch (rowData.type) {
+      case 'HEALTH_COLUMN':
+        return this.renderHealthColumn()
+      case 'ANNOUNCEMENT_COLUMN':
+        return this.renderAnnouncementColumn()
+      case 'BANNER_COLUMN':
+        return this.renderBannerColumn()
+      case 'CHANNELS_COLUMN':
+        return this.renderChannelsColumn()
+      case 'DAILY_CHOSEN_COLUMN':
+        return this.renderDailyChosenColumn()
+      default:
+        return <View />
+    }
+
+  }
+
+  renderHealthColumn() {
+    return (
+      <View style={styles.healthModule}>
+        <Health />
+      </View>
+    )
+  }
+
+  renderAnnouncementColumn() {
+    return (
+      <View style={styles.announcementModule}>
+
+      </View>
+    )
+  }
+
+  renderBannerColumn() {
+    return (
+      <View style={styles.advertisementModule}>
+        <Banner
+          banners={this.props.banners}
+          defaultIndex={this.defaultIndex}
+          onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
+          intent={this.clickListener.bind(this)}
+        />
+      </View>
+    )
+  }
+
+  renderChannelsColumn() {
+    return (
+      <View style={styles.channelModule}>
+        <Channels/>
+      </View>
+    )
+  }
+
+  renderDailyChosenColumn() {
+    return (
+      <View style={styles.dailyChosenModule}>
+        <DailyChosen showBadge={true} containerStyle={{marginBottom: 15}}/>
+        <DailyChosen />
+      </View>
+    )
+  }
+
+  refreshData() {
+
+  }
+
+  loadMoreData() {
+
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -68,42 +148,16 @@ class Home extends Component {
           rightImageSource={require("../../assets/images/home_message.png")}
           rightPress={() => Actions.REGIST()}
         />
-        
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.contentContainerStyle}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-        >
-          <View style={styles.body}>
-            <View style={styles.healthModule}>
-              <Health />
-            </View>
 
-            <View style={styles.announcementModule}>
-
-            </View>
-
-            <View style={styles.advertisementModule}>
-              <Banner
-                banners={this.props.banners}
-                defaultIndex={this.defaultIndex}
-                onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
-                intent={this.clickListener.bind(this)}
-              />
-            </View>
-
-            <View style={styles.channelModule}>
-              <Channels/>
-            </View>
-
-            <View style={styles.dayChosenModule}>
-              <DailyChosen showBadge={true} containerStyle={{marginBottom: 15}}/>
-              <DailyChosen />
-            </View>
-          </View>
-        </ScrollView>
-
+        <View style={styles.body}>
+          <CommonListView
+            contentContainerStyle={{backgroundColor: '#E5E5E5'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            loadNewData={()=>{this.refreshData()}}
+            loadMoreData={()=>{this.loadMoreData()}}
+          />
+        </View>
       </View>
     )
   }
@@ -119,10 +173,18 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
+  let dataArray = []
+  dataArray.push({type: 'HEALTH_COLUMN'})
+  dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
+  dataArray.push({type: 'BANNER_COLUMN'})
+  dataArray.push({type: 'CHANNELS_COLUMN'})
+  dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
+
   const banners = getBanner(state, 'home')
 
   return {
-    banners: banners
+    banners: banners,
+    ds: ds.cloneWithRows(dataArray)
   }
 }
 
@@ -169,7 +231,7 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(5),
   },
   
-  dayChosenModule: {
+  dailyChosenModule: {
     marginTop: normalizeH(15),
   },
 
