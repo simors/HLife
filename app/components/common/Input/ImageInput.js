@@ -9,35 +9,106 @@ import {
   Image,
   StyleSheet,
   Dimensions,
+  Platform,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import  ImagePicker from 'react-native-image-crop-picker'
-import ActionSheet from 'react-native-actionsheet'
+import {selectPhotoTapped} from '../../../util/ImageSelector'
+import {uploadFile} from '../../../api/leancloud/fileUploader'
+//import  ImagePicker from 'react-native-image-crop-picker'
+//import ActionSheet from 'react-native-actionsheet'
 
 class ImageInput extends Component {
   constructor(props) {
     super(props)
   }
+  componentDidMount() {
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: this.props.initValue
+    }
+    this.props.initInputForm(formInfo)
+  }
 
   selectImg() {
+    selectPhotoTapped({
+      start: this.pickAvatarStart,
+      failed: this.pickAvatarFailed,
+      cancelled: this.pickAvatarCancelled,
+      succeed: this.pickImageSucceed
+    })
+  }
+  pickAvatarStart = () => {
+  }
 
+  pickAvatarFailed = () => {
+  }
+
+  pickAvatarCancelled = () => {
+  }
+
+  pickImageSucceed = (source) => {
+    this.uploadImg(source)
+  }
+
+  uploadImg = (source) => {
+    let fileUri = ''
+    if (Platform.OS === 'ios') {
+      fileUri = fileUri.concat('file://')
+    }
+    fileUri = fileUri.concat(source.uri)
+
+    let fileName = source.uri.split('/').pop()
+    let uploadPayload = {
+      fileUri: fileUri,
+      fileName: fileName
+    }
+
+    uploadFile(uploadPayload).then((saved) => {
+      let leanImgUrl = saved.savedPos
+      this.webView.sendToBridge('editImg_' + leanImgUrl)
+    }).catch((error) => {
+      console.log('upload failed:', error)
+    })
   }
 
   render() {
+    if (this.pickImageSucceed())
+    {
     return (
       <View style={styles.container}>
         <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-          <TouchableOpacity style={{flex: 1}} onPress={this.selectImg()}>
-            <View style={styles.addImageViewStyle}>
+          <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
+             <View>
               <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
-                     source={require('../../../assets/images/default_picture.png')}/>
+                     source={this.}/>
               <Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>
-            </View>
+          </View>
           </TouchableOpacity>
+
         </View>
       </View>
-    )
+      )
+    }
+    else {
+      return (
+        <View style={styles.container}>
+          <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
+              <View>
+                <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
+                       source={[require('../../../assets/images/default_picture.png'),]}/>
+                <Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>
+              </View>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+
+      )
+    }
   }
 }
 

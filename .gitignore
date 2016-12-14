@@ -28,6 +28,13 @@ project.xcworkspace
 .idea
 .gradle
 local.properties
+android/app/gradle
+android/app/gradlew
+android/app/gradlew.bat
+android/build.gradle
+android/app/src/main/res
+android/app/src/main/assets/index.android.bundle
+android/app/src/main/assets/index.android.bundle.meta
 
 # node.js
 #
