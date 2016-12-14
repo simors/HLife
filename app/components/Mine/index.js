@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
-
+  Platform
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -128,7 +128,11 @@ const styles = StyleSheet.create({
     height: PAGE_HEIGHT,
   },
   header: {
-    marginTop: normalizeH(20),
+    ...Platform.select({
+      ios: {
+        marginTop: normalizeH(20)
+      }
+    }),
     width: PAGE_WIDTH,
     height: normalizeH(125),
     backgroundColor: 'rgba(80, 227, 194, 0.19)',

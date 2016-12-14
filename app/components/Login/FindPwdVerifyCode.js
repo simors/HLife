@@ -154,7 +154,7 @@ class FindPwdVerifyCode extends Component {
             <View style={styles.header}></View>
             <View style={this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}}>
               <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 17}}>
-                <ImageInput containerStyle={{borderRadius: 50}} {...imagePicker} />
+                <ImageInput containerStyle={{borderRadius: 50}} {...imagePicker} addImage={require('../../assets/images/default_portrait.png')} />
               </View>
               <View style={{marginTop: 17}}>
                 <CommonTextInput {...nameInput} placeholder="输入用户名" />

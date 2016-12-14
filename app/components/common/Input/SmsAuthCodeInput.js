@@ -81,14 +81,17 @@ class SmsAuthCodeInput extends Component {
     }
   }
 
-  requestSmsCode = () => { return this.props.getSmsAuCode() }
+  requestSmsCode = () => { this.props.getSmsAuCode() }
 
   getSmsAuthCode = () => {
-      this.requestSmsCode()
+    if (this.props.reset) {
+      this.setState({countDown: 0})
+    } else {
       this.setState({countDown: this.props.countTimes})
       this.countDown()
     }
-
+    this.requestSmsCode()
+  }
 
   renderGetSmsButtonEnabled = () => {
     return (

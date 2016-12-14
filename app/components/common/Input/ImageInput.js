@@ -87,12 +87,11 @@ class ImageInput extends Component {
 
   render() {
     if (this.props.data) {
-      console.log('image url: ', this.props.data)
       return (
         <View style={styles.container}>
           <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
             <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
-              <Image style={{flex: 1}} source={{uri: this.props.data}}/>
+              <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: this.props.data}}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -105,7 +104,7 @@ class ImageInput extends Component {
               <View>
                 <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
                        source={this.props.addImage}/>
-                <Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>
+                {/*<Text style={[styles.defaultAddImageTextStyle, this.props.addImageTextStyle]}>{this.props.prompt}</Text>*/}
               </View>
             </TouchableOpacity>
 
@@ -121,6 +120,7 @@ ImageInput.defaultProps = {
   addImageViewStyle: {},
   addImageBtnStyle: {},
   addImageTextStyle: {},
+  choosenImageStyle:{},
   addImage: require('../../../assets/images/default_picture.png'),
   prompt: "选择图片",
 }
@@ -151,12 +151,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  choosenImageStyle:{
+  //  position: 'absolute',
+    //top: 20,
+    //left: 25,
+    width: 100,
+    height: 100,
+    flex:1,
+
+  },
   defaultContainerStyle: {
     height: 100,
     width: 100,
     borderColor: '#E9E9E9',
     borderWidth: 1,
     backgroundColor: '#F3F3F3',
+    overflow:'hidden',
   },
   defaultAddImageBtnStyle: {
     position: 'absolute',
