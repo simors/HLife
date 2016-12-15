@@ -9,7 +9,8 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
-  Keyboard
+  Keyboard,
+  ScrollView,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -50,7 +51,7 @@ const HEIGHT = 'HEIGHT'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-const MIN_RTE_HEIGHT = 200
+const MIN_RTE_HEIGHT = 350
 // const navBarPadding = (Platform.OS == 'android' ? 50 : 64)
 const navBarPadding = 0
 
@@ -150,18 +151,20 @@ class RichTextInput extends Component {
     const height = this.state.webViewHeight
 
     return (
-      <View style={{flex: 1, height: height, paddingTop: 10}}>
-        <WebViewBridge
-          ref={(web) => {
-            this.webView = web
-          }}
-          onBridgeMessage={this.onBridgeMessage.bind(this)}
-          injectedJavaScript={injectedJavaScript}
-          hideKeyboardAccessoryView={true}
-          automaticallyAdjustContentInsets={true}
-          source={source}
-        />
-      </View>
+      <ScrollView>
+        <View style={{flex: 1, height: height}}>
+          <WebViewBridge
+            ref={(web) => {
+              this.webView = web
+            }}
+            onBridgeMessage={this.onBridgeMessage.bind(this)}
+            injectedJavaScript={injectedJavaScript}
+            hideKeyboardAccessoryView={true}
+            automaticallyAdjustContentInsets={true}
+            source={source}
+          />
+        </View>
+      </ScrollView>
     )
   }
 
@@ -184,7 +187,7 @@ class RichTextInput extends Component {
         {
           position: 'absolute',
           left: 0,
-          bottom: this.state.keyboardPadding + 42,
+          bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25),
         }]}
       >
         <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
@@ -214,6 +217,7 @@ class RichTextInput extends Component {
     const styleNormal = styles.mainContainer
     return (
       <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
+        <View style={{height: 20}}></View>
         <View style={this.props.shouldFocus ? styleFocused : styleNormal}>
           {this.renderWebView()}
         </View>
@@ -247,7 +251,7 @@ class RichTextInput extends Component {
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
           this.setState({
-            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 100 : MIN_RTE_HEIGHT,
+            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 100 + this.state.keyboardPadding : MIN_RTE_HEIGHT,
           })
         }
         break
