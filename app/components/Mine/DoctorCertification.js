@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'

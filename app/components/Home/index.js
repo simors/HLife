@@ -19,13 +19,15 @@ import {
   ListView,
   TouchableOpacity,
   Image,
-  Platform
+  Platform,
+  InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
 import {getBanner} from '../../selector/configSelector'
+import {fetchBanner} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -49,6 +51,14 @@ class Home extends Component {
       defaultIndex: 0,
     }
     this.defaultIndex = 0
+  }
+  
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchBanner({type: 0})
+    })
+
+    // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
   clickListener(index, banners) {
@@ -98,16 +108,22 @@ class Home extends Component {
   }
 
   renderBannerColumn() {
-    return (
-      <View style={styles.advertisementModule}>
-        <Banner
-          banners={this.props.banners}
-          defaultIndex={this.defaultIndex}
-          onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
-          intent={this.clickListener.bind(this)}
-        />
-      </View>
-    )
+    if (this.props.banner) {
+      return (
+        <View style={styles.advertisementModule}>
+          <Banner
+            banners={this.props.banner}
+            defaultIndex={this.defaultIndex}
+            onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
+            intent={this.clickListener.bind(this)}
+          />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.advertisementModule}></View>
+      )
+    }
   }
 
   renderChannelsColumn() {
@@ -180,15 +196,18 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'CHANNELS_COLUMN'})
   dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
 
-  const banners = getBanner(state, 'home')
+  const banner = getBanner(state, 0)
+  console.log('banner=', banner)
 
   return {
-    banners: banners,
+    banner: banner,
     ds: ds.cloneWithRows(dataArray)
   }
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchBanner
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
 
