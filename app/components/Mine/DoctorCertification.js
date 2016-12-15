@@ -159,7 +159,8 @@ const departmentInput = {
                   请上传本人持身份证的头像
                 </Text>
                 <ImageInput containerStyle={styles.imageInputStyle}
-
+                            addImage={require('../../assets/images/upload.png')}
+                            addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
                 />
               </View>
               <View style={styles.illustrate}>
@@ -183,6 +184,8 @@ const departmentInput = {
                   请上传医生有效证明，包含工作证、执业证和职称证
                 </Text>
                 <ImageInput containerStyle={styles.imageInputStyle}
+                            addImage={require('../../assets/images/upload.png')}
+                            addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
 
                 />
             </View>
@@ -278,7 +281,8 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(20),
     width: normalizeW(80),
     height: normalizeH(80),
-    marginBottom: normalizeH(12)
+    marginBottom: normalizeH(12),
+    borderStyle: 'dashed',
   },
   imageHeader: {
     width: normalizeW(86),

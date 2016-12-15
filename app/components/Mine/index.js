@@ -123,7 +123,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    backgroundColor: '#F5FCFF',
+    // backgroundColor: '#F5FCFF',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
     width: PAGE_WIDTH,
     height: PAGE_HEIGHT,
   },
@@ -174,7 +175,8 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
     height: normalizeH(80),
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF'
   },
   aindex: {
     flex: 1,
@@ -189,8 +191,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.34,
   },
   bzone: {
+    marginTop: normalizeH(15),
     width: PAGE_WIDTH,
     height: normalizeH(119),
+    backgroundColor: '#FFFFFF',
   },
   bheader: {
     borderBottomWidth: normalizeBorder(),
@@ -226,8 +230,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: normalizeW(25),
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F7F7F7',
+    backgroundColor: '#FFFFFF',
+    marginBottom: normalizeH(2),
+
   },
   ctext: {
     paddingLeft: normalizeW(20),
