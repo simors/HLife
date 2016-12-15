@@ -25,7 +25,7 @@ export function loginWithPwd(payload) {
       }
     })
   }, (err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : err.message
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
@@ -65,7 +65,7 @@ export function register(payload) {
       token: user.getSessionToken()
     }
   }, (err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : err.message
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
@@ -80,7 +80,7 @@ export function requestSmsAuthCode(payload) {
       // do nothing
     }, function (err) {
       console.log(err.message)
-      err.message = ERROR[err.code] ? ERROR[err.code] : err.message
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
   }
@@ -92,7 +92,7 @@ export function verifySmsCode(payload) {
   return AV.Cloud.verifySmsCode(smsAuthCode, phone).then(function (success) {
     // do nothing
   }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : err.message
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
@@ -102,6 +102,7 @@ export function requestResetPwdSmsCode(payload) {
   return AV.User.requestPasswordResetBySmsCode(phone).then((success) => {
     // do nothing
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
@@ -112,6 +113,7 @@ export function resetPwdBySmsCode(payload) {
   return AV.User.resetPasswordBySmsCode(smsAuthCode, password).then((success) => {
     return success
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
@@ -120,6 +122,7 @@ export function modifyMobilePhoneVerified(payload) {
   return AV.Cloud.run('hLifeModifyMobilePhoneVerified', payload).then((result)=>{
     return result
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }

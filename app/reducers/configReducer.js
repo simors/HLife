@@ -1,28 +1,14 @@
 import {Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
+import * as ConfigActionTypes from '../constants/configActionTypes'
 import {Config, BannerItemConfig} from '../models/ConfigModels'
 
-const initialState = initConfig({
-  banners: {
-    home: [
-      {
-        image: 'http://www.qq745.com/uploads/allimg/141106/1-141106153Q5.png',
-      },
-      {
-        image: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
-      },
-      {
-        image: 'http://img1.3lian.com/2015/a1/53/d/198.jpg',
-      },
-      {
-        image: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
-      }
-    ]
-  }
-})
+const initialState = Config()
 
 export default function configReducer(state = initialState, action) {
   switch (action.type) {
+    case ConfigActionTypes.UPDATE_CONFIG_BANNERS:
+      return handleUpdateConfigBanners(state, action)
     default:
       return state
   }
@@ -42,8 +28,10 @@ function initConfig(payload) {
 
 function initBanners(banners) {
   let bannerMap = new Map()
-  for(let type in banners) {
-    bannerMap = bannerMap.set(type, initBanner(banners[type]))
+  if(banners) {
+    for(let type in banners) {
+      bannerMap = bannerMap.set(type, initBanner(banners[type]))
+    }
   }
   return bannerMap
 }
@@ -55,6 +43,17 @@ function initBanner(banner) {
   })
   return new List(bannerItems)
 }
+
+function handleUpdateConfigBanners(state, action) {
+  let payload = action.payload
+  let type = payload.type
+  let bannerMap = new Map()
+  bannerMap = bannerMap.set(type, payload.banner)
+  state = state.set('banners',  bannerMap)
+  return state
+}
+
+
 
 function onRehydrate(state, action) {
   var incoming = action.payload.CONFIG

@@ -29,28 +29,34 @@ export default class Banner extends React.Component {
 
   constructor(props) {
     super(props)
-    this.images = props.banners.map((banner) => banner.image)
-    this.titles = props.banners.map((banner) => banner.title)
+    console.log('props.banners=', props.banners)
+    if(props.banners) {
+      this.images = props.banners.map((banner) => banner.image)
+      this.titles = props.banners.map((banner) => banner.title)
+    }
   }
 
   render() {
-    let imageViews = this.images.map((image, index) => {
-      return (
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{flex: 1}}
-          key={'b_image_'+index}
-          onPress={
+    let imageViews = <View />
+    if(this.images) {
+      imageViews = this.images.map((image, index) => {
+        return (
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{flex: 1}}
+            key={'b_image_'+index}
+            onPress={
             () => {
               this.props.intent && this.props.intent(index, this.props.banners)
               // this.props.banners[index].intent && this.props.banners[index].intent(index)
             }
           }
-        >
-          <Image style={styles.image} source={typeof(image) == 'string' ? {uri: image} : image}/>
-        </TouchableOpacity>
-      )
-    })
+          >
+            <Image style={styles.image} source={typeof(image) == 'string' ? {uri: image} : image}/>
+          </TouchableOpacity>
+        )
+      })
+    }
 
     return (
       <Swiper
@@ -61,7 +67,7 @@ export default class Banner extends React.Component {
         activeDotStyle={{width: 6, height: 6, backgroundColor:THEME.colors.green}}
         renderTitle={
           (index, view) => {
-            if (!this.titles[index]) {
+            if (!this.titles || !this.titles[index]) {
               return null;
             }
             return (
