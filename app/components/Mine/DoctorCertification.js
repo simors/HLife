@@ -88,30 +88,33 @@ const departmentInput = {
             <View style={styles.trip}>
               <Text style={{fontSize: 12}}>欢迎加入近来医生，完成认证可使用完整功能</Text>
             </View>
-            <View style={styles.azone}>
+            <View style={styles.zone}>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>姓名</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...nameInput}  containerStyle={{height: normalizeH(38), }} inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...nameInput}  containerStyle={{height: normalizeH(38), }}
+                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>身份证号</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...idNoInput}  containerStyle={{height: normalizeH(38), }} inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...idNoInput}  containerStyle={{height: normalizeH(38), }}
+                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
-                  <PhoneInput {...phoneInput} placeholder="仅用于客服与你联系" inputStyle={{height: normalizeH(38), backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <PhoneInput {...phoneInput} placeholder="仅用于客服与你联系"
+                              inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>验证码</Text>
                 <View style={{flex: 1,}}>
                   <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(38)}}
-                                    textInput={{height: normalizeH(38), backgroundColor: "#FFFFFF", borderWidth: 0, paddingLeft: 0, paddingRight: 0, }}
+                                    textInput={styles.smsAuthCodeTextInput}
                                     inputContainer={{paddingLeft: 17, paddingRight: 17}}
                                     placeholder = "填写手机验证码"
                                     codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
@@ -128,23 +131,25 @@ const departmentInput = {
               </View>
 
             </View>
-            <View style={styles.bzone}>
+            <View style={styles.zone}>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>执业地点</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...addressInput}  containerStyle={{height: normalizeH(38), }} inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...addressInput}  containerStyle={{height: normalizeH(38), }}
+                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>擅长科目</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...departmentInput}  containerStyle={{height: normalizeH(38), }} inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...departmentInput}  containerStyle={{height: normalizeH(38), }}
+                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
             </View>
-            <View style={styles.czone}>
-              <View style={[styles.dzone, {marginTop: 0}]}>
-                <View style={{width: normalizeW(86), height: normalizeH(40), justifyContent: 'center' }}>
+            <View style={[styles.zone, {flexDirection: 'row'}]}>
+              <View style={[styles.zone, {marginTop: 0, alignItems: 'flex-start', flex: 1}]}>
+                <View style={styles.imageHeader}>
                   <Text style={styles.maintext}>
                     认证头像
                   </Text>
@@ -152,12 +157,11 @@ const departmentInput = {
                 <Text style={styles.triptext}>
                   请上传本人持身份证的头像
                 </Text>
-                <ImageInput containerStyle={{marginLeft: normalizeW(20), width: normalizeW(80), height: normalizeH(80), marginBottom: normalizeH(12)}}
-                  // addImage=require()
+                <ImageInput containerStyle={styles.imageInputStyle}
 
                 />
               </View>
-              <View style={{marginTop: normalizeH(36), borderLeftWidth: 1, borderLeftColor: '#D3D2D6', paddingLeft: normalizeW(12), paddingRight: normalizeW(12)}}>
+              <View style={styles.illustrate}>
                 <Text style={[styles.triptext, {paddingLeft: 0}]}>
                   参考图像及拍摄说明
                 </Text>
@@ -168,8 +172,8 @@ const departmentInput = {
               </View>
 
             </View>
-            <View style={styles.dzone}>
-              <View style={{width: normalizeW(86), height: normalizeH(40), justifyContent: 'center' }}>
+            <View style={[styles.zone, {alignItems: 'flex-start'}]}>
+              <View style={styles.imageHeader}>
                 <Text style={styles.maintext}>
                   认证凭证
                 </Text>
@@ -177,21 +181,17 @@ const departmentInput = {
                 <Text style={styles.triptext}>
                   请上传医生有效证明，包含工作证、执业证和职称证
                 </Text>
-                <ImageInput containerStyle={{marginLeft: normalizeW(20), width: normalizeW(80), height: normalizeH(80), marginBottom: normalizeH(12)}}
-                            // addImage=require()
+                <ImageInput containerStyle={styles.imageInputStyle}
 
                 />
             </View>
-
-
+            <CommonButton buttonStyle={{marginBottom: normalizeH(6), marginTop: normalizeH(100)}} title="提交认证" />
+            <View style={styles.agreement}>
+              <Text style={styles.agreementText}>我已阅读</Text>
+              <Text style={[styles.agreementText, {color: '#50E3C2'}]}>《近来医生用户协议》</Text>
+            </View>
           </ScrollView>
         </View>
-        <CommonButton buttonStyle={{marginBottom: normalizeH(2),}} title="提交认证" />
-        <View style={styles.agreement}>
-          <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: 12, color: '#B2B2B2', }}>我已阅读</Text>
-          <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: 12, color: '#50E3C2', }}>服务条款及协议</Text>
-        </View>
-
       </View>
     )
   }
@@ -211,7 +211,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
-
   },
   header: {
     backgroundColor: '#50E3C2',
@@ -226,13 +225,10 @@ const styles = StyleSheet.create({
     flex: 1,
     width: PAGE_WIDTH,
     marginTop: normalizeH(64),
-
   },
-  azone: {
+  zone: {
     marginTop: normalizeH(15),
     backgroundColor: '#FFFFFF',
-
-
   },
   inputBox: {
     flex: 1,
@@ -241,27 +237,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#C8C7CC',
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   phoneInputBox: {
-
-  },
-  bzone: {
-    marginTop: normalizeH(15),
-    backgroundColor: '#FFFFFF',
-
-  },
-  czone: {
-    marginTop: normalizeH(15),
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-  },
-  dzone: {
-    flex: 1,
-    marginTop: normalizeH(15),
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
 
   },
   trip: {
@@ -289,11 +266,43 @@ const styles = StyleSheet.create({
   agreement: {
     flexDirection: 'row',
     marginBottom: normalizeH(35),
-    width: normalizeW(172),
-    height: normalizeH(26),
-    borderColor: 'yellow',
-    borderWidth: 2,
-
+    alignSelf: 'center'
+  },
+  agreementText: {
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: 12,
+    color: '#B2B2B2',
+  },
+  imageInputStyle: {
+    marginLeft: normalizeW(20),
+    width: normalizeW(80),
+    height: normalizeH(80),
+    marginBottom: normalizeH(12)
+  },
+  imageHeader: {
+    width: normalizeW(86),
+    height: normalizeH(40),
+    justifyContent: 'center'
+  },
+  illustrate: {
+    marginTop: normalizeH(36),
+    borderLeftWidth: 1,
+    borderLeftColor: '#D3D2D6',
+    paddingLeft: normalizeW(12),
+    paddingRight: normalizeW(12)
+  },
+  smsAuthCodeTextInput: {
+    height: normalizeH(38),
+    backgroundColor: "#FFFFFF",
+    borderWidth: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  phoneInputStyle: {
+    height: normalizeH(38),
+    backgroundColor: '#FFFFFF',
+    borderWidth: 0,
+    paddingLeft: 0,
   }
 
 })
