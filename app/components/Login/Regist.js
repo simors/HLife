@@ -24,6 +24,7 @@ import {
   Button
 } from 'react-native-elements'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {isInputValid} from '../../selector/inputFormSelector'
 import * as Toast from '../common/Toast'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
@@ -77,6 +78,18 @@ class Regist extends Component {
     Toast.show(error.message)
   }
 
+  smsCode() {
+    this.props.submitInputData({
+      formKey: commonForm,
+      stateKey:phoneInput.stateKey,
+      submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
+      success:() => {},
+      error: (error) => {
+        Toast.show(error.message)
+      }
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -94,15 +107,7 @@ class Regist extends Component {
 
           <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
           <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
-                            getSmsAuCode={() => {
-          this.props.submitInputData({
-            formKey: commonForm,
-            stateKey:phoneInput.stateKey,
-            submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
-            success:() => {},
-            error: (error) => {Toast.show(error.message)}
-          })
-        }}/>
+                            getSmsAuCode={() => {return this.smsCode()}} reset={!this.props.phoneValid} />
           <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
 
           <Button
@@ -124,7 +129,14 @@ class Regist extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let newProps = {}
+  let isValid = isInputValid(state, commonForm, phoneInput.stateKey)
+  if (!isValid.isValid) {
+    newProps.phoneValid = false
+  } else {
+    newProps.phoneValid = true
+  }
+  return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
