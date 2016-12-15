@@ -48,7 +48,7 @@ class InputTest extends Component {
   onRteFocusChanged = (val) => {
     if (val == true) {
       // this.scrollView.scrollTo({x: 0, y: 0, animated: false})
-      this.scrollView.scrollToPosition(0, 0, false)
+      // this.scrollView.scrollToPosition(0, 0, false)
     }
 
     this.setState({
@@ -71,28 +71,29 @@ class InputTest extends Component {
     return (
       <View style={styles.container}>
         <View style={{flex: 1, width: PAGE_WIDTH}}>
-          <KeyboardAwareScrollView
-            ref={(ref) => {
-              this.scrollView = ref
-            }}
-            keyboardDismissMode='on-drag'
-            style={{
-              flex: 0,
-              width: PAGE_WIDTH, paddingTop: 0, backgroundColor: '#ffffff'
-            }}
-          >
-            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>
-            {/*<View style={{marginTop: 20}}>*/}
+          {/*<KeyboardAwareScrollView*/}
+            {/*ref={(ref) => {*/}
+              {/*this.scrollView = ref*/}
+            {/*}}*/}
+            {/*keyboardDismissMode='on-drag'*/}
+            {/*style={[{*/}
+              {/*flex: 0,*/}
+              {/*width: PAGE_WIDTH, paddingTop: 0, backgroundColor: '#ffffff', borderWidth: 5, borderColor: '#11ff33'*/}
+            {/*},*/}
+              {/*this.state.rteFocused ? {height: 0, overflow: 'hidden', marginTop: 0} : {}*/}
+            {/*]}*/}
+          {/*>*/}
+            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden', marginTop: 0} : {}]}>
               <ImageInput containerStyle={{height: 100, width: PAGE_WIDTH - 34}} />
             </View>
-            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden'} : {}]}>
-            {/*<View style={{marginTop: 20}}>*/}
+            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden', marginTop: 0} : {}]}>
               <CommonTextInput {...articleName} placeholder="输入文章标题" />
             </View>
-            <View style={{flex: 1}}>
-              {this.renderRichText()}
-            </View>
-          </KeyboardAwareScrollView>
+
+          <View>
+            {this.renderRichText()}
+          </View>
+          {/*</KeyboardAwareScrollView>*/}
         </View>
       </View>
     )
