@@ -19,6 +19,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import PhoneInput from '../common/Input/PhoneInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
+import ImageInput from '../common/Input/ImageInput'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -142,31 +143,50 @@ const departmentInput = {
               </View>
             </View>
             <View style={styles.czone}>
-              <View style={{paddingLeft: normalizeW(20)}}>
-                <View style={{width: normalizeW(66), height: normalizeH(40), justifyContent: 'flex-start', borderWidth: 1, borderColor: 'red' }}>
+              <View style={[styles.dzone, {marginTop: 0}]}>
+                <View style={{width: normalizeW(86), height: normalizeH(40), justifyContent: 'center' }}>
                   <Text style={styles.maintext}>
                     认证头像
                   </Text>
                 </View>
-
                 <Text style={styles.triptext}>
                   请上传本人持身份证的头像
                 </Text>
-                <View style={{width: normalizeW(80), height: normalizeH(80), borderWidth:2, borderColor:'yellow'}}></View>
+                <ImageInput containerStyle={{marginLeft: normalizeW(20), width: normalizeW(80), height: normalizeH(80), marginBottom: normalizeH(12)}}
+                  // addImage=require()
+
+                />
+              </View>
+              <View style={{marginTop: normalizeH(36), borderLeftWidth: 1, borderLeftColor: '#D3D2D6', paddingLeft: normalizeW(12), paddingRight: normalizeW(12)}}>
+                <Text style={[styles.triptext, {paddingLeft: 0}]}>
+                  参考图像及拍摄说明
+                </Text>
+                <View style={{width: normalizeW(109), height: normalizeH(81), backgroundColor: 'yellow'}}>
+
+                </View>
 
               </View>
-              <View style={{height: normalizeH(104), marginTop: normalizeH(36), borderLeftWidth: 1, marginRight: normalizeW(12), borderLeftColor: '#D3D2D6'}}>
-                <Text style={styles.triptext}>参考图像及拍摄说明</Text>
-                {/*<Image source={require('../../assets/images/mine_wallet.png')}/>*/}
-                <View style={{width: normalizeW(109), height: normalizeH(81), borderWidth:2, borderColor:'yellow'}}></View>
-              </View>
-
 
             </View>
+            <View style={styles.dzone}>
+              <View style={{width: normalizeW(86), height: normalizeH(40), justifyContent: 'center' }}>
+                <Text style={styles.maintext}>
+                  认证凭证
+                </Text>
+              </View>
+                <Text style={styles.triptext}>
+                  请上传医生有效证明，包含工作证、执业证和职称证
+                </Text>
+                <ImageInput containerStyle={{marginLeft: normalizeW(20), width: normalizeW(80), height: normalizeH(80), marginBottom: normalizeH(12)}}
+                            // addImage=require()
+
+                />
+            </View>
+
 
           </ScrollView>
         </View>
-        {/*<CommonButton buttonStyle={{marginBottom: normalizeH(63),}} title="提交认证" />*/}
+        <CommonButton buttonStyle={{marginBottom: normalizeH(2),}} title="提交认证" />
         <View style={styles.agreement}>
           <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: 12, color: '#B2B2B2', }}>我已阅读</Text>
           <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: 12, color: '#50E3C2', }}>服务条款及协议</Text>
@@ -236,6 +256,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
   },
+  dzone: {
+    flex: 1,
+    marginTop: normalizeH(15),
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+
+  },
   trip: {
     height: normalizeH(44),
     backgroundColor: 'rgba(80, 226, 193, 0.23)',
@@ -252,6 +280,8 @@ const styles = StyleSheet.create({
   },
   triptext: {
     fontFamily: 'PingFangSC-Regular',
+    paddingLeft: normalizeW(20),
+    marginBottom: normalizeH(8),
     fontSize: 12,
     color: '#B2B2B2',
     letterSpacing: -0.31,

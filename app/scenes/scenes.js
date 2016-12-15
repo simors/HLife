@@ -37,7 +37,7 @@ export const scenes = Actions.create(
     <Scene key="LOGIN" component={Login} />
     <Scene key="REGIST" component={Regist} />
     <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
-    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
+    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode} />
     <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification} initial={true}/>
     <Scene key="INPUT_TEST" component={InputTest} />
 
