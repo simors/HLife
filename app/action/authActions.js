@@ -6,7 +6,6 @@ import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
-import * as Toast from '../components/common/Toast'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -73,7 +72,6 @@ function handleLoginWithPwd(payload, formData) {
       phone: formData.phoneInput.text,
       password: formData.passwordInput.text,
     }
-    //console.log('loginPayload=', loginPayload)
     lcAuth.loginWithPwd(loginPayload).then((userInfos) => {
       //console.log('userInfos=', userInfos)
       if(payload.success){
@@ -85,11 +83,7 @@ function handleLoginWithPwd(payload, formData) {
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
-      }else{
-        Toast.show(error.message)
       }
-      console.log('login error is', error)
-      //dispatch(showToast({text: error.message}))
     })
   }
 }
@@ -100,11 +94,17 @@ function handleGetSmsCode(payload, data) {
       phone: data.text,
     }
     lcAuth.requestSmsAuthCode(getSmsPayload).then(() => {
-      let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
-      dispatch(succeedAction({stateKey: payload.stateKey}))
+      if(payload.success){
+        let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
+        dispatch(succeedAction({stateKey: payload.stateKey}))
+        payload.success()
+      }
     }).catch((error) => {
-      Toast.show(error.message)
-    })}
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
 }
 
 function handleRegister(payload, formData) {
@@ -118,7 +118,9 @@ function handleRegister(payload, formData) {
     lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
       dispatch(registerWithPhoneNum(payload, formData))
     }).catch((error) => {
-      Toast.show(error.message)
+      if(payload.error){
+        payload.error(error)
+      }
     })
   }
 }
@@ -135,14 +137,10 @@ function registerWithPhoneNum(payload, formData) {
         let regAction = createAction(AuthTypes.REGISTER_SUCCESS)
         dispatch(regAction(user))
         payload.success(user)
-      }else{
-        Toast.show('注册成功')
       }
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
-      }else{
-        Toast.show(error.message)
       }
     })
   }
@@ -157,7 +155,9 @@ function handleRequestResetPwdSmsCode(payload, data) {
       let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
       dispatch(succeedAction({stateKey: payload.stateKey}))
     }).catch((error) => {
-      Toast.show(error.message)
+      if(payload.error){
+        payload.error(error)
+      }
     })}
 }
 

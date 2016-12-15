@@ -28,7 +28,8 @@ import PasswordInput from '../common/Input/PasswordInput'
 import * as Toast from '../common/Toast'
 import Symbol from 'es6-symbol'
 
-import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {isInputValid} from '../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 let commonForm = Symbol('commonForm')
@@ -67,6 +68,18 @@ class RetrievePassword extends Component {
     })
   }
 
+  smsCode() {
+    this.props.submitInputData({
+      formKey: commonForm,
+      stateKey:phoneInput.stateKey,
+      submitType: INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE,
+      success:() => {},
+      error: (error) => {
+        Toast.show(error.message)
+      }
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -81,13 +94,7 @@ class RetrievePassword extends Component {
           <PhoneInput {...phoneInput} containerStyle={styles.inputBox}
                       placeholder='请输入注册的手机号'/>
           <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
-                            getSmsAuCode={() => {
-                            this.props.submitFormData({
-                              formKey: commonForm,
-                              submitType: INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE,
-                              success:() => {},
-                              error:(error) => {Toast.show(error.message)}
-                            })}}
+                            getSmsAuCode={() => {return this.smsCode()}}  reset={!this.props.phoneValid}
           />
           <PasswordInput {...passwordInput} containerStyle={styles.inputBox}
                          placeholder='设置新密码(6-16位数字或字母)'/>
@@ -104,11 +111,19 @@ class RetrievePassword extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let newProps = {}
+  let isValid = isInputValid(state, commonForm, phoneInput.stateKey)
+  if (!isValid.isValid) {
+    newProps.phoneValid = false
+  } else {
+    newProps.phoneValid = true
+  }
+  return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData
+  submitFormData,
+  submitInputData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(RetrievePassword)

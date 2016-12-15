@@ -94,6 +94,7 @@ function checkInputValid(state, formKey, stateKey, data) {
     state = state.updateIn([formKey, "inputs", stateKey, 'invalidMsg'], val => '校验通过')
   }
   else {
+    state = state.updateIn([formKey, "inputs", stateKey, 'dataValid'], val => false)
     state = state.updateIn([formKey, "inputs", stateKey, 'invalidMsg'], val => errMsg)
   }
   return state

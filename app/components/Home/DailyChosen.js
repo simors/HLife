@@ -14,7 +14,6 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 
-import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 

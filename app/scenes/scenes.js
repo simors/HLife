@@ -14,6 +14,7 @@ import RetrievePwdVerifyCode from '../components/Login/RetrievePwdVerifyCode'
 import InputTest from '../components/common/Input/InputTest'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
+import DoctorCertification from '../components/Mine/DoctorCertification'
 
 const styles = StyleSheet.create({
   container: {
@@ -33,11 +34,12 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="root" hideNavBar={true}>
     <Scene key="LAUNCH" component={Launch} />
-    <Scene key="LOGIN" component={Login}/>
+    <Scene key="LOGIN" component={Login} />
     <Scene key="REGIST" component={Regist} />
     <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
     <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
-    <Scene key="INPUT_TEST" component={InputTest} initial={true} />
+    <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification} initial={true}/>
+    <Scene key="INPUT_TEST" component={InputTest} />
 
     <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
       <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
