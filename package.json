@@ -21,7 +21,6 @@
     "react-native-datepicker": "^1.4.2",
     "react-native-elements": "^0.7.0",
     "react-native-fs": "^2.0.1-rc.2",
-    "react-native-image-crop-picker": "^0.10.8",
     "react-native-image-picker": "^0.24.1",
     "react-native-keyboard-aware-scroll-view": "^0.2.4",
     "react-native-root-toast": "^1.0.3",
