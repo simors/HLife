@@ -13,19 +13,23 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import THEME from '../../constants/themes/theme1'
+import Channel from '../common/Channel'
+import AV from 'leancloud-storage'
 
 export default class Channels extends Component {
   constructor(props) {
     super(props)
   }
 
+
   render() {
     return (
       <View style={styles.channelContainer}>
         <View style={styles.channelWrap}>
           <TouchableOpacity onPress={()=>{}}>
-            <Image source={require("../../assets/images/home_health.png")}/>
-            <Text style={styles.channelText}>健康</Text>
+            {/*<Image source={require("../../assets/images/home_health.png")}/>*/}
+            {/*<Text style={styles.channelText}>健康</Text>*/}
+            <Channel imageSource={require("../../assets/images/home_health.png")} titleSource="健康"></Channel>
           </TouchableOpacity>
         </View>
         <View style={styles.channelWrap}>
