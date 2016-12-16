@@ -12,6 +12,7 @@ import Regist from '../components/Login/Regist'
 import FindPwdVerifyCode from '../components/Login/FindPwdVerifyCode'
 import RetrievePwdVerifyCode from '../components/Login/RetrievePwdVerifyCode'
 import InputTest from '../components/common/Input/InputTest'
+import CommonWebView from '../components/common/CommonWebView'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
@@ -40,6 +41,7 @@ export const scenes = Actions.create(
     <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
     <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
     <Scene key="INPUT_TEST" component={InputTest} />
+    <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
 
     <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
       <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

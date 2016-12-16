@@ -67,7 +67,7 @@ export default class Banner extends React.Component {
         activeDotStyle={{width: 6, height: 6, backgroundColor:THEME.colors.green}}
         renderTitle={
           (index, view) => {
-            if (!this.titles || !this.titles[index]) {
+            if (!this.titles || !this.titles[index] || this.props.hideTitle) {
               return null;
             }
             return (

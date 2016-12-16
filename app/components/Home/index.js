@@ -32,7 +32,7 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
-import Banner from '../common/Banner'
+import CommonBanner from '../common/CommonBanner'
 import Health from './Health'
 import DailyChosen from './DailyChosen'
 import Channels from './Channels'
@@ -111,11 +111,8 @@ class Home extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.advertisementModule}>
-          <Banner
+          <CommonBanner
             banners={this.props.banner}
-            defaultIndex={this.defaultIndex}
-            onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
-            intent={this.clickListener.bind(this)}
           />
         </View>
       )
