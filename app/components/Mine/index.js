@@ -33,16 +33,16 @@ export default class Launch extends Component {
             <Text style={styles.texts}>设置</Text>
           </View>
           <View style={styles.middle}>
-            <Image style={{width: 46, height: 46}}  source={require('../../assets/images/find_happy.png')}></Image>
+            <Image style={{width: normalizeW(46), height: normalizeH(46), marginTop: normalizeH(26)}}  source={require('../../assets/images/find_happy.png')}></Image>
             <Text style={styles.texts}>我爱我家</Text>
             <View style={styles.credits}>
-              <Image source={require('../../assets/images/mine_wallet.png')}></Image>
+              {/*<Image source={require('../../assets/images/mine_wallet.png')}></Image>*/}
               <Text>积分</Text>
               <Text>335</Text>
             </View>
           </View>
           <View style={styles.right}>
-            <TouchableOpacity>
+            <TouchableOpacity style={{marginTop: normalizeH(14), marginRight: normalizeW(12), alignItems: 'flex-end'}}>
               <Image style={{width: 20, height: 23}}  source={require('../../assets/images/home_message.png')} ></Image>
             </TouchableOpacity>
           </View>
@@ -50,44 +50,44 @@ export default class Launch extends Component {
         <View style={styles.azone}>
           <View style={styles.aindex}>
             <Image source={require('../../assets/images/mine_doctor.png')}></Image>
-            <Text style={styles.atext}>医生认证</Text>
+            <Text style={styles.textStyle}>医生认证</Text>
           </View>
           <View style={styles.aindex}>
             <Image source={require('../../assets/images/mine_promote.png')}></Image>
-            <Text style={styles.atext}>推广招聘</Text>
+            <Text style={styles.textStyle}>推广招聘</Text>
           </View>
           <View style={styles.aindex}>
             <Image source={require('../../assets/images/mine_store.png')}></Image>
-            <Text style={styles.atext}>我的店铺</Text>
+            <Text style={styles.textStyle}>我的店铺</Text>
           </View>
           <View style={styles.aindex}>
             <Image source={require('../../assets/images/mine_prize.png')}></Image>
-            <Text style={styles.atext}>推荐有奖</Text>
+            <Text style={styles.textStyle}>推荐有奖</Text>
           </View>
         </View>
         <View style={styles.bzone}>
           <View style={styles.bheader}>
             <View style={{marginTop: normalizeH(8), marginLeft: normalizeW(19), marginBottom: normalizeH(3)}}>
-              <Text style={styles.atext}>我的互动</Text>
+              <Text style={[styles.textStyle, {fontSize: 12, letterSpacing: 0.34}]}>我的互动</Text>
             </View>
 
           </View>
           <View style={styles.bbody}>
             <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_promote.png')}></Image>
-              <Text style={styles.btext}>提问</Text>
+              <Image source={require('../../assets/images/mine_ask.png')}></Image>
+              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>提问</Text>
             </View>
             <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_promote.png')}></Image>
-              <Text style={styles.btext}>关注</Text>
+              <Image source={require('../../assets/images/mine_focuson.png')}></Image>
+              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>关注</Text>
             </View>
             <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_promote.png')}></Image>
-              <Text style={styles.btext}>帖子</Text>
+              <Image source={require('../../assets/images/mine_artical.png')}></Image>
+              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>
             </View>
             <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_promote.png')}></Image>
-              <Text style={styles.btext}>评论</Text>
+              <Image source={require('../../assets/images/mine_comments.png')}></Image>
+              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>评论</Text>
             </View>
 
           </View>
@@ -95,23 +95,23 @@ export default class Launch extends Component {
         <View style={styles.czone}>
           <View style={styles.cindex}>
             <Image source={require('../../assets/images/mine_wallet.png')}></Image>
-            <Text style={styles.ctext}>钱包</Text>
+            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>钱包</Text>
           </View>
           <View style={styles.cindex}>
             <Image source={require('../../assets/images/mine_collection.png')}></Image>
-            <Text style={styles.ctext}>收藏</Text>
+            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>收藏</Text>
           </View>
           <View style={styles.cindex}>
             <Image source={require('../../assets/images/mine_signin.png')}></Image>
-            <Text style={styles.ctext}>每日签到</Text>
+            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>每日签到</Text>
           </View>
           <View style={styles.cindex}>
             <Image source={require('../../assets/images/mine_service.png')}></Image>
-            <Text style={styles.ctext}>联系客服</Text>
+            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>联系客服</Text>
           </View>
           <View style={styles.cindex}>
             <Image source={require('../../assets/images/mine_feedback.png')}></Image>
-            <Text style={styles.ctext}>意见反馈</Text>
+            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>意见反馈</Text>
           </View>
         </View>
       </View>
@@ -142,33 +142,34 @@ const styles = StyleSheet.create({
 
   },
   left: {
-    marginLeft: normalizeW(17),
-    marginTop: normalizeH(15),
+    flex: 1,
+
   },
   middle: {
-    marginTop: normalizeH(26),
-    marginBottom: normalizeH(12),
+    flex:3,
+    borderWidth: 1,
+    borderColor: 'red',
     alignItems: 'center'
 
+  },
+  right: {
+    flex: 1
 
   },
   credits: {
     flexDirection: 'row',
-    width: 91,
-    height: 17,
+    justifyContent: 'center',
+    width: normalizeW(91),
+    height: normalizeH(19),
     borderRadius: 5,
     backgroundColor: 'rgba(80, 227, 194, 1)',
-  },
-  right: {
-    marginRight: normalizeW(12),
-    marginTop: normalizeH(14),
-    opacity: 1,
   },
   texts: {
     fontFamily: 'PingFangSC-Regular',
     fontSize: 14,
     color: '#686868',
     letterSpacing: 0.4,
+
   },
   azone: {
     flexDirection: 'row',
@@ -184,12 +185,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
-  atext: {
-    fontFamily: 'PingFangSC-Regular',
-    fontSize: 12,
-    color: '#686868',
-    letterSpacing: 0.34,
-  },
   bzone: {
     marginTop: normalizeH(15),
     width: PAGE_WIDTH,
@@ -202,8 +197,6 @@ const styles = StyleSheet.create({
   },
   bbody: {
     flexDirection: 'row',
-
-
   },
   bindex: {
     flex: 1,
@@ -213,12 +206,6 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(11),
     borderRightWidth: 1,
     borderRightColor: '#F4F4F4',
-  },
-  btext: {
-    fontFamily: 'PingFangSC-Regular',
-    fontSize: 16,
-    color: '#636363',
-    letterSpacing: 0.19,
   },
   czone: {
     width: PAGE_WIDTH,
@@ -234,13 +221,12 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(2),
 
   },
-  ctext: {
-    paddingLeft: normalizeW(20),
+  textStyle: {
     fontFamily: 'PingFangSC-Regular',
-    fontSize: 12,
+    fontSize: 15,
     color: '#686868',
-    letterSpacing: 0.34,
-  },
+    letterSpacing: 0.43,
+  }
 
 })
 
