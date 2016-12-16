@@ -19,11 +19,18 @@ export default class CommonButton extends Component {
     super(props)
   }
 
+  pressAction() {
+    console.log("onPress", this.props.onPress)
+    if (this.props.onPress) {
+      this.props.onPress()
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <TouchableOpacity style={[styles.defaultBtnStyle, this.props.buttonStyle]}
-                          onPress={this.props.onPress}
+                          onPress={() => this.pressAction()}
                           disabled={this.props.disabled}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text style={[styles.defaultTitleStyle, this.props.titleStyle]}>{this.props.title}</Text>
