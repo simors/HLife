@@ -35,7 +35,7 @@
     var CONTENTS = simditorBody.html();
     WebViewBridge.send('COUNTER_' + COUNTER);
     WebViewBridge.send('CONTENTS_' + CONTENTS);
-    WebViewBridge.send('HEIGHT_' + $(document).height());
+    WebViewBridge.send('HEIGHT_' + simditorBody.height());
   });
 
   function set_any(type) {

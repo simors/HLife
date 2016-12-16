@@ -104,7 +104,7 @@ export default class Header extends Component {
       <View style={[styles.header, this.props.headerContainerStyle]}>
       	{this.renderLeft()}
         <View style={styles.titleWrap}>
-          <Text style={[styles.title, this.props.titleStyle]}>{this.props.title}</Text>
+          <Text numberOfLines={1} style={[styles.title, this.props.titleStyle]}>{this.props.title}</Text>
         </View>
         {this.renderRight()}
       </View>
@@ -116,9 +116,9 @@ export default class Header extends Component {
 Header.defaultProps = {
 	leftType: 'icon',
 	leftIconName: 'ios-arrow-back',
-	title: '登录',
-	rightType: 'text',
-	rightText: '快速注册'
+	title: '',
+	rightType: '',
+	rightText: ''
 }
 
 const styles = StyleSheet.create({
@@ -157,7 +157,11 @@ const styles = StyleSheet.create({
   },
   left: {
     fontSize: em(24),
-    color: '#50E3C2',
+    color: THEME.colors.green,
+  },
+  leftIconLabel: {
+    marginLeft: normalizeW(5),
+    color: THEME.colors.green,
   },
   leftImage: {
     marginRight: 3

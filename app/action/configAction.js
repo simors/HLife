@@ -20,3 +20,16 @@ export function fetchBanner(payload) {
     })
   }
 }
+
+export function fetchAnnouncement(payload) {
+  return (dispatch, getState) => {
+    lcConfig.getAnnouncement(payload).then((announcement) => {
+      let updateAnnouncementAction = createAction(ConfigActionTypes.UPDATE_CONFIG_ANNOUNCEMENT)
+      dispatch(updateAnnouncementAction({type: payload.type, announcement: announcement}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

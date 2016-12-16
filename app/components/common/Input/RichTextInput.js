@@ -149,6 +149,7 @@ class RichTextInput extends Component {
 
     // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
     const height = this.state.webViewHeight
+    console.log("webview height: ", height)
 
     return (
       <ScrollView>
@@ -250,8 +251,11 @@ class RichTextInput extends Component {
           this.articleContentChange({text: content})
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
+          console.log("text height: ", height)
+          console.log("keyboard padding: ", this.state.keyboardPadding)
+          let padding = (Platform.OS == 'ios' ? 0 : this.state.keyboardPadding)
           this.setState({
-            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 100 + this.state.keyboardPadding : MIN_RTE_HEIGHT,
+            webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 200 + padding : MIN_RTE_HEIGHT,
           })
         }
         break

@@ -9,6 +9,8 @@ export default function configReducer(state = initialState, action) {
   switch (action.type) {
     case ConfigActionTypes.UPDATE_CONFIG_BANNERS:
       return handleUpdateConfigBanners(state, action)
+    case ConfigActionTypes.UPDATE_CONFIG_ANNOUNCEMENT:
+      return handleUpdateConfigAnnouncements(state, action)
     default:
       return state
   }
@@ -50,6 +52,15 @@ function handleUpdateConfigBanners(state, action) {
   let bannerMap = new Map()
   bannerMap = bannerMap.set(type, payload.banner)
   state = state.set('banners',  bannerMap)
+  return state
+}
+
+function handleUpdateConfigAnnouncements(state, action) {
+  let payload = action.payload
+  let type = payload.type
+  let announcementMap = new Map()
+  announcementMap = announcementMap.set(type, payload.announcement)
+  state = state.set('announcements', announcementMap)
   return state
 }
 

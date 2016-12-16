@@ -35,6 +35,7 @@ class ImageInput extends Component {
 
   selectImg() {
     selectPhotoTapped({
+    //  title: this.prop.imagetitle,
       start: this.pickAvatarStart,
       failed: this.pickAvatarFailed,
       cancelled: this.pickAvatarCancelled,

@@ -13,3 +13,11 @@ export function getBanners(state) {
 export function getBanner(state, type) {
   return getBanners(state)[type]
 }
+
+export function getAnnouncements(state) {
+  return getConfig(state).announcements
+}
+
+export function getAnnouncement(state, type) {
+  return getAnnouncements(state)[type]
+}
