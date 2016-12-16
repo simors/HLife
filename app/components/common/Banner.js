@@ -29,7 +29,6 @@ export default class Banner extends React.Component {
 
   constructor(props) {
     super(props)
-    console.log('props.banners=', props.banners)
     if(props.banners) {
       this.images = props.banners.map((banner) => banner.image)
       this.titles = props.banners.map((banner) => banner.title)

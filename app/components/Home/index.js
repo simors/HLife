@@ -26,13 +26,14 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
-import {getBanner} from '../../selector/configSelector'
-import {fetchBanner} from '../../action/configAction'
+import {getBanner, getAnnouncement} from '../../selector/configSelector'
+import {fetchBanner, fetchAnnouncement} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import CommonBanner from '../common/CommonBanner'
+import CommonMarquee from '../common/CommonMarquee'
 import Health from './Health'
 import DailyChosen from './DailyChosen'
 import Channels from './Channels'
@@ -56,6 +57,7 @@ class Home extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
+      this.props.fetchAnnouncement({type: 0})
     })
 
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
@@ -100,20 +102,24 @@ class Home extends Component {
   }
 
   renderAnnouncementColumn() {
-    return (
-      <View style={styles.announcementModule}>
-
-      </View>
-    )
+    if(this.props.announcement) {
+      return (
+        <View style={styles.announcementModule}>
+          <CommonMarquee data={this.props.announcement} height={40} />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.announcementModule}></View>
+      )
+    }
   }
 
   renderBannerColumn() {
     if (this.props.banner) {
       return (
         <View style={styles.advertisementModule}>
-          <CommonBanner
-            banners={this.props.banner}
-          />
+          <CommonBanner banners={this.props.banner} />
         </View>
       )
     } else {
@@ -193,17 +199,19 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'CHANNELS_COLUMN'})
   dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
 
+  const announcement = getAnnouncement(state, 0)
   const banner = getBanner(state, 0)
-  console.log('banner=', banner)
 
   return {
+    announcement: announcement,
     banner: banner,
     ds: ds.cloneWithRows(dataArray)
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchBanner
+  fetchBanner,
+  fetchAnnouncement
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

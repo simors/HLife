@@ -25,8 +25,27 @@ export class BannerItem extends BannerItemConfig {
   }
 }
 
+export const AnnouncementItemConfig = Record({
+  type:undefined,//公告类型:0-home主页,1-local本地,...
+  title: undefined, //公告标题
+  url: undefined, //公告跳转地址
+})
+
+export class AnnouncementItem extends AnnouncementItemConfig {
+  static fromLeancloudObject(lcObj) {
+    let announcementItemConfig = new AnnouncementItemConfig()
+    let attrs = lcObj.attributes
+    return announcementItemConfig.withMutations((record)=> {
+      record.set('type', attrs.type)
+      record.set('title', attrs.title)
+      record.set('url', attrs.url)
+    })
+  }
+}
+
 export const Config = Record({
-  banners: Map()
+  banners: Map(),
+  announcements: Map()
 }, 'Config')
 
 
