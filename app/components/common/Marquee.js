@@ -61,6 +61,7 @@ export default class Marquee extends React.Component {
         whRatio={1.9}
         autoplayTimeout={4}
         loop={true}
+        useScrollView={true}
       >
         {titleViews}
       </Swiper>

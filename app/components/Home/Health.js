@@ -45,6 +45,7 @@ export default class Health extends Component {
               onPress={()=>{Actions.LOGIN()}}
             />
           </View>
+          <View style={styles.line}></View>
           <View style={styles.findHospital}>
             <Thumbnail
               sourceImage={require("../../assets/images/home_hospital.png")}
@@ -79,6 +80,8 @@ const styles = StyleSheet.create({
   },
   findDoctor: {
     flex: 1,
+  },
+  line: {
     marginTop: normalizeH(19),
     marginBottom: normalizeH(19),
     borderRightWidth: normalizeBorder(3),
