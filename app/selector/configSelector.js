@@ -21,3 +21,21 @@ export function getAnnouncements(state) {
 export function getAnnouncement(state, type) {
   return getAnnouncements(state)[type]
 }
+
+export function getColumns(state) {
+  return getConfig(state).column
+}
+
+export function getColumn(state, type) {
+  let columns = getColumns(state).column
+
+  if (columns) {
+    if (type && type.length > 0) {
+      columns = columns.filter(column => column.type == type)
+    }
+
+    return columns.toJS()
+  }
+
+  return undefined
+}

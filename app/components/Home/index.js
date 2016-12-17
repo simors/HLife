@@ -36,7 +36,7 @@ import CommonBanner from '../common/CommonBanner'
 import CommonMarquee from '../common/CommonMarquee'
 import Health from './Health'
 import DailyChosen from './DailyChosen'
-import Channels from './Channels'
+import Columns from './Columns'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -132,7 +132,7 @@ class Home extends Component {
   renderChannelsColumn() {
     return (
       <View style={styles.channelModule}>
-        <Channels/>
+        <Columns/>
       </View>
     )
   }
