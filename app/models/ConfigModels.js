@@ -61,10 +61,26 @@ export class ColumnItem extends ColumnItemConfig {
     })
   }
 }
+export const TopicsItemConfig = Record({
+  isPicked:undefined,//是否精选
+  title: undefined, //话题名称
+}, 'TopicsItemConfig')
+
+export class TopicsItem extends TopicsItemConfig {
+  static fromLeancloudObject(lcObj) {
+    let topicsItemConfig = new TopicsItemConfig()
+    let attrs = lcObj.attributes
+    return topicsItemConfig.withMutations((record)=> {
+      record.set('isPicked', attrs.isPicked)
+      record.set('title', attrs.title)
+    })
+  }
+}
 export const Config = Record({
   banners: Map(),
   announcements: Map(),
-  column: List()
+  column: List(),
+  topics: Map()
 }, 'Config')
 
 

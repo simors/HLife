@@ -13,6 +13,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigAnnouncements(state, action)
     case ConfigActionTypes.UPDATE_CONFIG_COLUMN:
       return handleUpdateConfigColumns(state,action)
+    case ConfigActionTypes.UPDATE_CONFIG_TOPICS:
+      return handleUpdateConfigTopics(state, action)
     default:
       return state
   }
@@ -69,6 +71,14 @@ function handleUpdateConfigAnnouncements(state, action) {
   return state
 }
 
+function handleUpdateConfigTopics(state, action) {
+  let payload = action.payload
+  let isPicked = payload.isPicked
+  let topicsMap = new Map()
+  topicsMap = topicsMap.set(isPicked, payload.topics)
+  state = state.set('topics', topicsMap)
+  return state
+}
 function handleUpdateConfigColumns(state, action) {
   let payload = action.payload
  // let type = payload.type

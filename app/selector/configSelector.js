@@ -39,3 +39,11 @@ export function getColumn(state, type) {
 
   return undefined
 }
+
+export function getTopics(state) {
+  return getConfig(state).topics
+}
+
+export function getTopic(state, isPicked) {
+  return getTopics(state)[isPicked]
+}
