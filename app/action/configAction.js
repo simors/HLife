@@ -33,3 +33,17 @@ export function fetchAnnouncement(payload) {
     })
   }
 }
+
+
+export function fetchColumn() {
+  return (dispatch, getState) => {
+    lcConfig.getColumn().then((column) => {
+      let updateColumnAction = createAction(ConfigActionTypes.UPDATE_CONFIG_COLUMN)
+      dispatch(updateColumnAction({column: column}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

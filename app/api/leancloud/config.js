@@ -3,7 +3,7 @@
  */
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
-import {BannerItem, AnnouncementItem} from '../../models/ConfigModels'
+import {BannerItem, AnnouncementItem,ColumnItem} from '../../models/ConfigModels'
 import ERROR from '../../constants/errorCode'
 
 export function getBanner(payload) {
@@ -44,4 +44,23 @@ export function getAnnouncement(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
+
+export function getColumn() {
+
+  let query = new AV.Query('ArticleCategory')
+
+   // query.equalTo('type', type)
+    return query.find().then(function(results) {
+      let column = []
+      results.forEach((result) => {
+        column.push(ColumnItem.fromLeancloudObject(result))
+      })
+      return new List(column)
+    }, function(err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+
+
 }

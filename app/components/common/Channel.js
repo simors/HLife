@@ -17,6 +17,7 @@ const PAGE_WIDTH=Dimensions.get('window').width
 export default class Channel extends Component{
   constructor(props) {
     super(props)
+
   }
   render(){
       return(

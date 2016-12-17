@@ -1,7 +1,7 @@
 import {Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as ConfigActionTypes from '../constants/configActionTypes'
-import {Config, BannerItemConfig} from '../models/ConfigModels'
+import {Config, BannerItemConfig,ColumnItemConfig} from '../models/ConfigModels'
 
 const initialState = Config()
 
@@ -11,6 +11,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigBanners(state, action)
     case ConfigActionTypes.UPDATE_CONFIG_ANNOUNCEMENT:
       return handleUpdateConfigAnnouncements(state, action)
+    case ConfigActionTypes.UPDATE_CONFIG_COLUMN:
+      return handleUpdateConfigColumns(state,action)
     default:
       return state
   }
@@ -22,6 +24,9 @@ function initConfig(payload) {
     record = record.withMutations((config) => {
       if(payload.banners) {
         config.set('banners', initBanners(payload.banners))
+      }
+      if(payload.columns) {
+        config.set('columns', initColumns(payload.columns))
       }
     })
   }
@@ -64,7 +69,32 @@ function handleUpdateConfigAnnouncements(state, action) {
   return state
 }
 
+function handleUpdateConfigColumns(state, action) {
+  let payload = action.payload
+ // let type = payload.type
+  // let columnMap = new Map()
+  // columnMap = columnMap.set(type, payload.column)
+  state = state.set('column', payload)
+  return state
+}
 
+function initColumns(columns) {
+  let columnMap = new Map()
+  if(columns) {
+    for(let type in columns) {
+      columnMap = columnMap.set(type, initColumn(columns[type]))
+    }
+  }
+  return columnMap
+}
+
+function initColumn(column) {
+  let columnItems = []
+  column.map((columnItem) => {
+    columnItems.push(new ColumnItemConfig(columnItem))
+  })
+  return new List(columnItems)
+}
 
 function onRehydrate(state, action) {
   var incoming = action.payload.CONFIG
