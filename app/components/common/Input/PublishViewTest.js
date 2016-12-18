@@ -36,7 +36,7 @@ const articleContent ={
   initValue: '\<p\>这是个初始加载内容\<\/p\>'
 }
 
-class InputTest extends Component {
+class PublishViewTest extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -107,7 +107,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(InputTest)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishViewTest)
 
 const styles = StyleSheet.create({
   container: {
