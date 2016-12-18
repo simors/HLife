@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from 'react-native'
 import MedicalLabPicker from './MedicalLabPicker'
+import RegionPicker from './RegionPicker'
 import Symbol from 'es6-symbol'
 
 let formKey = Symbol('pickerForm')
@@ -18,6 +19,12 @@ const medicalPicker = {
   type: 'medicalPicker'
 }
 
+const regionPicker = {
+  formKey: formKey,
+  stateKey: Symbol('regionPicker'),
+  type: 'regionPicker'
+}
+
 export default class PickerTest extends Component {
   constructor(props) {
     super(props)
@@ -25,8 +32,13 @@ export default class PickerTest extends Component {
 
   render() {
     return (
-      <View style={{marginTop: 30}}>
-        <MedicalLabPicker {...medicalPicker}/>
+      <View>
+        <View style={{marginTop: 30}}>
+          <MedicalLabPicker {...medicalPicker}/>
+        </View>
+        <View style={{marginTop: 30}}>
+          <RegionPicker {...regionPicker} level={3} />
+        </View>
       </View>
     )
   }
