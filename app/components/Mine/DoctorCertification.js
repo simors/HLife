@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import {Actions} from 'react-native-router-flux'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
@@ -21,6 +22,9 @@ import PhoneInput from '../common/Input/PhoneInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import ImageInput from '../common/Input/ImageInput'
+import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import * as Toast from '../common/Toast'
+import {isInputValid} from '../../selector/inputFormSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -65,12 +69,50 @@ const departmentInput = {
   type: "departmentInput",
   initValue: "选择科室"
 }
+const idImageInput = {
+  formKey: commonForm,
+  stateKey: Symbol('idImageInput'),
+  type: "idImageInput",
+}
+const cardImageInput = {
+  formKey: commonForm,
+  stateKey: Symbol('cardImageInput'),
+  type: "cardImageInput",
+}
 
  class DoctorCertification extends Component {
   constructor(props) {
     super(props)
   }
+   submitSuccessCallback(doctorInfo) {
+     Toast.show('认证提交成功')
+     Actions.MINE()
+   }
 
+   submitErrorCallback(error) {
+     Toast.show(error.message)
+   }
+
+   onButtonPress = () => {
+     this.props.submitFormData({
+       formKey: commonForm,
+       submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
+       success: this.submitSuccessCallback,
+       error: this.submitErrorCallback
+     })
+   }
+
+   smsCode() {
+     this.props.submitInputData({
+       formKey: commonForm,
+       stateKey:phoneInput.stateKey,
+       submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
+       success:() => {},
+       error: (error) => {
+         Toast.show(error.message)
+       }
+     })
+   }
 
   render() {
     return (
@@ -119,15 +161,11 @@ const departmentInput = {
                                     inputContainer={{paddingLeft: 17, paddingRight: 17}}
                                     placeholder = "填写手机验证码"
                                     codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
+                                    codeTextContainerDisable={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
                                     codeText={{fontSize: 12}}
-                                    getSmsAuCode={() => {
-                                      this.props.submitFormData({
-                                        formKey: commonForm,
-                                        submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
-                                        success:() => {},
-                                        error: (error) => {Toast.show(error.message)}
-                                      })
-                                    }}/>
+                                    getSmsAuCode={() => this.smsCode()}
+                                    reset={!this.props.phoneValid}
+                  />
                 </View>
               </View>
 
@@ -158,7 +196,7 @@ const departmentInput = {
                 <Text style={styles.triptext}>
                   请上传本人持身份证的头像
                 </Text>
-                <ImageInput containerStyle={styles.imageInputStyle}
+                <ImageInput {...idImageInput} containerStyle={styles.imageInputStyle}
                             addImage={require('../../assets/images/upload.png')}
                             addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
                 />
@@ -183,13 +221,16 @@ const departmentInput = {
                 <Text style={styles.triptext}>
                   请上传医生有效证明，包含工作证、执业证和职称证
                 </Text>
-                <ImageInput containerStyle={styles.imageInputStyle}
+                <ImageInput {...cardImageInput} containerStyle={styles.imageInputStyle}
                             addImage={require('../../assets/images/upload.png')}
                             addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
 
                 />
             </View>
-            <CommonButton buttonStyle={{marginBottom: normalizeH(6), marginTop: normalizeH(100)}} title="提交认证" />
+            <CommonButton buttonStyle={{marginBottom: normalizeH(6), marginTop: normalizeH(100)}}
+                          title="提交认证"
+                          onPress={this.onButtonPress}
+            />
             <View style={styles.agreement}>
               <Text style={styles.agreementText}>我已阅读</Text>
               <Text style={[styles.agreementText, {color: '#50E3C2'}]}>《近来医生用户协议》</Text>
@@ -202,10 +243,19 @@ const departmentInput = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let newProps = {}
+  let isValid = isInputValid(state, commonForm, phoneInput.stateKey)
+  if (!isValid.isValid) {
+    newProps.phoneValid = false
+  } else {
+    newProps.phoneValid = true
+  }
+  return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData,
+  submitInputData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DoctorCertification)

@@ -48,21 +48,31 @@ export default class Launch extends Component {
           </View>
         </View>
         <View style={styles.azone}>
-          <View style={styles.aindex}>
-            <Image source={require('../../assets/images/mine_doctor.png')}></Image>
-            <Text style={styles.textStyle}>医生认证</Text>
+          <View style={{flex: 1}} >
+            <TouchableOpacity style={styles.aindex} onPress= {()=>Actions.DCTOR_CERTIFICATION()}>
+              <Image source={require('../../assets/images/mine_doctor.png')}></Image>
+              <Text style={styles.textStyle}>医生认证</Text>
+            </TouchableOpacity>
+
           </View>
-          <View style={styles.aindex}>
-            <Image source={require('../../assets/images/mine_promote.png')}></Image>
-            <Text style={styles.textStyle}>推广招聘</Text>
+          <View style={{flex: 1}}>
+            <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
+              <Image source={require('../../assets/images/mine_promote.png')}></Image>
+              <Text style={styles.textStyle}>推广招聘</Text>
+            </TouchableOpacity>
+
           </View>
-          <View style={styles.aindex}>
-            <Image source={require('../../assets/images/mine_store.png')}></Image>
-            <Text style={styles.textStyle}>我的店铺</Text>
+          <View style={{flex: 1}}>
+            <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
+              <Image source={require('../../assets/images/mine_store.png')}></Image>
+              <Text style={styles.textStyle}>我的店铺</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.aindex}>
-            <Image source={require('../../assets/images/mine_prize.png')}></Image>
-            <Text style={styles.textStyle}>推荐有奖</Text>
+          <View style={{flex: 1}}>
+            <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
+              <Image source={require('../../assets/images/mine_prize.png')}></Image>
+              <Text style={styles.textStyle}>推荐有奖</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.bzone}>
@@ -147,10 +157,7 @@ const styles = StyleSheet.create({
   },
   middle: {
     flex:3,
-    borderWidth: 1,
-    borderColor: 'red',
     alignItems: 'center'
-
   },
   right: {
     flex: 1
@@ -182,8 +189,7 @@ const styles = StyleSheet.create({
   aindex: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-
+    alignItems: 'center'
   },
   bzone: {
     marginTop: normalizeH(15),

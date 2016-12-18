@@ -2,6 +2,7 @@
 import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as AuthTypes from '../constants/authActionTypes'
+import * as CeryificationTypes from '../constants/certificationActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
@@ -14,7 +15,8 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   LOGIN_WITH_SMS: 'LOGIN_WITH_SMS',
   LOGIN_WITH_PWD: 'LOGIN_WITH_PWD',
   FORGET_PASSWORD: 'FORGET_PASSWORD',
-  MODIFY_PASSWORD: 'MODIFY_PASSWORD'
+  MODIFY_PASSWORD: 'MODIFY_PASSWORD',
+  DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
 }
 
 export function submitFormData(payload) {
@@ -38,6 +40,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
         dispatch(handleResetPwdSmsCode(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION:
+        dispatch(handleDoctorCertification(payload, formData))
         break
     }
   }
@@ -178,4 +183,48 @@ function handleResetPwdSmsCode(payload, formData) {
         payload.error(error)
       }
     })}
+}
+
+function handleDoctorCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let smsPayload = {
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+
+    lcAuth.verifySmsCode(smsPayload).then(() => {
+      dispatch(doctorCertification(payload, formData))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+
+}
+
+function doctorCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let certPayload = {
+      name:   formData.nameInput.text,
+      idCardNo: formData.idCardNo.text,
+      phone:  formData.phoneInput.text,
+      organization: formData.addressInput.text,
+      department: formData.departmentInput.text,
+      certifiedImage: formData.idImageInput.text,
+      certificate: formData.cardImageInput.text,
+    }
+    lcAuth.certification(certPayload).then((doctor) => {
+      if(payload.success){
+        let cartificationAction = createAction(CeryificationTypes.DOCTOR_CERTIFICATION_REQUEST)
+        dispatch(cartificationAction(doctor))
+        payload.success(doctor)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+
 }

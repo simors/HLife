@@ -70,6 +70,27 @@ export function register(payload) {
   })
 }
 
+export function certification(payload) {
+  let Doctor = new AV.Object.extend('Doctors')
+  let doctor = new Doctor()
+
+  doctor.set('name', payload.name)
+  doctor.set('IDCardNo', payload.idCardNo)
+  doctor.set('phone', payload.phone)
+  doctor.set('organization', payload.organization)
+  doctor.set('department', payload.department)
+  doctor.set('certifiedImage', payload.certifiedImage)
+  doctor.set('certificate', payload.certificate)
+  doctor.set('status', 0)
+  
+  return doctor.save().then(function (doctor) {
+    console.log("certification success")
+  }, function (error) {
+    console.log("certification failed")
+  })
+  
+}
+
 export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({
