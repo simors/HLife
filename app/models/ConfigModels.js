@@ -43,9 +43,44 @@ export class AnnouncementItem extends AnnouncementItemConfig {
   }
 }
 
+export const ColumnItemConfig = Record({
+  type:undefined,//公告类型:0-home主页,1-local本地,...
+  title: undefined, //公告标题
+  imageSource: undefined, //公告跳转地址
+})
+
+
+export class ColumnItem extends ColumnItemConfig {
+  static fromLeancloudObject(lcObj) {
+    let columnItemConfig = new ColumnItemConfig()
+    let attrs = lcObj.attributes
+    return columnItemConfig.withMutations((record)=> {
+      record.set('type', attrs.type)
+      record.set('title', attrs.title)
+      record.set('imageSource', attrs.imageSource)
+    })
+  }
+}
+export const TopicsItemConfig = Record({
+  isPicked:undefined,//是否精选
+  title: undefined, //话题名称
+}, 'TopicsItemConfig')
+
+export class TopicsItem extends TopicsItemConfig {
+  static fromLeancloudObject(lcObj) {
+    let topicsItemConfig = new TopicsItemConfig()
+    let attrs = lcObj.attributes
+    return topicsItemConfig.withMutations((record)=> {
+      record.set('isPicked', attrs.isPicked)
+      record.set('title', attrs.title)
+    })
+  }
+}
 export const Config = Record({
   banners: Map(),
-  announcements: Map()
+  announcements: Map(),
+  column: List(),
+  topics: Map()
 }, 'Config')
 
 

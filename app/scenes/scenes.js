@@ -11,7 +11,8 @@ import Login from '../components/Login'
 import Regist from '../components/Login/Regist'
 import FindPwdVerifyCode from '../components/Login/FindPwdVerifyCode'
 import RetrievePwdVerifyCode from '../components/Login/RetrievePwdVerifyCode'
-import InputTest from '../components/common/Input/InputTest'
+import PublishViewTest from '../components/common/Input/PublishViewTest'
+import PickerTest from '../components/common/Input/PickerTest'
 import CommonWebView from '../components/common/CommonWebView'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
@@ -38,9 +39,10 @@ export const scenes = Actions.create(
     <Scene key="LOGIN" component={Login} />
     <Scene key="REGIST" component={Regist} />
     <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
-    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode} />
-    <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification} />
-    <Scene key="INPUT_TEST" component={InputTest} />
+    <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
+    <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
+    <Scene key="PUBLISH_VIEW_TEST" component={PublishViewTest} />
+    <Scene key="PICKER_TEST" component={PickerTest} />
     <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
 
     <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

@@ -35,7 +35,6 @@ export default class DailyChosen extends Component {
   render() {
     return (
       <View style={[styles.container, this.props.containerStyle]}>
-        {this.renderBadge()}
         <View style={styles.titleImageWrap}>
           <TouchableOpacity onPress={()=>{}}>
             <View style={styles.titleWrap}>
@@ -80,6 +79,7 @@ export default class DailyChosen extends Component {
           </View>
         </View>
 
+        {this.renderBadge()}
       </View>
     )
   }

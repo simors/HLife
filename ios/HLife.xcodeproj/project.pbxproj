@@ -29,6 +29,7 @@
 		5EDD4532D22D449181A36545 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5411B72DE67B4E9281A6AA8E /* EvilIcons.ttf */; };
 		6328222657C84EDDAA8C4E4A /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FCCBD9DF630046469F721237 /* Ionicons.ttf */; };
 		6545956C9A7D4CFDA6C3AB7C /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50343225606A4D92A8CCFC4A /* MaterialIcons.ttf */; };
+		729AE79448D546938744BBC4 /* libRCTBEEPickerManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */; };
 		730332F0DAB040B3BE49C9F8 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */; };
 		80598CC119704C77968765E7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AB072ABED6D40D3AB87C366 /* FontAwesome.ttf */; };
 		80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */; };
@@ -216,6 +217,13 @@
 			remoteGlobalIDString = 2D2A28201D9B03D100D4039D;
 			remoteInfo = "RCTAnimation-tvOS";
 		};
+		DDF8A7A41E0590DB00D43B3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 17D41E551D7EE0CA0031415E;
+			remoteInfo = RCTBEEPickerManager;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -264,7 +272,9 @@
 		DD0B3AC11DF9C2A200AE8D91 /* simditor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = simditor.js; path = resources/simditor.js; sourceTree = "<group>"; };
 		DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBEEPickerManager.a; sourceTree = "<group>"; };
 		F66B9CB97E874077B48688EE /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBEEPickerManager.xcodeproj; path = "../node_modules/react-native-picker/ios/RCTBEEPickerManager.xcodeproj"; sourceTree = "<group>"; };
 		FCCBD9DF630046469F721237 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -296,6 +306,7 @@
 				40C3F6E5D4274A2D862E9C6A /* libRNFS.a in Frameworks */,
 				80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */,
 				3281026B7F0A46FEAAEEC070 /* libRNImagePicker.a in Frameworks */,
+				729AE79448D546938744BBC4 /* libRCTBEEPickerManager.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,6 +441,7 @@
 				89409FA3FBBE46EA9C711FF5 /* RNFS.xcodeproj */,
 				3FFC8626CB984754B04F9CF8 /* React-Native-Webview-Bridge.xcodeproj */,
 				C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */,
+				F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -517,6 +529,14 @@
 			children = (
 				DDC829D61E02300E00F15C42 /* libRCTAnimation.a */,
 				DDC829D81E02300E00F15C42 /* libRCTAnimation-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DDF8A79E1E0590D900D43B3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDF8A7A51E0590DB00D43B3F /* libRCTBEEPickerManager.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -616,6 +636,10 @@
 				{
 					ProductGroup = DDC829CF1E02300E00F15C42 /* Products */;
 					ProjectRef = DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */;
+				},
+				{
+					ProductGroup = DDF8A79E1E0590D900D43B3F /* Products */;
+					ProjectRef = F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -840,6 +864,13 @@
 			remoteRef = DDC829D71E02300E00F15C42 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		DDF8A7A51E0590DB00D43B3F /* libRCTBEEPickerManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTBEEPickerManager.a;
+			remoteRef = DDF8A7A41E0590DB00D43B3F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -957,6 +988,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -978,6 +1010,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1009,6 +1042,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-picker/ios/RCTBEEPickerManager",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1042,6 +1076,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-picker/ios/RCTBEEPickerManager",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1102,6 +1137,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-picker/ios/RCTBEEPickerManager",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1148,6 +1184,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-webview-bridge/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-picker/ios/RCTBEEPickerManager",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

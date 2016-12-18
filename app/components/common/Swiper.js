@@ -253,10 +253,12 @@ export default class Swiper extends React.Component {
     if(state.dir == 'x') x = diff * state.width
     if(state.dir == 'y') y = diff * state.height
     if(this.refs.scrollView) {
-      if(Platform.OS == 'ios') {
+      if(Platform.OS == 'ios' || this.props.useScrollView) {
+        console.log('_scrollTo=', state)
         this.refs.scrollView.scrollTo({
           y,
-          x
+          x,
+          animated: true
         })
       } else {
         this._viewPagerIndex = diff
@@ -306,7 +308,7 @@ export default class Swiper extends React.Component {
   }
 
   _renderScrollView(pages) {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' || this.props.useScrollView) {
       return (
         <ScrollView
           ref="scrollView"

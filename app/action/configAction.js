@@ -33,3 +33,31 @@ export function fetchAnnouncement(payload) {
     })
   }
 }
+
+
+export function fetchColumn() {
+  return (dispatch, getState) => {
+    lcConfig.getColumn().then((column) => {
+      let updateColumnAction = createAction(ConfigActionTypes.UPDATE_CONFIG_COLUMN)
+      dispatch(updateColumnAction({column: column}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+
+export function getAllTopics(payload) {
+  return (dispatch, getState) => {
+    lcConfig.getTopics().then((topics) => {
+      let updateTopicsAction = createAction(ConfigActionTypes.UPDATE_CONFIG_TOPICS)
+      dispatch(updateTopicsAction({isPicked: true, topics: topics}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

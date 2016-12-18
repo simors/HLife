@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: 100,
-    backgroundColor: '#f3f3f3',
+    backgroundColor: '#fafafa',
     ...Platform.select({
       ios: {
         paddingTop: normalizeH(20),
