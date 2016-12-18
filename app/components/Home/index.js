@@ -27,7 +27,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
 import {getBanner, getAnnouncement} from '../../selector/configSelector'
-import {fetchBanner, fetchAnnouncement} from '../../action/configAction'
+import {fetchBanner, fetchAnnouncement,getAllTopics} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -42,7 +42,7 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 class Home extends Component {
-  constructor(props) {
+     constructor(props) {
     super(props)
 
     this.iosMarginTop = Platform.OS == 'ios' ? {marginTop: 20} : {};
@@ -58,6 +58,7 @@ class Home extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       this.props.fetchAnnouncement({type: 0})
+      this.props.getAllTopics({})
     })
 
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
@@ -83,6 +84,8 @@ class Home extends Component {
         return this.renderAnnouncementColumn()
       case 'BANNER_COLUMN':
         return this.renderBannerColumn()
+      case 'COLUMNS_COLUMN':
+        return this.renderColumnsColumn()
       case 'CHANNELS_COLUMN':
         return this.renderChannelsColumn()
       case 'DAILY_CHOSEN_COLUMN':
@@ -129,10 +132,18 @@ class Home extends Component {
     }
   }
 
+  renderColumnsColumn() {
+    return (
+      <View style={styles.columnsModule}>
+        <Columns/>
+      </View>
+    )
+  }
+
   renderChannelsColumn() {
     return (
-      <View style={styles.channelModule}>
-        <Columns/>
+      <View style={styles.channelsModule}>
+        <Text>channel test</Text>
       </View>
     )
   }
@@ -196,6 +207,7 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'HEALTH_COLUMN'})
   dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
   dataArray.push({type: 'BANNER_COLUMN'})
+  dataArray.push({type: 'COLUMNS_COLUMN'})
   dataArray.push({type: 'CHANNELS_COLUMN'})
   dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
 
@@ -211,7 +223,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
-  fetchAnnouncement
+  fetchAnnouncement,
+  getAllTopics
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
@@ -249,12 +262,17 @@ const styles = StyleSheet.create({
     height: normalizeH(136),
     marginTop: normalizeH(15),
   },
-  channelModule: {
+  columnsModule: {
     height: normalizeH(84),
     marginTop: normalizeH(15),
     marginBottom: normalizeH(5),
   },
-  
+  channelsModule: {
+    height: normalizeH(84),
+    marginTop: normalizeH(15),
+    marginBottom: normalizeH(5),
+  },
+
   dailyChosenModule: {
     marginTop: normalizeH(15),
   },

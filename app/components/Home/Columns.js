@@ -19,7 +19,6 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 
 import {Actions} from 'react-native-router-flux'
 import THEME from '../../constants/themes/theme1'
-import Channel from '../common/Channel'
 import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
 
