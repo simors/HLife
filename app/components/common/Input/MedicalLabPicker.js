@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  Image
+  Image,
+  Text,
+  Platform
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -77,9 +79,6 @@ const classfy = [
 class MedicalLabPicker extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      showClear: false,
-    }
   }
 
   componentDidMount() {
@@ -98,7 +97,7 @@ class MedicalLabPicker extends Component {
   }
 
   validInput(data) {
-    return {isVal: true, errMsg: '验证通过'}
+    return {isValid: true, errMsg: '验证通过'}
   }
 
   updateInput(text) {
@@ -118,16 +117,6 @@ class MedicalLabPicker extends Component {
     } else {
       this.setState({showClear: false})
     }
-  }
-
-  clearInput() {
-    let inputForm = {
-      formKey: this.props.formKey,
-      stateKey: this.props.stateKey,
-      data: {text: ''}
-    }
-    this.props.inputFormUpdate(inputForm)
-    this.setState({showClear: false})
   }
 
   showPicker() {
@@ -157,29 +146,14 @@ class MedicalLabPicker extends Component {
     Picker.show()
   }
 
-  renderClearBtn() {
-    if (this.state.showClear) {
-      return (
-        <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
-          <TouchableOpacity onPress={() => this.clearInput()}>
-            <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
-          </TouchableOpacity>
-        </View>
-      )
-    } else {
-      return (
-        <View />
-      )
-    }
-  }
-
   render() {
     return (
       <View>
         <TouchableOpacity onPress={() => this.showPicker()}>
-          <View style={styles.container}>
+          <View style={styles.container} pointerEvents='none'>
             <FormInput
               onChangeText={(text) => this.inputChange(text)}
+              onClick={() => this.showPicker()}
               editable={this.props.editable}
               placeholder={this.props.placeholder}
               placeholderTextColor={this.props.placeholderTextColor}
@@ -189,7 +163,6 @@ class MedicalLabPicker extends Component {
               containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
               inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
             />
-            {this.renderClearBtn()}
           </View>
         </TouchableOpacity>
       </View>
@@ -246,11 +219,7 @@ const styles = StyleSheet.create({
     borderWidth: normalizeBorder(),
     borderColor: '#E9E9E9',
     fontSize: em(16),
-    color: '#B2B2B2'
-  },
-  defaultClearBtnStyle: {
-    position: 'absolute',
-    right: normalizeW(25),
-    top: normalizeH(12)
+    color: '#B2B2B2',
+    textAlignVertical: 'center'
   },
 })
