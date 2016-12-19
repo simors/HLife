@@ -71,11 +71,11 @@ export function register(payload) {
 }
 
 export function certification(payload) {
-  let Doctor = new AV.Object.extend('Doctors')
+  let Doctor = AV.Object.extend('Doctor')
   let doctor = new Doctor()
 
   doctor.set('name', payload.name)
-  doctor.set('IDCardNo', payload.idCardNo)
+  doctor.set('idCardNo', payload.idCardNo)
   doctor.set('phone', payload.phone)
   doctor.set('organization', payload.organization)
   doctor.set('department', payload.department)
@@ -85,8 +85,9 @@ export function certification(payload) {
   
   return doctor.save().then(function (doctor) {
     console.log("certification success")
-  }, function (error) {
-    console.log("certification failed")
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
   
 }
@@ -111,7 +112,7 @@ export function verifySmsCode(payload) {
   let smsAuthCode = payload.smsAuthCode
   let phone = payload.phone
   return AV.Cloud.verifySmsCode(smsAuthCode, phone).then(function (success) {
-    // do nothing
+    //
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

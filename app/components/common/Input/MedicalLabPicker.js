@@ -98,7 +98,7 @@ class MedicalLabPicker extends Component {
   }
 
   validInput(data) {
-    return true
+    return {isVal: true, errMsg: '验证通过'}
   }
 
   updateInput(text) {

@@ -186,6 +186,7 @@ function handleResetPwdSmsCode(payload, formData) {
 }
 
 function handleDoctorCertification(payload, formData) {
+  console.log("handleDoctorCertification start", formData)
   return (dispatch, getState) => {
     let smsPayload = {
       phone: formData.phoneInput.text,
@@ -204,13 +205,14 @@ function handleDoctorCertification(payload, formData) {
 }
 
 function doctorCertification(payload, formData) {
+  console.log("doctorCertification start")
   return (dispatch, getState) => {
     let certPayload = {
       name:   formData.nameInput.text,
       idCardNo: formData.idCardNo.text,
       phone:  formData.phoneInput.text,
-      organization: formData.addressInput.text,
-      department: formData.departmentInput.text,
+      organization: formData.regionPicker.text,
+      department: formData.medicalPicker.text,
       certifiedImage: formData.idImageInput.text,
       certificate: formData.cardImageInput.text,
     }

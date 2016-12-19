@@ -2,7 +2,7 @@ import Toast from 'react-native-root-toast'
 
 export function show(text, options) {
   Toast.show(text, {
-    duration: 1500,
+    duration: 5000,
     position: Toast.positions.CENTER,
     shadow: true,
     animation: true,

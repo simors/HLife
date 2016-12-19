@@ -8,7 +8,8 @@ import * as uiTypes from '../constants/uiActionTypes'
 // (formKey, form)
 const initialState = Map({})
 
-export default function inputFormReducer(state = initialState, action) {
+export default function
+  inputFormReducer(state = initialState, action) {
   switch (action.type) {
     case uiTypes.INPUTFORM_INIT_STATE:
       return inputFromInit(state, action)
@@ -89,14 +90,9 @@ function checkInputValid(state, formKey, stateKey, data) {
     isValid = valid.isVal
     errMsg = valid.errMsg
   }
-  if (isValid) {
-    state = state.updateIn([formKey, "inputs", stateKey, 'dataValid'], val => true)
-    state = state.updateIn([formKey, "inputs", stateKey, 'invalidMsg'], val => '校验通过')
-  }
-  else {
-    state = state.updateIn([formKey, "inputs", stateKey, 'dataValid'], val => false)
-    state = state.updateIn([formKey, "inputs", stateKey, 'invalidMsg'], val => errMsg)
-  }
+  state = state.updateIn([formKey, "inputs", stateKey, 'dataValid'], val => isValid)
+  state = state.updateIn([formKey, "inputs", stateKey, 'invalidMsg'], val => errMsg)
+
   return state
 }
 

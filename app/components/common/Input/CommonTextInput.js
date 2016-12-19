@@ -44,9 +44,9 @@ class CommonTextInput extends Component {
 
   validInput(data) {
     if (data.text && data.text.length > 0) {
-      return true
+      return {isVal: true, errMsg: '验证通过'}
     }
-    return false
+    return {isVal: false, errMsg: '输入有误'}
   }
 
   inputChange(text) {

@@ -25,6 +25,8 @@ import ImageInput from '../common/Input/ImageInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import {isInputValid} from '../../selector/inputFormSelector'
+import MedicalLabPicker from '../common/Input/MedicalLabPicker'
+import RegionPicker from '../common/Input/RegionPicker'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -36,13 +38,13 @@ const nameInput = {
   formKey: commonForm,
   stateKey: Symbol('nameInput'),
   type: "nameInput",
-  initValue: "与身份证姓名保持一致"
+
 }
 const idNoInput = {
   formKey: commonForm,
   stateKey: Symbol('idNoInput'),
   type: "idNoInput",
-  initValue: "请填写居民身份证号"
+  placeholder: "请填写居民身份证号"
 }
 const phoneInput = {
   formKey: commonForm,
@@ -56,18 +58,18 @@ const smsAuthCodeInput = {
 
 }
 
-const addressInput = {
+const regionPicker = {
   formKey: commonForm,
-  stateKey: Symbol('addressInput'),
-  type: "addressInput",
-  initValue: "点击输入医院、诊所或药店地址"
+  stateKey: Symbol('regionPicker'),
+  type: "regionPicker",
+  placeholder: "点击输入医院、诊所或药店地址"
 }
 
-const departmentInput = {
+const medicalPicker = {
   formKey: commonForm,
-  stateKey: Symbol('departmentInput'),
-  type: "departmentInput",
-  initValue: "选择科室"
+  stateKey: Symbol('medicalPicker'),
+  type: "medicalPicker",
+  placeholder: "选择科室"
 }
 const idImageInput = {
   formKey: commonForm,
@@ -90,6 +92,7 @@ const cardImageInput = {
    }
 
    submitErrorCallback(error) {
+
      Toast.show(error.message)
    }
 
@@ -127,7 +130,7 @@ const cardImageInput = {
           rightType=""
         />
         <View style={styles.body}>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps= {true}>
             <View style={styles.trip}>
               <Text style={{fontSize: 12}}>欢迎加入近来医生，完成认证可使用完整功能</Text>
             </View>
@@ -135,7 +138,7 @@ const cardImageInput = {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>姓名</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...nameInput}  containerStyle={{height: normalizeH(38), }}
+                  <CommonTextInput {...nameInput} placeholder="与身份证姓名保持一致" containerStyle={{height: normalizeH(38), }}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
@@ -174,15 +177,16 @@ const cardImageInput = {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>执业地点</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...addressInput}  containerStyle={{height: normalizeH(38), }}
-                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(38)}}
+                                inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>擅长科目</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...departmentInput}  containerStyle={{height: normalizeH(38), }}
-                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+
+                  <MedicalLabPicker {...medicalPicker} containerStyle={{height: normalizeH(38), }}
+                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
             </View>
