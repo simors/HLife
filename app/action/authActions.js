@@ -209,7 +209,7 @@ function doctorCertification(payload, formData) {
   return (dispatch, getState) => {
     let certPayload = {
       name:   formData.nameInput.text,
-      idCardNo: formData.idCardNo.text,
+      idCardNo: formData.idNoInput.text,
       phone:  formData.phoneInput.text,
       organization: formData.regionPicker.text,
       department: formData.medicalPicker.text,
@@ -218,6 +218,7 @@ function doctorCertification(payload, formData) {
     }
     lcAuth.certification(certPayload).then((doctor) => {
       if(payload.success){
+        console.log( " lcAuth.certification success!")
         let cartificationAction = createAction(CeryificationTypes.DOCTOR_CERTIFICATION_REQUEST)
         dispatch(cartificationAction(doctor))
         payload.success(doctor)
