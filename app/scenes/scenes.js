@@ -42,7 +42,7 @@ export const scenes = Actions.create(
     <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
     <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
     <Scene key="PUBLISH_VIEW_TEST" component={PublishViewTest} />
-    <Scene key="PICKER_TEST" component={PickerTest} />
+    <Scene key="PICKER_TEST" component={PickerTest} initial={true}/>
     <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
 
     <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
