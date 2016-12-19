@@ -25,9 +25,6 @@ const PAGE_WIDTH=Dimensions.get('window').width
 class RegionPicker extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      showClear: false,
-    }
     this.pickerData = []
     this.generatePickerData()
   }
@@ -120,19 +117,9 @@ class RegionPicker extends Component {
     }
   }
 
-  clearInput() {
-    let inputForm = {
-      formKey: this.props.formKey,
-      stateKey: this.props.stateKey,
-      data: {text: ''}
-    }
-    this.props.inputFormUpdate(inputForm)
-    this.setState({showClear: false})
-  }
-
   showPicker() {
     Picker.init({
-      pickerTitleText: '请选择科室',
+      pickerTitleText: '请选择地区',
       pickerData: this.pickerData,
       wheelFlex: [1, 1, 1],
       onPickerConfirm: data => {
@@ -153,27 +140,11 @@ class RegionPicker extends Component {
     Picker.show()
   }
 
-  renderClearBtn() {
-    if (this.state.showClear) {
-      return (
-        <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
-          <TouchableOpacity onPress={() => this.clearInput()}>
-            <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
-          </TouchableOpacity>
-        </View>
-      )
-    } else {
-      return (
-        <View />
-      )
-    }
-  }
-
   render() {
     return (
       <View>
         <TouchableOpacity onPress={() => this.showPicker()}>
-          <View style={styles.container}>
+          <View style={styles.container} pointerEvents='none'>
             <FormInput
               onChangeText={(text) => this.inputChange(text)}
               editable={this.props.editable}
@@ -185,7 +156,6 @@ class RegionPicker extends Component {
               containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
               inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
             />
-            {this.renderClearBtn()}
           </View>
         </TouchableOpacity>
       </View>
@@ -244,10 +214,5 @@ const styles = StyleSheet.create({
     borderColor: '#E9E9E9',
     fontSize: em(16),
     color: '#B2B2B2'
-  },
-  defaultClearBtnStyle: {
-    position: 'absolute',
-    right: normalizeW(25),
-    top: normalizeH(12)
   },
 })
