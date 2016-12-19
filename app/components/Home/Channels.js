@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import Channel from './Channel'
+import {Actions} from 'react-native-router-flux'
 
 export default class Channels extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ export default class Channels extends Component {
                    channelRightStyle={styles.channelTopStyle}
                    sourceImage={{uri: 'http://dynamic-image.yesky.com/414x480/uploadImages/2015/107/47/24SH6H51T7HM.jpg'}}
                    channelTitle="足球世界"
-                   channellIntro="球迷的天堂"
+                   channelIntro="球迷的天堂"
                    onPress={()=> {
                      Actions.LOGIN()
                    }}/>
