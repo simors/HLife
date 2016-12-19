@@ -127,7 +127,7 @@ class RichTextInput extends Component {
   }
 
   validInput(data) {
-    return {isValid: true, errMsg: '验证通过'}
+    return {isVal: true, errMsg: '验证通过'}
   }
 
   keyboardWillShow = (e) => {
