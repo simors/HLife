@@ -10,23 +10,23 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../util/Responsive'
 
-export default class Thumbnail extends Component {
+export default class Channel extends Component {
   constructor(props) {
     super(props)
   }
 
   render() {
     return (
-      <View style={styles.thumbnailWrap}>
-        <TouchableOpacity style={[styles.thumbnailContainer, this.props.thumbnailContainerStyle]} onPress={this.props.onPress}>
-          <View style={[styles.thumbnailRight, this.props.thumbnailRightStyle]}>
-            <Text style={[styles.thumbnailTitle, this.props.thumbnailTitleStyle]}>{this.props.thumbnailTitle}</Text>
-            <Text style={[styles.thumbnailIntro, this.props.thumbnailIntroStyle]}>{this.props.thumbnailIntro}</Text>
+      <View style={[styles.body,this.props.bodyStyle]}>
+        <TouchableOpacity style={[styles.channelContainer, this.props.channelContainerStyle]} onPress={this.props.onPress}>
+          <View style={[styles.channelBottom, this.props.channelBottomStyle]}>
+            <Image style={[styles.channelImage, this.props.channelImageStyle]} source={this.props.sourceImage} />
           </View>
-          <View style={[styles.thumbnailLeft, this.props.thumbnailLeftStyle]}>
-            <Image style={[styles.thumbnailLeftImage, this.props.thumbnailLeftImageStyle]} source={this.props.sourceImage} />
+          <View style={[styles.channelTop, this.props.channelTopStyle]}>
+            <Text style={[styles.channelTitle, this.props.channelTitleStyle]}>{this.props.channelTitle}</Text>
+            <Text style={[styles.channelIntro, this.props.channelIntroStyle]}>{this.props.channelIntro}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -34,38 +34,59 @@ export default class Thumbnail extends Component {
   }
 }
 
+Channel.defaultProps = {
+  // style
+  bodyStyle:{},
+  channelContainerStyle:{},
+  channelBottomStyle:{},
+  channelImageStyle:{},
+  channelTopStyle:{},
+  channelTitleStyle:{},
+  channelIntroStyle:{},
+
+  sourceImage:{}
+}
+
 const styles = StyleSheet.create({
-  thumbnailWrap: {
+  body: {
     flex: 1,
+    borderWidth:1,
+    borderColor:"#E5E5E5",
     justifyContent: 'center',
     alignItems: 'center'
   },
-  thumbnailContainer: {
+  channelContainer: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  thumbnailLeft: {
-    width: 35,
-    height: 35,
-    marginRight: 10,
+  channelBottom: {
+    flex:1,
+    justifyContent: 'flex-end',
+    alignSelf: 'flex-end'
   },
-  thumbnailLeftImage: {
-
+  channelImage: {
+    width: normalizeW(159),
+    height: normalizeH(113),
+    marginBottom:normalizeH(7),
   },
-  thumbnailRight: {
-
+  channelTop: {
+    position:'absolute',
+    left:0,
+    right:0,
+    top:0,
+    height: normalizeH(60),
+    backgroundColor:'rgba(255, 255, 255, 0.7)',
+    alignItems: 'center'
   },
-  thumbnailTitle: {
-    marginTop: 8,
-    marginLeft: 8,
-    marginBottom: 8,
-    fontSize: em(15),
-    color: '#636363'
+  channelTitle: {
+    marginTop: normalizeH(15),
+    fontSize: em(18),
+    color: '#929292'
   },
-  thumbnailIntro: {
-    marginLeft: 8,
-    fontSize: em(10),
+  channelIntro: {
+    marginTop: normalizeH(8),
+    fontSize: em(12),
     color: '#ababab'
   }
 })
