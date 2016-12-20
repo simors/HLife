@@ -20,6 +20,7 @@ import {Actions} from 'react-native-router-flux'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
+import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -51,7 +52,9 @@ class ShopRegister extends Component {
           titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
-          <Text>注册店铺</Text>
+          <View>
+            <Text>欢迎加入{appConfig.APP_NAME}，给你的店铺带好更好的收入</Text>
+          </View>
         </View>
       </View>
     )
