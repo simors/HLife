@@ -18,6 +18,7 @@ import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
+import Chatroom from '../components/Chatroom'
 
 const styles = StyleSheet.create({
   container: {
@@ -47,6 +48,7 @@ export const scenes = Actions.create(
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
+      <Scene key="CHATROOM" component={Chatroom} initial={true}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -61,7 +63,7 @@ export const scenes = Actions.create(
           <Scene key="FIND_INDEX" component={Find} />
         </Scene>
 
-        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}} initial={true}>
+        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}} >
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>
