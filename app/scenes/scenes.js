@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} initial={true}/>
+      <Scene key="LAUNCH" component={Launch}/>
       <Scene key="LOGIN" component={Login}/>
       <Scene key="REGIST" component={Regist} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
@@ -61,7 +61,7 @@ export const scenes = Actions.create(
           <Scene key="FIND_INDEX" component={Find} />
         </Scene>
 
-        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}} initial={true}>
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>
