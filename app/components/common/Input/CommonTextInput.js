@@ -67,7 +67,16 @@ class CommonTextInput extends Component {
   renderClearBtn() {
     if (this.state.showClear) {
       return (
-        <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
+        <View style={[styles.defaultClearBtnStyle,
+            {right:
+               (this.props.containerStyle && this.props.containerStyle.paddingRight)
+               ? (this.props.inputStyle && this.props.inputStyle.marginRight)
+                  ? this.props.containerStyle.paddingRight + this.props.inputStyle.marginRight + 12
+                  : this.props.containerStyle.paddingRight + 12
+               : (this.props.inputStyle && this.props.inputStyle.marginRight)
+                  ? THEME.base.inputContainer.paddingRight + this.props.inputStyle.marginRight + 12
+                  : THEME.base.inputContainer.paddingRight + 12},
+            this.props.clearBtnStyle]}>
           <TouchableOpacity onPress={() => this.clearInput()}>
             <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
           </TouchableOpacity>

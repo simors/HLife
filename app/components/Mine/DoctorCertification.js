@@ -101,7 +101,7 @@ const cardImageInputC = {
   }
    submitSuccessCallback(doctorInfo) {
      Toast.show('认证提交成功')
-     Actions.MINE_INDEX()
+     Actions.MINE()
    }
 
    submitErrorCallback(error) {

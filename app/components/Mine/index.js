@@ -63,7 +63,7 @@ export default class Launch extends Component {
 
           </View>
           <View style={{flex: 1}}>
-            <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
+            <TouchableOpacity style={styles.aindex} onPress= {()=> {Actions.SHOPR_EGISTER()}}>
               <Image source={require('../../assets/images/mine_store.png')}></Image>
               <Text style={styles.textStyle}>我的店铺</Text>
             </TouchableOpacity>

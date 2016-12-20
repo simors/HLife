@@ -35,6 +35,7 @@ import Header from '../common/Header'
 import CommonBanner from '../common/CommonBanner'
 import CommonMarquee from '../common/CommonMarquee'
 import Health from './Health'
+import Channels from './Channels'
 import DailyChosen from './DailyChosen'
 import Columns from './Columns'
 
@@ -135,7 +136,7 @@ class Home extends Component {
   renderColumnsColumn() {
     return (
       <View style={styles.columnsModule}>
-        <Columns/>
+      <Columns />
       </View>
     )
   }
@@ -143,7 +144,7 @@ class Home extends Component {
   renderChannelsColumn() {
     return (
       <View style={styles.channelsModule}>
-        <Text>channel test</Text>
+        <Channels />
       </View>
     )
   }
@@ -268,7 +269,6 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(5),
   },
   channelsModule: {
-    height: normalizeH(84),
     marginTop: normalizeH(15),
     marginBottom: normalizeH(5),
   },

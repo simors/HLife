@@ -174,7 +174,6 @@ export default class Swiper extends React.Component {
 
   _onPageScrollStateChanged(scrollState) {
     if(scrollState == 'idle') {
-      //   console.log('_onPageScrollStateChanged idle index:', this.state.index)
       if(this.state.isScrolling) {
         this.setState({
           isScrolling: false
@@ -254,7 +253,6 @@ export default class Swiper extends React.Component {
     if(state.dir == 'y') y = diff * state.height
     if(this.refs.scrollView) {
       if(Platform.OS == 'ios' || this.props.useScrollView) {
-        // console.log('_scrollTo=', state)
         this.refs.scrollView.scrollTo({
           y,
           x,

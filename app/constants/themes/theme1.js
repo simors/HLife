@@ -37,6 +37,8 @@ export default THEME = {
 		light: '#B2B2B2',
 		lighter: '#B5B5B5',
 		green: '#50E3C2',
-    gray: '#929292'
+    gray: '#929292',
+    subDark: '#232323',
+		inputLabel: '#656565',
 	},
 }
