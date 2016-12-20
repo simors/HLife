@@ -24,9 +24,9 @@ export default class Channels extends Component {
       <View style={{flexDirection: 'row',height: normalizeH(180),}}>
         <View style={{backgroundColor: 'white', width: normalizeW(174)}}>
           <Channel
-            sourceImage={{uri: 'http://d.hiphotos.baidu.com/image/pic/item/242dd42a2834349b301f448bcbea15ce36d3bea6.jpg'}}
-            channelTitle="美食诱惑"
-            channelIntro="做生活的美食家"
+            sourceImage={{uri: this.props.topics[0].image}}
+            channelTitle={this.props.topics[0].title}
+            channelIntro={this.props.topics[0].introduction}
             onPress={()=> {
               Actions.LOGIN()
             }}/>
@@ -36,9 +36,9 @@ export default class Channels extends Component {
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
-                   sourceImage={{uri: 'http://d.hiphotos.baidu.com/image/pic/item/242dd42a2834349b301f448bcbea15ce36d3bea6.jpg'}}
-                   channelTitle="健康养生"
-                   channelIntro="生命最好的礼物"
+                   sourceImage={{uri: this.props.topics[1].image}}
+                   channelTitle={this.props.topics[1].title}
+                   channelIntro={this.props.topics[1].introduction}
                    onPress={()=> {
                      Actions.LOGIN()
                    }}/>
@@ -46,9 +46,9 @@ export default class Channels extends Component {
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
-                   sourceImage={{uri: 'http://e.hiphotos.baidu.com/image/pic/item/024f78f0f736afc33532a065b119ebc4b74512f7.jpg'}}
-                   channelTitle="相亲社区"
-                   channelIntro="解决你下半生的烦恼"
+                   sourceImage={{uri: this.props.topics[2].image}}
+                   channelTitle={this.props.topics[2].title}
+                   channelIntro={this.props.topics[2].introduction}
                    onPress={()=> {
                      Actions.LOGIN()
                    }}/>
@@ -58,9 +58,9 @@ export default class Channels extends Component {
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
-                   sourceImage={{uri: 'http://dynamic-image.yesky.com/414x480/uploadImages/2015/107/47/24SH6H51T7HM.jpg'}}
-                   channelTitle="足球世界"
-                   channelIntro="球迷的天堂"
+                   sourceImage={{uri: this.props.topics[3].image}}
+                   channelTitle={this.props.topics[3].title}
+                   channelIntro={this.props.topics[3].introduction}
                    onPress={()=> {
                      Actions.LOGIN()
                    }}/>
@@ -68,9 +68,9 @@ export default class Channels extends Component {
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
-                   sourceImage={{uri: 'http://d.hiphotos.baidu.com/image/pic/item/242dd42a2834349b301f448bcbea15ce36d3bea6.jpg'}}
-                   channelTitle="影视基地"
-                   channelIntro="看世界风花雪月"
+                   sourceImage={{uri: this.props.topics[4].image}}
+                   channelTitle={this.props.topics[4].title}
+                   channelIntro={this.props.topics[4].introduction}
                    onPress={()=> {
                      Actions.LOGIN()
                    }}/>
