@@ -1,5 +1,7 @@
 import AV from 'leancloud-storage'
+import {Map, List, Record} from 'immutable'
 import {UserInfo, UserDetail} from '../../models/userModels'
+import {ShopRecord, ShopInfo} from '../../models/shopModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
 /**
@@ -13,17 +15,9 @@ export function loginWithPwd(payload) {
   return AV.User.logInWithMobilePhone(phone, password).then((loginedUser) => {
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
     userInfo = userInfo.set('token', loginedUser.getSessionToken())
-    return loginedUser.fetch({include: ['detail']}, {}).then((user)=> {
-      let detail = user.get('detail')
-      let userDetail = {}
-      if (detail) {
-        userDetail = UserDetail.fromLeancloudObject(detail)
-      }
-      return {
-        userInfo: userInfo,
-        userDetail: userDetail,
-      }
-    })
+    return {
+      userInfo: userInfo,
+    }
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -102,7 +96,7 @@ export function shopCertification(payload) {
   shop.set('invitationCode', payload.invitationCode)
 
   return shop.save().then(function (result) {
-    console.log('lcAuth.shopCertification=', result)
+    return ShopInfo.fromLeancloudObject(result)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -160,6 +154,21 @@ export function resetPwdBySmsCode(payload) {
 export function modifyMobilePhoneVerified(payload) {
   return AV.Cloud.run('hLifeModifyMobilePhoneVerified', payload).then((result)=>{
     return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function verifyInvitationCode(payload) {
+  let params = {}
+  let invitationsCode = payload.invitationsCode
+  if(!invitationsCode) {
+    return false
+  }
+  params.invitationsCode = invitationsCode
+  return AV.Cloud.run('hLifeVerifyInvitationCode', params).then((result)=>{
+    return true
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

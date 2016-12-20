@@ -24,7 +24,7 @@ import THEME from '../../constants/themes/theme1'
 import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
-
+import ArticleShow from './ArticleShow'
 
 class ArticleColumn extends Component {
   constructor(props) {
@@ -51,6 +51,7 @@ class ArticleColumn extends Component {
               }}>
                 {/*<Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>*/}
                 <Text >{value.title}</Text>
+                <ArticleShow/>
               </TouchableOpacity>
             </View>
           )

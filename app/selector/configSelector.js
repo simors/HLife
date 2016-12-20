@@ -44,6 +44,6 @@ export function getTopics(state) {
   return getConfig(state).topics
 }
 
-export function getTopic(state, isPicked) {
-  return getTopics(state)[isPicked]
+export function getTopic(state) {
+  return getTopics(state)[true]
 }

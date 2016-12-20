@@ -80,8 +80,7 @@ class ShopRegister extends Component {
   }
 
   submitSuccessCallback(doctorInfo) {
-    Toast.show('认证提交成功')
-    //Actions.MINE()
+    Actions.SHOPR_EGISTER_SUCCESS()
   }
 
   submitErrorCallback(error) {
@@ -225,7 +224,7 @@ class ShopRegister extends Component {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.getInvitationWrap} onPress={()=>{}}>
+            <TouchableOpacity style={styles.getInvitationWrap} onPress={()=>Actions.GET_INVITATION_CODE()}>
               <Text style={{color:THEME.colors.green,fontSize: em(16)}}>如何获取邀请码？</Text>
             </TouchableOpacity>
 

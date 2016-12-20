@@ -19,6 +19,10 @@ import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
+import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
+import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
+import Chatroom from '../components/Chatroom'
+
 
 const styles = StyleSheet.create({
   container: {
@@ -38,7 +42,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch}/>
+      <Scene key="LAUNCH" component={Launch} initial={true}/>
       <Scene key="LOGIN" component={Login}/>
       <Scene key="REGIST" component={Regist} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
@@ -48,12 +52,17 @@ export const scenes = Actions.create(
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
+
       <Scene key="ARTICLES_ARTICLES" component={ArticleList}/>
+
+      <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
+      <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
+      <Scene key="CHATROOM" component={Chatroom} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
-          <Scene key="WELLCHOOSEN" component={Home} />
+          <Scene key="WELLCHOOSEN" component={Home} initial={true} />
         </Scene>
 
         <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -64,7 +73,7 @@ export const scenes = Actions.create(
           <Scene key="FIND_INDEX" component={Find} />
         </Scene>
 
-        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}} initial={true}>
+        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>

@@ -3,10 +3,9 @@
  */
 
 import * as AuthTypes from '../constants/authActionTypes'
-import {UserState, UserInfo, UserDetail, UserProfile} from '../models/userModels'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Map, List} from 'immutable'
-const initialState = new UserState()
+const initialState = new Map()
 
 export default function authReducer(state = initialState, action) {
   switch(action.type) {
@@ -14,6 +13,8 @@ export default function authReducer(state = initialState, action) {
       return handleRegisterSuccess(state, action)
     case AuthTypes.LOGIN_SUCCESS:
       return handleLoginSuccess(state, action)
+    case AuthTypes.SHOP_CERTIFICATION_SUCCESS:
+      return handleShopCertificationSuccess(state, action)
     default:
       return state
   }
@@ -21,29 +22,17 @@ export default function authReducer(state = initialState, action) {
 
 function handleRegisterSuccess(state, action) {
   let userInfo = action.payload.userInfo
-  if (!state.getIn(['profiles', userInfo.id])) {
-    state = state.setIn(['profiles', userInfo.id], new UserProfile())
-  }
-  state = state.setIn(['profiles', userInfo.id, 'userInfo'], userInfo)
-  state = state.set('activeUser', userInfo.id)
-
+  state = state.set('userInfo', userInfo)
   return state
 }
 
 function handleLoginSuccess(state, action) {
   const userInfo = action.payload.userInfo
-  console.log("userInfo", userInfo)
+  state = state.set('userInfo', userInfo)
+  return state
+}
 
-  if (!state.getIn(['profiles', userInfo.id])) {
-    state = state.setIn(['profiles', userInfo.id], new UserProfile())
-  }
-
-  state = state.setIn(['profiles', userInfo.id, 'userInfo'], userInfo)
-
-  const userDetail = action.payload.userDetail
-  state = state.setIn(['profiles', userInfo.id, 'userDetail'], userDetail)
-
-  state = state.set('activeUser', userInfo.id)
-
+function handleShopCertificationSuccess(state, action) {
+  state = state.set('shop',  action.payload)
   return state
 }

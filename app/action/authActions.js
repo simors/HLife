@@ -46,7 +46,7 @@ export function submitFormData(payload) {
         dispatch(handleDoctorCertification(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
-        dispatch(shopCertification(payload, formData))
+        dispatch(handleShopCertification(payload, formData))
         break
     }
   }
@@ -207,7 +207,6 @@ function handleDoctorCertification(payload, formData) {
 }
 
 function doctorCertification(payload, formData) {
-  console.log("doctorCertification start")
   return (dispatch, getState) => {
     let certPayload = {
       name:   formData.nameInput.text,
@@ -220,7 +219,6 @@ function doctorCertification(payload, formData) {
     }
     lcAuth.certification(certPayload).then((doctor) => {
       if(payload.success){
-        console.log( " lcAuth.certification success!")
         let cartificationAction = createAction(CeryificationTypes.DOCTOR_CERTIFICATION_REQUEST)
         dispatch(cartificationAction(doctor))
         payload.success(doctor)
@@ -240,8 +238,19 @@ function handleShopCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-
     lcAuth.verifySmsCode(smsPayload).then(() => {
+      dispatch(verifyInvitationCode(payload, formData))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function verifyInvitationCode(payload, formData) {
+  return (dispatch, getState) => {
+    lcAuth.verifyInvitationCode({invitationsCode: formData.invitationCodeInput.text}).then(()=>{
       dispatch(shopCertification(payload, formData))
     }).catch((error) => {
       if(payload.error){
@@ -252,17 +261,16 @@ function handleShopCertification(payload, formData) {
 }
 
 function shopCertification(payload, formData) {
-  console.log("handleShopCertification start", formData)
   return (dispatch, getState) => {
     let certPayload = {
       name:   formData.nameInput.text,
       phone:  formData.phoneInput.text,
       shopName:  formData.shopNameInput.text,
       shopAddress:  formData.shopAddrInput.text,
-      invitationCode:  formData.invitationCodeInput.text,
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
-      console.log('lcAuth.shopCertification=', shop)
+      let cartificationAction = createAction(AuthTypes.SHOP_CERTIFICATION_SUCCESS)
+      dispatch(cartificationAction(shop))
       if(payload.success){
         payload.success(shop)
       }

@@ -34,15 +34,9 @@ export default class ArticleList extends Component {
   render(){
     return(
       <View style={styles.container}>
-        <Header>
-          leftType="icon"
-          {/*leftImageSource={require("../../assets/images/local_unselect.png")}*/}
-          {/*leftImageLabel="长沙"*/}
-          leftPress={() => Actions.pop()}
-          title="精选栏目"
-          {/*rightType=""*/}
-          {/*rightImageSource={require("../../assets/images/artical_share.png")}*/}
-          {/*/!*rightPress={() => Actions.REGIST()}*!/*/}
+        <Header leftType="icon"
+                leftPress={() => Actions.pop()}
+                title="精选栏目">
         </Header>
         <View style={styles.columnsView}>
         <ArticleColumn></ArticleColumn>
