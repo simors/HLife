@@ -11,7 +11,7 @@ import {
   Image
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
-import Channel from './Channel'
+import ChannelItem from './ChannelItem'
 import {Actions} from 'react-native-router-flux'
 
 export default class Channels extends Component {
@@ -23,16 +23,16 @@ export default class Channels extends Component {
     return (
       <View style={{flexDirection: 'row',height: normalizeH(180),}}>
         <View style={{backgroundColor: 'white', width: normalizeW(174)}}>
-          <Channel
+          <ChannelItem
             sourceImage={{uri: this.props.topics[0].image}}
             channelTitle={this.props.topics[0].title}
             channelIntro={this.props.topics[0].introduction}
             onPress={()=> {
-              Actions.LOGIN()
+              Actions.FIND_INDEX({topicId:this.props.topics[0].objectId})
             }}/>
         </View>
         <View style={{backgroundColor: 'white', flex: 1}}>
-          <Channel channelTitleStyle={styles.channelTitleStyle}
+          <ChannelItem channelTitleStyle={styles.channelTitleStyle}
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
@@ -40,9 +40,9 @@ export default class Channels extends Component {
                    channelTitle={this.props.topics[1].title}
                    channelIntro={this.props.topics[1].introduction}
                    onPress={()=> {
-                     Actions.LOGIN()
+                     Actions.FIND_INDEX({topicId:this.props.topics[1].objectId})
                    }}/>
-          <Channel channelTitleStyle={styles.channelTitleStyle}
+          <ChannelItem channelTitleStyle={styles.channelTitleStyle}
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
@@ -50,11 +50,11 @@ export default class Channels extends Component {
                    channelTitle={this.props.topics[2].title}
                    channelIntro={this.props.topics[2].introduction}
                    onPress={()=> {
-                     Actions.LOGIN()
+                     Actions.FIND_INDEX({topicId:this.props.topics[2].objectId})
                    }}/>
         </View>
         <View style={{backgroundColor: 'white', flex: 1}}>
-          <Channel channelTitleStyle={styles.channelTitleStyle}
+          <ChannelItem channelTitleStyle={styles.channelTitleStyle}
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
@@ -62,9 +62,9 @@ export default class Channels extends Component {
                    channelTitle={this.props.topics[3].title}
                    channelIntro={this.props.topics[3].introduction}
                    onPress={()=> {
-                     Actions.LOGIN()
+                     Actions.FIND_INDEX({topicId:this.props.topics[3].objectId})
                    }}/>
-          <Channel channelTitleStyle={styles.channelTitleStyle}
+          <ChannelItem channelTitleStyle={styles.channelTitleStyle}
                    channelIntroStyle={styles.channelIntroStyle}
                    channelImageStyle={styles.channelImageStyle}
                    channelRightStyle={styles.channelTopStyle}
@@ -72,7 +72,7 @@ export default class Channels extends Component {
                    channelTitle={this.props.topics[4].title}
                    channelIntro={this.props.topics[4].introduction}
                    onPress={()=> {
-                     Actions.LOGIN()
+                     Actions.FIND_INDEX({topicId:this.props.topics[4].objectId})
                    }}/>
         </View>
       </View>
@@ -90,12 +90,12 @@ const styles = StyleSheet.create({
   channelIntroStyle: {
     marginTop: normalizeH(4),
     fontSize: em(10),
-    color: '#ababab'
+    color: '#636363'
   },
   channelTopStyle:{
     height:normalizeH(47),
     alignItems: 'flex-start',
-    backgroundColor:'rgba(255, 255, 255, 0.7)',
+    backgroundColor:'rgba(255, 255, 255, 0.1)',
     paddingLeft:4
   },
   channelImageStyle: {

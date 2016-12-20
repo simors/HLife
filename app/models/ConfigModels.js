@@ -66,6 +66,7 @@ export const TopicsItemConfig = Record({
   title: undefined, //话题名称
   image: undefined, //图片
   introduction: undefined, //介绍
+  objectId: undefined
 }, 'TopicsItemConfig')
 
 export class TopicsItem extends TopicsItemConfig {
@@ -77,6 +78,7 @@ export class TopicsItem extends TopicsItemConfig {
       record.set('title', attrs.title)
       record.set('image', attrs.image)
       record.set('introduction', attrs.introduction)
+      record.set('objectId', lcObj.id)
     })
   }
 }

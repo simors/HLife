@@ -20,17 +20,42 @@ import THEME from '../../constants/themes/theme1'
 export class TabScrollView extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      topicItem: 0,
+    }
+  }
+
+  componentDidMount(){
+    this.props.topics.map((value, key)=> {
+      if (value.objectId == this.props.topicId) {
+        this.setState({topicItem: key})
+      }
+    })
   }
 
   renderTopics() {
     return (
       this.props.topics.map((value, key)=> {
         return (
-          <View tabLabel={value.title} style={[styles.itemLayout,this.props.itemLayout &&this.props.itemLayout]}>
-            <Text >hello</Text>
+          <View key={key} tabLabel={value.title} style={[styles.itemLayout,this.props.itemLayout &&this.props.itemLayout]}>
+            <Text >{key}</Text>
           </View>
         )
       })
+    )
+  }
+
+  renderTabBar() {
+    return (
+      <ScrollableTabBar
+        activeTextColor={this.props.activeTextColor}
+        inactiveTextColor={this.props.inactiveTextColor}
+        style={[styles.tarBarStyle,this.props.tarBarStyle &&this.props.tarBarStyle]}
+        underlineStyle={[styles.tarBarUnderlineStyle,this.props.tarBarUnderlineStyle &&this.props.tarBarUnderlineStyle]}
+        textStyle={[styles.tabBarTextStyle,this.props.tabBarTextStyle &&this.props.tabBarTextStyle]}
+        tabStyle={[styles.tabBarTabStyle,this.props.tabBarTabStyle &&this.props.tabBarTabStyle]}
+        backgroundColor={this.props.backgroundColor}
+      />
     )
   }
 
@@ -38,18 +63,9 @@ export class TabScrollView extends Component {
     if (this.props.topics) {
       return (
         <ScrollableTabView style={[styles.body,this.props.body &&this.props.body]}
-                           initialPage={0}
+                           page={this.state.topicItem}
                            scrollWithoutAnimation={true}
-                           renderTabBar={
-                             ()=><ScrollableTabBar
-                               activeTextColor={this.props.activeTextColor}
-                               inactiveTextColor={this.props.inactiveTextColor}
-                               style={[styles.tarBarStyle,this.props.tarBarStyle &&this.props.tarBarStyle]}
-                               underlineStyle={[styles.tarBarUnderlineStyle,this.props.tarBarUnderlineStyle &&this.props.tarBarUnderlineStyle]}
-                               textStyle={[styles.tabBarTextStyle,this.props.tabBarTextStyle &&this.props.tabBarTextStyle]}
-                               tabStyle={[styles.tabBarTabStyle,this.props.tabBarTabStyle &&this.props.tabBarTabStyle]}
-                               backgroundColor={this.props.backgroundColor}
-                             />}
+                           renderTabBar={()=> this.renderTabBar()}
         >
           {this.renderTopics()}
         </ScrollableTabView>

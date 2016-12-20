@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 
-export default class Channel extends Component {
+export default class ChannelItem extends Component {
   constructor(props) {
     super(props)
   }
@@ -34,7 +34,7 @@ export default class Channel extends Component {
   }
 }
 
-Channel.defaultProps = {
+ChannelItem.defaultProps = {
   // style
   bodyStyle:{},
   channelContainerStyle:{},
@@ -76,17 +76,17 @@ const styles = StyleSheet.create({
     right:0,
     top:0,
     height: normalizeH(60),
-    backgroundColor:'rgba(255, 255, 255, 0.7)',
+    backgroundColor:'rgba(255, 255, 255, 0.1)',
     alignItems: 'center'
   },
   channelTitle: {
     marginTop: normalizeH(15),
     fontSize: em(18),
-    color: '#929292'
+    color: '#636363'
   },
   channelIntro: {
     marginTop: normalizeH(8),
     fontSize: em(12),
-    color: '#ababab'
+    color: '#636363'
   }
 })

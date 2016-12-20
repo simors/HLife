@@ -40,5 +40,6 @@ export default THEME = {
     gray: '#929292',
     subDark: '#232323',
 		inputLabel: '#656565',
+		red: '#F24016'
 	},
 }
