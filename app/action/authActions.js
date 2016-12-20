@@ -78,13 +78,11 @@ function handleLoginWithPwd(payload, formData) {
       password: formData.passwordInput.text,
     }
     lcAuth.loginWithPwd(loginPayload).then((userInfos) => {
-      //console.log('userInfos=', userInfos)
       if(payload.success){
         payload.success(userInfos)
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfos}))
-      //Actions.popTo('root')
     }).catch((error) => {
       if(payload.error){
         payload.error(error)

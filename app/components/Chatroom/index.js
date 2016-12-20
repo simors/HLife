@@ -10,7 +10,7 @@ import {
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-export default class Chatroot extends Component {
+export default class Chatroom extends Component {
   constructor(props) {
     super(props)
   }
