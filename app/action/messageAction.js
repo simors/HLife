@@ -4,11 +4,11 @@
 import {Platform} from 'react-native'
 import {createAction} from 'redux-actions'
 import * as msgActionTypes from '../constants/messageActionTypes'
-import {activeUser} from '../selector/authSelector'
+import {activeUserId} from '../selector/authSelector'
 
-export function initMessager(payload) {
+export function initMessageClient(payload) {
   return (dispatch, getState) => {
-    const userId = activeUser(getState())
+    const userId = activeUserId(getState())
 
     if (!userId) {
       if (payload.error) {

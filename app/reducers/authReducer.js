@@ -26,13 +26,13 @@ function handleRegisterSuccess(state, action) {
   }
   state = state.setIn(['profiles', userInfo.id, 'userInfo'], userInfo)
   state = state.set('activeUser', userInfo.id)
-  state = state.set('token', action.payload.token)
 
   return state
 }
 
 function handleLoginSuccess(state, action) {
   const userInfo = action.payload.userInfo
+  console.log("userInfo", userInfo)
 
   if (!state.getIn(['profiles', userInfo.id])) {
     state = state.setIn(['profiles', userInfo.id], new UserProfile())
@@ -44,7 +44,6 @@ function handleLoginSuccess(state, action) {
   state = state.setIn(['profiles', userInfo.id, 'userDetail'], userDetail)
 
   state = state.set('activeUser', userInfo.id)
-  state = state.set('token', action.payload.userInfo.token)
 
   return state
 }

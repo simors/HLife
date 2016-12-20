@@ -8,26 +8,14 @@ export const UserInfoRecord = Record({
   avatar: undefined,
   token: undefined,
   gender: undefined,
-  detailId: undefined,
-  identity: List(),
-  type: undefined,
+  detailId: undefined,        // 指向UserProfileRecord
+  attr: List(),               // 用户属性，如医生、推广员、店铺老板
 }, 'UserInfoRecord')
 
 export const UserDetailRecord = Record({
   id: undefined,
-  groups: List(),
-  corpus: List(),
   articles: List(),
   articleCount: 0,
-  reviewCount: 0,
-  likeCount: 0,
-  wordCount: 0,
-  school: undefined,
-  classNo: undefined,
-  desc: undefined,
-  personalSign: undefined,
-  backgroundImg: undefined,
-  drafts: List(),
 }, 'UserDetailRecord')
 
 export const UserProfileRecord = Record({
@@ -36,12 +24,8 @@ export const UserProfileRecord = Record({
 }, 'UserProfileRecord')
 
 export const UserStateRecord = Record({
-  isLoading: true,
-  fakeToken: false,
   activeUser: undefined,
   profiles: Map(),
-  token: undefined,
-  recommendUsers: List(),
 }, 'UserStateRecord')
 
 
@@ -74,31 +58,11 @@ export class UserInfo extends UserInfoRecord {
 }
 
 export class UserDetail extends UserDetailRecord {
-  static  assignUserDetail(detailObj) {
-    let detail = new UserDetail(detailObj)
-    return detail.withMutations((record)=> {
-      record.set('likeCount', attrs.likeCnt ? attrs.likeCnt : 0)
-      record.set('reviewCount', attrs.reviewCnt ? attrs.reviewCnt : 0)
-      record.set('articleCount', attrs.articleCnt ? attrs.articleCnt : 0)
-      record.set('wordCount', attrs.wordCnt ? attrs.wordCnt : 0)
-    })
-  }
-
   static fromLeancloudObject(lcObj) {
     let detail = new UserDetail()
     let attrs = lcObj.attributes
     return detail.withMutations((record)=> {
-      
-    })
-  }
-
-  static fromCloudFuncResult(result) {
-    let detail = new UserDetail(result)
-    return detail.withMutations((record)=> {
-      record.set('id', result.objectId)
-      record.set('likeCount', result.likeCnt)
-      record.set('reviewCount', result.reviewCnt)
-      record.set('articleCount', result.articleCnt)
+      record.set('id', lcObj.id)
     })
   }
 }
