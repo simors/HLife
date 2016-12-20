@@ -13,19 +13,20 @@ import configureStore from './app/store/configureStore'
 import persist from './app/store/persistStore'
 import {scenes} from './app/scenes/scenes'
 import AV from 'leancloud-storage'
+import * as LC_CONFIG from './app/constants/appConfig'
 
 const RouterWithRedux = connect()(Router)
 const store = configureStore()
 persist(store)
 
 const KM_Dev = {
-  appId: 'K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz',
-  appKey: 'UseC5jvqLT7TIiQWI8nRPmEl',
+  appId: LC_CONFIG.LC_DEV_APP_ID,
+  appKey: LC_CONFIG.LC_DEV_APP_KEY,
 }
 
 const KM_PRO = {
-  appId: 'K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz',
-  appKey: 'UseC5jvqLT7TIiQWI8nRPmEl',
+  appId: LC_CONFIG.LC_PRO_APP_ID,
+  appKey: LC_CONFIG.LC_PRO_APP_KEY,
 }
 
 //AV.setProduction(false)
