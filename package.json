@@ -12,7 +12,7 @@
     "babel-preset-react": "^6.16.0",
     "es6-symbol": "^3.1.0",
     "immutable": "^3.8.1",
-    "leancloud-realtime": "^3.3.1",
+    "leancloud-realtime": "^3.3.3",
     "leancloud-realtime-plugin-typed-messages": "^1.0.0",
     "leancloud-storage": "^1.5.3",
     "react": "15.4.1",

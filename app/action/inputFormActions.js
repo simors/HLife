@@ -27,17 +27,3 @@ export const inputFormOnDestroy = (payload) => {
     dispatch(inputFormDestroy(payload))
   }
 }
-
-export function submitInputForm(payload) {
-  return (dispatch, getState) => {
-    let formKey = payload.formKey
-    dispatch(inputFormCheck({formKey}))
-    let formData = getInputFormData(getState(), formKey)
-    console.log("formData:", formData)
-    let isValid = isInputFormValid(getState(), formKey)
-    if (isValid) {
-      console.log("invoke method to post form")
-      dispatch(inputFormDestroy({formKey}))
-    }
-  }
-}

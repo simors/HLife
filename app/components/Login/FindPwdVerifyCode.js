@@ -24,7 +24,6 @@ import RichTextInput from '../common/Input/RichTextInput'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DateTimeInput from '../common/Input/DateTimeInput'
 
-import {submitInputForm} from '../../action/inputFormActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -108,7 +107,6 @@ class FindPwdVerifyCode extends Component {
   }
 
   submit() {
-    this.props.submitInputForm({formKey: commonForm})
   }
 
   onRteFocusChanged = (val) => {
@@ -189,7 +187,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitInputForm
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(FindPwdVerifyCode)
