@@ -38,7 +38,7 @@ export class Find extends Component {
             rightImageSource={require("../../assets/images/home_message.png")}
             rightPress={() => Actions.REGIST()}
           />
-         <TabScrollView topics={this.props.topics}/>
+         <TabScrollView topics={this.props.topics} topicId={this.props.topicId}/>
         </View>
       )
   }
