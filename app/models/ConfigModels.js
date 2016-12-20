@@ -64,6 +64,8 @@ export class ColumnItem extends ColumnItemConfig {
 export const TopicsItemConfig = Record({
   isPicked:undefined,//是否精选
   title: undefined, //话题名称
+  image: undefined, //图片
+  introduction: undefined, //介绍
 }, 'TopicsItemConfig')
 
 export class TopicsItem extends TopicsItemConfig {
@@ -73,6 +75,8 @@ export class TopicsItem extends TopicsItemConfig {
     return topicsItemConfig.withMutations((record)=> {
       record.set('isPicked', attrs.isPicked)
       record.set('title', attrs.title)
+      record.set('image', attrs.image)
+      record.set('introduction', attrs.introduction)
     })
   }
 }

@@ -82,6 +82,6 @@ export class Conversation extends ConversationRecord {
   }
 }
 
-export class Messenger extends MessengerRecord {
+export class Messenger extends MsgClientRecord {
 
 }
