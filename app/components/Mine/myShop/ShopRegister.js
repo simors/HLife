@@ -81,7 +81,7 @@ class ShopRegister extends Component {
 
   submitSuccessCallback(doctorInfo) {
     Toast.show('认证提交成功')
-    Actions.MINE()
+    //Actions.MINE()
   }
 
   submitErrorCallback(error) {
@@ -92,7 +92,7 @@ class ShopRegister extends Component {
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
+      submitType: INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -103,7 +103,9 @@ class ShopRegister extends Component {
       formKey: commonForm,
       stateKey:phoneInput.stateKey,
       submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
-      success:() => {},
+      success:() => {
+        Toast.show('发送短信验证码成功,请注意查收')
+      },
       error: (error) => {
         Toast.show(error.message)
       }
