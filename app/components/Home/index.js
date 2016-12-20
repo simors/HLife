@@ -38,6 +38,7 @@ import Health from './Health'
 import Channels from './Channels'
 import DailyChosen from './DailyChosen'
 import Columns from './Columns'
+import {getTopic} from '../../selector/configSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -142,11 +143,19 @@ class Home extends Component {
   }
 
   renderChannelsColumn() {
-    return (
+    if(this.props.topics.length > 0) {
+      return (
+        <View style={styles.channelsModule}>
+          <Channels topics={this.props.topics}/>
+        </View>
+      )
+    }
+    else{
+      return (
       <View style={styles.channelsModule}>
-        <Channels />
       </View>
-    )
+      )
+    }
   }
 
   renderDailyChosenColumn() {
@@ -214,10 +223,21 @@ const mapStateToProps = (state, ownProps) => {
 
   const announcement = getAnnouncement(state, 0)
   const banner = getBanner(state, 0)
+  const topics = getTopic(state)
+
+  let pickedTopics = []
+  if(topics) {
+    topics.forEach((value) => {
+      if (value.isPicked) {
+        pickedTopics.push(value)
+      }
+    })
+  }
 
   return {
     announcement: announcement,
     banner: banner,
+    topics:pickedTopics,
     ds: ds.cloneWithRows(dataArray)
   }
 }
