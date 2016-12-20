@@ -44,7 +44,9 @@ import {getColumn} from '../../selector/configSelector'
           let imageUrl = value.imageSource
           return (
             <View key={key} style={styles.channelWrap}>
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=> {
+                Actions.ARTICLES_ARTICLES()
+              }}>
                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
               </TouchableOpacity>

@@ -16,22 +16,21 @@ import {
 import Header from '../common/Header'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import Icon from 'react-native-vector-icons/Ionicons'
+import icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
-
+import {Actions} from 'react-native-router-flux'
+import ArticleColumn from './ArticleColumn'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-export default class Articles extends Component {
+export default class ArticleList extends Component {
   constructor(props)
   {
     super(props)
   }
-  rendercolumns(){
 
-  }
   render(){
     return(
       <View style={styles.container}>
@@ -46,13 +45,13 @@ export default class Articles extends Component {
           {/*/!*rightPress={() => Actions.REGIST()}*!/*/}
         </Header>
         <View style={styles.columnsView}>
-
+        <ArticleColumn></ArticleColumn>
         </View>
-        <ScorllView>
+        <ScrollView>
           <View style={styles.articlesView}>
 
           </View>
-        </ScorllView>
+        </ScrollView>
       </View>
     )
   }

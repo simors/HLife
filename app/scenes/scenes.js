@@ -18,6 +18,7 @@ import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
+import ArticleList from '../components/Articles/ArticleList'
 
 const styles = StyleSheet.create({
   container: {
@@ -47,6 +48,8 @@ export const scenes = Actions.create(
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
+      <Scene key="ARTICLES_ARTICLES" component={ArticleList}/>
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
