@@ -254,7 +254,7 @@ export default class Swiper extends React.Component {
     if(state.dir == 'y') y = diff * state.height
     if(this.refs.scrollView) {
       if(Platform.OS == 'ios' || this.props.useScrollView) {
-        console.log('_scrollTo=', state)
+        // console.log('_scrollTo=', state)
         this.refs.scrollView.scrollTo({
           y,
           x,
