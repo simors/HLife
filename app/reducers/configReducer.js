@@ -107,6 +107,7 @@ function handleUpdateConfigColumns(state, action) {
   // let columnMap = new Map()
   // columnMap = columnMap.set(type, payload.column)
   state = state.set('column', payload)
+  console.log('<><><><><><><',state)
   return state
 }
 

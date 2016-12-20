@@ -14,9 +14,10 @@ import {
   InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
+import AV from 'leancloud-storage'
 import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-
+import Categorys from '../Articles/Categorys'
 import {Actions} from 'react-native-router-flux'
 import THEME from '../../constants/themes/theme1'
 import {fetchColumn} from '../../action/configAction'
@@ -34,6 +35,8 @@ import {getColumn} from '../../selector/configSelector'
     })
   }
 
+
+
   renderColumns() {
     if (this.props.column) {
       return (
@@ -42,7 +45,7 @@ import {getColumn} from '../../selector/configSelector'
           return (
             <View key={key} style={styles.channelWrap}>
               <TouchableOpacity onPress={()=>{}}>
-                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
+               <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
               </TouchableOpacity>
             </View>
@@ -58,10 +61,7 @@ import {getColumn} from '../../selector/configSelector'
       <View style={styles.channelContainer}>
         {this.renderColumns()}
         <View style={styles.channelWrap}>
-          <TouchableOpacity onPress={()=>{}}>
-            <Image source={require("../../assets/images/home_more.png")}/>
-            <Text style={styles.channelText}>更多</Text>
-          </TouchableOpacity>
+          <Categorys/>
         </View>
       </View>
     )

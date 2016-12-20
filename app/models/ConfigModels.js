@@ -26,9 +26,9 @@ export class BannerItem extends BannerItemConfig {
 }
 
 export const AnnouncementItemConfig = Record({
-  type:undefined,//公告类型:0-home主页,1-local本地,...
-  title: undefined, //公告标题
-  url: undefined, //公告跳转地址
+  type:undefined,//是否显示在首页
+  title: undefined, //标题
+  url: undefined, //图标
 })
 
 export class AnnouncementItem extends AnnouncementItemConfig {
@@ -44,9 +44,10 @@ export class AnnouncementItem extends AnnouncementItemConfig {
 }
 
 export const ColumnItemConfig = Record({
-  type:undefined,//公告类型:0-home主页,1-local本地,...
-  title: undefined, //公告标题
-  imageSource: undefined, //公告跳转地址
+  objectId: undefined,
+  type:undefined,//是否显示在首页
+  title: undefined, // 标题
+  imageSource: undefined, //图标
 })
 
 
@@ -58,6 +59,7 @@ export class ColumnItem extends ColumnItemConfig {
       record.set('type', attrs.type)
       record.set('title', attrs.title)
       record.set('imageSource', attrs.imageSource)
+      record.set('objectId', attrs.objectId)
     })
   }
 }

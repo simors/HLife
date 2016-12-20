@@ -54,7 +54,7 @@ class Home extends Component {
     }
     this.defaultIndex = 0
   }
-  
+
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
@@ -136,7 +136,7 @@ class Home extends Component {
   renderColumnsColumn() {
     return (
       <View style={styles.columnsModule}>
-      <Columns />
+        <Columns/>
       </View>
     )
   }
