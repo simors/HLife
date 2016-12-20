@@ -84,12 +84,30 @@ export function certification(payload) {
   doctor.set('status', 0)
   
   return doctor.save().then(function (doctor) {
-    console.log("certification success")
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
   
+}
+
+export function shopCertification(payload) {
+  let Shop = AV.Object.extend('Shop')
+  let shop = new Shop()
+
+  shop.set('name', payload.name)
+  shop.set('phone', payload.phone)
+  shop.set('shopName', payload.shopName)
+  shop.set('shopAddress', payload.shopAddress)
+  shop.set('invitationCode', payload.invitationCode)
+
+  return shop.save().then(function (result) {
+    console.log('lcAuth.shopCertification=', result)
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
 }
 
 export function requestSmsAuthCode(payload) {
@@ -101,7 +119,6 @@ export function requestSmsAuthCode(payload) {
       ttl: 10}).then(function () {
       // do nothing
     }, function (err) {
-      console.log(err.message)
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })

@@ -17,6 +17,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   FORGET_PASSWORD: 'FORGET_PASSWORD',
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
   DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
+  SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
 }
 
 export function submitFormData(payload) {
@@ -43,6 +44,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION:
         dispatch(handleDoctorCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
+        dispatch(shopCertification(payload, formData))
         break
     }
   }
@@ -220,6 +224,47 @@ function doctorCertification(payload, formData) {
         let cartificationAction = createAction(CeryificationTypes.DOCTOR_CERTIFICATION_REQUEST)
         dispatch(cartificationAction(doctor))
         payload.success(doctor)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+
+}
+
+function handleShopCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let smsPayload = {
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+
+    lcAuth.verifySmsCode(smsPayload).then(() => {
+      dispatch(shopCertification(payload, formData))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function shopCertification(payload, formData) {
+  console.log("handleShopCertification start", formData)
+  return (dispatch, getState) => {
+    let certPayload = {
+      name:   formData.nameInput.text,
+      phone:  formData.phoneInput.text,
+      shopName:  formData.shopNameInput.text,
+      shopAddress:  formData.shopAddrInput.text,
+      invitationCode:  formData.invitationCodeInput.text,
+    }
+    lcAuth.shopCertification(certPayload).then((shop) => {
+      console.log('lcAuth.shopCertification=', shop)
+      if(payload.success){
+        payload.success(shop)
       }
     }).catch((error) => {
       if(payload.error){
