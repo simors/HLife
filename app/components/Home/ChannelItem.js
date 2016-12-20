@@ -34,7 +34,7 @@ export default class ChannelItem extends Component {
   }
 }
 
-Channel.defaultProps = {
+ChannelItem.defaultProps = {
   // style
   bodyStyle:{},
   channelContainerStyle:{},
