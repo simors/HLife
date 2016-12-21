@@ -11,7 +11,8 @@ import {
   Platform,
   Modal,
   ScrollView,
-  TouchableHighlight
+  TouchableHighlight,
+  InteractionManager,
 } from 'react-native'
 import Header from '../common/Header'
 import {connect} from 'react-redux'
@@ -24,11 +25,21 @@ import {Actions} from 'react-native-router-flux'
 import ArticleColumn from './ArticleColumn'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+import {getArticle} from '../../selector/configSelector'
+import {fetchArticle} from '../../action/configAction'
 
-export default class ArticleList extends Component {
+
+ class ArticleList extends Component {
   constructor(props)
   {
     super(props)
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchArticle()
+
+    })
   }
 
   render(){
@@ -50,6 +61,18 @@ export default class ArticleList extends Component {
     )
   }
 }
+const mapStateToProps = (state, ownProps) => {
+  let article = getArticle(state, 'this.props.category')
+  console.log("new article: ", article)
+  return {
+    article: article,
+  }
+}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchArticle
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleList)
 
 const styles= StyleSheet.create({
   container:{

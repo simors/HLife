@@ -1,7 +1,7 @@
 import {Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as ConfigActionTypes from '../constants/configActionTypes'
-import {Config, BannerItemConfig,ColumnItemConfig} from '../models/ConfigModels'
+import {Config, BannerItemConfig,ColumnItemConfig,ArticleItemConfig} from '../models/ConfigModels'
 
 const initialState = Config()
 
@@ -15,6 +15,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigColumns(state,action)
     case ConfigActionTypes.UPDATE_CONFIG_TOPICS:
       return handleUpdateConfigTopics(state, action)
+    case ConfigActionTypes.UPDATE_CONFIG_ARTICLES:
+      return handleUpdateConfigArticles(state,action)
     default:
       return state
   }
@@ -107,7 +109,17 @@ function handleUpdateConfigColumns(state, action) {
   // let columnMap = new Map()
   // columnMap = columnMap.set(type, payload.column)
   state = state.set('column', payload)
-  console.log('<><><><><><><',state)
+  //console.log('<><><><><><><',state)
+  return state
+}
+
+function handleUpdateConfigArticles(state, action) {
+  let payload = action.payload
+  // let type = payload.type
+  // let columnMap = new Map()
+  // columnMap = columnMap.set(type, payload.column)
+  state = state.set('Article', payload)
+
   return state
 }
 

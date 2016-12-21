@@ -49,6 +49,23 @@ export function fetchColumn() {
 }
 
 
+export function fetchArticle() {
+  return (dispatch, getState) => {
+    console.log('<><><><><><><><>')
+    lcConfig.getArticle().then((article) => {
+      let updateArticleAction = createAction(ConfigActionTypes.UPDATE_CONFIG_ARTICLES)
+      dispatch(updateArticleAction({article:article}))
+
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+
+
 export function getAllTopics(payload) {
   return (dispatch, getState) => {
     lcConfig.getTopics().then((topics) => {

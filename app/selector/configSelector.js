@@ -40,6 +40,25 @@ export function getColumn(state, type) {
   return undefined
 }
 
+export function getArticles(state) {
+  return getConfig(state).article
+}
+
+export function getArticle(state, category) {
+  let articles = getArticles(state).article
+
+  if (articles) {
+    if (category && category.length > 0) {
+      articles = articles.filter(article => article.category == category)
+    }
+    console.log('=========>',articles)
+    return articles.toJS()
+  }
+
+  return undefined
+}
+
+
 export function getTopics(state) {
   return getConfig(state).topics
 }
