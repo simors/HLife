@@ -8,7 +8,9 @@ import {
   Dimensions,
   Image,
 } from 'react-native'
+import {Actions} from 'react-native-router-flux'
 import { GiftedChat } from 'react-native-gifted-chat'
+import Header from '../common/Header'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -46,23 +48,30 @@ export default class Chatroom extends Component {
 
   render() {
     return (
-      <GiftedChat
-        messages={this.state.messages}
-        onSend={this.onSend}
-        user={{
-          _id: 1,
-          name: '杨阳'
-        }}
-      />
+      <View style={styles.container}>
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.pop()}
+          title="聊天室"
+        />
+        <GiftedChat
+          messages={this.state.messages}
+          onSend={this.onSend}
+          user={{
+            _id: 1,
+            name: '杨阳'
+          }}
+          loadEarlier={true}
+        />
+      </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1
   },
   header: {
     flexDirection: 'row',
