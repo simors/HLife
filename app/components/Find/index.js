@@ -11,7 +11,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  InteractionManager
+  InteractionManager,
+  TouchableHighlight
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
@@ -39,6 +40,9 @@ export class Find extends Component {
             rightPress={() => Actions.REGIST()}
           />
          <TabScrollView topics={this.props.topics} topicId={this.props.topicId}/>
+          <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=>{console.log('touched');}}  >
+            <Image source={require("../../assets/images/local_write@2x.png")} />
+          </TouchableHighlight>
         </View>
       )
   }
@@ -61,5 +65,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  buttonImage:{
+    position:'absolute',
+    alignItems:'flex-end',
+    right:20,
+    bottom:61,
+    height: 45,
+    width: 45
   }
 })
