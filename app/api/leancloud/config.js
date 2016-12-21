@@ -64,7 +64,7 @@ export function getColumn() {
 }
 
 export function getTopics() {
-  let query = new AV.Query('Topics')
+  let query = new AV.Query('TopicCategory')
   return query.find().then(function(results) {
     let topics = []
     results.forEach((result) => {
@@ -95,7 +95,7 @@ export function getArticle(){
 
 export function getPickedTopics(payload) {
   let isPicked = payload.isPicked
-  let query = new AV.Query('Topics')
+  let query = new AV.Query('TopicCategory')
   query.equalTo('isPicked', isPicked)
   return query.find().then(function(results) {
     let topics = []

@@ -33,8 +33,10 @@ export default class Launch extends Component {
             <Text style={styles.texts}>设置</Text>
           </View>
           <View style={styles.middle}>
-            <Image style={{width: normalizeW(46), height: normalizeH(46), marginTop: normalizeH(26)}}  source={require('../../assets/images/find_happy.png')}></Image>
-            <Text style={styles.texts}>我爱我家</Text>
+            <TouchableOpacity onPress={() => Actions.PROFILE()}>
+              <Image style={{width: normalizeW(46), height: normalizeH(46), marginTop: normalizeH(26)}}  source={require('../../assets/images/find_happy.png')}></Image>
+              <Text style={styles.texts}>我爱我家</Text>
+            </TouchableOpacity>
             <View style={styles.credits}>
               {/*<Image source={require('../../assets/images/mine_wallet.png')}></Image>*/}
               <Text>积分</Text>
