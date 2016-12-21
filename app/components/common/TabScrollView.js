@@ -33,6 +33,13 @@ export class TabScrollView extends Component {
     })
   }
 
+  changeTab(payload) {
+    if (this.props.onSelected) {
+      this.props.onSelected(payload.i)
+    }
+    this.setState({topicItem: payload.i})
+  }
+
   renderTopics() {
     return (
       this.props.topics.map((value, key)=> {
@@ -66,6 +73,7 @@ export class TabScrollView extends Component {
                            page={this.state.topicItem}
                            scrollWithoutAnimation={true}
                            renderTabBar={()=> this.renderTabBar()}
+                           onChangeTab={(payload) => this.changeTab(payload)}
         >
           {this.renderTopics()}
         </ScrollableTabView>
