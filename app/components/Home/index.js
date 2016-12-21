@@ -38,6 +38,7 @@ import Health from './Health'
 import Channels from './Channels'
 import DailyChosen from './DailyChosen'
 import Columns from './Columns'
+import {getTopic} from '../../selector/configSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -54,7 +55,7 @@ class Home extends Component {
     }
     this.defaultIndex = 0
   }
-  
+
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
@@ -136,17 +137,25 @@ class Home extends Component {
   renderColumnsColumn() {
     return (
       <View style={styles.columnsModule}>
-      <Columns />
+        <Columns/>
       </View>
     )
   }
 
   renderChannelsColumn() {
-    return (
+    if(this.props.topics.length > 0) {
+      return (
+        <View style={styles.channelsModule}>
+          <Channels topics={this.props.topics}/>
+        </View>
+      )
+    }
+    else{
+      return (
       <View style={styles.channelsModule}>
-        <Channels />
       </View>
-    )
+      )
+    }
   }
 
   renderDailyChosenColumn() {
@@ -177,7 +186,7 @@ class Home extends Component {
           title="近来"
           rightType="image"
           rightImageSource={require("../../assets/images/home_message.png")}
-          rightPress={() => Actions.REGIST()}
+          rightPress={() => Actions.CHATROOM()}
         />
 
         <View style={styles.body}>
@@ -214,10 +223,21 @@ const mapStateToProps = (state, ownProps) => {
 
   const announcement = getAnnouncement(state, 0)
   const banner = getBanner(state, 0)
+  const topics = getTopic(state)
+
+  let pickedTopics = []
+  if(topics) {
+    topics.forEach((value) => {
+      if (value.isPicked) {
+        pickedTopics.push(value)
+      }
+    })
+  }
 
   return {
     announcement: announcement,
     banner: banner,
+    topics:pickedTopics,
     ds: ds.cloneWithRows(dataArray)
   }
 }

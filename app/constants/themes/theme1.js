@@ -34,11 +34,15 @@ export default THEME = {
 		white: '#fff',
 		black: '#000',
 		dark: '#636363',
+		lessDark: '#686868',
 		light: '#B2B2B2',
 		lighter: '#B5B5B5',
+		lighterA: '#E6E6E6',
+		lightest: '#E9E9E9',
 		green: '#50E3C2',
     gray: '#929292',
     subDark: '#232323',
 		inputLabel: '#656565',
+		red: '#F24016'
 	},
 }

@@ -7,6 +7,7 @@ import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
+import {initMessageClient} from '../action/messageAction'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -18,6 +19,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
   DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
+  SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
 }
 
 export function submitFormData(payload) {
@@ -47,6 +49,8 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
         dispatch(handleProfileSubmit(payload, formData))
+      case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
+        dispatch(handleShopCertification(payload, formData))
         break
     }
   }
@@ -87,6 +91,7 @@ function handleLoginWithPwd(payload, formData) {
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfos}))
+      dispatch(initMessageClient(payload))
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
@@ -207,7 +212,6 @@ function handleDoctorCertification(payload, formData) {
 }
 
 function doctorCertification(payload, formData) {
-  console.log("doctorCertification start")
   return (dispatch, getState) => {
     let certPayload = {
       name:   formData.nameInput.text,
@@ -220,7 +224,6 @@ function doctorCertification(payload, formData) {
     }
     lcAuth.certification(certPayload).then((doctor) => {
       if(payload.success){
-        console.log( " lcAuth.certification success!")
         let cartificationAction = createAction(CeryificationTypes.DOCTOR_CERTIFICATION_REQUEST)
         dispatch(cartificationAction(doctor))
         payload.success(doctor)
@@ -245,7 +248,34 @@ function handleProfileSubmit(payload, formData) {
       gender: formData.genderInput.text,
     }
     lcAuth.profileSubmit(profilePayload).then((profile) => {
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
 
+function handleShopCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let smsPayload = {
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    lcAuth.verifySmsCode(smsPayload).then(() => {
+      dispatch(verifyInvitationCode(payload, formData))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function verifyInvitationCode(payload, formData) {
+  return (dispatch, getState) => {
+    lcAuth.verifyInvitationCode({invitationsCode: formData.invitationCodeInput.text}).then(()=>{
+      dispatch(shopCertification(payload, formData))
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
@@ -253,4 +283,41 @@ function handleProfileSubmit(payload, formData) {
     })
   }
 
+}
+
+function shopCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let certPayload = {
+      name:   formData.nameInput.text,
+      phone:  formData.phoneInput.text,
+      shopName:  formData.shopNameInput.text,
+      shopAddress:  formData.shopAddrInput.text,
+    }
+    lcAuth.shopCertification(certPayload).then((shop) => {
+      let cartificationAction = createAction(AuthTypes.SHOP_CERTIFICATION_SUCCESS)
+      dispatch(cartificationAction(shop))
+      if(payload.success){
+        payload.success(shop)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+
+}
+
+
+export function fetchAticle() {
+  return (dispatch, getState) => {
+    lcArticle.getArticles().then((article) => {
+      let updateColumnAction = createAction(ArticleActionTypes.UPDATE_ARTICLES)
+      dispatch(updateColumnAction({article: article}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }

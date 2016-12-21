@@ -26,9 +26,9 @@ export class BannerItem extends BannerItemConfig {
 }
 
 export const AnnouncementItemConfig = Record({
-  type:undefined,//公告类型:0-home主页,1-local本地,...
-  title: undefined, //公告标题
-  url: undefined, //公告跳转地址
+  type:undefined,//是否显示在首页
+  title: undefined, //标题
+  url: undefined, //图标
 })
 
 export class AnnouncementItem extends AnnouncementItemConfig {
@@ -44,10 +44,11 @@ export class AnnouncementItem extends AnnouncementItemConfig {
 }
 
 export const ColumnItemConfig = Record({
-  type:undefined,//公告类型:0-home主页,1-local本地,...
-  title: undefined, //公告标题
-  imageSource: undefined, //公告跳转地址
-})
+  objectId: undefined,
+  type:undefined,//是否显示在首页
+  title: undefined, // 标题
+  imageSource: undefined, //图标
+},'ColumnItemConfig')
 
 
 export class ColumnItem extends ColumnItemConfig {
@@ -58,12 +59,44 @@ export class ColumnItem extends ColumnItemConfig {
       record.set('type', attrs.type)
       record.set('title', attrs.title)
       record.set('imageSource', attrs.imageSource)
+      record.set('objectId',lcObj.id)
     })
   }
 }
+export const ArticleItemConfig = Record({
+  title: undefined , //标题
+  url: undefined , //文章来源
+  // enable: undefined  //是否启用
+  category: undefined ,//(ArticleCategory.type)  分类
+  abstract: undefined,  //简介
+  image: undefined , //展示图片
+  author: undefined , //作者
+  articleId: undefined//唯一识别码
+},'ArticleItemStruc')
+
+export class ArticleItem extends ArticleItemConfig {
+  static fromLeancloudObject(lcObj) {
+    let articleItem = new ArticleItemConfig()
+    let attrs = lcObj.attributes
+    return articleItem.withMutations((record)=> {
+      record.set('objectId',lcObj.id)
+      record.set('title', attrs.title)
+      record.set('url', attrs.url)
+      record.set('category', attrs.category)
+      record.set('image', attrs.image)
+      record.set('abstract', attrs.abstract)
+      record.set('author',attrs.author)
+
+    })
+  }
+}
+
 export const TopicsItemConfig = Record({
   isPicked:undefined,//是否精选
   title: undefined, //话题名称
+  image: undefined, //图片
+  introduction: undefined, //介绍
+  objectId: undefined
 }, 'TopicsItemConfig')
 
 export class TopicsItem extends TopicsItemConfig {
@@ -73,14 +106,40 @@ export class TopicsItem extends TopicsItemConfig {
     return topicsItemConfig.withMutations((record)=> {
       record.set('isPicked', attrs.isPicked)
       record.set('title', attrs.title)
+      record.set('image', attrs.image)
+      record.set('introduction', attrs.introduction)
+      record.set('objectId', lcObj.id)
     })
   }
 }
+
+export const ShopCategoryConfig = Record({
+  status: 0, // 0-关闭, 1-启用
+  shopCategoryId: undefined,
+  imageSource: undefined,
+  text: undefined
+})
+
+export class ShopCategory extends ShopCategoryConfig {
+  static fromLeancloudObject(lcObj) {
+    let shopCategoryConfig = new ShopCategoryConfig()
+    let attrs = lcObj.attributes
+    return shopCategoryConfig.withMutations((record)=>{
+      record.set('status', attrs.status)
+      record.set('shopCategoryId', attrs.shopCategoryId)
+      record.set('imageSource', attrs.imageSource)
+      record.set('text', attrs.text)
+    })
+  }
+}
+
 export const Config = Record({
   banners: Map(),
   announcements: Map(),
   column: List(),
-  topics: Map()
+  topics: Map(),
+  article:List(),
+  shopCategories: List()
 }, 'Config')
 
 

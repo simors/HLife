@@ -49,6 +49,23 @@ export function fetchColumn() {
 }
 
 
+export function fetchArticle() {
+  return (dispatch, getState) => {
+    console.log('<><><><><><><><>')
+    lcConfig.getArticle().then((article) => {
+      let updateArticleAction = createAction(ConfigActionTypes.UPDATE_CONFIG_ARTICLES)
+      dispatch(updateArticleAction({article:article}))
+
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+
+
 export function getAllTopics(payload) {
   return (dispatch, getState) => {
     lcConfig.getTopics().then((topics) => {
@@ -56,6 +73,19 @@ export function getAllTopics(payload) {
       dispatch(updateTopicsAction({isPicked: true, topics: topics}))
     }).catch((error) => {
       if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopCategories(payload) {
+  return (dispatch, getState) => {
+    lcConfig.getShopCategories(payload).then((shopCategories) => {
+      let updateAction = createAction(ConfigActionTypes.UPDATE_CONFIG_SHOP_CATEGORIES)
+      dispatch(updateAction({shopCategories: shopCategories}))
+    }).catch((error) => {
+      if(payload.error){
         payload.error(error)
       }
     })
