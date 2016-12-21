@@ -54,7 +54,7 @@ export const scenes = Actions.create(
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
 
-      <Scene key="ARTICLES_ARTICLES" component={ArticleList}/>
+      <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
 
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
