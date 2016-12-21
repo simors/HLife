@@ -45,7 +45,7 @@ import {getColumn} from '../../selector/configSelector'
           return (
             <View key={key} style={styles.channelWrap}>
               <TouchableOpacity onPress={()=> {
-                Actions.ARTICLES_ARTICLES()
+                Actions.ARTICLES_ARTICLELIST({categoryId: value.id})
               }}>
                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
@@ -72,7 +72,6 @@ import {getColumn} from '../../selector/configSelector'
 
 const mapStateToProps = (state, ownProps) => {
   let column = getColumn(state, 'choice')
-  console.log("new column: ", column)
   return {
     column: column,
   }

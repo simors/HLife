@@ -17,13 +17,14 @@ import CommonWebView from '../components/common/CommonWebView'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
+import Profile from '../components/Mine/profile'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
-
+import PublishTopics from '../components/Find/PublishTopics'
 
 const styles = StyleSheet.create({
   container: {
@@ -52,14 +53,15 @@ export const scenes = Actions.create(
       <Scene key="PICKER_TEST" component={PickerTest} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
+      <Scene key="PROFILE" component={Profile} />
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
 
-      <Scene key="ARTICLES_ARTICLES" component={ArticleList}/>
-
+      <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
+      <Scene key="PUBLISH" component={PublishTopics} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

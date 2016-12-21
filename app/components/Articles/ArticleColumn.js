@@ -46,13 +46,11 @@ class ArticleColumn extends Component {
         this.props.column.map((value, key) => {
           return (
             <View key={key} tabLabel={value.title} style={[styles.itemLayout,this.props.itemLayout &&this.props.itemLayout]}>
-              <TouchableOpacity onPress={()=> {
-                Actions.ARTICLES_ARTICLES()
-              }}>
+
                 {/*<Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>*/}
                 <Text >{value.title}</Text>
-                <ArticleShow/>
-              </TouchableOpacity>
+                <ArticleShow {...value}/>
+
             </View>
           )
         })

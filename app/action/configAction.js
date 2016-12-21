@@ -51,8 +51,7 @@ export function fetchColumn() {
 
 export function fetchArticle() {
   return (dispatch, getState) => {
-    console.log('<><><><><><><><>')
-    lcConfig.getArticle().then((article) => {
+     lcConfig.getArticle().then((article) => {
       let updateArticleAction = createAction(ConfigActionTypes.UPDATE_CONFIG_ARTICLES)
       dispatch(updateArticleAction({article:article}))
 

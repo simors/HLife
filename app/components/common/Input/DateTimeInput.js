@@ -35,7 +35,7 @@ class DateTimeInput extends Component {
   }
 
   validDate() {
-    return true
+    return {isVal:true, errMsg:"验证通过"}
   }
 
   dateChange(date) {
