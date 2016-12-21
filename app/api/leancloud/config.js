@@ -3,7 +3,7 @@
  */
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
-import {BannerItem, AnnouncementItem,ColumnItem, TopicsItem} from '../../models/ConfigModels'
+import {BannerItem, AnnouncementItem,ColumnItem, TopicsItem,ShopCategory,ArticleItem} from '../../models/ConfigModels'
 import ERROR from '../../constants/errorCode'
 
 export function getBanner(payload) {
@@ -53,9 +53,11 @@ export function getColumn() {
    // query.equalTo('type', type)
     return query.find().then(function(results) {
       let column = []
+     // console.log('===========>',results)
       results.forEach((result) => {
         column.push(ColumnItem.fromLeancloudObject(result))
       })
+    //  console.log('===========>',column)
       return new List(column)
     }, function(err) {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -77,6 +79,24 @@ export function getTopics() {
   })
 }
 
+
+export function getArticle(){
+ let query = new AV.Query('Articles')
+ return query.find().then(function(results) {
+    let article = []
+   console.log('results--------->',results)
+    results.forEach((result) => {
+      article.push(ArticleItem.fromLeancloudObject(result))
+    })
+   console.log('--------->',article)
+    return new List(article)
+  }, function(err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+// }
+}
+
 export function getPickedTopics(payload) {
   let isPicked = payload.isPicked
   let query = new AV.Query('Topics')
@@ -88,6 +108,22 @@ export function getPickedTopics(payload) {
     })
     return new List(topics)
   }, function(err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function getShopCategories(payload) {
+  let query = new AV.Query('ShopCategory')
+  query.equalTo('status', 1)
+  //query.limit(payload.limit ? payload.limit : 5)
+  return query.find().then(function(results){
+    let shopCategories = []
+    results.forEach((result)=>{
+      shopCategories.push(ShopCategory.fromLeancloudObject(result))
+    })
+    return new List(shopCategories)
+  }, function(err){
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
