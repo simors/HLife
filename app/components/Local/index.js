@@ -167,8 +167,8 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
-  const shopCategories = selectShopCategories(state)
-  
+  const shopCategories = selectShopCategories(state, 5)
+
   return {
     banner: banner,
     shopCategories: shopCategories,

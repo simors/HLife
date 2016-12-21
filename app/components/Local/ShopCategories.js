@@ -76,6 +76,10 @@ export default class ShopCategories extends Component {
     return categoryHeight
   }
 
+  _showMoreShopCategoriesModal() {
+
+  }
+
   renderCategories() {
     let shopCategoriesViews = <View />
     if(this.props.shopCategories && this.props.shopCategories.length) {
@@ -95,6 +99,17 @@ export default class ShopCategories extends Component {
           </View>
         )
       })
+      shopCategoriesViews.push(
+        <View
+          style={{width: categoryWidth, height: categoryHeight}}
+          key={'shop_category_more'}
+        >
+          <ShopCategory
+            imageSource={require("../../assets/images/local_more.png")}
+            text='更多服务'
+            onPress={this._showMoreShopCategoriesModal.bind(this)}
+          />
+        </View>)
     }
     return shopCategoriesViews
   }

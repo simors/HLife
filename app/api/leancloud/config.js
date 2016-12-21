@@ -98,6 +98,7 @@ export function getPickedTopics(payload) {
 export function getShopCategories(payload) {
   let query = new AV.Query('ShopCategory')
   query.equalTo('status', 1)
+  //query.limit(payload.limit ? payload.limit : 5)
   return query.find().then(function(results){
     let shopCategories = []
     results.forEach((result)=>{
