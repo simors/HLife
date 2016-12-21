@@ -36,7 +36,7 @@ const articleContent ={
   initValue: '\<p\>输入正文...\<\/p\>'
 }
 
-class PublishArticle extends Component {
+class PublishTopics extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -96,7 +96,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishArticle)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)
 
 const styles = StyleSheet.create({
   body: {
