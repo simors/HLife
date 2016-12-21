@@ -42,6 +42,26 @@ import {fetchArticle} from '../../action/configAction'
     })
   }
 
+   renderArticles() {
+     if (this.props.article) {
+       return (
+         this.props.article.map((value, key) => {
+           let imageCount = value.images.size
+           return (
+             <View key={key} style={styles.channelWrap}>
+               <TouchableOpacity onPress={()=> {
+                 Actions.ARTICLES_ARTICLELIST({categoryId: value.id})
+               }}>
+                 <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
+                 <Text style={styles.channelText}>{value.title}</Text>
+               </TouchableOpacity>
+             </View>
+           )
+         })
+       )
+     }
+   }
+
   render(){
     return(
       <View style={styles.container}>
@@ -62,8 +82,8 @@ import {fetchArticle} from '../../action/configAction'
   }
 }
 const mapStateToProps = (state, ownProps) => {
-  let article = getArticle(state, 'this.props.category')
-  console.log("new article: ", article)
+  let article = getArticle(state, ownProps.categoryId)
+  //console.log("new article: ", article)
   return {
     article: article,
   }

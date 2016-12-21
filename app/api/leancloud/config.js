@@ -53,11 +53,9 @@ export function getColumn() {
    // query.equalTo('type', type)
     return query.find().then(function(results) {
       let column = []
-     // console.log('===========>',results)
-      results.forEach((result) => {
+   results.forEach((result) => {
         column.push(ColumnItem.fromLeancloudObject(result))
       })
-    //  console.log('===========>',column)
       return new List(column)
     }, function(err) {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -84,12 +82,10 @@ export function getArticle(){
  let query = new AV.Query('Articles')
  return query.find().then(function(results) {
     let article = []
-   console.log('results--------->',results)
     results.forEach((result) => {
       article.push(ArticleItem.fromLeancloudObject(result))
     })
-   console.log('--------->',article)
-    return new List(article)
+     return new List(article)
   }, function(err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

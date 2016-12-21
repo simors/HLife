@@ -39,7 +39,6 @@ class Categorys extends Component {
     return (
       this.props.column.map((value, key) => {
         if (key >= begin && key < begin + 4) {
-          console.log('============>', key)
           return (
             <View key={key} style={styles.channelWrap}>
                 <TouchableOpacity onPress={()=> {
@@ -47,7 +46,6 @@ class Categorys extends Component {
                 <Image style={[styles.defaultImageStyles, this.props.imageStyle]} source={{uri: value.imageSource}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
               </TouchableOpacity>
-              <Text>test3</Text>
             </View>
           )
         }
@@ -146,7 +144,6 @@ Categorys.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   let column = getColumn(state)
-  console.log("new column========>: ", column)
   return {
     column: column,
   }

@@ -44,7 +44,7 @@ export class AnnouncementItem extends AnnouncementItemConfig {
 }
 
 export const ColumnItemConfig = Record({
-  objectId: undefined,
+  id: undefined,
   type:undefined,//是否显示在首页
   title: undefined, // 标题
   imageSource: undefined, //图标
@@ -59,34 +59,32 @@ export class ColumnItem extends ColumnItemConfig {
       record.set('type', attrs.type)
       record.set('title', attrs.title)
       record.set('imageSource', attrs.imageSource)
-      record.set('objectId',lcObj.id)
+      record.set('id',lcObj.id)
     })
   }
 }
 export const ArticleItemConfig = Record({
   title: undefined , //标题
   url: undefined , //文章来源
-  // enable: undefined  //是否启用
-  category: undefined ,//(ArticleCategory.type)  分类
+ categoryId: undefined ,//(ArticleCategory.type)  分类
   abstract: undefined,  //简介
-  image: undefined , //展示图片
+  images: undefined , //展示图片
   author: undefined , //作者
   articleId: undefined//唯一识别码
-},'ArticleItemStruc')
+},'ArticleItemConfig')
 
 export class ArticleItem extends ArticleItemConfig {
   static fromLeancloudObject(lcObj) {
     let articleItem = new ArticleItemConfig()
     let attrs = lcObj.attributes
     return articleItem.withMutations((record)=> {
-      record.set('objectId',lcObj.id)
-      record.set('title', attrs.title)
-      record.set('url', attrs.url)
-      record.set('category', attrs.category)
-      record.set('image', attrs.image)
-      record.set('abstract', attrs.abstract)
-      record.set('author',attrs.author)
-
+     record.set('title',attrs.title)
+      record.set('url',attrs.url)
+      record.set('categoryId',attrs.Category.id)
+      record.set('abstract',attrs.abstract)
+      record.set('images',attrs.images)
+      record.set('author',attrs.Author)
+      record.set('articleId',lcObj.id)
     })
   }
 }

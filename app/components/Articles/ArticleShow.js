@@ -30,6 +30,27 @@ export default class ArticleShow extends Component{
   {
     super(props)
   }
+  renderArticles() {
+    if (this.props.article) {
+      return (
+        this.props.article.map((value, key) => {
+          let imageCount = value.images.size
+          return (
+            <View key={key} style={styles.channelWrap}>
+              <TouchableOpacity onPress={()=> {
+                Actions.ARTICLES_ARTICLELIST({categoryId: value.id})
+              }}>
+                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
+                <Text style={styles.channelText}>{value.title}</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        })
+      )
+    }
+  }
+
+
   render(){
     return(
       <View style={styles.container}>

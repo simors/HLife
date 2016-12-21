@@ -113,9 +113,7 @@ function handleUpdateConfigColumns(state, action) {
 
 function handleUpdateConfigArticles(state, action) {
   let payload = action.payload
-
-  state = state.set('Article', payload)
-
+  state = state.set('article', payload)
   return state
 }
 
