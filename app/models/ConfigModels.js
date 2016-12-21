@@ -84,11 +84,33 @@ export class TopicsItem extends TopicsItemConfig {
     })
   }
 }
+
+export const ShopCategoryConfig = Record({
+  status: 0, // 0-关闭, 1-启用
+  shopCategoryId: undefined,
+  imageSource: undefined,
+  text: undefined
+})
+
+export class ShopCategory extends ShopCategoryConfig {
+  static fromLeancloudObject(lcObj) {
+    let shopCategoryConfig = new ShopCategoryConfig()
+    let attrs = lcObj.attributes
+    return shopCategoryConfig.withMutations((record)=>{
+      record.set('status', attrs.status)
+      record.set('shopCategoryId', attrs.shopCategoryId)
+      record.set('imageSource', attrs.imageSource)
+      record.set('text', attrs.text)
+    })
+  }
+}
+
 export const Config = Record({
   banners: Map(),
   announcements: Map(),
   column: List(),
-  topics: Map()
+  topics: Map(),
+  shopCategories: List()
 }, 'Config')
 
 

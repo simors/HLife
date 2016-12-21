@@ -47,3 +47,7 @@ export function getTopics(state) {
 export function getTopic(state) {
   return getTopics(state)[true]
 }
+
+export function selectShopCategories(state) {
+  return getConfig(state).shopCategories
+}

@@ -15,6 +15,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigColumns(state,action)
     case ConfigActionTypes.UPDATE_CONFIG_TOPICS:
       return handleUpdateConfigTopics(state, action)
+    case ConfigActionTypes.UPDATE_CONFIG_SHOP_CATEGORIES:
+      return handleUpdateConfigShopCategories(state, action)
     default:
       return state
   }
@@ -127,6 +129,15 @@ function initColumn(column) {
     columnItems.push(new ColumnItemConfig(columnItem))
   })
   return new List(columnItems)
+}
+
+function handleUpdateConfigShopCategories(state, action) {
+  console.log('handleUpdateConfigShopCategories=', action)
+  let payload = action.payload
+  let shopCategories = payload.shopCategories
+  //console.log('handleUpdateConfigShopCategories.12=', shopCategories)
+  state = state.set('shopCategories', shopCategories)
+  return state
 }
 
 function onRehydrate(state, action) {
