@@ -171,7 +171,7 @@ const mapStateToProps = (state, ownProps) => {
   let shopCategory = {
     imageSource:require("../../assets/images/local_movement.png"),
     text: '健身美容',
-    url: 'https://www.baidu.com/'
+    shopCategoryId: 1
   }
   shopCategories.push(shopCategory)
   shopCategories.push(shopCategory)

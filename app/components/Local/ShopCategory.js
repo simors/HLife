@@ -17,21 +17,28 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 
-export default class ShopCategories extends Component {
+export default class ShopCategory extends Component {
   constructor(props) {
     super(props)
   }
 
+  onPress() {
+    Actions.SHOP_CATEGORY_LIST({shopCategoryId: this.props.shopCategoryId})
+  }
+
   render() {
     return (
-      <View style={[styles.shopCategory, this.props.containerStyle]}>
+      <TouchableOpacity
+        style={[styles.shopCategory, this.props.containerStyle]}
+        onPress={this.onPress.bind(this)}
+      >
         <Image
           style={[styles.image, this.props.imageStyle]}
           source={typeof(this.props.imageSource) == 'string'
               ? {uri: this.props.imageSource} : this.props.imageSource}
         />
         <Text style={[styles.text, this.props.textStyle]}>{this.props.text}</Text>
-      </View>
+      </TouchableOpacity>
     )
   }
 }

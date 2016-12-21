@@ -86,6 +86,7 @@ export default class ShopCategories extends Component {
             <ShopCategory
               imageSource={item.imageSource}
               text={item.text}
+              shopCategoryId={item.shopCategoryId}
             />
           </View>
         )

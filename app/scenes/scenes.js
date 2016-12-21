@@ -22,6 +22,7 @@ import ArticleList from '../components/Articles/ArticleList'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
+import ShopCategoryList from '../components/shop/ShopCategoryList'
 
 
 const styles = StyleSheet.create({
@@ -58,6 +59,7 @@ export const scenes = Actions.create(
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
+      <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
