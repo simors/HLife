@@ -52,8 +52,12 @@ export default class ShopCategories extends Component {
 
   _totalRow() {
     let totalRow = 0
-    if(this.props.shopCategories) {
-      totalRow = this.props.shopCategories.length / 2
+    if(this.props.shopCategories && this.props.shopCategories.length) {
+      if(this.props.shopCategories.length % 2 == 0) {
+        totalRow = this.props.shopCategories.length / 2
+      }else{
+        totalRow = (this.props.shopCategories.length + 1) / 2
+      }
     }
     return totalRow
   }
@@ -65,7 +69,7 @@ export default class ShopCategories extends Component {
 
   _getCategoryHeight() {
     let categoryHeight = this.state.height / 3
-    if(this.props.shopCategories) {
+    if(this.props.shopCategories && this.props.shopCategories.length) {
       let totalRow = this._totalRow()
       categoryHeight = this.state.height / totalRow
     }
@@ -74,7 +78,7 @@ export default class ShopCategories extends Component {
 
   renderCategories() {
     let shopCategoriesViews = <View />
-    if(this.props.shopCategories) {
+    if(this.props.shopCategories && this.props.shopCategories.length) {
       let categoryWidth = this._getCategoryWidth()
       let categoryHeight = this._getCategoryHeight()
       shopCategoriesViews = this.props.shopCategories.map((item, index)=>{
@@ -96,8 +100,8 @@ export default class ShopCategories extends Component {
   }
 
   renderRowLines() {
-    let rowLineViews = null
-    if(this.props.shopCategories) {
+    let rowLineViews = <View />
+    if(this.props.shopCategories && this.props.shopCategories.length) {
       let totalRow = this._totalRow()
       let categoryHeight = this._getCategoryHeight()
       rowLineViews = Array.apply(null,Array(totalRow - 1)).map(function(value, index){
@@ -110,11 +114,19 @@ export default class ShopCategories extends Component {
     return rowLineViews
   }
 
+  renderColLine() {
+    if(this.props.shopCategories && this.props.shopCategories.length) {
+      return (
+        <View style={[styles.colLine, {left: this.state.width / 2}]}/>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={[styles.wrapper]} onLayout={this._calContainer}>
         {this.renderCategories()}
-        <View style={[styles.colLine, {left: this.state.width / 2}]}/>
+        {this.renderColLine()}
         {this.renderRowLines()}
       </View>
     )

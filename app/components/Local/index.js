@@ -26,8 +26,8 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
-import {getBanner} from '../../selector/configSelector'
-import {fetchBanner,} from '../../action/configAction'
+import {getBanner, selectShopCategories} from '../../selector/configSelector'
+import {fetchBanner,fetchShopCategories} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -49,6 +49,7 @@ class Local extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
+      this.props.fetchShopCategories()
     })
 
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
@@ -79,7 +80,7 @@ class Local extends Component {
   }
 
   renderShopCategoryColumn() {
-    if(this.props.shopCategories) {
+    if(this.props.shopCategories && this.props.shopCategories.length) {
       return (
         <View style={styles.moduleB}>
           <ShopCategories
@@ -166,20 +167,8 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
-
-  let shopCategories = []
-  let shopCategory = {
-    imageSource:require("../../assets/images/local_movement.png"),
-    text: '健身美容',
-    shopCategoryId: 1
-  }
-  shopCategories.push(shopCategory)
-  shopCategories.push(shopCategory)
-  shopCategories.push(shopCategory)
-  shopCategories.push(shopCategory)
-  shopCategories.push(shopCategory)
-  shopCategories.push(shopCategory)
-
+  const shopCategories = selectShopCategories(state)
+  
   return {
     banner: banner,
     shopCategories: shopCategories,
@@ -189,6 +178,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
+  fetchShopCategories
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)

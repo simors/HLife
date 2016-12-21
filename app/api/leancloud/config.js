@@ -3,7 +3,7 @@
  */
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
-import {BannerItem, AnnouncementItem,ColumnItem, TopicsItem,ArticleItem} from '../../models/ConfigModels'
+import {BannerItem, AnnouncementItem,ColumnItem, TopicsItem,ShopCategory,ArticleItem} from '../../models/ConfigModels'
 import ERROR from '../../constants/errorCode'
 
 export function getBanner(payload) {
@@ -84,7 +84,7 @@ export function getArticle(){
  let query = new AV.Query('Articles')
  return query.find().then(function(results) {
     let article = []
-   console.log('--------->',article)
+   console.log('results--------->',results)
     results.forEach((result) => {
       article.push(ArticleItem.fromLeancloudObject(result))
     })
@@ -108,6 +108,21 @@ export function getPickedTopics(payload) {
     })
     return new List(topics)
   }, function(err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function getShopCategories(payload) {
+  let query = new AV.Query('ShopCategory')
+  query.equalTo('status', 1)
+  return query.find().then(function(results){
+    let shopCategories = []
+    results.forEach((result)=>{
+      shopCategories.push(ShopCategory.fromLeancloudObject(result))
+    })
+    return new List(shopCategories)
+  }, function(err){
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

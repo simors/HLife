@@ -78,3 +78,16 @@ export function getAllTopics(payload) {
     })
   }
 }
+
+export function fetchShopCategories(payload) {
+  return (dispatch, getState) => {
+    lcConfig.getShopCategories(payload).then((shopCategories) => {
+      let updateAction = createAction(ConfigActionTypes.UPDATE_CONFIG_SHOP_CATEGORIES)
+      dispatch(updateAction({shopCategories: shopCategories}))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
