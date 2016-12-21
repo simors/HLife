@@ -68,7 +68,10 @@ class Local extends Component {
       default:
         return <View />
     }
+  }
 
+  _showMoreShopCategoriesModal() {
+    
   }
 
   renderLocalHealthColumn() {
@@ -85,6 +88,7 @@ class Local extends Component {
         <View style={styles.moduleB}>
           <ShopCategories
             shopCategories={this.props.shopCategories}
+            morePress={this._showMoreShopCategoriesModal.bind(this)}
           />
         </View>
       )
