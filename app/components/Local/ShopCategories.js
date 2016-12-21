@@ -34,13 +34,13 @@ export default class ShopCategories extends Component {
   _initState(props) {
     let initState = {
       width: PAGE_WIDTH,
-      height: normalizeH(183),
+      height: undefined,
     }
     return initState
   }
 
   _calContainer(e) {
-    if (this.state.height != e.nativeEvent.layout.height) {
+    if (this.props.fixedHeight && this.state.height != e.nativeEvent.layout.height) {
       let width = e.nativeEvent.layout.width
       let height = e.nativeEvent.layout.height
       this.setState({
@@ -68,8 +68,8 @@ export default class ShopCategories extends Component {
   }
 
   _getCategoryHeight() {
-    let categoryHeight = this.state.height / 3
-    if(this.props.shopCategories && this.props.shopCategories.length) {
+    let categoryHeight = normalizeH(60)
+    if(this.props.fixedHeight && this.props.shopCategories && this.props.shopCategories.length) {
       let totalRow = this._totalRow()
       categoryHeight = this.state.height / totalRow
     }
@@ -95,17 +95,20 @@ export default class ShopCategories extends Component {
           </View>
         )
       })
-      shopCategoriesViews.push(
-        <View
-          style={{width: categoryWidth, height: categoryHeight}}
-          key={'shop_category_more'}
-        >
-          <ShopCategory
-            imageSource={require("../../assets/images/local_more.png")}
-            text='更多服务'
-            onPress={this.props.morePress}
-          />
-        </View>)
+      if(this.props.morePress) {
+        shopCategoriesViews.push(
+          <View
+            style={{width: categoryWidth, height: categoryHeight}}
+            key={'shop_category_more'}
+          >
+            <ShopCategory
+              imageSource={require("../../assets/images/local_more.png")}
+              text='更多服务'
+              onPress={this.props.morePress}
+            />
+          </View>)
+      }
+
     }
     return shopCategoriesViews
   }
@@ -114,9 +117,17 @@ export default class ShopCategories extends Component {
     let rowLineViews = <View />
     if(this.props.shopCategories && this.props.shopCategories.length) {
       let totalRow = this._totalRow()
+      let start = 1
+      if(this.props.hasTopBorder) {
+        start = 0
+        totalRow += 1
+      }
+      if(this.props.hasBottomBorder) {
+        totalRow += 1
+      }
       let categoryHeight = this._getCategoryHeight()
       rowLineViews = Array.apply(null,Array(totalRow - 1)).map(function(value, index){
-        let _top = categoryHeight * (index + 1)
+        let _top = categoryHeight * (index + start)
         return (
           <View style={[styles.rowLine, {top: _top}]} key={'row_line_' + index} />
         )

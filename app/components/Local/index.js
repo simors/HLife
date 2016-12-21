@@ -18,13 +18,16 @@ import {
   ScrollView,
   ListView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  Modal
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+// import Modal from 'react-native-modalbox'
 
 import {getBanner, selectShopCategories} from '../../selector/configSelector'
 import {fetchBanner,fetchShopCategories} from '../../action/configAction'
@@ -33,6 +36,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import CommonBanner from '../common/CommonBanner'
+import CommonModal from '../common/CommonModal'
 import LocalHealth from './LocalHealth'
 import ShopCategories from './ShopCategories'
 import PickedTopic from './PickedTopic'
@@ -44,6 +48,9 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class Local extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      modalVisible : false
+    }
   }
 
   componentDidMount() {
@@ -71,7 +78,9 @@ class Local extends Component {
   }
 
   _showMoreShopCategoriesModal() {
-    
+    this.setState({
+      modalVisible: true
+    })
   }
 
   renderLocalHealthColumn() {
@@ -88,6 +97,7 @@ class Local extends Component {
         <View style={styles.moduleB}>
           <ShopCategories
             shopCategories={this.props.shopCategories}
+            fixedHeight={true}
             morePress={this._showMoreShopCategoriesModal.bind(this)}
           />
         </View>
@@ -95,6 +105,24 @@ class Local extends Component {
     } else {
       return (
         <View style={styles.moduleB}></View>
+      )
+    }
+  }
+
+  renderAllShopCategories() {
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      return (
+        <View style={styles.modalCnt}>
+          <ShopCategories
+            shopCategories={this.props.allShopCategories}
+            hasTopBorder={true}
+            hasBottomBorder={true}
+          />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.modalCnt}></View>
       )
     }
   }
@@ -149,6 +177,16 @@ class Local extends Component {
             loadMoreData={()=>{this.loadMoreData()}}
           />
         </View>
+
+        <CommonModal
+          modalVisible={this.state.modalVisible}
+          modalTitle="更多栏目"
+        >
+          <ScrollView style={{backgroundColor:'#fff'}}>
+            {this.renderAllShopCategories()}
+          </ScrollView>
+        </CommonModal>
+
       </View>
     )
   }
@@ -171,11 +209,13 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
-  const shopCategories = selectShopCategories(state, 5)
+  const allShopCategories = selectShopCategories(state)
+  const shopCategories = allShopCategories.slice(0, 5)
 
   return {
     banner: banner,
     shopCategories: shopCategories,
+    allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray)
   }
 }
