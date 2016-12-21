@@ -85,6 +85,24 @@ export function certification(payload) {
   
 }
 
+export function profileSubmit(payload) {
+  let Profile = AV.Object.extend('Profiles')
+  let profile = new Profile()
+
+  profile.set('nickName', payload.nickname)
+  profile.set('favicon', payload.favicon)
+  profile.set('phone', payload.phone)
+  profile.set('gender', payload.gender)
+  profile.set('birthday', payload.birthday)
+
+    return profile.save().then(function (profile) {
+      console.log("profileSubmit success")
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+  }
+
 export function shopCertification(payload) {
   let Shop = AV.Object.extend('Shop')
   let shop = new Shop()
