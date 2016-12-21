@@ -13,6 +13,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import { GiftedChat } from 'react-native-gifted-chat'
 import Header from '../common/Header'
+import CustomInputToolbar from './CustomInputToolbar'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -48,6 +49,12 @@ class Chatroom extends Component {
     })
   }
 
+  renderCustomInputToolbar(toobarProps) {
+    return (
+      <CustomInputToolbar {...toobarProps}/>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -66,6 +73,7 @@ class Chatroom extends Component {
             avatar: 'https://facebook.github.io/react/img/logo_og.png',
           }}
           loadEarlier={true}
+          renderInputToolbar={(toobarProps) => this.renderCustomInputToolbar(toobarProps)}
         />
       </View>
     )

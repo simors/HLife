@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} initial={true}/>
+      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
       <Scene key="LOGIN" component={Login}/>
       <Scene key="REGIST" component={Regist} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
