@@ -3,11 +3,11 @@
  */
 import {Map, List, Record} from 'immutable'
 
-export const MsgClientRecord = Record({
+export const MessengerRecord = Record({
   client: undefined,
-  conversationList: List(),
+  conversationMap: Map(),
   unReadMsgCnt: 0,
-}, 'MsgClientRecord')
+}, 'MessengerRecord')
 
 export const MessageRecord = Record({
   id: undefined,
@@ -82,6 +82,6 @@ export class Conversation extends ConversationRecord {
   }
 }
 
-export class Messenger extends MsgClientRecord {
+export class Messenger extends MessengerRecord {
 
 }

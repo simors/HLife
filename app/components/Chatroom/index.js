@@ -8,13 +8,15 @@ import {
   Dimensions,
   Image,
 } from 'react-native'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import { GiftedChat } from 'react-native-gifted-chat'
 import Header from '../common/Header'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-export default class Chatroom extends Component {
+class Chatroom extends Component {
   constructor(props) {
     super(props)
     this.state = {messages: []}
@@ -60,7 +62,8 @@ export default class Chatroom extends Component {
           onSend={this.onSend}
           user={{
             _id: 1,
-            name: '杨阳'
+            name: '杨阳',
+            avatar: 'https://facebook.github.io/react/img/logo_og.png',
           }}
           loadEarlier={true}
         />
@@ -68,6 +71,15 @@ export default class Chatroom extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+  }
+}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chatroom)
 
 const styles = StyleSheet.create({
   container: {

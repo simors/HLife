@@ -8,7 +8,9 @@ import {TypedMessage, messageType, Realtime} from 'leancloud-realtime'
 import {TypedMessagePlugin}from 'leancloud-realtime-plugin-typed-messages'
 import * as LC_CONFIG from '../constants/appConfig'
 import * as msgTypes from '../constants/messageActionTypes'
+import {Conversation, Message} from '../models/messageModels'
 import {activeUserId} from '../selector/authSelector'
+import {messengerClient} from '../selector/messageSelector'
 
 class TextMessage extends TypedMessage {
 }
@@ -60,6 +62,9 @@ realtime.register(CommentMessage)
 realtime.register(LikeMessage)
 realtime.register(HearsayMessage)
 
+const initMessenger = createAction(msgTypes.INIT_MESSENGER_CLIENT)
+const onCreateConversation = createAction(msgTypes.ON_CONVERSATION_CREATED)
+
 export function initMessageClient(payload) {
   return (dispatch, getState) => {
     const userId = activeUserId(getState())
@@ -74,14 +79,14 @@ export function initMessageClient(payload) {
       tag = 'mobile'
     }
 
-    return dispatch(initLeancloudClient({
+    return dispatch(initLcMessenger({
       tag: tag,
       userId: userId,
     }))
   }
 }
 
-export function initLeancloudClient(payload) {
+export function initLcMessenger(payload) {
   return (dispatch) => {
     realtime.createIMClient(payload.userId, {}, payload.tag).then((client) => {
       client.on('message', function (message, conversation) {
@@ -101,15 +106,138 @@ export function initLeancloudClient(payload) {
         console.log('网络连接已恢复');
       })
 
-      dispatch(createAction(msgTypes.INIT_MESSAGE_CLIENT)({client: client}))
+      dispatch(initMessenger({client: client})).then(() => {
+        console.log('聊天室客户端创建成功')
+      })
     }).catch((error) => {
       console.log(error)
     })
   }
 }
 
-function onReceiveMsg(message, conversation) {
+export function createConversation(payload) {
+  return (dispatch, getState) => {
+    dispatch(createLcConversation(payload)).then((conversation) => {
+      dispatch(onCreateConversation(conversation))
+      if (payload.success) {
+        payload.success({meesage: '创建对话成功'})
+      }
+    }).catch((error) => {
+      console.log('failed to create conversation: ', error)
+    })
+  }
+}
+
+export function sendMessage(payload) {
   return (dispatch, getState) => {
 
+    let attributes = {}
+    if (payload.type == msgTypes.MSG_IMAGE) {
+      attributes['localUri'] = payload.uri
+    } else if (payload.type == msgTypes.MSG_AUDIO) {
+      attributes['localUri'] = payload.uri
+      attributes['duration'] = payload.duration
+    }
+
+    let msg = new Message({
+      id: payload.msgId,
+      from: activeUserId(getState()),
+      type: payload.type,
+      text: payload.text,
+      conversation: payload.conversationId,
+      status: 'created',
+      attributes: Map(attributes)
+    })
+
+    dispatch(sendLcTypedMessage(payload))
   }
+}
+
+function createLcConversation(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+      console.log('leancloud Messenger init failed, can\'t get client')
+    }
+    return client.createConversation({
+      members: payload.members,
+      name: payload.name,
+      unique: true,
+    }).then((conversation) => {
+      return Conversation.fromLeancloudConversation(conversation)
+    })
+  }
+}
+
+function sendLcTypedMessage(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+      console.log('leancloud Messenger init failed, can\'t get client')
+    }
+
+    return client.getConversation(payload.conversationId).then((conversation)=> {
+      switch (payload.type) {
+        case msgTypes.MSG_IMAGE:
+          return sendImageMessage(conversation, payload)
+
+        case msgTypes.MSG_AUDIO:
+          return sendAudioMessage(conversation, payload)
+
+        case msgTypes.MSG_TEXT:
+        default:
+          return sendTextMessage(conversation, payload)
+      }
+    })
+  }
+}
+
+function onReceiveMsg(message, conversation) {
+  return (dispatch, getState) => {
+    console.log("receive message:", message)
+    console.log("in conversation: ", conversation)
+  }
+}
+
+function sendTextMessage(conversation, payload) {
+  let message = new TextMessage()
+  message.setText(payload.text)
+  return conversation.send(message).then((message)=> {
+    return Message.fromLeancloudMessage(message, payload)
+  })
+}
+
+function sendImageMessage(conversation, payload) {
+  let message = new ImageMessage()
+  message.setText(payload.text)
+  let file = new AV.File(payload.fileName, {blob: {uri: payload.uri}})
+  return file.save().then((savedFile)=> {
+    message.setAttributes({
+      'mediaId': savedFile.attributes.url
+    })
+    return conversation.send(message)
+  }).then((message)=> {
+    return Message.fromLeancloudMessage(message, payload)
+  })
+}
+
+function sendAudioMessage(conversation, payload) {
+  let message = new AudioMessage()
+  message.setText(payload.text)
+  let file = new AV.File(payload.fileName, {blob: {uri: payload.uri}})
+  return file.save().then((savedFile)=> {
+    message.setAttributes({
+      'mediaId': savedFile.attributes.url,
+      'duration': payload.duration
+    })
+    return conversation.send(message)
+  }).then((message)=> {
+    return Message.fromLeancloudMessage(message, payload)
+  })
 }
