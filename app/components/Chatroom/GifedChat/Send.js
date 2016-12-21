@@ -1,15 +1,18 @@
-/**
- * Created by yangyang on 2016/12/21.
- */
-import React, {Component} from 'react'
+import React from 'react';
 import {
-  View,
-  TouchableOpacity,
   StyleSheet,
   Text,
-} from 'react-native'
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-export default class CustomSend extends Component {
+export default class Send extends React.Component {
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.props.text.trim().length === 0 && nextProps.text.trim().length > 0 || this.props.text.trim().length > 0 && nextProps.text.trim().length === 0) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
   render() {
     if (this.props.text.trim().length > 0) {
       return (
@@ -18,12 +21,13 @@ export default class CustomSend extends Component {
           onPress={() => {
             this.props.onSend({text: this.props.text.trim()}, true);
           }}
+          accessibilityTraits="button"
         >
           <Text style={[styles.text, this.props.textStyle]}>{this.props.label}</Text>
         </TouchableOpacity>
-      )
+      );
     }
-    return <View/>
+    return <View/>;
   }
 }
 
@@ -31,12 +35,9 @@ const styles = StyleSheet.create({
   container: {
     height: 44,
     justifyContent: 'flex-end',
-    backgroundColor: '#50E3C2',
-    borderRadius: 5,
-    paddingRight: 20,
   },
   text: {
-    color: '#FFFFFF',
+    color: '#0084ff',
     fontWeight: '600',
     fontSize: 17,
     backgroundColor: 'transparent',
@@ -46,10 +47,18 @@ const styles = StyleSheet.create({
   },
 });
 
-CustomSend.defaultProps = {
+Send.defaultProps = {
   text: '',
   onSend: () => {},
-  label: '发送',
+  label: 'Send',
   containerStyle: {},
   textStyle: {},
+};
+
+Send.propTypes = {
+  text: React.PropTypes.string,
+  onSend: React.PropTypes.func,
+  label: React.PropTypes.string,
+  containerStyle: View.propTypes.style,
+  textStyle: Text.propTypes.style,
 };

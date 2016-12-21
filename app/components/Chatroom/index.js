@@ -11,7 +11,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat } from './GifedChat/GiftedChat'
 import Header from '../common/Header'
 import CustomInputToolbar from './CustomInputToolbar'
 
