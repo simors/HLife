@@ -41,9 +41,9 @@ export class Find extends Component {
     return (
       <View style={styles.container}>
         <Header
+          leftType="none"
           title="发现"
-          rightType="text"
-          rightText=""
+          rightType="none"
         />
         <TabScrollView topics={this.props.topics} topicId={this.props.topicId} onSelected={(index) => this.getSelectedTab(index)} />
         <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=>{Actions.PUBLISH({topicId})}}  >
