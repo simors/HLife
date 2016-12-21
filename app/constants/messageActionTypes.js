@@ -10,3 +10,5 @@ export const MSG_REVIEW = 4
 export const MSG_COMMENT = 5
 export const MSG_LIKE = 6
 export const MSG_HEARSAY = 7
+
+export const INIT_MESSAGE_CLIENT = "INIT_MESSAGE_CLIENT"
