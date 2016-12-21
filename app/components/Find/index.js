@@ -35,12 +35,12 @@ export class Find extends Component {
           <Header
             leftPress={() => Actions.pop()}
             title="发现"
-            rightType="image"
-            rightImageSource={require("../../assets/images/home_message.png")}
+            rightType="text"
+            rightText=""
             rightPress={() => Actions.REGIST()}
           />
          <TabScrollView topics={this.props.topics} topicId={this.props.topicId}/>
-          <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=>{console.log('touched');}}  >
+          <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=>{Actions.PUBLISH()}}  >
             <Image source={require("../../assets/images/local_write@2x.png")} />
           </TouchableHighlight>
         </View>
