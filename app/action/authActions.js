@@ -17,6 +17,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   FORGET_PASSWORD: 'FORGET_PASSWORD',
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
   DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
+  PROFILE_SUBMIT: 'PROFILE_SUBMIT',
 }
 
 export function submitFormData(payload) {
@@ -43,6 +44,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION:
         dispatch(handleDoctorCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
+        dispatch(handleProfileSubmit(payload, formData))
         break
     }
   }
@@ -221,6 +225,27 @@ function doctorCertification(payload, formData) {
         dispatch(cartificationAction(doctor))
         payload.success(doctor)
       }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+
+}
+
+function handleProfileSubmit(payload, formData) {
+  console.log("handleProfileSubmit start")
+  return (dispatch, getState) => {
+    let profilePayload = {
+      nickname: formData.nicknameInput.text,
+      favicon: formData.faviconInput.text,
+      phone: formData.phoneInput.text,
+      birthday: formData.dtPicker.text,
+      gender: formData.genderInput.text,
+    }
+    lcAuth.profileSubmit(profilePayload).then((profile) => {
+
     }).catch((error) => {
       if(payload.error){
         payload.error(error)

@@ -17,6 +17,7 @@ import CommonWebView from '../components/common/CommonWebView'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
+import Profile from '../components/Mine/profile'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
 
 const styles = StyleSheet.create({
@@ -46,11 +47,13 @@ export const scenes = Actions.create(
       <Scene key="PICKER_TEST" component={PickerTest} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
+      <Scene key="PROFILE" component={Profile} />
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
-          <Scene key="WELLCHOOSEN" component={Home} />
+          <Scene key="WELLCHOOSEN" component={Home} initial={true} />
         </Scene>
 
         <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -61,7 +64,7 @@ export const scenes = Actions.create(
           <Scene key="FIND_INDEX" component={Find} />
         </Scene>
 
-        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}} initial={true}>
+        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}} >
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>

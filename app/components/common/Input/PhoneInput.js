@@ -18,7 +18,7 @@ import THEME from '../../../constants/themes/theme1'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
-class PhoneInput extends Component {
+class  PhoneInput extends Component {
 
 	constructor(props) {
 		super(props)
