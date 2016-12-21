@@ -56,7 +56,7 @@ export const scenes = Actions.create(
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
-          <Scene key="WELLCHOOSEN" component={Home} initial={true} />
+          <Scene key="WELLCHOOSEN" component={Home}/>
         </Scene>
 
         <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
