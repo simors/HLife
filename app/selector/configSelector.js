@@ -67,6 +67,9 @@ export function getTopic(state) {
   return getTopics(state)[true]
 }
 
-export function selectShopCategories(state) {
+export function selectShopCategories(state, num) {
+  if(num) {
+    return getConfig(state).shopCategories.slice(0, num)
+  }
   return getConfig(state).shopCategories
 }

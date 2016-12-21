@@ -23,7 +23,11 @@ export default class ShopCategory extends Component {
   }
 
   onPress() {
-    Actions.SHOP_CATEGORY_LIST({shopCategoryId: this.props.shopCategoryId})
+    if(this.props.shopCategoryId) {
+      Actions.SHOP_CATEGORY_LIST({shopCategoryId: this.props.shopCategoryId})
+    }else{
+      this.props.onPress()
+    }
   }
 
   render() {
