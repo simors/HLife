@@ -182,7 +182,7 @@ class Local extends Component {
           modalVisible={this.state.modalVisible}
           modalTitle="更多栏目"
         >
-          <ScrollView style={{backgroundColor:'#fff'}}>
+          <ScrollView>
             {this.renderAllShopCategories()}
           </ScrollView>
         </CommonModal>
