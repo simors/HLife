@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
   primary: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    paddingLeft: 5,
+    paddingRight: 5,
   },
 })
 

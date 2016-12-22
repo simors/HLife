@@ -26,6 +26,7 @@ import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
 import PublishTopics from '../components/Find/PublishTopics'
 import MessageBox from '../components/Message'
+import TextImageTest from '../components/common/Input/TextImageTest'
 
 const styles = StyleSheet.create({
   container: {
@@ -64,6 +65,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
+      <Scene key="TEXTIMAGE" component={TextImageTest} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
