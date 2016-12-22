@@ -27,24 +27,30 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export class Find extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      selectedTab: 0,
+    }
+  }
+
+  getSelectedTab(index) {
+    this.setState({selectedTab: index})
   }
 
   render() {
-      return (
-        <View style={styles.container}>
-          <Header
-            leftPress={() => Actions.pop()}
-            title="发现"
-            rightType="text"
-            rightText=""
-            rightPress={() => Actions.REGIST()}
-          />
-         <TabScrollView topics={this.props.topics} topicId={this.props.topicId}/>
-          <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=>{Actions.PUBLISH()}}  >
-            <Image source={require("../../assets/images/local_write@2x.png")} />
-          </TouchableHighlight>
-        </View>
-      )
+    let topicId = this.props.topics[this.state.selectedTab]
+    return (
+      <View style={styles.container}>
+        <Header
+          leftType="none"
+          title="发现"
+          rightType="none"
+        />
+        <TabScrollView topics={this.props.topics} topicId={this.props.topicId} onSelected={(index) => this.getSelectedTab(index)} />
+        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=>{Actions.PUBLISH({topicId})}}  >
+          <Image source={require("../../assets/images/local_write@2x.png")} />
+        </TouchableHighlight>
+      </View>
+    )
   }
 }
 

@@ -8,13 +8,17 @@ import {
   Dimensions,
   Image,
 } from 'react-native'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat } from './GifedChat/GiftedChat'
 import Header from '../common/Header'
+import CustomInputToolbar from './CustomInputToolbar'
+import CustomMessage from './CustomMessage'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-export default class Chatroom extends Component {
+class Chatroom extends Component {
   constructor(props) {
     super(props)
     this.state = {messages: []}
@@ -46,6 +50,18 @@ export default class Chatroom extends Component {
     })
   }
 
+  renderCustomInputToolbar(toobarProps) {
+    return (
+      <CustomInputToolbar {...toobarProps}/>
+    )
+  }
+
+  renderCustomMessage(messageProps) {
+    return (
+      <CustomMessage {...messageProps}/>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -53,21 +69,36 @@ export default class Chatroom extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="聊天室"
+          title={this.props.title}
         />
         <GiftedChat
           messages={this.state.messages}
           onSend={this.onSend}
           user={{
             _id: 1,
-            name: '杨阳'
+            name: '杨阳',
+            avatar: 'https://facebook.github.io/react/img/logo_og.png',
           }}
-          loadEarlier={true}
+          renderInputToolbar={(toobarProps) => this.renderCustomInputToolbar(toobarProps)}
+          renderMessage={(messageProps) => this.renderCustomMessage(messageProps)}
         />
       </View>
     )
   }
 }
+
+Chatroom.defaultProps = {
+  title: '聊天室'
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+  }
+}
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chatroom)
 
 const styles = StyleSheet.create({
   container: {

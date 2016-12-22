@@ -18,13 +18,16 @@ import {
   ScrollView,
   ListView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  Modal
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+// import Modal from 'react-native-modalbox'
 
 import {getBanner, selectShopCategories} from '../../selector/configSelector'
 import {fetchBanner,fetchShopCategories} from '../../action/configAction'
@@ -33,6 +36,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import CommonBanner from '../common/CommonBanner'
+import CommonModal from '../common/CommonModal'
 import LocalHealth from './LocalHealth'
 import ShopCategories from './ShopCategories'
 import PickedTopic from './PickedTopic'
@@ -44,6 +48,9 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class Local extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      modalVisible : false
+    }
   }
 
   componentDidMount() {
@@ -70,8 +77,32 @@ class Local extends Component {
     }
   }
 
-  _showMoreShopCategoriesModal() {
-    
+  _shopCategoryClick(shopCategoryId) {
+    if(shopCategoryId) {
+      this.closeModel(function(){
+        Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId})
+      })
+    }else{
+      this.openModel()
+    }
+  }
+
+  openModel(callback) {
+    this.setState({
+      modalVisible: true
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
+  }
+
+  closeModel(callback) {
+    this.setState({
+      modalVisible: false
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
   }
 
   renderLocalHealthColumn() {
@@ -88,13 +119,34 @@ class Local extends Component {
         <View style={styles.moduleB}>
           <ShopCategories
             shopCategories={this.props.shopCategories}
-            morePress={this._showMoreShopCategoriesModal.bind(this)}
+            fixedHeight={true}
+            onPress={this._shopCategoryClick.bind(this)}
+            showMore={true}
           />
         </View>
       )
     } else {
       return (
         <View style={styles.moduleB}></View>
+      )
+    }
+  }
+
+  renderAllShopCategories() {
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      return (
+        <View style={styles.modalCnt}>
+          <ShopCategories
+            shopCategories={this.props.allShopCategories}
+            hasTopBorder={true}
+            hasBottomBorder={true}
+            onPress={this._shopCategoryClick.bind(this)}
+          />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.modalCnt}></View>
       )
     }
   }
@@ -149,6 +201,17 @@ class Local extends Component {
             loadMoreData={()=>{this.loadMoreData()}}
           />
         </View>
+
+        <CommonModal
+          modalVisible={this.state.modalVisible}
+          modalTitle="更多栏目"
+          closeModal={() => this.closeModel()}
+        >
+          <ScrollView>
+            {this.renderAllShopCategories()}
+          </ScrollView>
+        </CommonModal>
+
       </View>
     )
   }
@@ -171,11 +234,26 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
-  const shopCategories = selectShopCategories(state, 5)
+  const allShopCategories = selectShopCategories(state)
+  const shopCategories = allShopCategories.slice(0, 5)
+
+  // let shopCategories = []
+  // let ts = {
+  //   imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
+  //   text: 'test',
+  //   shopCategoryId: 1
+  // }
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // allShopCategories = shopCategories
 
   return {
     banner: banner,
     shopCategories: shopCategories,
+    allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray)
   }
 }

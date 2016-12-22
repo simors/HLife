@@ -186,7 +186,7 @@ class Home extends Component {
           title="近来"
           rightType="image"
           rightImageSource={require("../../assets/images/home_message.png")}
-          rightPress={() => Actions.CHATROOM()}
+          rightPress={() => Actions.MESSAGE_BOX()}
         />
 
         <View style={styles.body}>

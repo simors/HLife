@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   Text,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 
@@ -18,13 +19,13 @@ export default class Launch extends Component {
   componentDidMount() {
     setTimeout(() => {
       Actions.HOME()
-      //Actions.LOGIN()
     }, 1000)
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar hidden={true} />
         <Text style={{}}>
           Welcome HLife
         </Text>
