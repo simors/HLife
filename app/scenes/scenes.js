@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar />
+      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
       <Scene key="LOGIN" component={Login}/>
       <Scene key="REGIST" component={Regist} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
@@ -65,7 +65,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
-      <Scene key="TEXTIMAGE" component={TextImageTest} initial={true}/>
+      <Scene key="TEXTIMAGE" component={TextImageTest} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
