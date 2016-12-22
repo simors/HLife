@@ -86,7 +86,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(MultilineText)
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
   },
   defaultInputStyle: {
     width: PAGE_WIDTH,
