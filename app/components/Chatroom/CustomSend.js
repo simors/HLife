@@ -23,7 +23,14 @@ export default class CustomSend extends Component {
         </TouchableOpacity>
       )
     }
-    return <View/>
+    return (
+      <TouchableOpacity
+        style={[styles.container, this.props.containerStyle]}
+        onPress={() => {}}
+      >
+        <Text style={[styles.text, this.props.textStyle]}>图片</Text>
+      </TouchableOpacity>
+    )
   }
 }
 
@@ -33,7 +40,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: '#50E3C2',
     borderRadius: 5,
-    paddingRight: 20,
   },
   text: {
     color: '#FFFFFF',

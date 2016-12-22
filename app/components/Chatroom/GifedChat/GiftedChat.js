@@ -410,7 +410,7 @@ class GiftedChat extends React.Component {
       return (
         <ActionSheet ref={component => this._actionSheetRef = component}>
           <View
-            style={styles.container}
+            style={[styles.container, this.props.containerStyle]}
             onLayout={(e) => {
               if (Platform.OS === 'android') {
                 // fix an issue when keyboard is dismissing during the initialization
@@ -458,6 +458,14 @@ class GiftedChat extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    ...Platform.select({
+      ios: {
+        marginTop: 65,
+      },
+      android: {
+        marginTop: 45
+      }
+    }),
   },
 });
 

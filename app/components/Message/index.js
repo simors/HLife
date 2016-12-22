@@ -41,6 +41,18 @@ class MessageBox extends Component {
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>我的服务</Text>
             </TouchableOpacity>
           </View>
+          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>评论</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>点赞</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     )
