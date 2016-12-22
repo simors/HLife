@@ -82,7 +82,7 @@ class Local extends Component {
       this.setState({
         modalVisible: false
       })
-      Actions.SHOP_CATEGORY_LIST({shopCategoryId: this.props.shopCategoryId})
+      Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId})
     }else{
       this.setState({
         modalVisible: true
