@@ -77,10 +77,18 @@ class Local extends Component {
     }
   }
 
-  _showMoreShopCategoriesModal() {
-    this.setState({
-      modalVisible: true
-    })
+  _shopCategoryClick(shopCategoryId) {
+    if(shopCategoryId) {
+      this.setState({
+        modalVisible: false
+      })
+      Actions.SHOP_CATEGORY_LIST({shopCategoryId: this.props.shopCategoryId})
+    }else{
+      this.setState({
+        modalVisible: true
+      })
+    }
+
   }
 
   renderLocalHealthColumn() {
@@ -98,7 +106,8 @@ class Local extends Component {
           <ShopCategories
             shopCategories={this.props.shopCategories}
             fixedHeight={true}
-            morePress={this._showMoreShopCategoriesModal.bind(this)}
+            onPress={this._shopCategoryClick.bind(this)}
+            showMore={true}
           />
         </View>
       )
@@ -117,6 +126,7 @@ class Local extends Component {
             shopCategories={this.props.allShopCategories}
             hasTopBorder={true}
             hasBottomBorder={true}
+            onPress={this._shopCategoryClick.bind(this)}
           />
         </View>
       )

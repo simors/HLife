@@ -90,12 +90,12 @@ export default class ShopCategories extends Component {
             <ShopCategory
               imageSource={item.imageSource}
               text={item.text}
-              shopCategoryId={item.shopCategoryId}
+              onPress={()=>this.props.onPress(item.shopCategoryId)}
             />
           </View>
         )
       })
-      if(this.props.morePress) {
+      if(this.props.showMore) {
         shopCategoriesViews.push(
           <View
             style={{width: categoryWidth, height: categoryHeight}}
@@ -104,7 +104,7 @@ export default class ShopCategories extends Component {
             <ShopCategory
               imageSource={require("../../assets/images/local_more.png")}
               text='更多服务'
-              onPress={this.props.morePress}
+              onPress={()=>this.props.onPress()}
             />
           </View>)
       }

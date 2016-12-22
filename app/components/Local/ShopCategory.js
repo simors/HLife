@@ -22,19 +22,11 @@ export default class ShopCategory extends Component {
     super(props)
   }
 
-  onPress() {
-    if(this.props.shopCategoryId) {
-      Actions.SHOP_CATEGORY_LIST({shopCategoryId: this.props.shopCategoryId})
-    }else{
-      this.props.onPress()
-    }
-  }
-
   render() {
     return (
       <TouchableOpacity
         style={[styles.shopCategory, this.props.containerStyle]}
-        onPress={this.onPress.bind(this)}
+        onPress={this.props.onPress}
       >
         <Image
           style={[styles.image, this.props.imageStyle]}
