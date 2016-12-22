@@ -27,7 +27,6 @@ export default class CommonWebView extends Component {
             leftImageSource={this.props.headerLeftImageSource}
             leftImageLabel={this.props.headerLeftImageLabel}
             leftText={this.props.headerLeftText}
-            leftIconLabel={this.props.headerLeftIconLabel}
             leftPress={this.props.headerLeftPress}
             title={this.props.headerTitle}
             rightType={this.props.headerRightType}
@@ -45,7 +44,7 @@ export default class CommonWebView extends Component {
       <View style={styles.container}>
         {this.renderHeader()}
         <WebView
-          source={{uri: this.props.url}}
+          source={this.props.html ? {html: this.props.html} : {uri: this.props.url} }
           scrollEnabled={true}
           automaticallyAdjustContentInsets={true}
           style={{

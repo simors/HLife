@@ -20,6 +20,7 @@ import DoctorCertification from '../components/Mine/DoctorCertification'
 import Profile from '../components/Mine/profile'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
+import Article from '../components/Articles/Article'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
@@ -57,7 +58,7 @@ export const scenes = Actions.create(
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
       <Scene key="PROFILE" component={Profile} />
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
-
+      <Scene key="ARTICLES_ARTICLE" component={Article}/>
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>

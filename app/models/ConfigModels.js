@@ -44,7 +44,7 @@ export class AnnouncementItem extends AnnouncementItemConfig {
 }
 
 export const ColumnItemConfig = Record({
-  id: undefined,
+  columnId: undefined,
   type:undefined,//是否显示在首页
   title: undefined, // 标题
   imageSource: undefined, //图标
@@ -59,13 +59,13 @@ export class ColumnItem extends ColumnItemConfig {
       record.set('type', attrs.type)
       record.set('title', attrs.title)
       record.set('imageSource', attrs.imageSource)
-      record.set('id',lcObj.id)
+      record.set('columnId',lcObj.id)
     })
   }
 }
 export const ArticleItemConfig = Record({
   title: undefined , //标题
-  url: undefined , //文章来源
+  html: undefined , //文章来源
  categoryId: undefined ,//(ArticleCategory.type)  分类
   abstract: undefined,  //简介
   images: undefined , //展示图片
@@ -79,7 +79,7 @@ export class ArticleItem extends ArticleItemConfig {
     let attrs = lcObj.attributes
     return articleItem.withMutations((record)=> {
      record.set('title',attrs.title)
-      record.set('url',attrs.url)
+      record.set('html',attrs.html)
       record.set('categoryId',attrs.Category.id)
       record.set('abstract',attrs.abstract)
       record.set('images',attrs.images)
