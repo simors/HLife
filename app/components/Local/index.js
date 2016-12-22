@@ -77,10 +77,32 @@ class Local extends Component {
     }
   }
 
-  _showMoreShopCategoriesModal() {
+  _shopCategoryClick(shopCategoryId) {
+    if(shopCategoryId) {
+      this.closeModel(function(){
+        Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId})
+      })
+    }else{
+      this.openModel()
+    }
+  }
+
+  openModel(callback) {
     this.setState({
       modalVisible: true
     })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
+  }
+
+  closeModel(callback) {
+    this.setState({
+      modalVisible: false
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
   }
 
   renderLocalHealthColumn() {
@@ -98,7 +120,8 @@ class Local extends Component {
           <ShopCategories
             shopCategories={this.props.shopCategories}
             fixedHeight={true}
-            morePress={this._showMoreShopCategoriesModal.bind(this)}
+            onPress={this._shopCategoryClick.bind(this)}
+            showMore={true}
           />
         </View>
       )
@@ -117,6 +140,7 @@ class Local extends Component {
             shopCategories={this.props.allShopCategories}
             hasTopBorder={true}
             hasBottomBorder={true}
+            onPress={this._shopCategoryClick.bind(this)}
           />
         </View>
       )
@@ -181,6 +205,7 @@ class Local extends Component {
         <CommonModal
           modalVisible={this.state.modalVisible}
           modalTitle="更多栏目"
+          closeModal={() => this.closeModel()}
         >
           <ScrollView>
             {this.renderAllShopCategories()}
@@ -211,6 +236,19 @@ const mapStateToProps = (state, ownProps) => {
   const banner = getBanner(state, 0)
   const allShopCategories = selectShopCategories(state)
   const shopCategories = allShopCategories.slice(0, 5)
+
+  // let shopCategories = []
+  // let ts = {
+  //   imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
+  //   text: 'test',
+  //   shopCategoryId: 1
+  // }
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // allShopCategories = shopCategories
 
   return {
     banner: banner,

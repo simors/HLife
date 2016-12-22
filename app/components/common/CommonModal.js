@@ -26,18 +26,18 @@ export default class CommonModal extends Component {
     this.state = {
       animationType : 'slide',
       transparent : true,
-      modalVisible : false
+      visible : false
     }
   }
 
   componentWillReceiveProps(newProps) {
-    this._setModalVisible(newProps.modalVisible)
+    if (this.props.modalVisible != newProps.modalVisible) {
+      this.setState({visible: newProps.modalVisible})
+    }
   }
 
-  _setModalVisible(modalVisible) {
-    this.setState({
-      modalVisible: modalVisible
-    })
+  componentDidMount() {
+    this.setState({visible: !!this.props.modalVisible})
   }
 
   render() {
@@ -48,8 +48,7 @@ export default class CommonModal extends Component {
       <Modal
         animationType={this.state.animationType}
         transparent={this.state.transparent}
-        visible={this.state.modalVisible}
-        onRequestClose={() => {this._setModalVisible(false)}}
+        visible={this.state.visible}
       >
         <View style={[styles.container, modalBackgroundStyle, this.props.containerStyle]}>
           <View style={styles.modalCntTitleWrap}>
@@ -60,7 +59,7 @@ export default class CommonModal extends Component {
           </View>
           <View style={styles.modalCntBottomWrap}>
             <TouchableWithoutFeedback
-              onPress={() => {this._setModalVisible(false)}}
+              onPress={() => {this.props.closeModal()}}
             >
               <Image source={require("../../assets/images/shop_close.png")}/>
             </TouchableWithoutFeedback>
