@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2016/12/7.
+ * Created by yangyang on 2016/12/22.
  */
 import React, {Component} from 'react'
 import {
@@ -17,10 +17,17 @@ import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
-class ImageInput extends Component {
+const PAGE_WIDTH = Dimensions.get('window').width
+
+class ImageGroupInput extends Component {
   constructor(props) {
     super(props)
+    this.imgList = []
+    this.state = {
+      imgCnt: 0,
+    }
   }
 
   componentDidMount() {
@@ -28,7 +35,6 @@ class ImageInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: this.props.initValue,
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
@@ -61,14 +67,15 @@ class ImageInput extends Component {
   }
 
   imageSelectedChange(url) {
+    this.imgList.push(url)
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      data: {text: url}
+      data: {text: this.imgList}
     }
     this.props.inputFormUpdate(inputForm)
-    if(this.props.imageInputCntUpdate)
-      this.props.imageInputCntUpdate()
+
+    this.setState({imgCnt: this.imgList.length})
   }
 
   uploadImg = (source) => {
@@ -92,42 +99,87 @@ class ImageInput extends Component {
     })
   }
 
-  render() {
-    if (this.props.data) {
-      return (
-        <View style={styles.container}>
-          <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
-              <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: this.props.data}}/>
-            </TouchableOpacity>
+  renderImage(src) {
+    return (
+      <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+        <Image style={{flex: 1}} source={{uri: src}}/>
+      </View>
+    )
+  }
+
+  renderImageButton() {
+    return (
+      <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Image style={[styles.defaultImgShow, this.props.imgShowStyle]}
+                   source={require('../../../assets/images/add_picture.png')}/>
           </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderImageRow() {
+    let imgComp = this.imgList.map((item, key) => {
+      return (
+        <View key={key}>
+          {this.renderImage(item)}
         </View>
       )
-    } else {
-      return (
-        <View style={styles.container}>
-          <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
-              <View>
-                <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
-                       source={this.props.addImage}/>
-              </View>
-            </TouchableOpacity>
-          </View>
+    })
+    if (this.state.imgCnt < this.props.number) {
+      imgComp.push(
+        <View key="imgBtn">
+          {this.renderImageButton()}
         </View>
       )
     }
+    return imgComp
+  }
+
+  renderImageCollect() {
+    let imgComp = this.renderImageRow()
+    let compList = []
+    let comp = []
+
+    for (let i = 0; i < imgComp.length; i++) {
+      comp.push(imgComp[i])
+      if ((i + 1) % 3 == 0) {
+        compList.push(comp)
+        comp = []
+      }
+    }
+    compList.push(comp)
+    return compList
+  }
+
+  renderImageShow() {
+    let compList = this.renderImageCollect()
+    console.log("compList", compList)
+    return (
+      compList.map((item, key) => {
+        console.log('item', item)
+        return (
+          <View key={key} style={styles.container}>
+            {item}
+          </View>
+        )
+      })
+    )
+  }
+
+  render() {
+    return (
+      <View>
+        {this.renderImageShow()}
+      </View>
+    )
   }
 }
 
-ImageInput.defaultProps = {
-  containerStyle: {},
-  addImageViewStyle: {},
-  addImageBtnStyle: {},
-  addImageTextStyle: {},
-  choosenImageStyle:{},
-  addImage: require('../../../assets/images/default_picture.png'),
-  prompt: "选择图片",
+ImageGroupInput.defaultProps = {
+  number: 1,
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -142,48 +194,26 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormUpdate
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImageInput)
+export default connect(mapStateToProps, mapDispatchToProps)(ImageGroupInput)
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addImageViewStyle: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  choosenImageStyle:{
-  //  position: 'absolute',
-    //top: 20,
-    //left: 25,
-    width: 100,
-    height: 100,
-    flex:1,
-
+    width: PAGE_WIDTH,
+    marginLeft: 10,
+    marginRight: 10,
   },
   defaultContainerStyle: {
-    height: 100,
-    width: 100,
+    height: normalizeH(106),
+    width: normalizeW(106),
     borderColor: '#E9E9E9',
     borderWidth: 1,
     backgroundColor: '#F3F3F3',
     overflow:'hidden',
+    margin: 5,
   },
-  defaultAddImageBtnStyle: {
-    position: 'absolute',
-    top: 20,
-    left: 25,
-    width: 50,
-    height: 50,
-  },
-  defaultAddImageTextStyle: {
-    fontSize: 12,
-    position: 'absolute',
-    bottom: 6,
-    left: 25,
+  defaultImgShow: {
+    width: 60,
+    height: 60,
   },
 })
