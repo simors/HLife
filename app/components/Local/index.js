@@ -234,21 +234,21 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
-  // const allShopCategories = selectShopCategories(state)
-  // const shopCategories = allShopCategories.slice(0, 5)
+  const allShopCategories = selectShopCategories(state)
+  const shopCategories = allShopCategories.slice(0, 5)
 
-  let shopCategories = []
-  let ts = {
-    imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
-    text: 'test',
-    shopCategoryId: 1
-  }
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  allShopCategories = shopCategories
+  // let shopCategories = []
+  // let ts = {
+  //   imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
+  //   text: 'test',
+  //   shopCategoryId: 1
+  // }
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // shopCategories.push(ts)
+  // allShopCategories = shopCategories
 
   return {
     banner: banner,
