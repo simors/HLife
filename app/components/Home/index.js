@@ -198,6 +198,7 @@ class Home extends Component {
             loadMoreData={()=>{this.loadMoreData()}}
           />
         </View>
+
       </View>
     )
   }
