@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  ScrollView
 } from 'react-native'
 import {connect} from 'react-redux'
 import AV from 'leancloud-storage'
@@ -22,10 +23,16 @@ import {Actions} from 'react-native-router-flux'
 import THEME from '../../constants/themes/theme1'
 import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
+import CommonModal from '../common/CommonModal'
+
+
 
  class Columns extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      modalVisible : false
+    }
   }
 
   componentDidMount() {
@@ -57,14 +64,42 @@ import {getColumn} from '../../selector/configSelector'
     }
   }
 
+   closeModel(callback) {
+     this.setState({
+       modalVisible: false
+     })
+     if(callback && typeof callback == 'function'){
+       callback()
+     }
+   }
+   openModel(callback) {
+     this.setState({
+       modalVisible: true
+     })
+     if(callback && typeof callback == 'function'){
+       callback()
+     }
+   }
 
   render() {
     return (
       <View style={styles.channelContainer}>
         {this.renderColumns()}
-        <View style={styles.channelWrap}>
-          <Categorys/>
-        </View>
+          <TouchableOpacity style={styles.channelWrap} onPress={() => {
+            this.openModel()
+          }}>
+            <Image source={require("../../assets/images/home_more.png")}/>
+            <Text style={styles.channelText}>更多</Text>
+          </TouchableOpacity>
+        <CommonModal
+          modalVisible={this.state.modalVisible}
+          modalTitle="精选栏目"
+          closeModal={() => this.closeModel()}
+        >
+          <ScrollView>
+            <Categorys/>
+          </ScrollView>
+        </CommonModal>
       </View>
     )
   }

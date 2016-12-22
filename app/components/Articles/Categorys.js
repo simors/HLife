@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
+import {CommonModal} from '../common/CommonModal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -81,55 +82,39 @@ class Categorys extends Component {
   render() {
     return (
       <View >
-        <Modal
-          animationType={"slide"}
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            alert("Modal has been closed.")
-          }}
-          style={[styles.defaultContainer, this.props.container]}>
-          <View style={styles.blankView}>
-            </View>
-          <View style={styles.body}>
-              <View style={styles.title}>
-                <Text style={styles.titletextext}>
-                   更多栏目
-                </Text>
-              </View>
-            <ScrollView>
-              <View style={styles.category}>
-                {this.renderCategorys()}
-              </View>
-            </ScrollView>
+        {/*<Modal*/}
+          {/*animationType={"slide"}*/}
+          {/*transparent={true}*/}
+          {/*visible={this.state.modalVisible}*/}
+          {/*onRequestClose={() => {*/}
+            {/*alert("Modal has been closed.")*/}
+          {/*}}*/}
+          {/*style={[styles.defaultContainer, this.props.container]}>*/}
+          {/*<View style={styles.blankView}>*/}
+            {/*</View>*/}
+          {/*<View style={styles.body}>*/}
+              {/*<View style={styles.title}>*/}
+                {/*<Text style={styles.titletextext}>*/}
+                   {/*更多栏目*/}
+                {/*</Text>*/}
+              {/*</View>*/}
+            {/*<ScrollView>*/}
+              {/*<View style={styles.category}>*/}
+                {/*{this.renderCategorys()}*/}
+              {/*</View>*/}
+            {/*</ScrollView>*/}
 
-            <TouchableHighlight onPress={() => {
-              this.setModalVisible(!this.state.modalVisible)
-            }}>
-              <View style={styles.cancelModal}>
-                <Image style={{}}source={require("../../assets/images/artical_close.png")}/>
-              </View>
-            </TouchableHighlight>
-          </View>
-        </Modal>
+            {/*<TouchableHighlight onPress={() => {*/}
+              {/*this.setModalVisible(!this.state.modalVisible)*/}
+            {/*}}>*/}
+              {/*<View style={styles.cancelModal}>*/}
+                {/*<Image style={{}}source={require("../../assets/images/artical_close.png")}/>*/}
+              {/*</View>*/}
+            {/*</TouchableHighlight>*/}
+          {/*</View>*/}
+        {/*</Modal>*/}
 
-        <TouchableOpacity onPress={() => {
-          // let ArticleObject=AV.Object.extend('Articles')
-          {/*let image1 = 'http://img1.3lian.com/2015/a1/53/d/198.jpg'*/}
-          {/*let image2 = 'http://www.qq745.com/uploads/allimg/141106/1-141106153Q5.png'*/}
-          {/*let image3 = 'http://img1.3lian.com/2015/a1/53/d/200.jpg'*/}
-          {/*var todo = new AV.Object('Articles')*/}
-          {/*let images= [image1,image2,image3];*/}
-          {/*todo.addUnique('images', images);*/}
-          {/*todo.save();*/}
-          {/*console.log('===========>save',todo.id)*/}
-          {/*//console.log('==========>',images)*/}
 
-          this.setModalVisible(true)
-        }}>
-          <Image source={require("../../assets/images/home_more.png")}/>
-          <Text style={styles.channelText}>更多</Text>
-        </TouchableOpacity>
       </View>
 
     )

@@ -46,11 +46,12 @@ export function getArticles(state) {
 
 export function getArticle(state, categoryId) {
   let articles = getArticles(state).article
+  console.log('articles=========>',articles)
   if (articles) {
     if (categoryId && categoryId.length > 0) {
       articles = articles.filter(article => article.categoryId == categoryId)
     }
-    console.log('articles=========>',articles)
+
     return articles.toJS()
   }
 

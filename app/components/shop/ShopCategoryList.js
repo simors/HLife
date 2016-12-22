@@ -15,6 +15,7 @@ import {
 import {Actions} from 'react-native-router-flux'
 
 import Header from '../common/Header'
+import Select from '../common/Input/Select'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 
@@ -31,11 +32,12 @@ export default class ShopCategoryList extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="店铺分类列表"
+          title="全部店铺"
           rightType="none"
         />
         <View style={styles.body}>
           <Text>{'店铺分类id='+this.props.shopCategoryId}</Text>
+          <Select />
         </View>
       </View>
     )

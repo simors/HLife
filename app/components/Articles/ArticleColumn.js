@@ -12,7 +12,8 @@ import {
   ScrollView,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  ListView,
 } from 'react-native'
 import {connect} from 'react-redux'
 import AV from 'leancloud-storage'
@@ -39,17 +40,17 @@ class ArticleColumn extends Component {
   }
 
 
-
   renderColumns() {
     if (this.props.column) {
       return (
         this.props.column.map((value, key) => {
           return (
-            <View key={key} tabLabel={value.title} style={[styles.itemLayout,this.props.itemLayout &&this.props.itemLayout]}>
+            <View key={key} tabLabel={value.title}
+                  style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
 
-                {/*<Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>*/}
-                <Text >{value.title}</Text>
-                <ArticleShow {...value}/>
+              {/*<Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>*/}
+              <Text >{value.title}</Text>
+              {this.renderArticleList()}
 
             </View>
           )
@@ -58,21 +59,47 @@ class ArticleColumn extends Component {
     }
   }
 
+  renderArticleItem(rowData) {
+    let value = rowData
+    console.log("rowData", value)
+    return (
+      <View tabLabel={value.title}
+            style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
+        <Text >{value.title}</Text>
+        <ArticleShow {...value}/>
+      </View>
+    )
+  }
+
+  renderArticleList() {
+    console.log("article:", this.props.articleSource)
+    if (!this.props.articleSource) {
+      return <View/>
+    }
+    return (
+      <ListView dataSource={this.props.articleSource}
+                renderRow={(rowData) => this.renderArticleItem(rowData)}>
+
+      </ListView>
+    )
+  }
+
 
   render() {
+
     return (
       <View style={styles.channelContainer}>
-        <ScrollableTabView style={[styles.body,this.props.body &&this.props.body]}
+        <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
                            initialPage={0}
                            scrollWithoutAnimation={true}
                            renderTabBar={
                              ()=><ScrollableTabBar
                                activeTextColor={this.props.activeTextColor}
                                inactiveTextColor={this.props.inactiveTextColor}
-                               style={[styles.tarBarStyle,this.props.tarBarStyle &&this.props.tarBarStyle]}
-                               underlineStyle={[styles.tarBarUnderlineStyle,this.props.tarBarUnderlineStyle &&this.props.tarBarUnderlineStyle]}
-                               textStyle={[styles.tabBarTextStyle,this.props.tabBarTextStyle &&this.props.tabBarTextStyle]}
-                               tabStyle={[styles.tabBarTabStyle,this.props.tabBarTabStyle &&this.props.tabBarTabStyle]}
+                               style={[styles.tarBarStyle, this.props.tarBarStyle && this.props.tarBarStyle]}
+                               underlineStyle={[styles.tarBarUnderlineStyle, this.props.tarBarUnderlineStyle && this.props.tarBarUnderlineStyle]}
+                               textStyle={[styles.tabBarTextStyle, this.props.tabBarTextStyle && this.props.tabBarTextStyle]}
+                               tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
                                backgroundColor={this.props.backgroundColor}
                              />}
         >
@@ -84,9 +111,17 @@ class ArticleColumn extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let column = getColumn(state)
+  console.log("new article: ", ownProps.articles)
+  let articleSource
+  if (ownProps.articles) {
+    articleSource = ds.cloneWithRows(ownProps.articles)
+  }
+
   return {
     column: column,
+    articleSource,
   }
 }
 
@@ -102,19 +137,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff'
   },
-  defaultImageStyles:{
-    height:normalizeH(35),
-    width:normalizeW(35),
+  defaultImageStyles: {
+    height: normalizeH(35),
+    width: normalizeW(35),
   },
   channelWrap: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow:'hidden'
+    overflow: 'hidden'
   },
   channelText: {
     marginTop: 4,
-    color:THEME.colors.gray,
+    color: THEME.colors.gray,
     textAlign: 'center'
   },
   body: {
