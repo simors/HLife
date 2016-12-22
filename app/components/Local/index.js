@@ -79,16 +79,30 @@ class Local extends Component {
 
   _shopCategoryClick(shopCategoryId) {
     if(shopCategoryId) {
-      this.setState({
-        modalVisible: false
+      this.closeModel(function(){
+        Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId})
       })
-      Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId})
     }else{
-      this.setState({
-        modalVisible: true
-      })
+      this.openModel()
     }
+  }
 
+  openModel(callback) {
+    this.setState({
+      modalVisible: true
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
+  }
+
+  closeModel(callback) {
+    this.setState({
+      modalVisible: false
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
   }
 
   renderLocalHealthColumn() {
@@ -191,6 +205,7 @@ class Local extends Component {
         <CommonModal
           modalVisible={this.state.modalVisible}
           modalTitle="更多栏目"
+          closeModal={() => this.closeModel()}
         >
           <ScrollView>
             {this.renderAllShopCategories()}
@@ -219,8 +234,21 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
-  const allShopCategories = selectShopCategories(state)
-  const shopCategories = allShopCategories.slice(0, 5)
+  // const allShopCategories = selectShopCategories(state)
+  // const shopCategories = allShopCategories.slice(0, 5)
+
+  let shopCategories = []
+  let ts = {
+    imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
+    text: 'test',
+    shopCategoryId: 1
+  }
+  shopCategories.push(ts)
+  shopCategories.push(ts)
+  shopCategories.push(ts)
+  shopCategories.push(ts)
+  shopCategories.push(ts)
+  allShopCategories = shopCategories
 
   return {
     banner: banner,
