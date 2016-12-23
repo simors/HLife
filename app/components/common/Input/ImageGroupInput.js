@@ -15,6 +15,7 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Gallery from 'react-native-gallery'
+import ImagePicker from 'react-native-image-picker'
 import CommonButton from '../CommonButton'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
@@ -52,6 +53,46 @@ class ImageGroupInput extends Component {
       failed: this.pickImageFailed,
       cancelled: this.pickImageCancel,
       succeed: this.pickImageSucceed
+    })
+  }
+
+  reSelectImg(index) {
+    const options = {
+      title: '',
+      takePhotoButtonTitle: '拍照',
+      chooseFromLibraryButtonTitle: '从相册选择',
+      cancelButtonTitle: '取消',
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true
+      }
+    }
+
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+      } else if (response.error) {
+      } else if (response.customButton) {
+      } else {
+        this.imgList.splice(index, 1)
+        let source
+        if (Platform.OS === 'android') {
+          source = {
+            uri: response.uri,
+            isStatic: true,
+          }
+        } else {
+          source = {
+            uri: response.uri.replace('file://', ''),
+            isStatic: true,
+            origURL: response.origURL,
+          }
+        }
+        this.pickImageSucceed(source)
+
+        this.toggleModal(!this.state.imgModalShow)
+      }
     })
   }
 
@@ -105,10 +146,10 @@ class ImageGroupInput extends Component {
     })
   }
 
-  renderReuploadBtn() {
+  renderReuploadBtn(index) {
     return (
       <View style={{position: 'absolute', bottom: normalizeH(50), left: normalizeW(17)}}>
-        <CommonButton title="重新上传" onPress={() => this.selectImg()} />
+        <CommonButton title="重新上传" onPress={() => this.reSelectImg(index)} />
       </View>
     )
   }
@@ -130,7 +171,7 @@ class ImageGroupInput extends Component {
               initialPage={index}
               onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}
             />
-            {this.renderReuploadBtn()}
+            {this.renderReuploadBtn(index)}
           </View>
         </Modal>
       </View>
