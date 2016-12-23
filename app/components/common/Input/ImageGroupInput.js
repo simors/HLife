@@ -10,9 +10,12 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
+  Modal,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import ImageViewer from 'react-native-image-zoom-viewer'
+import CommonButton from '../CommonButton'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
@@ -20,6 +23,7 @@ import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
 const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 class ImageGroupInput extends Component {
   constructor(props) {
@@ -27,6 +31,8 @@ class ImageGroupInput extends Component {
     this.imgList = []
     this.state = {
       imgCnt: 0,
+      imgModalShow: false,
+      showImg: '',
     }
   }
 
@@ -99,10 +105,52 @@ class ImageGroupInput extends Component {
     })
   }
 
+  renderReuploadBtn() {
+    return (
+      <View style={{borderWidth: 2, borderColor: 'red'}}>
+        <CommonButton title="重新上传" onPress={() => this.selectImg()} />
+      </View>
+    )
+  }
+
+  renderImageModal() {
+    let imgs = []
+    this.imgList.map((item) => {
+      imgs.push({url: item})
+    })
+    let index = this.imgList.findIndex((val) => {
+      console.log('val', val)
+      return (val == this.state.showImg)
+    })
+    if (index == -1) {
+      index = 0
+    }
+    return (
+      <View>
+        <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
+          <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
+            <ImageViewer
+              imageUrls={imgs}
+              index={index}
+              onClick={() => this.toggleModal(!this.state.imgModalShow)}
+              renderFooter={() => this.renderReuploadBtn()}
+            />
+          </View>
+        </Modal>
+      </View>
+    )
+  }
+
+  toggleModal(isShow, src) {
+    this.setState({imgModalShow: isShow, showImg: src})
+  }
+
   renderImage(src) {
     return (
       <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-        <Image style={{flex: 1}} source={{uri: src}}/>
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
+          <Image style={{flex: 1}} source={{uri: src}}/>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -156,10 +204,8 @@ class ImageGroupInput extends Component {
 
   renderImageShow() {
     let compList = this.renderImageCollect()
-    console.log("compList", compList)
     return (
       compList.map((item, key) => {
-        console.log('item', item)
         return (
           <View key={key} style={styles.container}>
             {item}
@@ -172,6 +218,7 @@ class ImageGroupInput extends Component {
   render() {
     return (
       <View>
+        {this.renderImageModal()}
         {this.renderImageShow()}
       </View>
     )
