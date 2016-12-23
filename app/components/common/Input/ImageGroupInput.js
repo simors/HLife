@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     // margin: 5,
   },
   defaultImgShow: {
-    width: 60,
-    height: 60,
+    width: normalizeW(60),
+    height: normalizeH(60),
   },
 })
