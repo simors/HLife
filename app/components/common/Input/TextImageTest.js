@@ -36,7 +36,7 @@ export default class TextImageTest extends Component {
           <MultilineText {...multiInput} initValue='yangyang'/>
         </View>
         <View style={{marginTop: 30}}>
-          <ImageGroupInput {...imageGroupInput} number={9} />
+          <ImageGroupInput {...imageGroupInput} number={9} imageLineCnt={2}/>
         </View>
       </View>
     )

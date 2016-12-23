@@ -30,6 +30,8 @@ class ImageGroupInput extends Component {
   constructor(props) {
     super(props)
     this.imgList = []
+    this.marginSize = 5
+    this.calImgSize = this.calculateImageWidth()
     this.state = {
       imgCnt: 0,
       imgModalShow: false,
@@ -45,6 +47,11 @@ class ImageGroupInput extends Component {
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
+  }
+
+  calculateImageWidth() {
+    let calImgSize = (PAGE_WIDTH - (this.props.imageLineCnt + 1) * 2 * this.marginSize) / this.props.imageLineCnt
+    return calImgSize
   }
 
   selectImg() {
@@ -183,8 +190,9 @@ class ImageGroupInput extends Component {
   }
 
   renderImage(src) {
+
     return (
-      <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+      <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
           <Image style={{flex: 1}} source={{uri: src}}/>
         </TouchableOpacity>
@@ -194,7 +202,7 @@ class ImageGroupInput extends Component {
 
   renderImageButton() {
     return (
-      <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+      <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Image style={[styles.defaultImgShow, this.props.imgShowStyle]}
@@ -230,7 +238,7 @@ class ImageGroupInput extends Component {
 
     for (let i = 0; i < imgComp.length; i++) {
       comp.push(imgComp[i])
-      if ((i + 1) % 3 == 0) {
+      if ((i + 1) % this.props.imageLineCnt == 0) {
         compList.push(comp)
         comp = []
       }
@@ -264,6 +272,7 @@ class ImageGroupInput extends Component {
 
 ImageGroupInput.defaultProps = {
   number: 1,
+  imageLineCnt: 3,
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -284,17 +293,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     width: PAGE_WIDTH,
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 5,
+    marginRight: 5,
   },
   defaultContainerStyle: {
-    height: normalizeH(106),
-    width: normalizeW(106),
+    // height: normalizeH(106),
+    // width: normalizeW(106),
     borderColor: '#E9E9E9',
     borderWidth: 1,
     backgroundColor: '#F3F3F3',
     overflow:'hidden',
-    margin: 5,
+    // margin: 5,
   },
   defaultImgShow: {
     width: 60,
