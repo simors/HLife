@@ -10,9 +10,13 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
+  Modal,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import Gallery from 'react-native-gallery'
+import ImagePicker from 'react-native-image-picker'
+import CommonButton from '../CommonButton'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
@@ -20,13 +24,18 @@ import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
 const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 class ImageGroupInput extends Component {
   constructor(props) {
     super(props)
     this.imgList = []
+    this.marginSize = 5
+    this.calImgSize = this.calculateImageWidth()
     this.state = {
       imgCnt: 0,
+      imgModalShow: false,
+      showImg: '',
     }
   }
 
@@ -40,12 +49,57 @@ class ImageGroupInput extends Component {
     this.props.initInputForm(formInfo)
   }
 
+  calculateImageWidth() {
+    let calImgSize = (PAGE_WIDTH - (this.props.imageLineCnt + 1) * 2 * this.marginSize) / this.props.imageLineCnt
+    return calImgSize
+  }
+
   selectImg() {
     selectPhotoTapped({
       start: this.pickImageStart,
       failed: this.pickImageFailed,
       cancelled: this.pickImageCancel,
       succeed: this.pickImageSucceed
+    })
+  }
+
+  reSelectImg(index) {
+    const options = {
+      title: '',
+      takePhotoButtonTitle: '拍照',
+      chooseFromLibraryButtonTitle: '从相册选择',
+      cancelButtonTitle: '取消',
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true
+      }
+    }
+
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+      } else if (response.error) {
+      } else if (response.customButton) {
+      } else {
+        this.imgList.splice(index, 1)
+        let source
+        if (Platform.OS === 'android') {
+          source = {
+            uri: response.uri,
+            isStatic: true,
+          }
+        } else {
+          source = {
+            uri: response.uri.replace('file://', ''),
+            isStatic: true,
+            origURL: response.origURL,
+          }
+        }
+        this.pickImageSucceed(source)
+
+        this.toggleModal(!this.state.imgModalShow)
+      }
     })
   }
 
@@ -99,17 +153,56 @@ class ImageGroupInput extends Component {
     })
   }
 
-  renderImage(src) {
+  renderReuploadBtn(index) {
     return (
-      <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-        <Image style={{flex: 1}} source={{uri: src}}/>
+      <View style={{position: 'absolute', bottom: normalizeH(50), left: normalizeW(17)}}>
+        <CommonButton title="重新上传" onPress={() => this.reSelectImg(index)} />
+      </View>
+    )
+  }
+
+  renderImageModal() {
+    let index = this.imgList.findIndex((val) => {
+      return (val == this.state.showImg)
+    })
+    if (index == -1) {
+      index = 0
+    }
+    return (
+      <View>
+        <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
+          <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
+            <Gallery
+              style={{flex: 1, backgroundColor: 'black'}}
+              images={this.imgList}
+              initialPage={index}
+              onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}
+            />
+            {this.renderReuploadBtn(index)}
+          </View>
+        </Modal>
+      </View>
+    )
+  }
+
+  toggleModal(isShow, src) {
+    this.setState({imgModalShow: isShow, showImg: src})
+  }
+
+  renderImage(src) {
+
+    return (
+      <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
+          <Image style={{flex: 1}} source={{uri: src}}/>
+        </TouchableOpacity>
       </View>
     )
   }
 
   renderImageButton() {
     return (
-      <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+      <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Image style={[styles.defaultImgShow, this.props.imgShowStyle]}
@@ -145,7 +238,7 @@ class ImageGroupInput extends Component {
 
     for (let i = 0; i < imgComp.length; i++) {
       comp.push(imgComp[i])
-      if ((i + 1) % 3 == 0) {
+      if ((i + 1) % this.props.imageLineCnt == 0) {
         compList.push(comp)
         comp = []
       }
@@ -156,10 +249,8 @@ class ImageGroupInput extends Component {
 
   renderImageShow() {
     let compList = this.renderImageCollect()
-    console.log("compList", compList)
     return (
       compList.map((item, key) => {
-        console.log('item', item)
         return (
           <View key={key} style={styles.container}>
             {item}
@@ -172,6 +263,7 @@ class ImageGroupInput extends Component {
   render() {
     return (
       <View>
+        {this.renderImageModal()}
         {this.renderImageShow()}
       </View>
     )
@@ -180,6 +272,7 @@ class ImageGroupInput extends Component {
 
 ImageGroupInput.defaultProps = {
   number: 1,
+  imageLineCnt: 3,
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -200,17 +293,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     width: PAGE_WIDTH,
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 5,
+    marginRight: 5,
   },
   defaultContainerStyle: {
-    height: normalizeH(106),
-    width: normalizeW(106),
+    // height: normalizeH(106),
+    // width: normalizeW(106),
     borderColor: '#E9E9E9',
     borderWidth: 1,
     backgroundColor: '#F3F3F3',
     overflow:'hidden',
-    margin: 5,
+    // margin: 5,
   },
   defaultImgShow: {
     width: 60,
