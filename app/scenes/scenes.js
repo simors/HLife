@@ -17,7 +17,8 @@ import CommonWebView from '../components/common/CommonWebView'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
-import Profile from '../components/Mine/profile'
+import DoctorInfo from '../components/Mine/DoctorInfo'
+import Profile from '../components/Mine/Profile'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
@@ -48,13 +49,14 @@ export const scenes = Actions.create(
     <Scene key="root" hideNavBar={true}>
       <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
       <Scene key="LOGIN" component={Login}/>
-      <Scene key="REGIST" component={Regist} />
+      <Scene key="REGIST" component={Regist} initial={true}/>
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
       <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
       <Scene key="PUBLISH_VIEW_TEST" component={PublishViewTest} />
       <Scene key="PICKER_TEST" component={PickerTest} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
+      <Scene key="DCTOR_INFO" component={DoctorInfo}/>
       <Scene key="PROFILE" component={Profile} />
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
 

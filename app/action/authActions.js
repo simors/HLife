@@ -238,7 +238,6 @@ function doctorCertification(payload, formData) {
 }
 
 function handleProfileSubmit(payload, formData) {
-  console.log("handleProfileSubmit start")
   return (dispatch, getState) => {
     let profilePayload = {
       nickname: formData.nicknameInput.text,
@@ -307,7 +306,6 @@ function shopCertification(payload, formData) {
   }
 
 }
-
 
 export function fetchAticle() {
   return (dispatch, getState) => {
