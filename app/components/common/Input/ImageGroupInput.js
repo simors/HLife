@@ -14,7 +14,7 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import ImageViewer from 'react-native-image-zoom-viewer'
+import Gallery from 'react-native-gallery'
 import CommonButton from '../CommonButton'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
@@ -107,17 +107,13 @@ class ImageGroupInput extends Component {
 
   renderReuploadBtn() {
     return (
-      <View style={{marginBottom: 30}}>
+      <View style={{position: 'absolute', bottom: normalizeH(50), left: normalizeW(17)}}>
         <CommonButton title="重新上传" onPress={() => this.selectImg()} />
       </View>
     )
   }
 
   renderImageModal() {
-    let imgs = []
-    this.imgList.map((item) => {
-      imgs.push({url: item})
-    })
     let index = this.imgList.findIndex((val) => {
       return (val == this.state.showImg)
     })
@@ -128,13 +124,13 @@ class ImageGroupInput extends Component {
       <View>
         <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
-            <ImageViewer
-              imageUrls={imgs}
-              index={index}
-              saveToLocalByLongPress={false}
-              onClick={() => this.toggleModal(!this.state.imgModalShow)}
-              renderFooter={() => this.renderReuploadBtn()}
+            <Gallery
+              style={{flex: 1, backgroundColor: 'black'}}
+              images={this.imgList}
+              initialPage={index}
+              onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}
             />
+            {this.renderReuploadBtn()}
           </View>
         </Modal>
       </View>
