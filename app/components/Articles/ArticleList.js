@@ -49,8 +49,7 @@ class ArticleList extends Component {
           return (
             <View key={key} style={styles.channelWrap}>
               <TouchableOpacity onPress={()=> {
-                Actions.ARTICLES_ARTICLELIST({categoryId: value.id})
-              }}>
+                Actions.ARTICLES_ARTICLELIST({categoryId: value.id})}}>
                 <Image style={[styles.defaultImageStyles, this.props.imageStyle]} source={{uri: imageUrl}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
               </TouchableOpacity>
@@ -71,18 +70,13 @@ class ArticleList extends Component {
         <View style={styles.columnsView}>
           <ArticleColumn articles={this.props.article}></ArticleColumn>
         </View>
-        <ScrollView>
-          <View style={styles.articlesView}>
-
-          </View>
-        </ScrollView>
       </View>
     )
   }
 }
 const mapStateToProps = (state, ownProps) => {
-
   let article = getArticle(state, ownProps.categoryId)
+  console.log("================>new article: ", ownProps.categoryId)
   console.log("================>new article: ", article)
   return {
     article: article,

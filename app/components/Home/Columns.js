@@ -49,10 +49,10 @@ import CommonModal from '../common/CommonModal'
       return (
         this.props.column.map((value, key) => {
           let imageUrl = value.imageSource
-          return (
+           return (
             <View key={key} style={styles.channelWrap}>
               <TouchableOpacity onPress={()=> {
-                Actions.ARTICLES_ARTICLELIST({categoryId: value.id})
+                Actions.ARTICLES_ARTICLELIST({categoryId: value.columnId})
               }}>
                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
