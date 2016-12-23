@@ -21,6 +21,7 @@ import DoctorInfo from '../components/Mine/DoctorInfo'
 import Profile from '../components/Mine/Profile'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
+import Article from '../components/Articles/Article'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
+      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar />
       <Scene key="LOGIN" component={Login}/>
       <Scene key="REGIST" component={Regist} initial={true}/>
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
@@ -59,7 +60,7 @@ export const scenes = Actions.create(
       <Scene key="DCTOR_INFO" component={DoctorInfo}/>
       <Scene key="PROFILE" component={Profile} />
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
-
+      <Scene key="ARTICLES_ARTICLE" component={Article}/>
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
@@ -67,7 +68,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
-      <Scene key="TEXTIMAGE" component={TextImageTest} />
+      <Scene key="TEXTIMAGE" component={TextImageTest} initial={true}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

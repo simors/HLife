@@ -33,10 +33,10 @@ class ArticleColumn extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchColumn()
-
-    })
+    // InteractionManager.runAfterInteractions(() => {
+    //   this.props.fetchColumn()
+    //
+    // })
   }
 
 
@@ -49,7 +49,6 @@ class ArticleColumn extends Component {
                   style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
 
               {/*<Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>*/}
-              <Text >{value.title}</Text>
               {this.renderArticleList()}
 
             </View>
@@ -61,19 +60,16 @@ class ArticleColumn extends Component {
 
   renderArticleItem(rowData) {
     let value = rowData
-    console.log("rowData", value)
-    return (
+     return (
       <View tabLabel={value.title}
             style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-        <Text >{value.title}</Text>
         <ArticleShow {...value}/>
       </View>
     )
   }
 
   renderArticleList() {
-    console.log("article:", this.props.articleSource)
-    if (!this.props.articleSource) {
+   if (!this.props.articleSource) {
       return <View/>
     }
     return (
@@ -113,7 +109,6 @@ class ArticleColumn extends Component {
 const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let column = getColumn(state)
-  console.log("new article: ", ownProps.articles)
   let articleSource
   if (ownProps.articles) {
     articleSource = ds.cloneWithRows(ownProps.articles)
@@ -126,7 +121,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchColumn
+  // fetchColumn
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleColumn)
