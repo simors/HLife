@@ -63,7 +63,11 @@ export default class ImageGroupViewer extends Component {
 
   renderImage(src) {
     return (
-      <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
+      <View style={[
+        styles.defaultContainerStyle,
+        {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize},
+        this.props.imageStyle
+        ]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
           <Image style={{flex: 1}} source={{uri: src}}/>
         </TouchableOpacity>
