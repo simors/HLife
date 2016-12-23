@@ -8,6 +8,9 @@ import {
   Dimensions,
   Platform,
   Text,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -15,104 +18,148 @@ import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
-import * as Toast from '../common/Toast'
-
-import CommonTextInput from '../common/Input/CommonTextInput'
-import RichTextInput from '../common/Input/RichTextInput'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import {getTopic} from '../../selector/configSelector'
+import MultilineText from '../common/Input/MultilineText'
+import ImageGroupInput from '../common/Input/ImageGroupInput'
+import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
 
-const PAGE_WIDTH=Dimensions.get('window').width
-const PAGE_HEIGHT=Dimensions.get('window').height
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
-let articleForm = Symbol('articleForm')
-const articleName = {
-  formKey: articleForm,
-  stateKey: Symbol('articleName'),
-  type: "articleName",
+let formKey = Symbol('multiForm')
+const multiInput = {
+  formKey: formKey,
+  stateKey: Symbol('multiInput'),
+  type: 'content'
 }
 
-const articleContent ={
-  formKey: articleForm,
-  stateKey: Symbol('articleContent'),
-  type: 'articleContent',
-  initValue: '\<p\>输入正文...\<\/p\>'
+const imageGroupInput = {
+  formKey: formKey,
+  stateKey: Symbol('imageGroupInput'),
+  type: 'imgGroup'
 }
 
 class PublishTopics extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      closeTips: false,
-      rteFocused: false,    // 富文本获取到焦点
-    }
+      isDisabled: false,
+      selectedTopic: undefined,
+    };
   }
 
   onButtonPress = () => {
-    this.props.publishTopicFormData({
-      formKey: articleForm,
-      categoryId: this.props.topicId.objectId,
-      submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-      success:this.submitSuccessCallback,
-      error: this.submitErrorCallback
-    })
+    // this.props.publishTopicFormData({
+    //   formKey: formKey,
+    //   categoryId: this.state.selectedTopic.objectId,
+    //   submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+    //   success:this.submitSuccessCallback,
+    //   error: this.submitErrorCallback
+    // })
   }
 
-  onRteFocusChanged = (val) => {
-    if (val == true) {
+  componentDidMount() {
+    if (this.props.topicId) {
+      this.setState({selectedTopic: this.props.topicId});
     }
-
-    this.setState({
-      rteFocused: val,
-    })
   }
 
-  submitSuccessCallback() {
-    Toast.show('发表成功')
-    Actions.pop()
+  openModal() {
+    this.refs.modal3.open();
   }
 
-  submitErrorCallback(error) {
-    Toast.show('发表失败')
-    Actions.pop()
+  closeModal(value) {
+    this.setState({selectedTopic: value})
+    this.refs.modal3.close();
   }
 
-  renderRichText() {
-    const shouldFocus = this.state.rteFocused
-    return (
-      <RichTextInput
-        {...articleContent}
-        onFocus={this.onRteFocusChanged}
-        shouldFocus={shouldFocus}
-      />
-    )
+  renderTopicsSelected() {
+    if (this.props.topics) {
+      return (
+        this.props.topics.map((value, key)=> {
+          return (
+            <View key={key} style={styles.modalTopicButtonStyle}>
+              <TouchableOpacity style={styles.modalTopicStyle}
+                                onPress={()=>this.closeModal(value)}>
+                <Text style={styles.ModalTopicTextStyle}>
+                  {value.title}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )
+        })
+      )
+    }
+  }
+
+  renderSelectedTopic() {
+    if (this.state.selectedTopic) {
+      return (
+        <View style={styles.selectedTopicStyle}>
+          <Text style={styles.selectedTopicTextStyle}>
+            {this.state.selectedTopic.title}
+          </Text>
+        </View>
+      )
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Header headerContainerStyle={[this.state.rteFocused ? {height: 0, overflow: 'hidden', marginTop: 0} : {}]}
+
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="发表文章"
+          title="发起话题"
           rightType="text"
-          rightText="发表"
+          rightText="发布"
           rightPress={() => this.onButtonPress()}
         />
-        <View style={this.state.rteFocused?styles.bodyFocus:styles.body}>
-            <View style={[{marginTop: 20}, this.state.rteFocused ? {height: 0, overflow: 'hidden', marginTop: 0} : {}]}>
-              <CommonTextInput {...articleName} placeholder="输入文章标题" />
-            </View>
 
-          <View>
-            {this.renderRichText()}
-          </View>
+        <View style={styles.body}>
+
+          <KeyboardAwareScrollView style={styles.scrollViewStyle}>
+            <TouchableOpacity style={styles.toSelectContainer} onPress={this.openModal.bind(this)}>
+              {this.renderSelectedTopic()}
+              <Image style={styles.imageStyle} source={require("../../assets/images/unfold_topic@2x.png")}/>
+            </TouchableOpacity>
+
+            <MultilineText containerStyle={{height: normalizeH(232)}}
+                           inputStyle={{height: normalizeH(232)}}
+                           {...multiInput}/>
+
+            <View style={{marginTop: 10}}>
+              <ImageGroupInput {...imageGroupInput}
+                               number={9}
+                               imageLineCnt={4}/>
+            </View>
+          </KeyboardAwareScrollView>
+
+          <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
+            <KeyboardAwareScrollView style={styles.scrollViewStyle}>
+              <Text style={styles.modalShowTopicsStyle}>选择一个主题</Text>
+              <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
+                {this.renderTopicsSelected()}
+              </View>
+            </KeyboardAwareScrollView>
+          </ModalBox>
+
         </View>
       </View>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+
+  const topics = getTopic(state, true)
+  return {
+    topics: topics
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -122,6 +169,10 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   body: {
     ...Platform.select({
       ios: {
@@ -131,17 +182,103 @@ const styles = StyleSheet.create({
         paddingTop: normalizeH(45)
       }
     }),
-    flex: 1,
+    height: PAGE_HEIGHT,
     width: PAGE_WIDTH
   },
-  bodyFocus:{
+
+  scrollViewStyle: {
     flex: 1,
     width: PAGE_WIDTH
   },
 
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  //选择话题的对话框的样式
+  toSelectContainer: {
+    height: normalizeH(44),
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: "#E6E6E6"
   },
+  selectedTopicStyle: {
+    marginTop: normalizeH(5),
+    marginLeft: normalizeW(12),
+    borderWidth: 1,
+    borderStyle: 'solid',
+    backgroundColor: '#50e3c2',
+    height: normalizeH(34),
+    alignItems: 'flex-start',
+    borderRadius: 100,
+    borderColor: 'transparent',
+  },
+  selectedTopicTextStyle: {
+    fontSize: em(15),
+    color: "#ffffff",
+    marginLeft: normalizeW(16),
+    marginRight: normalizeW(16),
+    marginTop: normalizeH(7),
+    alignSelf: 'center',
+  },
+  imageStyle: {
+    position: 'absolute',
+    right: normalizeW(12),
+    marginTop: normalizeH(10),
+    width: normalizeW(24),
+    height: normalizeH(24),
+    alignSelf: 'flex-end',
+  },
+
+
+  //modal 所有子组件的样式
+  modalStyle: {
+    width: PAGE_WIDTH,
+    backgroundColor: '#f2f2f2',
+    height: normalizeH(250),
+    alignItems: 'flex-start',
+    ...Platform.select({
+      ios: {
+        top: normalizeH(65),
+      },
+      android: {
+        top: normalizeH(45)
+      }
+    }),
+  },
+  modalTextStyle: {
+    marginTop: normalizeH(17),
+    marginBottom: normalizeH(18),
+    alignSelf: 'center',
+    color: "#4a4a4a",
+    fontSize: em(12)
+  },
+  modalShowTopicsStyle: {
+    marginTop: normalizeH(17),
+    marginBottom: normalizeH(18),
+    alignSelf: 'center',
+    color: "#4a4a4a",
+    fontSize: em(12)
+  },
+  modalTopicButtonStyle: {
+    alignItems: 'flex-start',
+    marginLeft: normalizeW(5),
+    marginRight: normalizeW(5),
+    marginBottom: normalizeH(20)
+  },
+  modalTopicStyle: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#E9E9E9',
+    height: normalizeH(34),
+    alignItems: 'flex-start',
+    borderRadius: 100
+  },
+  ModalTopicTextStyle: {
+    fontSize: em(15),
+    color: "#4a4a4a",
+    marginLeft: normalizeW(16),
+    marginRight: normalizeW(16),
+    marginTop: normalizeH(7),
+    alignSelf: 'center',
+  },
+
 })
