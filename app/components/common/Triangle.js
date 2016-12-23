@@ -19,9 +19,9 @@ export default class Triangle extends Component {
 
   static defaultProps = {
     direction: 'right-down',
-    width: 20,
-    height: 20,
-    color: THEME.colors.light,
+    width: 15,
+    height: 15,
+    color: THEME.colors.lighterB,
   }
   
   constructor(props) {
