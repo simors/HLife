@@ -107,7 +107,7 @@ class ImageGroupInput extends Component {
 
   renderReuploadBtn() {
     return (
-      <View style={{borderWidth: 2, borderColor: 'red'}}>
+      <View style={{marginBottom: 30}}>
         <CommonButton title="重新上传" onPress={() => this.selectImg()} />
       </View>
     )
@@ -119,7 +119,6 @@ class ImageGroupInput extends Component {
       imgs.push({url: item})
     })
     let index = this.imgList.findIndex((val) => {
-      console.log('val', val)
       return (val == this.state.showImg)
     })
     if (index == -1) {
@@ -132,6 +131,7 @@ class ImageGroupInput extends Component {
             <ImageViewer
               imageUrls={imgs}
               index={index}
+              saveToLocalByLongPress={false}
               onClick={() => this.toggleModal(!this.state.imgModalShow)}
               renderFooter={() => this.renderReuploadBtn()}
             />
