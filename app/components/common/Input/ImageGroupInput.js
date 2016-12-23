@@ -297,13 +297,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   defaultContainerStyle: {
-    // height: normalizeH(106),
-    // width: normalizeW(106),
     borderColor: '#E9E9E9',
     borderWidth: 1,
     backgroundColor: '#F3F3F3',
     overflow:'hidden',
-    // margin: 5,
   },
   defaultImgShow: {
     width: normalizeW(60),
