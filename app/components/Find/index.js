@@ -20,6 +20,7 @@ import {getTopic} from '../../selector/configSelector'
 import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {TopicShow} from './TopicShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -36,6 +37,22 @@ export class Find extends Component {
     this.setState({selectedTab: index})
   }
 
+  renderTopicItem() {
+    return (
+      <TopicShow containerStyle={{marginBottom: 10}}/>
+    )
+  }
+
+  renderTopicPage() {
+    return (
+      <View >
+        {this.renderTopicItem()}
+        {this.renderTopicItem()}
+        {this.renderTopicItem()}
+      </View>
+    )
+  }
+
   render() {
     let topicId = this.props.topics[this.state.selectedTab]
     return (
@@ -45,9 +62,14 @@ export class Find extends Component {
           title="发现"
           rightType="none"
         />
-        <TabScrollView topics={this.props.topics} topicId={this.props.topicId} onSelected={(index) => this.getSelectedTab(index)} />
-        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=>{Actions.PUBLISH({topicId})}}  >
-          <Image source={require("../../assets/images/local_write@2x.png")} />
+        <TabScrollView topics={this.props.topics}
+                       topicId={this.props.topicId}
+                       onSelected={(index) => this.getSelectedTab(index)}
+                       renderTopicPage={() => this.renderTopicPage()}/>
+        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=> {
+          Actions.PUBLISH({topicId})
+        }}>
+          <Image source={require("../../assets/images/local_write@2x.png")}/>
         </TouchableHighlight>
       </View>
     )
@@ -61,8 +83,7 @@ const mapStateToProps = (state, ownProps) => {
     topics: topics
   }
 }
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)
 
@@ -72,11 +93,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  buttonImage:{
-    position:'absolute',
-    alignItems:'flex-end',
-    right:20,
-    bottom:61,
+  buttonImage: {
+    position: 'absolute',
+    alignItems: 'flex-end',
+    right: 20,
+    bottom: 61,
     height: 45,
     width: 45
   }
