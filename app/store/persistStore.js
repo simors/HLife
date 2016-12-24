@@ -26,6 +26,7 @@ export default function persist(store) {
     //   }),
     // ],
     // transforms: [messageFilter],
+    whitelist: ['AUTH', 'CONFIG', 'MESSAGE'],
   }, () => {
     store.dispatch(restoreFromPersistence())
   })
