@@ -29,7 +29,7 @@ export default class Select extends Component {
 
   static defaultProps = {
     height: 40,
-    optionListHeight: 150,
+    optionListHeight: 160,
     onSelect: () => { }
   }
 
@@ -39,43 +39,62 @@ export default class Select extends Component {
     this.positionX = 0
     this.positionY = 0
 
+    let defaultText = props.defaultText
     let defaultValue = props.defaultValue
 
-    if (!defaultValue) {
+    if (!defaultText) {
       if (Array.isArray(props.children)) {
-        defaultValue = props.children[0].props.children
+        defaultText = props.children[0].props.children
       } else {
-        defaultValue = props.children.props.children
+        defaultText = props.children.props.children
       }
     }
 
     this.state = {
-      value: defaultValue
+      value: defaultValue,
+      text: defaultText,
+      show: false,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // console.log(this.props.selectRef + '.componentWillReceiveProps.nextProps.show=' + nextProps.show)
+    // console.log(this.props.selectRef + '.componentWillReceiveProps.this.props.show=' + this.props.show)
+    if(this.props.show != nextProps.show) {
+      this.state.show = nextProps.show
+      this.setState({ show: this.state.show })
+      // console.log(this.props.selectRef + '.componentWillReceiveProps.state.show=' + this.state.show)
+      this._toggle()
     }
   }
 
   reset() {
-    const { defaultValue } = this.props
-    this.setState({ value: defaultValue })
+    const { defaultText } = this.props
+    this.setState({ text: defaultText })
   }
 
   _onPress() {
+    if(this.props.onPress) {
+      this.props.onPress()
+    }
+    this._toggle()
+  }
+
+  _toggle() {
     const {show, optionListRef, children, onSelect, width, height, overlayPageX, optionListHeight } = this.props
     if (!children.length) {
       return false
     }
-
     this.overlayPageX = overlayPageX
-    optionListRef()._toggle(show, children, this.positionX, this.positionY, width, height, optionListHeight, overlayPageX, (item, value=item) => {
-      if (item) {
-        onSelect(value);
-        this.setState({
-          value: item
-        })
-      }
+    optionListRef()._toggle(this.state.show, children, this.state.text, this.state.value, this.positionX, this.positionY, width, height, optionListHeight, overlayPageX, (text, value=text) => {
+      onSelect(value, text)
+      this.setState({
+        text: text,
+        value: value
+      })
     })
   }
-  
+
   blur() {
     this.props.optionListRef()._blur()
   }
@@ -84,11 +103,22 @@ export default class Select extends Component {
     const { width, height, style, styleOption, styleText } = this.props
     const dimensions = { height }
 
+    let selectingTxtStatus = {}
+    let selectingTriangleStatus = {}
+    if(this.state.show){
+      selectingTxtStatus = {
+        color: THEME.colors.green
+      }
+      selectingTriangleStatus = {
+        borderBottomColor: THEME.colors.green
+      }
+    }
+
     return (
       <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
         <View ref={this.props.selectRef || SELECT} style={[styles.container, style ]}>
-          <Option style={ styleOption } styleText={ styleText }>{this.state.value}</Option>
-          <Triangle style={styles.triangle} direction="right-down"/>
+          <Option hideSelectedIcon={true} value={this.state.value} style={ [styleOption] } styleText={ [styleText, selectingTxtStatus] }>{this.state.text}</Option>
+          <Triangle style={[styles.triangle, selectingTriangleStatus]} direction="right-down"/>
         </View>
       </TouchableWithoutFeedback>
     )

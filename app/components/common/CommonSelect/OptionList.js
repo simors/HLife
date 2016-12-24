@@ -30,11 +30,13 @@ export default class OptionList extends Component {
       optionListHeight: 150,
 
       items: [],
+      selectedText: '',
+      selectedValue: '',
       onSelect: () => { }
     }
   }
 
-  _toggle(show, items, positionX, positionY, width, height, optionListHeight, overlayPageX, onSelect) {
+  _toggle(show, items, selectedText, selectedValue, positionX, positionY, width, height, optionListHeight, overlayPageX, onSelect) {
     positionX = positionX - this.state.overlayPageX
     positionY = positionY - this.state.overlayPageY
 
@@ -46,9 +48,11 @@ export default class OptionList extends Component {
       width,
       height,
       items,
+      selectedText,
+      selectedValue,
       onSelect,
       optionListHeight,
-      show: show
+      show: !!show
     })
   }
 
@@ -81,7 +85,7 @@ export default class OptionList extends Component {
 
   render() {
     let {
-      items, overlayPageX, overlayPageY, positionX,
+      items, selectedText, selectedValue, overlayPageX, overlayPageY, positionX,
       positionY, width, height, show, optionListHeight
     } = this.state
 
@@ -98,6 +102,8 @@ export default class OptionList extends Component {
         overlayStyles = {overlayStyles} >
         <Items
           items={items}
+          selectedText={selectedText}
+          selectedValue={selectedValue}
           positionX={positionX}
           positionY={positionY}
           optionListHeight={optionListHeight}

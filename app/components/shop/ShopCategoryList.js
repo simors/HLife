@@ -36,9 +36,7 @@ class ShopCategoryList extends Component {
       shoCategoryId: '',
       sortId: '0',
       distanceId: '',
-      shopCategoryShow: false,
-      distanceShow: false,
-      sortShow: false,
+      selectGroupShow: [false, false, false],
 
     }
   }
@@ -49,33 +47,46 @@ class ShopCategoryList extends Component {
 
 
   _onSelectShopCategory(shoCategoryId) {
+    this.state.selectGroupShow = [false, false, false]
     this.setState({
       ...this.state,
-      shoCategoryId: shoCategoryId
+      shoCategoryId: shoCategoryId,
+      selectGroupShow: this.state.selectGroupShow
     });
   }
 
   _onSelectSort(sortId) {
+    this.state.selectGroupShow = [false, false, false]
     this.setState({
       ...this.state,
-      sortId: sortId
-    });
+      sortId: sortId,
+      selectGroupShow: this.state.selectGroupShow
+    })
   }
 
   _onSelectDistance(distanceId) {
+    this.state.selectGroupShow = [false, false, false]
     this.setState({
       ...this.state,
-      distanceId: distanceId
+      distanceId: distanceId,
+      selectGroupShow: this.state.selectGroupShow
     });
   }
 
-  _onSelectPress(params){
-    this.setState({
-      ...this.state,
-      shopCategoryShow: !!params.shopCategoryShow,
-      distanceShow: !!params.distanceShow,
-      sortShow: !!params.sortShow,
+  _onSelectPress(index){
+    if(index == 0) {
+      this.state.selectGroupShow = [!this.state.selectGroupShow[0], false, false]
+    }else if(index == 1) {
+      this.state.selectGroupShow = [false, !this.state.selectGroupShow[1], false]
+    }else if(index == 2) {
+      this.state.selectGroupShow = [false, false, !this.state.selectGroupShow[2]]
+    }
+    // console.log('this.state.selectGroupShow.1=', this.state.selectGroupShow[index])
+
+    this.setState({ //Notes:触发子组件更新
+      selectGroupShow: this.state.selectGroupShow
     })
+    // console.log('this.state.selectGroupShow.3=', this.state.selectGroupShow)
   }
 
   renderShopCategoryOptions() {
@@ -83,7 +94,7 @@ class ShopCategoryList extends Component {
     if(this.props.allShopCategories) {
       optionsView = this.props.allShopCategories.map((item, index) => {
         return (
-          <Option key={"shopCategoryOption_" + index} value={item.shopCategoryId}>{item.text}</Option>
+          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.shopCategoryId}>{item.text}</Option>
         )
       })
     }
@@ -104,14 +115,15 @@ class ShopCategoryList extends Component {
           <View style={styles.selectGroup}>
             <View style={{ flex: 1}}>
               <Select
-                show={this.state.shopCategoryShow}
-                onPress={()=>this._onSelectPress({shopCategoryShow:!this.state.shopCategoryShow})}
+                show={this.state.selectGroupShow[0]}
+                onPress={()=>this._onSelectPress(0)}
                 style={{borderBottomWidth:normalizeBorder()}}
                 selectRef="SELECT1"
                 overlayPageX={0}
-                optionListHeight={400}
+                optionListHeight={330}
                 optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                defaultValue="全部分类"
+                defaultText="全部分类"
+                defaultValue=""
                 onSelect={this._onSelectShopCategory.bind(this)}>
                 <Option key={"shopCategoryOption_-1"} value="">全部分类</Option>
                 {this.renderShopCategoryOptions()}
@@ -120,14 +132,15 @@ class ShopCategoryList extends Component {
             </View>
             <View style={{ flex: 1}}>
               <Select
-                show={this.state.distanceShow}
-                onPress={()=>this._onSelectPress({distanceShow:!this.state.distanceShow})}
+                show={this.state.selectGroupShow[1]}
+                onPress={()=>this._onSelectPress(1)}
                 style={{borderWidth:normalizeBorder()}}
                 selectRef="SELECT2"
                 overlayPageX={PAGE_WIDTH/3}
-                optionListHeight={250}
+                optionListHeight={270}
                 optionListRef={()=> this._getOptionList('DISTANCE_OPTION_LIST')}
-                defaultValue="全城"
+                defaultText="全城"
+                defaultValue=""
                 onSelect={this._onSelectDistance.bind(this)}>
                 <Option key={"distanceOption_0"} value="1">1km</Option>
                 <Option key={"distanceOption_1"} value="2">2km</Option>
@@ -139,13 +152,14 @@ class ShopCategoryList extends Component {
             </View>
             <View style={{ flex: 1}}>
               <Select
-                show={this.state.sortShow}
-                onPress={()=>this._onSelectPress({sortShow:!this.state.sortShow})}
+                show={this.state.selectGroupShow[2]}
+                onPress={()=>this._onSelectPress(2)}
                 style={{borderBottomWidth:normalizeBorder()}}
                 selectRef="SELECT3"
                 overlayPageX={PAGE_WIDTH * 2 / 3 }
                 optionListRef={()=> this._getOptionList('SORT_OPTION_LIST')}
-                defaultValue="智能排序"
+                defaultText="智能排序"
+                defaultValue="0"
                 onSelect={this._onSelectSort.bind(this)}>
                 <Option key={"sortOption_0"} value="0">智能排序</Option>
                 <Option key={"sortOption_1"} value="1">好评优先</Option>
