@@ -15,6 +15,7 @@ export function loginWithPwd(payload) {
   return AV.User.logInWithMobilePhone(phone, password).then((loginedUser) => {
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
     userInfo = userInfo.set('token', loginedUser.getSessionToken())
+    console.log("loginWithPwd", userInfo)
     return {
       userInfo: userInfo,
     }
@@ -86,22 +87,24 @@ export function certification(payload) {
 }
 
 export function profileSubmit(payload) {
-  let Profile = AV.Object.extend('Profiles')
-  let profile = new Profile()
 
-  profile.set('nickName', payload.nickname)
-  profile.set('favicon', payload.favicon)
-  profile.set('phone', payload.phone)
-  profile.set('gender', payload.gender)
-  profile.set('birthday', payload.birthday)
+  console.log("profileSubmit:payload=", payload)
+  var userInfo = AV.Object.createWithoutData('_User', payload.id);
+  userInfo.set('nickName', payload.nickname)
+  userInfo.set('avatar', payload.avatar)
+  userInfo.set('mobilePhoneNumber', payload.phone)
+  userInfo.set('gender', payload.gender)
+  userInfo.set('birthday', payload.birthday)
 
-    return profile.save().then(function (profile) {
-      console.log("profileSubmit success")
-    }, function (err) {
-      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-      throw err
-    })
-  }
+  return userInfo.save().then(function (userinfo) {
+    console.log("profileSubmit:", userinfo)
+
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+}
 
 export function shopCertification(payload) {
   let Shop = AV.Object.extend('Shop')

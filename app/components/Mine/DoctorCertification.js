@@ -239,7 +239,7 @@ const cardImageInputC = {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
-                  <PhoneInput {...phoneInput} placeholder="仅用于客服与你联系"
+                  <PhoneInput {...phoneInput} placeholder="仅用于客服与你联系" editable={false}
                               inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>

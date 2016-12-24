@@ -27,6 +27,7 @@ import PhoneInput from '../common/Input/PhoneInput'
 import DateTimeInput from '../common/Input/DateTimeInput'
 import * as Toast from '../common/Toast'
 import GenderSelector from '../common/Input/GenderSelector'
+import {getUserId, getUserInfo} from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -38,10 +39,10 @@ const nicknameInput = {
   stateKey: Symbol('nicknameInput'),
   type: "nicknameInput",
 }
-const faviconInput = {
+const avatarInput = {
   formKey: profileForm,
-  stateKey: Symbol('faviconInput'),
-  type: "faviconInput",
+  stateKey: Symbol('avatarInput'),
+  type: "avatarInput",
 }
 const phoneInput = {
   formKey: profileForm,
@@ -67,6 +68,11 @@ class Profile extends Component {
       gender: 'man',
     }
   }
+
+  componentDidMount() {
+    console.log("Profile: this.props.userInfo", this.props.userInfo)
+  }
+
   submitSuccessCallback(doctorInfo) {
     Toast.show('保存信息成功')
     Actions.MINE()
@@ -78,9 +84,11 @@ class Profile extends Component {
   }
 
   onButtonPress = () => {
+
     this.props.submitFormData({
       formKey: profileForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT,
+      id: this.props.userInfo && this.props.userInfo.id,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -103,7 +111,7 @@ class Profile extends Component {
           rightType=""
         />
         <View style={styles.zonea}>
-          <ImageInput {...faviconInput} containerStyle={styles.imageInputStyle}
+          <ImageInput {...avatarInput} containerStyle={styles.imageInputStyle}
                       addImage={require('../../assets/images/default_portrait.png')}
                       addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
           />
@@ -161,7 +169,11 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let userInfo = getUserInfo(state)
+  return {
+    userInfo: userInfo,
+
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
