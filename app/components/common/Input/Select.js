@@ -2,9 +2,10 @@ import React, {Component} from 'react'
 import {
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   Text,
-  ListView,
+  ScrollView,
   StyleSheet,
   Dimensions,
 } from 'react-native'
@@ -28,13 +29,41 @@ export default class Select extends Component {
 
   }
 
+  renderOptions() {
+    return (
+      <View style={styles.optionsWrap}>
+        <View style={styles.option}>
+          <Text style={styles.optionTxt}>fjahdkfa</Text>
+        </View>
+        <View style={styles.option}>
+          <Text style={styles.optionTxt}>fjahdkfa</Text>
+        </View>
+        <View style={styles.option}>
+          <Text style={styles.optionTxt}>fjahdkfa</Text>
+        </View>
+        <View style={styles.option}>
+          <Text style={styles.optionTxt}>fjahdkfa</Text>
+        </View>
+        <View style={styles.option}>
+          <Text style={styles.optionTxt}>fjahdkfa</Text>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <View style={{backgroundColor:'green'}}>
-          <Text>美食特色</Text>
-          <View style={styles.rightBottomAngle}></View>
-          <Triangle color="red" width={40} height={40} direction="right-down"/>
+        <TouchableWithoutFeedback>
+          <View style={styles.selectInput}>
+            <Text style={styles.selectInputTxt}>美食特色</Text>
+            <Triangle style={styles.triangle} direction="right-down"/>
+          </View>
+        </TouchableWithoutFeedback>
+        <View style={[styles.optionsContainer, styles.hide]}>
+          <ScrollView contentContainerStyle={styles.contentContainerStyle}>
+            {this.renderOptions()}
+          </ScrollView>
         </View>
       </View>
     )
@@ -44,12 +73,48 @@ export default class Select extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  rightBottomAngle: {
-    ...PublicStyle.triAngle({direction: 'right-down'}),
-    marginTop: 20
+  hide: {
+    width: 0,
+    height: 0
+  },
+  selectInput: {
+    height: 60,
+    borderWidth: normalizeBorder(),
+    backgroundColor: THEME.colors.lessWhite,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  selectInputTxt: {
+    fontSize: em(17),
+    color: THEME.colors.lessDark
+  },
+  triangle: {
+    position: 'absolute',
+    right: 2,
+    bottom: 2
+  },
+  optionsContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 60,
+    height: 350,
+  },
+  contentContainerStyle: {
+    flex: 1,
+  },
+  optionsWrap: {
+
+  },
+  option: {
+    justifyContent: 'center',
+    height: normalizeH(60),
+    paddingLeft: normalizeW(20),
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA
+
   }
+
 
 })

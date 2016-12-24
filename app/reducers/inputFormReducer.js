@@ -55,7 +55,8 @@ function inputFromInit(state, action) {
   form = form.set("inputs", inputs)
   state = state.setIn([formKey], form)
 
-  if (payload.initValue && payload.initValue.text && 0 < payload.initValue.text.length) {
+  if ((payload.initValue && payload.initValue.text && 0 < payload.initValue.text.length) ||
+      (payload.checkValid)){
     state = checkInputValid(state, formKey, stateKey, payload.initValue)
   }
   return state
@@ -116,6 +117,7 @@ function checkInputFormValid(state, action) {
     state = state.updateIn([formKey, 'error'], val => '表单数据校验通过')
   }
   else{
+    state = state.updateIn([formKey, 'dataReady'], val => false)
     state = state.updateIn([formKey, 'error'], val => invalidMsg)
   }
   return state
