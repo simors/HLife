@@ -239,9 +239,11 @@ function doctorCertification(payload, formData) {
 
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
+    console.log('handleProfileSubmit=', formData)
     let profilePayload = {
+      id: payload.id,
       nickname: formData.nicknameInput.text,
-      favicon: formData.faviconInput.text,
+      avatar: formData.avatarInput.text,
       phone: formData.phoneInput.text,
       birthday: formData.dtPicker.text,
       gender: formData.genderInput.text,

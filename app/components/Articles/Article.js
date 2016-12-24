@@ -33,22 +33,23 @@ export default class Article extends Component {
 
   }
 
+
   render() {
     return (
       <View style={styles.container}>
-        <Header>
-          leftType="icon"
-          leftPress={() => Actions.pop()}
-          rightType="image"
-          rightImageSource={require("../../assets/images/artical_share.png")}
+        <Header leftType='icon'
+                leftPress={() => Actions.pop()}
+                rightType='image'
+                rightImageSource={require("../../assets/images/artical_share.png")}>
+
         </Header>
         <ScrollView>
         <View style={styles.cotainer}>
         <View style={styles.titleView}>
-          <Text style={{fontSize:normalizeH(17), color:'#636363'}}>{this.props.title}</Text>
+          <Text style={{fontSize:normalizeH(17), color:'#636363',marginLeft:normalizeW(12)}}>{this.props.title}</Text>
         </View>
         <View style={styles.authorView}>
-          <Text style={{fontSize:normalizeH(15), color:'#929292'}}>{this.props.author}</Text>
+          <Text style={{fontSize:normalizeH(15), color:'#929292',marginLeft:normalizeW(12)}}>{this.props.author}</Text>
         </View>
 
           <WebView style={styles.articleView}
