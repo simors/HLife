@@ -190,7 +190,6 @@ class ImageGroupInput extends Component {
   }
 
   renderImage(src) {
-
     return (
       <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>

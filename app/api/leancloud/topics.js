@@ -11,7 +11,7 @@ export function pubishTopics(payload) {
   var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId);
 
   topic.set('dependent', topicCategory);
-  topic.set('title', payload.title)
+  topic.set('imgGroup', payload.imgGroup)
   topic.set('content', payload.content)
 
   return topic.save().then(function (doctor) {

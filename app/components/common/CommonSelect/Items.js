@@ -56,18 +56,18 @@ export default class Items extends Component {
   }
 
   render() {
-    const { items, positionX, positionY, show, onPress, width, height, optionListHeight } = this.props
+    const { items, selectedText, selectedValue, positionX, positionY, show, onPress, width, height, optionListHeight } = this.props
 
     if (!show) {
       return null;
     }
 
     const renderedItems = React.Children.map(items, (item) => {
-
+      const newItem = React.cloneElement(item, {selectedValue: selectedValue, selectedText: selectedText})
       return (
-        <TouchableWithoutFeedback onPress={() => onPress(item.props.children, item.props.value) }>
+        <TouchableWithoutFeedback onPress={() => onPress(newItem.props.children, newItem.props.value) }>
           <View>
-            {item}
+            {newItem}
           </View>
         </TouchableWithoutFeedback>
       )
