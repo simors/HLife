@@ -105,14 +105,15 @@ class ShopCategoryList extends Component {
     return optionsView
   }
 
-  gotoShopDetailScene(shopCategoryId) {
-    Toast.show('店铺id=' + shopCategoryId, {duration: 1000})
+  gotoShopDetailScene(shopId) {
+    // Toast.show('店铺id=' + shopCategoryId, {duration: 1000})
+    Actions.SHOP_DETAIL({shopId: shopId})
   }
 
   renderRow(rowData, rowId) {
     const scoreWidth = rowData.score / 5.0 * 62
     return (
-      <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.shopCategoryId)}}>
+      <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.shopId)}}>
         <View style={styles.shopInfoWrap}>
           <View style={styles.coverWrap}>
             <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
@@ -240,7 +241,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   let dataArray = []
   let shopInfo = {
-    shopCategoryId: 1,
+    shopId: 3,
     pv: '100w+',
     coverUrl: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
     shopName: '乐会港式茶餐厅（奥克斯广场店）乐会港式茶餐厅',
