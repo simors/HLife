@@ -1,2 +1,2 @@
 export const PUBLISH_SUCCESS = "PUBLISH_SUCCESS"
-
+export const UPDATE_TOPICS = "UPDATE_TOPICS"

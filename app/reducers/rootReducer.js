@@ -5,13 +5,14 @@ import uiReducer from './uiReducer'
 import authReducer  from './authReducer'
 import messageReducer from './messageReducer'
 import articleReducer from './articleReducer'
-
+import topicReducer from './messageReducer'
 const rootReducers = combineReducers({
   CONFIG: configReducer,
   UI: uiReducer,
   AUTH: authReducer,
   MESSAGE: messageReducer,
   ARTICLE: articleReducer,
+  TOPIC:topicReducer
 })
 
 const rootReducersWrapper = (state, action) => {
