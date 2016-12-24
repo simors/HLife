@@ -9,8 +9,8 @@ import {
   ColumnItem,
   TopicsItem,
   ShopCategory,
-  ArticleItem
 } from '../../models/ConfigModels'
+import {ArticleItem} from '../../models/ArticleModel'
 import ERROR from '../../constants/errorCode'
 
 export function getBanner(payload) {
@@ -85,11 +85,15 @@ export function getTopics() {
 }
 
 
-export function getArticle() {
+export function getArticle(payload) {
   let query = new AV.Query('Articles')
+  if (payload) {
+    let categoryId = payload
+    let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
+    query.equalTo('Category', articleCategory)
+  }
   return query.find().then(function (results) {
     let article = []
-    console.log('<<<<><><><><><>', results)
     results.forEach((result) => {
       article.push(ArticleItem.fromLeancloudObject(result))
     })

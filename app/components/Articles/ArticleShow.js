@@ -50,10 +50,13 @@ export default class ArticleShow extends Component {
                   <TouchableOpacity onPress={()=> {
                     Actions.ARTICLES_ARTICLE({...this.props})}}>
                   <View style={styles.oneTitle}>
-                    <Text>{this.props.title}</Text>
+                    <Text style={{fontSize:normalizeW(17),color:'#636363'}}>{this.props.title}</Text>
                   </View>
                     </TouchableOpacity>
-                  <View style={styles.oneAuthor}><Text>{this.props.author}</Text></View>
+                  <View style={styles.oneAuthor}>
+                    <Image style={{height:normalizeH(30),width:normalizeW(30),overflow:'hidden'}}></Image>
+                    <Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text>
+                  </View>
                   <View style={styles.comment}></View>
                 </View>
               </View>
@@ -87,7 +90,7 @@ export default class ArticleShow extends Component {
                 <TouchableOpacity onPress={()=> {
                   Actions.ARTICLES_ARTICLE({...this.props})}}>
                   <View style={styles.threeTitle}>
-                    <Text style={{fontSize: normalizeW(17)}}>{this.props.title}</Text>
+                    <Text style={{fontSize:normalizeW(17),color:'#636363'}}>{this.props.title}</Text>
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <Image style={styles.threeImage} source={{uri: this.props.images[0]}}>
@@ -100,8 +103,8 @@ export default class ArticleShow extends Component {
                 </TouchableOpacity>
                 <View style={styles.threeArticleInfo}>
 
-                  <View style={styles.threeAuthor}><Text>{this.props.author}</Text></View>
-                  <View style={styles.comment}></View>
+                  <View ><Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text></View>
+                  <View style={styles.comments}></View>
                 </View>
               </View>
             </View>
@@ -160,14 +163,21 @@ const styles = StyleSheet.create(
       width: normalizeW(260),
     },
     oneAuthor: {
+      flexDirection:'row',
       height: normalizeH(40),
       width: normalizeW(260),
       borderBottomWidth: normalizeW(3),
       borderBottomColor: '#E6E6E6',
     },
     comment: {
-      height: normalizeH(44),
-      width: normalizeW(260),
+      height: normalizeH(40),
+      width: normalizeW(150),
     },
+    threeArticleInfo:{
+      flexDirection:'row',
+      width:PAGE_WIDTH,
+
+    },
+
   }
 )

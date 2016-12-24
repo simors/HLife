@@ -15,8 +15,6 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigColumns(state,action)
     case ConfigActionTypes.UPDATE_CONFIG_TOPICS:
       return handleUpdateConfigTopics(state, action)
-    case ConfigActionTypes.UPDATE_CONFIG_ARTICLES:
-      return handleUpdateConfigArticles(state,action)
     case ConfigActionTypes.UPDATE_CONFIG_SHOP_CATEGORIES:
       return handleUpdateConfigShopCategories(state, action)
     default:
@@ -108,12 +106,6 @@ function initTopic(topic) {
 function handleUpdateConfigColumns(state, action) {
   let payload = action.payload
   state = state.set('column', payload)
-  return state
-}
-
-function handleUpdateConfigArticles(state, action) {
-  let payload = action.payload
-  state = state.set('article', payload)
   return state
 }
 

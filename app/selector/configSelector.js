@@ -40,25 +40,6 @@ export function getColumn(state, type) {
   return undefined
 }
 
-export function getArticles(state) {
-  return getConfig(state).article
-}
-
-export function getArticle(state, categoryId) {
-  let articles = getArticles(state).article
-  console.log('articles=========>',articles)
-  if (articles) {
-    if (categoryId && categoryId.length > 0) {
-      articles = articles.filter(article => article.categoryId == categoryId)
-    }
-
-    return articles.toJS()
-  }
-
-  return undefined
-}
-
-
 export function getTopics(state) {
   return getConfig(state).topics
 }
@@ -68,7 +49,7 @@ export function getTopic(state) {
 }
 
 export function selectShopCategories(state, num) {
-  if(num) {
+  if (num) {
     return getConfig(state).shopCategories.slice(0, num)
   }
   return getConfig(state).shopCategories

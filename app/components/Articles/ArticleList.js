@@ -23,42 +23,18 @@ import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
 import ArticleColumn from './ArticleColumn'
-import {getArticle} from '../../selector/configSelector'
-import {fetchArticle} from '../../action/configAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 
-class ArticleList extends Component {
+export default class ArticleList extends Component {
   constructor(props) {
     super(props)
   }
 
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchArticle()
-    })
-  }
 
-  renderArticles() {
-    if (this.props.article) {
-      return (
-        this.props.article.map((value, key) => {
-          let imageCount = value.images.size
-          return (
-            <View key={key} style={styles.channelWrap}>
-              <TouchableOpacity onPress={()=> {
-                Actions.ARTICLES_ARTICLELIST({categoryId: value.id})}}>
-                <Image style={[styles.defaultImageStyles, this.props.imageStyle]} source={{uri: imageUrl}}/>
-                <Text style={styles.channelText}>{value.title}</Text>
-              </TouchableOpacity>
-            </View>
-          )
-        })
-      )
-    }
-  }
+
 
   render() {
     return (
@@ -68,25 +44,19 @@ class ArticleList extends Component {
                 title="精选栏目">
         </Header>
         <View style={styles.columnsView}>
-          <ArticleColumn articles={this.props.article}></ArticleColumn>
+          <ArticleColumn  columnId={this.props.columnId}></ArticleColumn>
         </View>
       </View>
     )
   }
 }
-const mapStateToProps = (state, ownProps) => {
-  let article = getArticle(state, ownProps.categoryId)
-  console.log("================>new article: ", ownProps.categoryId)
-  console.log("================>new article: ", article)
-  return {
-    article: article,
-  }
-}
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchArticle
-}, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(ArticleList)
+// const mapStateToProps = (state, ownProps) => {
+//   return{}
+// }
+// const mapDispatchToProps = (dispatch) => bindActionCreators({
+// }, dispatch)
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(ArticleList)
 
 const styles = StyleSheet.create({
   container: {

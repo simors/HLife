@@ -22,6 +22,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {CommonModal} from '../common/CommonModal'
+import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -29,13 +30,28 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class Categorys extends Component {
   constructor(props) {
     super(props)
-    this.state = {modalVisible: false};
+
   }
 
-  setModalVisible(visible) {
-    this.setState({modalVisible: visible});
+  renderColumns() {
+    if (this.props.column) {
+      return (
+        this.props.column.map((value, key) => {
+          let imageUrl = value.imageSource
+          return (
+            <View key={key} style={styles.channelWrap}>
+              <TouchableOpacity onPress={()=> {
+                Actions.ARTICLES_ARTICLELIST({categoryId: value.columnId})
+              }}>
+                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
+                <Text style={styles.channelText}>{value.title}</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        })
+      )
+    }
   }
-
   renderElems(begin) {
     return (
       this.props.column.map((value, key) => {
@@ -82,39 +98,7 @@ class Categorys extends Component {
   render() {
     return (
       <View >
-        {/*<Modal*/}
-          {/*animationType={"slide"}*/}
-          {/*transparent={true}*/}
-          {/*visible={this.state.modalVisible}*/}
-          {/*onRequestClose={() => {*/}
-            {/*alert("Modal has been closed.")*/}
-          {/*}}*/}
-          {/*style={[styles.defaultContainer, this.props.container]}>*/}
-          {/*<View style={styles.blankView}>*/}
-            {/*</View>*/}
-          {/*<View style={styles.body}>*/}
-              {/*<View style={styles.title}>*/}
-                {/*<Text style={styles.titletextext}>*/}
-                   {/*更多栏目*/}
-                {/*</Text>*/}
-              {/*</View>*/}
-            {/*<ScrollView>*/}
-              {/*<View style={styles.category}>*/}
-                {/*{this.renderCategorys()}*/}
-              {/*</View>*/}
-            {/*</ScrollView>*/}
-
-            {/*<TouchableHighlight onPress={() => {*/}
-              {/*this.setModalVisible(!this.state.modalVisible)*/}
-            {/*}}>*/}
-              {/*<View style={styles.cancelModal}>*/}
-                {/*<Image style={{}}source={require("../../assets/images/artical_close.png")}/>*/}
-              {/*</View>*/}
-            {/*</TouchableHighlight>*/}
-          {/*</View>*/}
-        {/*</Modal>*/}
-
-
+        {this.renderColumns()}
       </View>
 
     )
@@ -221,5 +205,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color:THEME.colors.gray,
     textAlign: 'center'
+  },
+  columnContainer:{
+    width:PAGE_WIDTH,
+    flexDirection:'row',
+    flexWrap: 'wrap',
+
   },
 })
