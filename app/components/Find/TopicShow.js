@@ -28,6 +28,14 @@ export class TopicShow extends Component {
     }
   }
 
+  componentWillReceiveProps(){
+    this.setState({measureFlag: true})
+    this.setState({expanded: true})
+    this.setState({expandText: '全文'})
+    this.setState({showExpandText: false})
+    this.setState({numberOfLines: null})
+  }
+
   _onTextLayout(event) {
     if (this.state.measureFlag) {
       if (this.state.expanded) {
@@ -131,12 +139,8 @@ TopicShow.defaultProps = {
   // style
   containerStyle: {},
   numberOfValues: 3,
-  imgGroup: ["http://www.qq745.com/uploads/allimg/141106/1-141106153Q5.png",
-    "http://img1.3lian.com/2015/a1/53/d/198.jpg",
-    "http://img1.3lian.com/2015/a1/53/d/200.jpg",
-    "http://img1.3lian.com/2015/a1/53/d/200.jpg",
-    "http://img1.3lian.com/2015/a1/53/d/200.jpg"],
-  content:"国家发展改革委新闻发言人赵辰昕说：“纲要提出了165项重大工程项目，这些项目都是供给侧结构性改革中‘补短板’的重要内容。抓好这些项目的实施，就是要坚持从满足需要出发，从解决好人民群众普遍关心的突出问题出发，坚持问题导向，增加有效供给。正像总书记讲话指出的，新的增长点就蕴含在解决好人民群众普遍关心的突出问题当中。”"
+  imgGroup: undefined,
+  content:undefined
 }
 
 //export

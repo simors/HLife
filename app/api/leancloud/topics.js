@@ -1,10 +1,9 @@
 import AV from 'leancloud-storage'
-import {Map, List, Record} from 'immutable'
-import {ShopRecord, ShopInfo} from '../../models/shopModel'
+import {List} from 'immutable'
 import ERROR from '../../constants/errorCode'
-import * as oPrs from './databaseOprs'
+import {TopicArticlesItem} from '../../models/TopicModel'
 
-export function pubishTopics(payload) {
+export function publishTopics(payload) {
   let Topics = AV.Object.extend('Topics')
   let topic = new Topics()
 
@@ -15,6 +14,23 @@ export function pubishTopics(payload) {
   topic.set('content', payload.content)
 
   return topic.save().then(function (doctor) {
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function getTopicArticles(payload) {
+  let categoryId = payload.categoryId
+  var category = AV.Object.createWithoutData('TopicCategory', categoryId);
+  let query = new AV.Query('Topics')
+  query.equalTo('dependent', category)
+  return query.find().then(function (results) {
+    let topicArticles = []
+    results.forEach((result) => {
+      topicArticles.push(TopicArticlesItem.fromLeancloudObject(result))
+    })
+    return new List(topicArticles)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

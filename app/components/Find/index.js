@@ -17,6 +17,9 @@ import {
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {getTopic} from '../../selector/configSelector'
+import {getTopicArticles} from '../../selector/topicSelector'
+import {fetchTopicArticles} from '../../action/topicActions'
+
 import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -35,22 +38,29 @@ export class Find extends Component {
 
   getSelectedTab(index) {
     this.setState({selectedTab: index})
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicArticles({categoryId: this.props.topics[index].objectId})
+    })
   }
 
-  renderTopicItem() {
+  renderTopicItem(value) {
     return (
-      <TopicShow containerStyle={{marginBottom: 10}}/>
+      <TopicShow containerStyle={{marginBottom: 10}}
+                 content={value.content}
+                 imgGroup={value.imgGroup}/>
     )
   }
 
   renderTopicPage() {
-    return (
-      <View >
-        {this.renderTopicItem()}
-        {this.renderTopicItem()}
-        {this.renderTopicItem()}
-      </View>
-    )
+    if (this.props.topicArticles) {
+      return (
+        this.props.topicArticles.map((value, key)=> {
+          return (
+            this.renderTopicItem(value)
+          )
+        })
+      )
+    }
   }
 
   render() {
@@ -79,11 +89,17 @@ export class Find extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const topics = getTopic(state, true)
+  const topicArticles = getTopicArticles(state)
+  console.log("=+++++>>>>",topicArticles)
   return {
-    topics: topics
+    topics: topics,
+    topicArticles: topicArticles
   }
 }
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchTopicArticles
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)
 
