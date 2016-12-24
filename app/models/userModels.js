@@ -4,6 +4,8 @@ export const UserInfoRecord = Record({
   id: undefined,
   phone: undefined,
   token: undefined,
+  nickname: undefined,
+  avatar: undefined
 }, 'UserInfoRecord')
 
 export class UserInfo extends UserInfoRecord {
@@ -13,6 +15,8 @@ export class UserInfo extends UserInfoRecord {
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('phone', lcObj.attributes.mobilePhoneNumber)
+      record.set('nickname',lcObj.attributes.nickname)
+      record.set('avatar',lcObj.attributes.avatar)
     })
     return info
   }

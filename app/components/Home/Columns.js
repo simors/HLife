@@ -52,7 +52,7 @@ import CommonModal from '../common/CommonModal'
            return (
             <View key={key} style={styles.channelWrap}>
               <TouchableOpacity onPress={()=> {
-                Actions.ARTICLES_ARTICLELIST({categoryId: value.columnId})
+                Actions.ARTICLES_ARTICLELIST({columnId: value.columnId})
               }}>
                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
@@ -106,7 +106,7 @@ import CommonModal from '../common/CommonModal'
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let column = getColumn(state, 'choice')
+ let column = getColumn(state, 'choice')
   return {
     column: column,
   }

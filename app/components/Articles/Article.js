@@ -33,14 +33,15 @@ export default class Article extends Component {
 
   }
 
+
   render() {
     return (
       <View style={styles.container}>
-        <Header>
-          leftType="icon"
-          leftPress={() => Actions.pop()}
-          rightType="image"
-          rightImageSource={require("../../assets/images/artical_share.png")}
+        <Header leftType='icon'
+                leftPress={() => Actions.pop()}
+                rightType='image'
+                rightImageSource={require("../../assets/images/artical_share.png")}>
+
         </Header>
         <ScrollView>
         <View style={styles.cotainer}>

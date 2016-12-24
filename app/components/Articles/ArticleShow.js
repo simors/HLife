@@ -54,7 +54,7 @@ export default class ArticleShow extends Component {
                   </View>
                     </TouchableOpacity>
                   <View style={styles.oneAuthor}>
-                    <Image style={{height:normalizeH(30),width:normalizeW(30),radioValue:50,overflow:'hidden'}}></Image>
+                    <Image style={{height:normalizeH(30),width:normalizeW(30),overflow:'hidden'}}></Image>
                     <Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text>
                   </View>
                   <View style={styles.comment}></View>
@@ -103,7 +103,7 @@ export default class ArticleShow extends Component {
                 </TouchableOpacity>
                 <View style={styles.threeArticleInfo}>
 
-                  <View style={{fontSize:normalizeW(15),color:'#929292'}}><Text>{this.props.author}</Text></View>
+                  <View ><Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text></View>
                   <View style={styles.comments}></View>
                 </View>
               </View>
