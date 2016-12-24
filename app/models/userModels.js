@@ -4,7 +4,7 @@ export const UserInfoRecord = Record({
   id: undefined,
   phone: undefined,
   token: undefined,
-  avatar: undefined
+  avatar: undefined,
   profileFlag: false,
   nickname: undefined,
   gender: undefined,
@@ -18,7 +18,7 @@ export class UserInfo extends UserInfoRecord {
     let info = new UserInfoRecord()
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)
-      record.set('avatar',lcObj.attributes.avatar)\
+      record.set('avatar',lcObj.attributes.avatar)
       record.set('phone', attrs.mobilePhoneNumber)
       record.set('profileFlag', attrs.profileFlag)
       record.set('nickname', attrs.nickname)
