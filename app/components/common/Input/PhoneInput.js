@@ -118,6 +118,7 @@ class  PhoneInput extends Component {
           keyboardType={this.props.keyboardType}
           containerStyle={[styles.container, this.props.containerStyle && this.props.containerStyle]}
           inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
+          editable={this.props.editable}
         /> 
         {this.renderClearBtn()}
       </View>

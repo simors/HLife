@@ -102,7 +102,7 @@ function tapActions(props) {
     if (result) { //TODO just test
       //reactInvokeMethod.event('publish_noLogin_click')
       if (props.index != 0) {
-        Actions.Login()
+        Actions.LOGIN()
       }
     } else {
       switch (props.index) {
@@ -123,7 +123,7 @@ function tapActions(props) {
         }
           break
         default: {
-          Actions.PUBLISH_ONE_WORD()
+          // Actions.PUBLISH_ONE_WORD()
         }
       }
     }
