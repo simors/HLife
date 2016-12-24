@@ -5,22 +5,25 @@ export const UserInfoRecord = Record({
   phone: undefined,
   token: undefined,
   avatar: undefined,
-  profileFlag: false,
   nickname: undefined,
   gender: undefined,
   birthday: undefined,
 }, 'UserInfoRecord')
 
+export const UserStateRecord = Record({
+  activeUser: undefined,      // 已登录用户ID
+  profiles: Map(),            // 用户个人信息列表，已用户id作为健值
+  token: undefined,
+})
+
 export class UserInfo extends UserInfoRecord {
   static fromLeancloudObject(lcObj) {
-    console.log('lcObj=', lcObj)
     let attrs = lcObj.attributes
     let info = new UserInfoRecord()
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('avatar',lcObj.attributes.avatar)
       record.set('phone', attrs.mobilePhoneNumber)
-      record.set('profileFlag', attrs.profileFlag)
       record.set('nickname', attrs.nickname)
       record.set('gender', attrs.gender)
       record.set('birthday', attrs.birthday)
@@ -29,3 +32,9 @@ export class UserInfo extends UserInfoRecord {
   }
 }
 
+export class UserState extends UserStateRecord {
+  getUserInfoById(userId) {
+    const profile = this.profiles.get(userId)
+    return profile ? (profile.get('userInfo') ? profile.get('userInfo') : new UserInfo()) : new UserInfo()
+  }
+}
