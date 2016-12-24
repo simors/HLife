@@ -51,7 +51,7 @@ export function fetchColumn() {
 export function getAllTopicCategories(payload) {
   return (dispatch, getState) => {
     lcConfig.getTopicCategories().then((topicCategories) => {
-      let updateTopicsAction = createAction(ConfigActionTypes.UPDATE_CONFIG_TOPICS)
+      let updateTopicsAction = createAction(ConfigActionTypes.UPDATE_CONFIG_TOPIC_CATEGORIES)
       dispatch(updateTopicsAction({topicCategories: topicCategories}))
     }).catch((error) => {
       if(payload.error) {

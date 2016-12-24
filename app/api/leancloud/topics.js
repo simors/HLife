@@ -1,7 +1,7 @@
 import AV from 'leancloud-storage'
 import {List} from 'immutable'
 import ERROR from '../../constants/errorCode'
-import {TopicArticlesItem} from '../../models/TopicModel'
+import {TopicsItem} from '../../models/TopicModel'
 
 export function publishTopics(payload) {
   let Topics = AV.Object.extend('Topics')
@@ -20,17 +20,17 @@ export function publishTopics(payload) {
   })
 }
 
-export function getTopicArticles(payload) {
+export function getTopics(payload) {
   let categoryId = payload.categoryId
   var category = AV.Object.createWithoutData('TopicCategory', categoryId);
   let query = new AV.Query('Topics')
   query.equalTo('dependent', category)
   return query.find().then(function (results) {
-    let topicArticles = []
+    let topics = []
     results.forEach((result) => {
-      topicArticles.push(TopicArticlesItem.fromLeancloudObject(result))
+      topics.push(TopicsItem.fromLeancloudObject(result))
     })
-    return new List(topicArticles)
+    return new List(topics)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

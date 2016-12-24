@@ -51,11 +51,11 @@ function handlePublishTopic(payload, formData) {
   }
 }
 
-export function fetchTopicArticles(payload) {
+export function fetchTopics(payload) {
   return (dispatch, getState) => {
-    lcTopics.getTopicArticles(payload).then((topicArticles) => {
-      let updateTopicArticlesAction = createAction(topicActionTypes.UPDATE_TOPICS)
-      dispatch(updateTopicArticlesAction({categoryId: payload.categoryId, topicArticles: topicArticles}))
+    lcTopics.getTopics(payload).then((topics) => {
+      let updateTopicsAction = createAction(topicActionTypes.UPDATE_TOPICS)
+      dispatch(updateTopicsAction({topics: topics}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

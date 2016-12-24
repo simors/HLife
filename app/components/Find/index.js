@@ -17,8 +17,8 @@ import {
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {getTopicCategories} from '../../selector/configSelector'
-import {getTopicArticles} from '../../selector/topicSelector'
-import {fetchTopicArticles} from '../../action/topicActions'
+import {getTopics} from '../../selector/topicSelector'
+import {fetchTopics} from '../../action/topicActions'
 
 import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
@@ -39,24 +39,25 @@ export class Find extends Component {
   getSelectedTab(index) {
     this.setState({selectedTab: index})
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicArticles({categoryId: this.props.topicCategories[index].objectId})
+      this.props.fetchTopics({categoryId: this.props.topicCategories[index].objectId})
     })
   }
 
-  renderTopicItem(value) {
+  renderTopicItem(value, key) {
     return (
-      <TopicShow containerStyle={{marginBottom: 10}}
+      <TopicShow key={key}
+                 containerStyle={{marginBottom: 10}}
                  content={value.content}
                  imgGroup={value.imgGroup}/>
     )
   }
 
   renderTopicPage() {
-    if (this.props.topicArticles) {
+    if (this.props.topics) {
       return (
-        this.props.topicArticles.map((value, key)=> {
+        this.props.topics.map((value, key)=> {
           return (
-            this.renderTopicItem(value)
+            this.renderTopicItem(value, key)
           )
         })
       )
@@ -89,15 +90,15 @@ export class Find extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const topicCategories = getTopicCategories(state)
-  const topicArticles = getTopicArticles(state)
+  const topics = getTopics(state)
   return {
     topicCategories: topicCategories,
-    topicArticles: topicArticles
+    topics: topics
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchTopicArticles
+  fetchTopics
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)

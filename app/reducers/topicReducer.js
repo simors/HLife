@@ -5,6 +5,7 @@
 import * as AuthTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Map} from 'immutable'
+
 const initialState = new Map()
 
 export default function topicReducer(state = initialState, action) {
@@ -18,6 +19,6 @@ export default function topicReducer(state = initialState, action) {
 
 function handleUpdateTopics(state, action) {
   let payload = action.payload
-  state = state.set('topicArticles', payload.topicArticles)
+  state = state.set('topics', payload.topics)
   return state
 }

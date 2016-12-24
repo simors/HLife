@@ -105,22 +105,6 @@ export function getArticle(payload) {
   })
 }
 
-export function getPickedTopics(payload) {
-  let isPicked = payload.isPicked
-  let query = new AV.Query('TopicCategory')
-  query.equalTo('isPicked', isPicked)
-  return query.find().then(function (results) {
-    let topics = []
-    results.forEach((result) => {
-      topics.push(TopicsItem.fromLeancloudObject(result))
-    })
-    return new List(topics)
-  }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-}
-
 export function getShopCategories(payload) {
   let query = new AV.Query('ShopCategory')
   query.equalTo('status', 1)

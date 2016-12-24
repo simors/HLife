@@ -1,20 +1,20 @@
 /**
  * Created by wuxingyu on 2016/12/24.
  */
-import {List, Record} from 'immutable'
+import {Record} from 'immutable'
 
-export const TopicArticlesConfig = Record({
+export const TopicsConfig = Record({
   content: undefined, //话题内容
   imgGroup: undefined, //图片
   objectId: undefined,
-  categoryId:undefined  //属于的分类
-}, 'TopicArticlesConfig')
+  categoryId: undefined  //属于的分类
+}, 'TopicsConfig')
 
-export class TopicArticlesItem extends TopicArticlesConfig {
+export class TopicsItem extends TopicsConfig {
   static fromLeancloudObject(lcObj) {
-    let topicsItemConfig = new TopicArticlesConfig()
+    let topicsConfig = new TopicsConfig()
     let attrs = lcObj.attributes
-    return topicsItemConfig.withMutations((record)=> {
+    return topicsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
       record.set('imgGroup', attrs.imgGroup)
       record.set('categoryId', attrs.dependent.id)
