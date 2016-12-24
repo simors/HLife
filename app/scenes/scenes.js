@@ -26,6 +26,7 @@ import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
+import ShopDetail from '../components/shop/ShopDetail'
 import PublishTopics from '../components/Find/PublishTopics'
 import MessageBox from '../components/Message'
 import TextImageTest from '../components/common/Input/TextImageTest'
@@ -66,6 +67,7 @@ export const scenes = Actions.create(
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
+      <Scene key="SHOP_DETAIL" component={ShopDetail} />
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
@@ -98,9 +100,7 @@ function tapActions(props) {
     let activeUser = jsonData.token
     return activeUser ? true : false
   }).then((result) => {
-    //if (!result) {
-    if (result) { //TODO just test
-      //reactInvokeMethod.event('publish_noLogin_click')
+    if (!result) {
       if (props.index != 0) {
         Actions.LOGIN()
       }
