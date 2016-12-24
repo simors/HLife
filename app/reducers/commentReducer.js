@@ -7,9 +7,9 @@ import {Map, List} from 'immutable'
 
 const initialState = new Map()
 
-export default function articleReducer(state = initialState, action) {
+export default function commentArticleReducer(state = initialState, action) {
   switch(action.type) {
-    case Types.ADD_ARTICLES:
+    case Types.ADD_COMMENT_ARTICLE:
       return handleAddArticles(state, action)
     default:
       return state
@@ -17,8 +17,8 @@ export default function articleReducer(state = initialState, action) {
 }
 
 function handleAddArticles(state, action) {
-  let columnId = action.payload.columnId
-  let articleList = action.payload.articleList
-  state = state.set(columnId, articleList)
+  let articleId = action.payload.articleId
+  let commentArticleList = action.payload.commentArticleList
+  state = state.set(articleId, commentArticleList)
   return state
 }

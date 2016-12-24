@@ -6,6 +6,7 @@ import authReducer  from './authReducer'
 import messageReducer from './messageReducer'
 import articleReducer from './articleReducer'
 import topicReducer from './topicReducer'
+import commentArticleReduce from './commentReducer'
 
 const rootReducers = combineReducers({
   CONFIG: configReducer,
@@ -13,7 +14,8 @@ const rootReducers = combineReducers({
   AUTH: authReducer,
   MESSAGE: messageReducer,
   ARTICLE: articleReducer,
-  TOPIC: topicReducer
+  TOPIC: topicReducer,
+  COMMENT_ARTICLE: commentArticleReduce
 })
 
 const rootReducersWrapper = (state, action) => {
