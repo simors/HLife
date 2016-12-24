@@ -74,15 +74,15 @@ export const scenes = Actions.create(
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
-        <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar >
+        <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="WUAI" component={Home}/>
         </Scene>
 
-        <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar >
+        <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="LOCAL_INDEX" component={Local} />
         </Scene>
 
-        <Scene key="FIND" title="发现" number={2} icon={TabIcon} hideNavBar >
+        <Scene key="FIND" title="发现" number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="FIND_INDEX" component={Find} />
         </Scene>
 
@@ -95,25 +95,37 @@ export const scenes = Actions.create(
 )
 
 function tapActions(props) {
-  AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
-    let jsonData = JSON.parse(data)
-    let activeUser = jsonData.token
-    return activeUser ? true : false
-  }).then((result) => {
-    if (!result) {
-      if (props.index != 0) {
-        Actions.LOGIN()
+  if (props.index == 3) {
+    AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
+      let jsonData = JSON.parse(data)
+      let activeUser = jsonData.token
+      return activeUser ? true : false
+    }).then((result) => {
+      if (!result) {
+        // if (props.index != 0) {
+          Actions.LOGIN()
+        // }
+      } else {
+        Actions.MINE()
       }
-    } else {
-      switch (props.index) {
-        case 3: {
-          Actions.MINE()
-          break
-        }
-        default: {
-          Actions.HOME()
-        }
+    })
+  } else {
+    switch (props.index) {
+      case 0: {
+        Actions.HOME_INDEX()
+        break
+      }
+      case 1: {
+        Actions.LOCAL()
+        break
+      }
+      case 2: {
+        Actions.FIND()
+        break
+      }
+      default: {
+        Actions.HOME()
       }
     }
-  })
+  }
 }
