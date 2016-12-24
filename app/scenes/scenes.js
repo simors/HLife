@@ -100,9 +100,7 @@ function tapActions(props) {
     let activeUser = jsonData.token
     return activeUser ? true : false
   }).then((result) => {
-    //if (!result) {
-    if (result) { //TODO just test
-      //reactInvokeMethod.event('publish_noLogin_click')
+    if (!result) {
       if (props.index != 0) {
         Actions.LOGIN()
       }
