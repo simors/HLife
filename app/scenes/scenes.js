@@ -74,15 +74,15 @@ export const scenes = Actions.create(
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
-        <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
-          <Scene key="WELLCHOOSEN" component={Home}/>
+        <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar >
+          <Scene key="WUAI" component={Home}/>
         </Scene>
 
-        <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar >
           <Scene key="LOCAL_INDEX" component={Local} />
         </Scene>
 
-        <Scene key="FIND" title="发现" number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="FIND" title="发现" number={2} icon={TabIcon} hideNavBar >
           <Scene key="FIND_INDEX" component={Find} />
         </Scene>
 
@@ -106,24 +106,12 @@ function tapActions(props) {
       }
     } else {
       switch (props.index) {
-        case 0: {
-          Actions.HOME_INDEX()
-        }
-          break
-        case 1: {
-          Actions.LOCAL()
-        }
-          break
-        case 2: {
-          Actions.FIND()
-          break
-        }
         case 3: {
           Actions.MINE()
-        }
           break
+        }
         default: {
-          // Actions.PUBLISH_ONE_WORD()
+          Actions.HOME()
         }
       }
     }
