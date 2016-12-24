@@ -98,13 +98,12 @@ function tapActions(props) {
   if (props.index == 3) {
     AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
       let jsonData = JSON.parse(data)
+      console.log('User Auth:', jsonData)
       let activeUser = jsonData.token
       return activeUser ? true : false
     }).then((result) => {
       if (!result) {
-        // if (props.index != 0) {
-          Actions.LOGIN()
-        // }
+        Actions.LOGIN()
       } else {
         Actions.MINE()
       }

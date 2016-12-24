@@ -40,7 +40,7 @@ export function restoreFromPersistence() {
     if (authSelectors.isUserLogined(getState())) {
       dispatch(verifyToken())
     } else {
-      Actions.LOGIN()
+      // Actions.LOGIN()
       try {
       } catch (e) {
         console.log("restoreFromPersistence error is", e)
