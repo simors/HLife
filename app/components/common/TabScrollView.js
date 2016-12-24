@@ -16,6 +16,10 @@ import {
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import THEME from '../../constants/themes/theme1'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 export class TabScrollView extends Component {
   constructor(props) {
@@ -46,7 +50,9 @@ export class TabScrollView extends Component {
         return (
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-            <Text >{key}</Text>
+            <KeyboardAwareScrollView style={styles.scrollViewStyle}>
+              {this.props.renderTopicPage()}
+            </KeyboardAwareScrollView>
           </View>
         )
       })
@@ -112,8 +118,8 @@ const styles = StyleSheet.create({
   },
   itemLayout: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    //  alignItems: 'center',
+//    justifyContent: 'center'
   },
   tabBarTextStyle: {
     fontSize: 16,
@@ -133,5 +139,9 @@ const styles = StyleSheet.create({
 
   tabBarStyle: {
     height: 38,
+  },
+  scrollViewStyle: {
+    flex: 1,
+    width: PAGE_WIDTH
   },
 })

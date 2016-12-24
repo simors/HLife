@@ -12,283 +12,222 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
-import Symbol from 'es6-symbol'
-import Header from '../common/Header'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import {getTopic} from '../../selector/configSelector'
-import MultilineText from '../common/Input/MultilineText'
-import ImageGroupInput from '../common/Input/ImageGroupInput'
-import ModalBox from 'react-native-modalbox';
-import {Actions} from 'react-native-router-flux'
-import * as Toast from '../common/Toast'
+import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import THEME from '../../constants/themes/theme1'
+import TopicImageViewer from '../../components/common/TopicImageViewer'
 
-const PAGE_WIDTH = Dimensions.get('window').width
-const PAGE_HEIGHT = Dimensions.get('window').height
-
-let formKey = Symbol('multiForm')
-const multiInput = {
-  formKey: formKey,
-  stateKey: Symbol('multiInput'),
-  type: 'content'
-}
-
-const imageGroupInput = {
-  formKey: formKey,
-  stateKey: Symbol('imageGroupInput'),
-  type: 'imgGroup'
-}
-
-class PublishTopics extends Component {
+export class TopicShow extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isDisabled: false,
-      selectedTopic: undefined,
-    };
-  }
-
-  submitSuccessCallback() {
-    Toast.show('发布成功')
-    Actions.pop()
-  }
-
-  submitErrorCallback(error) {
-    Toast.show(error.message)
-  }
-
-  onButtonPress = () => {
-     this.props.publishTopicFormData({
-       formKey: formKey,
-       categoryId: this.state.selectedTopic.objectId,
-       submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-       success:this.submitSuccessCallback,
-       error: this.submitErrorCallback
-     })
-  }
-
-  componentDidMount() {
-    if (this.props.topicId) {
-      this.setState({selectedTopic: this.props.topicId});
+      numberOfLines: null,
+      expandText: '全文',
+      expanded: true,
+      showExpandText: false,
+      measureFlag: true,
     }
   }
 
-  openModal() {
-    this.refs.modal3.open();
+  _onTextLayout(event) {
+    if (this.state.measureFlag) {
+      if (this.state.expanded) {
+        this.maxHeight = event.nativeEvent.layout.height;
+        this.setState({expanded: false, numberOfLines: this.props.numberOfValues});
+      }
+      else {
+        this.mixHeight = event.nativeEvent.layout.height;
+        if (this.mixHeight != this.maxHeight) {
+          this.setState({showExpandText: true})
+        }
+        this.setState({measureFlag: false})
+      }
+    }
   }
 
-  closeModal(value) {
-    this.setState({selectedTopic: value})
-    this.refs.modal3.close();
+  _onPressExpand() {
+    if (!this.state.expanded) {
+      this.setState({numberOfLines: null, expandText: '收起', expanded: true})
+    } else {
+      this.setState({numberOfLines: this.props.numberOfValues, expandText: '全文', expanded: false})
+    }
   }
 
-  renderTopicsSelected() {
-    if (this.props.topics) {
+  renderExpandText() {
+    if (this.state.showExpandText) {
       return (
-        this.props.topics.map((value, key)=> {
-          return (
-            <View key={key} style={styles.modalTopicButtonStyle}>
-              <TouchableOpacity style={styles.modalTopicStyle}
-                                onPress={()=>this.closeModal(value)}>
-                <Text style={styles.ModalTopicTextStyle}>
-                  {value.title}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )
-        })
+        <Text style={styles.showExpandTextStyle}
+              onPress={this._onPressExpand.bind(this)}>
+          {this.state.expandText}
+        </Text>
       )
     }
-  }
 
-  renderSelectedTopic() {
-    if (this.state.selectedTopic) {
-      return (
-        <View style={styles.selectedTopicStyle}>
-          <Text style={styles.selectedTopicTextStyle}>
-            {this.state.selectedTopic.title}
-          </Text>
-        </View>
-      )
-    }
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.containerStyle, this.props.containerStyle]}>
 
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
-          title="发起话题"
-          rightType="text"
-          rightText="发布"
-          rightPress={() => this.onButtonPress()}
-        />
-
-        <View style={styles.body}>
-
-          <KeyboardAwareScrollView style={styles.scrollViewStyle}>
-            <TouchableOpacity style={styles.toSelectContainer} onPress={this.openModal.bind(this)}>
-              {this.renderSelectedTopic()}
-              <Image style={styles.imageStyle} source={require("../../assets/images/unfold_topic@2x.png")}/>
+        <View style={styles.introWrapStyle}>
+          <View style={{flexDirection: 'row'}} onPress={()=> {
+          }}>
+            <TouchableOpacity>
+              <Image source={require("../../assets/images/local_write@2x.png")}/>
             </TouchableOpacity>
-
-            <MultilineText containerStyle={{height: normalizeH(232)}}
-                           inputStyle={{height: normalizeH(232)}}
-                           {...multiInput}/>
-
-            <View style={{marginTop: 10}}>
-              <ImageGroupInput {...imageGroupInput}
-                               number={9}
-                               imageLineCnt={4}/>
-            </View>
-          </KeyboardAwareScrollView>
-
-          <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
-            <KeyboardAwareScrollView style={styles.scrollViewStyle}>
-              <Text style={styles.modalShowTopicsStyle}>选择一个主题</Text>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
-                {this.renderTopicsSelected()}
+            <View>
+              <TouchableOpacity>
+                <Text style={styles.userNameStyle}>白天不懂夜的黑</Text>
+              </TouchableOpacity>
+              <View style={styles.timeLocationStyle}>
+                <Text style={styles.timeTextStyle}>刚刚</Text>
+                <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
+                <Text style={styles.timeTextStyle}>长沙</Text>
               </View>
-            </KeyboardAwareScrollView>
-          </ModalBox>
+            </View>
+            <TouchableOpacity style={styles.attentionStyle}>
+              <Image source={require("../../assets/images/give_attention_shop.png")}/>
+            </TouchableOpacity>
+          </View>
+        </View>
 
+
+        <View>
+          <View style={styles.contentWrapStyle}>
+            <Text style={styles.contentStyle}
+                  numberOfLines={this.state.numberOfLines}
+                  onLayout={this._onTextLayout.bind(this)}>
+              {this.props.content}
+            </Text>
+            {this.renderExpandText()}
+          </View>
+          <View style={styles.imagesWrapStyle}>
+            <TopicImageViewer images={this.props.imgGroup}/>
+          </View>
+        </View>
+
+
+        <View style={styles.commentContainerStyle}>
+          <View>
+            <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+            }}>
+              <Image style={styles.commentImageStyle} source={require("../../assets/images/like_unselect.png")}/>
+              <Text style={styles.commentTextStyle}>75000</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+            }}>
+              <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
+              <Text style={styles.commentTextStyle}>88888</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    );
+    )
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-
-  const topics = getTopic(state, true)
-  return {
-    topics: topics
-  }
+TopicShow.defaultProps = {
+  // style
+  containerStyle: {},
+  numberOfValues: 3,
+  imgGroup: ["http://www.qq745.com/uploads/allimg/141106/1-141106153Q5.png",
+    "http://img1.3lian.com/2015/a1/53/d/198.jpg",
+    "http://img1.3lian.com/2015/a1/53/d/200.jpg",
+    "http://img1.3lian.com/2015/a1/53/d/200.jpg",
+    "http://img1.3lian.com/2015/a1/53/d/200.jpg"],
+  content:"国家发展改革委新闻发言人赵辰昕说：“纲要提出了165项重大工程项目，这些项目都是供给侧结构性改革中‘补短板’的重要内容。抓好这些项目的实施，就是要坚持从满足需要出发，从解决好人民群众普遍关心的突出问题出发，坚持问题导向，增加有效供给。正像总书记讲话指出的，新的增长点就蕴含在解决好人民群众普遍关心的突出问题当中。”"
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  publishTopicFormData
-}, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)
-
+//export
 const styles = StyleSheet.create({
-  container: {
+  containerStyle: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  body: {
-    ...Platform.select({
-      ios: {
-        paddingTop: normalizeH(65),
-      },
-      android: {
-        paddingTop: normalizeH(45)
-      }
-    }),
-    height: PAGE_HEIGHT,
-    width: PAGE_WIDTH
+    backgroundColor: '#fff'
   },
 
-  scrollViewStyle: {
-    flex: 1,
-    width: PAGE_WIDTH
+  //用户、时间、地点信息
+  introWrapStyle: {
+    marginTop: normalizeH(12),
+    marginLeft: normalizeW(12)
   },
-
-  //选择话题的对话框的样式
-  toSelectContainer: {
-    height: normalizeH(44),
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: "#E6E6E6"
-  },
-  selectedTopicStyle: {
-    marginTop: normalizeH(5),
-    marginLeft: normalizeW(12),
-    borderWidth: 1,
-    borderStyle: 'solid',
-    backgroundColor: '#50e3c2',
-    height: normalizeH(34),
-    alignItems: 'flex-start',
-    borderRadius: 100,
-    borderColor: 'transparent',
-  },
-  selectedTopicTextStyle: {
+  userNameStyle: {
     fontSize: em(15),
-    color: "#ffffff",
-    marginLeft: normalizeW(16),
-    marginRight: normalizeW(16),
-    marginTop: normalizeH(7),
-    alignSelf: 'center',
+    marginTop: 1,
+    marginLeft: 10,
+    color: "#4a4a4a"
   },
-  imageStyle: {
-    position: 'absolute',
-    right: normalizeW(12),
+  attentionStyle: {
+    position: "absolute",
+    right: normalizeW(10),
+    top: normalizeH(6),
+    width: normalizeW(56),
+    height: normalizeH(25)
+  },
+  timeLocationStyle: {
+    marginLeft: normalizeW(11),
+    marginTop: normalizeH(9),
+    flexDirection: 'row'
+  },
+  timeTextStyle: {
+    marginRight: normalizeW(26),
+    fontSize: em(12),
+    color: THEME.colors.lighter
+  },
+  positionStyle: {
+    marginRight: normalizeW(4),
+    width: normalizeW(8),
+    height: normalizeH(12)
+  },
+
+  //文章和图片
+  contentWrapStyle: {
+    marginTop: normalizeH(13),
+    marginLeft: normalizeW(12)
+  },
+  contentStyle: {
+    fontSize: em(17),
+    lineHeight: em(21),
+    color: "#4a4a4a"
+  },
+  imagesWrapStyle: {
+    marginTop: normalizeH(9),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  showExpandTextStyle: {
+    fontSize: em(12),
     marginTop: normalizeH(10),
-    width: normalizeW(24),
-    height: normalizeH(24),
-    alignSelf: 'flex-end',
+    color: THEME.colors.green
   },
 
-
-  //modal 所有子组件的样式
-  modalStyle: {
-    width: PAGE_WIDTH,
-    backgroundColor: '#f2f2f2',
-    height: normalizeH(250),
-    alignItems: 'flex-start',
-    ...Platform.select({
-      ios: {
-        top: normalizeH(65),
-      },
-      android: {
-        top: normalizeH(45)
-      }
-    }),
+  //评论和点赞按钮
+  commentContainerStyle: {
+    flex: 1,
+    marginTop: normalizeH(13),
+    marginBottom: normalizeH(8),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
-  modalTextStyle: {
-    marginTop: normalizeH(17),
-    marginBottom: normalizeH(18),
-    alignSelf: 'center',
-    color: "#4a4a4a",
-    fontSize: em(12)
-  },
-  modalShowTopicsStyle: {
-    marginTop: normalizeH(17),
-    marginBottom: normalizeH(18),
-    alignSelf: 'center',
-    color: "#4a4a4a",
-    fontSize: em(12)
-  },
-  modalTopicButtonStyle: {
-    alignItems: 'flex-start',
-    marginLeft: normalizeW(5),
-    marginRight: normalizeW(5),
-    marginBottom: normalizeH(20)
-  },
-  modalTopicStyle: {
+  commentStyle: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#E9E9E9',
-    height: normalizeH(34),
-    alignItems: 'flex-start',
-    borderRadius: 100
+    height: normalizeH(32),
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderRadius: 100,
+    flexDirection: 'row',
   },
-  ModalTopicTextStyle: {
+  commentImageStyle: {
+    marginLeft: normalizeW(20),
+    marginRight: normalizeW(20),
+  },
+  commentTextStyle: {
     fontSize: em(15),
-    color: "#4a4a4a",
-    marginLeft: normalizeW(16),
-    marginRight: normalizeW(16),
-    marginTop: normalizeH(7),
-    alignSelf: 'center',
-  },
-
+    marginRight: normalizeW(20),
+    color: THEME.colors.lighter
+  }
 })
