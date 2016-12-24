@@ -58,7 +58,6 @@ class PublishTopics extends Component {
 
   submitErrorCallback(error) {
     Toast.show(error.message)
-    Actions.pop()
   }
 
   onButtonPress = () => {
