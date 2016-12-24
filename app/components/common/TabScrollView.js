@@ -11,7 +11,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  InteractionManager
+  InteractionManager,
+  RefreshControl
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
@@ -26,6 +27,7 @@ export class TabScrollView extends Component {
     super(props)
     this.state = {
       topicItem: 0,
+      isRefreshing:false
     }
   }
 
@@ -36,6 +38,14 @@ export class TabScrollView extends Component {
       }
     })
   }
+
+  _onRefresh(){
+    this.setState({isRefreshing: true})
+    setTimeout(() => {
+      this.props.refreshTopic()
+      this.setState({isRefreshing: false})
+    }, 1000)
+}
 
   changeTab(payload) {
     if (this.props.onSelected) {
@@ -50,7 +60,15 @@ export class TabScrollView extends Component {
         return (
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-            <KeyboardAwareScrollView style={styles.scrollViewStyle}>
+            <KeyboardAwareScrollView
+              style={styles.scrollViewStyle}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this._onRefresh.bind(this)}
+                  colors={['#ff0000', '#00ff00','#0000ff','#3ad564']}
+                  progressBackgroundColor="#ffffff"
+                /> }>
               {this.props.renderTopicPage()}
             </KeyboardAwareScrollView>
           </View>

@@ -52,6 +52,13 @@ export class Find extends Component {
     )
   }
 
+  refreshTopic()
+  {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopics({categoryId: this.props.topicCategories[this.state.selectedTab].objectId})
+    })
+  }
+
   renderTopicPage() {
     if (this.props.topics) {
       return (
@@ -75,6 +82,7 @@ export class Find extends Component {
         />
         <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.topicId}
+                       refreshTopic={()=>this.refreshTopic()}
                        onSelected={(index) => this.getSelectedTab(index)}
                        renderTopicPage={() => this.renderTopicPage()}/>
         <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=> {
