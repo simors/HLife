@@ -25,7 +25,7 @@ export class TabScrollView extends Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.topics.map((value, key)=> {
       if (value.objectId == this.props.topicId) {
         this.setState({topicItem: key})
@@ -44,7 +44,8 @@ export class TabScrollView extends Component {
     return (
       this.props.topics.map((value, key)=> {
         return (
-          <View key={key} tabLabel={value.title} style={[styles.itemLayout,this.props.itemLayout &&this.props.itemLayout]}>
+          <View key={key} tabLabel={value.title}
+                style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
             <Text >{key}</Text>
           </View>
         )
@@ -57,10 +58,10 @@ export class TabScrollView extends Component {
       <ScrollableTabBar
         activeTextColor={this.props.activeTextColor}
         inactiveTextColor={this.props.inactiveTextColor}
-        style={[styles.tarBarStyle,this.props.tarBarStyle &&this.props.tarBarStyle]}
-        underlineStyle={[styles.tarBarUnderlineStyle,this.props.tarBarUnderlineStyle &&this.props.tarBarUnderlineStyle]}
-        textStyle={[styles.tabBarTextStyle,this.props.tabBarTextStyle &&this.props.tabBarTextStyle]}
-        tabStyle={[styles.tabBarTabStyle,this.props.tabBarTabStyle &&this.props.tabBarTabStyle]}
+        style={[styles.tarBarStyle, this.props.tarBarStyle && this.props.tarBarStyle]}
+        underlineStyle={[styles.tarBarUnderlineStyle, this.props.tarBarUnderlineStyle && this.props.tarBarUnderlineStyle]}
+        textStyle={[styles.tabBarTextStyle, this.props.tabBarTextStyle && this.props.tabBarTextStyle]}
+        tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
         backgroundColor={this.props.backgroundColor}
       />
     )
@@ -69,7 +70,7 @@ export class TabScrollView extends Component {
   render() {
     if (this.props.topics) {
       return (
-        <ScrollableTabView style={[styles.body,this.props.body &&this.props.body]}
+        <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
                            page={this.state.topicItem}
                            scrollWithoutAnimation={true}
                            renderTabBar={()=> this.renderTabBar()}
@@ -84,11 +85,11 @@ export class TabScrollView extends Component {
 
 TabScrollView.defaultProps = {
   // style
-  tabBarTextStyle:{},
-  tabBarTabStyle:{},
-  tarBarUnderlineStyle:{},
-  tarBarStyle:{},
-  body:{},
+  tabBarTextStyle: {},
+  tabBarTabStyle: {},
+  tarBarUnderlineStyle: {},
+  tarBarStyle: {},
+  body: {},
 
   inactiveTextColor: '#686868',
   activeTextColor: THEME.colors.green,
