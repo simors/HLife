@@ -88,10 +88,12 @@ export default class Select extends Component {
     this.overlayPageX = overlayPageX
     optionListRef()._toggle(this.state.show, children, this.state.text, this.state.value, this.positionX, this.positionY, width, height, optionListHeight, overlayPageX, (text, value=text) => {
       onSelect(value, text)
-      this.setState({
-        text: text,
-        value: value
-      })
+      if(value !== null) {
+        this.setState({
+          text: text,
+          value: value
+        })
+      }
     })
   }
 

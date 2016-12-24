@@ -8,7 +8,9 @@ import {
   Text,
   Dimensions,
   ScrollView,
+  ListView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   Platform
 } from 'react-native'
@@ -22,8 +24,10 @@ import {
   OptionList,
   Select
 } from '../common/CommonSelect'
+import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
+import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -101,6 +105,46 @@ class ShopCategoryList extends Component {
     return optionsView
   }
 
+  gotoShopDetailScene(shopCategoryId) {
+    Toast.show('店铺id=' + shopCategoryId, {duration: 1000})
+  }
+
+  renderRow(rowData, rowId) {
+    const scoreWidth = rowData.score / 5.0 * 62
+    return (
+      <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.shopCategoryId)}}>
+        <View style={styles.shopInfoWrap}>
+          <View style={styles.coverWrap}>
+            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
+          </View>
+          <View style={styles.shopIntroWrap}>
+            <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
+            <View style={styles.scoresWrap}>
+              <View style={styles.scoreIconGroup}>
+                <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
+                <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
+              </View>
+              <Text style={styles.score}>3.5</Text>
+            </View>
+            <View style={styles.subInfoWrap}>
+              <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
+              <Text style={styles.subTxt}>{rowData.businessArea}</Text>
+              <Text style={styles.subTxt}>{rowData.distance}</Text>
+            </View>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  refreshData() {
+
+  }
+
+  loadMoreData() {
+
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -112,6 +156,16 @@ class ShopCategoryList extends Component {
           rightType="none"
         />
         <View style={styles.body}>
+          <View style={{paddingTop: 40}}>
+            <CommonListView
+              contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
+              dataSource={this.props.ds}
+              renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+              loadNewData={()=>{this.refreshData()}}
+              loadMoreData={()=>{this.loadMoreData()}}
+            />
+          </View>
+
           <View style={styles.selectGroup}>
             <View style={{ flex: 1}}>
               <Select
@@ -176,6 +230,36 @@ class ShopCategoryList extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let ds = undefined
+  if(ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+  let dataArray = []
+  let shopInfo = {
+    shopCategoryId: 1,
+    pv: '100w+',
+    coverUrl: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
+    shopName: '乐会港式茶餐厅（奥克斯广场店）乐会港式茶餐厅',
+    score: 3.5,
+    businessArea: '银盆岭',
+    distance: '4.3km'
+
+  }
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+  dataArray.push(shopInfo)
+
   let shopCategories = []
   let ts = {
     shopCategoryId: "1",
@@ -189,6 +273,7 @@ const mapStateToProps = (state, ownProps) => {
   let allShopCategories = shopCategories
 
   return {
+    ds: ds.cloneWithRows(dataArray),
     allShopCategories: allShopCategories,
   }
 }
@@ -209,18 +294,75 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(64),
+        marginTop: normalizeH(64),
       },
       android: {
-        paddingTop: normalizeH(44)
+        marginTop: normalizeH(44)
       }
     }),
     flex: 1,
   },
   selectGroup: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
     backgroundColor: THEME.colors.lessWhite,
+  },
+  shopInfoWrap: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 10,
+    marginBottom: normalizeH(10),
+    backgroundColor: '#fff'
+  },
+  coverWrap: {
+    width: 80,
+    height: 80
+  },
+  cover: {
+    flex: 1
+  },
+  shopIntroWrap: {
+    paddingLeft: 10,
+  },
+  shopName: {
+    lineHeight: 20,
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  score: {
+    marginLeft: 5,
+    color: '#f5a623',
+    fontSize: em(12)
+  },
+  scoresWrap: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  scoreIconGroup: {
+    width: 62,
+    height: 11,
+    backgroundColor: '#d8d8d8'
+  },
+  scoreBackDrop: {
+    height: 11,
+    backgroundColor: '#f5a623'
+  },
+  scoreIcon: {
+    position: 'absolute',
+    left: 0,
+    top: 0
+  },
+  subInfoWrap: {
+    flexDirection: 'row',
+  },
+  subTxt: {
+    marginRight: normalizeW(10),
+    color: '#d8d8d8',
+    fontSize: em(12)
   }
 })
