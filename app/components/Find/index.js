@@ -16,7 +16,7 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
-import {getTopic} from '../../selector/configSelector'
+import {getTopicCategories} from '../../selector/configSelector'
 import {getTopicArticles} from '../../selector/topicSelector'
 import {fetchTopicArticles} from '../../action/topicActions'
 
@@ -39,7 +39,7 @@ export class Find extends Component {
   getSelectedTab(index) {
     this.setState({selectedTab: index})
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicArticles({categoryId: this.props.topics[index].objectId})
+      this.props.fetchTopicArticles({categoryId: this.props.topicCategories[index].objectId})
     })
   }
 
@@ -64,7 +64,7 @@ export class Find extends Component {
   }
 
   render() {
-    let topicId = this.props.topics[this.state.selectedTab]
+    let topicId = this.props.topicCategories[this.state.selectedTab]
     return (
       <View style={styles.container}>
         <Header
@@ -72,7 +72,7 @@ export class Find extends Component {
           title="发现"
           rightType="none"
         />
-        <TabScrollView topics={this.props.topics}
+        <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.topicId}
                        onSelected={(index) => this.getSelectedTab(index)}
                        renderTopicPage={() => this.renderTopicPage()}/>
@@ -88,11 +88,10 @@ export class Find extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-  const topics = getTopic(state, true)
+  const topicCategories = getTopicCategories(state)
   const topicArticles = getTopicArticles(state)
-  console.log("=+++++>>>>",topicArticles)
   return {
-    topics: topics,
+    topicCategories: topicCategories,
     topicArticles: topicArticles
   }
 }

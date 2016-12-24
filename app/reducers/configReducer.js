@@ -32,9 +32,6 @@ function initConfig(payload) {
       if(payload.columns) {
         config.set('columns', initColumns(payload.columns))
       }
-      if(payload.topics) {
-        config.set('topics', initTopics(payload.topics))
-      }
     })
   }
   return record
@@ -78,29 +75,8 @@ function handleUpdateConfigAnnouncements(state, action) {
 
 function handleUpdateConfigTopics(state, action) {
   let payload = action.payload
-  let isPicked = payload.isPicked
-  let topicsMap = new Map()
-  topicsMap = topicsMap.set(isPicked, payload.topics)
-  state = state.set('topics', topicsMap)
+  state = state.set('topicCategories', payload.topicCategories)
   return state
-}
-
-function initTopics(topics) {
-  let topicsMap = new Map()
-  if(topics) {
-    for(let isPicked in topics) {
-      topicsMap = topicsMap.set(isPicked, initTopic(topics[isPicked]))
-    }
-  }
-  return topicsMap
-}
-
-function initTopic(topic) {
-  let topicItems = []
-  topic.map((topicItem) => {
-    topicItems.push(new ColumnItemConfig(topicItem))
-  })
-  return new List(topicItems)
 }
 
 function handleUpdateConfigColumns(state, action) {

@@ -19,7 +19,7 @@ import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import {getTopic} from '../../selector/configSelector'
+import {getTopicCategories} from '../../selector/configSelector'
 import MultilineText from '../common/Input/MultilineText'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
 import ModalBox from 'react-native-modalbox';
@@ -166,7 +166,7 @@ class PublishTopics extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-  const topics = getTopic(state, true)
+  const topics = getTopicCategories(state)
   return {
     topics: topics
   }
