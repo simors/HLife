@@ -62,7 +62,7 @@ class Login extends Component {
     //console.log('userInfos=' + JSON.stringify(userInfos))
     // console.log("submitSuccessCallback:", userInfos)
     Toast.show('登录成功!')
-    Actions.HOME()
+    Actions.pop()
   }
   
   submitErrorCallback(error) {
