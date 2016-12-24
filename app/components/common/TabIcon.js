@@ -28,11 +28,13 @@ class TabIcon extends Component {
       </View>
     )
   }
-  publish=(title, selected, index, onPressd, isLogin) =>{
+  publish=(title, selected, index, onPressed, isLogin) =>{
     return (
       <TouchableWithoutFeedback onPress={()=> {
-          onPressd({isLogin: isLogin, index: index})
-        }}>
+        if (onPressed) {
+          onPressed({isLogin: isLogin, index: index})
+        }
+      }}>
         <View style={styles.container}>
           {this.getImage(index, selected)}
           {this.getTitle(title, selected)}

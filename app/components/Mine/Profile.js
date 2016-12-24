@@ -27,7 +27,7 @@ import PhoneInput from '../common/Input/PhoneInput'
 import DateTimeInput from '../common/Input/DateTimeInput'
 import * as Toast from '../common/Toast'
 import GenderSelector from '../common/Input/GenderSelector'
-import {getUserId, getUserInfo} from '../../selector/authSelector'
+import {activeUserInfo} from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -169,7 +169,7 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let userInfo = getUserInfo(state)
+  let userInfo = activeUserInfo(state)
   return {
     userInfo: userInfo,
 
