@@ -33,13 +33,12 @@ export function publishTopicFormData(payload) {
 function handlePublishTopic(payload, formData) {
   return (dispatch, getState) => {
     let publishTopicPayload = {
-      title: formData.articleName.text,
-      content: formData.articleContent.text,
+      content: formData.content.text,
+      imgGroup: formData.imgGroup.text,
       categoryId: payload.categoryId,
     }
     lcTopics.pubishTopics(publishTopicPayload).then(() => {
       if(payload.success){
-        console.log("----><___444444_________public tosssss")
         payload.success()
       }
       let publishAction = createAction(topicActionTypes.PUBLISH_SUCCESS)

@@ -24,6 +24,7 @@ import MultilineText from '../common/Input/MultilineText'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
 import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
+import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -50,14 +51,23 @@ class PublishTopics extends Component {
     };
   }
 
+  submitSuccessCallback() {
+    Toast.show('发布成功')
+    Actions.pop()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
   onButtonPress = () => {
-    // this.props.publishTopicFormData({
-    //   formKey: formKey,
-    //   categoryId: this.state.selectedTopic.objectId,
-    //   submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-    //   success:this.submitSuccessCallback,
-    //   error: this.submitErrorCallback
-    // })
+     this.props.publishTopicFormData({
+       formKey: formKey,
+       categoryId: this.state.selectedTopic.objectId,
+       submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+       success:this.submitSuccessCallback,
+       error: this.submitErrorCallback
+     })
   }
 
   componentDidMount() {
