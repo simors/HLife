@@ -17,7 +17,7 @@ export class TopicsItem extends TopicsConfig {
     return topicsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
       record.set('imgGroup', attrs.imgGroup)
-      record.set('categoryId', attrs.dependent.id)
+      record.set('categoryId', attrs.category.id)
       record.set('objectId', lcObj.id)
     })
   }

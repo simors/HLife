@@ -9,7 +9,7 @@ export function publishTopics(payload) {
 
   var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId);
 
-  topic.set('dependent', topicCategory);
+  topic.set('category', topicCategory);
   topic.set('imgGroup', payload.imgGroup)
   topic.set('content', payload.content)
 
@@ -24,7 +24,7 @@ export function getTopics(payload) {
   let categoryId = payload.categoryId
   var category = AV.Object.createWithoutData('TopicCategory', categoryId);
   let query = new AV.Query('Topics')
-  query.equalTo('dependent', category)
+  query.equalTo('category', category)
   return query.find().then(function (results) {
     let topics = []
     results.forEach((result) => {
