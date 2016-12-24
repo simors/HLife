@@ -4,7 +4,7 @@ import configReducer from './configReducer'
 import uiReducer from './uiReducer'
 import authReducer  from './authReducer'
 import messageReducer from './messageReducer'
-import topicReducer from './messageReducer'
+import topicReducer from './topicReducer'
 
 const rootReducers = combineReducers({
   CONFIG: configReducer,
