@@ -24,6 +24,8 @@ import THEME from '../../constants/themes/theme1'
 import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
 import CommonModal from '../common/CommonModal'
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 
 
@@ -96,7 +98,7 @@ import CommonModal from '../common/CommonModal'
           modalTitle="精选栏目"
           closeModal={() => this.closeModel()}
         >
-          <ScrollView>
+          <ScrollView style={{width:PAGE_WIDTH,flexDirection:'row',flexWrap:'wrap'}}>
             <Categorys/>
           </ScrollView>
         </CommonModal>

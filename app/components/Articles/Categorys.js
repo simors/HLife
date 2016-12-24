@@ -39,7 +39,7 @@ class Categorys extends Component {
         this.props.column.map((value, key) => {
           let imageUrl = value.imageSource
           return (
-            <View key={key} style={styles.channelWrap}>
+            <View key={key} >
               <TouchableOpacity onPress={()=> {
                 Actions.ARTICLES_ARTICLELIST({categoryId: value.columnId})
               }}>
@@ -57,7 +57,7 @@ class Categorys extends Component {
       this.props.column.map((value, key) => {
         if (key >= begin && key < begin + 4) {
           return (
-            <View key={key} style={styles.channelWrap}>
+            <View key={key} >
                 <TouchableOpacity onPress={()=> {
               }}>
                 <Image style={[styles.defaultImageStyles, this.props.imageStyle]} source={{uri: value.imageSource}}/>
