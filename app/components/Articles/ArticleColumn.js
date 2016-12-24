@@ -132,12 +132,14 @@ class ArticleColumn extends Component {
         tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
         backgroundColor={this.props.backgroundColor}
       />
+
     )
   }
 
   render() {
     if (this.props.column) {
       return (
+
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
                            page={this.state.columnItem}
                            scrollWithoutAnimation={true}
@@ -223,6 +225,11 @@ const styles = StyleSheet.create({
   },
 
   tabBarStyle: {
-    height: 38,
+    height: normalizeH(38),
+    width:normalizeW(339)
+  },
+  moreColumns:{
+    height:normalizeH(20),
+    width:normalizeW(20)
   },
 })

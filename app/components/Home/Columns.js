@@ -74,6 +74,17 @@ const PAGE_HEIGHT = Dimensions.get('window').height
        callback()
      }
    }
+
+   _shopCategoryClick(columnId) {
+     if(columnId) {
+       this.closeModel(function(){
+         Actions.ARTICLES_ARTICLELIST({columnId: columnId})
+       })
+     }else{
+       this.openModel()
+     }
+   }
+
    openModel(callback) {
      this.setState({
        modalVisible: true
@@ -99,8 +110,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
           closeModal={() => this.closeModel()}
         >
           <ScrollView style={{width:PAGE_WIDTH,flexDirection:'row',flexWrap:'wrap'}}>
-            <Categorys/>
-          </ScrollView>
+            <Categorys    onPress={this._shopCategoryClick.bind(this)}/>
+          </ScrollView >
         </CommonModal>
       </View>
     )

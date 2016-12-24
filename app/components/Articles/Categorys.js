@@ -39,65 +39,26 @@ class Categorys extends Component {
         this.props.column.map((value, key) => {
           let imageUrl = value.imageSource
           return (
-            <View key={key} >
-              <TouchableOpacity onPress={()=> {
-                Actions.ARTICLES_ARTICLELIST({categoryId: value.columnId})
-              }}>
-                <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
-                <Text style={styles.channelText}>{value.title}</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={()=>this.props.onPress(value.columnId)}>
+              <View key={key} style={styles.channelWrap}>
+                <View style={styles.defaultImageStyles}>
+                  <Image style={styles.defaultImageStyles} source={{uri: imageUrl}}/>
+                </View>
+                <View style={styles.channelText}>
+                  <Text style={ {fontSize: normalizeW(15),
+                    color: '#929292'}}>{value.title}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
           )
         })
       )
     }
   }
-  renderElems(begin) {
-    return (
-      this.props.column.map((value, key) => {
-        if (key >= begin && key < begin + 4) {
-          return (
-            <View key={key} >
-                <TouchableOpacity onPress={()=> {
-              }}>
-                <Image style={[styles.defaultImageStyles, this.props.imageStyle]} source={{uri: value.imageSource}}/>
-                <Text style={styles.channelText}>{value.title}</Text>
-              </TouchableOpacity>
-            </View>
-          )
-        }
-      })
-    )
-  }
-
-  renderCategorysRow(begin) {
-    return (
-      <View style={styles.rowView}>
-        {this.renderElems(begin)}
-      </View>
-    )
-  }
-
-  renderCategorys() {
-    if (!this.props.column) {
-      return (
-        <View>
-        </View>
-      )
-    }
-    return (
-      this.props.column.map((value, key) => {
-        if (key % 4 == 0) {
-
-          this.renderCategorysRow(key)
-        }
-      })
-    )
-  }
 
   render() {
     return (
-      <View >
+      <View style={styles.columnContainer}>
         {this.renderColumns()}
       </View>
 
@@ -107,8 +68,8 @@ class Categorys extends Component {
 
 Categorys.defaultProps = {
   //visible: 'true'
-  defaultContainer:{},
-  defaultImageStyles:{},
+  defaultContainer: {},
+  defaultImageStyles: {},
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -126,90 +87,35 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps)(Categorys)
 
 const styles = StyleSheet.create({
-  body:{
-    backgroundColor:'#FFFFFF',
-    opacity:1,
-  },
-  blankView:{
-    height:normalizeH(186),
-    opacity:0.3,
-    backgroundColor:'#000000'
-  },
-  defaultContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    width: PAGE_WIDTH,
-    marginTop: normalizeH(186),
-    opacity:80
-  },
-  rowView: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#fff'
-  },
+
+
   defaultImageStyles: {
-    height: normalizeH(35),
-    width: normalizeW(35),
-  },
-  category: {
-    width: PAGE_WIDTH,
-    height: normalizeH(276),
-    borderWidth: normalizeBorder(2),
-    backgroundColor:'#FFFFFF',
-    opacity:1,
-    marginTop:normalizeH(3),
-  },
-  title:{
-    height:normalizeH(67),
-    width:PAGE_WIDTH,
-    borderWidth:normalizeBorder(1),
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor:'#FFFFFF',
-    opacity:1,
-  },
-  titletext:{
-    height:normalizeH(20),
-    fontSize:normalizeW(18),
-    width:normalizeW(186),
-  },
-  cancelModal:
-  {
-
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop:normalizeH(3),
-    height:normalizeH(132),
-    width:PAGE_WIDTH,
-    backgroundColor:'#FFFFFF',
-    opacity:1,
-
-  },
-  channelContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#fff'
-  },
-  defaultImageStyles:{
-    height:normalizeH(35),
-    width:normalizeW(35),
+    height: normalizeH(45),
+    width: normalizeW(45),
   },
   channelWrap: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow:'hidden'
+    // overflow: 'hidden',
+    marginTop: normalizeH(20),
+    marginBottom:normalizeH(20),
+    marginLeft: normalizeW(20),
+    marginRight:normalizeW(20),
+    height: normalizeH(80),
+    // width: normalizeW(35),
   },
   channelText: {
-    marginTop: 4,
-    color:THEME.colors.gray,
-    textAlign: 'center'
+    marginTop: 7,
+    textAlign: 'center',
   },
-  columnContainer:{
-    width:PAGE_WIDTH,
-    flexDirection:'row',
+  columnContainer: {
+    borderBottomWidth:normalizeBorder(2),
+    width: PAGE_WIDTH,
+    flexDirection: 'row',
     flexWrap: 'wrap',
-
+    justifyContent: 'center',
+    borderColor:'#E6E6E6',
+    borderTopWidth:normalizeH(2),
   },
 })

@@ -100,7 +100,7 @@ function tapActions(props) {
     let activeUser = jsonData.token
     return activeUser ? true : false
   }).then((result) => {
-    if (!result) {
+    if (result) {
       if (props.index != 0) {
         Actions.LOGIN()
       }
