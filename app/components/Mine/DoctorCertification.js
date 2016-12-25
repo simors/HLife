@@ -27,6 +27,8 @@ import * as Toast from '../common/Toast'
 import {isInputValid} from '../../selector/inputFormSelector'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
+import ImageGroupViewer from '../common/Input/ImageGroupViewer'
+import ImageGroupInput from '../common/Input/ImageGroupInput'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -76,28 +78,15 @@ const idImageInput = {
   stateKey: Symbol('idImageInput'),
   type: "idImageInput",
 }
-const cardImageInputA = {
+const imageGroupInput = {
   formKey: commonForm,
-  stateKey: Symbol('cardImageInputA'),
-  type: "cardImageInput",
-}
-const cardImageInputB = {
-  formKey: commonForm,
-  stateKey: Symbol('cardImageInputB'),
-  type: "cardImageInput",
-}
-const cardImageInputC = {
-  formKey: commonForm,
-  stateKey: Symbol('cardImageInputC'),
-  type: "cardImageInput",
+  stateKey: Symbol('imageGroupInput'),
+  type: 'imgGroup'
 }
 
  class DoctorCertification extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      cardImageInputCnt: 0,
-    }
   }
    submitSuccessCallback(doctorInfo) {
      Toast.show('认证提交成功')
@@ -128,79 +117,6 @@ const cardImageInputC = {
          Toast.show(error.message)
        }
      })
-   }
-
-   renderImage(cnt) {
-     if (cnt === 0)
-       return (
-         <View>
-           <ImageInput {...cardImageInputA} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-                       imageInputCntUpdate = {()=> {this.setState({ cardImageInputCnt: this.state.cardImageInputCnt + 1})}}
-
-           />
-         </View>
-       )
-     else if(cnt === 1)
-       return (
-         <View style={{flexDirection: 'row'}}>
-           <ImageInput {...cardImageInputA} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-
-
-           />
-           <ImageInput {...cardImageInputB} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-                       imageInputCntUpdate = {()=> {this.setState({ cardImageInputCnt: this.state.cardImageInputCnt + 1})}}
-
-           />
-         </View>
-       )
-     else if(cnt === 2)
-       return (
-         <View style={{flexDirection: 'row'}}>
-           <ImageInput {...cardImageInputA} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-
-           />
-           <ImageInput {...cardImageInputB} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-
-           />
-           <ImageInput {...cardImageInputC} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-                       imageInputCntUpdate = {()=> {this.setState({ cardImageInputCnt: this.state.cardImageInputCnt + 1})}}
-
-           />
-         </View>
-       )
-     else if(cnt === 3)
-       return (
-         <View style={{flexDirection: 'row'}}>
-           <ImageInput {...cardImageInputA} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-
-           />
-           <ImageInput {...cardImageInputB} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-
-           />
-           <ImageInput {...cardImageInputC} containerStyle={styles.imageInputStyle}
-                       addImage={require('../../assets/images/upload.png')}
-                       addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
-
-           />
-         </View>
-       )
-
    }
 
   render() {
@@ -297,6 +213,7 @@ const cardImageInputC = {
                   参考图像及拍摄说明
                 </Text>
                 <View style={{width: normalizeW(109), height: normalizeH(81), backgroundColor: 'yellow'}}>
+                  {/*<ImageGroupViewer images={''} imageLineCnt={1}/>*/}
 
                 </View>
 
@@ -312,8 +229,8 @@ const cardImageInputC = {
                 <Text style={styles.triptext}>
                   请上传医生有效证明，包含工作证、执业证和职称证
                 </Text>
-              <View style={{flexDirection: 'row'}}>
-                {this.renderImage(this.state.cardImageInputCnt)}
+              <View style={{flexDirection: 'row', marginLeft: normalizeW(20), marginBottom: normalizeH(12), marginRight: normalizeW(20), marginTop: normalizeH(8),borderWidth: 1, borderColor: 'red'}}>
+                <ImageGroupInput {...imageGroupInput} number={3} imageLineCnt={4}/>
               </View>
             </View>
             <CommonButton buttonStyle={{marginBottom: normalizeH(6), marginTop: normalizeH(100)}}

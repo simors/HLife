@@ -67,8 +67,6 @@ class ImageInput extends Component {
       data: {text: url}
     }
     this.props.inputFormUpdate(inputForm)
-    if(this.props.imageInputCntUpdate)
-      this.props.imageInputCntUpdate()
   }
 
   uploadImg = (source) => {
