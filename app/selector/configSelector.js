@@ -40,12 +40,8 @@ export function getColumn(state, type) {
   return undefined
 }
 
-export function getTopics(state) {
-  return getConfig(state).topics
-}
-
-export function getTopic(state) {
-  return getTopics(state)[true]
+export function getTopicCategories(state) {
+  return getConfig(state).topicCategories
 }
 
 export function selectShopCategories(state, num) {

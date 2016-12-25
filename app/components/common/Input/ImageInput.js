@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
+  Modal
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -17,10 +18,19 @@ import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import Gallery from 'react-native-gallery'
+import CommonButton from '../CommonButton'
+
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 class ImageInput extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      imgModalShow: false,
+    }
   }
 
   componentDidMount() {
@@ -67,8 +77,6 @@ class ImageInput extends Component {
       data: {text: url}
     }
     this.props.inputFormUpdate(inputForm)
-    if(this.props.imageInputCntUpdate)
-      this.props.imageInputCntUpdate()
   }
 
   uploadImg = (source) => {
@@ -92,22 +100,60 @@ class ImageInput extends Component {
     })
   }
 
+  renderReuploadBtn() {
+    return (
+      <View style={{position: 'absolute', bottom: normalizeH(50), left: normalizeW(17)}}>
+        <CommonButton title="重新上传" onPress={() => this.selectImg()} />
+      </View>
+    )
+  }
+
+  renderImageModal(src) {
+    return (
+      <View>
+        <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
+          <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
+            <Gallery
+              style={{flex: 1, backgroundColor: 'black'}}
+              images={[src]}
+              onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}
+            />
+            {this.renderReuploadBtn()}
+          </View>
+        </Modal>
+      </View>
+    )
+  }
+
+  toggleModal(isShow) {
+    this.setState({imgModalShow: isShow})
+  }
+
+  renderImageShow(src) {
+    return (
+      <View style={styles.container}>
+        <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
+          <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow)}>
+            <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     if (this.props.data) {
       return (
-        <View style={styles.container}>
-          <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
-              <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: this.props.data}}/>
-            </TouchableOpacity>
-          </View>
+        <View>
+          {this.renderImageModal(this.props.data)}
+          {this.renderImageShow(this.props.data)}
         </View>
       )
     } else {
       return (
         <View style={styles.container}>
           <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-            <TouchableOpacity style={{flex: 1}} onPress={this.selectImg.bind(this)}>
+            <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
               <View>
                 <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
                        source={this.props.addImage}/>

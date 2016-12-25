@@ -26,8 +26,8 @@ export default class Launch extends Component {
     return (
       <View style={styles.container}>
         <StatusBar hidden={true} />
-        <Text style={{}}>
-          Welcome HLife
+        <Text>
+          吾爱欢迎界面
         </Text>
       </View>
     )
@@ -40,7 +40,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5FCFF',
-    // width: PAGE_WIDTH,
-    // height: PAGE_HEIGHT
   },
 })

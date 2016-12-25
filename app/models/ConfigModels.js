@@ -71,19 +71,19 @@ export const CommentConfig = Record({
 })
 
 
-export const TopicsItemConfig = Record({
+export const TopicCategoryItemConfig = Record({
   isPicked: undefined,//是否精选
   title: undefined, //话题名称
   image: undefined, //图片
   introduction: undefined, //介绍
   objectId: undefined
-}, 'TopicsItemConfig')
+}, 'TopicCategoryItemConfig')
 
-export class TopicsItem extends TopicsItemConfig {
+export class TopicCategoryItem extends TopicCategoryItemConfig {
   static fromLeancloudObject(lcObj) {
-    let topicsItemConfig = new TopicsItemConfig()
+    let topicCategoryItemConfig = new TopicCategoryItemConfig()
     let attrs = lcObj.attributes
-    return topicsItemConfig.withMutations((record)=> {
+    return topicCategoryItemConfig.withMutations((record)=> {
       record.set('isPicked', attrs.isPicked)
       record.set('title', attrs.title)
       record.set('image', attrs.image)
@@ -117,7 +117,7 @@ export const Config = Record({
   banners: Map(),
   announcements: Map(),
   column: List(),
-  topics: Map(),
+  topicCategories: List(),
   article: List(),
   shopCategories: List()
 }, 'Config')

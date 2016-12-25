@@ -16,7 +16,10 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
-import {getTopic} from '../../selector/configSelector'
+import {getTopicCategories} from '../../selector/configSelector'
+import {getTopics} from '../../selector/topicSelector'
+import {fetchTopics} from '../../action/topicActions'
+
 import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -35,26 +38,41 @@ export class Find extends Component {
 
   getSelectedTab(index) {
     this.setState({selectedTab: index})
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopics({categoryId: this.props.topicCategories[index].objectId})
+    })
   }
 
-  renderTopicItem() {
+  renderTopicItem(value, key) {
     return (
-      <TopicShow containerStyle={{marginBottom: 10}}/>
+      <TopicShow key={key}
+                 containerStyle={{marginBottom: 10}}
+                 content={value.content}
+                 imgGroup={value.imgGroup}/>
     )
+  }
+
+  refreshTopic()
+  {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopics({categoryId: this.props.topicCategories[this.state.selectedTab].objectId})
+    })
   }
 
   renderTopicPage() {
-    return (
-      <View >
-        {this.renderTopicItem()}
-        {this.renderTopicItem()}
-        {this.renderTopicItem()}
-      </View>
-    )
+    if (this.props.topics) {
+      return (
+        this.props.topics.map((value, key)=> {
+          return (
+            this.renderTopicItem(value, key)
+          )
+        })
+      )
+    }
   }
 
   render() {
-    let topicId = this.props.topics[this.state.selectedTab]
+    let topicId = this.props.topicCategories[this.state.selectedTab]
     return (
       <View style={styles.container}>
         <Header
@@ -62,8 +80,9 @@ export class Find extends Component {
           title="发现"
           rightType="none"
         />
-        <TabScrollView topics={this.props.topics}
+        <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.topicId}
+                       refreshTopic={()=>this.refreshTopic()}
                        onSelected={(index) => this.getSelectedTab(index)}
                        renderTopicPage={() => this.renderTopicPage()}/>
         <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=> {
@@ -78,12 +97,17 @@ export class Find extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-  const topics = getTopic(state, true)
+  const topicCategories = getTopicCategories(state)
+  const topics = getTopics(state)
   return {
+    topicCategories: topicCategories,
     topics: topics
   }
 }
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchTopics
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)
 

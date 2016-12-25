@@ -13,8 +13,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigAnnouncements(state, action)
     case ConfigActionTypes.UPDATE_CONFIG_COLUMN:
       return handleUpdateConfigColumns(state,action)
-    case ConfigActionTypes.UPDATE_CONFIG_TOPICS:
-      return handleUpdateConfigTopics(state, action)
+    case ConfigActionTypes.UPDATE_CONFIG_TOPIC_CATEGORIES:
+      return handleUpdateConfigTopicCategories(state, action)
     case ConfigActionTypes.UPDATE_CONFIG_SHOP_CATEGORIES:
       return handleUpdateConfigShopCategories(state, action)
     default:
@@ -31,9 +31,6 @@ function initConfig(payload) {
       }
       if(payload.columns) {
         config.set('columns', initColumns(payload.columns))
-      }
-      if(payload.topics) {
-        config.set('topics', initTopics(payload.topics))
       }
     })
   }
@@ -76,31 +73,10 @@ function handleUpdateConfigAnnouncements(state, action) {
   return state
 }
 
-function handleUpdateConfigTopics(state, action) {
+function handleUpdateConfigTopicCategories(state, action) {
   let payload = action.payload
-  let isPicked = payload.isPicked
-  let topicsMap = new Map()
-  topicsMap = topicsMap.set(isPicked, payload.topics)
-  state = state.set('topics', topicsMap)
+  state = state.set('topicCategories', payload.topicCategories)
   return state
-}
-
-function initTopics(topics) {
-  let topicsMap = new Map()
-  if(topics) {
-    for(let isPicked in topics) {
-      topicsMap = topicsMap.set(isPicked, initTopic(topics[isPicked]))
-    }
-  }
-  return topicsMap
-}
-
-function initTopic(topic) {
-  let topicItems = []
-  topic.map((topicItem) => {
-    topicItems.push(new ColumnItemConfig(topicItem))
-  })
-  return new List(topicItems)
 }
 
 function handleUpdateConfigColumns(state, action) {

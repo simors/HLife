@@ -57,8 +57,8 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_VIEW_TEST" component={PublishViewTest} />
       <Scene key="PICKER_TEST" component={PickerTest} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
-      <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification}/>
-      <Scene key="DCTOR_INFO" component={DoctorInfo}/>
+      <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification} />
+      <Scene key="DCTOR_INFO" component={DoctorInfo} />
       <Scene key="PROFILE" component={Profile} />
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
       <Scene key="ARTICLES_ARTICLE" component={Article}/>
@@ -95,7 +95,6 @@ export const scenes = Actions.create(
 )
 
 function tapActions(props) {
-
   if (props.index == 3) {
     AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
       let jsonData = JSON.parse(data)

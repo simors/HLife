@@ -20,14 +20,15 @@ import {
   TouchableOpacity,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  StatusBar
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
 import {getBanner, getAnnouncement} from '../../selector/configSelector'
-import {fetchBanner, fetchAnnouncement,getAllTopics} from '../../action/configAction'
+import {fetchBanner, fetchAnnouncement, getAllTopicCategories} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -38,7 +39,7 @@ import Health from './Health'
 import Channels from './Channels'
 import DailyChosen from './DailyChosen'
 import Columns from './Columns'
-import {getTopic} from '../../selector/configSelector'
+import {getTopicCategories} from '../../selector/configSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -60,7 +61,7 @@ class Home extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       this.props.fetchAnnouncement({type: 0})
-      this.props.getAllTopics({})
+      this.props.getAllTopicCategories({})
     })
 
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
@@ -178,6 +179,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar hidden={false} />
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/local_unselect.png")}
@@ -224,7 +226,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const announcement = getAnnouncement(state, 0)
   const banner = getBanner(state, 0)
-  const topics = getTopic(state)
+  const topics = getTopicCategories(state)
 
   let pickedTopics = []
   if(topics) {
@@ -246,7 +248,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
   fetchAnnouncement,
-  getAllTopics
+  getAllTopicCategories
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

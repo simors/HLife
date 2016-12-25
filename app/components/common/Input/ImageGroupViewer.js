@@ -61,6 +61,20 @@ export default class ImageGroupViewer extends Component {
     this.setState({imgModalShow: isShow, showImg: src})
   }
 
+  renderImageBrowse(src) {
+    if (this.props.browse) {
+      return (
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
+          <Image style={{flex: 1}} source={{uri: src}}/>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <Image style={{flex: 1}} source={{uri: src}}/>
+      )
+    }
+  }
+
   renderImage(src) {
     return (
       <View style={[
@@ -68,9 +82,7 @@ export default class ImageGroupViewer extends Component {
         {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize},
         this.props.imageStyle
         ]}>
-        <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
-          <Image style={{flex: 1}} source={{uri: src}}/>
-        </TouchableOpacity>
+        {this.renderImageBrowse(src)}
       </View>
     )
   }
@@ -127,6 +139,7 @@ export default class ImageGroupViewer extends Component {
 
 ImageGroupViewer.defaultProps = {
   imageLineCnt: 3,
+  browse: true,
 }
 
 const styles = StyleSheet.create({

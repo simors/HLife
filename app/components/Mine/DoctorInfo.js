@@ -28,6 +28,8 @@ import {isInputValid} from '../../selector/inputFormSelector'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
 import {getInputData} from '../../selector/inputFormSelector'
+import ImageGroupViewer from '../common/Input/ImageGroupViewer'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -93,12 +95,20 @@ const cardImageInputC = {
   type: "cardImageInput",
 }
 
+const images = [
+  'http://c.hiphotos.baidu.com/image/pic/item/64380cd7912397dd5393db755a82b2b7d1a287dd.jpg',
+  'http://c.hiphotos.baidu.com/image/pic/item/d009b3de9c82d1585e277e5f840a19d8bd3e42b2.jpg',
+  'http://g.hiphotos.baidu.com/image/pic/item/83025aafa40f4bfb1530a905014f78f0f63618fa.jpg',
+  'http://c.hiphotos.baidu.com/image/pic/item/f7246b600c3387448982f948540fd9f9d72aa0bb.jpg'
+]
+
 class DoctorInfo extends Component {
   constructor(props) {
     super(props)
   }
 
   render() {
+    console.log("render:", require('../../assets/images/card_portrait.png'))
     return (
       <View style={styles.container}>
         <Header
@@ -164,6 +174,7 @@ class DoctorInfo extends Component {
                             addImage={require('../../assets/images/upload.png')}
                             addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
                 />
+                <ImageGroupViewer images={images} imageLineCnt={3}/>
               </View>
 
             </View>
@@ -174,6 +185,7 @@ class DoctorInfo extends Component {
                 </Text>
               </View>
               <View style={{flexDirection: 'row'}}>
+                <ImageGroupViewer images={images} imageLineCnt={3}/>
 
               </View>
             </View>
