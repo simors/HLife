@@ -34,7 +34,7 @@ export class UserInfo extends UserInfoRecord {
 
 export class UserState extends UserStateRecord {
   getUserInfoById(userId) {
-    const profile = this.profiles.get(userId)
-    return profile ? (profile.get('userInfo') ? profile.get('userInfo') : new UserInfo()) : new UserInfo()
+    const userInfo = this.profiles.get(userId)
+    return userInfo ? userInfo : new UserInfo()
   }
 }
