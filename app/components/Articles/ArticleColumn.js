@@ -26,7 +26,7 @@ import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import ArticleShow from './ArticleShow'
-import {getArticle,getArticles} from '../../selector/articleSelector'
+import {getArticleCollection} from '../../selector/articleSelector'
 import {fetchArticle} from '../../action/articleAction'
 
 class ArticleColumn extends Component {
@@ -34,6 +34,7 @@ class ArticleColumn extends Component {
     super(props)
     this.state = {
       columnItem: 0,
+      columnId: 0,
     }
   }
 
@@ -43,24 +44,24 @@ class ArticleColumn extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchArticle(this.props.columnId)
     })
-
     this.props.column.map((value, key)=> {
-
-      if (value.columnId == this.props.categoryId) {
-
-        this.setState({columnItem: key})
+      if (value.columnId == this.props.columnId) {
+        this.setState({columnItem: key, columnId: value.columnId})
       }
     })
+
   }
+
 
   changeTab(payload) {
 
-    // this.setState({columnItem: payload.i})
+    this.setState({columnItem: payload.i})
     if (this.props.column) {
       return (
         this.props.column.map((value, key) => {
-          console.log('=========<<<<<<<<',value)
+          // console.log('=========<<<<<<<<',value)
           if (key == payload.i) {
+           this.setState({columnId: value.columnId})
             this.props.fetchArticle(value.columnId)
           }
         })
@@ -68,18 +69,18 @@ class ArticleColumn extends Component {
     }
   }
 
-
   renderColumns() {
     if (this.props.column) {
       return (
         this.props.column.map((value, key) => {
-          return (
-            <View key={key} tabLabel={value.title}
-                  style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-              {this.renderArticleList()}
-            </View>
-          )
-        })
+            return (
+              <View key={key} tabLabel={value.title}
+                    style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
+                {this.renderArticleList(value.columnId)}
+              </View>
+            )
+          }
+        )
       )
     }
   }
@@ -87,23 +88,36 @@ class ArticleColumn extends Component {
   renderArticleItem(rowData) {
     let value = rowData
     return (
-      <View tabLabel={value.title}
-            style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
+      <View
+        style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
         <ArticleShow {...value}/>
       </View>
     )
   }
 
-  renderArticleList() {
-    if (!this.props.articleSource) {
-      return <View/>
-    }
-    return (
-      <ListView dataSource={this.props.articleSource}
-                renderRow={(rowData) => this.renderArticleItem(rowData)}>
+  renderArticleList(columnId) {
 
-      </ListView>
-    )
+    let columnArticles = this.props.columnArticles
+    let articles = columnArticles.find(value => {
+      return (value.id === columnId)
+    })
+    if (!articles) {
+      return (
+        <View/>
+      )
+    } else {
+
+      let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+      let articleSource
+
+      articleSource = ds.cloneWithRows(articles.articles)
+      console.log('article========>', articles.articles)
+
+      return (
+        <ListView dataSource={articleSource}
+                  renderRow={(rowData) => this.renderArticleItem(rowData)} />
+      )
+    }
   }
 
 
@@ -118,12 +132,14 @@ class ArticleColumn extends Component {
         tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
         backgroundColor={this.props.backgroundColor}
       />
+
     )
   }
 
   render() {
     if (this.props.column) {
       return (
+
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
                            page={this.state.columnItem}
                            scrollWithoutAnimation={true}
@@ -138,21 +154,12 @@ class ArticleColumn extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let column = getColumn(state)
-  // console.log('column-====--------->', column)
- // let articles = getArticles(state)
-  let articles = getArticle(state, ownProps.columnId)
-  console.log('columnId-====--------->', ownProps.columnId)
-  console.log('articles-====--------->', articles)
-  let articleSource
-  if (articles) {
-    articleSource = ds.cloneWithRows(articles)
-  }
+  let columnArticles = getArticleCollection(state)
 
   return {
     column: column,
-    articleSource,
+    columnArticles: columnArticles,
   }
 }
 
@@ -218,6 +225,11 @@ const styles = StyleSheet.create({
   },
 
   tabBarStyle: {
-    height: 38,
+    height: normalizeH(38),
+    width:normalizeW(339)
+  },
+  moreColumns:{
+    height:normalizeH(20),
+    width:normalizeW(20)
   },
 })

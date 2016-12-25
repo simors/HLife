@@ -5,7 +5,9 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Platform,
+  StatusBar
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router} from 'react-native-router-flux'
@@ -39,7 +41,15 @@ export default class HLifeEntry extends Component {
     super(props)
   }
 
+  componentDidMount() {
+    console.disableYellowBox = true
+  }
+
   render() {
+    if (Platform.OS === 'ios') {
+      StatusBar.setBarStyle('light-content', true)
+    }
+
     return (
       <Provider store={store}>
         <View style={{flex: 1}}>

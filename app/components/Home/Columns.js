@@ -24,6 +24,8 @@ import THEME from '../../constants/themes/theme1'
 import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
 import CommonModal from '../common/CommonModal'
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 
 
@@ -72,6 +74,17 @@ import CommonModal from '../common/CommonModal'
        callback()
      }
    }
+
+   _shopCategoryClick(columnId) {
+     if(columnId) {
+       this.closeModel(function(){
+         Actions.ARTICLES_ARTICLELIST({columnId: columnId})
+       })
+     }else{
+       this.openModel()
+     }
+   }
+
    openModel(callback) {
      this.setState({
        modalVisible: true
@@ -96,9 +109,9 @@ import CommonModal from '../common/CommonModal'
           modalTitle="精选栏目"
           closeModal={() => this.closeModel()}
         >
-          <ScrollView>
-            <Categorys/>
-          </ScrollView>
+          <ScrollView style={{width:PAGE_WIDTH,flexDirection:'row',flexWrap:'wrap'}}>
+            <Categorys    onPress={this._shopCategoryClick.bind(this)}/>
+          </ScrollView >
         </CommonModal>
       </View>
     )

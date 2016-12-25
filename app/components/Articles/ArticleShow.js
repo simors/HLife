@@ -31,7 +31,10 @@ export default class ArticleShow extends Component {
   }
 
   renderArticles() {
+    console.log('guolailexiesha',{...this.props})
+
     if (this.props.articleId) {
+      console.log('guolailexiesha',{...this.props})
       let imageCount = this.props.images.length
       switch (imageCount) {
         case 1:

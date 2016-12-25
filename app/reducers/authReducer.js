@@ -5,7 +5,9 @@
 import * as AuthTypes from '../constants/authActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Map, List} from 'immutable'
-const initialState = new Map()
+import {UserState} from '../models/userModels'
+
+const initialState = new UserState()
 
 export default function authReducer(state = initialState, action) {
   switch(action.type) {
@@ -22,13 +24,17 @@ export default function authReducer(state = initialState, action) {
 
 function handleRegisterSuccess(state, action) {
   let userInfo = action.payload.userInfo
-  state = state.set('userInfo', userInfo)
+  state = state.set('activeUser', userInfo.id)
+  state = state.set('token', userInfo.token)
+  state = state.setIn(['profiles', userInfo.id], userInfo)
   return state
 }
 
 function handleLoginSuccess(state, action) {
   const userInfo = action.payload.userInfo
-  state = state.set('userInfo', userInfo)
+  state = state.set('activeUser', userInfo.id)
+  state = state.set('token', userInfo.token)
+  state = state.setIn(['profiles', userInfo.id], userInfo)
   return state
 }
 

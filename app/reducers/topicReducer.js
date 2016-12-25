@@ -1,10 +1,11 @@
 /**
- * Created by zachary on 2016/12/9.
+ * Created by wuxingyu on 2016/12/24.
  */
 
 import * as AuthTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Map, List} from 'immutable'
+import {Map} from 'immutable'
+
 const initialState = new Map()
 
 export default function topicReducer(state = initialState, action) {
@@ -18,9 +19,6 @@ export default function topicReducer(state = initialState, action) {
 
 function handleUpdateTopics(state, action) {
   let payload = action.payload
-  let categoryId = payload.categoryId
-  let topicsMap = new Map()
-  topicsMap = topicsMap.set(categoryId, payload.topics)
-  state = state.set('topics', topicsMap)
+  state = state.set('topics', payload.topics)
   return state
 }

@@ -37,7 +37,7 @@ function handlePublishTopic(payload, formData) {
       imgGroup: formData.imgGroup.text,
       categoryId: payload.categoryId,
     }
-    lcTopics.pubishTopics(publishTopicPayload).then(() => {
+    lcTopics.publishTopics(publishTopicPayload).then(() => {
       if(payload.success){
         payload.success()
       }
@@ -45,6 +45,19 @@ function handlePublishTopic(payload, formData) {
       dispatch(publishAction({stateKey: payload.stateKey}))
     }).catch((error) => {
       if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchTopics(payload) {
+  return (dispatch, getState) => {
+    lcTopics.getTopics(payload).then((topics) => {
+      let updateTopicsAction = createAction(topicActionTypes.UPDATE_TOPICS)
+      dispatch(updateTopicsAction({topics: topics}))
+    }).catch((error) => {
+      if(payload.error) {
         payload.error(error)
       }
     })

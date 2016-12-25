@@ -4,6 +4,15 @@ import {UserInfo, UserDetail} from '../../models/userModels'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
+
+export function become(payload) {
+  return AV.User.become(payload.token).then(() => {
+    // do nothing
+  }, (err) => {
+    throw err
+  })
+}
+
 /**
  * 用户名和密码登录
  * @param payload

@@ -48,11 +48,11 @@ export function fetchColumn() {
   }
 }
 
-export function getAllTopics(payload) {
+export function getAllTopicCategories(payload) {
   return (dispatch, getState) => {
-    lcConfig.getTopics().then((topics) => {
-      let updateTopicsAction = createAction(ConfigActionTypes.UPDATE_CONFIG_TOPICS)
-      dispatch(updateTopicsAction({isPicked: true, topics: topics}))
+    lcConfig.getTopicCategories().then((topicCategories) => {
+      let updateTopicsAction = createAction(ConfigActionTypes.UPDATE_CONFIG_TOPIC_CATEGORIES)
+      dispatch(updateTopicsAction({topicCategories: topicCategories}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

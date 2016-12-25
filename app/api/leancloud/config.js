@@ -7,7 +7,7 @@ import {
   BannerItem,
   AnnouncementItem,
   ColumnItem,
-  TopicsItem,
+  TopicCategoryItem,
   ShopCategory,
 } from '../../models/ConfigModels'
 import {ArticleItem} from '../../models/ArticleModel'
@@ -70,14 +70,14 @@ export function getColumn() {
   })
 }
 
-export function getTopics() {
+export function getTopicCategories() {
   let query = new AV.Query('TopicCategory')
   return query.find().then(function (results) {
-    let topics = []
+    let topicCategories = []
     results.forEach((result) => {
-      topics.push(TopicsItem.fromLeancloudObject(result))
+      topicCategories.push(TopicCategoryItem.fromLeancloudObject(result))
     })
-    return new List(topics)
+    return new List(topicCategories)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -99,22 +99,6 @@ export function getArticle(payload) {
     })
 
     return new List(article)
-  }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-}
-
-export function getPickedTopics(payload) {
-  let isPicked = payload.isPicked
-  let query = new AV.Query('TopicCategory')
-  query.equalTo('isPicked', isPicked)
-  return query.find().then(function (results) {
-    let topics = []
-    results.forEach((result) => {
-      topics.push(TopicsItem.fromLeancloudObject(result))
-    })
-    return new List(topics)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

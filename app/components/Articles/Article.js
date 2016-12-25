@@ -53,7 +53,7 @@ export default class Article extends Component {
         </View>
 
           <WebView style={styles.articleView}
-                  source= {{html: this.props.html}}
+                  source= {{html: this.props.content}}
           >
 
           </WebView>
