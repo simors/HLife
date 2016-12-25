@@ -48,9 +48,7 @@ export class Find extends Component {
     return (
       <TopicShow key={key}
                  containerStyle={{marginBottom: 10}}
-                 content={value.content}
-                 imgGroup={value.imgGroup}
-                 createdAt={value.createdAt}
+                 topic={value}
       />
     )
   }

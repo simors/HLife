@@ -89,7 +89,7 @@ export class TopicShow extends Component {
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>
                 <Text style={styles.timeTextStyle}>
-                  {getConversationTime(this.props.createdAt.valueOf())}
+                  {getConversationTime(this.props.topic.createdAt.valueOf())}
                 </Text>
                 <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
                 <Text style={styles.timeTextStyle}>长沙</Text>
@@ -107,12 +107,12 @@ export class TopicShow extends Component {
             <Text style={styles.contentStyle}
                   numberOfLines={this.state.numberOfLines}
                   onLayout={this._onTextLayout.bind(this)}>
-              {this.props.content}
+              {this.props.topic.content}
             </Text>
             {this.renderExpandText()}
           </View>
           <View style={styles.imagesWrapStyle}>
-            <TopicImageViewer images={this.props.imgGroup}/>
+            <TopicImageViewer images={this.props.topic.imgGroup}/>
           </View>
         </View>
 
@@ -142,9 +142,11 @@ TopicShow.defaultProps = {
   // style
   containerStyle: {},
   numberOfValues: 3,
-  imgGroup: undefined,
-  content: undefined,
-  createAt: undefined,
+  topic:{
+    imgGroup: undefined,
+    content: undefined,
+    createAt: undefined,
+  }
 }
 
 //export
