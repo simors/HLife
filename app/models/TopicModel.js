@@ -10,7 +10,8 @@ export const TopicsConfig = Record({
   objectId: undefined,
   categoryId: undefined,  //属于的分类
   nickname: undefined,
-  createdAt: undefined
+  createdAt: undefined,
+  avatar: undefined,
 }, 'TopicsConfig')
 
 export class TopicsItem extends TopicsConfig {
@@ -19,7 +20,9 @@ export class TopicsItem extends TopicsConfig {
     let attrs = lcObj.attributes
     let user = lcObj.get('user')
     let nickname = "吾爱用户"
+    let avatar = undefined
     if (user) {
+      avatar = user.get('avatar')
       nickname = user.get('nickname')
       if (!nickname) {
         let phoneNumber = user.getMobilePhoneNumber()
@@ -32,6 +35,7 @@ export class TopicsItem extends TopicsConfig {
       record.set('createdAt', lcObj.createdAt)
       record.set('categoryId', attrs.category.id)
       record.set('nickname', nickname)
+      record.set('avatar', avatar)
       record.set('objectId', lcObj.id)
     })
   }

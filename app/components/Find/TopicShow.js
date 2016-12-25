@@ -81,7 +81,8 @@ export class TopicShow extends Component {
           <View style={{flexDirection: 'row'}} onPress={()=> {
           }}>
             <TouchableOpacity>
-              <Image source={require("../../assets/images/local_write@2x.png")}/>
+              <Image style={styles.avatarStyle}
+                     source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/local_write@2x.png")}/>
             </TouchableOpacity>
             <View>
               <TouchableOpacity>
@@ -112,7 +113,7 @@ export class TopicShow extends Component {
             {this.renderExpandText()}
           </View>
           <View style={styles.imagesWrapStyle}>
-            <TopicImageViewer images={this.props.topicimgGroup}/>
+            <TopicImageViewer images={this.props.topic.imgGroup}/>
           </View>
         </View>
 
@@ -142,7 +143,7 @@ TopicShow.defaultProps = {
   // style
   containerStyle: {},
   numberOfValues: 3,
-  topic:{
+  topic: {
     imgGroup: undefined,
     content: undefined,
     createAt: undefined,
@@ -178,6 +179,10 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(11),
     marginTop: normalizeH(9),
     flexDirection: 'row'
+  },
+  avatarStyle: {
+    height: normalizeH(44),
+    width:  normalizeW(44)
   },
   timeTextStyle: {
     marginRight: normalizeW(26),
