@@ -38,6 +38,7 @@ export default function persist(store) {
 export function restoreFromPersistence() {
   return (dispatch, getState) => {
     if (authSelectors.isUserLogined(getState())) {
+      console.log('user login automatically')
       dispatch(verifyToken())
     } else {
       // Actions.LOGIN()

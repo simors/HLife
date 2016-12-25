@@ -5,7 +5,7 @@
 import * as AuthTypes from '../constants/authActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Map, List} from 'immutable'
-import {UserState} from '../models/userModels'
+import {UserState, UserInfo} from '../models/userModels'
 
 const initialState = new UserState()
 
@@ -17,6 +17,8 @@ export default function authReducer(state = initialState, action) {
       return handleLoginSuccess(state, action)
     case AuthTypes.SHOP_CERTIFICATION_SUCCESS:
       return handleShopCertificationSuccess(state, action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -40,5 +42,29 @@ function handleLoginSuccess(state, action) {
 
 function handleShopCertificationSuccess(state, action) {
   state = state.set('shop',  action.payload)
+  return state
+}
+
+function onRehydrate(state, action) {
+  var incoming = action.payload.AUTH
+  if (incoming) {
+    if (!incoming.activeUser) {
+      return state
+    }
+    state = state.set('activeUser', incoming.activeUser)
+    state = state.set('token', incoming.token)
+
+    const profiles = Map(incoming.profiles)
+    try {
+      for (let [userId,profile] of profiles) {
+        if (userId && profile) {
+          const userInfo = new UserInfo(profile.userInfo)
+          state = state.setIn(['profiles', userId], userInfo)
+        }
+      }
+    } catch (e) {
+      profiles.clear()
+    }
+  }
   return state
 }
