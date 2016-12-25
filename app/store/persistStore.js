@@ -29,7 +29,7 @@ export default function persist(store) {
     //   }),
     // ],
     // transforms: [messageFilter],
-    whitelist: ['AUTH', 'CONFIG', 'MESSAGE'],
+    whitelist: ['AUTH', 'CONFIG', 'MESSAGE', 'ARTICLE', 'TOPIC', 'COMMENT_ARTICLE'],
   }, () => {
     store.dispatch(restoreFromPersistence())
   })

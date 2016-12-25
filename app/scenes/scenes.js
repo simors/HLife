@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar />
+      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
       <Scene key="LOGIN" component={Login}/>
       <Scene key="REGIST" component={Regist} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
@@ -58,7 +58,7 @@ export const scenes = Actions.create(
       <Scene key="PICKER_TEST" component={PickerTest} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification} />
-      <Scene key="DCTOR_INFO" component={DoctorInfo} initial={true}/>
+      <Scene key="DCTOR_INFO" component={DoctorInfo} />
       <Scene key="PROFILE" component={Profile} />
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
       <Scene key="ARTICLES_ARTICLE" component={Article}/>
