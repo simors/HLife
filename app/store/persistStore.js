@@ -32,7 +32,7 @@ export default function persist(store) {
     whitelist: ['AUTH', 'CONFIG', 'MESSAGE', 'ARTICLE', 'TOPIC', 'COMMENT_ARTICLE'],
   }, () => {
     store.dispatch(restoreFromPersistence())
-  }).purge()
+  })
 }
 
 export function restoreFromPersistence() {
