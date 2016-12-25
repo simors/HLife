@@ -56,9 +56,9 @@ function onRehydrate(state, action) {
 
     const profiles = Map(incoming.profiles)
     try {
-      for (let [userId,profile] of profiles) {
+      for (let [userId, profile] of profiles) {
         if (userId && profile) {
-          const userInfo = new UserInfo(profile.userInfo)
+          const userInfo = new UserInfo({...profile})
           state = state.setIn(['profiles', userId], userInfo)
         }
       }

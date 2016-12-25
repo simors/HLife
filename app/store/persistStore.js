@@ -6,6 +6,7 @@ import {Actions} from 'react-native-router-flux'
 import * as authSelectors from '../selector/authSelector'
 import {initMessageClient} from '../action/messageAction'
 import {become} from '../api/leancloud/auth'
+import {UserInfo, UserState, UserStateRecord, UserInfoRecord} from '../models/userModels'
 
 const messageFilter = createFilter(
   'MESSAGE',
@@ -21,10 +22,11 @@ const messageFilter = createFilter(
 export default function persist(store) {
   persistStore(store, {
     storage: AsyncStorage,
-    // transform: [
+    // transforms: [
     //   immutableTransform({
     //     records: [
-    //       ...useRecords,
+    //       UserInfoRecord,
+    //       UserStateRecord
     //     ],
     //   }),
     // ],
