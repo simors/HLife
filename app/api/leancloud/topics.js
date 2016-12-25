@@ -7,9 +7,12 @@ export function publishTopics(payload) {
   let Topics = AV.Object.extend('Topics')
   let topic = new Topics()
 
-  var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId);
+  var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId)
+  var user = AV.Object.createWithoutData('_User', payload.userId)
 
-  topic.set('category', topicCategory);
+
+  topic.set('category', topicCategory)
+  topic.set('user', user)
   topic.set('imgGroup', payload.imgGroup)
   topic.set('content', payload.content)
 

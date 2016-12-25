@@ -36,6 +36,7 @@ function handlePublishTopic(payload, formData) {
       content: formData.content.text,
       imgGroup: formData.imgGroup.text,
       categoryId: payload.categoryId,
+      userId: payload.userId
     }
     lcTopics.publishTopics(publishTopicPayload).then(() => {
       if(payload.success){

@@ -18,6 +18,7 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {getTopicCategories} from '../../selector/configSelector'
 import {getTopics} from '../../selector/topicSelector'
+import {isUserLogined} from '../../selector/authSelector'
 import {fetchTopics} from '../../action/topicActions'
 
 import {TabScrollView} from '../common/TabScrollView'
@@ -86,7 +87,11 @@ export class Find extends Component {
                        renderTopicPage={() => this.renderTopicPage()}/>
         <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
                             onPress={()=> {
-                              Actions.PUBLISH({topicId})
+                              if (this.props.isLogin) {
+                                Actions.PUBLISH({topicId})
+                              } else {
+                                Actions.LOGIN()
+                              }
                             }}
         >
           <Image source={require("../../assets/images/local_write@2x.png")}/>
@@ -100,9 +105,11 @@ const mapStateToProps = (state, ownProps) => {
 
   const topicCategories = getTopicCategories(state)
   const topics = getTopics(state)
+  const isLogin = isUserLogined(state)
   return {
     topicCategories: topicCategories,
-    topics: topics
+    topics: topics,
+    isLogin: isLogin
   }
 }
 

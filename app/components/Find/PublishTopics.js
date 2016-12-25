@@ -25,6 +25,7 @@ import ImageGroupInput from '../common/Input/ImageGroupInput'
 import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -61,13 +62,19 @@ class PublishTopics extends Component {
   }
 
   onButtonPress = () => {
-     this.props.publishTopicFormData({
-       formKey: formKey,
-       categoryId: this.state.selectedTopic.objectId,
-       submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-       success:this.submitSuccessCallback,
-       error: this.submitErrorCallback
-     })
+    if (this.props.isLogin) {
+      this.props.publishTopicFormData({
+        formKey: formKey,
+        categoryId: this.state.selectedTopic.objectId,
+        userId: this.props.userInfo.id,
+        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+        success: this.submitSuccessCallback,
+        error: this.submitErrorCallback
+      })
+    }
+    else {
+      Actions.LOGIN()
+    }
   }
 
   componentDidMount() {
@@ -165,10 +172,13 @@ class PublishTopics extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
   const topics = getTopicCategories(state)
+  const isLogin = isUserLogined(state)
+  const userInfo = activeUserInfo(state)
   return {
-    topics: topics
+    topics: topics,
+    isLogin: isLogin,
+    userInfo: userInfo
   }
 }
 
