@@ -20,7 +20,8 @@ import {
   TouchableOpacity,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  StatusBar
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -178,6 +179,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar hidden={false} />
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/local_unselect.png")}
