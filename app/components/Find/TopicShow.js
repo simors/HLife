@@ -15,6 +15,7 @@ import {
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import TopicImageViewer from '../../components/common/TopicImageViewer'
+import {getConversationTime} from '../../util/numberUtils'
 
 export class TopicShow extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export class TopicShow extends Component {
     }
   }
 
-  componentWillReceiveProps(){
+  componentWillReceiveProps() {
     this.setState({measureFlag: true})
     this.setState({expanded: true})
     this.setState({expandText: '全文'})
@@ -87,7 +88,9 @@ export class TopicShow extends Component {
                 <Text style={styles.userNameStyle}>白天不懂夜的黑</Text>
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>
-                <Text style={styles.timeTextStyle}>刚刚</Text>
+                <Text style={styles.timeTextStyle}>
+                  {getConversationTime(this.props.createdAt.valueOf())}
+                </Text>
                 <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
                 <Text style={styles.timeTextStyle}>长沙</Text>
               </View>
@@ -140,7 +143,8 @@ TopicShow.defaultProps = {
   containerStyle: {},
   numberOfValues: 3,
   imgGroup: undefined,
-  content:undefined
+  content: undefined,
+  createAt: undefined,
 }
 
 //export

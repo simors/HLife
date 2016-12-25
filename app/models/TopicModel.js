@@ -7,7 +7,8 @@ export const TopicsConfig = Record({
   content: undefined, //话题内容
   imgGroup: undefined, //图片
   objectId: undefined,
-  categoryId: undefined  //属于的分类
+  categoryId: undefined,  //属于的分类
+  createdAt: undefined
 }, 'TopicsConfig')
 
 export class TopicsItem extends TopicsConfig {
@@ -17,6 +18,7 @@ export class TopicsItem extends TopicsConfig {
     return topicsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
       record.set('imgGroup', attrs.imgGroup)
+      record.set('createdAt', lcObj.createdAt)
       record.set('categoryId', attrs.category.id)
       record.set('objectId', lcObj.id)
     })
