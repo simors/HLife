@@ -85,7 +85,7 @@ export class TopicShow extends Component {
             </TouchableOpacity>
             <View>
               <TouchableOpacity>
-                <Text style={styles.userNameStyle}>白天不懂夜的黑</Text>
+                <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>
                 <Text style={styles.timeTextStyle}>
@@ -112,7 +112,7 @@ export class TopicShow extends Component {
             {this.renderExpandText()}
           </View>
           <View style={styles.imagesWrapStyle}>
-            <TopicImageViewer images={this.props.topic.imgGroup}/>
+            <TopicImageViewer images={this.props.topicimgGroup}/>
           </View>
         </View>
 

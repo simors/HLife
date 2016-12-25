@@ -28,6 +28,7 @@ export function getTopics(payload) {
   var category = AV.Object.createWithoutData('TopicCategory', categoryId);
   let query = new AV.Query('Topics')
   query.equalTo('category', category)
+  query.include(['user']);
   query.descending('createdAt')
   return query.find().then(function (results) {
     let topics = []
