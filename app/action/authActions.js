@@ -85,12 +85,12 @@ function handleLoginWithPwd(payload, formData) {
       phone: formData.phoneInput.text,
       password: formData.passwordInput.text,
     }
-    lcAuth.loginWithPwd(loginPayload).then((userInfos) => {
+    lcAuth.loginWithPwd(loginPayload).then((userInfo) => {
       if(payload.success){
-        payload.success(userInfos)
+        payload.success(userInfo)
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
-      dispatch(loginAction({...userInfos}))
+      dispatch(loginAction({...userInfo}))
       dispatch(initMessageClient(payload))
     }).catch((error) => {
       if(payload.error){

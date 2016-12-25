@@ -34,8 +34,8 @@ function handleRegisterSuccess(state, action) {
 
 function handleLoginSuccess(state, action) {
   const userInfo = action.payload.userInfo
-  state = state.set('activeUser', userInfo.id)
-  state = state.set('token', userInfo.token)
+  state = state.set('activeUser', userInfo.get('id'))
+  state = state.set('token', userInfo.get('token'))
   state = state.setIn(['profiles', userInfo.id], userInfo)
   return state
 }
