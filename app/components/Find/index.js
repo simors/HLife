@@ -52,8 +52,7 @@ export class Find extends Component {
     )
   }
 
-  refreshTopic()
-  {
+  refreshTopic() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopics({categoryId: this.props.topicCategories[this.state.selectedTab].objectId})
     })
@@ -85,9 +84,11 @@ export class Find extends Component {
                        refreshTopic={()=>this.refreshTopic()}
                        onSelected={(index) => this.getSelectedTab(index)}
                        renderTopicPage={() => this.renderTopicPage()}/>
-        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage} onPress={()=> {
-          Actions.PUBLISH({topicId})
-        }}>
+        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
+                            onPress={()=> {
+                              Actions.PUBLISH({topicId})
+                            }}
+        >
           <Image source={require("../../assets/images/local_write@2x.png")}/>
         </TouchableHighlight>
       </View>
