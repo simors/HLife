@@ -10,13 +10,13 @@ const initialState = new Map()
 export default function commentArticleReducer(state = initialState, action) {
   switch(action.type) {
     case Types.ADD_COMMENT_ARTICLE:
-      return handleAddArticles(state, action)
+      return handleAddComments(state, action)
     default:
       return state
   }
 }
 
-function handleAddArticles(state, action) {
+function handleAddComments(state, action) {
   let articleId = action.payload.articleId
   let commentArticleList = action.payload.commentArticleList
   state = state.set(articleId, commentArticleList)
