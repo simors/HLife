@@ -90,7 +90,7 @@ export default class ShopCategories extends Component {
             <ShopCategory
               imageSource={item.imageSource}
               text={item.text}
-              onPress={()=>this.props.onPress(item.shopCategoryId)}
+              onPress={()=>this.props.onPress(item.shopCategoryId, item.text)}
             />
           </View>
         )

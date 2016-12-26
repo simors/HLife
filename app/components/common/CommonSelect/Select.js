@@ -49,7 +49,6 @@ export default class Select extends Component {
         defaultText = props.children.props.children
       }
     }
-
     this.state = {
       value: defaultValue,
       text: defaultText,
