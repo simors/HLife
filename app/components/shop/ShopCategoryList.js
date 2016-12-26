@@ -153,9 +153,8 @@ class ShopCategoryList extends Component {
     return optionsView
   }
 
-  gotoShopDetailScene(shopId) {
-    // Toast.show('店铺id=' + shopCategoryId, {duration: 1000})
-    Actions.SHOP_DETAIL({shopId: shopId})
+  gotoShopDetailScene(id) {
+    Actions.SHOP_DETAIL({id: id})
   }
 
   renderRow(rowData, rowId) {
