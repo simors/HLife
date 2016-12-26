@@ -17,6 +17,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigTopicCategories(state, action)
     case ConfigActionTypes.UPDATE_CONFIG_SHOP_CATEGORIES:
       return handleUpdateConfigShopCategories(state, action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -116,5 +118,5 @@ function onRehydrate(state, action) {
   var incoming = action.payload.CONFIG
   if (!incoming) return state
 
-  return incoming
+  return state
 }

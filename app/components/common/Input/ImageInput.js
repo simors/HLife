@@ -101,11 +101,15 @@ class ImageInput extends Component {
   }
 
   renderReuploadBtn() {
-    return (
-      <View style={{position: 'absolute', bottom: normalizeH(50), left: normalizeW(17)}}>
-        <CommonButton title="重新上传" onPress={() => this.selectImg()} />
-      </View>
-    )
+    if (this.props.editable) {
+      return (
+        <View style={{position: 'absolute', bottom: normalizeH(50), left: normalizeW(17)}}>
+          <CommonButton title="重新上传" onPress={() => this.selectImg()} />
+        </View>
+      )
+    } else {
+      return <View/>
+    }
   }
 
   renderImageModal(src) {
@@ -174,6 +178,7 @@ ImageInput.defaultProps = {
   choosenImageStyle:{},
   addImage: require('../../../assets/images/default_picture.png'),
   prompt: "选择图片",
+  editable: true,
 }
 
 const mapStateToProps = (state, ownProps) => {

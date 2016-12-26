@@ -39,9 +39,6 @@ let profileForm = Symbol('profileForm')
 class Profile extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      gender: 'man',
-    }
   }
 
   submitSuccessCallback(doctorInfo) {

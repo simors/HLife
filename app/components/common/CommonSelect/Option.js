@@ -28,7 +28,7 @@ export default class Option extends Component {
   renderSelectedIcon() {
     // console.log('renderSelectedIcon.selectedValue=', this.props.selectedValue)
     // console.log('renderSelectedIcon.value=', this.props.value)
-    if(this.props.selectedValue == this.props.value) {
+    if(this.props.selectedValue == this.props.value && !this.props.hideSelectedIcon) {
       return (
         <View style={{flex: 1,flexDirection: 'row'}}>
           <View style={{flex: 1}}/>

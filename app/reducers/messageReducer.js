@@ -10,12 +10,18 @@ const initialState = new Messenger()
 export default function messageReducer(state = initialState, action) {
   switch (action.type) {
     case Types.INIT_MESSENGER_CLIENT:
-      return state.set('client', action.payload.client)
+      return onInitMessenger(state, action)
     case Types.ON_CONVERSATION_CREATED:
       return onConversationCreated(state, action)
     default:
       return state
   }
+}
+
+function onInitMessenger(state, action) {
+  let client = action.payload.client
+  state = state.set('client', client)
+  return state
 }
 
 function onConversationCreated(state, action) {
