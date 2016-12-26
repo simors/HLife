@@ -105,9 +105,13 @@ export function profileSubmit(payload) {
   userInfo.set('gender', payload.gender)
   userInfo.set('birthday', payload.birthday)
 
-  return userInfo.save().then(function (userinfo) {
-    console.log("profileSubmit:", userinfo)
-
+  return userInfo.save().then((loginedUser)=>{
+    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    // userInfo = userInfo.set('token', loginedUser.getSessionToken())
+    // console.log("loginWithPwd", userInfo)
+    return {
+      userInfo: userInfo,
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

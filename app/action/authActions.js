@@ -253,6 +253,8 @@ function handleProfileSubmit(payload, formData) {
       if (payload.success) {
         payload.success()
       }
+      let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
+      dispatch(profileAction({...profile}))
     }).catch((error) => {
       if(payload.error){
         payload.error(error)
