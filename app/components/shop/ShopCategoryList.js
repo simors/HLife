@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-  Platform
+  Platform,
+  InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -28,53 +29,102 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
+import {selectShopCategories} from '../../selector/configSelector'
+import {selectShopList} from '../../selector/shopSelector'
+import {fetchShopCategories} from '../../action/configAction'
+import {fetchShopList} from '../../action/shopAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+const ds = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
 
 class ShopCategoryList extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      shoCategoryId: '',
-      sortId: '0',
-      distanceId: '',
-      selectGroupShow: [false, false, false],
-
+      searchForm: {
+        shopCategoryId: '',
+        sortId: '0',
+        distance: '',
+        geo: [39.9, 116.4],
+        geoName: '长沙'
+      },
+      selectGroupShow: [false, false, false]
     }
   }
 
+  componentWillMount() {
+    if(this.props.shopCategoryId) {
+      this.setState({
+        ...this.state,
+        searchForm: {
+          ...this.state.searchForm,
+          shopCategoryId: this.props.shopCategoryId
+        },
+      })
+    }
+
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchShopCategories()
+      this.refreshData()
+    })
+  }
+
+  componentDidMount() {
+
+  }
+
   _getOptionList(OptionListRef) {
-    return this.refs[OptionListRef];
+    return this.refs[OptionListRef]
   }
 
 
-  _onSelectShopCategory(shoCategoryId) {
+  _onSelectShopCategory(shopCategoryId) {
+    console.log('_onSelectShopCategory.shopCategoryId=' , shopCategoryId)
+    this.state.searchForm.shopCategoryId = shopCategoryId
     this.state.selectGroupShow = [false, false, false]
     this.setState({
       ...this.state,
-      shoCategoryId: shoCategoryId,
+      searchForm: {
+        ...this.state.searchForm,
+        shopCategoryId: this.state.searchForm.shopCategoryId
+      },
       selectGroupShow: this.state.selectGroupShow
-    });
+    })
+    console.log('_onSelectShopCategory.this.state=' , this.state)
+    this.refreshData()
   }
 
   _onSelectSort(sortId) {
     this.state.selectGroupShow = [false, false, false]
+    this.state.searchForm.sortId = sortId
     this.setState({
       ...this.state,
-      sortId: sortId,
+      searchFrom: {
+        ...this.state.searchForm,
+        sortId: this.state.searchForm.sortId
+      },
       selectGroupShow: this.state.selectGroupShow
     })
+    this.refreshData()
   }
 
-  _onSelectDistance(distanceId) {
+  _onSelectDistance(distance) {
     this.state.selectGroupShow = [false, false, false]
+    this.state.searchForm.distance = distance
     this.setState({
       ...this.state,
-      distanceId: distanceId,
+      searchFrom: {
+        ...this.state.searchForm,
+        distance: this.state.searchForm.distance
+      },
       selectGroupShow: this.state.selectGroupShow
-    });
+    })
+    this.refreshData()
   }
 
   _onSelectPress(index){
@@ -85,12 +135,10 @@ class ShopCategoryList extends Component {
     }else if(index == 2) {
       this.state.selectGroupShow = [false, false, !this.state.selectGroupShow[2]]
     }
-    // console.log('this.state.selectGroupShow.1=', this.state.selectGroupShow[index])
 
     this.setState({ //Notes:触发子组件更新
       selectGroupShow: this.state.selectGroupShow
     })
-    // console.log('this.state.selectGroupShow.3=', this.state.selectGroupShow)
   }
 
   renderShopCategoryOptions() {
@@ -113,7 +161,7 @@ class ShopCategoryList extends Component {
   renderRow(rowData, rowId) {
     const scoreWidth = rowData.score / 5.0 * 62
     return (
-      <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.shopId)}}>
+      <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.id)}}>
         <View style={styles.shopInfoWrap}>
           <View style={styles.coverWrap}>
             <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
@@ -125,7 +173,7 @@ class ShopCategoryList extends Component {
                 <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
                 <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
               </View>
-              <Text style={styles.score}>3.5</Text>
+              <Text style={styles.score}>{rowData.score}</Text>
             </View>
             <View style={styles.subInfoWrap}>
               <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
@@ -139,7 +187,13 @@ class ShopCategoryList extends Component {
   }
 
   refreshData() {
-
+    let payload = {
+      ...this.state.searchForm,
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchShopList(payload)
   }
 
   loadMoreData() {
@@ -239,48 +293,19 @@ const mapStateToProps = (state, ownProps) => {
       rowHasChanged: (r1, r2) => r1 != r2,
     })
   }
-  let dataArray = []
-  let shopInfo = {
-    shopId: 3,
-    pv: '100w+',
-    coverUrl: 'http://img1.3lian.com/2015/a1/53/d/200.jpg',
-    shopName: '乐会港式茶餐厅（奥克斯广场店）乐会港式茶餐厅',
-    score: 3.5,
-    businessArea: '银盆岭',
-    distance: '4.3km'
 
-  }
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-  dataArray.push(shopInfo)
-
-  let shopCategories = []
-  let ts = {
-    shopCategoryId: "1",
-    text: '美食特色'
-  }
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  shopCategories.push(ts)
-  let allShopCategories = shopCategories
-
+  const allShopCategories = selectShopCategories(state)
+  console.log('allShopCategories=', allShopCategories)
+  const shopList = selectShopList(state) || []
   return {
-    ds: ds.cloneWithRows(dataArray),
+    ds: ds.cloneWithRows(shopList),
     allShopCategories: allShopCategories,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  fetchShopCategories,
+  fetchShopList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCategoryList)
@@ -288,9 +313,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopCategoryList)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   body: {
     ...Platform.select({
@@ -327,6 +349,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   shopIntroWrap: {
+    flex: 1,
     paddingLeft: 10,
   },
   shopName: {
