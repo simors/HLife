@@ -95,7 +95,7 @@ class ShopCategoryList extends Component {
       },
       selectGroupShow: this.state.selectGroupShow
     })
-    console.log('_onSelectShopCategory.this.state=' , this.state)
+    // console.log('_onSelectShopCategory.this.state=' , this.state)
     this.refreshData()
   }
 
