@@ -44,6 +44,7 @@
 		DD0B3AC71DF9C2A200AE8D91 /* richTextEdit.html in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3ABF1DF9C2A200AE8D91 /* richTextEdit.html */; };
 		DD0B3AC81DF9C2A200AE8D91 /* simditor.css in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3AC01DF9C2A200AE8D91 /* simditor.css */; };
 		DD0B3AC91DF9C2A200AE8D91 /* simditor.js in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3AC11DF9C2A200AE8D91 /* simditor.js */; };
+		DD10AE101E10EF1200A462BD /* RnBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = DD10AE0F1E10EF1200A462BD /* RnBridge.m */; };
 		DDC829ED1E02305700F15C42 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDC829D61E02300E00F15C42 /* libRCTAnimation.a */; };
 		F60FD21424D94BECB5C98C02 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C6A68F38C16488FA39D2939 /* Foundation.ttf */; };
 /* End PBXBuildFile section */
@@ -270,6 +271,8 @@
 		DD0B3ABF1DF9C2A200AE8D91 /* richTextEdit.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = richTextEdit.html; path = resources/richTextEdit.html; sourceTree = "<group>"; };
 		DD0B3AC01DF9C2A200AE8D91 /* simditor.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = simditor.css; path = resources/simditor.css; sourceTree = "<group>"; };
 		DD0B3AC11DF9C2A200AE8D91 /* simditor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = simditor.js; path = resources/simditor.js; sourceTree = "<group>"; };
+		DD10AE0E1E10EE4300A462BD /* RnBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RnBridge.h; path = HLife/rn/RnBridge.h; sourceTree = "<group>"; };
+		DD10AE0F1E10EF1200A462BD /* RnBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RnBridge.m; path = HLife/rn/RnBridge.m; sourceTree = "<group>"; };
 		DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBEEPickerManager.a; sourceTree = "<group>"; };
@@ -393,6 +396,7 @@
 		13B07FAE1A68108700A75B9A /* HLife */ = {
 			isa = PBXGroup;
 			children = (
+				DD10ADF51E10ED9C00A462BD /* rn */,
 				DD0B3AB91DF9C28D00AE8D91 /* resources */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -514,6 +518,15 @@
 				DD0B3AC11DF9C2A200AE8D91 /* simditor.js */,
 			);
 			name = resources;
+			sourceTree = "<group>";
+		};
+		DD10ADF51E10ED9C00A462BD /* rn */ = {
+			isa = PBXGroup;
+			children = (
+				DD10AE0E1E10EE4300A462BD /* RnBridge.h */,
+				DD10AE0F1E10EF1200A462BD /* RnBridge.m */,
+			);
+			name = rn;
 			sourceTree = "<group>";
 		};
 		DDC7CA281DFE98490020E889 /* Products */ = {
@@ -940,6 +953,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				DD10AE101E10EF1200A462BD /* RnBridge.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

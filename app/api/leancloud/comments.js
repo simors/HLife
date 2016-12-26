@@ -28,3 +28,20 @@ export function getCommentArticle(payload) {
     throw err
   })
 }
+
+export function publishCommentArticle(payload) {
+  let comments = AV.Object.extend('ArticleComment')
+  let comment = new comments()
+
+  var articleId = AV.Object.createWithoutData('Articles', payload.articleId);
+  comment.set('author',payload.author)
+  comment.set('articleId', articleId);
+  comment.set('replyId', payload.replyId)
+  comment.set('content', payload.content)
+
+  return comment.save().then(function (comment) {
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
