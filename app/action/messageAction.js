@@ -106,9 +106,7 @@ export function initLcMessenger(payload) {
         console.log('网络连接已恢复');
       })
 
-      dispatch(initMessenger({client: client})).then(() => {
-        console.log('聊天室客户端创建成功')
-      })
+      dispatch(initMessenger({client: client}))
     }).catch((error) => {
       console.log(error)
     })

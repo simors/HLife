@@ -30,7 +30,9 @@ export default class Launch extends Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.left}>
-            <Text style={styles.texts}>设置</Text>
+            <TouchableOpacity style={{marginTop: normalizeH(14), marginLeft: normalizeW(12)}} onPress={() => Actions.SETTING()}>
+              <Text style={styles.texts}>设置</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.middle}>
             <TouchableOpacity onPress={() => Actions.PROFILE()}>

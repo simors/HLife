@@ -10,15 +10,12 @@ import {
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router} from 'react-native-router-flux'
-import configureStore from './app/store/configureStore'
-import persist from './app/store/persistStore'
+import {persistor, store} from './app/store/persistStore'
 import {scenes} from './app/scenes/scenes'
 import AV from 'leancloud-storage'
 import * as LC_CONFIG from './app/constants/appConfig'
 
 const RouterWithRedux = connect()(Router)
-const store = configureStore()
-persist(store)
 
 const KM_Dev = {
   appId: LC_CONFIG.LC_DEV_APP_ID,

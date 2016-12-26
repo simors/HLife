@@ -2,6 +2,7 @@ import {applyMiddleware, createStore} from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import {enableBatching} from 'redux-batched-actions'
+import {autoRehydrate} from 'redux-persist'
 
 import rootReducer from '../reducers/rootReducer'
 

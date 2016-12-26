@@ -82,7 +82,7 @@ export class TopicShow extends Component {
           }}>
             <TouchableOpacity>
               <Image style={styles.avatarStyle}
-                     source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/local_write@2x.png")}/>
+                     source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
             </TouchableOpacity>
             <View>
               <TouchableOpacity>
@@ -182,7 +182,11 @@ const styles = StyleSheet.create({
   },
   avatarStyle: {
     height: normalizeH(44),
-    width:  normalizeW(44)
+    width:  normalizeW(44),
+    borderRadius: 22,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor:'transparent',
   },
   timeTextStyle: {
     marginRight: normalizeW(26),

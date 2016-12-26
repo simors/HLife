@@ -7,6 +7,7 @@ import * as authSelectors from '../selector/authSelector'
 import {initMessageClient} from '../action/messageAction'
 import {become} from '../api/leancloud/auth'
 import {UserInfo, UserState, UserStateRecord, UserInfoRecord} from '../models/userModels'
+import configureStore from '../store/configureStore'
 
 const messageFilter = createFilter(
   'MESSAGE',
@@ -20,7 +21,7 @@ const messageFilter = createFilter(
 )
 
 export default function persist(store) {
-  persistStore(store, {
+  return persistStore(store, {
     storage: AsyncStorage,
     // transforms: [
     //   immutableTransform({
@@ -67,3 +68,6 @@ function verifyToken() {
     })
   }
 }
+
+export const store = configureStore()
+export const persistor = persist(store)
