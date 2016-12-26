@@ -16,6 +16,7 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import Symbol from 'es6-symbol'
 import {Actions} from 'react-native-router-flux'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
