@@ -7,6 +7,7 @@ import messageReducer from './messageReducer'
 import articleReducer from './articleReducer'
 import topicReducer from './topicReducer'
 import commentArticleReduce from './commentReducer'
+import shopReducer from './shopReducer'
 
 const rootReducers = combineReducers({
   CONFIG: configReducer,
@@ -15,7 +16,8 @@ const rootReducers = combineReducers({
   MESSAGE: messageReducer,
   ARTICLE: articleReducer,
   TOPIC: topicReducer,
-  COMMENT_ARTICLE: commentArticleReduce
+  COMMENT_ARTICLE: commentArticleReduce,
+  SHOP: shopReducer
 })
 
 const rootReducersWrapper = (state, action) => {
