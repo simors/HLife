@@ -28,7 +28,7 @@ class DateTimeInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: {text: this.props.value},
+      initValue: {text: this.props.initValue},
       checkValid: this.validDate
     }
     this.props.initInputForm(formInfo)

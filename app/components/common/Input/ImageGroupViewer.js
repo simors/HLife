@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
+  ScrollView,
   Modal,
 } from 'react-native'
 import Gallery from 'react-native-gallery'
@@ -30,7 +31,10 @@ export default class ImageGroupViewer extends Component {
   }
 
   calculateImageWidth() {
-    let calImgSize = (PAGE_WIDTH - (this.props.imageLineCnt + 1) * 2 * this.marginSize) / this.props.imageLineCnt
+    let calImgSize = 107
+    if('oneLine' != this.props.showMode) {
+      calImgSize = (PAGE_WIDTH - (this.props.imageLineCnt + 1) * 2 * this.marginSize) / this.props.imageLineCnt
+    }
     return calImgSize
   }
 
@@ -103,28 +107,52 @@ export default class ImageGroupViewer extends Component {
     let compList = []
     let comp = []
 
-    for (let i = 0; i < imgComp.length; i++) {
-      comp.push(imgComp[i])
-      if ((i + 1) % this.props.imageLineCnt == 0) {
-        compList.push(comp)
-        comp = []
+    if('oneLine' == this.props.showMode) {
+      compList.push(imgComp)
+    }else {
+      for (let i = 0; i < imgComp.length; i++) {
+        comp.push(imgComp[i])
+        if ((i + 1) % this.props.imageLineCnt == 0) {
+          compList.push(comp)
+          comp = []
+        }
       }
+      compList.push(comp)
     }
-    compList.push(comp)
     return compList
   }
 
   renderImageShow() {
     let compList = this.renderImageCollect()
-    return (
-      compList.map((item, key) => {
-        return (
-          <View key={key} style={styles.container}>
+    const showMode = this.props.showMode || 'multiLine' //照片显示模式: multiLine-多行, oneLint-单行
+
+    if('oneLine' == showMode) {
+      return (
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={[styles.contentContainerStyle, this.props.contentContainerStyle]}
+        >
+          {compList.map((item, key) => {
+            return (
+            <View key={key} style={[styles.container, this.props.containerStyle]}>
             {item}
-          </View>
-        )
-      })
-    )
+            </View>
+            )
+          })}
+        </ScrollView>
+      )
+    }else {
+      return (
+        compList.map((item, key) => {
+          return (
+            <View key={key} style={[styles.container, {width: PAGE_WIDTH}, this.props.containerStyle]}>
+              {item}
+            </View>
+          )
+        })
+      )
+    }
   }
 
   render() {
@@ -145,7 +173,6 @@ ImageGroupViewer.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    width: PAGE_WIDTH,
     marginLeft: 5,
     marginRight: 5,
   },
