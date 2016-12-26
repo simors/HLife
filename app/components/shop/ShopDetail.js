@@ -44,6 +44,8 @@ class ShopDetail extends Component {
 
 
   render() {
+    const scoreWidth = 4.5 / 5.0 * 62
+    
     return (
       <View style={styles.container}>
         <Header
@@ -134,7 +136,6 @@ class ShopDetail extends Component {
         </View>
       </View>
     )
-    const scoreWidth = 4.5 / 5.0 * 62
   }
 }
 
