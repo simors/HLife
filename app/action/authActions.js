@@ -49,6 +49,7 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
         dispatch(handleProfileSubmit(payload, formData))
+        break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
         dispatch(handleShopCertification(payload, formData))
         break
@@ -249,6 +250,9 @@ function handleProfileSubmit(payload, formData) {
       gender: formData.genderInput.text,
     }
     lcAuth.profileSubmit(profilePayload).then((profile) => {
+      if (payload.success) {
+        payload.success()
+      }
     }).catch((error) => {
       if(payload.error){
         payload.error(error)

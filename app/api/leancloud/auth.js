@@ -99,7 +99,7 @@ export function profileSubmit(payload) {
 
   console.log("profileSubmit:payload=", payload)
   var userInfo = AV.Object.createWithoutData('_User', payload.id);
-  userInfo.set('nickName', payload.nickname)
+  userInfo.set('nickname', payload.nickname)
   userInfo.set('avatar', payload.avatar)
   userInfo.set('mobilePhoneNumber', payload.phone)
   userInfo.set('gender', payload.gender)

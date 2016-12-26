@@ -13,12 +13,13 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {ButtonGroup} from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 class GenderSelector extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedIndex: 0
+      selectedIndex: this.props.data == 'male'? 1: 0
     }
   }
   componentDidMount() {
@@ -40,7 +41,7 @@ class GenderSelector extends Component {
     let gender = ""
     this.setState({selectedIndex})
     console.log('selected', selectedIndex)
-    if (selectedIndex == 0) {
+    if (selectedIndex == 1) {
       gender = "male"
     } else {
       gender = "female"
@@ -54,22 +55,24 @@ class GenderSelector extends Component {
   }
 
   render() {
-    const buttons = ['男', '女']
+    const buttons = ['女', '男']
     return (
       <ButtonGroup
         onPress={(index) => this.updateIndex(index)}
         selectedIndex={this.state.selectedIndex}
         buttons={buttons}
         containerStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-        selectedBackgroundColor="red"
-        textStyle={{fontSize: 18}}
+        selectedBackgroundColor="#50E3C2"
+        textStyle={{ fontSize: 18}}
       />
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   return {
+    data: inputData.text
   }
 }
 

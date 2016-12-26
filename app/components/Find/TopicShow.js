@@ -15,6 +15,7 @@ import {
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import TopicImageViewer from '../../components/common/TopicImageViewer'
+import {getConversationTime} from '../../util/numberUtils'
 
 export class TopicShow extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export class TopicShow extends Component {
     }
   }
 
-  componentWillReceiveProps(){
+  componentWillReceiveProps() {
     this.setState({measureFlag: true})
     this.setState({expanded: true})
     this.setState({expandText: '全文'})
@@ -80,14 +81,17 @@ export class TopicShow extends Component {
           <View style={{flexDirection: 'row'}} onPress={()=> {
           }}>
             <TouchableOpacity>
-              <Image source={require("../../assets/images/local_write@2x.png")}/>
+              <Image style={styles.avatarStyle}
+                     source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/local_write@2x.png")}/>
             </TouchableOpacity>
             <View>
               <TouchableOpacity>
-                <Text style={styles.userNameStyle}>白天不懂夜的黑</Text>
+                <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>
-                <Text style={styles.timeTextStyle}>刚刚</Text>
+                <Text style={styles.timeTextStyle}>
+                  {getConversationTime(this.props.topic.createdAt.valueOf())}
+                </Text>
                 <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
                 <Text style={styles.timeTextStyle}>长沙</Text>
               </View>
@@ -104,12 +108,12 @@ export class TopicShow extends Component {
             <Text style={styles.contentStyle}
                   numberOfLines={this.state.numberOfLines}
                   onLayout={this._onTextLayout.bind(this)}>
-              {this.props.content}
+              {this.props.topic.content}
             </Text>
             {this.renderExpandText()}
           </View>
           <View style={styles.imagesWrapStyle}>
-            <TopicImageViewer images={this.props.imgGroup}/>
+            <TopicImageViewer images={this.props.topic.imgGroup}/>
           </View>
         </View>
 
@@ -139,8 +143,11 @@ TopicShow.defaultProps = {
   // style
   containerStyle: {},
   numberOfValues: 3,
-  imgGroup: undefined,
-  content:undefined
+  topic: {
+    imgGroup: undefined,
+    content: undefined,
+    createAt: undefined,
+  }
 }
 
 //export
@@ -172,6 +179,10 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(11),
     marginTop: normalizeH(9),
     flexDirection: 'row'
+  },
+  avatarStyle: {
+    height: normalizeH(44),
+    width:  normalizeW(44)
   },
   timeTextStyle: {
     marginRight: normalizeW(26),

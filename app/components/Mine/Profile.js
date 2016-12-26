@@ -17,6 +17,7 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
+import Symbol from 'es6-symbol'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../../components/common/Header'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
@@ -34,32 +35,6 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 
 let profileForm = Symbol('profileForm')
 
-const nicknameInput = {
-  formKey: profileForm,
-  stateKey: Symbol('nicknameInput'),
-  type: "nicknameInput",
-}
-const avatarInput = {
-  formKey: profileForm,
-  stateKey: Symbol('avatarInput'),
-  type: "avatarInput",
-}
-const phoneInput = {
-  formKey: profileForm,
-  stateKey: Symbol('phoneInput'),
-  type: "phoneInput",
-}
-
-const genderInput = {
-  formKey: profileForm,
-  stateKey: Symbol('genderInput'),
-  type: "genderInput",
-}
-const dtPicker = {
-  formKey: profileForm,
-  stateKey: Symbol('dtPicker'),
-  type: "dtPicker",
-}
 
 class Profile extends Component {
   constructor(props) {
@@ -69,13 +44,9 @@ class Profile extends Component {
     }
   }
 
-  componentDidMount() {
-    console.log("Profile: this.props.userInfo", this.props.userInfo)
-  }
-
   submitSuccessCallback(doctorInfo) {
     Toast.show('保存信息成功')
-    Actions.MINE()
+    Actions.pop()
   }
 
   submitErrorCallback(error) {
@@ -95,10 +66,37 @@ class Profile extends Component {
   }
 
   render() {
-    const options = [
-      "男",
-      "女"
-    ];
+    const nicknameInput = {
+      formKey: profileForm,
+      stateKey: Symbol('nicknameInput'),
+      initValue: this.props.userInfo.nickname? this.props.userInfo.nickname: undefined,
+      type: "nicknameInput",
+    }
+    const avatarInput = {
+      formKey: profileForm,
+      stateKey: Symbol('avatarInput'),
+      initValue: this.props.userInfo.avatar? this.props.userInfo.avatar: undefined,
+      type: "avatarInput",
+    }
+    const phoneInput = {
+      formKey: profileForm,
+      stateKey: Symbol('phoneInput'),
+      initValue: this.props.userInfo.phone? this.props.userInfo.phone: undefined,
+      type: "phoneInput",
+    }
+
+    const genderInput = {
+      formKey: profileForm,
+      stateKey: Symbol('genderInput'),
+      initValue: this.props.userInfo.gender? this.props.userInfo.gender: undefined,
+      type: "genderInput",
+    }
+    const dtPicker = {
+      formKey: profileForm,
+      stateKey: Symbol('dtPicker'),
+      initValue: this.props.userInfo.birthday? this.props.userInfo.birthday: undefined,
+      type: "dtPicker",
+    }
     return(
       <View style={styles.container}>
         <Header
@@ -121,8 +119,8 @@ class Profile extends Component {
             <View style={{flex: 1, justifyContent: 'center'}}>
               <Text style={styles.mainText}>昵称</Text>
             </View>
-            <View style={{flex: 1, justifyContent: 'center'}}>
-              <CommonTextInput {...nicknameInput} placeholder="我爱我家" containerStyle={{height: normalizeH(38), }}
+            <View style={{flex: 2, justifyContent: 'center'}}>
+              <CommonTextInput {...nicknameInput} containerStyle={{height: normalizeH(38), }}
                                inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
             </View>
             <View>
@@ -134,7 +132,7 @@ class Profile extends Component {
             <View style={{flex: 1, justifyContent: 'center'}}>
               <Text style={styles.mainText}>手机号</Text>
             </View>
-            <View style={{flex: 1, justifyContent: 'center'}}>
+            <View style={{flex: 2, justifyContent: 'center'}}>
               <PhoneInput {...phoneInput}
                           inputStyle={styles.phoneInputStyle}/>
             </View>
@@ -145,7 +143,7 @@ class Profile extends Component {
             <View style={{flex: 1, justifyContent: 'center'}}>
               <Text style={styles.mainText}>性别</Text>
             </View>
-            <View style={{flex: 1, paddingLeft: normalizeW(30)}}>
+            <View style={{flex: 2, paddingLeft: normalizeW(30)}}>
               <GenderSelector {...genderInput}/>
             </View>
           </View>
@@ -153,8 +151,8 @@ class Profile extends Component {
             <View style={{flex: 1, justifyContent: 'center', }}>
               <Text style={styles.mainText}>出生年月</Text>
             </View>
-            <View style={{flex: 1, justifyContent: 'center', }}>
-              <DateTimeInput {...dtPicker} value="2016-05-18" PickerStyle={{backgroundColor: '#FFFFFF', width: normalizeW(120), borderWidth: 0}}/>
+            <View style={{flex: 2, justifyContent: 'center', }}>
+              <DateTimeInput {...dtPicker} value="2016-05-18" PickerStyle={{backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
             </View>
           </View>
         </View>
@@ -172,7 +170,6 @@ const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
   return {
     userInfo: userInfo,
-
   }
 }
 
