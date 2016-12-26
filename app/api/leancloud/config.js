@@ -91,6 +91,8 @@ export function getArticle(payload) {
     let categoryId = payload
     let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
     query.equalTo('Category', articleCategory)
+    query.include(['user']);
+    query.descending('createdAt')
   }
   return query.find().then(function (results) {
     let article = []

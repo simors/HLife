@@ -111,7 +111,6 @@ class ArticleColumn extends Component {
       let articleSource
 
       articleSource = ds.cloneWithRows(articles.articles)
-      console.log('article========>', articles.articles)
 
       return (
         <ListView dataSource={articleSource}

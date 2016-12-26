@@ -34,8 +34,7 @@ export default class ArticleShow extends Component {
     console.log('guolailexiesha',{...this.props})
 
     if (this.props.articleId) {
-      console.log('guolailexiesha',{...this.props})
-      let imageCount = this.props.images.length
+       let imageCount = this.props.images.length
       switch (imageCount) {
         case 1:
           return (
@@ -45,7 +44,6 @@ export default class ArticleShow extends Component {
                   Actions.ARTICLES_ARTICLE({...this.props})}}>
                 <View>
                   <Image style={styles.image} source={{uri: this.props.images[0]}}>
-
                   </Image>
                 </View>
                   </TouchableOpacity>
@@ -57,8 +55,8 @@ export default class ArticleShow extends Component {
                   </View>
                     </TouchableOpacity>
                   <View style={styles.oneAuthor}>
-                    <Image style={{height:normalizeH(30),width:normalizeW(30),overflow:'hidden'}}></Image>
-                    <Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text>
+                    <Image style={{height:normalizeH(20),width:normalizeW(20),overflow:'hidden',borderRadius:normalizeW(10)}} source={{uri: this.props.avatar}}></Image>
+                    <Text style={{fontSize:normalizeW(15),color:'#929292',marginLeft:normalizeW(8)}}>{this.props.nickname}</Text>
                   </View>
                   <View style={styles.comment}></View>
                 </View>
@@ -92,8 +90,8 @@ export default class ArticleShow extends Component {
               <View style={styles.threeImageView}>
                 <TouchableOpacity onPress={()=> {
                   Actions.ARTICLES_ARTICLE({...this.props})}}>
-                  <View style={styles.threeTitle}>
-                    <Text style={{fontSize:normalizeW(17),color:'#636363'}}>{this.props.title}</Text>
+                  <View >
+                    <Text style={styles.threeTitle}>{this.props.title}</Text>
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <Image style={styles.threeImage} source={{uri: this.props.images[0]}}>
@@ -105,8 +103,8 @@ export default class ArticleShow extends Component {
                   </View>
                 </TouchableOpacity>
                 <View style={styles.threeArticleInfo}>
-
-                  <View ><Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text></View>
+                  <Image style={styles.threeAvatar} source={{uri: this.props.avatar}}></Image>
+                  <Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.nickname}</Text>
                   <View style={styles.comments}></View>
                 </View>
               </View>
@@ -141,10 +139,8 @@ const styles = StyleSheet.create(
       flexDirection: 'row',
     },
     threeImage: {
-      marginTop: normalizeH(10),
       marginLeft: normalizeW(6),
       //marginRight: normalizeW(10),
-      marginBottom: normalizeH(10),
       height: normalizeH(117),
       width: normalizeW(117),
     },
@@ -169,18 +165,37 @@ const styles = StyleSheet.create(
       flexDirection:'row',
       height: normalizeH(40),
       width: normalizeW(260),
-      borderBottomWidth: normalizeW(3),
+      borderBottomWidth: normalizeW(1),
       borderBottomColor: '#E6E6E6',
+      alignItems:'center',
     },
     comment: {
       height: normalizeH(40),
       width: normalizeW(150),
     },
     threeArticleInfo:{
+     // marginLeft:normalizeW(6),
       flexDirection:'row',
       width:PAGE_WIDTH,
-
+      alignItems: 'center'
     },
+    threeAvatar:{
+      borderRadius:normalizeW(15),
+      height:normalizeH(30),
+      width:normalizeW(30),
+      overflow:'hidden',
+      marginTop:normalizeH(6),
+      marginLeft:normalizeW(6),
+      marginRight:normalizeW(6),
+      marginBottom:normalizeH(10)
+    },
+    threeTitle:{
+      marginTop:normalizeH(10),
+      marginLeft:normalizeW(10),
+      marginBottom:normalizeH(12),
+      fontSize:normalizeW(17),
+      color:'#636363'
+    }
 
   }
 )

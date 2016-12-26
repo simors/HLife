@@ -47,10 +47,11 @@ export default class Article extends Component {
         <ScrollView>
         <View style={styles.cotainer}>
         <View style={styles.titleView}>
-          <Text style={{fontSize:normalizeH(17), color:'#636363',marginLeft:normalizeW(12)}}>{this.props.title}</Text>
+          <Text style={{fontSize:normalizeH(17), color:'#636363',marginLeft:normalizeW(12),fontWeight:'bold'}}>{this.props.title}</Text>
         </View>
         <View style={styles.authorView}>
-          <Text style={{fontSize:normalizeH(15), color:'#929292',marginLeft:normalizeW(12)}}>{this.props.author}</Text>
+          <Image style={{height:normalizeH(30),width:normalizeW(30),overflow:'hidden',borderRadius:normalizeW(15),marginLeft:normalizeW(12)}} source={{uri: this.props.avatar}}></Image>
+          <Text style={{fontSize:normalizeH(15), color:'#929292',marginLeft:normalizeW(12)}}>{this.props.nickname}</Text>
         </View>
 
           <WebView style={styles.articleView}
@@ -81,14 +82,16 @@ const styles = StyleSheet.create(
       height: normalizeH(39),
       width: PAGE_WIDTH,
       marginTop: normalizeH(64),
-      borderWidth: normalizeBorder(1),
+      borderBottomWidth: normalizeBorder(3),
+      borderColor:'#E6E6E6',
       justifyContent: 'center',
     },
     authorView: {
       height: normalizeH(50),
       width: PAGE_WIDTH,
       marginTop: normalizeH(3),
-      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection:'row',
     },
     articleView: {
       height: normalizeH(452),
