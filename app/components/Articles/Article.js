@@ -23,6 +23,7 @@ import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
 import {CommonWebView} from '../common/CommonWebView'
+import CommentPublic from './CommentPublic'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -60,7 +61,7 @@ export default class Article extends Component {
           </View>
         </ScrollView>
         <View style={styles.commentView}>
-
+          <CommentPublic></CommentPublic>
         </View>
       </View>
     )
