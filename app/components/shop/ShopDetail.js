@@ -93,7 +93,7 @@ class ShopDetail extends Component {
               <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{Toast.show('联系电话')}}>
                 <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
                 <View style={styles.contactNumberTxtWrap}>
-                  <Text style={styles.contactNumberTxt} numberOfLines={1}>岳麓大道57号奥克斯广场3楼</Text>
+                  <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -194,11 +194,11 @@ class ShopDetail extends Component {
               </View>
               <View style={styles.serviceInfoContainer}>
                 <View style={styles.openTime}>
-                  <Text style={styles.serviceTxt}>营业时间:</Text>
+                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
                   <Text style={styles.serviceTxt}>10:30-24:00</Text>
                 </View>
                 <View style={styles.shopSpecial}>
-                  <Text style={styles.serviceTxt}>本店特色:</Text>
+                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
                   <Text style={styles.serviceTxt}>早午茶  营养粥  肠粉   粤菜</Text>
                 </View>
               </View>
@@ -214,7 +214,7 @@ class ShopDetail extends Component {
                     <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
                   </View>
                   <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.shopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
+                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
                     <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
                       <View style={styles.scoreIconGroup}>
                         <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
@@ -234,7 +234,7 @@ class ShopDetail extends Component {
                     <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
                   </View>
                   <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.shopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
+                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
                     <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
                       <View style={styles.scoreIconGroup}>
                         <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
@@ -254,7 +254,7 @@ class ShopDetail extends Component {
                     <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
                   </View>
                   <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.shopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
+                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
                     <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
                       <View style={styles.scoreIconGroup}>
                         <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
@@ -624,6 +624,9 @@ const styles = StyleSheet.create({
     fontSize: em(17),
     color: "#8f8e94"
   },
+  serviceLabel: {
+    marginRight: 10
+  },
   guessYouLikeWrap: {
     marginBottom: normalizeW(10),
   },
@@ -660,7 +663,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
   },
-  shopName: {
+  gylShopName: {
     lineHeight: 20,
     fontSize: em(17),
     color: '#8f8e94'
