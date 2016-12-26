@@ -19,7 +19,7 @@ class GenderSelector extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedIndex: this.props.data == 'male'? 1: 0
+      selectedIndex: 1
     }
   }
   componentDidMount() {
@@ -30,7 +30,14 @@ class GenderSelector extends Component {
       initValue: {text: this.props.initValue},
       checkValid: this.validInput
     }
+
     this.props.initInputForm(formInfo)
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (this.props.data != newProps.data) {
+      this.setState({'selectedIndex': (newProps.data == 'male'? 1: 0)})
+    }
   }
 
   validInput(data) {
@@ -39,23 +46,27 @@ class GenderSelector extends Component {
 
   updateIndex (selectedIndex) {
     let gender = ""
-    this.setState({selectedIndex})
-    console.log('selected', selectedIndex)
-    if (selectedIndex == 1) {
-      gender = "male"
-    } else {
-      gender = "female"
+
+    if(this.state.selectedIndex != selectedIndex)
+    {
+      this.setState({selectedIndex})
+      if (selectedIndex == 1) {
+        gender = "male"
+      } else {
+        gender = "female"
+      }
+      let formInfo = {
+        formKey: this.props.formKey,
+        stateKey: this.props.stateKey,
+        data: {text: gender}
+      }
+      this.props.inputFormUpdate(formInfo)
     }
-    let formInfo = {
-      formKey: this.props.formKey,
-      stateKey: this.props.stateKey,
-      data: {text: gender}
-    }
-    this.props.inputFormUpdate(formInfo)
   }
 
   render() {
     const buttons = ['女', '男']
+
     return (
       <ButtonGroup
         onPress={(index) => this.updateIndex(index)}
