@@ -38,7 +38,7 @@ class ImageInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: this.props.initValue,
+      initValue: {text: this.props.initValue},
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
