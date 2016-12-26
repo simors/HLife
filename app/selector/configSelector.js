@@ -3,27 +3,47 @@
  */
 
 export function getConfig(state) {
-  return state.CONFIG.toJS()
+  return state.CONFIG
 }
 
 export function getBanners(state) {
-  return getConfig(state).banners
+  let config = getConfig(state)
+  if (config) {
+    return config.banners.toJS()
+  }
+  return undefined
 }
 
 export function getBanner(state, type) {
-  return getBanners(state)[type]
+  let banner = getBanners(state)
+  if (banner) {
+    return banner[type]
+  }
+  return undefined
 }
 
 export function getAnnouncements(state) {
-  return getConfig(state).announcements
+  let config = getConfig(state)
+  if (config) {
+    return config.announcements.toJS()
+  }
+  return undefined
 }
 
 export function getAnnouncement(state, type) {
-  return getAnnouncements(state)[type]
+  let announcements = getAnnouncements(state)
+  if (announcements) {
+    return announcements[type]
+  }
+  return undefined
 }
 
 export function getColumns(state) {
-  return getConfig(state).column
+  let config = getConfig(state)
+  if (config) {
+    return config.column
+  }
+  return undefined
 }
 
 export function getColumn(state, type) {
@@ -34,19 +54,31 @@ export function getColumn(state, type) {
       columns = columns.filter(column => column.type == type)
     }
 
-    return columns.toJS()
+    return columns
   }
 
   return undefined
 }
 
 export function getTopicCategories(state) {
-  return getConfig(state).topicCategories
+  let config = getConfig(state)
+  if (config) {
+    return config.topicCategories.toJS()
+  }
+  return undefined
 }
 
 export function selectShopCategories(state, num) {
-  if (num) {
-    return getConfig(state).shopCategories.slice(0, num)
+  let config = getConfig(state)
+  if (config) {
+    let shopCategories = config.shopCategories.toJS()
+    if (shopCategories) {
+      if (num) {
+        return shopCategories.slice(0, num)
+      } else {
+        return shopCategories
+      }
+    }
   }
-  return getConfig(state).shopCategories
+  return undefined
 }

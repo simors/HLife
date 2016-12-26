@@ -30,6 +30,8 @@ import ShopDetail from '../components/shop/ShopDetail'
 import PublishTopics from '../components/Find/PublishTopics'
 import MessageBox from '../components/Message'
 import TextImageTest from '../components/common/Input/TextImageTest'
+import Setting from '../components/Mine/Setting'
+import Popup from '../components/common/Popup'
 
 const styles = StyleSheet.create({
   container: {
@@ -71,6 +73,8 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
+      <Scene key="SETTING" component={Setting} />
+      <Scene key="POPUP" component={Popup} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
