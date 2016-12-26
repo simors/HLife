@@ -21,6 +21,7 @@ import {bindActionCreators} from 'redux'
 import {TopicShow} from './TopicShow'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {TopicComment} from './TopicComment'
+import CommentInput from '../common/Input/CommentInput'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -61,6 +62,7 @@ export class TopicDetail extends Component {
           <TopicComment />
           <TopicComment hasParentComment={true}/>
           <TopicComment />
+          <CommentInput />
         </KeyboardAwareScrollView>
       </View>
     )
