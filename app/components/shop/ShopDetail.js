@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-  Platform
+  Platform,
+  InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -23,7 +24,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
-import {selectShopDetail} from '../../selector/shopSelector'
+import {fetchShopAnnouncements} from '../../action/shopAction'
+import {selectShopDetail, selectShopAnnouncements, selectLatestShopAnnouncemment} from '../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -33,10 +35,18 @@ class ShopDetail extends Component {
     super(props)
   }
 
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchShopAnnouncements({id: this.props.id})
+    })
+
+  }
+
 
   render() {
     const scoreWidth = this.props.shopDetail.score / 5.0 * 62
     const album = this.props.shopDetail.album
+    let announcementCover = {uri: this.props.latestShopAnnouncement.coverUrl}
     
     return (
       <View style={styles.container}>
@@ -102,18 +112,18 @@ class ShopDetail extends Component {
             <View style={styles.shopAnnouncementWrap}>
               <View style={styles.shopAnnouncementContainer}>
                 <View style={styles.shopAnnouncementCoverWrap}>
-                  <Image style={styles.shopAnnouncementCover} source={{uri: "http://c.hiphotos.baidu.com/image/pic/item/64380cd7912397dd5393db755a82b2b7d1a287dd.jpg"}}/>
+                  <Image style={styles.shopAnnouncementCover} source={announcementCover}/>
                 </View>
                 <View style={styles.shopAnnouncementCnt}>
                   <View style={styles.shopAnnouncementTitleWrap}>
                     <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
-                      精心研制的营养早餐，蔬菜、水果和稀饭的结合，如诗一般美
+                      {this.props.latestShopAnnouncement.content}
                     </Text>
                   </View>
                   <View style={styles.shopAnnouncementSubTitleWrap}>
-                    <Image style={styles.shopAnnouncementIcon} source={{uri: "http://c.hiphotos.baidu.com/image/pic/item/64380cd7912397dd5393db755a82b2b7d1a287dd.jpg"}}/>
-                    <Text style={styles.shopAnnouncementSubTxt}>米奇妙妙屋</Text>
-                    <Text style={styles.shopAnnouncementSubTxt}>一天前</Text>
+                    <Image style={styles.shopAnnouncementIcon} source={{uri: this.props.shopDetail.owner.avatar}}/>
+                    <Text style={styles.shopAnnouncementSubTxt}>{this.props.shopDetail.owner.nickname}</Text>
+                    <Text style={styles.shopAnnouncementSubTxt}>{this.props.latestShopAnnouncement.createdDate}</Text>
                   </View>
                 </View>
               </View>
@@ -329,13 +339,16 @@ const mapStateToProps = (state, ownProps) => {
   //     :
   //     "乐会港式餐厅（王府井店）",
   // }
+
+  let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
   return {
-    shopDetail: shopDetail
+    shopDetail: shopDetail,
+    latestShopAnnouncement: latestShopAnnouncement
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  fetchShopAnnouncements
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)
