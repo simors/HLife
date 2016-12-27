@@ -64,6 +64,8 @@ realtime.register(HearsayMessage)
 
 const initMessenger = createAction(msgTypes.INIT_MESSENGER_CLIENT)
 const onCreateConversation = createAction(msgTypes.ON_CONVERSATION_CREATED)
+const onEnterConversation = createAction(msgTypes.ON_ENTER_CONVERSATION)
+const onLeaveConversation = createAction(msgTypes.ON_LEAVE_CONVERSATION)
 
 export function initMessageClient(payload) {
   return (dispatch, getState) => {
@@ -159,6 +161,7 @@ function createLcConversation(payload) {
         payload.error()
       }
       console.log('leancloud Messenger init failed, can\'t get client')
+      return undefined
     }
     return client.createConversation({
       members: payload.members,
@@ -178,6 +181,7 @@ function sendLcTypedMessage(payload) {
         payload.error()
       }
       console.log('leancloud Messenger init failed, can\'t get client')
+      return undefined
     }
 
     return client.getConversation(payload.conversationId).then((conversation)=> {

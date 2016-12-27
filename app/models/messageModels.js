@@ -4,33 +4,35 @@
 import {Map, List, Record} from 'immutable'
 
 export const MessengerRecord = Record({
-  client: undefined,
-  conversationMap: Map(),
-  unReadMsgCnt: 0,
+  client: undefined,                        // 客户端id
+  conversationMap: Map(),                   // 会话列表，会话id作为键值
+  unReadMsgCnt: 0,                          // 未读消息个数
+  activeConversation: undefined,            // 当前处于聊天状态的会话
+  OrderedConversation: List(),              // 将所有会话按更新时间排序
 }, 'MessengerRecord')
-
-export const MessageRecord = Record({
-  id: undefined,
-  from: undefined,
-  status: undefined,
-  type: undefined,
-  text: undefined,
-  contentURI: undefined,
-  conversation: undefined,
-  timestamp: undefined,
-  attributes: Map(),
-}, 'MessageRecord')
 
 export const ConversationRecord = Record({
   id: undefined,
-  members: List(),
+  members: List(),            // 会话成员列表
   name: undefined,
   unreadCount: 0,
-  lastMessageAt: undefined,
+  lastMessageAt: undefined,   // 会话最后更新时间
   updatedAt: undefined,
   createdAt: undefined,
-  messages: List(),
+  messages: List(),           // 消息列表
 }, 'ConversationRecord')
+
+export const MessageRecord = Record({
+  id: undefined,              // 消息编号
+  from: undefined,            // 发送消息的用户id
+  status: undefined,          // 记录消息状态，created/complete/fail
+  type: undefined,            // 消息类型
+  text: undefined,            // 消息内容
+  contentURI: undefined,
+  conversation: undefined,    // 对应的会话id
+  timestamp: undefined,
+  attributes: Map(),          // 消息属性，用于记录图片、语音等富媒体消息
+}, 'MessageRecord')
 
 export class Message extends MessageRecord {
   static fromLeancloudMessage(lcMsg, payload) {

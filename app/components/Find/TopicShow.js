@@ -16,6 +16,7 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import TopicImageViewer from '../../components/common/TopicImageViewer'
 import {getConversationTime} from '../../util/numberUtils'
+import {Actions} from 'react-native-router-flux'
 
 export class TopicShow extends Component {
   constructor(props) {
@@ -73,6 +74,32 @@ export class TopicShow extends Component {
 
   }
 
+  commentButtonPress() {
+    Actions.TOPIC_DETAIL({topic: this.props.topic})
+  }
+
+  renderCommentAndLikeButton() {
+    if (this.props.showCommentAndLikeButton) {
+      return (
+        <View style={styles.commentContainerStyle}>
+          <View>
+            <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+            }}>
+              <Image style={styles.commentImageStyle} source={require("../../assets/images/like_unselect.png")}/>
+              <Text style={styles.commentTextStyle}>75000</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.commentStyle} onPress={()=> this.commentButtonPress()}>
+              <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
+              <Text style={styles.commentTextStyle}>88888</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={[styles.containerStyle, this.props.containerStyle]}>
@@ -117,24 +144,10 @@ export class TopicShow extends Component {
           </View>
         </View>
 
+        {this.renderCommentAndLikeButton()}
 
-        <View style={styles.commentContainerStyle}>
-          <View>
-            <TouchableOpacity style={styles.commentStyle} onPress={()=> {
-            }}>
-              <Image style={styles.commentImageStyle} source={require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>75000</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity style={styles.commentStyle} onPress={()=> {
-            }}>
-              <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>88888</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
       </View>
+
     )
   }
 }
@@ -147,7 +160,8 @@ TopicShow.defaultProps = {
     imgGroup: undefined,
     content: undefined,
     createAt: undefined,
-  }
+  },
+  showCommentAndLikeButton: true,
 }
 
 //export
@@ -182,11 +196,11 @@ const styles = StyleSheet.create({
   },
   avatarStyle: {
     height: normalizeH(44),
-    width:  normalizeW(44),
+    width: normalizeW(44),
     borderRadius: 22,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor:'transparent',
+    borderColor: 'transparent',
   },
   timeTextStyle: {
     marginRight: normalizeW(26),
@@ -211,6 +225,7 @@ const styles = StyleSheet.create({
   },
   imagesWrapStyle: {
     marginTop: normalizeH(9),
+    marginBottom: normalizeH(13),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -223,10 +238,9 @@ const styles = StyleSheet.create({
   //评论和点赞按钮
   commentContainerStyle: {
     flex: 1,
-    marginTop: normalizeH(13),
     marginBottom: normalizeH(8),
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-around',
   },
   commentStyle: {
