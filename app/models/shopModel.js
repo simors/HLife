@@ -18,6 +18,8 @@ export const ShopRecord = Record({
   geoName: undefined, //店铺地理坐标对应城市区域名称
   pv: 1000, //店铺点击量
   score: 4.5, //店铺评分
+  ourSpecial: '', //本店特色
+  openTime: '', //营业时间
   album: [], //店铺相册
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
@@ -62,6 +64,8 @@ export class ShopInfo extends ShopRecord {
       record.set('geoName', attrs.geoName)
       record.set('pv', attrs.pv)
       record.set('score', attrs.score)
+      record.set('ourSpecial', attrs.ourSpecial)
+      record.set('openTime', attrs.openTime)
       record.set('album', attrs.album)
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())

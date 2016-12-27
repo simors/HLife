@@ -206,11 +206,11 @@ class ShopDetail extends Component {
               <View style={styles.serviceInfoContainer}>
                 <View style={styles.openTime}>
                   <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
-                  <Text style={styles.serviceTxt}>10:30-24:00</Text>
+                  <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
                 </View>
                 <View style={styles.shopSpecial}>
                   <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
-                  <Text style={styles.serviceTxt}>早午茶  营养粥  肠粉   粤菜</Text>
+                  <Text style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
                 </View>
               </View>
             </View>
