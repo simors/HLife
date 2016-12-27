@@ -46,6 +46,7 @@ function handleLoginSuccess(state, action) {
 }
 
 function handleShopCertificationSuccess(state, action) {
+
   state = state.set('shop',  action.payload)
   return state
 }
@@ -57,8 +58,9 @@ function handleProfileSubmitSuccess(state, action) {
 }
 
 function handleDoctorCertificationRequest(state, action) {
-  let doctorInfo = action.payload.doctor
-
+  // console.log("handleShopCertificationSuccess action.payload", action.payload)
+  let doctorInfo = action.payload
+  state =state.setIn(['doctorInfo', doctorInfo.id], doctorInfo)
   return state
 }
 

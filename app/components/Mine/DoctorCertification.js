@@ -103,6 +103,7 @@ const imageGroupInput = {
      this.props.submitFormData({
        formKey: commonForm,
        submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
+       id: this.props.userInfo && this.props.userInfo.id,
        success: this.submitSuccessCallback,
        error: this.submitErrorCallback
      })
