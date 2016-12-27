@@ -24,10 +24,6 @@ class AudioMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_AUDIO)(AudioMessage)
 
-class ReviewMessage extends TypedMessage {
-}
-messageType(msgTypes.MSG_REVIEW)(ReviewMessage)
-
 class CommentMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_COMMENT)(CommentMessage)
@@ -36,9 +32,6 @@ class LikeMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_LIKE)(LikeMessage)
 
-class HearsayMessage extends TypedMessage {
-}
-messageType(msgTypes.MSG_HEARSAY)(HearsayMessage)
 
 //we should move this to the server to avoid reverse-engineering
 
@@ -57,15 +50,16 @@ const realtime = new Realtime({
 realtime.register(TextMessage)
 realtime.register(ImageMessage)
 realtime.register(AudioMessage)
-realtime.register(ReviewMessage)
 realtime.register(CommentMessage)
 realtime.register(LikeMessage)
-realtime.register(HearsayMessage)
 
 const initMessenger = createAction(msgTypes.INIT_MESSENGER_CLIENT)
 const onCreateConversation = createAction(msgTypes.ON_CONVERSATION_CREATED)
 const onEnterConversation = createAction(msgTypes.ON_ENTER_CONVERSATION)
 const onLeaveConversation = createAction(msgTypes.ON_LEAVE_CONVERSATION)
+const onCreateMessage = createAction(msgTypes.ON_MESSAGE_CREATED)
+const onSendMessage = createAction(msgTypes.ON_MESSAGE_SENTED)
+const onRecvMessage = createAction(msgTypes.ON_MESSAGE_RECEIVED)
 
 export function initMessageClient(payload) {
   return (dispatch, getState) => {
@@ -149,7 +143,22 @@ export function sendMessage(payload) {
       attributes: Map(attributes)
     })
 
-    dispatch(sendLcTypedMessage(payload))
+    dispatch(onCreateMessage({message: msg}))
+
+    dispatch(sendLcTypedMessage(payload)).then((message) => {
+      dispatch(onSendMessage({message: message}))
+    }).catch((error) => {
+      const failMsg = new Message({
+        id: payload.msgId,
+        from: activeUserId(getState()),
+        type: payload.type,
+        text: payload.text,
+        conversation: payload.conversationId,
+        status: 'fail',
+        attributes: Map(attributes),
+      })
+      dispatch(onSendMessage({message: failMsg}))
+    })
   }
 }
 
@@ -204,11 +213,33 @@ function onReceiveMsg(message, conversation) {
   return (dispatch, getState) => {
     console.log("receive message:", message)
     console.log("in conversation: ", conversation)
+    let msgType = message.type
+    if (msgType === msgTypes.MSG_TEXT || msgType === msgTypes.MSG_AUDIO || msgType === msgTypes.MSG_IMAGE) {
+      dispatch(onRecvNormalMessage(message, conversation))
+    }
+    if (msgType === msgTypes.MSG_COMMENT || msgType === msgTypes.MSG_LIKE || msgType === msgTypes.MSG_SYSTEM) {
+      dispatch(onRecvNotifyMessage(message, conversation))
+    }
+  }
+}
+
+function onRecvNormalMessage(message, conversation) {
+  return (dispatch, getState) => {
+    dispatch(onRecvMessage({
+      message: Message.fromLeancloudMessage(message),
+      conversation: Conversation.fromLeancloudConversation(conversation)
+    }))
+  }
+}
+
+function onRecvNotifyMessage(message, conversation) {
+  return (dispatch, getState) => {
+
   }
 }
 
 function sendTextMessage(conversation, payload) {
-  let message = new TextMessage()
+  let message = new ImageMessage()
   message.setText(payload.text)
   return conversation.send(message).then((message)=> {
     return Message.fromLeancloudMessage(message, payload)
