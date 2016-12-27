@@ -27,3 +27,16 @@ export function fetchShopList(payload) {
   }
 }
 
+export function fetchShopAnnouncements(payload) {
+  return (dispatch, getState) => {
+    lcShop.getShopAnnouncement(payload).then((shopAnnouncements) =>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST)
+      dispatch(updateAction({shopId: payload.id, shopAnnouncements: shopAnnouncements}))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
