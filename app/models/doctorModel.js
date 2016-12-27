@@ -20,7 +20,7 @@ export class DoctorInfo extends DoctorInfoRecord {
     static fromLeancloudObject(lcObj) {
       let doctorInfo = new DoctorInfo()
       let attrs = lcObj.attributes
-      return doctorInfo.withMutations((record) => {
+      doctorInfo= doctorInfo.withMutations((record) => {
         record.set('name', attrs.name)
         record.set('IDCardNo', attrs.IDCardNo)
         record.set('phone', attrs.phone)
@@ -28,9 +28,10 @@ export class DoctorInfo extends DoctorInfoRecord {
         record.set('department', attrs.department)
         record.set('certifiedImage', attrs.certifiedImage)
         record.set('certificate', attrs.certificate)
-        record.Set('status', attrs.status)
+        record.set('status', attrs.status)
         record.set('desc', attrs.desc)
         })
+      return doctorInfo
     }
 
 }

@@ -21,6 +21,18 @@ export function selectShopDetail(state, id) {
       }
     })
   }
-  console.log('shopDetail=', shopDetail)
+  // console.log('shopDetail=', shopDetail)
   return shopDetail
+}
+
+export function selectShopAnnouncements(state, shopId) {
+  return selectShop(state).shopAnnouncements[shopId]
+}
+
+export function selectLatestShopAnnouncemment(state, shopId) {
+  let shopAnnouncements = selectShopAnnouncements(state, shopId)
+  if(shopAnnouncements && shopAnnouncements.length) {
+    return shopAnnouncements[0]
+  }
+  return {}
 }

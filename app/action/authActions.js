@@ -2,7 +2,6 @@
 import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as AuthTypes from '../constants/authActionTypes'
-import * as CeryificationTypes from '../constants/certificationActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
@@ -127,14 +126,17 @@ function handleRegister(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-
-    lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
+    if(__DEV__) {// in android and ios simulator ,__DEV__ is true
       dispatch(registerWithPhoneNum(payload, formData))
-    }).catch((error) => {
-      if(payload.error){
-        payload.error(error)
-      }
-    })
+    }else {
+      lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
+        dispatch(registerWithPhoneNum(payload, formData))
+      }).catch((error) => {
+        if(payload.error){
+          payload.error(error)
+        }
+      })
+    }
   }
 }
 
@@ -208,24 +210,28 @@ function handleDoctorCertification(payload, formData) {
         payload.error(error)
       }
     })
+    // dispatch(doctorCertification(payload, formData))
   }
 
 }
 
 function doctorCertification(payload, formData) {
+  console.log("doctorCertification", formData)
   return (dispatch, getState) => {
     let certPayload = {
+      id: payload.id,
       name:   formData.nameInput.text,
       idCardNo: formData.idNoInput.text,
       phone:  formData.phoneInput.text,
       organization: formData.regionPicker.text,
       department: formData.medicalPicker.text,
       certifiedImage: formData.idImageInput.text,
-      certificate: formData.cardImageInput.text,
+      certificate: formData.imgGroup.text,
     }
     lcAuth.certification(certPayload).then((doctor) => {
       if(payload.success){
-        let cartificationAction = createAction(CeryificationTypes.DOCTOR_CERTIFICATION_REQUEST)
+        console.log("doctorCertification doctor", doctor)
+        let cartificationAction = createAction(AuthTypes.DOCTOR_CERTIFICATION_REQUEST)
         dispatch(cartificationAction(doctor))
         payload.success(doctor)
       }

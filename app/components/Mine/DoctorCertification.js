@@ -29,6 +29,7 @@ import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
+import {activeUserInfo} from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -90,7 +91,7 @@ const imageGroupInput = {
   }
    submitSuccessCallback(doctorInfo) {
      Toast.show('认证提交成功')
-     Actions.MINE()
+     Actions.pop()
    }
 
    submitErrorCallback(error) {
@@ -102,6 +103,7 @@ const imageGroupInput = {
      this.props.submitFormData({
        formKey: commonForm,
        submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
+       id: this.props.userInfo && this.props.userInfo.id,
        success: this.submitSuccessCallback,
        error: this.submitErrorCallback
      })
@@ -148,14 +150,14 @@ const imageGroupInput = {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>身份证号</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...idNoInput}  containerStyle={{height: normalizeH(38), }}
+                  <CommonTextInput {...idNoInput}  containerStyle={{height: normalizeH(38) }} maxLength={18}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
-                  <PhoneInput {...phoneInput} placeholder="仅用于客服与你联系" editable={false}
+                  <PhoneInput {...phoneInput} initValue={this.props.userInfo.phone} placeholder="仅用于客服与你联系" editable={false}
                               inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>
@@ -249,14 +251,18 @@ const imageGroupInput = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let newProps = {}
+  let phoneValid
   let isValid = isInputValid(state, commonForm, phoneInput.stateKey)
+  let userInfo = activeUserInfo(state)
   if (!isValid.isValid) {
-    newProps.phoneValid = false
+    phoneValid = false
   } else {
-    newProps.phoneValid = true
+    phoneValid = true
   }
-  return newProps
+  return {
+    phoneValid: phoneValid,
+    userInfo: userInfo,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

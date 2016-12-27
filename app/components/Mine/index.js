@@ -10,19 +10,26 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {activeUserInfo} from '../../selector/authSelector'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
-
-export default class Launch extends Component {
+class Mine extends Component {
   constructor(props) {
     super(props)
   }
 
   componentDidMount() {
-    
+  }
 
+  componentWillReceiveProps(newProps) {
+    if (this.props.data != newProps.data) {
+      this.setState({'selectedIndex': (newProps.data == 'male'? 1: 0)})
+    }
   }
 
   render() {
@@ -35,9 +42,9 @@ export default class Launch extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.middle}>
-            <TouchableOpacity onPress={() => Actions.PROFILE()}>
-              <Image style={{width: normalizeW(46), height: normalizeH(46), marginTop: normalizeH(26)}}  source={require('../../assets/images/find_happy.png')}></Image>
-              <Text style={styles.texts}>我爱我家</Text>
+            <TouchableOpacity style={{alignItems: 'center', marginTop: normalizeH(26)}} onPress={() => Actions.PROFILE()}>
+              <Image style={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}} source={{uri: this.props.userInfo.avatar}}/>
+              <Text style={styles.texts}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '我爱我家'}</Text>
             </TouchableOpacity>
             <View style={styles.credits}>
               {/*<Image source={require('../../assets/images/mine_wallet.png')}></Image>*/}
@@ -133,6 +140,18 @@ export default class Launch extends Component {
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  let userInfo = activeUserInfo(state)
+  return {
+    userInfo: userInfo,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Mine)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -161,7 +180,7 @@ const styles = StyleSheet.create({
   },
   middle: {
     flex:3,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   right: {
     flex: 1

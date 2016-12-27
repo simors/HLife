@@ -30,7 +30,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {selectShopCategories} from '../../selector/configSelector'
-import {selectShopList} from '../../selector/shopSelector'
+import {selectShopList, selectShopListTotal} from '../../selector/shopSelector'
 import {fetchShopCategories} from '../../action/configAction'
 import {fetchShopList} from '../../action/shopAction'
 
@@ -44,6 +44,7 @@ const ds = new ListView.DataSource({
 class ShopCategoryList extends Component {
   constructor(props) {
     super(props)
+    let listView = undefined
 
     this.state = {
       searchForm: {
@@ -51,7 +52,9 @@ class ShopCategoryList extends Component {
         sortId: '0',
         distance: '',
         geo: [39.9, 116.4],
-        geoName: '长沙'
+        geoName: '长沙',
+        lastScore: '',
+        lastGeo: '',
       },
       shopCategoryName: '',
       selectGroupShow: [false, false, false]
@@ -76,8 +79,15 @@ class ShopCategoryList extends Component {
     })
   }
 
-  componentDidMount() {
-
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.lastScore || nextProps.lastGeo || nextProps.total) {
+      this.state.searchForm.lastScore = nextProps.lastScore
+      this.state.searchForm.lastGeo = nextProps.lastGeo
+      this.setState({
+        ...this.state,
+        searchForm: this.state.searchForm
+      })
+    }
   }
 
   _getOptionList(OptionListRef) {
@@ -178,8 +188,8 @@ class ShopCategoryList extends Component {
             </View>
             <View style={styles.subInfoWrap}>
               <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
-              <Text style={styles.subTxt}>{rowData.businessArea}</Text>
-              <Text style={styles.subTxt}>{rowData.distance}</Text>
+              <Text style={styles.subTxt}>{rowData.geoName}</Text>
+              <Text style={styles.subTxt}>{rowData.distance}km</Text>
             </View>
           </View>
         </View>
@@ -188,17 +198,29 @@ class ShopCategoryList extends Component {
   }
 
   refreshData() {
+    this.loadMoreData(true)
+  }
+
+  loadMoreData(isRefresh) {
     let payload = {
       ...this.state.searchForm,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
       error: (err)=>{
         Toast.show(err.message, {duration: 1000})
       }
     }
+    console.log('loadMoreData.payload=', payload)
     this.props.fetchShopList(payload)
-  }
-
-  loadMoreData() {
-
   }
 
   render() {
@@ -219,6 +241,7 @@ class ShopCategoryList extends Component {
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
               loadNewData={()=>{this.refreshData()}}
               loadMoreData={()=>{this.loadMoreData()}}
+              ref={(listView) => this.listView = listView}
             />
           </View>
 
@@ -298,9 +321,18 @@ const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
   // console.log('allShopCategories=', allShopCategories)
   const shopList = selectShopList(state) || []
+  // console.log('shopList=', shopList)
+  let lastScore = ''
+  let lastGeo = []
+  if(shopList && shopList.length) {
+    lastScore = shopList[shopList.length-1].score
+    lastGeo = shopList[shopList.length-1].geo
+  }
   return {
     ds: ds.cloneWithRows(shopList),
     allShopCategories: allShopCategories,
+    lastScore: lastScore,
+    lastGeo: lastGeo,
   }
 }
 

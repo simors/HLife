@@ -13,6 +13,16 @@ export default function messageReducer(state = initialState, action) {
       return onInitMessenger(state, action)
     case Types.ON_CONVERSATION_CREATED:
       return onConversationCreated(state, action)
+    case Types.ON_ENTER_CONVERSATION:
+      return onConversationEntered(state, action)
+    case Types.ON_LEAVE_CONVERSATION:
+      return onConversationLeft(state, action)
+    case Types.ON_MESSAGE_CREATED:
+      return onMessageCreated(state, action)
+    case Types.ON_MESSAGE_SENTED:
+      return onMessageSend(state, action)
+    case Types.ON_MESSAGE_RECEIVED:
+      return onMessageReceived(state, action)
     default:
       return state
   }
@@ -26,10 +36,114 @@ function onInitMessenger(state, action) {
 
 function onConversationCreated(state, action) {
   let conversation = action.payload
-  let cid = conversation.get('id')
+  let cid = conversation.id
 
   if (state.getIn(['conversationMap', cid]) == undefined) {
     state = state.updateIn(['conversationMap', cid], new Conversation(), val => val.merge(conversation))
+    return sortConversationList(state)
   }
+  return state
+}
+
+function onConversationEntered(state, action) {
+  let cid = action.payload.cid
+
+  // Mark all read
+  const curUnreadCount = state.getIn(['conversationMap', convId, 'unreadCount'])
+  if (curUnreadCount > 0) {
+    state = state.setIn(['conversationMap', cid, 'unreadCount'], 0)
+    state = state.update('unReadMsgCnt', val => val - curUnreadCount)
+  }
+
+  // Record active conversation
+  state = state.set('activeConversation', cid)
+  return state
+}
+
+function onConversationLeft(state, action) {
+  state = state.set('activeConversation', undefined)
+  return state
+}
+
+function onMessageCreated(state, action) {
+  const msg = action.payload.message
+  const createdMsgId = msg.id
+  const convId = msg.conversation
+  state = deleteMessage(state, createdMsgId, convId)
+  return createMessage(state, msg)
+}
+
+function onMessageSend(state, action) {
+  const msg = action.payload.message
+  const createdMsgId = msg.id
+  const convId = msg.conversation
+
+  //replace stored message with new id
+  state = deleteMessage(state, createdMsgId, convId)
+  return createMessage(state, msg)
+}
+
+function onMessageReceived(state, action) {
+  const msg = action.payload.message
+  const conv = action.payload.conversation
+
+  if (!state.hasIn(['conversationMap', conv.id])) {
+    state = state.setIn(['conversationMap', conv.id], conv)
+    state = state.setIn(['conversationMap', conv.id, 'unreadCount'], 0)
+  }
+
+  state = createMessage(state, msg)
+  if (state.activeConversation != conv.id) {
+    state = state.updateIn(['conversationMap', conv.id, 'unreadCount'], val=> {
+      return val + 1
+    })
+    state = state.update('unReadMsgCnt', val=>val + 1)
+  }
+
+  return state
+}
+
+function createMessage(state, msg) {
+  state = state.updateIn(['conversationMap', msg.conversation, 'messages'], msgList=> {
+    if (msgList.includes(msg)) {
+      return msgList
+    }
+    return msgList.push(msg)
+  })
+  state = state.setIn(['conversationMap', msg.conversation, 'lastMessageAt'], msg.timestamp)
+  state = state.setIn(['conversationMap', msg.conversation, 'updatedAt'], msg.timestamp)
+
+  let sortedIdList = state.get('OrderedConversation')
+  sortedIdList = sortedIdList.delete(sortedIdList.keyOf(msg.conversation))
+  sortedIdList = sortedIdList.unshift(msg.conversation)
+  state = state.set('OrderedConversation', sortedIdList)
+
+  return state
+}
+
+function deleteMessage(state, msgId, cid) {
+  state = state.updateIn(
+    ['conversationMap', cid, 'messages'],
+    list=>list.filter(id => id !== msgId)
+  )
+  return state
+}
+
+function sortConversationList(state) {
+  const sortedConvList = state.get('conversationMap').toList().sort(
+    (conv1, conv2) => {
+      return conv1.updatedAt < conv2.updatedAt ? 1 : -1
+    }
+  )
+
+  let sortedIdList = List()
+  state = state.set('OrderedConversation',
+    sortedIdList.withMutations((list) => {
+      sortedConvList.map((conv) => {
+        list.push(conv.id)
+      })
+    })
+  )
+
   return state
 }
