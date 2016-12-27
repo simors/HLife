@@ -21,6 +21,6 @@ export function selectShopDetail(state, id) {
       }
     })
   }
-  console.log('shopDetail=', shopDetail)
+  // console.log('shopDetail=', shopDetail)
   return shopDetail
 }

@@ -17,7 +17,6 @@ export function getShopList(payload) {
   let isRefresh = payload.isRefresh
   let lastScore = payload.lastScore
   let lastGeo = payload.lastGeo
-
   let query = new AV.Query('Shop')
   if(shopCategoryId){
     //构建内嵌查询
@@ -51,9 +50,6 @@ export function getShopList(payload) {
     query.addDescending('score')
     query.addDescending('geo')
   }
-
-  
-
   query.limit(5) // 最多返回 5 条结果
   if(distance) {
     if (Array.isArray(geo)) {
@@ -64,7 +60,7 @@ export function getShopList(payload) {
     query.contains('geoName', geoName)
   }
   return query.find().then(function (results) {
-    // console.log('getShopList.results=', results)
+    console.log('getShopList.results=', results)
     return AV.GeoPoint.current().then(function(geoPoint){
       let shopList = []
       results.forEach((result) => {
