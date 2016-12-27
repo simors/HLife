@@ -191,8 +191,8 @@ class ShopCategoryList extends Component {
             </View>
             <View style={styles.subInfoWrap}>
               <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
-              <Text style={styles.subTxt}>{rowData.businessArea}</Text>
-              <Text style={styles.subTxt}>{rowData.distance}</Text>
+              <Text style={styles.subTxt}>{rowData.geoName}</Text>
+              <Text style={styles.subTxt}>{rowData.distance}km</Text>
             </View>
           </View>
         </View>

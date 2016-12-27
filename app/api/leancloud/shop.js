@@ -54,7 +54,7 @@ export function getShopList(payload) {
 
   
 
-  query.limit(3) // 最多返回 3 条结果
+  query.limit(5) // 最多返回 5 条结果
   if(distance) {
     if (Array.isArray(geo)) {
       let point = new AV.GeoPoint(geo)
@@ -65,11 +65,14 @@ export function getShopList(payload) {
   }
   return query.find().then(function (results) {
     // console.log('getShopList.results=', results)
-    let shopList = []
-    results.forEach((result) => {
-      shopList.push(ShopInfo.fromLeancloudObject(result))
+    return AV.GeoPoint.current().then(function(geoPoint){
+      let shopList = []
+      results.forEach((result) => {
+        result.userCurGeo = geoPoint
+        shopList.push(ShopInfo.fromLeancloudObject(result))
+      })
+      return new List(shopList)
     })
-    return new List(shopList)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
