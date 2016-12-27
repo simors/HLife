@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {activeUserInfo} from '../../selector/authSelector'
+import {activeUserInfo, activeDoctorInfo} from '../../selector/authSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 
@@ -26,12 +26,21 @@ class Mine extends Component {
   componentDidMount() {
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.data != newProps.data) {
-      this.setState({'selectedIndex': (newProps.data == 'male'? 1: 0)})
+  doctorCertificationImage(status) {
+    if (status === undefined)
+      return require('../../assets/images/mine_doctor.png')
+    switch (status)
+    {
+      case 0: //审核失败
+        return require('../../assets/images/doctor_not_pass.png')
+      case 1: //审核成功
+        return require('../../assets/images/doctor_approved.png')
+      case 2: //审核中
+        return require('../../assets/images/doctor_in_review.png')
     }
-  }
 
+
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -61,7 +70,7 @@ class Mine extends Component {
         <View style={styles.azone}>
           <View style={{flex: 1}} >
             <TouchableOpacity style={styles.aindex} onPress= {()=>Actions.DCTOR_CERTIFICATION()}>
-              <Image source={require('../../assets/images/mine_doctor.png')}></Image>
+              <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}></Image>
               <Text style={styles.textStyle}>医生认证</Text>
             </TouchableOpacity>
 
@@ -142,8 +151,10 @@ class Mine extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
+  let doctorInfo = activeDoctorInfo(state)
   return {
     userInfo: userInfo,
+    doctorInfo: doctorInfo,
   }
 }
 

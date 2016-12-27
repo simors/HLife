@@ -1,4 +1,5 @@
 import {Record, Map, List} from 'immutable'
+import {DoctorInfo} from './doctorModel'
 
 export const UserInfoRecord = Record({
   id: undefined,
@@ -8,6 +9,7 @@ export const UserInfoRecord = Record({
   nickname: undefined,
   gender: undefined,
   birthday: undefined,
+  identity: undefined,
 }, 'UserInfoRecord')
 
 export const UserStateRecord = Record({
@@ -28,6 +30,7 @@ export class UserInfo extends UserInfoRecord {
       record.set('nickname', attrs.nickname)
       record.set('gender', attrs.gender)
       record.set('birthday', attrs.birthday)
+      record.set('identity', attrs.identity)
     })
     return info
   }
@@ -37,5 +40,10 @@ export class UserState extends UserStateRecord {
   getUserInfoById(userId) {
     const userInfo = this.profiles.get(userId)
     return userInfo ? userInfo : new UserInfo()
+  }
+
+  getDoctorInfoById(userId) {
+    const doctorInfo = this.doctorInfo.get(userId)
+    return doctorInfo? doctorInfo: new DoctorInfo()
   }
 }

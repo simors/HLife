@@ -43,10 +43,10 @@ const nameInput = {
   type: "nameInput",
 
 }
-const idNoInput = {
+const IDInput = {
   formKey: commonForm,
-  stateKey: Symbol('idNoInput'),
-  type: "idNoInput",
+  stateKey: Symbol('IDInput'),
+  type: "IDInput",
   placeholder: "请填写居民身份证号"
 }
 const phoneInput = {
@@ -150,7 +150,7 @@ const imageGroupInput = {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>身份证号</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...idNoInput}  containerStyle={{height: normalizeH(38) }} maxLength={18}
+                  <CommonTextInput {...IDInput}  containerStyle={{height: normalizeH(38) }} maxLength={18}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
@@ -216,6 +216,7 @@ const imageGroupInput = {
                 </Text>
                 <View style={{width: normalizeW(109), height: normalizeH(81), backgroundColor: 'yellow'}}>
                   {/*<ImageGroupViewer images={''} imageLineCnt={1}/>*/}
+                  <Image source={require('../../assets/images/card_portrait.png')}/>
 
                 </View>
 
@@ -231,7 +232,7 @@ const imageGroupInput = {
                 <Text style={styles.triptext}>
                   请上传医生有效证明，包含工作证、执业证和职称证
                 </Text>
-              <View style={{flexDirection: 'row', marginLeft: normalizeW(20), marginBottom: normalizeH(12), marginRight: normalizeW(20), marginTop: normalizeH(8),borderWidth: 1, borderColor: 'red'}}>
+              <View style={{flexDirection: 'row', marginLeft: normalizeW(20), marginBottom: normalizeH(12), marginRight: normalizeW(20), marginTop: normalizeH(8)}}>
                 <ImageGroupInput {...imageGroupInput} number={3} imageLineCnt={4}/>
               </View>
             </View>

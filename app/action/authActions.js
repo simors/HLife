@@ -203,14 +203,14 @@ function handleDoctorCertification(payload, formData) {
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
 
-    lcAuth.verifySmsCode(smsPayload).then(() => {
-      dispatch(doctorCertification(payload, formData))
-    }).catch((error) => {
-      if(payload.error){
-        payload.error(error)
-      }
-    })
-    // dispatch(doctorCertification(payload, formData))
+    // lcAuth.verifySmsCode(smsPayload).then(() => {
+    //   dispatch(doctorCertification(payload, formData))
+    // }).catch((error) => {
+    //   if(payload.error){
+    //     payload.error(error)
+    //   }
+    // })
+    dispatch(doctorCertification(payload, formData))
   }
 
 }
@@ -221,7 +221,7 @@ function doctorCertification(payload, formData) {
     let certPayload = {
       id: payload.id,
       name:   formData.nameInput.text,
-      idCardNo: formData.idNoInput.text,
+      ID: formData.IDInput.text,
       phone:  formData.phoneInput.text,
       organization: formData.regionPicker.text,
       department: formData.medicalPicker.text,
@@ -246,7 +246,7 @@ function doctorCertification(payload, formData) {
 
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
-    console.log('handleProfileSubmit=', formData)
+     console.log('handleProfileSubmit=', formData)
     let profilePayload = {
       id: payload.id,
       nickname: formData.nicknameInput.text,
@@ -259,6 +259,7 @@ function handleProfileSubmit(payload, formData) {
       if (payload.success) {
         payload.success()
       }
+      console.log("profileSubmit return profile", profile)
       let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
       dispatch(profileAction({...profile}))
     }).catch((error) => {
