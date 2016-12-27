@@ -43,10 +43,10 @@ const nameInput = {
   type: "nameInput",
 
 }
-const idNoInput = {
+const IDInput = {
   formKey: commonForm,
-  stateKey: Symbol('idNoInput'),
-  type: "idNoInput",
+  stateKey: Symbol('IDInput'),
+  type: "IDInput",
   placeholder: "请填写居民身份证号"
 }
 const phoneInput = {
@@ -134,7 +134,7 @@ class DoctorInfo extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>身份证号</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...idNoInput}  containerStyle={{height: normalizeH(38), }}
+                  <CommonTextInput {...IDInput}  containerStyle={{height: normalizeH(38), }}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>

@@ -85,7 +85,7 @@ class Profile extends Component {
     const genderInput = {
       formKey: profileForm,
       stateKey: Symbol('genderInput'),
-      initValue: this.props.userInfo.gender? this.props.userInfo.gender: undefined,
+      initValue: this.props.userInfo.gender? this.props.userInfo.gender: 'male',
       type: "genderInput",
     }
     const dtPicker = {
