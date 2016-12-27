@@ -2,6 +2,7 @@
  * Created by zachary on 2016/12/20.
  */
 import {Map, List, Record} from 'immutable'
+import AV from 'leancloud-storage'
 
 export const ShopRecord = Record({
   id: undefined,
@@ -13,7 +14,8 @@ export const ShopRecord = Record({
   contactNumber: undefined, //店铺联系电话（客服电话）
   targetShopCategory: {}, //店铺所属分类信息
   geo:[], //店铺地理坐标
-  geonName: undefined, //店铺地理坐标对应城市区域名称
+  distance: undefined, //用户与店铺的距离
+  geoName: undefined, //店铺地理坐标对应城市区域名称
   pv: 1000, //店铺点击量
   score: 4.5, //店铺评分
   album: [], //店铺相册
@@ -40,7 +42,10 @@ export class ShopInfo extends ShopRecord {
       targetShopCategory.text = attrs.text
       record.set('targetShopCategory', attrs.targetShopCategory)
       record.set('geo', attrs.geo)
-      record.set('geonName', attrs.geonName)
+      let geo = new AV.GeoPoint(attrs.geo)
+      let distance = geo.kilometersTo(lcObj.userCurGeo)
+      record.set('distance', Number(distance).toFixed(0))
+      record.set('geoName', attrs.geoName)
       record.set('pv', attrs.pv)
       record.set('score', attrs.score)
       record.set('album', attrs.album)

@@ -33,6 +33,7 @@ import TextImageTest from '../components/common/Input/TextImageTest'
 import Setting from '../components/Mine/Setting'
 import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
+import DocterFinder from '../components/Health/DocterFinder'
 
 const styles = StyleSheet.create({
   container: {
@@ -76,7 +77,7 @@ export const scenes = Actions.create(
       <Scene key="MESSAGE_BOX" component={MessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
-      <Scene key="POPUP" component={Popup} />
+      <Scene key="DOCTER_FINDER" component={DocterFinder} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
@@ -96,6 +97,8 @@ export const scenes = Actions.create(
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>
+
+      <Scene key="POPUP" component={Popup} />
     </Scene>
   </Scene>
 )

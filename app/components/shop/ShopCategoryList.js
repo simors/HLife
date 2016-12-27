@@ -30,7 +30,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {selectShopCategories} from '../../selector/configSelector'
-import {selectShopList} from '../../selector/shopSelector'
+import {selectShopList, selectShopListTotal} from '../../selector/shopSelector'
 import {fetchShopCategories} from '../../action/configAction'
 import {fetchShopList} from '../../action/shopAction'
 
@@ -53,9 +53,8 @@ class ShopCategoryList extends Component {
         distance: '',
         geo: [39.9, 116.4],
         geoName: '长沙',
-        lastCreatedAt: '',
         lastScore: '',
-        lastGeo: ''
+        lastGeo: '',
       },
       shopCategoryName: '',
       selectGroupShow: [false, false, false]
@@ -81,14 +80,12 @@ class ShopCategoryList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.lastScore || nextProps.lastGeo) {
+    if(nextProps.lastScore || nextProps.lastGeo || nextProps.total) {
+      this.state.searchForm.lastScore = nextProps.lastScore
+      this.state.searchForm.lastGeo = nextProps.lastGeo
       this.setState({
         ...this.state,
-        searchForm: {
-          ...this.state.searchForm,
-          lastScore: nextProps.lastScore,
-          lastGeo: nextProps.lastGeo,
-        },
+        searchForm: this.state.searchForm
       })
     }
   }
@@ -191,8 +188,8 @@ class ShopCategoryList extends Component {
             </View>
             <View style={styles.subInfoWrap}>
               <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
-              <Text style={styles.subTxt}>{rowData.businessArea}</Text>
-              <Text style={styles.subTxt}>{rowData.distance}</Text>
+              <Text style={styles.subTxt}>{rowData.geoName}</Text>
+              <Text style={styles.subTxt}>{rowData.distance}km</Text>
             </View>
           </View>
         </View>
@@ -214,12 +211,15 @@ class ShopCategoryList extends Component {
         }
         if(isEmpty) {
           this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
         }
       },
       error: (err)=>{
         Toast.show(err.message, {duration: 1000})
       }
     }
+    console.log('loadMoreData.payload=', payload)
     this.props.fetchShopList(payload)
   }
 
