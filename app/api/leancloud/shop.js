@@ -94,3 +94,64 @@ export function getShopAnnouncement(payload) {
     throw err
   })
 }
+
+export function isFollowedShop(payload) {
+  let shopId = payload.id
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  let currentUser = AV.User.current()
+
+  let query = new AV.Query('ShopFollower')
+  query.equalTo('follower', currentUser)
+  query.equalTo('shop', shop)
+
+  return query.find().then((result)=>{
+    console.log('isFollowedShop.result=', result)
+    return result
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function followShop(payload) {
+
+  return isFollowedShop(payload).then((result) =>{
+    if(result && result.length) {
+      return {
+        code: '10001',
+        message: '您已关注过该店铺,请不要重复关注'
+      }
+    }
+
+    let shopId = payload.id
+    let shop = AV.Object.createWithoutData('Shop', shopId)
+    let currentUser = AV.User.current()
+
+    let ShopFollower = AV.Object.extend('ShopFollower')
+    let shopFollower = new ShopFollower()
+    shopFollower.set('follower', currentUser)
+    shopFollower.set('shop', shop)
+
+    let ShopFollowee = AV.Object.extend('ShopFollowee')
+    let shopFollowee = new ShopFollowee()
+    shopFollowee.set('user', currentUser)
+    shopFollowee.set('followee', shop)
+
+    return shopFollower.save().then(function(shopFollowerResult){
+      return shopFollowee.save()
+    }).then(()=>{
+      return {
+        code: '10000',
+        message: '关注成功'
+      }
+    }).catch((err) =>{
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+  }).catch((err) =>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+
+}

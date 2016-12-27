@@ -40,3 +40,25 @@ export function fetchShopAnnouncements(payload) {
   }
 }
 
+export function followShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.followShop(payload).then((result) =>{
+      if(result && '10000' == result.code) {
+        let updateAction = createAction(ShopActionTypes.FOLLOW_SHOP_SUCCESS)
+        dispatch(updateAction({}))
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
