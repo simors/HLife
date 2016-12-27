@@ -13,10 +13,9 @@ const messageFilter = createFilter(
   'MESSAGE',
   [
     'activeConversation',
-    'msgById',
-    'convById',
-    'convListSortedByUpdatedTime',
-    'unreadCount'
+    'conversationMap',
+    'unReadMsgCnt',
+    'OrderedConversation'
   ]
 )
 
@@ -31,7 +30,7 @@ export default function persist(store) {
     //     ],
     //   }),
     // ],
-    // transforms: [messageFilter],
+    transforms: [messageFilter],
     whitelist: ['AUTH', 'CONFIG', 'MESSAGE', 'ARTICLE', 'TOPIC', 'COMMENT_ARTICLE'],
   }, () => {
     store.dispatch(restoreFromPersistence())

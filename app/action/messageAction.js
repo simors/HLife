@@ -103,6 +103,7 @@ export function initLcMessenger(payload) {
       })
 
       dispatch(initMessenger({client: client}))
+      console.log('IM客户端已登录')
     }).catch((error) => {
       console.log(error)
     })
