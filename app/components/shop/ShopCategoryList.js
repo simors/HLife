@@ -53,6 +53,7 @@ class ShopCategoryList extends Component {
         geo: [39.9, 116.4],
         geoName: '长沙'
       },
+      shopCategoryName: '',
       selectGroupShow: [false, false, false]
     }
   }
@@ -65,6 +66,7 @@ class ShopCategoryList extends Component {
           ...this.state.searchForm,
           shopCategoryId: this.props.shopCategoryId
         },
+        shopCategoryName: this.props.shopCategoryName
       })
     }
 
@@ -84,7 +86,7 @@ class ShopCategoryList extends Component {
 
 
   _onSelectShopCategory(shopCategoryId) {
-    console.log('_onSelectShopCategory.shopCategoryId=' , shopCategoryId)
+    // console.log('_onSelectShopCategory.shopCategoryId=' , shopCategoryId)
     this.state.searchForm.shopCategoryId = shopCategoryId
     this.state.selectGroupShow = [false, false, false]
     this.setState({
@@ -95,7 +97,7 @@ class ShopCategoryList extends Component {
       },
       selectGroupShow: this.state.selectGroupShow
     })
-    console.log('_onSelectShopCategory.this.state=' , this.state)
+    // console.log('_onSelectShopCategory.this.state=' , this.state)
     this.refreshData()
   }
 
@@ -230,8 +232,8 @@ class ShopCategoryList extends Component {
                 overlayPageX={0}
                 optionListHeight={330}
                 optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                defaultText="全部分类"
-                defaultValue=""
+                defaultText={this.state.shopCategoryName}
+                defaultValue={this.state.searchForm.shopCategoryId}
                 onSelect={this._onSelectShopCategory.bind(this)}>
                 <Option key={"shopCategoryOption_-1"} value="">全部分类</Option>
                 {this.renderShopCategoryOptions()}
@@ -294,7 +296,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const allShopCategories = selectShopCategories(state)
-  console.log('allShopCategories=', allShopCategories)
+  // console.log('allShopCategories=', allShopCategories)
   const shopList = selectShopList(state) || []
   return {
     ds: ds.cloneWithRows(shopList),

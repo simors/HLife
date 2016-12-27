@@ -77,10 +77,10 @@ class Local extends Component {
     }
   }
 
-  _shopCategoryClick(shopCategoryId) {
+  _shopCategoryClick(shopCategoryId, shopCategoryName) {
     if(shopCategoryId) {
       this.closeModel(function(){
-        Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId})
+        Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId, shopCategoryName: shopCategoryName})
       })
     }else{
       this.openModel()
