@@ -126,7 +126,7 @@ function handleRegister(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    if(__DEV__) {
+    if(__DEV__) {// in android and ios simulator ,__DEV__ is true
       dispatch(registerWithPhoneNum(payload, formData))
     }else {
       lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
