@@ -30,7 +30,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {selectShopCategories} from '../../selector/configSelector'
-import {selectShopList, selectShopListTotal} from '../../selector/shopSelector'
+import {selectShopList} from '../../selector/shopSelector'
 import {fetchShopCategories} from '../../action/configAction'
 import {fetchShopList} from '../../action/shopAction'
 
@@ -219,7 +219,6 @@ class ShopCategoryList extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    console.log('loadMoreData.payload=', payload)
     this.props.fetchShopList(payload)
   }
 

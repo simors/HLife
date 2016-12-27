@@ -25,7 +25,8 @@ import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
 import {fetchShopAnnouncements} from '../../action/shopAction'
-import {selectShopDetail, selectShopAnnouncements, selectLatestShopAnnouncemment} from '../../selector/shopSelector'
+import {selectShopDetail, selectLatestShopAnnouncemment} from '../../selector/shopSelector'
+import {selectShopList} from '../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -39,9 +40,52 @@ class ShopDetail extends Component {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopAnnouncements({id: this.props.id})
     })
-
   }
 
+  renderGuessYouLikeList() {
+    let guessYouLikeView = <View/>
+    if(this.props.guessYouLikeList.length) {
+      guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
+        const scoreWidth = item.score / 5.0 * 62
+        return (
+          <TouchableWithoutFeedback onPress={()=>{Actions.SHOP_DETAIL({id: item.id})}}>
+            <View style={styles.shopInfoWrap}>
+              <View style={styles.coverWrap}>
+                <Image style={styles.cover} source={{uri: item.coverUrl}}/>
+              </View>
+              <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
+                <Text style={styles.gylShopName} numberOfLines={1}>{item.shopName}</Text>
+                <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
+                  <View style={styles.scoreIconGroup}>
+                    <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
+                    <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
+                  </View>
+                  <Text style={styles.score}>{item.score}分</Text>
+                </View>
+                <View style={styles.subInfoWrap}>
+                  <Text style={styles.subTxt}>{item.pv}人看过</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        )
+      })
+    }
+    return guessYouLikeView
+  }
+
+  renderGuessYouLike() {
+    if(this.props.guessYouLikeList.length) {
+      return (
+        <View style={styles.guessYouLikeWrap}>
+          <View style={styles.guessYouLikeTitleWrap}>
+            <Text style={styles.guessYouLikeTitle}>猜你喜欢</Text>
+          </View>
+          {this.renderGuessYouLikeList()}
+        </View>
+      )
+    }
+  }
 
   render() {
     const scoreWidth = this.props.shopDetail.score / 5.0 * 62
@@ -215,71 +259,7 @@ class ShopDetail extends Component {
               </View>
             </View>
 
-            <View style={styles.guessYouLikeWrap}>
-              <View style={styles.guessYouLikeTitleWrap}>
-                <Text style={styles.guessYouLikeTitle}>猜你喜欢</Text>
-              </View>
-              <TouchableWithoutFeedback onPress={()=>{}}>
-                <View style={styles.shopInfoWrap}>
-                  <View style={styles.coverWrap}>
-                    <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
-                  </View>
-                  <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
-                    <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
-                      <View style={styles.scoreIconGroup}>
-                        <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                        <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                      </View>
-                      <Text style={styles.score}>4.8分</Text>
-                    </View>
-                    <View style={styles.subInfoWrap}>
-                      <Text style={styles.subTxt}>100人看过</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={()=>{}}>
-                <View style={styles.shopInfoWrap}>
-                  <View style={styles.coverWrap}>
-                    <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
-                  </View>
-                  <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
-                    <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
-                      <View style={styles.scoreIconGroup}>
-                        <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                        <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                      </View>
-                      <Text style={styles.score}>4.8分</Text>
-                    </View>
-                    <View style={styles.subInfoWrap}>
-                      <Text style={styles.subTxt}>100人看过</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={()=>{}}>
-                <View style={styles.shopInfoWrap}>
-                  <View style={styles.coverWrap}>
-                    <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
-                  </View>
-                  <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
-                    <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
-                      <View style={styles.scoreIconGroup}>
-                        <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                        <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                      </View>
-                      <Text style={styles.score}>4.8分</Text>
-                    </View>
-                    <View style={styles.subInfoWrap}>
-                      <Text style={styles.subTxt}>100人看过</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
+            {this.renderGuessYouLike()}
 
           </ScrollView>
 
@@ -291,59 +271,15 @@ class ShopDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
-  // let shopDetail = {
-  //   album: [
-  //     "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg",
-  // "http://p1.meituan.net/440.0/deal/201301/11/175747_4466522.jpg",
-  // "http://p0.meituan.net/440.0/shaitu/f94d922f07f2afbe547b3e9951448f39129643.jpg",
-  // "http://p0.meituan.net/440.0/deal/201212/25/181352_8361352.jpg",
-  // "http://p0.meituan.net/440.0/deal/201212/25/181353_4984547.jpg",
-  // "http://p1.meituan.net/440.0/deal/201212/25/181354_9032902.jpg",
-  // "http://p1.meituan.net/440.0/deal/201212/25/181357_3305704.jpg",
-  // "http://p1.meituan.net/440.0/shaitu/b49a3601c7010a9b53fda4f1bc00b361122049.jpg"
-  //   ],
-  //   contactNumber
-  //     :
-  //     "0731-84712627",
-  //   coverUrl
-  //     :
-  //     "http://p0.meituan.net/deal/__47271683__4555428.jpg",
-  //   createdAt
-  //     :
-  //     "Tue Dec 20 2016",
-  //   geo
-  //     :
-  //   undefined,
-  //   geonName
-  //     :
-  //   undefined,
-  //   id
-  //     :
-  //     "58591e831b69e6006cb2ce19",
-  //   name
-  //     :
-  //     "31231",
-  //   phone
-  //     :
-  //     "13975152028",
-  //   pv
-  //     :
-  //     300000,
-  //   score
-  //     :
-  //     3.8,
-  //   shopAddress
-  //     :
-  //     "芙蓉区黄兴中路王府井8楼",
-  //   shopName
-  //     :
-  //     "乐会港式餐厅（王府井店）",
-  // }
-
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
+  const shopList = selectShopList(state) || []
+  if(shopList.length > 3) {
+    shopList.splice(0, shopList.length-3)
+  }
   return {
     shopDetail: shopDetail,
-    latestShopAnnouncement: latestShopAnnouncement
+    latestShopAnnouncement: latestShopAnnouncement,
+    guessYouLikeList: shopList
   }
 }
 
