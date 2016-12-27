@@ -7,6 +7,7 @@ import {REHYDRATE} from 'redux-persist/constants'
 import {Map, List} from 'immutable'
 import {UserState, UserInfo} from '../models/userModels'
 
+
 const initialState = new UserState()
 
 export default function authReducer(state = initialState, action) {
@@ -19,6 +20,8 @@ export default function authReducer(state = initialState, action) {
       return handleShopCertificationSuccess(state, action)
     case AuthTypes.PROFILE_SUBMIT_SUCCESS:
       return handleProfileSubmitSuccess(state, action)
+    case AuthTypes.DOCTOR_CERTIFICATION_REQUEST:
+      return handleDoctorCertificationRequest(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -49,10 +52,14 @@ function handleShopCertificationSuccess(state, action) {
 
 function handleProfileSubmitSuccess(state, action) {
   let userInfo = action.payload.userInfo
-  console.log("handleProfileSubmitSuccess", userInfo)
   state = state.setIn(['profiles', userInfo.id], userInfo)
   return state
+}
 
+function handleDoctorCertificationRequest(state, action) {
+  let doctorInfo = action.payload.doctor
+
+  return state
 }
 
 function onRehydrate(state, action) {
