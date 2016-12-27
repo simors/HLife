@@ -66,16 +66,16 @@ function onConversationLeft(state, action) {
 }
 
 function onMessageCreated(state, action) {
-  const createdMsgId = action.payload.msgId
   const msg = action.payload.message
+  const createdMsgId = msg.id
   const convId = msg.conversation
   state = deleteMessage(state, createdMsgId, convId)
   return createMessage(state, msg)
 }
 
 function onMessageSend(state, action) {
-  const createdMsgId = action.payload.msgId
   const msg = action.payload.message
+  const createdMsgId = msg.id
   const convId = msg.conversation
 
   //replace stored message with new id
