@@ -62,7 +62,8 @@ class ShopDetail extends Component {
                     </View>
                     <Text style={styles.score}>{this.props.shopDetail.score}</Text>
                   </View>
-                  <Text style={styles.distance}>4.3km</Text>
+                  <Text style={styles.distance}>{this.props.shopDetail.geoName}</Text>
+                  <Text style={styles.distance}>{this.props.shopDetail.distance}km</Text>
                 </View>
               </View>
               <View style={styles.shopHeadRight}>
@@ -406,7 +407,8 @@ const styles = StyleSheet.create({
   },
   distance: {
     color: '#d8d8d8',
-    fontSize: em(12)
+    fontSize: em(12),
+    marginRight: normalizeW(10)
   },
   albumWrap: {
     backgroundColor: '#fff'

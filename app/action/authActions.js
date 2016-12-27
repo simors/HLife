@@ -126,14 +126,17 @@ function handleRegister(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-
-    lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
+    if(__DEV__) {
       dispatch(registerWithPhoneNum(payload, formData))
-    }).catch((error) => {
-      if(payload.error){
-        payload.error(error)
-      }
-    })
+    }else {
+      lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
+        dispatch(registerWithPhoneNum(payload, formData))
+      }).catch((error) => {
+        if(payload.error){
+          payload.error(error)
+        }
+      })
+    }
   }
 }
 

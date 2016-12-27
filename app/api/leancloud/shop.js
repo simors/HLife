@@ -60,7 +60,7 @@ export function getShopList(payload) {
     query.contains('geoName', geoName)
   }
   return query.find().then(function (results) {
-    console.log('getShopList.results=', results)
+    // console.log('getShopList.results=', results)
     return AV.GeoPoint.current().then(function(geoPoint){
       let shopList = []
       results.forEach((result) => {
