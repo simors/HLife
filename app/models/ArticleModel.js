@@ -11,14 +11,18 @@ export const ArticleItemConfig = Record({
   categoryId: undefined,    // (ArticleCategory.type)  分类
   abstract: undefined,      // 简介
   images: undefined,        // 展示图片
-  nickname: undefined,        // 作者名称
+  nickname: undefined,      // 作者名称
   avatar: undefined,        //作者头像
-  author:undefined,        //作者ID
-  createdAt: undefined,
+  author:undefined,         //作者ID
+  createdAt: undefined,     //创建时间
+  likes: undefined,         //点赞数
 }, 'ArticleItemConfig')
 
+
+
 export class ArticleItem extends ArticleItemConfig {
-  static fromLeancloudObject(lcObj) {
+  static fromLeancloudObject(lcObj,likers) {
+    console.log('lcObjd=============>',lcObj)
     let articleItem = new ArticleItemConfig()
     let attrs = lcObj.attributes
     let user = lcObj.get('user')
@@ -44,8 +48,8 @@ export class ArticleItem extends ArticleItemConfig {
       record.set('avatar',avatar)
       record.set('articleId', lcObj.id)
       record.set('createdAt', lcObj.createdAt)
-
       record.set('author',attrs.author.id)
+      record.set('likers',likers)
     })
   }
 }

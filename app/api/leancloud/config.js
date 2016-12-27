@@ -91,13 +91,28 @@ export function getArticle(payload) {
     let categoryId = payload
     let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
     query.equalTo('Category', articleCategory)
-    query.include(['user']);
+    query.include(['user'])
     query.descending('createdAt')
   }
   return query.find().then(function (results) {
+    console.log('results=============>',results)
+
     let article = []
+    let like = []
     results.forEach((result) => {
-      article.push(ArticleItem.fromLeancloudObject(result))
+      let articleItem=AV.Object.createWithoutData('Articles',result.id)
+      console.log('articleItem=============>',articleItem)
+      let relation =  articleItem.relation('likers')
+      let queryLikers = relation.query()
+      console.log('articleItem=============>',queryLikers)
+
+      queryLikers.find().then(function (likersResult) {
+        // likers.forEach()
+        console.log('likers=============>',likersResult)
+        //article.push(ArticleItem.fromLeancloudObject(result,queryLikers))
+
+      })
+      // article.push(ArticleItem.fromLeancloudObject(result))
     })
 
     return new List(article)
