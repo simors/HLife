@@ -162,6 +162,18 @@ export function sendMessage(payload) {
   }
 }
 
+export function enterConversation(payload) {
+  return (dispatch, getState) => {
+    dispatch(onEnterConversation({cid: payload.conversationId}))
+  }
+}
+
+export function leaveConversation(payload) {
+  return (dispatch, getState) => {
+    dispatch(onLeaveConversation())
+  }
+}
+
 function createLcConversation(payload) {
   return (dispatch, getState) => {
     let client = messengerClient(getState())
