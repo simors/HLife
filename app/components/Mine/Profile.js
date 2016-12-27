@@ -218,5 +218,7 @@ const  styles = StyleSheet.create({
     width: normalizeW(84),
     height: normalizeH(84),
     borderWidth: 0,
+    borderRadius: normalizeW(42),
+    overflow: 'hidden'
   },
 })

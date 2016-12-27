@@ -38,8 +38,7 @@ class Mine extends Component {
           </View>
           <View style={styles.middle}>
             <TouchableOpacity style={{alignItems: 'center', marginTop: normalizeH(26)}} onPress={() => Actions.PROFILE()}>
-              {/*<Image style={{width: normalizeW(46), height: normalizeH(46), marginTop: normalizeH(26)}}  source={require('../../assets/images/find_happy.png')}></Image>*/}
-              <ImageInput initValue={this.props.userInfo.avatar}  editable={false} containerStyle={{width: normalizeW(46), height: normalizeH(46)}}/>
+              <ImageInput initValue={this.props.userInfo.avatar}  editable={false} browse={false} containerStyle={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}}/>
               <Text style={styles.texts}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '我爱我家'}</Text>
             </TouchableOpacity>
             <View style={styles.credits}>
