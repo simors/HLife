@@ -13,7 +13,6 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import {activeUserInfo} from '../../selector/authSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import ImageInput from '../../components/common/Input/ImageInput'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -27,6 +26,12 @@ class Mine extends Component {
   componentDidMount() {
   }
 
+  componentWillReceiveProps(newProps) {
+    if (this.props.data != newProps.data) {
+      this.setState({'selectedIndex': (newProps.data == 'male'? 1: 0)})
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -38,7 +43,7 @@ class Mine extends Component {
           </View>
           <View style={styles.middle}>
             <TouchableOpacity style={{alignItems: 'center', marginTop: normalizeH(26)}} onPress={() => Actions.PROFILE()}>
-              <ImageInput initValue={this.props.userInfo.avatar}  editable={false} browse={false} containerStyle={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}}/>
+              <Image style={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}} source={{uri: this.props.userInfo.avatar}}/>
               <Text style={styles.texts}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '我爱我家'}</Text>
             </TouchableOpacity>
             <View style={styles.credits}>

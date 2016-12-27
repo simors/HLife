@@ -76,6 +76,10 @@ export function register(payload) {
 }
 
 export function certification(payload) {
+  console.log("certification", payload)
+
+  let userInfo = AV.Object.createWithoutData('_User', payload.id)
+
   let Doctor = AV.Object.extend('Doctor')
   let doctor = new Doctor()
 
@@ -87,9 +91,11 @@ export function certification(payload) {
   doctor.set('certifiedImage', payload.certifiedImage)
   doctor.set('certificate', payload.certificate)
   doctor.set('status', 0)
+  doctor.set('user', userInfo)
 
   return doctor.save().then((doctorInfo)=>{
     let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+    doctor.id = payload.id
     return {
       doctorInfo: doctor,
     }
