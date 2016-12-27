@@ -42,7 +42,7 @@ export default class Health extends Component {
               sourceImage={require("../../assets/images/home_doctor.png")}
               thumbnailTitle="找名医"
               thumbnailIntro="一对一对症咨询"
-              onPress={()=>{Actions.LOGIN()}}
+              onPress={()=>{Actions.DOCTER_FINDER()}}
             />
           </View>
           <View style={styles.line}></View>

@@ -133,16 +133,48 @@ class ImageInput extends Component {
     this.setState({imgModalShow: isShow})
   }
 
+  renderImageBrowse(src) {
+    if (this.props.browse) {
+      return (
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow)}>
+          <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
+      )
+    }
+  }
+
   renderImageShow(src) {
     return (
       <View style={styles.container}>
         <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-          <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow)}>
-            <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
-          </TouchableOpacity>
+          {this.renderImageBrowse(src)}
         </View>
       </View>
     )
+  }
+
+  renderAddImage() {
+    if (this.props.editable) {
+      return (
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
+          <View>
+            <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
+                   source={this.props.addImage}/>
+          </View>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <View>
+          <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
+                 source={this.props.addImage}/>
+        </View>
+      )
+    }
   }
 
   render() {
@@ -157,12 +189,7 @@ class ImageInput extends Component {
       return (
         <View style={styles.container}>
           <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
-            <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
-              <View>
-                <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
-                       source={this.props.addImage}/>
-              </View>
-            </TouchableOpacity>
+            {this.renderAddImage()}
           </View>
         </View>
       )
@@ -179,6 +206,7 @@ ImageInput.defaultProps = {
   addImage: require('../../../assets/images/default_picture.png'),
   prompt: "选择图片",
   editable: true,
+  browse: true,
 }
 
 const mapStateToProps = (state, ownProps) => {
