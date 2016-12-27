@@ -110,6 +110,20 @@ export default class CommonListView extends Component {
     )
   }
 
+  isPullDown = (pullDown)=> {
+    this.setState({headerLoadRefresh: pullDown})
+  }
+  isLoadUp = (loadUp)=> {
+    this.setState({hasMore: loadUp})
+  }
+
+  hideHeader = (hideHeader)=> {
+    this.setState({hideHeader: hideHeader})
+  }
+  hideFooter = (hideFooter)=> {
+    this.setState({hideFooter: hideFooter})
+  }
+
   /**
    * PullDown
    */

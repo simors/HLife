@@ -14,6 +14,9 @@ export function getShopList(payload) {
   let distance = payload.distance
   let geo = payload.geo
   let geoName = payload.geoName
+  let isRefresh = payload.isRefresh
+  let lastScore = payload.lastScore
+  let lastGeo = payload.lastGeo
 
   let query = new AV.Query('Shop')
   if(shopCategoryId){
@@ -28,31 +31,48 @@ export function getShopList(payload) {
   query.include('targetShopCategory')
 
   if(sortId == 1) {
+    if(!isRefresh) { //分页查询
+      query.skip(1)
+      query.lessThanOrEqualTo('score', lastScore)
+    }
     query.addDescending('score')
   }else if(sortId == 2) {
+    if(!isRefresh) { //分页查询
+      query.skip(1)
+      query.lessThanOrEqualTo('geo', lastGeo)
+    }
     query.addDescending('geo')
     query.addDescending('score')
   }else{
+    if(!isRefresh) { //分页查询
+      query.skip(1)
+      query.lessThanOrEqualTo('score', lastScore)
+    }
     query.addDescending('score')
     query.addDescending('geo')
   }
 
+  
+
+  query.limit(5) // 最多返回 5 条结果
   if(distance) {
     if (Array.isArray(geo)) {
       let point = new AV.GeoPoint(geo)
-      console.log('point=', point)
       query.withinKilometers('geo', point, distance)
     }
   }else {
     query.contains('geoName', geoName)
   }
   return query.find().then(function (results) {
-    console.log('getShopList.results=', results)
-    let shopList = []
-    results.forEach((result) => {
-      shopList.push(ShopInfo.fromLeancloudObject(result))
+    // console.log('getShopList.results=', results)
+    return AV.GeoPoint.current().then(function(geoPoint){
+      let shopList = []
+      results.forEach((result) => {
+        result.userCurGeo = geoPoint
+        shopList.push(ShopInfo.fromLeancloudObject(result))
+      })
+      return new List(shopList)
     })
-    return new List(shopList)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

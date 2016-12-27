@@ -2,6 +2,7 @@ import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 import {UserInfo, UserDetail} from '../../models/userModels'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
+import {DoctorInfo} from '../../models/doctorModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
 
@@ -86,13 +87,17 @@ export function certification(payload) {
   doctor.set('certifiedImage', payload.certifiedImage)
   doctor.set('certificate', payload.certificate)
   doctor.set('status', 0)
-  
-  return doctor.save().then(function (doctor) {
+
+  return doctor.save().then((doctorInfo)=>{
+    let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+    return {
+      doctorInfo: doctor,
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-  
+
 }
 
 export function profileSubmit(payload) {
