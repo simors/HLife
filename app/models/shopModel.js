@@ -87,7 +87,7 @@ export class ShopAnnouncement extends ShopAnnouncementRecord {
     let shopAnnouncement = new ShopAnnouncementRecord()
     let attrs = lcObj.attributes
     return shopAnnouncement.withMutations((record)=>{
-      console.log('ShopAnnouncement.lcObj=', lcObj)
+      // console.log('ShopAnnouncement.lcObj=', lcObj)
       record.set('id', lcObj.id)
       record.set('content', attrs.content)
       record.set('coverUrl', attrs.coverUrl)
@@ -107,5 +107,6 @@ export class ShopAnnouncement extends ShopAnnouncementRecord {
 
 export const Shop = Record({
   shopList: List(),
-  shopAnnouncements: Map()
+  shopAnnouncements: Map(),
+  userFollowShopsInfo: Map()
 }, 'Shop')

@@ -24,9 +24,10 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
-import {fetchShopAnnouncements} from '../../action/shopAction'
-import {selectShopDetail, selectLatestShopAnnouncemment} from '../../selector/shopSelector'
+import {fetchShopAnnouncements, userIsFollowedShop, followShop} from '../../action/shopAction'
+import {selectShopDetail, selectLatestShopAnnouncemment, selectUserIsFollowShop} from '../../selector/shopSelector'
 import {selectShopList} from '../../selector/shopSelector'
+import * as authSelector from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -39,7 +40,31 @@ class ShopDetail extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopAnnouncements({id: this.props.id})
+      if(this.props.isUserLogined) {
+        this.props.userIsFollowedShop({id: this.props.id})
+      }
     })
+  }
+
+  componentWillReceiveProps() {
+
+  }
+
+  followShop() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }
+    let payload = {
+      id: this.props.id,
+      success: function(result) {
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.followShop(payload)
+    
   }
 
   renderGuessYouLikeList() {
@@ -48,7 +73,7 @@ class ShopDetail extends Component {
       guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
         const scoreWidth = item.score / 5.0 * 62
         return (
-          <TouchableWithoutFeedback onPress={()=>{Actions.SHOP_DETAIL({id: item.id})}}>
+          <TouchableWithoutFeedback key={"guessYouLike_" + index} onPress={()=>{Actions.SHOP_DETAIL({id: item.id})}}>
             <View style={styles.shopInfoWrap}>
               <View style={styles.coverWrap}>
                 <Image style={styles.cover} source={{uri: item.coverUrl}}/>
@@ -121,9 +146,14 @@ class ShopDetail extends Component {
                 </View>
               </View>
               <View style={styles.shopHeadRight}>
-                <TouchableOpacity onPress={()=>{Toast.show('关注成功')}}>
-                  <Image style={styles.attention} source={require('../../assets/images/give_attention_head.png')}/>
-                </TouchableOpacity>
+                  {this.props.isFollowedShop
+                    ? <View style={styles.shopAttentioned}>
+                        <Text style={styles.shopAttentionedTxt}>已关注</Text>
+                      </View>
+                    : <TouchableOpacity onPress={this.followShop.bind(this)}>
+                        <Image style={styles.shopAttention} source={require('../../assets/images/give_attention_head.png')}/>
+                      </TouchableOpacity>
+                  }
               </View>
             </View>
 
@@ -273,18 +303,24 @@ const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
   const shopList = selectShopList(state) || []
+  const isUserLogined = authSelector.isUserLogined(state)
   if(shopList.length > 3) {
     shopList.splice(0, shopList.length-3)
   }
+  const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   return {
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
-    guessYouLikeList: shopList
+    guessYouLikeList: shopList,
+    isUserLogined: isUserLogined,
+    isFollowedShop: isFollowedShop
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchShopAnnouncements
+  fetchShopAnnouncements,
+  userIsFollowedShop,
+  followShop
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)
@@ -322,6 +358,18 @@ const styles = StyleSheet.create({
     width: 60,
     justifyContent: 'center',
     alignItems: 'flex-end'
+  },
+  shopAttentioned: {
+    backgroundColor: THEME.colors.green,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 6,
+    paddingRight: 6,
+    borderRadius: 5,
+  },
+  shopAttentionedTxt: {
+    color: '#fff',
+    fontSize: em(14),
   },
   shopName: {
     fontSize: em(17),

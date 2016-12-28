@@ -40,3 +40,39 @@ export function fetchShopAnnouncements(payload) {
   }
 }
 
+export function userIsFollowedShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.isFollowedShop(payload).then((result)=>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
+      dispatch(updateAction(result))
+      return result
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function followShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.followShop(payload).then((result) =>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
+      dispatch(updateAction(result))
+      if(result && '10002' == result.code) {
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
