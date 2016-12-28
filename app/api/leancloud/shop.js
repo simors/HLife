@@ -105,8 +105,16 @@ export function isFollowedShop(payload) {
   query.equalTo('shop', shop)
 
   return query.find().then((result)=>{
-    console.log('isFollowedShop.result=', result)
-    return result
+    if(result && result.length) {
+      return {
+        code: '10001',
+        message: '您已关注过该店铺,请不要重复关注'
+      }
+    }
+    return {
+      code: '10000',
+      message: '未关注'
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -116,11 +124,8 @@ export function isFollowedShop(payload) {
 export function followShop(payload) {
 
   return isFollowedShop(payload).then((result) =>{
-    if(result && result.length) {
-      return {
-        code: '10001',
-        message: '您已关注过该店铺,请不要重复关注'
-      }
+    if(result && '10001' == result.code) {
+      return result
     }
 
     let shopId = payload.id
@@ -141,7 +146,7 @@ export function followShop(payload) {
       return shopFollowee.save()
     }).then(()=>{
       return {
-        code: '10000',
+        code: '10002',
         message: '关注成功'
       }
     }).catch((err) =>{
