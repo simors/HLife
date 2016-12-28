@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   contentStyle: {
     fontSize: em(17),
-    lineHeight: em(21),
+    lineHeight: 20,
     paddingTop: normalizeH(10),
     paddingRight: normalizeW(8),
     color: "#4a4a4a"

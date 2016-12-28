@@ -10,12 +10,17 @@ import {
   Keyboard,
   TextInput,
   Dimensions,
+  Platform,
 } from 'react-native'
-import { FormInput } from 'react-native-elements'
+import {FormInput}  from 'react-native-elements'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 class CommentInput extends Component {
 
@@ -23,14 +28,39 @@ class CommentInput extends Component {
     super(props);
     this.state = {
       inputHeight: 28,
+      disableComment: false,
+      keyboardPadding:0,
       currentText: ''
+    }
+  }
+  validInput(data) {
+    return {isVal: true, errMsg: '验证通过'}
+  }
+  componentWillUnmount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.keyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.keyboardWillShow)
+      Keyboard.removeListener('keyboardDidHide', this.keyboardWillHide)
     }
   }
 
   componentDidMount() {
-    let formInfo = {
+      if (Platform.OS == 'ios') {
+        Keyboard.addListener('keyboardWillShow', this.keyboardWillShow)
+        Keyboard.addListener('keyboardWillHide', this.keyboardWillHide)
+      } else {
+        Keyboard.addListener('keyboardDidShow', this.keyboardWillShow)
+        Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
+      }
+
+      let formInfo = {
       formKey: this.props.formKey,
-      stateKey: this.props.stateKey
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: {text: this.props.initValue},
+      checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
   }
@@ -46,12 +76,12 @@ class CommentInput extends Component {
         })
       } else {
         this.setState({
-          inputHeight: event.nativeEvent.contentSize.height
+          inputHeight: event.nativeEvent.contentSize.height,
         })
       }
     } else {
       this.setState({
-        inputHeight: minHeight
+        inputHeight: minHeight,
       })
     }
   }
@@ -65,12 +95,25 @@ class CommentInput extends Component {
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      text: text
+      data: {text}
     }
     this.props.inputFormUpdate(inputForm)
   }
 
-  send = () => {}
+  send = () => {
+    this.props.onPublishButton()
+  }
+
+  keyboardWillShow = (e) => {
+    this.setState({
+      keyboardPadding: PAGE_HEIGHT - e.endCoordinates.screenY,
+    })
+  }
+
+  keyboardWillHide = (e) => {
+    this.setState({keyboardPadding: 0})
+    this.setState({disableComment: false})
+  }
 
   renderSubmitButtonEnabled = () => {
     return (
@@ -94,27 +137,48 @@ class CommentInput extends Component {
     )
   }
 
-  render() {
+  renderComment() {
     return (
       <View
-        style={[styles.mainContainerFocused, {bottom: this.props.keyboardPadding}]}>
+        style={[styles.mainContainerFocused, {bottom: this.state.keyboardPadding}]}>
         <View style={{backgroundColor: '#d2d2d2', height: 0.5}}/>
         <View style={styles.inputBar}>
           <FormInput containerStyle={styles.inputContainer}
-              inputStyle={[styles.inputField, {height: this.state.inputHeight}]}
-              multiline={true}
-              autoFocus={this.props.autoFocus}
-              placeholder={this.props.placeholder}
-              placeholderTextColor='#b4b4b4'
-              underlineColorAndroid="transparent"
-              onChangeText={(text) => {
-                this.inputChange(this.processText(text))
-              }}
-              value={this.state.currentText}
-              onChange={this.measure}
-            />
+                     inputStyle={[styles.inputField, {height: this.state.inputHeight}]}
+                     multiline={true}
+                     autoFocus={this.props.autoFocus}
+                     placeholder={this.props.placeholder}
+                     placeholderTextColor='#b4b4b4'
+                     underlineColorAndroid="transparent"
+                     onChangeText={(text) => {
+                       this.inputChange(this.processText(text))
+                     }}
+                     value={this.state.currentText}
+                     onChange={this.measure}
+          />
           {this.state.currentText ? this.renderSubmitButtonEnabled() : this.renderSubmitButtonDisabled()}
         </View>
+      </View>
+    )
+  }
+
+  renderShow() {
+    return (
+      <View style={[styles.showContainer]}>
+        <TouchableOpacity style={[styles.commentShowContainer]} onPress={() => {
+          this.setState({disableComment: true})
+        }}>
+          <Text>写评论...</Text>
+        </TouchableOpacity>
+      </View>
+
+    )
+  }
+
+  render() {
+    return (
+      <View>
+        {this.state.disableComment ? this.renderComment() : this.renderShow()}
       </View>
     )
   }
@@ -122,7 +186,8 @@ class CommentInput extends Component {
 
 CommentInput.defaultProps = {
   placeholder: '请输入文字...',
-  autoFocus: false,
+  autoFocus: true,
+  onPublishButton:()=>{}
 }
 
 const styles = StyleSheet.create({
@@ -130,6 +195,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
+    bottom: 0,
     backgroundColor: '#ffffff'
   },
   inputBar: {
@@ -195,12 +261,34 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#969696',
   },
+  showContainer: {
+    position:'absolute',
+    bottom:0,
+    right:0,
+    left:0,
+    alignItems:"center",
+    height: normalizeH(44),
+    flexDirection: 'row',
+    backgroundColor: '#fafafa',
+  },
+
+  commentShowContainer: {
+    width: 295,
+    height: 30,
+    borderColor: '#dfdfdf',
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginLeft: 13,
+    paddingRight: 12
+  }
 })
 
 const mapStateToProps = (state, ownProps) => {
-  let obj = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  console.log("obj", obj)
-  return {obj}
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  return {
+    data: inputData.text
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
