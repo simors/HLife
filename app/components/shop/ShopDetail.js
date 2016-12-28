@@ -47,7 +47,7 @@ class ShopDetail extends Component {
   }
 
   componentWillReceiveProps() {
-    console.log('isFollowedShop=', this.props.isFollowedShop)
+
   }
 
   followShop() {

@@ -148,6 +148,7 @@ export function followShop(payload) {
       return shopFollowee.save()
     }).then(()=>{
       return {
+        shopId: shopId,
         code: '10002',
         message: '关注成功'
       }

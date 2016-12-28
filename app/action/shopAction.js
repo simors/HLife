@@ -57,9 +57,9 @@ export function userIsFollowedShop(payload) {
 export function followShop(payload) {
   return (dispatch, getState) => {
     lcShop.followShop(payload).then((result) =>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
+      dispatch(updateAction(result))
       if(result && '10002' == result.code) {
-        let updateAction = createAction(ShopActionTypes.FOLLOW_SHOP_SUCCESS)
-        dispatch(updateAction({}))
         if(payload.success){
           payload.success(result)
         }
