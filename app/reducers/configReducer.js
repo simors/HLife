@@ -60,18 +60,18 @@ function initBanner(banner) {
 function handleUpdateConfigBanners(state, action) {
   let payload = action.payload
   let type = payload.type
-  let bannerMap = new Map()
-  bannerMap = bannerMap.set(type, payload.banner)
-  state = state.set('banners',  bannerMap)
+  let _map = state.get('banners')
+  _map = _map.set(type, payload.banner)
+  state = state.set('banners',  _map)
   return state
 }
 
 function handleUpdateConfigAnnouncements(state, action) {
   let payload = action.payload
   let type = payload.type
-  let announcementMap = new Map()
-  announcementMap = announcementMap.set(type, payload.announcement)
-  state = state.set('announcements', announcementMap)
+  let _map = state.get('announcements')
+  _map = _map.set(type, payload.announcement)
+  state = state.set('announcements',  _map)
   return state
 }
 

@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-  Platform
+  Platform,
+  InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -23,7 +24,10 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
-import {selectShopDetail} from '../../selector/shopSelector'
+import {fetchShopAnnouncements, userIsFollowedShop, followShop} from '../../action/shopAction'
+import {selectShopDetail, selectLatestShopAnnouncemment, selectUserIsFollowShop} from '../../selector/shopSelector'
+import {selectShopList} from '../../selector/shopSelector'
+import * as authSelector from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -33,10 +37,85 @@ class ShopDetail extends Component {
     super(props)
   }
 
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchShopAnnouncements({id: this.props.id})
+      if(this.props.isUserLogined) {
+        this.props.userIsFollowedShop({id: this.props.id})
+      }
+    })
+  }
+
+  componentWillReceiveProps() {
+
+  }
+
+  followShop() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }
+    let payload = {
+      id: this.props.id,
+      success: function(result) {
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.followShop(payload)
+    
+  }
+
+  renderGuessYouLikeList() {
+    let guessYouLikeView = <View/>
+    if(this.props.guessYouLikeList.length) {
+      guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
+        const scoreWidth = item.score / 5.0 * 62
+        return (
+          <TouchableWithoutFeedback key={"guessYouLike_" + index} onPress={()=>{Actions.SHOP_DETAIL({id: item.id})}}>
+            <View style={styles.shopInfoWrap}>
+              <View style={styles.coverWrap}>
+                <Image style={styles.cover} source={{uri: item.coverUrl}}/>
+              </View>
+              <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
+                <Text style={styles.gylShopName} numberOfLines={1}>{item.shopName}</Text>
+                <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
+                  <View style={styles.scoreIconGroup}>
+                    <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
+                    <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
+                  </View>
+                  <Text style={styles.score}>{item.score}分</Text>
+                </View>
+                <View style={styles.subInfoWrap}>
+                  <Text style={styles.subTxt}>{item.pv}人看过</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        )
+      })
+    }
+    return guessYouLikeView
+  }
+
+  renderGuessYouLike() {
+    if(this.props.guessYouLikeList.length) {
+      return (
+        <View style={styles.guessYouLikeWrap}>
+          <View style={styles.guessYouLikeTitleWrap}>
+            <Text style={styles.guessYouLikeTitle}>猜你喜欢</Text>
+          </View>
+          {this.renderGuessYouLikeList()}
+        </View>
+      )
+    }
+  }
 
   render() {
     const scoreWidth = this.props.shopDetail.score / 5.0 * 62
     const album = this.props.shopDetail.album
+    let announcementCover = {uri: this.props.latestShopAnnouncement.coverUrl}
     
     return (
       <View style={styles.container}>
@@ -62,13 +141,19 @@ class ShopDetail extends Component {
                     </View>
                     <Text style={styles.score}>{this.props.shopDetail.score}</Text>
                   </View>
-                  <Text style={styles.distance}>4.3km</Text>
+                  <Text style={styles.distance}>{this.props.shopDetail.geoName}</Text>
+                  <Text style={styles.distance}>{this.props.shopDetail.distance}km</Text>
                 </View>
               </View>
               <View style={styles.shopHeadRight}>
-                <TouchableOpacity onPress={()=>{Toast.show('关注成功')}}>
-                  <Image style={styles.attention} source={require('../../assets/images/give_attention_head.png')}/>
-                </TouchableOpacity>
+                  {this.props.isFollowedShop
+                    ? <View style={styles.shopAttentioned}>
+                        <Text style={styles.shopAttentionedTxt}>已关注</Text>
+                      </View>
+                    : <TouchableOpacity onPress={this.followShop.bind(this)}>
+                        <Image style={styles.shopAttention} source={require('../../assets/images/give_attention_head.png')}/>
+                      </TouchableOpacity>
+                  }
               </View>
             </View>
 
@@ -101,18 +186,18 @@ class ShopDetail extends Component {
             <View style={styles.shopAnnouncementWrap}>
               <View style={styles.shopAnnouncementContainer}>
                 <View style={styles.shopAnnouncementCoverWrap}>
-                  <Image style={styles.shopAnnouncementCover} source={{uri: "http://c.hiphotos.baidu.com/image/pic/item/64380cd7912397dd5393db755a82b2b7d1a287dd.jpg"}}/>
+                  <Image style={styles.shopAnnouncementCover} source={announcementCover}/>
                 </View>
                 <View style={styles.shopAnnouncementCnt}>
                   <View style={styles.shopAnnouncementTitleWrap}>
                     <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
-                      精心研制的营养早餐，蔬菜、水果和稀饭的结合，如诗一般美
+                      {this.props.latestShopAnnouncement.content}
                     </Text>
                   </View>
                   <View style={styles.shopAnnouncementSubTitleWrap}>
-                    <Image style={styles.shopAnnouncementIcon} source={{uri: "http://c.hiphotos.baidu.com/image/pic/item/64380cd7912397dd5393db755a82b2b7d1a287dd.jpg"}}/>
-                    <Text style={styles.shopAnnouncementSubTxt}>米奇妙妙屋</Text>
-                    <Text style={styles.shopAnnouncementSubTxt}>一天前</Text>
+                    <Image style={styles.shopAnnouncementIcon} source={{uri: this.props.shopDetail.owner.avatar}}/>
+                    <Text style={styles.shopAnnouncementSubTxt}>{this.props.shopDetail.owner.nickname}</Text>
+                    <Text style={styles.shopAnnouncementSubTxt}>{this.props.latestShopAnnouncement.createdDate}</Text>
                   </View>
                 </View>
               </View>
@@ -195,80 +280,16 @@ class ShopDetail extends Component {
               <View style={styles.serviceInfoContainer}>
                 <View style={styles.openTime}>
                   <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
-                  <Text style={styles.serviceTxt}>10:30-24:00</Text>
+                  <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
                 </View>
                 <View style={styles.shopSpecial}>
                   <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
-                  <Text style={styles.serviceTxt}>早午茶  营养粥  肠粉   粤菜</Text>
+                  <Text style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
                 </View>
               </View>
             </View>
 
-            <View style={styles.guessYouLikeWrap}>
-              <View style={styles.guessYouLikeTitleWrap}>
-                <Text style={styles.guessYouLikeTitle}>猜你喜欢</Text>
-              </View>
-              <TouchableWithoutFeedback onPress={()=>{}}>
-                <View style={styles.shopInfoWrap}>
-                  <View style={styles.coverWrap}>
-                    <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
-                  </View>
-                  <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
-                    <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
-                      <View style={styles.scoreIconGroup}>
-                        <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                        <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                      </View>
-                      <Text style={styles.score}>4.8分</Text>
-                    </View>
-                    <View style={styles.subInfoWrap}>
-                      <Text style={styles.subTxt}>100人看过</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={()=>{}}>
-                <View style={styles.shopInfoWrap}>
-                  <View style={styles.coverWrap}>
-                    <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
-                  </View>
-                  <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
-                    <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
-                      <View style={styles.scoreIconGroup}>
-                        <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                        <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                      </View>
-                      <Text style={styles.score}>4.8分</Text>
-                    </View>
-                    <View style={styles.subInfoWrap}>
-                      <Text style={styles.subTxt}>100人看过</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={()=>{}}>
-                <View style={styles.shopInfoWrap}>
-                  <View style={styles.coverWrap}>
-                    <Image style={styles.cover} source={{uri: "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg"}}/>
-                  </View>
-                  <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                    <Text style={styles.gylShopName} numberOfLines={1}>乐会港式茶餐厅（奥克斯广场店）</Text>
-                    <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
-                      <View style={styles.scoreIconGroup}>
-                        <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                        <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                      </View>
-                      <Text style={styles.score}>4.8分</Text>
-                    </View>
-                    <View style={styles.subInfoWrap}>
-                      <Text style={styles.subTxt}>100人看过</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
+            {this.renderGuessYouLike()}
 
           </ScrollView>
 
@@ -280,61 +301,26 @@ class ShopDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
-  // let shopDetail = {
-  //   album: [
-  //     "http://p1.meituan.net/440.0/deal/201301/11/175747_1186323.jpg",
-  // "http://p1.meituan.net/440.0/deal/201301/11/175747_4466522.jpg",
-  // "http://p0.meituan.net/440.0/shaitu/f94d922f07f2afbe547b3e9951448f39129643.jpg",
-  // "http://p0.meituan.net/440.0/deal/201212/25/181352_8361352.jpg",
-  // "http://p0.meituan.net/440.0/deal/201212/25/181353_4984547.jpg",
-  // "http://p1.meituan.net/440.0/deal/201212/25/181354_9032902.jpg",
-  // "http://p1.meituan.net/440.0/deal/201212/25/181357_3305704.jpg",
-  // "http://p1.meituan.net/440.0/shaitu/b49a3601c7010a9b53fda4f1bc00b361122049.jpg"
-  //   ],
-  //   contactNumber
-  //     :
-  //     "0731-84712627",
-  //   coverUrl
-  //     :
-  //     "http://p0.meituan.net/deal/__47271683__4555428.jpg",
-  //   createdAt
-  //     :
-  //     "Tue Dec 20 2016",
-  //   geo
-  //     :
-  //   undefined,
-  //   geonName
-  //     :
-  //   undefined,
-  //   id
-  //     :
-  //     "58591e831b69e6006cb2ce19",
-  //   name
-  //     :
-  //     "31231",
-  //   phone
-  //     :
-  //     "13975152028",
-  //   pv
-  //     :
-  //     300000,
-  //   score
-  //     :
-  //     3.8,
-  //   shopAddress
-  //     :
-  //     "芙蓉区黄兴中路王府井8楼",
-  //   shopName
-  //     :
-  //     "乐会港式餐厅（王府井店）",
-  // }
+  let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
+  const shopList = selectShopList(state) || []
+  const isUserLogined = authSelector.isUserLogined(state)
+  if(shopList.length > 3) {
+    shopList.splice(0, shopList.length-3)
+  }
+  const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   return {
-    shopDetail: shopDetail
+    shopDetail: shopDetail,
+    latestShopAnnouncement: latestShopAnnouncement,
+    guessYouLikeList: shopList,
+    isUserLogined: isUserLogined,
+    isFollowedShop: isFollowedShop
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  fetchShopAnnouncements,
+  userIsFollowedShop,
+  followShop
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)
@@ -373,6 +359,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end'
   },
+  shopAttentioned: {
+    backgroundColor: THEME.colors.green,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 6,
+    paddingRight: 6,
+    borderRadius: 5,
+  },
+  shopAttentionedTxt: {
+    color: '#fff',
+    fontSize: em(14),
+  },
   shopName: {
     fontSize: em(17),
     color: '#030303'
@@ -406,7 +404,8 @@ const styles = StyleSheet.create({
   },
   distance: {
     color: '#d8d8d8',
-    fontSize: em(12)
+    fontSize: em(12),
+    marginRight: normalizeW(10)
   },
   albumWrap: {
     backgroundColor: '#fff'

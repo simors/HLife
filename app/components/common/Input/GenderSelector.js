@@ -30,7 +30,6 @@ class GenderSelector extends Component {
       initValue: {text: this.props.initValue},
       checkValid: this.validInput
     }
-
     this.props.initInputForm(formInfo)
   }
 

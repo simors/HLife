@@ -5,7 +5,7 @@ import {Record, Map, List} from 'immutable'
 
 export const DoctorInfoRecord = Record({
   name:           undefined, //真实姓名
-  IDCardNo:       undefined, //居民身份证号码
+  ID:             undefined, //居民身份证号码
   phone:          undefined, //联系手机号码
   organization:   undefined, //执业地点
   department:     undefined, //科室
@@ -20,9 +20,9 @@ export class DoctorInfo extends DoctorInfoRecord {
     static fromLeancloudObject(lcObj) {
       let doctorInfo = new DoctorInfo()
       let attrs = lcObj.attributes
-      return doctorInfo.withMutations((record) => {
+      doctorInfo= doctorInfo.withMutations((record) => {
         record.set('name', attrs.name)
-        record.set('IDCardNo', attrs.IDCardNo)
+        record.set('ID', attrs.ID)
         record.set('phone', attrs.phone)
         record.set('organization', attrs.organization)
         record.set('department', attrs.department)
@@ -31,6 +31,7 @@ export class DoctorInfo extends DoctorInfoRecord {
         record.set('status', attrs.status)
         record.set('desc', attrs.desc)
         })
+      return doctorInfo
     }
 
 }

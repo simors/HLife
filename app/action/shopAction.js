@@ -27,3 +27,52 @@ export function fetchShopList(payload) {
   }
 }
 
+export function fetchShopAnnouncements(payload) {
+  return (dispatch, getState) => {
+    lcShop.getShopAnnouncement(payload).then((shopAnnouncements) =>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST)
+      dispatch(updateAction({shopId: payload.id, shopAnnouncements: shopAnnouncements}))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function userIsFollowedShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.isFollowedShop(payload).then((result)=>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
+      dispatch(updateAction(result))
+      return result
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function followShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.followShop(payload).then((result) =>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
+      dispatch(updateAction(result))
+      if(result && '10002' == result.code) {
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+

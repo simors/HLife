@@ -10,10 +10,9 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {activeUserInfo} from '../../selector/authSelector'
+import {activeUserInfo, activeDoctorInfo} from '../../selector/authSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import ImageInput from '../../components/common/Input/ImageInput'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -27,6 +26,21 @@ class Mine extends Component {
   componentDidMount() {
   }
 
+  doctorCertificationImage(status) {
+    if (status === undefined)
+      return require('../../assets/images/mine_doctor.png')
+    switch (status)
+    {
+      case 0: //审核失败
+        return require('../../assets/images/doctor_not_pass.png')
+      case 1: //审核成功
+        return require('../../assets/images/doctor_approved.png')
+      case 2: //审核中
+        return require('../../assets/images/doctor_in_review.png')
+    }
+
+
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -38,7 +52,7 @@ class Mine extends Component {
           </View>
           <View style={styles.middle}>
             <TouchableOpacity style={{alignItems: 'center', marginTop: normalizeH(26)}} onPress={() => Actions.PROFILE()}>
-              <ImageInput initValue={this.props.userInfo.avatar}  editable={false} browse={false} containerStyle={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}}/>
+              <Image style={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}} source={{uri: this.props.userInfo.avatar}}/>
               <Text style={styles.texts}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '我爱我家'}</Text>
             </TouchableOpacity>
             <View style={styles.credits}>
@@ -56,7 +70,7 @@ class Mine extends Component {
         <View style={styles.azone}>
           <View style={{flex: 1}} >
             <TouchableOpacity style={styles.aindex} onPress= {()=>Actions.DCTOR_CERTIFICATION()}>
-              <Image source={require('../../assets/images/mine_doctor.png')}></Image>
+              <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}></Image>
               <Text style={styles.textStyle}>医生认证</Text>
             </TouchableOpacity>
 
@@ -137,8 +151,10 @@ class Mine extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
+  let doctorInfo = activeDoctorInfo(state)
   return {
     userInfo: userInfo,
+    doctorInfo: doctorInfo,
   }
 }
 

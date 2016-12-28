@@ -46,19 +46,21 @@ function handleLoginSuccess(state, action) {
 }
 
 function handleShopCertificationSuccess(state, action) {
+
   state = state.set('shop',  action.payload)
   return state
 }
 
 function handleProfileSubmitSuccess(state, action) {
   let userInfo = action.payload.userInfo
+
   state = state.setIn(['profiles', userInfo.id], userInfo)
   return state
 }
 
 function handleDoctorCertificationRequest(state, action) {
-  let doctorInfo = action.payload.doctor
-
+  let doctorInfo = action.payload.doctorInfo
+  state =state.setIn(['doctorInfo', doctorInfo.id], doctorInfo)
   return state
 }
 

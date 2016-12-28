@@ -24,3 +24,27 @@ export function selectShopDetail(state, id) {
   // console.log('shopDetail=', shopDetail)
   return shopDetail
 }
+
+export function selectShopAnnouncements(state, shopId) {
+  return selectShop(state).shopAnnouncements[shopId]
+}
+
+export function selectLatestShopAnnouncemment(state, shopId) {
+  let shopAnnouncements = selectShopAnnouncements(state, shopId)
+  if(shopAnnouncements && shopAnnouncements.length) {
+    return shopAnnouncements[0]
+  }
+  return {}
+}
+
+export function selectUserFollowShopsInfo(state) {
+  return state.SHOP.get('userFollowShopsInfo')
+}
+
+export function selectUserIsFollowShop(state, shopId) {
+  let userFollowShopsInfo = selectUserFollowShopsInfo(state)
+  if(userFollowShopsInfo && userFollowShopsInfo.size) {
+    return userFollowShopsInfo.get(shopId)
+  }
+  return false
+}

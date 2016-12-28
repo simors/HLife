@@ -76,20 +76,29 @@ export function register(payload) {
 }
 
 export function certification(payload) {
+  console.log("certification", payload)
+
+  let userInfo = AV.Object.createWithoutData('_User', payload.id)
+
   let Doctor = AV.Object.extend('Doctor')
   let doctor = new Doctor()
 
   doctor.set('name', payload.name)
-  doctor.set('idCardNo', payload.idCardNo)
+  doctor.set('ID', payload.ID)
   doctor.set('phone', payload.phone)
   doctor.set('organization', payload.organization)
   doctor.set('department', payload.department)
   doctor.set('certifiedImage', payload.certifiedImage)
   doctor.set('certificate', payload.certificate)
-  doctor.set('status', 0)
+  doctor.set('status', 2) //审核中
+  doctor.set('user', userInfo)
+
+  userInfo.addUnique('identity', 'doctor')
+  userInfo.save()
 
   return doctor.save().then((doctorInfo)=>{
     let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+    doctor.id = payload.id
     return {
       doctorInfo: doctor,
     }
@@ -109,6 +118,7 @@ export function profileSubmit(payload) {
   userInfo.set('mobilePhoneNumber', payload.phone)
   userInfo.set('gender', payload.gender)
   userInfo.set('birthday', payload.birthday)
+  userInfo.set('identity', [])
 
   return userInfo.save().then((loginedUser)=>{
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)

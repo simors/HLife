@@ -6,6 +6,7 @@ import {Map, List, Record} from 'immutable'
 import ERROR from '../../constants/errorCode'
 import {
   ShopInfo,
+  ShopAnnouncement
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -27,7 +28,7 @@ export function getShopList(payload) {
   }
 
   //用 include 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
-  query.include('targetShopCategory')
+  query.include(['targetShopCategory', 'owner'])
 
   if(sortId == 1) {
     if(!isRefresh) { //分页查询
@@ -60,7 +61,7 @@ export function getShopList(payload) {
     query.contains('geoName', geoName)
   }
   return query.find().then(function (results) {
-    console.log('getShopList.results=', results)
+    // console.log('getShopList.results=', results)
     return AV.GeoPoint.current().then(function(geoPoint){
       let shopList = []
       results.forEach((result) => {
@@ -73,4 +74,92 @@ export function getShopList(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
+
+export function getShopAnnouncement(payload) {
+  let shopAnnouncements = []
+  let shopId = payload.id //店铺id
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  let relation = shop.relation('containedAnnouncements')
+  let query = relation.query()
+  query.addDescending('createdAt')
+  return query.find().then(function(results) {
+    // console.log('getShopAnnouncement.results=====', results)
+    results.forEach((result)=>{
+      shopAnnouncements.push(ShopAnnouncement.fromLeancloudObject(result))
+    })
+    return new List(shopAnnouncements)
+  }, function(err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function isFollowedShop(payload) {
+  let shopId = payload.id
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  let currentUser = AV.User.current()
+
+  let query = new AV.Query('ShopFollower')
+  query.equalTo('follower', currentUser)
+  query.equalTo('shop', shop)
+
+  return query.find().then((result)=>{
+    if(result && result.length) {
+      return {
+        shopId: shopId,
+        code: '10001',
+        message: '您已关注过该店铺,请不要重复关注'
+      }
+    }
+    return {
+      shopId: shopId,
+      code: '10000',
+      message: '未关注'
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function followShop(payload) {
+
+  return isFollowedShop(payload).then((result) =>{
+    if(result && '10001' == result.code) {
+      return result
+    }
+
+    let shopId = payload.id
+    let shop = AV.Object.createWithoutData('Shop', shopId)
+    let currentUser = AV.User.current()
+
+    let ShopFollower = AV.Object.extend('ShopFollower')
+    let shopFollower = new ShopFollower()
+    shopFollower.set('follower', currentUser)
+    shopFollower.set('shop', shop)
+
+    let ShopFollowee = AV.Object.extend('ShopFollowee')
+    let shopFollowee = new ShopFollowee()
+    shopFollowee.set('user', currentUser)
+    shopFollowee.set('followee', shop)
+
+    return shopFollower.save().then(function(shopFollowerResult){
+      return shopFollowee.save()
+    }).then(()=>{
+      return {
+        shopId: shopId,
+        code: '10002',
+        message: '关注成功'
+      }
+    }).catch((err) =>{
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+  }).catch((err) =>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+
 }
