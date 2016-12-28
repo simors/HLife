@@ -10,17 +10,25 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Platform
+  Platform,
+  InteractionManager
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
+import {getDocterList} from '../../action/authActions'
 
 class DocterFinder extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.getDocterList({})
+    })
   }
 
   render() {
@@ -42,7 +50,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  getDocterList,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DocterFinder)

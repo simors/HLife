@@ -316,15 +316,10 @@ function shopCertification(payload, formData) {
 
 }
 
-export function fetchAticle() {
+export function getDocterList(payload) {
   return (dispatch, getState) => {
-    lcArticle.getArticles().then((article) => {
-      let updateColumnAction = createAction(ArticleActionTypes.UPDATE_ARTICLES)
-      dispatch(updateColumnAction({article: article}))
-    }).catch((error) => {
-      if(payload.error) {
-        payload.error(error)
-      }
+    lcAuth.fetchDocterList(payload).then((docters) => {
+
     })
   }
 }
