@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   contentStyle: {
     fontSize: em(17),
-    lineHeight: em(21),
+    lineHeight: 20,
     color: "#4a4a4a"
   },
   imagesWrapStyle: {

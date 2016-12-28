@@ -1,7 +1,7 @@
 import AV from 'leancloud-storage'
 import {List} from 'immutable'
 import ERROR from '../../constants/errorCode'
-import {TopicsItem} from '../../models/TopicModel'
+import {TopicsItem, TopicCommentsItem} from '../../models/TopicModel'
 
 export function publishTopics(payload) {
   let Topics = AV.Object.extend('Topics')
@@ -16,7 +16,38 @@ export function publishTopics(payload) {
   topic.set('imgGroup', payload.imgGroup)
   topic.set('content', payload.content)
 
-  return topic.save().then(function (doctor) {
+  return topic.save().then(function (result) {
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function publishTopicComments(payload) {
+  let TopicComments = AV.Object.extend('TopicComments')
+  let topicComment = new TopicComments()
+
+  var topic = AV.Object.createWithoutData('Topics', payload.topicId)
+  var user = AV.Object.createWithoutData('_User', payload.userId)
+
+  topicComment.set('topic', topic)
+  topicComment.set('user', user)
+  topicComment.set('content', payload.content)
+
+  if (payload.commentId) {
+    topicComment.set('parentCommentId', payload.commentId)
+  }
+
+  return topicComment.save().then(function (result) {
+    if (result) {
+      var relation = topic.relation('comments');
+      relation.add(topicComment);
+      return topic.save().then(function (result) {
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -40,4 +71,26 @@ export function getTopics(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
+
+export function getTopicComments(payload) {
+  let topicId = payload.topicId
+  let topic = AV.Object.createWithoutData('Topics', topicId);
+  let relation = topic.relation('comments')
+  let query = relation.query()
+  query.include(['user']);
+  query.descending('createdAt')
+  return query.find().then(function (results) {
+      let topicComments = []
+      if (results) {
+        results.forEach( (result) => {
+          topicComments.push(TopicCommentsItem.fromLeancloudObject(result))
+        })
+      }
+      return new List(topicComments)
+    }
+    , function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
 }
