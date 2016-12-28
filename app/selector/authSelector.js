@@ -32,7 +32,5 @@ export function activeUserInfo(state) {
 
 export function activeDoctorInfo(state) {
   let activeUser = activeUserId(state)
-  console.log("activeDoctorInfo", state.AUTH.getDoctorInfoById(activeUser))
-
   return activeUser? state.AUTH.getDoctorInfoById(activeUser) : new DoctorInfo()
 }

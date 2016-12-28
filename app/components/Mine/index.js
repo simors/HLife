@@ -38,9 +38,27 @@ class Mine extends Component {
       case 2: //审核中
         return require('../../assets/images/doctor_in_review.png')
     }
-
-
   }
+  doctorCertificationAction= (status)=> {
+    console.log("doctorCertificationAction start status:", status)
+    if (status === undefined)
+      Actions.DCTOR_CERTIFICATION()
+    switch (status)
+    {
+      case 0:
+        Actions.DCTOR_REVISE()
+        break
+      case 1:
+        Actions.DCTOR_INFO()
+        break
+      case 2:
+        Actions.DCTOR_CHECKING()
+        break
+      default:
+        break
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -69,7 +87,7 @@ class Mine extends Component {
         </View>
         <View style={styles.azone}>
           <View style={{flex: 1}} >
-            <TouchableOpacity style={styles.aindex} onPress= {()=>Actions.DCTOR_CERTIFICATION()}>
+            <TouchableOpacity style={styles.aindex} onPress= {() => this.doctorCertificationAction(this.props.doctorInfo.status)}>
               <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}></Image>
               <Text style={styles.textStyle}>医生认证</Text>
             </TouchableOpacity>
