@@ -11,6 +11,7 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  InteractionManager
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -22,9 +23,22 @@ import {TopicShow} from './TopicShow'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {TopicComment} from './TopicComment'
 import CommentInput from '../common/Input/CommentInput'
+import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import {getTopicComments} from '../../selector/topicSelector'
+
+import * as Toast from '../common/Toast'
+import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+let formKey = Symbol('commentForm')
+const commentInput = {
+  formKey: formKey,
+  stateKey: Symbol('commentInput'),
+  type: 'comment'
+}
 
 export class TopicDetail extends Component {
   constructor(props) {
@@ -32,7 +46,60 @@ export class TopicDetail extends Component {
     this.state = {}
   }
 
-  onButtonPress() {
+  onButtonPress = () => {
+    if (this.props.isLogin) {
+      this.props.publishTopicFormData({
+        formKey: formKey,
+        topicId: this.props.topic.objectId,
+        userId: this.props.userInfo.id,
+        commentId: (this.props.comment)?this.props.comment.id:undefined,
+        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
+        success: this.submitSuccessCallback.bind(this),
+        error: this.submitErrorCallback
+      })
+    }
+    else {
+      Actions.LOGIN()
+    }
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+    })
+  }
+
+  onRightPress = () => {
+  }
+
+  submitSuccessCallback() {
+    Toast.show('评论成功')
+    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  renderTopicCommentPage() {
+    if (this.props.topicComments) {
+      return (
+        this.props.topicComments.map((value, key)=> {
+          return (
+            this.renderTopicCommentItem(value, key)
+          )
+        })
+      )
+    }
+  }
+
+  renderTopicCommentItem(value, key) {
+    return (
+      <TopicComment key={key}
+                    topic={value}
+                    hasParentComment={(value.parentComment)?true:false}
+      />
+    )
   }
 
   render() {
@@ -45,7 +112,7 @@ export class TopicDetail extends Component {
           title="详情"
           rightType="text"
           rightText="..."
-          rightPress={() => this.onButtonPress()}
+          rightPress={() => this.onRightPress()}
         />
 
         <KeyboardAwareScrollView style={styles.body}>
@@ -59,11 +126,10 @@ export class TopicDetail extends Component {
               </Text>
             </View>
           </View>
-          <TopicComment />
-          <TopicComment hasParentComment={true}/>
-          <TopicComment />
-          <CommentInput />
+          {this.renderTopicCommentPage()}
+
         </KeyboardAwareScrollView>
+        <CommentInput  {...commentInput} onPublishButton={()=>this.onButtonPress()}/>
       </View>
     )
   }
@@ -72,10 +138,20 @@ export class TopicDetail extends Component {
 TopicDetail.defaultProps = {}
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  const isLogin = isUserLogined(state)
+  const userInfo = activeUserInfo(state)
+  const topicComments = getTopicComments(state)
+  return {
+    topicComments:topicComments,
+    isLogin: isLogin,
+    userInfo: userInfo
+  }
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchTopicCommentsByTopicId,
+  publishTopicFormData
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)
 
@@ -116,7 +192,7 @@ const styles = StyleSheet.create({
     height: normalizeH(35),
     alignSelf: 'center',
     borderRadius: 100,
-    marginLeft:normalizeW(12),
+    marginLeft: normalizeW(12),
     width: normalizeW(35),
   },
   zanTextStyle: {

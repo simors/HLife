@@ -24,7 +24,7 @@ import {submitFormData, submitInputData} from '../../action/authActions'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
-import {activeDoctorInfo} from '../../selector/authSelector'
+import {activeDoctorInfo} from '../../selector/doctorSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width

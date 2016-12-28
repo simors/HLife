@@ -18,7 +18,7 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {activeDoctorInfo} from '../../selector/authSelector'
+import {activeDoctorInfo} from '../../selector/doctorSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
