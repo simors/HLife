@@ -19,6 +19,9 @@ export function show(text, options) {
     },
     onHidden: () => {
         // calls on toast\`s hide animation end.
+      if(options && options.onHidden && typeof options.onHidden == 'function') {
+        options.onHidden()
+      }
     }
   })
 }

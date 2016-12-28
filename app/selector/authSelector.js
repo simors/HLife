@@ -3,6 +3,7 @@
  */
 import {Map} from 'immutable'
 import {UserInfo} from '../models/userModels'
+import {DoctorInfo} from '../models/doctorModel'
 
 export function activeUserId(state) {
   return state.AUTH.activeUser
@@ -27,4 +28,9 @@ export function userInfoById(state, userId) {
 export function activeUserInfo(state) {
   let activeUser = activeUserId(state)
   return activeUser ? state.AUTH.getUserInfoById(activeUser) : new UserInfo()
+}
+
+export function activeDoctorInfo(state) {
+  let activeUser = activeUserId(state)
+  return activeUser? state.AUTH.getDoctorInfoById(activeUser) : new DoctorInfo()
 }
