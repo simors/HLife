@@ -24,8 +24,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
-import {fetchShopAnnouncements, followShop} from '../../action/shopAction'
-import {selectShopDetail, selectLatestShopAnnouncemment} from '../../selector/shopSelector'
+import {fetchShopAnnouncements, userIsFollowedShop, followShop} from '../../action/shopAction'
+import {selectShopDetail, selectLatestShopAnnouncemment, selectUserIsFollowShop} from '../../selector/shopSelector'
 import {selectShopList} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 
@@ -40,7 +40,14 @@ class ShopDetail extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopAnnouncements({id: this.props.id})
+      if(this.props.isUserLogined) {
+        this.props.userIsFollowedShop({id: this.props.id})
+      }
     })
+  }
+
+  componentWillReceiveProps() {
+    console.log('isFollowedShop=', this.props.isFollowedShop)
   }
 
   followShop() {
@@ -139,9 +146,14 @@ class ShopDetail extends Component {
                 </View>
               </View>
               <View style={styles.shopHeadRight}>
-                <TouchableOpacity onPress={this.followShop.bind(this)}>
-                  <Image style={styles.attention} source={require('../../assets/images/give_attention_head.png')}/>
-                </TouchableOpacity>
+                  {this.props.isFollowedShop
+                    ? <View style={styles.shopAttentioned}>
+                        <Text style={styles.shopAttentionedTxt}>已关注</Text>
+                      </View>
+                    : <TouchableOpacity onPress={this.followShop.bind(this)}>
+                        <Image style={styles.shopAttention} source={require('../../assets/images/give_attention_head.png')}/>
+                      </TouchableOpacity>
+                  }
               </View>
             </View>
 
@@ -295,16 +307,19 @@ const mapStateToProps = (state, ownProps) => {
   if(shopList.length > 3) {
     shopList.splice(0, shopList.length-3)
   }
+  const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   return {
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
     guessYouLikeList: shopList,
-    isUserLogined: isUserLogined
+    isUserLogined: isUserLogined,
+    isFollowedShop: isFollowedShop
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopAnnouncements,
+  userIsFollowedShop,
   followShop
 }, dispatch)
 
@@ -343,6 +358,18 @@ const styles = StyleSheet.create({
     width: 60,
     justifyContent: 'center',
     alignItems: 'flex-end'
+  },
+  shopAttentioned: {
+    backgroundColor: THEME.colors.green,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 6,
+    paddingRight: 6,
+    borderRadius: 5,
+  },
+  shopAttentionedTxt: {
+    color: '#fff',
+    fontSize: em(14),
   },
   shopName: {
     fontSize: em(17),

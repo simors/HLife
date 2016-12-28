@@ -107,11 +107,13 @@ export function isFollowedShop(payload) {
   return query.find().then((result)=>{
     if(result && result.length) {
       return {
+        shopId: shopId,
         code: '10001',
         message: '您已关注过该店铺,请不要重复关注'
       }
     }
     return {
+      shopId: shopId,
       code: '10000',
       message: '未关注'
     }

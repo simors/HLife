@@ -36,3 +36,15 @@ export function selectLatestShopAnnouncemment(state, shopId) {
   }
   return {}
 }
+
+export function selectUserFollowShopsInfo(state) {
+  return state.SHOP.get('userFollowShopsInfo')
+}
+
+export function selectUserIsFollowShop(state, shopId) {
+  let userFollowShopsInfo = selectUserFollowShopsInfo(state)
+  if(userFollowShopsInfo && userFollowShopsInfo.size) {
+    return userFollowShopsInfo.get(shopId)
+  }
+  return false
+}

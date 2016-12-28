@@ -40,6 +40,20 @@ export function fetchShopAnnouncements(payload) {
   }
 }
 
+export function userIsFollowedShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.isFollowedShop(payload).then((result)=>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
+      dispatch(updateAction(result))
+      return result
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function followShop(payload) {
   return (dispatch, getState) => {
     lcShop.followShop(payload).then((result) =>{
