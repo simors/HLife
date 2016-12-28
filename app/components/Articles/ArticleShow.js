@@ -9,7 +9,7 @@ import {
   Alert,
   Dimensions,
   Platform,
-
+  InteractionManager,
   ScrollView,
   TouchableHighlight
 } from 'react-native'
@@ -21,42 +21,63 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
+import {fetchLikers} from '../../action/articleAction'
+
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 
-export default class ArticleShow extends Component {
+class ArticleShow extends Component {
   constructor(props) {
     super(props)
   }
 
-  renderArticles() {
-    console.log('guolailexiesha',{...this.props})
-
+  componentDidMount() {
+    console.log('DidMountisHere-====--------->')
     if (this.props.articleId) {
-       let imageCount = this.props.images.length
+      InteractionManager.runAfterInteractions(() => {
+        this.props.fetchLikers(this.props.articleId)
+      })
+    }
+  }
+
+  renderArticles() {
+    if (this.props.articleId) {
+      let imageCount = this.props.images.length
       switch (imageCount) {
         case 1:
           return (
             <View style={styles.container}>
               <View style={styles.oneImage}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.ARTICLES_ARTICLE({...this.props})}}>
-                <View>
-                  <Image style={styles.image} source={{uri: this.props.images[0]}}>
-                  </Image>
-                </View>
-                  </TouchableOpacity>
+                  Actions.ARTICLES_ARTICLE({...this.props})
+                }}>
+                  <View>
+                    <Image style={styles.image} source={{uri: this.props.images[0]}}>
+                    </Image>
+                  </View>
+                </TouchableOpacity>
                 <View style={styles.oneArticleInfo}>
                   <TouchableOpacity onPress={()=> {
-                    Actions.ARTICLES_ARTICLE({...this.props})}}>
-                  <View style={styles.oneTitle}>
-                    <Text style={{fontSize:normalizeW(17),color:'#636363'}}>{this.props.title}</Text>
-                  </View>
-                    </TouchableOpacity>
+                    Actions.ARTICLES_ARTICLE({...this.props})
+                  }}>
+                    <View style={styles.oneTitle}>
+                      <Text style={{fontSize: normalizeW(17), color: '#636363'}}>{this.props.title}</Text>
+                    </View>
+                  </TouchableOpacity>
                   <View style={styles.oneAuthor}>
-                    <Image style={{height:normalizeH(20),width:normalizeW(20),overflow:'hidden',borderRadius:normalizeW(10)}} source={{uri: this.props.avatar}}></Image>
-                    <Text style={{fontSize:normalizeW(15),color:'#929292',marginLeft:normalizeW(8)}}>{this.props.nickname}</Text>
+                    <Image style={{
+                      height: normalizeH(20),
+                      width: normalizeW(20),
+                      overflow: 'hidden',
+                      borderRadius: normalizeW(10)
+                    }} source={{uri: this.props.avatar}}></Image>
+                    <Text style={{
+                      fontSize: normalizeW(15),
+                      color: '#929292',
+                      marginLeft: normalizeW(8)
+                    }}>{this.props.nickname}</Text>
                   </View>
                   <View style={styles.comment}></View>
                 </View>
@@ -89,7 +110,8 @@ export default class ArticleShow extends Component {
             <View style={styles.container}>
               <View style={styles.threeImageView}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.ARTICLES_ARTICLE({...this.props})}}>
+                  Actions.ARTICLES_ARTICLE({...this.props})
+                }}>
                   <View >
                     <Text style={styles.threeTitle}>{this.props.title}</Text>
                   </View>
@@ -104,7 +126,7 @@ export default class ArticleShow extends Component {
                 </TouchableOpacity>
                 <View style={styles.threeArticleInfo}>
                   <Image style={styles.threeAvatar} source={{uri: this.props.avatar}}></Image>
-                  <Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.nickname}</Text>
+                  <Text style={{fontSize: normalizeW(15), color: '#929292'}}>{this.props.nickname}</Text>
                   <View style={styles.comments}></View>
                 </View>
               </View>
@@ -124,6 +146,17 @@ export default class ArticleShow extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+return{}
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchLikers
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleShow)
+
 
 const styles = StyleSheet.create(
   {
@@ -162,39 +195,39 @@ const styles = StyleSheet.create(
       width: normalizeW(260),
     },
     oneAuthor: {
-      flexDirection:'row',
+      flexDirection: 'row',
       height: normalizeH(40),
       width: normalizeW(260),
       borderBottomWidth: normalizeW(1),
       borderBottomColor: '#E6E6E6',
-      alignItems:'center',
+      alignItems: 'center',
     },
     comment: {
       height: normalizeH(40),
       width: normalizeW(150),
     },
-    threeArticleInfo:{
-     // marginLeft:normalizeW(6),
-      flexDirection:'row',
-      width:PAGE_WIDTH,
+    threeArticleInfo: {
+      // marginLeft:normalizeW(6),
+      flexDirection: 'row',
+      width: PAGE_WIDTH,
       alignItems: 'center'
     },
-    threeAvatar:{
-      borderRadius:normalizeW(15),
-      height:normalizeH(30),
-      width:normalizeW(30),
-      overflow:'hidden',
-      marginTop:normalizeH(6),
-      marginLeft:normalizeW(6),
-      marginRight:normalizeW(6),
-      marginBottom:normalizeH(10)
+    threeAvatar: {
+      borderRadius: normalizeW(15),
+      height: normalizeH(30),
+      width: normalizeW(30),
+      overflow: 'hidden',
+      marginTop: normalizeH(6),
+      marginLeft: normalizeW(6),
+      marginRight: normalizeW(6),
+      marginBottom: normalizeH(10)
     },
-    threeTitle:{
-      marginTop:normalizeH(10),
-      marginLeft:normalizeW(10),
-      marginBottom:normalizeH(12),
-      fontSize:normalizeW(17),
-      color:'#636363'
+    threeTitle: {
+      marginTop: normalizeH(10),
+      marginLeft: normalizeW(10),
+      marginBottom: normalizeH(12),
+      fontSize: normalizeW(17),
+      color: '#636363'
     }
 
   }

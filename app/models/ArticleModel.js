@@ -15,14 +15,32 @@ export const ArticleItemConfig = Record({
   avatar: undefined,        //作者头像
   author:undefined,         //作者ID
   createdAt: undefined,     //创建时间
-  likes: undefined,         //点赞数
+ // likes: undefined,         //点赞数
 }, 'ArticleItemConfig')
 
+export const LikersItemConfig = Record({
+  avatar:undefined,
+  authorId:undefined,
+  nickname:undefined,
+},'LikersItemConfig')
+
+export class LikersItem extends LikersItemConfig{
+  static fromLeancloudObject(lcObj){
+    console.log('lcObj====>',lcObj)
+    let likerItem = new LikersItemConfig()
+   // let attrs = lcObj.attributes
+    return likerItem.withMutations((record)=>{
+      console.log('zhelishurule',lcObj.avatar)
+      record.set('avatar', lcObj.avatar)
+      record.set('authorId', lcObj.objectId)
+      record.set('nickname', lcObj.nickname?lcObj.nickname:lcObj.username)
+    })
+  }
+}
 
 
 export class ArticleItem extends ArticleItemConfig {
-  static fromLeancloudObject(lcObj,likers) {
-    console.log('lcObjd=============>',lcObj)
+  static fromLeancloudObject(lcObj) {
     let articleItem = new ArticleItemConfig()
     let attrs = lcObj.attributes
     let user = lcObj.get('user')
@@ -38,7 +56,6 @@ export class ArticleItem extends ArticleItemConfig {
     }
     return articleItem.withMutations((record)=> {
 
-      console.log('zhelishishenmeyangzi',record)
       record.set('title', attrs.title)
       record.set('content', attrs.content)
       record.set('categoryId', attrs.Category.id)
@@ -49,7 +66,12 @@ export class ArticleItem extends ArticleItemConfig {
       record.set('articleId', lcObj.id)
       record.set('createdAt', lcObj.createdAt)
       record.set('author',attrs.author.id)
-      record.set('likers',likers)
+    //  record.set('likers',likers)
     })
   }
 }
+
+export const Articles = Record({
+  aticlrList: List(),
+  likesList: Map()
+}, 'Articles')

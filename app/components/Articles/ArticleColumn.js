@@ -39,8 +39,6 @@ class ArticleColumn extends Component {
   }
 
   componentDidMount() {
-    console.log('DidMountisHere-====--------->', this.props.columnId)
-
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchArticle(this.props.columnId)
     })
@@ -163,7 +161,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchArticle
+  fetchArticle,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleColumn)

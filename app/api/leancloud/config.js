@@ -10,7 +10,7 @@ import {
   TopicCategoryItem,
   ShopCategory,
 } from '../../models/ConfigModels'
-import {ArticleItem} from '../../models/ArticleModel'
+import {ArticleItem, LikersItem} from '../../models/ArticleModel'
 import ERROR from '../../constants/errorCode'
 
 export function getBanner(payload) {
@@ -90,29 +90,18 @@ export function getArticle(payload) {
   if (payload) {
     let categoryId = payload
     let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
+    // console.log('getLikers.category=====', articleCategory)
+
     query.equalTo('Category', articleCategory)
     query.include(['user'])
     query.descending('createdAt')
   }
   return query.find().then(function (results) {
-    console.log('results=============>',results)
-
+    //  console.log('results=============>',results)
     let article = []
-    let like = []
     results.forEach((result) => {
-      let articleItem=AV.Object.createWithoutData('Articles',result.id)
-      console.log('articleItem=============>',articleItem)
-      let relation =  articleItem.relation('likers')
-      let queryLikers = relation.query()
-      console.log('articleItem=============>',queryLikers)
+      article.push(ArticleItem.fromLeancloudObject(result))
 
-      queryLikers.find().then(function (likersResult) {
-        // likers.forEach()
-        console.log('likers=============>',likersResult)
-        //article.push(ArticleItem.fromLeancloudObject(result,queryLikers))
-
-      })
-      // article.push(ArticleItem.fromLeancloudObject(result))
     })
 
     return new List(article)
@@ -120,6 +109,26 @@ export function getArticle(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
+
+export function getLikers(payload) {
+    let articleIdJson = {
+      articleId: payload
+    }
+    let likers=[]
+    return AV.Cloud.run('getArticleLikers',articleIdJson).then(function(datas){
+      console.log('datas============>',datas)
+      datas.forEach((data)=> {
+        likers.push(LikersItem.fromLeancloudObject(data))
+        console.log('likers========>',likers)
+      })
+      return new List(likers)
+    }, function (err) {
+      console.log(err)
+
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
 }
 
 export function getShopCategories(payload) {
