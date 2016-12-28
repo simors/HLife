@@ -14,13 +14,14 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Symbol from 'es6-symbol'
+import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import PhoneInput from '../common/Input/PhoneInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ImageInput from '../common/Input/ImageInput'
-import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitFormData, submitInputData} from '../../action/authActions'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
@@ -88,6 +89,7 @@ class DoctorRevise extends Component {
           leftType="text"
           leftStyle={styles.left}
           leftText="取消"
+          leftPress = {()=> {Actions.pop()}}
           title="认证资料信息"
           titleStyle={styles.left}
           rightType=""

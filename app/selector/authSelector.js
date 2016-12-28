@@ -31,6 +31,5 @@ export function activeUserInfo(state) {
 }
 
 export function activeDoctorInfo(state) {
-  let activeUser = activeUserId(state)
-  return activeUser? state.AUTH.getDoctorInfoById(activeUser) : new DoctorInfo()
+  return state.DOCTOR.get('doctor')? state.DOCTOR.get('doctor'): new DoctorInfo()
 }
