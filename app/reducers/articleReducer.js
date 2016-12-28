@@ -11,6 +11,8 @@ export default function articleReducer(state = initialState, action) {
   switch(action.type) {
     case Types.ADD_ARTICLES:
       return handleAddArticles(state, action)
+    case Types.ADD_LIKERS:
+      return handleAddLikers(state,action)
     default:
       return state
   }
@@ -21,4 +23,12 @@ function handleAddArticles(state, action) {
   let articleList = action.payload.articleList
   state = state.set(columnId, articleList)
   return state
+}
+
+function handleAddLikers(state, action) {
+  let articleId = action.payload.articleId
+  let likersList = action.payload.likersList
+  state = state.set(articleId,likersList)
+  return state
+
 }

@@ -223,14 +223,3 @@ export function verifyInvitationCode(payload) {
     throw err
   })
 }
-
-export function fetchDocterList(payload) {
-  return AV.Cloud.run('hLifeGetDocterList').then((results) => {
-    // console.log('find user: ', results)
-    return results
-  }, (err) => {
-    console.log(err)
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-}

@@ -1,4 +1,3 @@
-
 import {createAction} from 'redux-actions'
 import * as topicActionTypes from '../constants/topicActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'

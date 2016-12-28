@@ -18,8 +18,9 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
-import {getDocterList} from '../../action/authActions'
-import {getDoctorList, activeUserId} from '../../selector/authSelector'
+import {getDocterList} from '../../action/doctorAction'
+import {activeUserId} from '../../selector/authSelector'
+import {getDoctorList} from '../../selector/doctorSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height

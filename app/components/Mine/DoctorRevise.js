@@ -13,23 +13,20 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {Actions} from 'react-native-router-flux'
 import Symbol from 'es6-symbol'
+import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import PhoneInput from '../common/Input/PhoneInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
-import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import ImageInput from '../common/Input/ImageInput'
-import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
-import * as Toast from '../common/Toast'
-import {isInputValid} from '../../selector/inputFormSelector'
+import {submitFormData, submitInputData} from '../../action/authActions'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
-import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
-import {activeUserInfo} from '../../selector/authSelector'
+import {activeDoctorInfo} from '../../selector/doctorSelector'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -54,12 +51,6 @@ const phoneInput = {
   stateKey: Symbol('phoneInput'),
   type: "phoneInput",
 }
-const smsAuthCodeInput = {
-  formKey: commonForm,
-  stateKey: Symbol('smsAuthCodeInput'),
-  type: "smsAuthCodeInput",
-
-}
 
 const regionPicker = {
   formKey: commonForm,
@@ -74,10 +65,10 @@ const medicalPicker = {
   type: "medicalPicker",
   placeholder: "选择科室"
 }
-const idImageInput = {
+const IDImageInput = {
   formKey: commonForm,
-  stateKey: Symbol('idImageInput'),
-  type: "idImageInput",
+  stateKey: Symbol('IDImageInput'),
+  type: "IDImageInput",
 }
 const imageGroupInput = {
   formKey: commonForm,
@@ -85,41 +76,10 @@ const imageGroupInput = {
   type: 'imgGroup'
 }
 
-class DoctorCertification extends Component {
+class DoctorRevise extends Component {
   constructor(props) {
     super(props)
   }
-   submitSuccessCallback(doctorInfo) {
-     Toast.show('认证提交成功')
-     Actions.pop()
-   }
-
-   submitErrorCallback(error) {
-
-     Toast.show(error.message)
-   }
-
-   onButtonPress = () => {
-     this.props.submitFormData({
-       formKey: commonForm,
-       submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
-       id: this.props.userInfo && this.props.userInfo.id,
-       success: this.submitSuccessCallback,
-       error: this.submitErrorCallback
-     })
-   }
-
-   smsCode() {
-     this.props.submitInputData({
-       formKey: commonForm,
-       stateKey:phoneInput.stateKey,
-       submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
-       success:() => {},
-       error: (error) => {
-         Toast.show(error.message)
-       }
-     })
-   }
 
   render() {
     return (
@@ -130,59 +90,50 @@ class DoctorCertification extends Component {
           leftStyle={styles.left}
           leftText="取消"
           leftPress = {()=> {Actions.pop()}}
-          title="医生认证"
+          title="认证资料信息"
           titleStyle={styles.left}
           rightType=""
         />
         <View style={styles.body}>
           <ScrollView keyboardShouldPersistTaps= {true} keyboardDismissMode= {'on-drag'}>
-            <View style={styles.trip}>
-              <Text style={{fontSize: 12}}>欢迎加入近来医生，完成认证可使用完整功能</Text>
-            </View>
             <View style={styles.zone}>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>姓名</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...nameInput} placeholder="与身份证姓名保持一致" containerStyle={{height: normalizeH(38), }}
+                  <CommonTextInput {...nameInput}
+                                   initValue={this.props.doctorInfo.name}
+                                   placeholder="与身份证姓名保持一致"
+                                   containerStyle={{height: normalizeH(38), }}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>身份证号</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...IDInput}  containerStyle={{height: normalizeH(38) }} maxLength={18}
+                  <CommonTextInput {...IDInput}
+                                   initValue={this.props.doctorInfo.ID}
+                                   containerStyle={{height: normalizeH(38), }}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
-                  <PhoneInput {...phoneInput} initValue={this.props.userInfo.phone} placeholder="仅用于客服与你联系" editable={false}
+                  <PhoneInput {...phoneInput}
+                              initValue={this.props.doctorInfo.phone}
+                              placeholder="仅用于客服与你联系"
+                              editable={false}
                               inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>
-              <View style={styles.inputBox}>
-                <Text style={styles.maintext}>验证码</Text>
-                <View style={{flex: 1,}}>
-                  <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(38)}}
-                                    textInput={styles.smsAuthCodeTextInput}
-                                    inputContainer={{paddingLeft: 17, paddingRight: 17}}
-                                    placeholder = "填写手机验证码"
-                                    codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                                    codeTextContainerDisable={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                                    codeText={{fontSize: 12}}
-                                    getSmsAuCode={() => this.smsCode()}
-                                    reset={!this.props.phoneValid}
-                  />
-                </View>
-              </View>
-
             </View>
             <View style={styles.zone}>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>执业地点</Text>
                 <View style={{flex: 1}}>
-                  <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(38)}}
+                  <RegionPicker {...regionPicker}
+                                initValue={this.props.doctorInfo.organization}
+                                containerStyle={{height: normalizeH(38)}}
                                 inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
@@ -190,7 +141,9 @@ class DoctorCertification extends Component {
                 <Text style={styles.maintext}>擅长科目</Text>
                 <View style={{flex: 1}}>
 
-                  <MedicalLabPicker {...medicalPicker} containerStyle={{height: normalizeH(38), }}
+                  <MedicalLabPicker {...medicalPicker}
+                                    initValue={this.props.doctorInfo.department}
+                                    containerStyle={{height: normalizeH(38), }}
                                     inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
@@ -202,24 +155,12 @@ class DoctorCertification extends Component {
                     认证头像
                   </Text>
                 </View>
-                <Text style={styles.triptext}>
-                  请上传本人持身份证的头像
-                </Text>
-                <ImageInput {...idImageInput} containerStyle={styles.imageInputStyle}
+                <ImageInput {...IDImageInput}
+                            initValue={this.props.doctorInfo.certifiedImage}
+                            containerStyle={styles.imageInputStyle}
                             addImage={require('../../assets/images/upload.png')}
                             addImageBtnStyle={{width: normalizeW(80), height: normalizeH(80), top: 0, left: 0}}
                 />
-              </View>
-              <View style={styles.illustrate}>
-                <Text style={[styles.triptext, {paddingLeft: 0}]}>
-                  参考图像及拍摄说明
-                </Text>
-                <View style={{width: normalizeW(109), height: normalizeH(81), backgroundColor: 'yellow'}}>
-                  {/*<ImageGroupViewer images={''} imageLineCnt={1}/>*/}
-                  <Image source={require('../../assets/images/card_portrait.png')}/>
-
-                </View>
-
               </View>
 
             </View>
@@ -229,21 +170,19 @@ class DoctorCertification extends Component {
                   认证凭证
                 </Text>
               </View>
-                <Text style={styles.triptext}>
-                  请上传医生有效证明，包含工作证、执业证和职称证
-                </Text>
-              <View style={{flexDirection: 'row', marginLeft: normalizeW(20), marginBottom: normalizeH(12), marginRight: normalizeW(20), marginTop: normalizeH(8)}}>
-                <ImageGroupInput {...imageGroupInput} number={3} imageLineCnt={4}/>
+              <View style={{flexDirection: 'row'}}>
+                <ImageGroupInput {...imageGroupInput}
+                                 number={3}
+                                 imageLineCnt={4}/>
               </View>
+
             </View>
-            <CommonButton buttonStyle={{marginBottom: normalizeH(6), marginTop: normalizeH(100)}}
-                          title="提交认证"
+
+            <CommonButton buttonStyle={{marginBottom: normalizeH(6), marginTop: normalizeH(54)}}
+                          title="确认修改内容，重新提交"
                           onPress={this.onButtonPress}
             />
-            <View style={styles.agreement}>
-              <Text style={styles.agreementText}>我已阅读</Text>
-              <Text style={[styles.agreementText, {color: '#50E3C2'}]}>《近来医生用户协议》</Text>
-            </View>
+            <Text style={styles.tailText}>重新提交后，审核时间重新开始计算</Text>
           </ScrollView>
         </View>
       </View>
@@ -252,17 +191,9 @@ class DoctorCertification extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let phoneValid
-  let isValid = isInputValid(state, commonForm, phoneInput.stateKey)
-  let userInfo = activeUserInfo(state)
-  if (!isValid.isValid) {
-    phoneValid = false
-  } else {
-    phoneValid = true
-  }
-  return {
-    phoneValid: phoneValid,
-    userInfo: userInfo,
+  let doctorInfo = activeDoctorInfo(state)
+  return{
+    doctorInfo: doctorInfo,
   }
 }
 
@@ -271,7 +202,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(DoctorCertification)
+export default connect(mapStateToProps, mapDispatchToProps)(DoctorRevise)
 
 const styles = StyleSheet.create({
   container: {
@@ -305,40 +236,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  phoneInputBox: {
-
-  },
-  trip: {
-    height: normalizeH(44),
-    backgroundColor: 'rgba(80, 226, 193, 0.23)',
-    justifyContent: 'center',
-    alignItems: 'center'
-
-  },
   maintext: {
     width: normalizeW(66),
     marginLeft: normalizeW(20),
     fontFamily: 'PingFangSC-Regular',
     fontSize: em(16),
     color: '#656565',
-  },
-  triptext: {
-    fontFamily: 'PingFangSC-Regular',
-    paddingLeft: normalizeW(20),
-    marginBottom: normalizeH(8),
-    fontSize: 12,
-    color: '#B2B2B2',
-    letterSpacing: -0.31,
-  },
-  agreement: {
-    flexDirection: 'row',
-    marginBottom: normalizeH(35),
-    alignSelf: 'center'
-  },
-  agreementText: {
-    fontFamily: 'PingFangSC-Regular',
-    fontSize: 12,
-    color: '#B2B2B2',
   },
   imageInputStyle: {
     marginLeft: normalizeW(20),
@@ -352,25 +255,18 @@ const styles = StyleSheet.create({
     height: normalizeH(40),
     justifyContent: 'center'
   },
-  illustrate: {
-    marginTop: normalizeH(36),
-    borderLeftWidth: 1,
-    borderLeftColor: '#D3D2D6',
-    paddingLeft: normalizeW(12),
-    paddingRight: normalizeW(12)
-  },
-  smsAuthCodeTextInput: {
-    height: normalizeH(38),
-    backgroundColor: "#FFFFFF",
-    borderWidth: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
   phoneInputStyle: {
     height: normalizeH(38),
     backgroundColor: '#FFFFFF',
     borderWidth: 0,
     paddingLeft: 0,
+  },
+  tailText: {
+    fontFamily: 'PingFangSC-Regular',
+    alignSelf: 'center',
+    fontSize: em(12),
+    color: '#B2B2B2',
+    letterSpacing: 0,
+    height: normalizeH(26)
   }
-
 })

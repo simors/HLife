@@ -4,15 +4,18 @@ import {
   View,
   Text,
   Dimensions,
+  ScrollView,
   TouchableOpacity,
   Image,
   Platform
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {activeUserInfo, activeDoctorInfo} from '../../selector/authSelector'
+import {activeUserInfo} from '../../selector/authSelector'
+import {activeDoctorInfo} from '../../selector/doctorSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import {fetchDoctorInfo} from '../../action/doctorAction'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -22,8 +25,8 @@ class Mine extends Component {
   constructor(props) {
     super(props)
   }
-
   componentDidMount() {
+    this.props.fetchDoctorInfo({id: this.props.userInfo.id})
   }
 
   doctorCertificationImage(status) {
@@ -38,9 +41,27 @@ class Mine extends Component {
       case 2: //审核中
         return require('../../assets/images/doctor_in_review.png')
     }
-
-
   }
+  doctorCertificationAction= (status)=> {
+    console.log("doctorCertificationAction start status:", status)
+    if (status === undefined)
+      Actions.DCTOR_CERTIFICATION()
+    switch (status)
+    {
+      case 0:
+        Actions.DCTOR_REVISE()
+        break
+      case 1:
+        Actions.DCTOR_INFO()
+        break
+      case 2:
+        Actions.DCTOR_CHECKING()
+        break
+      default:
+        break
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -67,83 +88,86 @@ class Mine extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.azone}>
-          <View style={{flex: 1}} >
-            <TouchableOpacity style={styles.aindex} onPress= {()=>Actions.DCTOR_CERTIFICATION()}>
-              <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}></Image>
-              <Text style={styles.textStyle}>医生认证</Text>
-            </TouchableOpacity>
+        <ScrollView onScroll={() => {this.props.fetchDoctorInfo({id: this.props.userInfo.id})}}>
+          <View style={styles.azone}>
+            <View style={{flex: 1}} >
+              <TouchableOpacity style={styles.aindex} onPress= {() => this.doctorCertificationAction(this.props.doctorInfo.status)}>
+                <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}></Image>
+                <Text style={styles.textStyle}>医生认证</Text>
+              </TouchableOpacity>
 
-          </View>
-          <View style={{flex: 1}}>
-            <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
-              <Image source={require('../../assets/images/mine_promote.png')}></Image>
-              <Text style={styles.textStyle}>推广招聘</Text>
-            </TouchableOpacity>
+            </View>
+            <View style={{flex: 1}}>
+              <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
+                <Image source={require('../../assets/images/mine_promote.png')}></Image>
+                <Text style={styles.textStyle}>推广招聘</Text>
+              </TouchableOpacity>
 
-          </View>
-          <View style={{flex: 1}}>
-            <TouchableOpacity style={styles.aindex} onPress= {()=> {Actions.SHOPR_EGISTER()}}>
-              <Image source={require('../../assets/images/mine_store.png')}></Image>
-              <Text style={styles.textStyle}>我的店铺</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{flex: 1}}>
-            <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
-              <Image source={require('../../assets/images/mine_prize.png')}></Image>
-              <Text style={styles.textStyle}>推荐有奖</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.bzone}>
-          <View style={styles.bheader}>
-            <View style={{marginTop: normalizeH(8), marginLeft: normalizeW(19), marginBottom: normalizeH(3)}}>
-              <Text style={[styles.textStyle, {fontSize: 12, letterSpacing: 0.34}]}>我的互动</Text>
             </View>
+            <View style={{flex: 1}}>
+              <TouchableOpacity style={styles.aindex} onPress= {()=> {Actions.SHOPR_EGISTER()}}>
+                <Image source={require('../../assets/images/mine_store.png')}></Image>
+                <Text style={styles.textStyle}>我的店铺</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{flex: 1}}>
+              <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
+                <Image source={require('../../assets/images/mine_prize.png')}></Image>
+                <Text style={styles.textStyle}>推荐有奖</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.bzone}>
+            <View style={styles.bheader}>
+              <View style={{marginTop: normalizeH(8), marginLeft: normalizeW(19), marginBottom: normalizeH(3)}}>
+                <Text style={[styles.textStyle, {fontSize: 12, letterSpacing: 0.34}]}>我的互动</Text>
+              </View>
 
-          </View>
-          <View style={styles.bbody}>
-            <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_ask.png')}></Image>
-              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>提问</Text>
             </View>
-            <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_focuson.png')}></Image>
-              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>关注</Text>
-            </View>
-            <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_artical.png')}></Image>
-              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>
-            </View>
-            <View style={styles.bindex}>
-              <Image source={require('../../assets/images/mine_comments.png')}></Image>
-              <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>评论</Text>
-            </View>
+            <View style={styles.bbody}>
+              <View style={styles.bindex}>
+                <Image source={require('../../assets/images/mine_ask.png')}></Image>
+                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>提问</Text>
+              </View>
+              <View style={styles.bindex}>
+                <Image source={require('../../assets/images/mine_focuson.png')}></Image>
+                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>关注</Text>
+              </View>
+              <View style={styles.bindex}>
+                <Image source={require('../../assets/images/mine_artical.png')}></Image>
+                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>
+              </View>
+              <View style={styles.bindex}>
+                <Image source={require('../../assets/images/mine_comments.png')}></Image>
+                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>评论</Text>
+              </View>
 
+            </View>
           </View>
-        </View>
-        <View style={styles.czone}>
-          <View style={styles.cindex}>
-            <Image source={require('../../assets/images/mine_wallet.png')}></Image>
-            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>钱包</Text>
+          <View style={styles.czone}>
+            <View style={styles.cindex}>
+              <Image source={require('../../assets/images/mine_wallet.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>钱包</Text>
+            </View>
+            <View style={styles.cindex}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>收藏</Text>
+            </View>
+            <View style={styles.cindex}>
+              <Image source={require('../../assets/images/mine_signin.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>每日签到</Text>
+            </View>
+            <View style={styles.cindex}>
+              <Image source={require('../../assets/images/mine_service.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>联系客服</Text>
+            </View>
+            <View style={styles.cindex}>
+              <Image source={require('../../assets/images/mine_feedback.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>意见反馈</Text>
+            </View>
           </View>
-          <View style={styles.cindex}>
-            <Image source={require('../../assets/images/mine_collection.png')}></Image>
-            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>收藏</Text>
-          </View>
-          <View style={styles.cindex}>
-            <Image source={require('../../assets/images/mine_signin.png')}></Image>
-            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>每日签到</Text>
-          </View>
-          <View style={styles.cindex}>
-            <Image source={require('../../assets/images/mine_service.png')}></Image>
-            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>联系客服</Text>
-          </View>
-          <View style={styles.cindex}>
-            <Image source={require('../../assets/images/mine_feedback.png')}></Image>
-            <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>意见反馈</Text>
-          </View>
-        </View>
+
+        </ScrollView>
       </View>
     )
   }
@@ -159,6 +183,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchDoctorInfo,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)

@@ -230,9 +230,9 @@ function doctorCertification(payload, formData) {
     }
     lcAuth.certification(certPayload).then((doctor) => {
       if(payload.success){
-        console.log("doctorCertification doctor", doctor)
-        let cartificationAction = createAction(AuthTypes.DOCTOR_CERTIFICATION_REQUEST)
-        dispatch(cartificationAction(doctor))
+        // console.log("doctorCertification doctor", doctor)
+        // let cartificationAction = createAction(AuthTypes.DOCTOR_CERTIFICATION_REQUEST)
+        // dispatch(cartificationAction(doctor))
         payload.success(doctor)
       }
     }).catch((error) => {
@@ -320,13 +320,4 @@ function shopCertification(payload, formData) {
     })
   }
 
-}
-
-export function getDocterList(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchDocterList(payload).then((doctors) => {
-      const queryDoctors = createAction(AuthTypes.QUERY_DOCTORS)
-      dispatch(queryDoctors({doctors}))
-    })
-  }
 }

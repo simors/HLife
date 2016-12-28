@@ -5,7 +5,7 @@ export const ArticleCommentItem=Record({
   articleId: undefined,   //评论的文章引用 为POINTER
   content: undefined,     //评论内容
   reply: undefined,       //回复评论引用  为POINTER
-  author: undefined,      //作者
+  author: undefined,      //作者名称
 })
 
 export class ArticleComment extends ArticleCommentItem {

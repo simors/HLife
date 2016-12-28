@@ -1,5 +1,4 @@
 import {Record, Map, List} from 'immutable'
-import {DoctorInfo} from './doctorModel'
 
 export const UserInfoRecord = Record({
   id: undefined,
@@ -15,7 +14,6 @@ export const UserInfoRecord = Record({
 export const UserStateRecord = Record({
   activeUser: undefined,      // 已登录用户ID
   profiles: Map(),            // 用户个人信息列表，已用户id作为健值
-  doctorInfo: Map(),          // 医生信息列表
   token: undefined,
 }, 'UserStateRecord')
 
@@ -40,10 +38,5 @@ export class UserState extends UserStateRecord {
   getUserInfoById(userId) {
     const userInfo = this.profiles.get(userId)
     return userInfo ? userInfo : new UserInfo()
-  }
-
-  getDoctorInfoById(userId) {
-    const doctorInfo = this.doctorInfo.get(userId)
-    return doctorInfo? doctorInfo: new DoctorInfo()
   }
 }

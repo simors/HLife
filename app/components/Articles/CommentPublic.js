@@ -25,7 +25,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
-import {CommonTextInput} from '../../components/common/Input/CommonTextInput'
+import {CommentInput} from '../../components/common/Input/CommentInput'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
