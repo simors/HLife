@@ -39,8 +39,6 @@ class ArticleColumn extends Component {
   }
 
   componentDidMount() {
-    console.log('DidMountisHere-====--------->', this.props.columnId)
-
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchArticle(this.props.columnId)
     })
@@ -111,7 +109,6 @@ class ArticleColumn extends Component {
       let articleSource
 
       articleSource = ds.cloneWithRows(articles.articles)
-      console.log('article========>', articles.articles)
 
       return (
         <ListView dataSource={articleSource}
@@ -164,7 +161,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchArticle
+  fetchArticle,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleColumn)
