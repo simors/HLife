@@ -22,13 +22,13 @@ export function fetchArticle(payload) {
   }
 }
 
-export function fetchLikers(payload) {
-  console.log('<><><><><>fetchLikers',payload)
+export function fetchLikers(articleId,columnId) {
+ // console.log('<><><><><>fetchLikers',payload)
   return (dispatch, getState) => {
-    let articleId = payload
-    lcConfig.getLikers(payload).then((likersList) => {
+   // let articleId = payload
+    lcConfig.getLikers(articleId).then((likersList) => {
       console.log('likersList======>',likersList)
-      dispatch(addLikersAction({articleId: articleId, likersList: likersList}))
+      dispatch(addLikersAction({articleId: articleId, likersList: likersList,columnId: columnId}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
