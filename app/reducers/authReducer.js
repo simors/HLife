@@ -22,6 +22,8 @@ export default function authReducer(state = initialState, action) {
       return handleProfileSubmitSuccess(state, action)
     case AuthTypes.DOCTOR_CERTIFICATION_REQUEST:
       return handleDoctorCertificationRequest(state, action)
+    case AuthTypes.QUERY_DOCTORS:
+      return handleQueryDoctors(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -61,6 +63,14 @@ function handleProfileSubmitSuccess(state, action) {
 function handleDoctorCertificationRequest(state, action) {
   let doctorInfo = action.payload.doctorInfo
   state =state.setIn(['doctorInfo', doctorInfo.id], doctorInfo)
+  return state
+}
+
+function handleQueryDoctors(state, action) {
+  let doctors = action.payload.doctors
+  doctors.forEach((doctor) => {
+    state = state.setIn(['doctorInfo', doctor.id], doctor)
+  })
   return state
 }
 

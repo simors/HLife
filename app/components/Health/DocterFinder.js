@@ -19,6 +19,10 @@ import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
 import {getDocterList} from '../../action/authActions'
+import {getDoctorList} from '../../selector/authSelector'
+
+const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_HEIGHT=Dimensions.get('window').height
 
 class DocterFinder extends Component {
   constructor(props) {
@@ -31,22 +35,44 @@ class DocterFinder extends Component {
     })
   }
 
+  renderDocs() {
+    return (
+      this.props.doctors.map((value, key) => {
+        return (
+          <View key={key} style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>{value.nickname ? value.nickname : value.phone}</Text>
+            </TouchableOpacity>
+          </View>
+        )
+      })
+    )
+  }
+
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="找名医"
         />
+        <View style={styles.itemContainer}>
+          {this.renderDocs()}
+        </View>
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let doctors = getDoctorList(state)
+  console.log('doctors', doctors)
+  return {
+    doctors,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -61,4 +87,28 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: '#F5FCFF'
   },
+  itemContainer: {
+    width: PAGE_WIDTH,
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(65),
+      },
+      android: {
+        paddingTop: normalizeH(45)
+      }
+    }),
+  },
+  selectItem: {
+    flexDirection: 'row',
+    height: normalizeH(45),
+    paddingLeft: normalizeW(25),
+    alignItems: 'center',
+    marginBottom: normalizeH(2),
+    marginTop: normalizeH(5),
+  },
+  textStyle: {
+    fontSize: 17,
+    color: '#4A4A4A',
+    letterSpacing: 0.43,
+  }
 })

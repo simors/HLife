@@ -324,8 +324,9 @@ function shopCertification(payload, formData) {
 
 export function getDocterList(payload) {
   return (dispatch, getState) => {
-    lcAuth.fetchDocterList(payload).then((docters) => {
-
+    lcAuth.fetchDocterList(payload).then((doctors) => {
+      const queryDoctors = createAction(AuthTypes.QUERY_DOCTORS)
+      dispatch(queryDoctors({doctors}))
     })
   }
 }

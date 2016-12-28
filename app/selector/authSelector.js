@@ -36,3 +36,12 @@ export function activeDoctorInfo(state) {
 
   return activeUser? state.AUTH.getDoctorInfoById(activeUser) : new DoctorInfo()
 }
+
+export function getDoctorList(state) {
+  let doctors = []
+  let docMap = state.AUTH.doctorInfo
+  docMap.forEach((value) => {
+    doctors.push(value)
+  })
+  return doctors
+}
