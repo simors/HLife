@@ -3,6 +3,7 @@
  */
 import  {Platform, CameraRoll} from 'react-native'
 import {createAction} from 'redux-actions'
+import {Map, List} from 'immutable'
 import AV from 'leancloud-storage'
 import {TypedMessage, messageType, Realtime} from 'leancloud-realtime'
 import {TypedMessagePlugin}from 'leancloud-realtime-plugin-typed-messages'
@@ -144,11 +145,12 @@ export function sendMessage(payload) {
       attributes: Map(attributes)
     })
 
-    dispatch(onCreateMessage({message: msg}))
+    dispatch(onCreateMessage({createdMsgId: payload.msgId, message: msg}))
 
     dispatch(sendLcTypedMessage(payload)).then((message) => {
-      dispatch(onSendMessage({message: message}))
+      dispatch(onSendMessage({createdMsgId: payload.msgId, message: message}))
     }).catch((error) => {
+      console.log(error)
       const failMsg = new Message({
         id: payload.msgId,
         from: activeUserId(getState()),
@@ -254,8 +256,9 @@ function onRecvNotifyMessage(message, conversation) {
 function sendTextMessage(conversation, payload) {
   let message = new ImageMessage()
   message.setText(payload.text)
-  return conversation.send(message).then((message)=> {
-    return Message.fromLeancloudMessage(message, payload)
+  return conversation.send(message).then((msg)=> {
+    console.log('msg after send: ', msg)
+    return Message.fromLeancloudMessage(msg, payload)
   })
 }
 

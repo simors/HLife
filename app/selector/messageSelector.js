@@ -10,3 +10,7 @@ export function messengerClient(state) {
 export function getConversationById(state, id) {
   return state.MESSAGE.getIn(['conversationMap', id]).toJS()
 }
+
+export function activeConversation(state) {
+  return state.MESSAGE.get('activeConversation')
+}

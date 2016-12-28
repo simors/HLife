@@ -127,7 +127,7 @@ const styles = {
       alignItems: 'flex-start',
     },
     wrapper: {
-      borderRadius: 15,
+      borderRadius: 5,
       backgroundColor: '#f0f0f0',
       marginRight: 60,
       minHeight: 20,
@@ -155,7 +155,7 @@ const styles = {
       alignItems: 'flex-end',
     },
     wrapper: {
-      borderRadius: 15,
+      borderRadius: 5,
       backgroundColor: '#50E3C2',
       marginLeft: 60,
       minHeight: 20,

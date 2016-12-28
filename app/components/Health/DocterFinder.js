@@ -19,7 +19,7 @@ import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
 import {getDocterList} from '../../action/authActions'
-import {getDoctorList} from '../../selector/authSelector'
+import {getDoctorList, activeUserId} from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -35,12 +35,20 @@ class DocterFinder extends Component {
     })
   }
 
+  consult(doctor) {
+    let payload = {
+      name: doctor.phone,
+      members: [this.props.currentUser, doctor.id]
+    }
+    Actions.CHATROOM(payload)
+  }
+
   renderDocs() {
     return (
       this.props.doctors.map((value, key) => {
         return (
           <View key={key} style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => this.consult(value)}>
               <Image source={require('../../assets/images/mine_collection.png')}></Image>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>{value.nickname ? value.nickname : value.phone}</Text>
             </TouchableOpacity>
@@ -69,9 +77,9 @@ class DocterFinder extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let doctors = getDoctorList(state)
-  console.log('doctors', doctors)
   return {
     doctors,
+    currentUser: activeUserId(state),
   }
 }
 
