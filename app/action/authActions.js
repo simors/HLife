@@ -321,3 +321,73 @@ function shopCertification(payload, formData) {
   }
 
 }
+
+export function fetchUserFollowees(payload) {
+  return (dispatch, getState) => {
+    lcAuth.fetchUserFollowees(payload).then((result)=>{
+      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function userIsFollowedTheUser(payload) {
+  return (dispatch, getState) => {
+    lcAuth.userIsFollowedTheUser(payload).then((result)=>{
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function followUser(payload) {
+  return (dispatch, getState) => {
+    lcAuth.followUser(payload).then((result) =>{
+      if(result && '10003' == result.code) {
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function unFollowUser(payload) {
+  return (dispatch, getState) => {
+    lcAuth.unFollowUser(payload).then((result) =>{
+      if(result && '10005' == result.code) {
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}

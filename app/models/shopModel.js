@@ -140,12 +140,12 @@ export class ShopComment extends ShopCommentRecord {
       let user = {}
       let userAttrs = attrs.user.attributes
       if(user) {
-        user.shopName = userAttrs.nickname
+        user.id = attrs.user.id
+        user.nickname = userAttrs.nickname
         user.avatar = userAttrs.avatar
       }
       record.set('user', user)
-
-      record.set('createdDate', numberUtils.formatLeancloudTime((lcObj.createdAt, 'YYYY-DD-MM')))
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-DD-MM'))
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())
     })

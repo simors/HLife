@@ -20,6 +20,8 @@ export default function authReducer(state = initialState, action) {
       return handleShopCertificationSuccess(state, action)
     case AuthTypes.PROFILE_SUBMIT_SUCCESS:
       return handleProfileSubmitSuccess(state, action)
+    case AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS:
+      return handleFetchUserFolloweesSuccess(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -53,6 +55,13 @@ function handleProfileSubmitSuccess(state, action) {
   let userInfo = action.payload.userInfo
 
   state = state.setIn(['profiles', userInfo.id], userInfo)
+  return state
+}
+
+function handleFetchUserFolloweesSuccess(state, action) {
+  let currentUserId = action.payload.currentUserId
+  let followees = action.payload.followees
+  state = state.setIn(['followees', currentUserId], followees)
   return state
 }
 

@@ -15,6 +15,7 @@ export const UserStateRecord = Record({
   activeUser: undefined,      // 已登录用户ID
   profiles: Map(),            // 用户个人信息列表，已用户id作为健值
   token: undefined,
+  followees: Map()
 }, 'UserStateRecord')
 
 export class UserInfo extends UserInfoRecord {
