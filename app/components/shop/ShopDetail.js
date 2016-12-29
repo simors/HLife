@@ -193,7 +193,9 @@ class ShopDetail extends Component {
         })
       },
       error: (err) => {
-        Toast.show(err.message)
+        that.closeModal(()=>{
+          Toast.show(err.message, {duration: 1000})
+        })
       }
     }
     this.props.submitShopComment(payload)
