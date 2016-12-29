@@ -205,7 +205,7 @@ class ImageGroupInput extends Component {
         <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Image style={[styles.defaultImgShow, this.props.imgShowStyle]}
-                   source={require('../../../assets/images/add_picture.png')}/>
+                   source={this.props.addImage}/>
           </View>
         </TouchableOpacity>
       </View>
@@ -272,6 +272,7 @@ class ImageGroupInput extends Component {
 ImageGroupInput.defaultProps = {
   number: 1,
   imageLineCnt: 3,
+  addImage: require('../../../assets/images/add_picture.png'),
 }
 
 const mapStateToProps = (state, ownProps) => {

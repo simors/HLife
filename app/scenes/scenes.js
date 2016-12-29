@@ -36,6 +36,7 @@ import Setting from '../components/Mine/Setting'
 import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
 import DocterFinder from '../components/Health/DocterFinder'
+import Inguiry from '../components/Home/Inquiry/index'
 
 const styles = StyleSheet.create({
   container: {
@@ -82,6 +83,7 @@ export const scenes = Actions.create(
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />
+      <Scene key="INQUIRY" component={Inguiry} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

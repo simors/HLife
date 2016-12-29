@@ -12,6 +12,7 @@ export const TopicsConfig = Record({
   nickname: undefined,
   createdAt: undefined,
   avatar: undefined,
+  commentNum:undefined,
 }, 'TopicsConfig')
 
 export class TopicsItem extends TopicsConfig {
@@ -37,6 +38,7 @@ export class TopicsItem extends TopicsConfig {
       record.set('nickname', nickname)
       record.set('avatar', avatar)
       record.set('objectId', lcObj.id)
+      record.set('commentNum', attrs.commentNum)
     })
   }
 }
