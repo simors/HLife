@@ -111,7 +111,7 @@ function createMessage(state, msg) {
     if (msgList.includes(msg)) {
       return msgList
     }
-    return msgList.push(msg)
+    return msgList.unshift(msg)   // 消息倒序排列，最新的消息在列表最前面
   })
   state = state.setIn(['conversationMap', msg.conversation, 'lastMessageAt'], msg.timestamp)
   state = state.setIn(['conversationMap', msg.conversation, 'updatedAt'], msg.timestamp)

@@ -226,8 +226,6 @@ function sendLcTypedMessage(payload) {
 
 function onReceiveMsg(message, conversation) {
   return (dispatch, getState) => {
-    console.log("receive message:", message)
-    console.log("in conversation: ", conversation)
     let msgType = message.type
     if (msgType === msgTypes.MSG_TEXT || msgType === msgTypes.MSG_AUDIO || msgType === msgTypes.MSG_IMAGE) {
       dispatch(onRecvNormalMessage(message, conversation))

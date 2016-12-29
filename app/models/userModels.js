@@ -32,6 +32,20 @@ export class UserInfo extends UserInfoRecord {
     })
     return info
   }
+
+  static fromLeancloudApi(lcObj) {
+    let info = new UserInfoRecord()
+    info = info.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('avatar',lcObj.avatar)
+      record.set('phone', lcObj.phone)
+      record.set('nickname', lcObj.nickname)
+      record.set('gender', lcObj.gender)
+      record.set('birthday', lcObj.birthday)
+      record.set('identity', new List(lcObj.identity))
+    })
+    return info
+  }
 }
 
 export class UserState extends UserStateRecord {

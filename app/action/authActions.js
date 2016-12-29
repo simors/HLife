@@ -7,6 +7,7 @@ import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '..
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
 import {initMessageClient} from '../action/messageAction'
+import {UserInfo} from '../models/userModels'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -320,4 +321,19 @@ function shopCertification(payload, formData) {
     })
   }
 
+}
+
+export function getUserInfoById(payload) {
+  return (dispatch, getState) => {
+    lcAuth.getUserById(payload).then((user) => {
+      console.log('get user', user)
+      let code = user.error
+      if (0 != code) {
+        return
+      }
+      let userInfo = UserInfo.fromLeancloudApi(user.userInfo)
+      const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
+      dispatch(addUserProfile({userInfo}))
+    })
+  }
 }

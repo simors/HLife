@@ -13,25 +13,26 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Symbol from 'es6-symbol'
-import { GiftedChat } from './GifedChat/GiftedChat'
+import {GiftedChat} from './GifedChat/GiftedChat'
 import Header from '../common/Header'
 import CustomInputToolbar from './CustomInputToolbar'
 import CustomMessage from './CustomMessage'
 import {createConversation, leaveConversation, enterConversation, sendMessage} from '../../action/messageAction'
-import {activeUserInfo} from '../../selector/authSelector'
-import {activeConversation} from '../../selector/messageSelector'
+import {getUserInfoById} from '../../action/authActions'
+import {activeUserInfo, userInfoById} from '../../selector/authSelector'
+import {activeConversation, getMessages} from '../../selector/messageSelector'
 import * as msgTypes from '../../constants/messageActionTypes'
 
-const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_WIDTH = Dimensions.get('window').width
 
 class Chatroom extends Component {
   constructor(props) {
     super(props)
-    this.state = {messages: []}
+    // this.state = {messages: []}
     this.onSend = this.onSend.bind(this)
   }
 
-  componentWillMount() {
+  /*componentWillMount() {
     this.setState({
       messages: [
         {
@@ -46,11 +47,14 @@ class Chatroom extends Component {
         },
       ],
     })
-  }
+  }*/
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       console.log('begin to create conversation:', this.props.name, this.props.members)
+      this.props.members.forEach((member) => {
+        this.props.getUserInfoById({userId: member})
+      })
       this.props.createConversation({
         members: this.props.members,
         name: this.props.name,
@@ -63,19 +67,24 @@ class Chatroom extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    if (this.props.messages != newProps.messages) {
 
+    }
   }
 
   onSend(messages = []) {
-    this.setState((previousState) => {
-      return {
-        messages: GiftedChat.append(previousState.messages, messages),
-      }
-    })
+    // this.setState((previousState) => {
+    //   return {
+    //     messages: GiftedChat.append(previousState.messages, messages),
+    //   }
+    // })
+
+    let time = new Date()
+    let msgId = this.props.name + time.toLocaleString()
 
     let payload = {
       type: msgTypes.MSG_TEXT,
-      msgId: Symbol(this.props.name),
+      msgId: msgId,
       conversationId: this.props.conversationId,
     }
 
@@ -90,9 +99,9 @@ class Chatroom extends Component {
     }
   }
 
-  renderCustomInputToolbar(toobarProps) {
+  renderCustomInputToolbar(toolbarProps) {
     return (
-      <CustomInputToolbar {...toobarProps}/>
+      <CustomInputToolbar {...toolbarProps}/>
     )
   }
 
@@ -112,7 +121,7 @@ class Chatroom extends Component {
           title={this.props.title}
         />
         <GiftedChat
-          messages={this.state.messages}
+          messages={this.props.messages}
           onSend={this.onSend}
           user={{
             _id: this.props.user.id,
@@ -134,16 +143,50 @@ Chatroom.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let user = activeUserInfo(state)
+  /*let otherMember = []
+  ownProps.members.forEach((member) => {
+    let other = userInfoById(state, member).toJS()
+    let otherInfo = {
+      id: other.id,
+      phone: other.phone,
+      nickname: other.nickname,
+      avatar: other.avatar,
+    }
+    otherMember.push(otherInfo)
+  })*/
   let conversationId = activeConversation(state)
+  let lcMsg = getMessages(state, conversationId)
+  let messages = []
+
   newProps.user = user
+  // newProps.otherMember = otherMember
   newProps.conversationId = conversationId
+  lcMsg.forEach((value) => {
+    let from = value.from
+    let userInfo = userInfoById(state, from).toJS()
+    let msg = {
+      _id: value.id,
+      text: value.text,
+      createdAt: value.timestamp,
+      user: {
+        _id: userInfo.id,
+        name: userInfo.nickname ? userInfo.nickname : userInfo.phone,
+        avatar: userInfo.avatar,
+      }
+    }
+
+    messages.push(msg)
+  })
+  newProps.messages = messages
+  console.log('messages newProps:', newProps)
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   createConversation,
   leaveConversation,
   enterConversation,
-  sendMessage
+  sendMessage,
+  getUserInfoById
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chatroom)
@@ -157,7 +200,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     height: 40,
   },
-  conversationView: {
-
-  },
+  conversationView: {},
 })
