@@ -76,3 +76,51 @@ export function followShop(payload) {
   }
 }
 
+export function submitShopComment(payload) {
+  return (dispatch, getState) => {
+    lcShop.submitShopComment(payload).then((result) => {
+      let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_COMMENT_SUCCESS)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopCommentList(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopCommentList(payload).then((shopComments)=>{
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS)
+      dispatch(updateAction({shopId: payload.id, shopComments: shopComments}))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopCommentTotalCount(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopCommentTotalCount(payload).then((shopCommentTotalCount) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_TOTAL_COUNT_SUCCESS)
+      dispatch(updateAction({shopId: payload.id, shopCommentTotalCount: shopCommentTotalCount}))
+      if(payload.success){
+        payload.success(shopCommentTotalCount)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+

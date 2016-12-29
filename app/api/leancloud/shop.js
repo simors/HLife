@@ -6,7 +6,8 @@ import {Map, List, Record} from 'immutable'
 import ERROR from '../../constants/errorCode'
 import {
   ShopInfo,
-  ShopAnnouncement
+  ShopAnnouncement,
+  ShopComment
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -160,6 +161,70 @@ export function followShop(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-
-
 }
+
+export function submitShopComment(payload) {
+  let shopId = payload.id
+  let score = payload.score
+  let content = payload.content
+  let blueprints = payload.blueprints
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  let currentUser = AV.User.current()
+
+  let ShopComment = AV.Object.extend('ShopComment')
+  let shopComment = new ShopComment()
+  shopComment.set('user', currentUser)
+  shopComment.set('targetShop', shop)
+  shopComment.set('score', shop)
+  shopComment.set('targetShop', shop)
+  shopComment.set('score', score)
+  shopComment.set('content', content)
+  shopComment.set('blueprints', blueprints)
+
+  return shopComment.save().then((results) => {
+    console.log('results=', results)
+    return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopCommentList(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopComment')
+  //构建内嵌查询
+  let innerQuery = new AV.Query('Shop')
+  innerQuery.equalTo('objectId', shopId)
+  //执行内嵌查询
+  query.matchesQuery('targetShop', innerQuery)
+  query.include(['targetShop', 'user'])
+  query.addDescending('createdAt')
+  return query.find().then((results)=>{
+    let shopComment = []
+    results.forEach((result)=>{
+      shopComment.push(ShopComment.fromLeancloudObject(result))
+    })
+    return new List(shopComment)
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopCommentTotalCount(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopComment')
+  //构建内嵌查询
+  let innerQuery = new AV.Query('Shop')
+  innerQuery.equalTo('objectId', shopId)
+  //执行内嵌查询
+  query.matchesQuery('targetShop', innerQuery)
+  return query.count().then((results)=>{
+    return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+

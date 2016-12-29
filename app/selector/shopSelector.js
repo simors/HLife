@@ -11,7 +11,7 @@ export function selectShopList(state) {
 }
 
 export function selectShopDetail(state, id) {
-  let shopDetail = {}
+  let shopDetail = {owner: {}}
   let shopList = selectShop(state).shopList
   if(shopList && shopList.length) {
     shopList.forEach((shopItem)=>{
@@ -26,7 +26,7 @@ export function selectShopDetail(state, id) {
 }
 
 export function selectShopAnnouncements(state, shopId) {
-  return selectShop(state).shopAnnouncements[shopId]
+  return selectShop(state).shopAnnouncements[shopId] || []
 }
 
 export function selectLatestShopAnnouncemment(state, shopId) {
@@ -47,4 +47,12 @@ export function selectUserIsFollowShop(state, shopId) {
     return userFollowShopsInfo.get(shopId)
   }
   return false
+}
+
+export function selectShopComments(state, shopId) {
+  return selectShop(state).shopComments[shopId] || []
+}
+
+export function selectShopCommentsTotalCount(state, shopId) {
+  return selectShop(state).shopCommentsTotalCounts[shopId]
 }

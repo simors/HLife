@@ -3,9 +3,9 @@
  */
 import * as Types from '../constants/doctorActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Map} from 'immutable'
+import {Doctor} from '../models/doctorModel'
 
-const initialState = new Map()
+const initialState = new Doctor()
 
 export default function doctorReducer(state = initialState, action) {
   switch (action.type) {
@@ -20,7 +20,7 @@ export default function doctorReducer(state = initialState, action) {
 
 function handleDoctorUpdate(state, action) {
   payload = action.payload
-  state = state.set('doctor', payload.doctor)
+  state = state.set('doctorInfo', payload.doctor)
   return state
 }
 
