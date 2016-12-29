@@ -88,9 +88,11 @@ class ShopDetail extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }
+    const that = this
     let payload = {
       userId: userId,
       success: function(result) {
+        that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -98,6 +100,25 @@ class ShopDetail extends Component {
       }
     }
     this.props.followUser(payload)
+
+  }
+
+  unFollowUser(userId) {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }
+    const that = this
+    let payload = {
+      userId: userId,
+      success: function(result) {
+        that.props.fetchUserFollowees()
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.unFollowUser(payload)
 
   }
 
@@ -210,9 +231,9 @@ class ShopDetail extends Component {
               <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
 
               {userIsFollowedTheUser
-                ? <View style={styles.userAttentioned}>
-                    <Text style={styles.userAttentionedTxt}>已关注</Text>
-                  </View>
+                ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>
+                    <Text style={styles.userAttentionedTxt}>取消关注</Text>
+                  </TouchableOpacity>
                 : <TouchableOpacity onPress={()=>{this.followUser(item.user.id)}}>
                     <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
                   </TouchableOpacity>
@@ -423,7 +444,6 @@ const mapStateToProps = (state, ownProps) => {
   const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
 
   const userFollowees = authSelector.selectUserFollowees(state)
-  console.log('mapStateToProps.userFollowees===', userFollowees)
 
   // let shopDetail = ShopDetailTestData.shopDetail
   // const shopComments = ShopDetailTestData.shopComments
@@ -512,15 +532,15 @@ const styles = StyleSheet.create({
   },
   userAttentioned: {
     backgroundColor: THEME.colors.green,
-    paddingTop: 2,
-    paddingBottom: 2,
+    paddingTop: 4,
+    paddingBottom: 4,
     paddingLeft: 4,
     paddingRight: 4,
     borderRadius: 5,
   },
   userAttentionedTxt: {
     color: '#fff',
-    fontSize: em(12),
+    fontSize: 9,
   },
   shopName: {
     fontSize: em(17),
