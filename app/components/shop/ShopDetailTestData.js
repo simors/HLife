@@ -55,6 +55,56 @@ export const latestShopAnnouncement = {
   "updatedAt": 1482833918052
 }
 
+export const shopComments = [
+  {
+    "id": "58648203da2f600065ad4554",
+    "content": "Shahs 大碗厨环境非常nice，饭菜的味道也没得说，值得推荐",
+    "blueprints": [
+      "http://ac-K5Rltwmf.clouddn.com/2198cde31ab267a912f0.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/1933358a86a7f1e4a13a.jpg"
+    ],
+    "containedReply": [],
+    "targetShop": {
+      "shopName": "大碗厨（湘雅附三店）"
+    },
+    "score": 5,
+    "user": {
+      "shopName": "佐凯",
+      "avatar": "http://ac-K5Rltwmf.clouddn.com/ed42f892ab14cb645dba.jpg"
+    },
+    "createdDate": "-- ::",
+    "createdAt": 1482981891454,
+    "updatedAt": 1482981891454
+  },
+  {
+    "id": "5864763b128fe10069f52999",
+    "content": "大碗厨环境非常nice，饭菜的味道也没得说，值得推荐",
+    "blueprints": [
+      "http://ac-K5Rltwmf.clouddn.com/cc9373f79cf0ec40be6f.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/d4755ba3fd4dbad559d7.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/c649cf7d9eb6bb630d26.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/e31df7e7e7dd0865d5a3.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/e81e569eb9d46930982a.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/8f6decff1436db4076a0.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/032b7674446e6683b134.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/07515a9ac696cfe4404f.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/fad6ac3b449f5712b21c.jpg"
+    ],
+    "containedReply": [],
+    "targetShop": {
+      "shopName": "大碗厨（湘雅附三店）"
+    },
+    "score": 5,
+    "user": {
+      "shopName": "佐凯",
+      "avatar": "http://ac-K5Rltwmf.clouddn.com/ed42f892ab14cb645dba.jpg"
+    },
+    "createdDate": "-- ::",
+    "createdAt": 1482978875375,
+    "updatedAt": 1482978875375
+  }
+]
+
 export const shopList = [
   {
     "id": "5858e68a8e450a006cba3cff",
