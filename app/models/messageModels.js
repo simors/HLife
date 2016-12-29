@@ -2,6 +2,7 @@
  * Created by yangyang on 2016/12/20.
  */
 import {Map, List, Record} from 'immutable'
+import * as msgTypes from '../constants/messageActionTypes'
 
 export const MessengerRecord = Record({
   client: undefined,                        // 客户端id
@@ -44,7 +45,7 @@ export class Message extends MessageRecord {
         messageType = lcMsg.content._lctype
         text = lcMsg.content._lctext
       } else {
-        messageType = lcMsg.type
+        messageType = payload.type
         text = lcMsg.text
       }
       record.set('id', lcMsg.id)

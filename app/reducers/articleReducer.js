@@ -11,6 +11,8 @@ export default function articleReducer(state = initialState, action) {
   switch(action.type) {
     case Types.ADD_ARTICLES:
       return handleAddArticles(state, action)
+    case Types.ADD_LIKERS:
+      return handleAddLikers(state, action)
     default:
       return state
   }
@@ -21,4 +23,21 @@ function handleAddArticles(state, action) {
   let articleList = action.payload.articleList
   state = state.set(columnId, articleList)
   return state
+}
+
+function handleAddLikers(state, action) {
+  let columnId = action.payload.columnId
+  let articleId = action.payload.articleId
+  let likersList = action.payload.likersList
+
+  let articleList = state.get(columnId)
+  let article = articleList.find((value) => {return value.articleId == articleId})
+  let index = articleList.findIndex((value) => {return value.articleId == articleId})
+  article = article.set('likers', likersList)
+  articleList = articleList.update(index, val => article)
+  state = state.set(columnId, articleList)
+  //console.log('state======>',state)
+
+  return state
+
 }

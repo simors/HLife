@@ -9,7 +9,7 @@ import {
   Alert,
   Dimensions,
   Platform,
-
+  InteractionManager,
   ScrollView,
   TouchableHighlight
 } from 'react-native'
@@ -21,44 +21,64 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
+import {fetchLikers} from '../../action/articleAction'
+import {getArticleItem} from '../../selector/articleSelector'
+
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 
-export default class ArticleShow extends Component {
+ class ArticleShow extends Component {
   constructor(props) {
     super(props)
   }
 
-  renderArticles() {
-    console.log('guolailexiesha',{...this.props})
+  componentDidMount() {
+    console.log('DidMountisHere-====--------->',this.props)
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchLikers(this.props.articleId,this.props.categoryId)
+    })
 
+  }
+
+  renderArticles() {
     if (this.props.articleId) {
-      console.log('guolailexiesha',{...this.props})
       let imageCount = this.props.images.length
+     // let likeCount = this.props.likers.length
       switch (imageCount) {
         case 1:
           return (
             <View style={styles.container}>
               <View style={styles.oneImage}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.ARTICLES_ARTICLE({...this.props})}}>
-                <View>
-                  <Image style={styles.image} source={{uri: this.props.images[0]}}>
-
-                  </Image>
-                </View>
-                  </TouchableOpacity>
+                  Actions.ARTICLES_ARTICLE({...this.props})
+                }}>
+                  <View>
+                    <Image style={styles.image} source={{uri: this.props.images[0]}}>
+                    </Image>
+                  </View>
+                </TouchableOpacity>
                 <View style={styles.oneArticleInfo}>
                   <TouchableOpacity onPress={()=> {
-                    Actions.ARTICLES_ARTICLE({...this.props})}}>
-                  <View style={styles.oneTitle}>
-                    <Text style={{fontSize:normalizeW(17),color:'#636363'}}>{this.props.title}</Text>
-                  </View>
-                    </TouchableOpacity>
+                    Actions.ARTICLES_ARTICLE({...this.props})
+                  }}>
+                    <View style={styles.oneTitle}>
+                      <Text style={{fontSize: normalizeW(17), color: '#636363'}}>{this.props.title}</Text>
+                    </View>
+                  </TouchableOpacity>
                   <View style={styles.oneAuthor}>
-                    <Image style={{height:normalizeH(30),width:normalizeW(30),overflow:'hidden'}}></Image>
-                    <Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text>
+                    <Image style={{
+                      height: normalizeH(20),
+                      width: normalizeW(20),
+                      overflow: 'hidden',
+                      borderRadius: normalizeW(10)
+                    }} source={{uri: this.props.avatar}}></Image>
+                    <Text style={{
+                      fontSize: normalizeW(15),
+                      color: '#929292',
+                      marginLeft: normalizeW(8)
+                    }}>{this.props.nickname}</Text>
                   </View>
                   <View style={styles.comment}></View>
                 </View>
@@ -91,9 +111,10 @@ export default class ArticleShow extends Component {
             <View style={styles.container}>
               <View style={styles.threeImageView}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.ARTICLES_ARTICLE({...this.props})}}>
-                  <View style={styles.threeTitle}>
-                    <Text style={{fontSize:normalizeW(17),color:'#636363'}}>{this.props.title}</Text>
+                  Actions.ARTICLES_ARTICLE({...this.props})
+                }}>
+                  <View >
+                    <Text style={styles.threeTitle}>{this.props.title}</Text>
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <Image style={styles.threeImage} source={{uri: this.props.images[0]}}>
@@ -105,8 +126,12 @@ export default class ArticleShow extends Component {
                   </View>
                 </TouchableOpacity>
                 <View style={styles.threeArticleInfo}>
-
-                  <View ><Text style={{fontSize:normalizeW(15),color:'#929292'}}>{this.props.author}</Text></View>
+                  <Image style={styles.threeAvatar} source={{uri: this.props.avatar}}></Image>
+                  <Text style={{fontSize: normalizeW(15), color: '#929292'}}>{this.props.nickname}</Text>
+                <View style={styles.threelike}>
+                  <Image source={require('../../assets/images/artical_like_unselect.png')}></Image>
+                </View>
+                  <Text>{this.props.articleItem.likers?this.props.articleItem.likers.length:'hzw'}</Text>
                   <View style={styles.comments}></View>
                 </View>
               </View>
@@ -127,6 +152,21 @@ export default class ArticleShow extends Component {
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
+  console.log('articleItem=======>',articleItem)
+  return{
+    articleItem : articleItem
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchLikers
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleShow)
+
+
 const styles = StyleSheet.create(
   {
     container: {
@@ -141,10 +181,8 @@ const styles = StyleSheet.create(
       flexDirection: 'row',
     },
     threeImage: {
-      marginTop: normalizeH(10),
       marginLeft: normalizeW(6),
       //marginRight: normalizeW(10),
-      marginBottom: normalizeH(10),
       height: normalizeH(117),
       width: normalizeW(117),
     },
@@ -166,20 +204,46 @@ const styles = StyleSheet.create(
       width: normalizeW(260),
     },
     oneAuthor: {
-      flexDirection:'row',
+      flexDirection: 'row',
       height: normalizeH(40),
       width: normalizeW(260),
-      borderBottomWidth: normalizeW(3),
+      borderBottomWidth: normalizeW(1),
       borderBottomColor: '#E6E6E6',
+      alignItems: 'center',
     },
     comment: {
       height: normalizeH(40),
       width: normalizeW(150),
     },
-    threeArticleInfo:{
-      flexDirection:'row',
-      width:PAGE_WIDTH,
-
+    threeArticleInfo: {
+      // marginLeft:normalizeW(6),
+      flexDirection: 'row',
+      width: PAGE_WIDTH,
+      alignItems: 'center'
+    },
+    threeAvatar: {
+      borderRadius: normalizeW(15),
+      height: normalizeH(30),
+      width: normalizeW(30),
+      overflow: 'hidden',
+      marginTop: normalizeH(6),
+      marginLeft: normalizeW(6),
+      marginRight: normalizeW(6),
+      marginBottom: normalizeH(10)
+    },
+    threeTitle: {
+      marginTop: normalizeH(10),
+      marginLeft: normalizeW(10),
+      marginBottom: normalizeH(12),
+      fontSize: normalizeW(17),
+      color: '#636363'
+    },
+    threelike:{
+      marginLeft:normalizeW(28),
+      marginTop:normalizeH(15),
+      marginBottom:normalizeH(13),
+      height:normalizeH(22),
+      width:normalizeW(25),
     },
 
   }

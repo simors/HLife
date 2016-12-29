@@ -38,6 +38,9 @@ function onConversationCreated(state, action) {
   let conversation = action.payload
   let cid = conversation.id
 
+  // Record active conversation
+  state = state.set('activeConversation', cid)
+
   if (state.getIn(['conversationMap', cid]) == undefined) {
     state = state.updateIn(['conversationMap', cid], new Conversation(), val => val.merge(conversation))
     return sortConversationList(state)
@@ -67,7 +70,7 @@ function onConversationLeft(state, action) {
 
 function onMessageCreated(state, action) {
   const msg = action.payload.message
-  const createdMsgId = msg.id
+  const createdMsgId = action.payload.createdMsgId
   const convId = msg.conversation
   state = deleteMessage(state, createdMsgId, convId)
   return createMessage(state, msg)
@@ -75,7 +78,7 @@ function onMessageCreated(state, action) {
 
 function onMessageSend(state, action) {
   const msg = action.payload.message
-  const createdMsgId = msg.id
+  const createdMsgId = action.payload.createdMsgId
   const convId = msg.conversation
 
   //replace stored message with new id
@@ -124,7 +127,7 @@ function createMessage(state, msg) {
 function deleteMessage(state, msgId, cid) {
   state = state.updateIn(
     ['conversationMap', cid, 'messages'],
-    list=>list.filter(id => id !== msgId)
+    list=>list.filter(msg => msg.id !== msgId)
   )
   return state
 }
