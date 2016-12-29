@@ -28,26 +28,8 @@ const PAGE_WIDTH = Dimensions.get('window').width
 class Chatroom extends Component {
   constructor(props) {
     super(props)
-    // this.state = {messages: []}
     this.onSend = this.onSend.bind(this)
   }
-
-  /*componentWillMount() {
-    this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: 'Hello developer',
-          createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
-          },
-        },
-      ],
-    })
-  }*/
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
@@ -66,19 +48,7 @@ class Chatroom extends Component {
     this.props.leaveConversation()
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.messages != newProps.messages) {
-
-    }
-  }
-
   onSend(messages = []) {
-    // this.setState((previousState) => {
-    //   return {
-    //     messages: GiftedChat.append(previousState.messages, messages),
-    //   }
-    // })
-
     let time = new Date()
     let msgId = this.props.name + time.toLocaleString()
 
@@ -143,23 +113,11 @@ Chatroom.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let user = activeUserInfo(state)
-  /*let otherMember = []
-  ownProps.members.forEach((member) => {
-    let other = userInfoById(state, member).toJS()
-    let otherInfo = {
-      id: other.id,
-      phone: other.phone,
-      nickname: other.nickname,
-      avatar: other.avatar,
-    }
-    otherMember.push(otherInfo)
-  })*/
   let conversationId = activeConversation(state)
   let lcMsg = getMessages(state, conversationId)
   let messages = []
 
   newProps.user = user
-  // newProps.otherMember = otherMember
   newProps.conversationId = conversationId
   lcMsg.forEach((value) => {
     let from = value.from

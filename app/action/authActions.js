@@ -325,6 +325,9 @@ function shopCertification(payload, formData) {
 
 export function getUserInfoById(payload) {
   return (dispatch, getState) => {
+    if (!payload.userId) {
+      return
+    }
     lcAuth.getUserById(payload).then((user) => {
       console.log('get user', user)
       let code = user.error
@@ -334,6 +337,10 @@ export function getUserInfoById(payload) {
       let userInfo = UserInfo.fromLeancloudApi(user.userInfo)
       const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
       dispatch(addUserProfile({userInfo}))
+    }).catch(error => {
+      if (payload.error) {
+        payload.error(error)
+      }
     })
   }
 }
