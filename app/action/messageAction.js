@@ -226,8 +226,6 @@ function sendLcTypedMessage(payload) {
 
 function onReceiveMsg(message, conversation) {
   return (dispatch, getState) => {
-    console.log("receive message:", message)
-    console.log("in conversation: ", conversation)
     let msgType = message.type
     if (msgType === msgTypes.MSG_TEXT || msgType === msgTypes.MSG_AUDIO || msgType === msgTypes.MSG_IMAGE) {
       dispatch(onRecvNormalMessage(message, conversation))
@@ -254,10 +252,9 @@ function onRecvNotifyMessage(message, conversation) {
 }
 
 function sendTextMessage(conversation, payload) {
-  let message = new ImageMessage()
+  let message = new TextMessage()
   message.setText(payload.text)
   return conversation.send(message).then((msg)=> {
-    console.log('msg after send: ', msg)
     return Message.fromLeancloudMessage(msg, payload)
   })
 }

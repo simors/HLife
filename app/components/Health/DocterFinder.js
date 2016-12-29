@@ -19,7 +19,7 @@ import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
 import {getDocterList} from '../../action/doctorAction'
-import {activeUserId} from '../../selector/authSelector'
+import {activeUserId, isUserLogined} from '../../selector/authSelector'
 import {getDoctorList} from '../../selector/doctorSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -37,11 +37,15 @@ class DocterFinder extends Component {
   }
 
   consult(doctor) {
-    let payload = {
-      name: doctor.phone,
-      members: [this.props.currentUser, doctor.id]
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      let payload = {
+        name: doctor.phone,
+        members: [this.props.currentUser, doctor.id]
+      }
+      Actions.CHATROOM(payload)
     }
-    Actions.CHATROOM(payload)
   }
 
   renderDocs() {
@@ -81,6 +85,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     doctors,
     currentUser: activeUserId(state),
+    isLogin: isUserLogined(state)
   }
 }
 

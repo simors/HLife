@@ -224,6 +224,23 @@ export function verifyInvitationCode(payload) {
   })
 }
 
+export function getUserById(payload) {
+  let params = {}
+  let userId = payload.userId
+  if (!userId) {
+    return false
+  }
+  params.userId = userId
+  return AV.Cloud.run('hLifeGetUserinfoById', params).then((result) => {
+    return result
+  }, (err) => {
+    console.log(err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+}
+
 export function fetchUserFollowees() {
   let query = AV.User.current().followeeQuery()
   query.include('followee')
