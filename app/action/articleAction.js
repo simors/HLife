@@ -7,6 +7,7 @@ import * as articleTypes from '../constants/articleActionTypes'
 
 const addArticleAction = createAction(articleTypes.ADD_ARTICLES)
 const addLikersAction = createAction(articleTypes.ADD_LIKERS)
+const addCommentAction = createAction(articleTypes.ADD_COMMENT)
 
 export function fetchArticle(payload) {
   return (dispatch, getState) => {
@@ -29,6 +30,20 @@ export function fetchLikers(articleId,columnId) {
     laArticle.getLikers(articleId).then((likersList) => {
    //   console.log('likersList======>',likersList)
       dispatch(addLikersAction({articleId: articleId, likersList: likersList,columnId: columnId}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+
+export function fetchCommentsArticle(payload) {
+  return (dispatch, getState) => {
+    let articleId = payload
+    laArticle.getComment(payload).then((commentArticleList) => {
+      dispatch(addCommentAction({articleId: articleId, commentArticleList: commentArticleList}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
