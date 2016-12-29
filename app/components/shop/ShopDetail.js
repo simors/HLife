@@ -13,7 +13,8 @@ import {
   TouchableWithoutFeedback,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  TextInput
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -28,6 +29,9 @@ import {fetchShopAnnouncements, userIsFollowedShop, followShop} from '../../acti
 import {selectShopDetail, selectLatestShopAnnouncemment, selectUserIsFollowShop} from '../../selector/shopSelector'
 import {selectShopList} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
+import Comment from '../common/Comment'
+
+import * as ShopDetailTestData from './ShopDetailTestData'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -35,6 +39,9 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class ShopDetail extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      modalVisible : true
+    }
   }
 
   componentWillMount() {
@@ -64,6 +71,28 @@ class ShopDetail extends Component {
       }
     }
     this.props.followShop(payload)
+    
+  }
+
+  openModel(callback) {
+    this.setState({
+      modalVisible: true
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
+  }
+
+  closeModal(callback) {
+    this.setState({
+      modalVisible: false
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
+  }
+
+  submitComment(commentData) {
     
   }
 
@@ -293,6 +322,29 @@ class ShopDetail extends Component {
 
           </ScrollView>
 
+          <View style={styles.shopCommentWrap}>
+            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
+              <Text style={styles.shopCommentInput}>写评论...</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.commentBtnWrap} onPress={()=>{}}>
+              <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
+              <View style={styles.commentBtnBadge}>
+                <Text style={styles.commentBtnBadgeTxt}>35</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.shopUpWrap} onPress={()=>{}}>
+              <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+            </TouchableOpacity>
+          </View>
+
+          <Comment
+            modalVisible={this.state.modalVisible}
+            modalTitle="写评论"
+            closeModal={() => this.closeModal()}
+            submitComment={this.submitComment.bind(this)}
+          />
         </View>
       </View>
     )
@@ -304,10 +356,15 @@ const mapStateToProps = (state, ownProps) => {
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
   const shopList = selectShopList(state) || []
   const isUserLogined = authSelector.isUserLogined(state)
+  // let shopDetail = ShopDetailTestData.shopDetail
+  // let latestShopAnnouncement = ShopDetailTestData.latestShopAnnouncement
+  // const shopList = ShopDetailTestData.shopList
+  // const isUserLogined = true
   if(shopList.length > 3) {
     shopList.splice(0, shopList.length-3)
   }
-  const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
+  // const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
+  const isFollowedShop = true
   return {
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
@@ -677,6 +734,52 @@ const styles = StyleSheet.create({
   },
   guessYouLikeScoresWrap: {
     flex: 1
-  }
-
+  },
+  shopCommentWrap: {
+    height:50,
+    paddingLeft:10,
+    borderTopWidth:normalizeBorder(),
+    borderTopColor: THEME.colors.lighterA,
+    backgroundColor:'rgba(0,0,0,0.005)',
+    flexDirection:'row',
+    alignItems:'center'
+  },
+  shopCommentInputBox: {
+    flex: 1,
+    marginRight:10,
+    padding:6,
+    borderWidth:normalizeBorder(),
+    borderColor: THEME.colors.lighterA,
+    borderRadius:10,
+    backgroundColor:'#fff'
+  },
+  shopCommentInput:{
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  commentBtnWrap: {
+    width:60,
+    height:38,
+    justifyContent:'center',
+    alignItems: 'center'
+  },
+  commentBtnBadge:{
+    alignItems: 'center',
+    width: 30,
+    backgroundColor:'#f5a623',
+    position:'absolute',
+    right:0,
+    top:0,
+    borderRadius:10,
+    borderWidth:normalizeBorder(),
+    borderColor: '#f5a623'
+  },
+  commentBtnBadgeTxt:{
+    fontSize: 9,
+    color: '#fff'
+  },
+  shopUpWrap:{
+    width:60,
+    alignItems: 'center'
+  },
 })
