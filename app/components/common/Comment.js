@@ -36,8 +36,8 @@ const scoreInput = {
 }
 const commentInput = {
   formKey: commonForm,
-  stateKey: Symbol('commentInput'),
-  type: 'comment'
+  stateKey: Symbol('contentInput'),
+  type: 'content'
 }
 const imageGroupInput = {
   formKey: commonForm,
@@ -51,14 +51,14 @@ class Comment extends Component {
   }
 
   static defaultProps = {
-    showModules: ['score', 'comment', 'blueprint']
+    showModules: ['score', 'content', 'blueprint']
   }
 
   constructor(props) {
     super(props)
     this.state = {
       score: 0,
-      comment: '',
+      content: '',
       blueprints: []
     }
   }
@@ -66,7 +66,7 @@ class Comment extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       score: nextProps.score,
-      comment: nextProps.comment,
+      content: nextProps.content,
       blueprints: nextProps.blueprints
     })
   }
@@ -93,11 +93,11 @@ class Comment extends Component {
   }
 
   renderComment() {
-    if(this.props.showModules.indexOf('comment') >= 0) {
+    if(this.props.showModules.indexOf('content') >= 0) {
       return (
         <View style={[styles.modalRow]}>
           <View style={[styles.modalCol]}>
-            <Text style={[styles.modalLabel]}>{this.props.commentLabel || '点评:'}</Text>
+            <Text style={[styles.modalLabel]}>{this.props.contentLabel || '点评:'}</Text>
           </View>
           <View style={[styles.modalCol3]}>
             <TextAreaInput
@@ -159,14 +159,14 @@ class Comment extends Component {
 const mapStateToProps = (state, ownProps) => {
   const formData = getInputFormData(state, commonForm)
   let score = 0
-  let comment = ''
+  let content = ''
   let imgGroup = []
   if(formData) {
     if(formData.score) {
       score = formData.score.text
     }
-    if(formData.comment) {
-      comment = formData.comment.text
+    if(formData.content) {
+      content = formData.content.text
     }
     if(formData.imgGroup) {
       imgGroup = formData.imgGroup.text
@@ -174,7 +174,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   return {
     score: score,
-    comment: comment,
+    content: content,
     blueprints: imgGroup
   }
 }

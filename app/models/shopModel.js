@@ -3,6 +3,7 @@
  */
 import {Map, List, Record} from 'immutable'
 import AV from 'leancloud-storage'
+import * as numberUtils from '../util/numberUtils'
 
 export const ShopRecord = Record({
   id: undefined,
@@ -105,8 +106,90 @@ export class ShopAnnouncement extends ShopAnnouncementRecord {
   }
 }
 
+export const ShopCommentRecord = Record({
+  id: undefined, //店铺评论id
+  content: '', //评论内容
+  blueprints: [], //晒图
+  containedReply: [], //回复列表
+  targetShop: {}, //目标店铺
+  score: 4, // 用户打分
+  user: {}, //评论用户详细信息
+  createdDate: '', //格式化后的创建时间
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+})
+
+export class ShopComment extends ShopCommentRecord {
+  static fromLeancloudObject(lcObj) {
+    let shopComment = new ShopCommentRecord()
+    let attrs = lcObj.attributes
+    return shopComment.withMutations((record)=>{
+      // console.log('shopComment.lcObj=', lcObj)
+      record.set('id', lcObj.id)
+      record.set('content', attrs.content)
+      record.set('blueprints', attrs.blueprints)
+      record.set('score', attrs.score)
+
+      let targetShop = {}
+      let targetShopAttrs = attrs.targetShop.attributes
+      if(targetShopAttrs) {
+        targetShop.shopName = targetShopAttrs.shopName
+      }
+      record.set('targetShop', targetShop)
+
+      let user = {}
+      let userAttrs = attrs.user.attributes
+      if(user) {
+        user.id = attrs.user.id
+        user.nickname = userAttrs.nickname
+        user.avatar = userAttrs.avatar
+      }
+      record.set('user', user)
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+}
+
+export const UpRecord = Record({
+  id: undefined, // 点赞id
+  upType: '', //点赞类型: enum('shop', 'shopComment', 'article', 'articleComment', 'topic', 'topicComment')
+  targetId: '', //点赞类型对应的对象id
+  status: false, //是否点赞
+  createdDate: '', //格式化后的创建时间
+  user: {},
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+})
+
+export class Up extends UpRecord {
+  static fromLeancloudObject(lcObj) {
+    let up = new UpRecord()
+    let attrs = lcObj.attributes
+    return up.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('upType', attrs.upType)
+      record.set('targetId', attrs.targetId)
+      record.set('status', attrs.status)
+
+      let userAttrs = attrs.user.attributes
+      let user = {}
+      user.id = attrs.user.id
+      user.nickname = userAttrs.nickname
+      record.set('user', user)
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+}
+
 export const Shop = Record({
   shopList: List(),
   shopAnnouncements: Map(),
-  userFollowShopsInfo: Map()
+  userFollowShopsInfo: Map(),
+  shopComments: Map(),
+  shopCommentsTotalCounts: Map(),
+  userUpShopsInfo: Map()
 }, 'Shop')

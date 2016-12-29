@@ -6,7 +6,9 @@ import {Map, List, Record} from 'immutable'
 import ERROR from '../../constants/errorCode'
 import {
   ShopInfo,
-  ShopAnnouncement
+  ShopAnnouncement,
+  ShopComment,
+  Up
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -161,3 +163,159 @@ export function followShop(payload) {
     throw err
   })
 }
+
+export function submitShopComment(payload) {
+  let shopId = payload.id
+  let score = payload.score
+  let content = payload.content
+  let blueprints = payload.blueprints
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  let currentUser = AV.User.current()
+
+  let ShopComment = AV.Object.extend('ShopComment')
+  let shopComment = new ShopComment()
+  shopComment.set('user', currentUser)
+  shopComment.set('targetShop', shop)
+  shopComment.set('score', shop)
+  shopComment.set('targetShop', shop)
+  shopComment.set('score', score)
+  shopComment.set('content', content)
+  shopComment.set('blueprints', blueprints)
+
+  return shopComment.save().then((results) => {
+    // console.log('results=', results)
+    return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopCommentList(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopComment')
+  //构建内嵌查询
+  let innerQuery = new AV.Query('Shop')
+  innerQuery.equalTo('objectId', shopId)
+  //执行内嵌查询
+  query.matchesQuery('targetShop', innerQuery)
+  query.include(['targetShop', 'user'])
+  query.addDescending('createdAt')
+  return query.find().then((results)=>{
+    // console.log('fetchShopCommentList.results=', results)
+    let shopComment = []
+    results.forEach((result)=>{
+      shopComment.push(ShopComment.fromLeancloudObject(result))
+    })
+    return new List(shopComment)
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopCommentTotalCount(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopComment')
+  //构建内嵌查询
+  let innerQuery = new AV.Query('Shop')
+  innerQuery.equalTo('objectId', shopId)
+  //执行内嵌查询
+  query.matchesQuery('targetShop', innerQuery)
+  return query.count().then((results)=>{
+    return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchUserUpShopInfo(payload) {
+  let shopId = payload.id
+  let upType = 'shop'
+  let currentUser = AV.User.current()
+  
+  let query = new AV.Query('Up')
+  query.equalTo('targetId', shopId)
+  query.equalTo('upType', upType)
+  query.equalTo('user', currentUser)
+  query.include('user')
+  return query.first().then((result) =>{
+    let userUpShopInfo = undefined
+    if(result && result.attributes) {
+      userUpShopInfo = Up.fromLeancloudObject(result)
+    }
+    return userUpShopInfo
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function userUpShop(payload) {
+  let shopId = payload.id
+  let upType = 'shop'
+  let currentUser = AV.User.current()
+
+  return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
+    // console.log('userUpShop.userUpShopInfo=', userUpShopInfo)
+    if(!userUpShopInfo) {
+      let Up = AV.Object.extend('Up')
+      let up = new Up()
+      up.set('targetId', shopId)
+      up.set('upType', upType)
+      up.set('user', currentUser)
+      return up.save()
+    }else if(userUpShopInfo.id && !userUpShopInfo.status) {
+      let up = AV.Object.createWithoutData('Up', userUpShopInfo.id)
+      up.set('status', true)
+      return up.save()
+    }
+    return {
+      code: '10007',
+      message: '您已经赞过该店铺了'
+    }
+  }).then((result) => {
+    if(result && '10007' == result.code) {
+      return result
+    }
+    return {
+      shopId: shopId,
+      code: '10008',
+      message: '成功点赞'
+    }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function userUnUpShop(payload) {
+  let shopId = payload.id
+
+  return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
+    if(userUpShopInfo && userUpShopInfo.id) {
+      let up = AV.Object.createWithoutData('Up', userUpShopInfo.id)
+      up.set('status', false)
+      return up.save()
+    }
+    return {
+      code: '10009',
+      message: '您还没有赞过该店铺'
+    }
+  }).then((result) => {
+    if(result && '10009' == result.code) {
+      return result
+    }
+    return {
+      shopId: shopId,
+      code: '10010',
+      message: '取消点赞成功'
+    }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+
