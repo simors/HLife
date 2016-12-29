@@ -25,10 +25,9 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
-import {fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount} from '../../action/shopAction'
+import {fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
-import {selectShopDetail, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount} from '../../selector/shopSelector'
-import {selectShopList} from '../../selector/shopSelector'
+import {selectShopDetail,selectShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import Comment from '../common/Comment'
 
@@ -54,6 +53,7 @@ class ShopDetail extends Component {
       if(this.props.isUserLogined) {
         this.props.userIsFollowedShop({id: this.props.id})
         this.props.fetchUserFollowees()
+        this.props.fetchUserUpShopInfo({id: this.props.id})
       }
       // this.props.fetchShopCommentList({id: this.props.shopDetail.id})
     })
@@ -67,9 +67,44 @@ class ShopDetail extends Component {
 
   }
 
+  userUpShop() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    let payload = {
+      id: this.props.id,
+      success: function(result) {
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.userUpShop(payload)
+  }
+
+  userUnUpShop() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    let payload = {
+      id: this.props.id,
+      success: function(result) {
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.userUnUpShop(payload)
+  }
+
   followShop() {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
+      return
     }
     let payload = {
       id: this.props.id,
@@ -81,12 +116,12 @@ class ShopDetail extends Component {
       }
     }
     this.props.followShop(payload)
-    
   }
 
   followUser(userId) {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
+      return
     }
     const that = this
     let payload = {
@@ -106,6 +141,7 @@ class ShopDetail extends Component {
   unFollowUser(userId) {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
+      return
     }
     const that = this
     let payload = {
@@ -143,6 +179,7 @@ class ShopDetail extends Component {
   submitComment(commentData) {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
+      return
     }
     const that = this
     let payload = {
@@ -417,9 +454,16 @@ class ShopDetail extends Component {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.shopUpWrap} onPress={()=>{}}>
-              <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
-            </TouchableOpacity>
+            {
+              this.props.userIsUpedShop
+                ? <TouchableOpacity style={styles.shopUpWrap} onPress={this.userUnUpShop.bind(this)}>
+                    <Image style={{}} source={require('../../assets/images/like_select.png')}/>
+                  </TouchableOpacity>
+                : <TouchableOpacity style={styles.shopUpWrap} onPress={this.userUpShop.bind(this)}>
+                    <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+                  </TouchableOpacity>
+            }
+
           </View>
 
           <Comment
@@ -445,6 +489,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const userFollowees = authSelector.selectUserFollowees(state)
 
+  const userIsUpedShop = selectUserIsUpedShop(state, ownProps.id)
+
   // let shopDetail = ShopDetailTestData.shopDetail
   // const shopComments = ShopDetailTestData.shopComments
   // const shopCommentsTotalCount = 1368
@@ -465,7 +511,8 @@ const mapStateToProps = (state, ownProps) => {
     isFollowedShop: isFollowedShop,
     shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
-    userFollowees: userFollowees
+    userFollowees: userFollowees,
+    userIsUpedShop: userIsUpedShop
   }
 }
 
@@ -479,7 +526,10 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   followUser,
   unFollowUser,
   userIsFollowedTheUser,
-  fetchUserFollowees
+  fetchUserFollowees,
+  fetchUserUpShopInfo,
+  userUpShop,
+  userUnUpShop
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

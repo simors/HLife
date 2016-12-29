@@ -7,7 +7,8 @@ import ERROR from '../../constants/errorCode'
 import {
   ShopInfo,
   ShopAnnouncement,
-  ShopComment
+  ShopComment,
+  Up
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -182,7 +183,7 @@ export function submitShopComment(payload) {
   shopComment.set('blueprints', blueprints)
 
   return shopComment.save().then((results) => {
-    console.log('results=', results)
+    // console.log('results=', results)
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -228,4 +229,93 @@ export function fetchShopCommentTotalCount(payload) {
     throw err
   })
 }
+
+export function fetchUserUpShopInfo(payload) {
+  let shopId = payload.id
+  let upType = 'shop'
+  let currentUser = AV.User.current()
+  
+  let query = new AV.Query('Up')
+  query.equalTo('targetId', shopId)
+  query.equalTo('upType', upType)
+  query.equalTo('user', currentUser)
+  query.include('user')
+  return query.first().then((result) =>{
+    let userUpShopInfo = undefined
+    if(result && result.attributes) {
+      userUpShopInfo = Up.fromLeancloudObject(result)
+    }
+    return userUpShopInfo
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function userUpShop(payload) {
+  let shopId = payload.id
+  let upType = 'shop'
+  let currentUser = AV.User.current()
+
+  return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
+    // console.log('userUpShop.userUpShopInfo=', userUpShopInfo)
+    if(!userUpShopInfo) {
+      let Up = AV.Object.extend('Up')
+      let up = new Up()
+      up.set('targetId', shopId)
+      up.set('upType', upType)
+      up.set('user', currentUser)
+      return up.save()
+    }else if(userUpShopInfo.id && !userUpShopInfo.status) {
+      let up = AV.Object.createWithoutData('Up', userUpShopInfo.id)
+      up.set('status', true)
+      return up.save()
+    }
+    return {
+      code: '10007',
+      message: '您已经赞过该店铺了'
+    }
+  }).then((result) => {
+    if(result && '10007' == result.code) {
+      return result
+    }
+    return {
+      shopId: shopId,
+      code: '10008',
+      message: '成功点赞'
+    }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function userUnUpShop(payload) {
+  let shopId = payload.id
+
+  return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
+    if(userUpShopInfo && userUpShopInfo.id) {
+      let up = AV.Object.createWithoutData('Up', userUpShopInfo.id)
+      up.set('status', false)
+      return up.save()
+    }
+    return {
+      code: '10009',
+      message: '您还没有赞过该店铺'
+    }
+  }).then((result) => {
+    if(result && '10009' == result.code) {
+      return result
+    }
+    return {
+      shopId: shopId,
+      code: '10010',
+      message: '取消点赞成功'
+    }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 
