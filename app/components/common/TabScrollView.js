@@ -44,7 +44,7 @@ export class TabScrollView extends Component {
     setTimeout(() => {
       this.props.refreshTopic()
       this.setState({isRefreshing: false})
-    }, 1000)
+    }, 100)
 }
 
   changeTab(payload) {

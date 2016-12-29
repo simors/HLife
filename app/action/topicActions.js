@@ -27,6 +27,7 @@ export function publishTopicFormData(payload) {
     switch (payload.submitType) {
       case TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS:
         dispatch(handlePublishTopic(payload, formData))
+        break
       case TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT:
         dispatch(handlePublishTopicComment(payload, formData))
         break
