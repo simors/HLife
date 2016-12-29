@@ -7,9 +7,35 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
+  Platform,
 } from 'react-native'
 
+import {selectPhotoTapped} from '../../util/ImageSelector'
+
 export default class CustomSend extends Component {
+
+  sendImage() {
+    selectPhotoTapped({
+      start: () => {},
+      failed: () => {},
+      cancelled: () => {},
+      succeed: (source) => {
+        let file = this.getImageUrl(source)
+        this.props.onSend({image: file.fileUri, fileName: file.fileName}, true);
+      },
+    })
+  }
+
+  getImageUrl(source) {
+    let fileUri = ''
+    if (Platform.OS === 'ios') {
+      fileUri = fileUri.concat('file://')
+    }
+    fileUri = fileUri.concat(source.uri)
+    let fileName = source.uri.split('/').pop()
+    return {fileUri, fileName}
+  }
+
   render() {
     if (this.props.text.trim().length > 0) {
       return (
@@ -26,7 +52,9 @@ export default class CustomSend extends Component {
     return (
       <TouchableOpacity
         style={[styles.container, this.props.containerStyle]}
-        onPress={() => {}}
+        onPress={() => {
+          this.sendImage()
+        }}
       >
         <Text style={[styles.text, this.props.textStyle]}>图片</Text>
       </TouchableOpacity>
