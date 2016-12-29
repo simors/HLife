@@ -14,6 +14,12 @@ import {connect} from 'react-redux'
 import {ButtonGroup} from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
+import {em} from '../../../util/Responsive'
+
+const male = () => <View style={{flex:1, justifyContent: 'center'}}><Text style={{alignSelf: 'center', fontSize:em(18)}}>男</Text></View>
+const female = () => <View style={{flex:1, justifyContent: 'center'}}><Text style={{alignSelf: 'center',fontSize:em(18)}}>女</Text></View>
+
+const buttons = [{ element: female }, { element: male } ]
 
 class GenderSelector extends Component {
   constructor(props) {
@@ -64,8 +70,6 @@ class GenderSelector extends Component {
   }
 
   render() {
-    const buttons = ['女', '男']
-
     return (
       <ButtonGroup
         onPress={(index) => this.updateIndex(index)}
@@ -73,7 +77,6 @@ class GenderSelector extends Component {
         buttons={buttons}
         containerStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
         selectedBackgroundColor="#50E3C2"
-        textStyle={{ fontSize: 18}}
       />
     )
   }

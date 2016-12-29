@@ -23,7 +23,7 @@
     "react-native-communications": "^2.1.4",
     "react-native-datepicker": "^1.4.2",
     "react-native-dismiss-keyboard": "^1.0.0",
-    "react-native-elements": "^0.7.0",
+    "react-native-elements": "^0.7.2",
     "react-native-fs": "^2.0.1-rc.2",
     "react-native-gallery": "0.0.17",
     "react-native-image-picker": "^0.24.1",

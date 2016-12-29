@@ -32,7 +32,7 @@ export default class Health extends Component {
               sourceImage={require("../../assets/images/home_question.png")}
               thumbnailTitle="快速问诊"
               thumbnailIntro="专业医生免费为您解答疑问"
-              onPress={()=>{Actions.LOGIN()}}
+              onPress={()=>{Actions.INQUIRY()}}
             />
           </View>
         </View>

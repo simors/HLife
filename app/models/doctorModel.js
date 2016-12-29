@@ -37,6 +37,6 @@ export class DoctorInfo extends DoctorInfoRecord {
 }
 
 export const Doctor = Record({
-  doctorList: Map(),
+  doctors: Map(),
   doctorInfo: DoctorInfoRecord(),
 }, 'Doctor')

@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
 
   scrollViewStyle: {
     flex: 1,
-    width: PAGE_WIDTH
+    width: PAGE_WIDTH,
   },
 
   //选择话题的对话框的样式
