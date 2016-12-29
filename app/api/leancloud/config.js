@@ -120,6 +120,7 @@ export function getLikers(payload) {
     articleId: payload
   }
   let likers = []
+  console.log('ahahahahahahahaha',articleIdJson)
   return AV.Cloud.run('getArticleLikers', articleIdJson).then((datas) => {
     console.log('datas============>',datas)
     datas.forEach((data)=> {

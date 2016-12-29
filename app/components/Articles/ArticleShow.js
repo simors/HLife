@@ -131,7 +131,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
                 <View style={styles.threelike}>
                   <Image source={require('../../assets/images/artical_like_unselect.png')}></Image>
                 </View>
-                  <Text style={styles.threeLikeT}>{this.props.articleItem.likers?this.props.articleItem.likers.length:'hzw'}</Text>
+                  <Text style={styles.threeLikeT}>{this.props.articleItem.likers?this.props.articleItem.likers.length:0}</Text>
                   <View style={styles.comments}></View>
                 </View>
               </View>
@@ -154,7 +154,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 const mapStateToProps = (state, ownProps) => {
   let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
-  console.log('articleItem=======>',articleItem)
+  //console.log('articleItem=======>',articleItem)
   return{
     articleItem : articleItem
   }
