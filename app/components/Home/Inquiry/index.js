@@ -13,7 +13,6 @@ import {
 } from 'react-native'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import Header from '../../common/Header'
-import TextAreaInput from '../../common/Input/TextAreaInput'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import MultilineText from '../../common/Input/MultilineText'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
@@ -103,8 +102,6 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     width: PAGE_WIDTH,
-    // paddingLeft: normalizeW(20),
-    // paddingRight: normalizeW(20),
     marginTop: normalizeH(64),
     backgroundColor: '#FFFFFF',
   },
