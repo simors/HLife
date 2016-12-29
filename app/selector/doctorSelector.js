@@ -10,8 +10,10 @@ export function activeDoctorInfo(state) {
 export function getDoctorList(state) {
   let doctors = []
   let docMap = state.DOCTOR.get('doctorList')
-  docMap.forEach((value) => {
-    doctors.push(value)
-  })
+  if (docMap) {
+    docMap.forEach((value) => {
+      doctors.push(value)
+    })
+  }
   return doctors
 }
