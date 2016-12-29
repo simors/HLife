@@ -9,7 +9,7 @@ export function activeDoctorInfo(state) {
 
 export function getDoctorList(state) {
   let doctors = []
-  let docMap = state.DOCTOR
+  let docMap = state.DOCTOR.get('doctorList')
   docMap.forEach((value) => {
     doctors.push(value)
   })
