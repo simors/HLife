@@ -15,6 +15,7 @@ export function publishTopics(payload) {
   topic.set('user', user)
   topic.set('imgGroup', payload.imgGroup)
   topic.set('content', payload.content)
+  topic.set('commentNum', 0)
 
   return topic.save().then(function (result) {
   }, function (err) {
@@ -40,8 +41,9 @@ export function publishTopicComments(payload) {
 
   return topicComment.save().then(function (result) {
     if (result) {
-      var relation = topic.relation('comments');
+      let relation = topic.relation('comments')
       relation.add(topicComment);
+      topic.increment("commentNum", 1)
       return topic.save().then(function (result) {
       }, function (err) {
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

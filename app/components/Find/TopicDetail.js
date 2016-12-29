@@ -120,13 +120,13 @@ export class TopicDetail extends Component {
   }
 
   renderNoComment() {
-    if (this.props.commentsTotalCount) {
+    if (this.props.commentsTotalCount == 0) {
+      return (
+        <Text style={{alignSelf: 'center', paddingTop: 20}}>
+          目前没有评论，快来抢沙发吧！~~~
+        </Text>
+      )
     }
-    return (
-      <Text style={{alignSelf: 'center', paddingTop:20}}>
-        目前没有评论，快来抢沙发吧！~~~
-      </Text>
-    )
   }
 
   measureMyComponent(event){
