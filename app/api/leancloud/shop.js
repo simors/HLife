@@ -160,6 +160,4 @@ export function followShop(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-
-
 }
