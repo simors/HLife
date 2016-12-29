@@ -131,7 +131,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
                 <View style={styles.threelike}>
                   <Image source={require('../../assets/images/artical_like_unselect.png')}></Image>
                 </View>
-                  <Text>{this.props.articleItem.likers?this.props.articleItem.likers.length:'hzw'}</Text>
+                  <Text style={styles.threeLikeT}>{this.props.articleItem.likers?this.props.articleItem.likers.length:'hzw'}</Text>
                   <View style={styles.comments}></View>
                 </View>
               </View>
@@ -245,6 +245,10 @@ const styles = StyleSheet.create(
       height:normalizeH(22),
       width:normalizeW(25),
     },
+    threelikeT:{
+      fontcolor:'#B6B6B6',
+      fontSize:em(11),
+    }
 
   }
 )
