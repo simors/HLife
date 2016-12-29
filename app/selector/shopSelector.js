@@ -56,3 +56,11 @@ export function selectShopComments(state, shopId) {
 export function selectShopCommentsTotalCount(state, shopId) {
   return selectShop(state).shopCommentsTotalCounts[shopId]
 }
+
+export function selectUserIsUpedShop(state, shopId) {
+  let userUpShopsInfo = state.SHOP.get('userUpShopsInfo')
+  if(userUpShopsInfo && userUpShopsInfo.size) {
+    return userUpShopsInfo.get(shopId)
+  }
+  return false
+}
