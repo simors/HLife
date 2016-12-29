@@ -43,17 +43,17 @@ export class LikersItem extends LikersItemConfig{
 
 export class ArticleItem extends ArticleItemConfig {
   static fromLeancloudObject(lcObj,likerList) {
-  //  console.log('likeList---------------->',likerList)
+    console.log('likeList---------------->',lcObj)
     let articleItem = new ArticleItemConfig()
     let attrs = lcObj.attributes
-    let user = lcObj.get('user')
+    let user = lcObj.attributes.user.attributes
     let nickname = "吾爱用户"
     let avatar = undefined
     if (user) {
-      avatar = user.get('avatar')
-      nickname = user.get('nickname')
+      avatar = user.avatar
+      nickname = user.nickname
       if (!nickname) {
-        let phoneNumber = user.getMobilePhoneNumber()
+        let phoneNumber = user.username
         nickname = hidePhoneNumberDetail(phoneNumber)
       }
     }
@@ -68,7 +68,7 @@ export class ArticleItem extends ArticleItemConfig {
       record.set('avatar',avatar)
       record.set('articleId', lcObj.id)
       record.set('createdAt', lcObj.createdAt)
-      record.set('author',attrs.author.id)
+      record.set('author',attrs.user.id)
       record.set('likers',likerList)
   //    console.log('articleItem====>',record)
     })

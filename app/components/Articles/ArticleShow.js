@@ -246,7 +246,7 @@ const styles = StyleSheet.create(
       width:normalizeW(25),
     },
     threelikeT:{
-      fontcolor:'#B6B6B6',
+      color:'#B6B6B6',
       fontSize:em(11),
     }
 
