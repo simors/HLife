@@ -90,45 +90,49 @@ export function getArticle(payload) {
   if (payload) {
     let categoryId = payload
     let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
-    // console.log('getLikers.category=====', articleCategory)
-
+    console.log('getLikers.category=====', articleCategory)
     query.equalTo('Category', articleCategory)
     query.include(['user'])
     query.descending('createdAt')
   }
-  return query.find().then(function (results) {
-    //  console.log('results=============>',results)
+  return query.find().then((results) => {
+    console.log('results=============>', results)
     let article = []
     results.forEach((result) => {
+      // console.log('resultId=========>', result.id)
+      // getLikers(result.id).then((likersList) => {
+      //   console.log('likersList', likersList)
+      //   article.push(ArticleItem.fromLeancloudObject(result, likersList))
+      // })
       article.push(ArticleItem.fromLeancloudObject(result))
 
     })
 
     return new List(article)
-  }, function (err) {
+  }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
 
 export function getLikers(payload) {
-    let articleIdJson = {
-      articleId: payload
-    }
-    let likers=[]
-    return AV.Cloud.run('getArticleLikers',articleIdJson).then(function(datas){
-      console.log('datas============>',datas)
-      datas.forEach((data)=> {
-        likers.push(LikersItem.fromLeancloudObject(data))
-        console.log('likers========>',likers)
-      })
-      return new List(likers)
-    }, function (err) {
-      console.log(err)
-
-      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-      throw err
+  let articleIdJson = {
+    articleId: payload
+  }
+  let likers = []
+  return AV.Cloud.run('getArticleLikers', articleIdJson).then((datas) => {
+    console.log('datas============>',datas)
+    datas.forEach((data)=> {
+      likers.push(data)
     })
+    // console.log('likers=============================>', likers)
+    return likers
+  }, (err) => {
+    console.log(err)
+
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
 
 export function getShopCategories(payload) {

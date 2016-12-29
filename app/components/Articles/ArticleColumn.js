@@ -28,6 +28,8 @@ import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-v
 import ArticleShow from './ArticleShow'
 import {getArticleCollection} from '../../selector/articleSelector'
 import {fetchArticle} from '../../action/articleAction'
+import {fetchLikers} from '../../action/articleAction'
+
 
 class ArticleColumn extends Component {
   constructor(props) {
@@ -85,6 +87,8 @@ class ArticleColumn extends Component {
 
   renderArticleItem(rowData) {
     let value = rowData
+
+    console.log('value=====>',value)
     return (
       <View
         style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
@@ -162,6 +166,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchArticle,
+  fetchLikers,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleColumn)

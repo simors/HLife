@@ -22,29 +22,30 @@ import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
 import {fetchLikers} from '../../action/articleAction'
+import {getArticleItem} from '../../selector/articleSelector'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 
-class ArticleShow extends Component {
+ class ArticleShow extends Component {
   constructor(props) {
     super(props)
   }
 
   componentDidMount() {
-    console.log('DidMountisHere-====--------->')
-    if (this.props.articleId) {
-      InteractionManager.runAfterInteractions(() => {
-        this.props.fetchLikers(this.props.articleId)
-      })
-    }
+    console.log('DidMountisHere-====--------->',this.props)
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchLikers(this.props.articleId,this.props.categoryId)
+    })
+
   }
 
   renderArticles() {
     if (this.props.articleId) {
       let imageCount = this.props.images.length
+     // let likeCount = this.props.likers.length
       switch (imageCount) {
         case 1:
           return (
@@ -127,6 +128,10 @@ class ArticleShow extends Component {
                 <View style={styles.threeArticleInfo}>
                   <Image style={styles.threeAvatar} source={{uri: this.props.avatar}}></Image>
                   <Text style={{fontSize: normalizeW(15), color: '#929292'}}>{this.props.nickname}</Text>
+                <View style={styles.threelike}>
+                  <Image source={require('../../assets/images/artical_like_unselect.png')}></Image>
+                </View>
+                  <Text>{this.props.articleItem.likers?this.props.articleItem.likers.length:'hzw'}</Text>
                   <View style={styles.comments}></View>
                 </View>
               </View>
@@ -148,7 +153,11 @@ class ArticleShow extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-return{}
+  let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
+  console.log('articleItem=======>',articleItem)
+  return{
+    articleItem : articleItem
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -228,7 +237,14 @@ const styles = StyleSheet.create(
       marginBottom: normalizeH(12),
       fontSize: normalizeW(17),
       color: '#636363'
-    }
+    },
+    threelike:{
+      marginLeft:normalizeW(28),
+      marginTop:normalizeH(15),
+      marginBottom:normalizeH(13),
+      height:normalizeH(22),
+      width:normalizeW(25),
+    },
 
   }
 )

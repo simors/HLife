@@ -34,6 +34,9 @@ export function normalizeH(value) {
  * 根据像素比实现一像素边框
  */
 export function normalizeBorder(borderWidth = 1) {
+  if(__DEV__) {
+    return borderWidth
+  }
   return PAGE_PIXEL_RATIO >= 3
           ? borderWidth / 3
           : PAGE_PIXEL_RATIO >= 2

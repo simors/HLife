@@ -4,7 +4,7 @@
 import {DoctorInfo} from '../models/doctorModel'
 
 export function activeDoctorInfo(state) {
-  return state.DOCTOR.get('doctor')? state.DOCTOR.get('doctor'): new DoctorInfo()
+  return state.DOCTOR.get('doctorInfo')? state.DOCTOR.get('doctorInfo'): new DoctorInfo()
 }
 
 export function getDoctorList(state) {

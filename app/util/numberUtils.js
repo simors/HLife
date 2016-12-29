@@ -94,3 +94,35 @@ export function getConversationTime(timestamp) {
   }
   return labelText
 }
+
+/**
+ * 将leancloud createdAt, updateAt时间对象转换成指定格式的日期字符串
+ *
+ * format:  YYYY-MM-DD HH:mm:SS
+ *   YYYY 年
+ *   MM   月
+ *   DD   日
+ *   HH   时
+ *   mm   分
+ *   SS   秒
+ */
+export function formatLeancloudTime(lcTime, format) {
+  let fullYear = ''
+  let month = ''
+  let date = ''
+  let hours = ''
+  let minutes = ''
+  let seconds = ''
+  format = format || 'YYYY-MM-DD HH:mm:SS'
+  if(lcTime) {
+    fullYear = lcTime.getFullYear()
+    month = lcTime.getMonth()
+    date = lcTime.getDate()
+    hours = lcTime.getHours()
+    minutes = lcTime.getMinutes()
+    seconds = lcTime.getSeconds()
+  }
+  const result = format.replace('YYYY', fullYear).replace('MM', month).replace('DD', date)
+    .replace('HH', hours).replace('mm', minutes).replace('SS', seconds)
+  return result
+}
