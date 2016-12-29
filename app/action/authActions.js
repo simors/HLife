@@ -329,7 +329,6 @@ export function getUserInfoById(payload) {
       return
     }
     lcAuth.getUserById(payload).then((user) => {
-      console.log('get user', user)
       let code = user.error
       if (0 != code) {
         return

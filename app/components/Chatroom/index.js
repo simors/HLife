@@ -50,7 +50,7 @@ class Chatroom extends Component {
 
   onSend(messages = []) {
     let time = new Date()
-    let msgId = this.props.name + time.toLocaleString()
+    let msgId = this.props.name + '_' + time.getSeconds()
 
     let payload = {
       type: msgTypes.MSG_TEXT,
@@ -136,7 +136,6 @@ const mapStateToProps = (state, ownProps) => {
     messages.push(msg)
   })
   newProps.messages = messages
-  console.log('messages newProps:', newProps)
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
