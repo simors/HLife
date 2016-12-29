@@ -201,6 +201,7 @@ export function fetchShopCommentList(payload) {
   query.include(['targetShop', 'user'])
   query.addDescending('createdAt')
   return query.find().then((results)=>{
+    // console.log('fetchShopCommentList.results=', results)
     let shopComment = []
     results.forEach((result)=>{
       shopComment.push(ShopComment.fromLeancloudObject(result))

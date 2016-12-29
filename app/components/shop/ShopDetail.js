@@ -26,6 +26,7 @@ import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
 import {fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount} from '../../action/shopAction'
+import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectShopDetail, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount} from '../../selector/shopSelector'
 import {selectShopList} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
@@ -52,6 +53,7 @@ class ShopDetail extends Component {
       this.props.fetchShopCommentTotalCount({id: this.props.id})
       if(this.props.isUserLogined) {
         this.props.userIsFollowedShop({id: this.props.id})
+        this.props.fetchUserFollowees()
       }
       // this.props.fetchShopCommentList({id: this.props.shopDetail.id})
     })
@@ -82,6 +84,44 @@ class ShopDetail extends Component {
     
   }
 
+  followUser(userId) {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }
+    const that = this
+    let payload = {
+      userId: userId,
+      success: function(result) {
+        that.props.fetchUserFollowees()
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.followUser(payload)
+
+  }
+
+  unFollowUser(userId) {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }
+    const that = this
+    let payload = {
+      userId: userId,
+      success: function(result) {
+        that.props.fetchUserFollowees()
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.unFollowUser(payload)
+
+  }
+
   openModel(callback) {
     this.setState({
       modalVisible: true
@@ -110,6 +150,7 @@ class ShopDetail extends Component {
       ...commentData,
       success: () => {
         that.props.fetchShopCommentList({id: that.props.shopDetail.id})
+        that.props.fetchShopCommentTotalCount({id: that.props.id})
         that.closeModal(()=>{
           Toast.show('发布成功', {duration: 1000})
         })
@@ -166,17 +207,38 @@ class ShopDetail extends Component {
     }
   }
 
+  userIsFollowedTheUser(userId) {
+    let userFollowees = this.props.userFollowees
+    if(userFollowees && userFollowees.length) {
+      for(let i = 0; i < userFollowees.length; i++) {
+        if(userFollowees[i].id == userId) {
+          return true
+        }
+      }
+      return false
+    }
+  }
+
   renderComments() {
     if(this.props.shopComments && this.props.shopComments.length) {
+      const that = this
       const commentsView = this.props.shopComments.map((item, index) => {
         const scoreWidth = item.score / 5.0 * 62
+        let userIsFollowedTheUser = that.userIsFollowedTheUser(item.user.id)
         return (
           <View key={"shop_comment_" + index} style={styles.commentContainer}>
             <View style={styles.commentAvatarBox}>
               <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
-              <TouchableOpacity onPress={()=>{Toast.show('关注成功')}}>
-                <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
-              </TouchableOpacity>
+
+              {userIsFollowedTheUser
+                ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>
+                    <Text style={styles.userAttentionedTxt}>取消关注</Text>
+                  </TouchableOpacity>
+                : <TouchableOpacity onPress={()=>{this.followUser(item.user.id)}}>
+                    <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
+                  </TouchableOpacity>
+              }
+
             </View>
             <View style={styles.commentRight}>
               <View style={[styles.commentLine, styles.commentHeadLine]}>
@@ -379,6 +441,9 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
+  const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
+
+  const userFollowees = authSelector.selectUserFollowees(state)
 
   // let shopDetail = ShopDetailTestData.shopDetail
   // const shopComments = ShopDetailTestData.shopComments
@@ -386,12 +451,12 @@ const mapStateToProps = (state, ownProps) => {
   // let latestShopAnnouncement = ShopDetailTestData.latestShopAnnouncement
   // const shopList = ShopDetailTestData.shopList
   // const isUserLogined = true
+  // const isFollowedShop = true
 
   if(shopList.length > 3) {
     shopList.splice(0, shopList.length-3)
   }
-  // const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
-  const isFollowedShop = true
+
   return {
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
@@ -399,7 +464,8 @@ const mapStateToProps = (state, ownProps) => {
     isUserLogined: isUserLogined,
     isFollowedShop: isFollowedShop,
     shopComments: shopComments,
-    shopCommentsTotalCount: shopCommentsTotalCount
+    shopCommentsTotalCount: shopCommentsTotalCount,
+    userFollowees: userFollowees
   }
 }
 
@@ -409,7 +475,11 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   followShop,
   submitShopComment,
   fetchShopCommentList,
-  fetchShopCommentTotalCount
+  fetchShopCommentTotalCount,
+  followUser,
+  unFollowUser,
+  userIsFollowedTheUser,
+  fetchUserFollowees
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)
@@ -459,6 +529,18 @@ const styles = StyleSheet.create({
   shopAttentionedTxt: {
     color: '#fff',
     fontSize: em(14),
+  },
+  userAttentioned: {
+    backgroundColor: THEME.colors.green,
+    paddingTop: 4,
+    paddingBottom: 4,
+    paddingLeft: 4,
+    paddingRight: 4,
+    borderRadius: 5,
+  },
+  userAttentionedTxt: {
+    color: '#fff',
+    fontSize: 9,
   },
   shopName: {
     fontSize: em(17),
