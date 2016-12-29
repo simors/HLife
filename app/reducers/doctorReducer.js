@@ -27,7 +27,7 @@ function handleDoctorUpdate(state, action) {
 function handleQueryDoctors(state, action) {
   let doctors = action.payload.doctors
   doctors.forEach((doctor) => {
-    state = state.setIn(['doctorList', doctor.id], doctor)
+    state = state.setIn(['doctors', doctor.id], doctor)
   })
   return state
 }

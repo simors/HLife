@@ -124,3 +124,63 @@ export function fetchShopCommentTotalCount(payload) {
   }
 }
 
+export function fetchUserUpShopInfo(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_UP_SHOP_INFO)
+      dispatch(updateAction(userUpShopInfo))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function userUpShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.userUpShop(payload).then((result) => {
+      if(result && '10008' == result.code) {
+        let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_SUCCESS)
+        dispatch(updateAction(result))
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function userUnUpShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.userUnUpShop(payload).then((result) => {
+      if(result && '10010' == result.code) {
+        let updateAction = createAction(ShopActionTypes.USER_UNUP_SHOP_SUCCESS)
+        dispatch(updateAction(result))
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+

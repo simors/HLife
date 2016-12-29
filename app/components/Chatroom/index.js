@@ -53,20 +53,21 @@ class Chatroom extends Component {
     let msgId = this.props.name + '_' + time.getSeconds()
 
     let payload = {
-      type: msgTypes.MSG_TEXT,
       msgId: msgId,
       conversationId: this.props.conversationId,
     }
-
-    if (!Array.isArray(messages)) {
-      payload.text = messages
-      this.props.sendMessage(payload)
-    } else {
-      messages.forEach((value) => {
+    messages.forEach((value) => {
+      if (value.text && value.text.length > 0) {
+        payload.type = msgTypes.MSG_TEXT
         payload.text = value.text
-        this.props.sendMessage(payload)
-      })
-    }
+      } else if (value.image && value.image.length > 0) {
+        payload.type = msgTypes.MSG_IMAGE
+        payload.text = value.image
+        payload.fileName = value.fileName
+        payload.uri = value.image
+      }
+      this.props.sendMessage(payload)
+    })
   }
 
   renderCustomInputToolbar(toolbarProps) {
@@ -122,14 +123,29 @@ const mapStateToProps = (state, ownProps) => {
   lcMsg.forEach((value) => {
     let from = value.from
     let userInfo = userInfoById(state, from).toJS()
-    let msg = {
-      _id: value.id,
-      text: value.text,
-      createdAt: value.timestamp,
-      user: {
-        _id: userInfo.id,
-        name: userInfo.nickname ? userInfo.nickname : userInfo.phone,
-        avatar: userInfo.avatar,
+    let type = value.type
+    let msg = {}
+    if (type == msgTypes.MSG_TEXT) {
+      msg = {
+        _id: value.id,
+        text: value.text,
+        createdAt: value.timestamp,
+        user: {
+          _id: userInfo.id,
+          name: userInfo.nickname ? userInfo.nickname : userInfo.phone,
+          avatar: userInfo.avatar,
+        }
+      }
+    } else if (type == msgTypes.MSG_IMAGE) {
+      msg = {
+        _id: value.id,
+        image: value.attributes.uri,
+        createdAt: value.timestamp,
+        user: {
+          _id: userInfo.id,
+          name: userInfo.nickname ? userInfo.nickname : userInfo.phone,
+          avatar: userInfo.avatar,
+        }
       }
     }
 

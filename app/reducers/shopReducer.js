@@ -19,6 +19,12 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdateShopCommentList(state, action)
     case ShopActionTypes.FETCH_SHOP_COMMENT_TOTAL_COUNT_SUCCESS:
       return handleUpdateShopCommentTotalCount(state, action)
+    case ShopActionTypes.USER_UP_SHOP_SUCCESS:
+      return handleUpdateUserUpShopSuccess(state, action)
+    case ShopActionTypes.USER_UNUP_SHOP_SUCCESS:
+      return handleUpdateUserUnUpShopSuccess(state, action)
+    case ShopActionTypes.UPDATE_USER_UP_SHOP_INFO:
+      return handleUpdateUserUpShopInfo(state, action)
     default:
       return state
   }
@@ -79,5 +85,34 @@ function handleUpdateShopCommentTotalCount(state, action) {
   let _map = state.get('shopCommentsTotalCounts')
   _map = _map.set(shopId, shopCommentTotalCount)
   state = state.set('shopCommentsTotalCounts',  _map)
+  return state
+}
+
+function handleUpdateUserUpShopSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  console.log('handleUpdateUserUpShopSuccess.payload===', payload)
+  let userUpShopsInfo = state.get('userUpShopsInfo')
+  userUpShopsInfo = userUpShopsInfo.set(shopId, true)
+  state = state.set('userUpShopsInfo', userUpShopsInfo)
+  return state
+}
+
+function handleUpdateUserUnUpShopSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let userUpShopsInfo = state.get('userUpShopsInfo')
+  userUpShopsInfo = userUpShopsInfo.set(shopId, false)
+  state = state.set('userUpShopsInfo', userUpShopsInfo)
+  return state
+}
+
+function handleUpdateUserUpShopInfo(state, action) {
+  let payload = action.payload
+  let shopId = payload.targetId
+  let status = payload.status
+  let userUpShopsInfo = state.get('userUpShopsInfo')
+  userUpShopsInfo = userUpShopsInfo.set(shopId, status)
+  state = state.set('userUpShopsInfo', userUpShopsInfo)
   return state
 }

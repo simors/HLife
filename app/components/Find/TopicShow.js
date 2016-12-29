@@ -92,7 +92,7 @@ export class TopicShow extends Component {
           <View>
             <TouchableOpacity style={styles.commentStyle} onPress={()=> this.commentButtonPress()}>
               <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>88888</Text>
+              <Text style={styles.commentTextStyle}>{this.props.topic.commentNum}</Text>
             </TouchableOpacity>
           </View>
         </View>
