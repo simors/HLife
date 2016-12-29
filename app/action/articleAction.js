@@ -43,7 +43,7 @@ export function fetchCommentsArticle(payload) {
   return (dispatch, getState) => {
     let articleId = payload
     laArticle.getComment(payload).then((commentArticleList) => {
-      dispatch(addCommentAction({articleId: articleId, commentArticleList: commentArticleList}))
+      dispatch(addCommentAction({articleId: articleId, commentArticleList: commentArticleList,columnId:columnId}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

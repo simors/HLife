@@ -21,7 +21,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
-import {fetchLikers} from '../../action/articleAction'
+import {fetchLikers,fetchCommentsArticle} from '../../action/articleAction'
 import {getArticleItem} from '../../selector/articleSelector'
 
 
