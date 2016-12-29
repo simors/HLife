@@ -254,10 +254,9 @@ function onRecvNotifyMessage(message, conversation) {
 }
 
 function sendTextMessage(conversation, payload) {
-  let message = new ImageMessage()
+  let message = new TextMessage()
   message.setText(payload.text)
   return conversation.send(message).then((msg)=> {
-    console.log('msg after send: ', msg)
     return Message.fromLeancloudMessage(msg, payload)
   })
 }

@@ -45,7 +45,7 @@ export class Message extends MessageRecord {
         messageType = lcMsg.content._lctype
         text = lcMsg.content._lctext
       } else {
-        messageType = payload.type
+        messageType = lcMsg.type
         text = lcMsg.text
       }
       record.set('id', lcMsg.id)
