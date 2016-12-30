@@ -30,13 +30,14 @@ export function publishTopicComments(payload) {
 
   var topic = AV.Object.createWithoutData('Topics', payload.topicId)
   var user = AV.Object.createWithoutData('_User', payload.userId)
+  var parentComment = AV.Object.createWithoutData('TopicComments', payload.commentId)
 
   topicComment.set('topic', topic)
   topicComment.set('user', user)
   topicComment.set('content', payload.content)
 
   if (payload.commentId) {
-    topicComment.set('parentCommentId', payload.commentId)
+    topicComment.set('parentComment', parentComment)
   }
 
   return topicComment.save().then(function (result) {
@@ -81,11 +82,13 @@ export function getTopicComments(payload) {
   let relation = topic.relation('comments')
   let query = relation.query()
   query.include(['user']);
+  query.include(['parentComment']);
+  query.include(['parentComment.user']);
   query.descending('createdAt')
   return query.find().then(function (results) {
       let topicComments = []
       if (results) {
-        results.forEach( (result) => {
+        results.forEach((result) => {
           topicComments.push(TopicCommentsItem.fromLeancloudObject(result))
         })
       }

@@ -38,7 +38,8 @@ export class TopicDetail extends Component {
     super(props)
     this.state = {
       modalVisible: false,
-      commentY:0
+      commentY: 0,
+      comment: undefined
     }
   }
 
@@ -74,7 +75,8 @@ export class TopicDetail extends Component {
 
   closeModal(callback) {
     this.setState({
-      modalVisible: false
+      modalVisible: false,
+      comment: undefined
     })
     if (callback && typeof callback == 'function') {
       callback()
@@ -90,7 +92,7 @@ export class TopicDetail extends Component {
         ...commentData,
         topicId: this.props.topic.objectId,
         userId: this.props.userInfo.id,
-        commentId: (this.props.comment) ? this.props.comment.id : undefined,
+        commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
         success: this.submitSuccessCallback.bind(this),
         error: this.submitErrorCallback
@@ -110,11 +112,18 @@ export class TopicDetail extends Component {
     }
   }
 
+  onCommentButton(topic) {
+    this.setState({
+      comment: topic
+    })
+    this.openModel()
+  }
+
   renderTopicCommentItem(value, key) {
     return (
       <TopicComment key={key}
                     topic={value}
-                    hasParentComment={(value.parentComment) ? true : false}
+                    onCommentButton={this.onCommentButton.bind(this)}
       />
     )
   }
@@ -129,71 +138,73 @@ export class TopicDetail extends Component {
     }
   }
 
-  measureMyComponent(event){
-    this.setState({commentY: (event.nativeEvent.layout.height+event.nativeEvent.layout.y)})
+  measureMyComponent(event) {
+    this.setState({commentY: (event.nativeEvent.layout.height + event.nativeEvent.layout.y)})
   }
 
   scrollToComment() {
     this.refs.scrollView.scrollToPosition(0, this.state.commentY)
   }
 
-render()
-{
-  return (
-    <View style={styles.containerStyle}>
-      <Header
-        leftType="icon"
-        leftIconName="ios-arrow-back"
-        leftPress={() => Actions.pop()}
-        title="详情"
-        rightType="text"
-        rightText="..."
-        rightPress={() => this.onRightPress()}
-      />
 
-      <KeyboardAwareScrollView style={styles.body} ref={"scrollView"} >
-        <TopicShow topic={this.props.topic}
-                   numberOfValues={null}
-                   showCommentAndLikeButton={false}/>
-        <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
-          <View style={styles.zanStyle}>
-            <Text style={styles.zanTextStyle}>
-              赞
-            </Text>
+  render() {
+    return (
+      <View style={styles.containerStyle}>
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.pop()}
+          title="详情"
+          rightType="text"
+          rightText="..."
+          rightPress={() => this.onRightPress()}
+        />
+
+        <KeyboardAwareScrollView style={styles.body} ref={"scrollView"}>
+          <TopicShow topic={this.props.topic}
+                     numberOfValues={null}
+                     showCommentAndLikeButton={false}/>
+          <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
+            <View style={styles.zanStyle}>
+              <Text style={styles.zanTextStyle}>
+                赞
+              </Text>
+            </View>
           </View>
+          {this.renderTopicCommentPage()}
+          {this.renderNoComment()}
+        </KeyboardAwareScrollView>
+
+        <View style={styles.shopCommentWrap}>
+          <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
+            <Text style={styles.shopCommentInput}>写评论...</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
+            <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
+            <View style={styles.commentBtnBadge}>
+              <Text style={styles.commentBtnBadgeTxt}>
+                {this.props.commentsTotalCount > 99 ? '99+' : this.props.commentsTotalCount}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
+          }}>
+            <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+          </TouchableOpacity>
         </View>
-        {this.renderTopicCommentPage()}
-        {this.renderNoComment()}
-      </KeyboardAwareScrollView>
-
-      <View style={styles.shopCommentWrap}>
-        <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
-          <Text style={styles.shopCommentInput}>写评论...</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
-          <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-          <View style={styles.commentBtnBadge}>
-            <Text
-              style={styles.commentBtnBadgeTxt}>{this.props.commentsTotalCount > 99 ? '99+' : this.props.commentsTotalCount}</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
-        }}>
-          <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
-        </TouchableOpacity>
+        <Comment
+          showModules={["content"]}
+          modalVisible={this.state.modalVisible}
+          modalTitle="写评论"
+          textAreaPlaceholder={(this.state.comment) ?"回复 " + this.state.comment.nickname + ": ": "回复 楼主: "}
+          closeModal={() => this.closeModal()}
+          submitComment={this.submitComment.bind(this)}
+        />
       </View>
-      <Comment
-        showModules={["content"]}
-        modalVisible={this.state.modalVisible}
-        modalTitle="写评论"
-        closeModal={() => this.closeModal()}
-        submitComment={this.submitComment.bind(this)}
-      />
-    </View>
-  )
-}
+    )
+  }
 }
 
 TopicDetail.defaultProps = {}

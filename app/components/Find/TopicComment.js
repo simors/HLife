@@ -14,9 +14,6 @@ import {
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
-import TopicImageViewer from '../../components/common/TopicImageViewer'
-import {getConversationTime} from '../../util/numberUtils'
-import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -28,15 +25,15 @@ export class TopicComment extends Component {
   }
 
   renderParentComment() {
-    if (this.props.hasParentComment) {
+    if (this.props.topic.parentCommentContent) {
       return (
         <View style={styles.parentCommentStyle}>
           <Text style={styles.parentCommentContentStyle}>
             <Text style={styles.commentUserStyle}>
-              {this.props.topic.nickname}:
+              {this.props.topic.parentCommentUser + ": "}
             </Text>
             <Text style={styles.parentCommentTextStyle}>
-              {this.props.topic.content}
+              {this.props.topic.parentCommentContent}
             </Text>
           </Text>
         </View>
@@ -77,6 +74,7 @@ export class TopicComment extends Component {
               <Text style={styles.commentTextStyle}>25</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+              this.props.onCommentButton(this.props.topic)
             }}>
               <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
               <Text style={styles.commentTextStyle}>回复</Text>
@@ -101,7 +99,6 @@ TopicComment.defaultProps = {
     createAt: undefined,
     topic: undefined,
   },
-  hasParentComment: false,
 }
 
 //export
