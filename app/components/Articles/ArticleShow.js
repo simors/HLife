@@ -38,6 +38,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
     console.log('DidMountisHere-====--------->',this.props)
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchLikers(this.props.articleId,this.props.categoryId)
+      this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
     })
 
   }
@@ -161,7 +162,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchLikers
+  fetchLikers,
+  fetchCommentsArticle,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleShow)

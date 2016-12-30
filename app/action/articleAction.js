@@ -39,11 +39,11 @@ export function fetchLikers(articleId,columnId) {
 }
 
 
-export function fetchCommentsArticle(payload) {
+export function fetchCommentsArticle(articleId,columnId) {
   return (dispatch, getState) => {
-    let articleId = payload
-    laArticle.getComment(payload).then((commentArticleList) => {
-      dispatch(addCommentAction({articleId: articleId, commentArticleList: commentArticleList,columnId:columnId}))
+   // let articleId = payload
+    laArticle.getComment(articleId).then((commentList) => {
+      dispatch(addCommentAction({articleId: articleId, commentList: commentList,columnId:columnId}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

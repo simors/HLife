@@ -91,7 +91,9 @@ export class ArticleComment extends ArticleCommentItem {
   static fromLeancloudObject(lcObj) {
     let commentItem = new ArticleCommentItem()
     let attrs = lcObj.attributes
-    let user = lcObj.attributes.author.attributes
+    let user = attrs.author.attributes
+    //console.log('user====>',user)
+
     let nickname = "吾爱用户"
     let avatar = undefined
     if (user) {
@@ -102,16 +104,23 @@ export class ArticleComment extends ArticleCommentItem {
         nickname = hidePhoneNumberDetail(phoneNumber)
       }
     }
+
     return commentItem.withMutations((record)=> {
-      record.set('author', attrs.author)
-      record.set('reply', attrs.reply)
+      record.set('author', attrs.author.id)
+    //  console.log('author====>',record)
+
+      record.set('reply', attrs.replyId?attrs.replyId.id:undefined)
+    //  console.log('author====>',record)
+
       record.set('content', attrs.content)
+
       record.set('articleId', attrs.articleId.id)
+
       record.set('commentId', lcObj.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)
-      record.set('createdAt', lcObj.createdAt)
-
+     // record.set('createdAt', lcObj.createdAt)
+     //     console.log('articleItem====>',record)
     })
   }
 }
