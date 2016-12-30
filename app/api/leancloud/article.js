@@ -2,7 +2,7 @@
  * Created by lilu on 2016/12/29.
  */
 
-import {ArticleItem, LikersItem,ArticleCommentItem} from '../../models/ArticleModel'
+import {ArticleItem, LikersItem,ArticleComment} from '../../models/ArticleModel'
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 
@@ -59,16 +59,22 @@ export function getLikers(payload) {
 
 
 export function getComment(payload) {
+
   let query = new AV.Query('ArticleComment')
   if (payload) {
     let articleId = payload
     let commentForArticle = AV.Object.createWithoutData('Articles', articleId)
     query.equalTo('articleId', commentForArticle)
+    query.include(['author'])
+    query.descending('createdAt')
   }
   return query.find().then(function (results) {
+
     let comment = []
     results.forEach((result) => {
-      comment.push(ArticleCommentItem.fromLeancloudObject(result))
+     // console.log('articleItem====>',result)
+
+      comment.push(ArticleComment.fromLeancloudObject(result))
     })
 
     return new List(comment)
