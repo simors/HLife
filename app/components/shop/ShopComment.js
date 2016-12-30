@@ -219,7 +219,9 @@ class ShopComment extends Component {
                     </TouchableOpacity>
                     <Text style={styles.replyWord}>:</Text>
 
+                    <View style={styles.replyContentWrap}>
                       <Text style={styles.replyContent}>回复哈师大发生大火发哈收到回复哈佛哈多喝水</Text>
+                    </View>
                   </View>
 
                 </View>
