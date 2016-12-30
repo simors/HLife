@@ -21,7 +21,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
-import {fetchLikers} from '../../action/articleAction'
+import {fetchLikers,fetchCommentsArticle} from '../../action/articleAction'
 import {getArticleItem} from '../../selector/articleSelector'
 
 
@@ -38,6 +38,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
     console.log('DidMountisHere-====--------->',this.props)
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchLikers(this.props.articleId,this.props.categoryId)
+      this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
     })
 
   }
@@ -131,7 +132,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
                 <View style={styles.threelike}>
                   <Image source={require('../../assets/images/artical_like_unselect.png')}></Image>
                 </View>
-                  <Text>{this.props.articleItem.likers?this.props.articleItem.likers.length:'hzw'}</Text>
+                  <Text style={styles.threeLikeT}>{this.props.articleItem.likers?this.props.articleItem.likers.length:0}</Text>
                   <View style={styles.comments}></View>
                 </View>
               </View>
@@ -154,14 +155,15 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 const mapStateToProps = (state, ownProps) => {
   let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
-  console.log('articleItem=======>',articleItem)
+  //console.log('articleItem=======>',articleItem)
   return{
     articleItem : articleItem
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchLikers
+  fetchLikers,
+  fetchCommentsArticle,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleShow)
@@ -245,6 +247,10 @@ const styles = StyleSheet.create(
       height:normalizeH(22),
       width:normalizeW(25),
     },
+    threelikeT:{
+      color:'#B6B6B6',
+      fontSize:em(11),
+    }
 
   }
 )
