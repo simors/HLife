@@ -312,7 +312,7 @@ class ShopDetail extends Component {
           {commentsView}
 
           <View style={styles.commentFoot}>
-            <TouchableOpacity onPress={()=>{Toast.show('查看全部评论')}}>
+            <TouchableOpacity onPress={()=>{Actions.SHOP_COMMENT_LIST()}}>
               <Text style={styles.allCommentsLink}>查看全部评价</Text>
             </TouchableOpacity>
           </View>
@@ -449,7 +449,7 @@ class ShopDetail extends Component {
               <Text style={styles.shopCommentInput}>写评论...</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.commentBtnWrap} onPress={()=>{}}>
+            <TouchableOpacity style={styles.commentBtnWrap} onPress={()=>{Actions.SHOP_COMMENT_LIST()}}>
               <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
               <View style={styles.commentBtnBadge}>
                 <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
