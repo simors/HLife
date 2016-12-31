@@ -153,15 +153,15 @@ export class TopicDetail extends Component {
     if (this.props.isLiked) {
       this.props.unLikeTopic({
         topicId: this.props.topic.objectId,
-        success: this.submitSuccessCallback.bind(this),
-        error: this.submitErrorCallback
+        success: this.likeSuccessCallback.bind(this),
+        error: this.likeErrorCallback
       })
     }
     else {
       this.props.likeTopic({
         topicId: this.props.topic.objectId,
-        success: this.submitSuccessCallback.bind(this),
-        error: this.submitErrorCallback
+        success: this.likeSuccessCallback.bind(this),
+        error: this.likeErrorCallback
       })
     }
   }
@@ -172,7 +172,7 @@ export class TopicDetail extends Component {
         topicId: payload.topic.objectId,
         upType: 'topicComment',
         success: payload.success,
-        error: this.submitErrorCallback
+        error: this.likeErrorCallback
       })
     }
     else {
@@ -180,16 +180,16 @@ export class TopicDetail extends Component {
         topicId: payload.topic.objectId,
         upType: 'topicComment',
         success: payload.success,
-        error: this.submitErrorCallback
+        error: this.likeErrorCallback
       })
     }
   }
 
-  submitErrorCallback(error) {
+  likeErrorCallback(error) {
     Toast.show(error.message)
   }
 
-  submitSuccessCallback() {
+  likeSuccessCallback() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId})

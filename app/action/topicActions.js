@@ -65,6 +65,10 @@ function handlePublishTopicComment(payload, formData) {
       commentId: payload.commentId,
       userId: payload.userId
     }
+    if ( (!payload.content) || payload.content.length == 0) {
+      payload.error({message: "输入不能为空"})
+      return
+    }
     lcTopics.publishTopicComments(publishTopicCommentPayload).then(() => {
       if (payload.success) {
         payload.success()
@@ -142,11 +146,11 @@ export function fetchTopicLikesCount(payload) {
     lcTopics.fetchTopicLikesCount(payload).then((likesTotalCount) => {
       let updateAction = createAction(topicActionTypes.FETCH_TOPIC_LIKES_TOTAL_COUNT_SUCCESS)
       dispatch(updateAction({topicId: payload.topicId, likesTotalCount: likesTotalCount}))
-      if(payload.success){
+      if (payload.success) {
         payload.success(likesTotalCount)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -158,11 +162,11 @@ export function fetchTopicIsLiked(payload) {
     lcTopics.fetchUserLikeTopicInfo(payload).then((userLikeInfo) => {
       let updateAction = createAction(topicActionTypes.FETCH_TOPIC_IS_LIKED_SUCCESS)
       dispatch(updateAction({topicId: payload.topicId, userLikeInfo: userLikeInfo}))
-      if(payload.success){
+      if (payload.success) {
         payload.success()
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })

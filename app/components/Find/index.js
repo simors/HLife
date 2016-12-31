@@ -25,6 +25,7 @@ import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import TopicShow from './TopicShow'
+import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
