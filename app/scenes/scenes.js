@@ -38,6 +38,7 @@ import TopicDetail from '../components/Find/TopicDetail'
 import DocterFinder from '../components/Health/DocterFinder'
 import Inguiry from '../components/Home/Inquiry/index'
 import HealthRecord from '../components/Home/Inquiry/HealthRecord'
+import QA from '../components/Home/Inquiry/QA'
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +87,8 @@ export const scenes = Actions.create(
       <Scene key="DOCTER_FINDER" component={DocterFinder} />
       <Scene key="INQUIRY" component={Inguiry} />
       <Scene key="HEALTHRECORD" component={HealthRecord} />
+      <Scene key="QA" component={QA}/>
+
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

@@ -11,6 +11,7 @@ import {
   ScrollView,
   Image,
 } from 'react-native'
+import {Actions} from 'react-native-router-flux'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import Header from '../../common/Header'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
@@ -47,7 +48,11 @@ export default class HealthRecord extends Component {
     super(props)
   }
   onButtonPress = () => {
-
+    let payload = {
+      name: '13574897719',
+      members: ['58647b4f61ff4b0068b8b306', '585892e1ac502e006704ffe1']
+    }
+    Actions.QA(payload)
   }
   render() {
     return (
