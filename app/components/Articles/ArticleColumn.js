@@ -59,7 +59,7 @@ class ArticleColumn extends Component {
     if (this.props.column) {
       return (
         this.props.column.map((value, key) => {
-          // console.log('=========<<<<<<<<',value)
+           console.log('=========<<<<<<<<',value)
           if (key == payload.i) {
            this.setState({columnId: value.columnId})
             this.props.fetchArticle(value.columnId)
@@ -88,7 +88,7 @@ class ArticleColumn extends Component {
   renderArticleItem(rowData) {
     let value = rowData
 
-   // console.log('value=====>',value)
+    console.log('value=====>',value)
     return (
       <View
         style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
@@ -98,11 +98,14 @@ class ArticleColumn extends Component {
   }
 
   renderArticleList(columnId) {
-
     let columnArticles = this.props.columnArticles
+   // console.log('columnArticles=====>',columnArticles)
+
     let articles = columnArticles.find(value => {
-      return (value.id === columnId)
+      return (value.id === 'article')
     })
+  //  console.log('articles=====>',articles)
+
     if (!articles) {
       return (
         <View/>
@@ -157,7 +160,7 @@ class ArticleColumn extends Component {
 const mapStateToProps = (state, ownProps) => {
   let column = getColumn(state)
   let columnArticles = getArticleCollection(state)
-
+  //console.log('columnArticles',columnArticles)
   return {
     column: column,
     columnArticles: columnArticles,
@@ -166,7 +169,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchArticle,
-  fetchLikers,
+
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleColumn)

@@ -17,14 +17,8 @@ export function getArticle(payload) {
     query.descending('createdAt')
   }
   return query.find().then((results) => {
-   // console.log('results=============>', results)
     let article = []
     results.forEach((result) => {
-      // console.log('resultId=========>', result.id)
-      // getLikers(result.id).then((likersList) => {
-      //   console.log('likersList', likersList)
-      //   article.push(ArticleItem.fromLeancloudObject(result, likersList))
-      // })
       article.push(ArticleItem.fromLeancloudObject(result))
 
     })
@@ -57,17 +51,11 @@ export function getLikers(payload) {
   })
 }
 
-
+//根据ARTICLE的RELATION进行查询
 export function getComment(payload) {
-
-  let query = new AV.Query('ArticleComment')
-  if (payload) {
-    let articleId = payload
-    let commentForArticle = AV.Object.createWithoutData('Articles', articleId)
-    query.equalTo('articleId', commentForArticle)
-    query.include(['author'])
-    query.descending('createdAt')
-  }
+  let article = AV.Object.createWithoutData('Articles',payload)
+  let relation = article.relation('comments')
+  let query = relation.query()
   return query.find().then(function (results) {
 
     let comment = []

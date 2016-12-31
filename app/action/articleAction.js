@@ -12,7 +12,7 @@ const addCommentAction = createAction(articleTypes.ADD_COMMENT)
 export function fetchArticle(payload) {
   return (dispatch, getState) => {
     let columnId = payload
-    laArticle.getArticle(payload).then((articleList) => {
+    laArticle.getArticle(columnId).then((articleList) => {
  //     console.log('articleListh======>',articleList)
       dispatch(addArticleAction({columnId: columnId, articleList: articleList}))
     }).catch((error) => {
@@ -27,9 +27,9 @@ export function fetchLikers(articleId,columnId) {
  // console.log('<><><><><>fetchLikers',payload)
   return (dispatch, getState) => {
    // let articleId = payload
-    laArticle.getLikers(articleId).then((likersList) => {
+    laArticle.getLikers(articleId).then((likerList) => {
    //   console.log('likersList======>',likersList)
-      dispatch(addLikersAction({articleId: articleId, likersList: likersList,columnId: columnId}))
+      dispatch(addLikersAction({likerList:likerList}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
@@ -43,7 +43,7 @@ export function fetchCommentsArticle(articleId,columnId) {
   return (dispatch, getState) => {
    // let articleId = payload
     laArticle.getComment(articleId).then((commentList) => {
-      dispatch(addCommentAction({articleId: articleId, commentList: commentList,columnId:columnId}))
+      dispatch(addCommentAction({commentList:commentList}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
@@ -51,3 +51,4 @@ export function fetchCommentsArticle(articleId,columnId) {
     })
   }
 }
+

@@ -108,14 +108,10 @@ export class ArticleComment extends ArticleCommentItem {
     return commentItem.withMutations((record)=> {
       record.set('author', attrs.author.id)
     //  console.log('author====>',record)
-
       record.set('reply', attrs.replyId?attrs.replyId.id:undefined)
     //  console.log('author====>',record)
-
       record.set('content', attrs.content)
-
       record.set('articleId', attrs.articleId.id)
-
       record.set('commentId', lcObj.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)
