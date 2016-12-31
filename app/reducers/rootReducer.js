@@ -6,7 +6,6 @@ import authReducer  from './authReducer'
 import messageReducer from './messageReducer'
 import articleReducer from './articleReducer'
 import topicReducer from './topicReducer'
-import commentArticleReduce from './commentReducer'
 import shopReducer from './shopReducer'
 import doctorReducer from './doctorReducer'
 
@@ -17,7 +16,6 @@ const rootReducers = combineReducers({
   MESSAGE: messageReducer,
   ARTICLE: articleReducer,
   TOPIC: topicReducer,
-  COMMENT_ARTICLE: commentArticleReduce,
   SHOP: shopReducer,
   DOCTOR: doctorReducer
 })

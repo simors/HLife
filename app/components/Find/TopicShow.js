@@ -199,7 +199,6 @@ const styles = StyleSheet.create({
     width: normalizeW(44),
     borderRadius: 22,
     borderWidth: 1,
-    borderStyle: 'solid',
     borderColor: 'transparent',
   },
   timeTextStyle: {

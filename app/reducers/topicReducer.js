@@ -2,17 +2,17 @@
  * Created by wuxingyu on 2016/12/24.
  */
 
-import * as AuthTypes from '../constants/topicActionTypes'
+import * as TopicTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Map} from 'immutable'
 
 const initialState = new Map()
 
 export default function topicReducer(state = initialState, action) {
-  switch(action.type) {
-    case AuthTypes.UPDATE_TOPICS:
+  switch (action.type) {
+    case TopicTypes.UPDATE_TOPICS:
       return handleUpdateTopics(state, action)
-    case AuthTypes.UPDATE_TOPIC_COMMENTS:
+    case TopicTypes.UPDATE_TOPIC_COMMENTS:
       return handleUpdateTopicComments(state, action)
     default:
       return state

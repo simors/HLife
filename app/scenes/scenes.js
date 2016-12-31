@@ -29,6 +29,7 @@ import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
 import ShopDetail from '../components/shop/ShopDetail'
+import ShopCommentList from '../components/shop/ShopCommentList'
 import PublishTopics from '../components/Find/PublishTopics'
 import MessageBox from '../components/Message'
 import TextImageTest from '../components/common/Input/TextImageTest'
@@ -79,6 +80,7 @@ export const scenes = Actions.create(
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
       <Scene key="SHOP_DETAIL" component={ShopDetail} />
+      <Scene key="SHOP_COMMENT_LIST" component={ShopCommentList} />
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="TOPIC_DETAIL" component={TopicDetail} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />

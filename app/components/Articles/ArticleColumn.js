@@ -88,7 +88,7 @@ class ArticleColumn extends Component {
   renderArticleItem(rowData) {
     let value = rowData
 
-    console.log('value=====>',value)
+   // console.log('value=====>',value)
     return (
       <View
         style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>

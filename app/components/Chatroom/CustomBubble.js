@@ -9,8 +9,8 @@ import {
   View,
 } from 'react-native';
 
-import MessageText from './GifedChat/MessageText';
-import MessageImage from './GifedChat/MessageImage';
+import CustomMessageText from './CustomMessageText';
+import CustomMessageImage from './CustomMessageImage';
 import Time from './GifedChat/Time';
 
 import { isSameUser, isSameDay, warnDeprecated } from './GifedChat/utils';
@@ -27,7 +27,7 @@ export default class Bubble extends React.Component {
       if (this.props.renderMessageText) {
         return this.props.renderMessageText(messageTextProps);
       }
-      return <MessageText {...messageTextProps}/>;
+      return <CustomMessageText {...messageTextProps}/>;
     }
     return null;
   }
@@ -38,7 +38,7 @@ export default class Bubble extends React.Component {
       if (this.props.renderMessageImage) {
         return this.props.renderMessageImage(messageImageProps);
       }
-      return <MessageImage {...messageImageProps}/>;
+      return <CustomMessageImage {...messageImageProps}/>;
     }
     return null;
   }
