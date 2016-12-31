@@ -18,13 +18,13 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {getTopicCategories} from '../../selector/configSelector'
 import {getTopics} from '../../selector/topicSelector'
-import {isUserLogined} from '../../selector/authSelector'
-import {fetchTopics} from '../../action/topicActions'
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 
 import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {TopicShow} from './TopicShow'
+import TopicShow from './TopicShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -44,11 +44,33 @@ export class Find extends Component {
     })
   }
 
+  onLikeButton(payload) {
+    if (payload.isLiked) {
+      this.props.unLikeTopic({
+        topicId: payload.topic.objectId,
+        success: payload.success,
+        error: this.submitErrorCallback
+      })
+    }
+    else {
+      this.props.likeTopic({
+        topicId: payload.topic.objectId,
+        success: payload.success,
+        error: this.submitErrorCallback
+      })
+    }
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
   renderTopicItem(value, key) {
     return (
       <TopicShow key={key}
                  containerStyle={{marginBottom: 10}}
                  topic={value}
+                 onLikeButton={(payload)=>this.onLikeButton(payload)}
       />
     )
   }
@@ -106,15 +128,19 @@ const mapStateToProps = (state, ownProps) => {
   const topicCategories = getTopicCategories(state)
   const topics = getTopics(state)
   const isLogin = isUserLogined(state)
+  const userInfo = activeUserInfo(state)
   return {
     topicCategories: topicCategories,
     topics: topics,
-    isLogin: isLogin
+    isLogin: isLogin,
+    userInfo: userInfo
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchTopics
+  fetchTopics,
+  likeTopic,
+  unLikeTopic
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)

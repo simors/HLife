@@ -19,13 +19,14 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {TopicShow} from './TopicShow'
+import TopicShow from './TopicShow'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {TopicComment} from './TopicComment'
 import Comment from '../common/Comment'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import {getTopicComments} from '../../selector/topicSelector'
+import {getTopicComments,isTopicLiked} from '../../selector/topicSelector'
+import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic } from '../../action/topicActions'
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
@@ -46,6 +47,7 @@ export class TopicDetail extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
     })
   }
 
@@ -146,6 +148,34 @@ export class TopicDetail extends Component {
     this.refs.scrollView.scrollToPosition(0, this.state.commentY)
   }
 
+  onLikeButton() {
+    if (this.props.isLiked) {
+      this.props.unLikeTopic({
+        topicId: this.props.topic.objectId,
+        success: this.submitSuccessCallback.bind(this),
+        error: this.submitErrorCallback
+      })
+    }
+    else {
+      this.props.likeTopic({
+        topicId: this.props.topic.objectId,
+        success: this.submitSuccessCallback.bind(this),
+        error: this.submitErrorCallback
+      })
+    }
+  }
+
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  submitSuccessCallback() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId})
+    })
+  }
 
   render() {
     return (
@@ -189,9 +219,10 @@ export class TopicDetail extends Component {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
-          }}>
-            <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+          <TouchableOpacity style={styles.shopUpWrap} onPress={this.onLikeButton.bind(this)}>
+            <Image style={{}} source={this.props.isLiked?
+              require("../../assets/images/like_select.png"):
+              require("../../assets/images/like_unselect.png")}/>
           </TouchableOpacity>
         </View>
         <Comment
@@ -213,10 +244,12 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const topicComments = getTopicComments(state)
+  const isLiked = isTopicLiked(state, ownProps.topic.objectId)
   const commentsTotalCount = topicComments ? topicComments.length : undefined
   return {
     topicComments: topicComments,
     isLogin: isLogin,
+    isLiked:isLiked,
     userInfo: userInfo,
     commentsTotalCount: commentsTotalCount
   }
@@ -224,7 +257,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicCommentsByTopicId,
-  publishTopicFormData
+  publishTopicFormData,
+  fetchTopicIsLiked,
+  fetchTopicLikesCount,
+  likeTopic,
+  unLikeTopic
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)

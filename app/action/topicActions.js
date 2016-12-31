@@ -104,3 +104,67 @@ export function fetchTopicCommentsByTopicId(payload) {
     })
   }
 }
+
+export function likeTopic(payload) {
+  return (dispatch, getState) => {
+    lcTopics.likeTopic(payload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(topicActionTypes.LIKE_TOPIC_SUCCESS)
+      dispatch(publishAction({stateKey: payload.stateKey}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function unLikeTopic(payload) {
+  return (dispatch, getState) => {
+    lcTopics.unLikeTopic(payload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(topicActionTypes.UNLIKE_TOPIC_SUCCESS)
+      dispatch(publishAction({stateKey: payload.stateKey}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchTopicLikesCount(payload) {
+  return (dispatch, getState) => {
+    lcTopics.fetchTopicLikesCount(payload).then((likesTotalCount) => {
+      let updateAction = createAction(topicActionTypes.FETCH_TOPIC_LIKES_TOTAL_COUNT_SUCCESS)
+      dispatch(updateAction({topicId: payload.topicId, likesTotalCount: likesTotalCount}))
+      if(payload.success){
+        payload.success(likesTotalCount)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchTopicIsLiked(payload) {
+  return (dispatch, getState) => {
+    lcTopics.fetchUserLikeTopicInfo(payload).then((userLikeInfo) => {
+      let updateAction = createAction(topicActionTypes.FETCH_TOPIC_IS_LIKED_SUCCESS)
+      dispatch(updateAction({topicId: payload.topicId, userLikeInfo: userLikeInfo}))
+      if(payload.success){
+        payload.success()
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
