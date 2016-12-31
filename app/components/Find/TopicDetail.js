@@ -21,12 +21,12 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import TopicShow from './TopicShow'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import {TopicComment} from './TopicComment'
+import TopicComment from './TopicComment'
 import Comment from '../common/Comment'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import {getTopicComments,isTopicLiked} from '../../selector/topicSelector'
-import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic } from '../../action/topicActions'
+import {getTopicComments, isTopicLiked} from '../../selector/topicSelector'
+import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic} from '../../action/topicActions'
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
@@ -46,8 +46,8 @@ export class TopicDetail extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
+      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType:'topic'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
     })
   }
 
@@ -56,7 +56,7 @@ export class TopicDetail extends Component {
 
   submitSuccessCallback() {
     Toast.show('评论成功')
-    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType:'topic'})
     this.closeModal(()=> {
       Toast.show('发布成功', {duration: 1000})
     })
@@ -126,6 +126,7 @@ export class TopicDetail extends Component {
       <TopicComment key={key}
                     topic={value}
                     onCommentButton={this.onCommentButton.bind(this)}
+                    onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
       />
     )
   }
@@ -165,6 +166,24 @@ export class TopicDetail extends Component {
     }
   }
 
+  onLikeCommentButton(payload) {
+    if (payload.isLiked) {
+      this.props.unLikeTopic({
+        topicId: payload.topic.objectId,
+        upType: 'topicComment',
+        success: payload.success,
+        error: this.submitErrorCallback
+      })
+    }
+    else {
+      this.props.likeTopic({
+        topicId: payload.topic.objectId,
+        upType: 'topicComment',
+        success: payload.success,
+        error: this.submitErrorCallback
+      })
+    }
+  }
 
   submitErrorCallback(error) {
     Toast.show(error.message)
@@ -220,8 +239,8 @@ export class TopicDetail extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.shopUpWrap} onPress={this.onLikeButton.bind(this)}>
-            <Image style={{}} source={this.props.isLiked?
-              require("../../assets/images/like_select.png"):
+            <Image style={{}} source={this.props.isLiked ?
+              require("../../assets/images/like_select.png") :
               require("../../assets/images/like_unselect.png")}/>
           </TouchableOpacity>
         </View>
@@ -229,7 +248,7 @@ export class TopicDetail extends Component {
           showModules={["content"]}
           modalVisible={this.state.modalVisible}
           modalTitle="写评论"
-          textAreaPlaceholder={(this.state.comment) ?"回复 " + this.state.comment.nickname + ": ": "回复 楼主: "}
+          textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
           closeModal={() => this.closeModal()}
           submitComment={this.submitComment.bind(this)}
         />
@@ -249,7 +268,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     topicComments: topicComments,
     isLogin: isLogin,
-    isLiked:isLiked,
+    isLiked: isLiked,
     userInfo: userInfo,
     commentsTotalCount: commentsTotalCount
   }

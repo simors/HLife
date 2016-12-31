@@ -48,6 +48,7 @@ export class Find extends Component {
     if (payload.isLiked) {
       this.props.unLikeTopic({
         topicId: payload.topic.objectId,
+        upType:'topic',
         success: payload.success,
         error: this.submitErrorCallback
       })
@@ -55,6 +56,7 @@ export class Find extends Component {
     else {
       this.props.likeTopic({
         topicId: payload.topic.objectId,
+        upType:'topic',
         success: payload.success,
         error: this.submitErrorCallback
       })

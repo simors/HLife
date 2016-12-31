@@ -27,7 +27,7 @@ export function publishTopics(payload) {
 
 export function fetchTopicLikesCount(payload) {
   let topicId = payload.topicId
-  let upType = 'topic'
+  let upType = payload.upType
   let query = new AV.Query('Up')
   query.equalTo('targetId', topicId)
   query.equalTo('upType', upType)
@@ -42,7 +42,7 @@ export function fetchTopicLikesCount(payload) {
 
 export function fetchUserLikeTopicInfo(payload) {
   let shopId = payload.topicId
-  let upType = 'topic'
+  let upType = payload.upType
   let currentUser = AV.User.current()
 
   let query = new AV.Query('Up')
@@ -64,7 +64,7 @@ export function fetchUserLikeTopicInfo(payload) {
 
 export function likeTopic(payload) {
   let topicId = payload.topicId
-  let upType = 'topic'
+  let upType = payload.upType
   let currentUser = AV.User.current()
   return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
     if (!userLikeTopicInfo) {

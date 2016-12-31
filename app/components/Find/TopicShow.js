@@ -39,8 +39,8 @@ export class TopicShow extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topic'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
     })
   }
 
@@ -92,8 +92,8 @@ export class TopicShow extends Component {
 
   successCallback() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topic'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
     })
   }
 
