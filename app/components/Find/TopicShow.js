@@ -11,12 +11,17 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  InteractionManager
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import TopicImageViewer from '../../components/common/TopicImageViewer'
 import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
+import {getTopicLikedTotalCount, isTopicLiked} from '../../selector/topicSelector'
+import {fetchTopicLikesCount, fetchTopicIsLiked} from '../../action/topicActions'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 
 export class TopicShow extends Component {
   constructor(props) {
@@ -27,15 +32,26 @@ export class TopicShow extends Component {
       expanded: true,
       showExpandText: false,
       measureFlag: true,
+      liked: false,
+      likedChange: false
     }
   }
 
-  componentWillReceiveProps() {
-    this.setState({measureFlag: true})
-    this.setState({expanded: true})
-    this.setState({expandText: '全文'})
-    this.setState({showExpandText: false})
-    this.setState({numberOfLines: null})
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topic'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.topic.content != nextProps.topic.content) {
+      this.setState({measureFlag: true})
+      this.setState({expanded: true})
+      this.setState({expandText: '全文'})
+      this.setState({showExpandText: false})
+      this.setState({numberOfLines: null})
+    }
   }
 
   _onTextLayout(event) {
@@ -74,6 +90,21 @@ export class TopicShow extends Component {
 
   }
 
+  successCallback() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topic'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
+    })
+  }
+
+  onLikeButton() {
+    this.props.onLikeButton({
+      topic: this.props.topic,
+      isLiked: this.props.isLiked,
+      success: this.successCallback.bind(this)
+    })
+  }
+
   commentButtonPress() {
     Actions.TOPIC_DETAIL({topic: this.props.topic})
   }
@@ -83,10 +114,12 @@ export class TopicShow extends Component {
       return (
         <View style={styles.commentContainerStyle}>
           <View>
-            <TouchableOpacity style={styles.commentStyle} onPress={()=> {
-            }}>
-              <Image style={styles.commentImageStyle} source={require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>75000</Text>
+            <TouchableOpacity style={styles.commentStyle} onPress={()=>this.onLikeButton()}>
+              <Image style={styles.commentImageStyle}
+                     source={this.props.isLiked ?
+                       require("../../assets/images/like_select.png") :
+                       require("../../assets/images/like_unselect.png")}/>
+              <Text style={styles.commentTextStyle}>{this.props.likesCount?this.props.likesCount:0}</Text>
             </TouchableOpacity>
           </View>
           <View>
@@ -164,6 +197,23 @@ TopicShow.defaultProps = {
   showCommentAndLikeButton: true,
 }
 
+const mapStateToProps = (state, ownProps) => {
+  const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
+  const isLiked = isTopicLiked(state, ownProps.topic.objectId)
+  return {
+    likesCount: likesCount,
+    isLiked: isLiked
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchTopicLikesCount,
+  fetchTopicIsLiked
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(TopicShow)
+
+
 //export
 const styles = StyleSheet.create({
   containerStyle: {
@@ -199,7 +249,6 @@ const styles = StyleSheet.create({
     width: normalizeW(44),
     borderRadius: 22,
     borderWidth: 1,
-    borderStyle: 'solid',
     borderColor: 'transparent',
   },
   timeTextStyle: {

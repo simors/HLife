@@ -11,12 +11,14 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  InteractionManager
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
-import TopicImageViewer from '../../components/common/TopicImageViewer'
-import {getConversationTime} from '../../util/numberUtils'
-import {Actions} from 'react-native-router-flux'
+import {getTopicLikedTotalCount, isTopicLiked} from '../../selector/topicSelector'
+import {fetchTopicLikesCount, fetchTopicIsLiked} from '../../action/topicActions'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -27,21 +29,43 @@ export class TopicComment extends Component {
     this.state = {}
   }
 
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topicComment'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topicComment'})
+    })
+  }
+
   renderParentComment() {
-    if (this.props.hasParentComment) {
+    if (this.props.topic.parentCommentContent) {
       return (
         <View style={styles.parentCommentStyle}>
           <Text style={styles.parentCommentContentStyle}>
             <Text style={styles.commentUserStyle}>
-              {this.props.topic.nickname}:
+              {this.props.topic.parentCommentUser + ": "}
             </Text>
             <Text style={styles.parentCommentTextStyle}>
-              {this.props.topic.content}
+              {this.props.topic.parentCommentContent}
             </Text>
           </Text>
         </View>
       )
     }
+  }
+
+  successCallback() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topicComment'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topicComment'})
+    })
+  }
+
+  onLikeCommentButton() {
+    this.props.onLikeCommentButton({
+      topic: this.props.topic,
+      isLiked: this.props.isLiked,
+      success: this.successCallback.bind(this)
+    })
   }
 
   render() {
@@ -71,12 +95,15 @@ export class TopicComment extends Component {
             <Text style={styles.timeTextStyle}>刚刚</Text>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>长沙</Text>
-            <TouchableOpacity style={styles.likeStyle} onPress={()=> {
-            }}>
-              <Image style={styles.likeImageStyle} source={require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>25</Text>
+            <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
+              <Image style={styles.likeImageStyle}
+                     source={this.props.isLiked ?
+                       require("../../assets/images/like_select.png") :
+                       require("../../assets/images/like_unselect.png")}/>
+              <Text style={styles.commentTextStyle}>{this.props.likesCount?this.props.likesCount:0}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+              this.props.onCommentButton(this.props.topic)
             }}>
               <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
               <Text style={styles.commentTextStyle}>回复</Text>
@@ -101,8 +128,23 @@ TopicComment.defaultProps = {
     createAt: undefined,
     topic: undefined,
   },
-  hasParentComment: false,
 }
+
+const mapStateToProps = (state, ownProps) => {
+  const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
+  const isLiked = isTopicLiked(state, ownProps.topic.objectId)
+  return {
+    likesCount: likesCount,
+    isLiked: isLiked
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchTopicLikesCount,
+  fetchTopicIsLiked
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(TopicComment)
 
 //export
 const styles = StyleSheet.create({
@@ -125,7 +167,6 @@ const styles = StyleSheet.create({
     width: normalizeW(35),
     borderRadius: 17.5,
     borderWidth: 1,
-    borderStyle: 'solid',
     borderColor: 'transparent',
     marginTop: normalizeH(10),
     marginLeft: normalizeW(12),

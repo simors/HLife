@@ -58,10 +58,17 @@ export const latestShopAnnouncement = {
 export const shopComments = [
   {
     "id": "58648203da2f600065ad4554",
-    "content": "Shahs 大碗厨环境非常nice，饭菜的味道也没得说，值得推荐",
+    "content": "Shahs 大碗厨环境非常nice，饭菜的味道也没得说，值得推荐Shahs 大碗厨环境非常nice，饭菜的味道也没得说，值得推荐Shahs 大碗厨环境非常nice，饭菜的味道也没得说，值得推荐Shahs 大碗厨环境非常nice，饭菜的味道也没得说，值得推荐Shahs 大碗厨环境非常nice，饭菜的味道也没得说，值得推荐",
     "blueprints": [
       "http://ac-K5Rltwmf.clouddn.com/2198cde31ab267a912f0.jpg",
-      "http://ac-K5Rltwmf.clouddn.com/1933358a86a7f1e4a13a.jpg"
+      "http://ac-K5Rltwmf.clouddn.com/1933358a86a7f1e4a13a.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/2198cde31ab267a912f0.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/1933358a86a7f1e4a13a.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/2198cde31ab267a912f0.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/1933358a86a7f1e4a13a.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/2198cde31ab267a912f0.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/1933358a86a7f1e4a13a.jpg",
+      "http://ac-K5Rltwmf.clouddn.com/2198cde31ab267a912f0.jpg"
     ],
     "containedReply": [],
     "targetShop": {
@@ -69,10 +76,11 @@ export const shopComments = [
     },
     "score": 5,
     "user": {
-      "shopName": "佐凯",
+      "id": "58621cb41b69e675fcd4d7a1",
+      "nickname": "佐凯",
       "avatar": "http://ac-K5Rltwmf.clouddn.com/ed42f892ab14cb645dba.jpg"
     },
-    "createdDate": "-- ::",
+    "createdDate": "2016-12-30 10:14:30",
     "createdAt": 1482981891454,
     "updatedAt": 1482981891454
   },
@@ -96,10 +104,11 @@ export const shopComments = [
     },
     "score": 5,
     "user": {
-      "shopName": "佐凯",
+      "id": "58621cb41b69e675fcd4d7a1",
+      "nickname": "佐凯",
       "avatar": "http://ac-K5Rltwmf.clouddn.com/ed42f892ab14cb645dba.jpg"
     },
-    "createdDate": "-- ::",
+    "createdDate": "2016-12-30 10:14:30",
     "createdAt": 1482978875375,
     "updatedAt": 1482978875375
   }

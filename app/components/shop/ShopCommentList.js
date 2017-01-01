@@ -24,10 +24,12 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {selectShopCategories} from '../../selector/configSelector'
-import {selectShopList} from '../../selector/shopSelector'
-import {fetchShopCategories} from '../../action/configAction'
-import {fetchShopList} from '../../action/shopAction'
+import {fetchShopCommentList} from '../../action/shopAction'
+import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
+import {selectUserIsFollowShop, selectShopComments} from '../../selector/shopSelector'
+import ShopComment from './ShopComment'
+
+import * as ShopDetailTestData from './ShopDetailTestData'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -47,9 +49,27 @@ class ShopCommentList extends Component {
 
   }
 
+  renderRow(rowData, rowId) {
 
-  gotoShopDetailScene(id) {
-    Actions.SHOP_DETAIL({id: id})
+    return (
+      <ShopComment
+        userId={rowData.user.id}
+        userNickname={rowData.user.nickname}
+        avatar={rowData.user.avatar}
+        score={rowData.score}
+        content={rowData.content}
+        createdDate={rowData.createdDate}
+        blueprints={rowData.blueprints}
+      />
+    )
+  }
+
+  refreshData() {
+
+  }
+
+  loadMoreData(isRefresh) {
+
   }
 
   render() {
@@ -63,7 +83,14 @@ class ShopCommentList extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <Text>评价列表页</Text>
+          <CommonListView
+            contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            loadNewData={()=>{this.refreshData()}}
+            loadMoreData={()=>{this.loadMoreData()}}
+            ref={(listView) => this.listView = listView}
+          />
         </View>
       </View>
     )
@@ -71,9 +98,19 @@ class ShopCommentList extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let ds = undefined
+  if(ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+
+  const shopCommentList = ShopDetailTestData.shopComments
 
   return {
-
+    ds: ds.cloneWithRows(shopCommentList),
   }
 }
 
@@ -86,6 +123,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopCommentList)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.05)'
   },
   body: {
     ...Platform.select({
