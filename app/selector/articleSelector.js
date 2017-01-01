@@ -63,3 +63,7 @@ export function getcommentList(state,articleId,categoryId)
 
   //return commentList
 }
+
+export function getcommentCount(state,articleId,categoryId) {
+  return getArticles(state).commentsCount[articleId] || []
+}

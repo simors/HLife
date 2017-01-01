@@ -21,8 +21,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
-import {fetchLikers,fetchCommentsArticle} from '../../action/articleAction'
-import {getArticleItem,getLikerList,getcommentList} from '../../selector/articleSelector'
+import {fetchLikers,fetchCommentsArticle,fetchCommentsCount} from '../../action/articleAction'
+import {getArticleItem,getLikerList,getcommentList,getcommentCount} from '../../selector/articleSelector'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -38,7 +38,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
    // console.log('DidMountisHere-====--------->',this.props)
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchLikers(this.props.articleId,this.props.categoryId)
-      this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
+      //this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
+      this.props.fetchCommentsCount(this.props.articleId,this.props.categoryId)
     })
 
   }
@@ -135,7 +136,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
                   <Text style={styles.threeLikeT}>{this.props.likerList?this.props.likerList.length:0}</Text>
                   <View style={styles.comments}></View>
                    <Image source={require('../../assets/images/artical_comments_unselect.png')}></Image>
-                  <Text>{this.props.commentList?this.props.commentList.length:0}</Text>
+                  <Text>{this.props.commentCount?this.props.commentCount:0}</Text>
                 </View>
               </View>
             </View>
@@ -159,7 +160,7 @@ const mapStateToProps = (state, ownProps) => {
 //  let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
   let likerList = getLikerList(state,ownProps.articleId,ownProps.categoryId)
   let commentList = getcommentList(state,ownProps.articleId,ownProps.categoryId)
-
+  let commentCount = getcommentCount(state,ownProps.articleId,ownProps.categoryId)
   //console.log('articleItem=======>',articleItem)
  // console.log('likerList=======>',likerList)
  // console.log('commentList=======>',commentList)
@@ -168,12 +169,14 @@ const mapStateToProps = (state, ownProps) => {
     likerList: likerList,
     commentList: commentList,
    // articleItem : articleItem,
+    commentCount:commentCount
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchLikers,
   fetchCommentsArticle,
+  fetchCommentsCount,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleShow)

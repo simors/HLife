@@ -16,6 +16,8 @@ export default function articleReducer(state = initialState, action) {
       return handleAddLikers(state, action)
     case Types.ADD_COMMENT:
       return handleAddComments(state,action)
+    case Types.ADD_COMMENT_COUNT:
+      return handleAddCommentsCount(state,action)
     default:
       return state
   }
@@ -62,5 +64,26 @@ function handleAddComments(state, action) {
   let _map = state.get('commentList')
   _map = _map.set(articleId, commentList)
   state = state.set('commentList',_map)
+  return state
+}
+
+function handleAddCommentsCount(state, action) {
+  // let columnId = action.payload.columnId
+ // console.log('action',action)
+  let articleId = action.payload.articleId
+  let commentsCount = action.payload.commentsCount
+  // let articleList = state.get(columnId)
+  // let article = articleList.find((value) => {return value.articleId == articleId})
+  // let index = articleList.findIndex((value) => {return value.articleId == articleId})
+  // article = article.set('comments', commentList)
+  // articleList = articleList.update(index, val => article)
+  // state = state.set(columnId, articleList)
+  // //console.log('state======>',state)
+  //
+  // return state
+  // let articleId = action.payload.articleId
+  let _map = state.get('commentsCount')
+  _map = _map.set(articleId, commentsCount)
+  state = state.set('commentsCount',_map)
   return state
 }

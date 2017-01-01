@@ -121,8 +121,44 @@ export class ArticleComment extends ArticleCommentItem {
   }
 }
 
+export const UpRecord = Record({
+  id: undefined, // 点赞id
+  upType: '', //点赞类型: enum('shop', 'shopComment', 'article', 'articleComment', 'topic', 'topicComment')
+  targetId: '', //点赞类型对应的对象id
+  status: false, //是否点赞
+  createdDate: '', //格式化后的创建时间
+  user: {},
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+})
+
+export class Up extends UpRecord {
+  static fromLeancloudObject(lcObj) {
+    let up = new UpRecord()
+    let attrs = lcObj.attributes
+    return up.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('upType', attrs.upType)
+      record.set('targetId', attrs.targetId)
+      record.set('status', attrs.status)
+
+      let userAttrs = attrs.user.attributes
+      let user = {}
+      user.id = attrs.user.id
+      user.nickname = userAttrs.nickname
+      record.set('user', user)
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+}
+
 export const Articles = Record({
   articleList: Map(),
   likerList: Map(),
   commentList: Map(),
+  upList: Map(),
+  upCount: Map(),
+  commentsCount: Map(),
 }, 'Articles')

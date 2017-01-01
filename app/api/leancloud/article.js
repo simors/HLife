@@ -51,6 +51,18 @@ export function getLikers(payload) {
   })
 }
 
+export function getCommentCount(payload) {
+  let article = AV.Object.createWithoutData('Articles',payload)
+  let relation = article.relation('comments')
+  let query = relation.query()
+  return query.count().then(function (results) {
+    console.log('count==>',results)
+   return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
 //根据ARTICLE的RELATION进行查询
 export function getComment(payload) {
   let article = AV.Object.createWithoutData('Articles',payload)
