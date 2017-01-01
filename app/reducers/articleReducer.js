@@ -3,9 +3,10 @@
  */
 import * as Types from '../constants/articleActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Map, List} from 'immutable'
+import {Map, Record,List} from 'immutable'
+import {Articles} from '../models/ArticleModel'
 
-const initialState = new Map()
+const initialState = new Articles()
 
 export default function articleReducer(state = initialState, action) {
   switch(action.type) {
@@ -23,34 +24,31 @@ export default function articleReducer(state = initialState, action) {
 function handleAddArticles(state, action) {
   let columnId = action.payload.columnId
   let articleList = action.payload.articleList
-  state = state.set('article', articleList)
+ // console.log('columnId',columnId)
+ // console.log('articleList',articleList)
+  // state = state.set('articleList', articleList)
+  // return state
+  let _map = state.get('articleList')
+  _map = _map.set(columnId, articleList)
+  state = state.set('articleList',_map)
   return state
 }
 
 function handleAddLikers(state, action) {
   // let columnId = action.payload.columnId
-  // let articleId = action.payload.articleId
-  // let likersList = action.payload.likersList
-  // let articleList = state.get(columnId)
-  // let article = articleList.find((value) => {return value.articleId == articleId})
-  // let index = articleList.findIndex((value) => {return value.articleId == articleId})
-  // article = article.set('likers', likersList)
-  // articleList = articleList.update(index, val => article)
-  // state = state.set(columnId, articleList)
-  // //console.log('state======>',state)
-  //
-  // return state
-  //let articleId = action.payload.articleId
+  let articleId = action.payload.articleId
   let likerList = action.payload.likerList
-  state = state.set('liker', likerList)
+  let _map = state.get('likerList')
+  _map = _map.set(articleId, likerList)
+  state = state.set('likerList',_map)
   return state
 
 }
 
 function handleAddComments(state, action) {
   // let columnId = action.payload.columnId
-  // let articleId = action.payload.articleId
-  // let commentList = action.payload.commentList
+  let articleId = action.payload.articleId
+  let commentList = action.payload.commentList
   // let articleList = state.get(columnId)
   // let article = articleList.find((value) => {return value.articleId == articleId})
   // let index = articleList.findIndex((value) => {return value.articleId == articleId})
@@ -61,7 +59,8 @@ function handleAddComments(state, action) {
   //
   // return state
  // let articleId = action.payload.articleId
-  let commentList = action.payload.commentList
-  state = state.set('comments', commentList)
+  let _map = state.get('commentList')
+  _map = _map.set(articleId, commentList)
+  state = state.set('commentList',_map)
   return state
 }

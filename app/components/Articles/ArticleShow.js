@@ -35,7 +35,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   }
 
   componentDidMount() {
-    console.log('DidMountisHere-====--------->',this.props)
+   // console.log('DidMountisHere-====--------->',this.props)
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchLikers(this.props.articleId,this.props.categoryId)
       this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
@@ -135,7 +135,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
                   <Text style={styles.threeLikeT}>{this.props.likerList?this.props.likerList.length:0}</Text>
                   <View style={styles.comments}></View>
                    <Image source={require('../../assets/images/artical_comments_unselect.png')}></Image>
-                  <Text>{this.props.commentList?this.props.commentList.size:0}</Text>
+                  <Text>{this.props.commentList?this.props.commentList.length:0}</Text>
                 </View>
               </View>
             </View>
@@ -156,18 +156,18 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
+//  let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
   let likerList = getLikerList(state,ownProps.articleId,ownProps.categoryId)
   let commentList = getcommentList(state,ownProps.articleId,ownProps.categoryId)
 
-  console.log('articleItem=======>',articleItem)
-  console.log('likerList=======>',likerList)
-  console.log('commentList=======>',commentList)
+  //console.log('articleItem=======>',articleItem)
+ // console.log('likerList=======>',likerList)
+ // console.log('commentList=======>',commentList)
 
   return{
     likerList: likerList,
     commentList: commentList,
-    articleItem : articleItem,
+   // articleItem : articleItem,
   }
 }
 

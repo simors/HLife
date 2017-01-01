@@ -15,8 +15,8 @@ export const ArticleItemConfig = Record({
   avatar: undefined,        //作者头像
   author: undefined,         //作者ID
   createdAt: undefined,     //创建时间
-  likers: List(),           //点赞数
-  comments: List(),         //评论
+  //likers: List(),           //点赞数
+ // comments: List(),         //评论
 }, 'ArticleItemConfig')
 
 export const LikersItemConfig = Record({
@@ -122,7 +122,7 @@ export class ArticleComment extends ArticleCommentItem {
 }
 
 export const Articles = Record({
-  aticlrList: List(),
-  likesList: List(),
-  commentList: List(),
+  articleList: Map(),
+  likerList: Map(),
+  commentList: Map(),
 }, 'Articles')

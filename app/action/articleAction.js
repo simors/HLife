@@ -13,7 +13,9 @@ export function fetchArticle(payload) {
   return (dispatch, getState) => {
     let columnId = payload
     laArticle.getArticle(columnId).then((articleList) => {
- //     console.log('articleListh======>',articleList)
+     // console.log('articleListh======>',articleList)
+    //  console.log('columnId======>',columnId)
+
       dispatch(addArticleAction({columnId: columnId, articleList: articleList}))
     }).catch((error) => {
       if(payload.error) {
@@ -28,8 +30,8 @@ export function fetchLikers(articleId,columnId) {
   return (dispatch, getState) => {
    // let articleId = payload
     laArticle.getLikers(articleId).then((likerList) => {
-   //   console.log('likersList======>',likersList)
-      dispatch(addLikersAction({likerList:likerList}))
+      console.log('likersList======>',likerList)
+      dispatch(addLikersAction({likerList:likerList,articleId:articleId}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
@@ -43,7 +45,7 @@ export function fetchCommentsArticle(articleId,columnId) {
   return (dispatch, getState) => {
    // let articleId = payload
     laArticle.getComment(articleId).then((commentList) => {
-      dispatch(addCommentAction({commentList:commentList}))
+      dispatch(addCommentAction({commentList:commentList,articleId:articleId}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

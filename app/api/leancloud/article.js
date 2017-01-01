@@ -41,7 +41,7 @@ export function getLikers(payload) {
     datas.forEach((data)=> {
       likers.push(data)
     })
-    // console.log('likers=============================>', likers)
+     console.log('likers=============================>', likers)
     return likers
   }, (err) => {
     console.log(err)
