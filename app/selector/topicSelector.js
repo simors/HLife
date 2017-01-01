@@ -9,3 +9,13 @@ export function getTopics(state) {
 export function getTopicComments(state) {
   return state.TOPIC.toJS().topicComments
 }
+
+
+export function getTopicLikedTotalCount(state, topicId) {
+  return state.TOPIC.toJS().TopicLikesNum[topicId]
+}
+
+
+export function isTopicLiked(state, topicId) {
+  return state.TOPIC.toJS().IsLikedByCurrentUser[topicId]
+}

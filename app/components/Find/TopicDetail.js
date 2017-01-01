@@ -19,13 +19,14 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {TopicShow} from './TopicShow'
+import TopicShow from './TopicShow'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import {TopicComment} from './TopicComment'
+import TopicComment from './TopicComment'
 import Comment from '../common/Comment'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import {getTopicComments} from '../../selector/topicSelector'
+import {getTopicComments, isTopicLiked} from '../../selector/topicSelector'
+import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic} from '../../action/topicActions'
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
@@ -45,7 +46,8 @@ export class TopicDetail extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType:'topic'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
     })
   }
 
@@ -54,7 +56,7 @@ export class TopicDetail extends Component {
 
   submitSuccessCallback() {
     Toast.show('评论成功')
-    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType:'topic'})
     this.closeModal(()=> {
       Toast.show('发布成功', {duration: 1000})
     })
@@ -124,6 +126,7 @@ export class TopicDetail extends Component {
       <TopicComment key={key}
                     topic={value}
                     onCommentButton={this.onCommentButton.bind(this)}
+                    onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
       />
     )
   }
@@ -146,6 +149,52 @@ export class TopicDetail extends Component {
     this.refs.scrollView.scrollToPosition(0, this.state.commentY)
   }
 
+  onLikeButton() {
+    if (this.props.isLiked) {
+      this.props.unLikeTopic({
+        topicId: this.props.topic.objectId,
+        success: this.likeSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+    else {
+      this.props.likeTopic({
+        topicId: this.props.topic.objectId,
+        success: this.likeSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+  }
+
+  onLikeCommentButton(payload) {
+    if (payload.isLiked) {
+      this.props.unLikeTopic({
+        topicId: payload.topic.objectId,
+        upType: 'topicComment',
+        success: payload.success,
+        error: this.likeErrorCallback
+      })
+    }
+    else {
+      this.props.likeTopic({
+        topicId: payload.topic.objectId,
+        upType: 'topicComment',
+        success: payload.success,
+        error: this.likeErrorCallback
+      })
+    }
+  }
+
+  likeErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  likeSuccessCallback() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId})
+    })
+  }
 
   render() {
     return (
@@ -189,16 +238,17 @@ export class TopicDetail extends Component {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
-          }}>
-            <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+          <TouchableOpacity style={styles.shopUpWrap} onPress={this.onLikeButton.bind(this)}>
+            <Image style={{}} source={this.props.isLiked ?
+              require("../../assets/images/like_select.png") :
+              require("../../assets/images/like_unselect.png")}/>
           </TouchableOpacity>
         </View>
         <Comment
           showModules={["content"]}
           modalVisible={this.state.modalVisible}
           modalTitle="写评论"
-          textAreaPlaceholder={(this.state.comment) ?"回复 " + this.state.comment.nickname + ": ": "回复 楼主: "}
+          textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
           closeModal={() => this.closeModal()}
           submitComment={this.submitComment.bind(this)}
         />
@@ -213,10 +263,12 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const topicComments = getTopicComments(state)
+  const isLiked = isTopicLiked(state, ownProps.topic.objectId)
   const commentsTotalCount = topicComments ? topicComments.length : undefined
   return {
     topicComments: topicComments,
     isLogin: isLogin,
+    isLiked: isLiked,
     userInfo: userInfo,
     commentsTotalCount: commentsTotalCount
   }
@@ -224,7 +276,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicCommentsByTopicId,
-  publishTopicFormData
+  publishTopicFormData,
+  fetchTopicIsLiked,
+  fetchTopicLikesCount,
+  likeTopic,
+  unLikeTopic
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)
