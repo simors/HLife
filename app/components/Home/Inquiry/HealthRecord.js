@@ -12,6 +12,7 @@ import {
   Image,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
+import Symbol from 'es6-symbol'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import Header from '../../common/Header'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
