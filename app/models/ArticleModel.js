@@ -156,9 +156,10 @@ export class Up extends UpRecord {
 
 export const Articles = Record({
   articleList: Map(),
-  likerList: Map(),
+ // likerList: Map(),
   commentList: Map(),
   upList: Map(),
   upCount: Map(),
+  isUp: Map(),
   commentsCount: Map(),
 }, 'Articles')

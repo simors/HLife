@@ -2,7 +2,7 @@
  * Created by lilu on 2016/12/29.
  */
 
-import {ArticleItem, LikersItem,ArticleComment} from '../../models/ArticleModel'
+import {ArticleItem, LikersItem,ArticleComment,Up} from '../../models/ArticleModel'
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 
@@ -30,25 +30,25 @@ export function getArticle(payload) {
   })
 }
 
-export function getLikers(payload) {
-  let articleIdJson = {
-    articleId: payload
-  }
-  let likers = []
-  //console.log('ahahahahahahahaha',articleIdJson)
-  return AV.Cloud.run('getArticleLikers', articleIdJson).then((datas) => {
-    //console.log('datas============>',datas)
-    datas.forEach((data)=> {
-      likers.push(data)
-    })
-     console.log('likers=============================>', likers)
-    return likers
-  }, (err) => {
-    console.log(err)
+export function getUps(payload) {
+  let articleId = payload.articleId
+  let upType = payload.upType
+  let query = AV.query('Up')
+  query.equalTo('targetId', articleId)
+  query.equalTo('upType', upType)
+  query.equalTo('status', true)
 
+  return query.find().then((results) => {
+    let ups = []
+    results.forEach((result) => {
+      ups.push(Up.fromLeancloudObject(result))
+    })
+    return new List(ups)
+  },(err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
 }
 
 export function getCommentCount(payload) {
@@ -63,6 +63,108 @@ export function getCommentCount(payload) {
     throw err
   })
 }
+
+export function getUpCount(payload) {
+  let articleId = payload.articleId
+  let upType = payload.upType
+  let query = new AV.Query('Up')
+  query.equalTo('upType', upType)
+  query.equalTo('targetId', articleId)
+  query.equalTo('status', true)
+  return query.count().then((results)=> {
+    return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function getIsUps(payload) {
+  let articleId = payload.articleId
+  let upType = payload.upType
+  let currentUser = AV.User.current()
+  let query = new AV.Query('Up')
+  query.equalTo('targetId', articleId)
+  query.equalTo('upType', upType)
+  query.equalTo('user', currentUser)
+  query.include('user')
+  return query.first().then((result) =>{
+    let userUpShopInfo = undefined
+    if(result && result.attributes) {
+      userUpShopInfo = Up.fromLeancloudObject(result)
+    }
+    return userUpShopInfo
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+
+export function upArticle(payload) {
+  let articleId = payload.articleId
+  let upType = payload.upType
+  let currentUser = AV.User.current()
+  return getIsUps(payload).then((userLikeTopicInfo) => {
+    if (!userLikeTopicInfo) {
+      let Up = AV.Object.extend('Up')
+      let up = new Up()
+      up.set('targetId', topicId)
+      up.set('upType', upType)
+      up.set('user', currentUser)
+      return up.save()
+    }
+    else if (userLikeTopicInfo.id && !userLikeTopicInfo.status) {
+      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+      up.set('status', true)
+      return up.save()
+    }
+    return {
+      code: '10107',
+      message: '您已经赞过该话题了'
+    }
+  }).then((result) => {
+    if (result && '10107' == result.code) {
+      return result
+    }
+    return {
+      articleId: articleId,
+      code: '10108',
+      message: '成功点赞'
+    }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function unUpArticle(payload) {
+  let articleId = payload.articleId
+  return getIsUps(payload).then((userLikeTopicInfo) => {
+    if (userLikeTopicInfo && userLikeTopicInfo.id) {
+      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+      up.set('status', false)
+      return up.save()
+    }
+    return {
+      code: '10009',
+      message: '您还没有赞过该话题'
+    }
+  }).then((result) => {
+    if (result && '10009' == result.code) {
+      return result
+    }
+    return {
+      articleId: articleId,
+      code: '10010',
+      message: '取消点赞成功'
+    }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 //根据ARTICLE的RELATION进行查询
 export function getComment(payload) {
   let article = AV.Object.createWithoutData('Articles',payload)

@@ -67,3 +67,12 @@ export function getcommentList(state,articleId,categoryId)
 export function getcommentCount(state,articleId,categoryId) {
   return getArticles(state).commentsCount[articleId] || []
 }
+
+export function getUpCount(state,articleId,categoryId) {
+  return getArticles(state).upCount[articleId] || []
+}
+
+export function getIsUp(state,articleId) {
+  console.log('=========>',articleId)
+  return getArticles(state).isUp[articleId] || []
+}

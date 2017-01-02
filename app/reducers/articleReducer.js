@@ -12,8 +12,12 @@ export default function articleReducer(state = initialState, action) {
   switch(action.type) {
     case Types.ADD_ARTICLES:
       return handleAddArticles(state, action)
-    case Types.ADD_LIKERS:
-      return handleAddLikers(state, action)
+    case Types.ADD_UPS:
+      return handleAddUps(state, action)
+    case Types.ADD_UP_COUNT:
+      return handleUpdateUpCount(state,action)
+    case Types.UPDATE_ISUP:
+      return handleUpdateIsUp(state,action)
     case Types.ADD_COMMENT:
       return handleAddComments(state,action)
     case Types.ADD_COMMENT_COUNT:
@@ -36,13 +40,13 @@ function handleAddArticles(state, action) {
   return state
 }
 
-function handleAddLikers(state, action) {
+function handleAddUps(state, action) {
   // let columnId = action.payload.columnId
   let articleId = action.payload.articleId
-  let likerList = action.payload.likerList
-  let _map = state.get('likerList')
+  let upList = action.payload.upList
+  let _map = state.get('upList')
   _map = _map.set(articleId, likerList)
-  state = state.set('likerList',_map)
+  state = state.set('upList',_map)
   return state
 
 }
@@ -51,16 +55,6 @@ function handleAddComments(state, action) {
   // let columnId = action.payload.columnId
   let articleId = action.payload.articleId
   let commentList = action.payload.commentList
-  // let articleList = state.get(columnId)
-  // let article = articleList.find((value) => {return value.articleId == articleId})
-  // let index = articleList.findIndex((value) => {return value.articleId == articleId})
-  // article = article.set('comments', commentList)
-  // articleList = articleList.update(index, val => article)
-  // state = state.set(columnId, articleList)
-  // //console.log('state======>',state)
-  //
-  // return state
- // let articleId = action.payload.articleId
   let _map = state.get('commentList')
   _map = _map.set(articleId, commentList)
   state = state.set('commentList',_map)
@@ -85,5 +79,29 @@ function handleAddCommentsCount(state, action) {
   let _map = state.get('commentsCount')
   _map = _map.set(articleId, commentsCount)
   state = state.set('commentsCount',_map)
+  return state
+}
+
+function handleUpdateIsUp(state, action) {
+  let payload = action.payload
+  let articleId = payload.articleId
+  let userUpInfo = payload.userUpInfo
+  let _map = state.get('isUp')
+  if(userUpInfo && userUpInfo.status)
+  {
+    _map = _map.set(articleId, true)
+  }else{
+    _map = _map.set(articleId, false)
+  }
+  state = state.set('isUp',  _map)
+  return state
+}
+
+function handleUpdateUpCount(state,action){
+  let articleId = action.payload.articleId
+  let upCount = action.payload.upCount
+  let _map = state.get('upCount')
+  _map = _map.set(articleId, upCount)
+  state = state.set('upCount',_map)
   return state
 }

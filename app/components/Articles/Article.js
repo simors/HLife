@@ -25,11 +25,12 @@ import {Actions} from 'react-native-router-flux'
 import {CommonWebView} from '../common/CommonWebView'
 import CommentPublic from './CommentPublic'
 import Comment from '../common/Comment'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-
-export default class Article extends Component {
+ class Article extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -37,12 +38,62 @@ export default class Article extends Component {
       commentY:0
     }
   }
+  renderCommentPage() {
+    if (this.props.topicComments) {
+      return (
+        this.props.topicComments.map((value, key)=> {
+          return (
+            this.renderCommentItem(value, key)
+          )
+        })
+      )
+    }
+  }
+  renderCommentItem(value, key) {
+    return (
+      <TopicComment key={key}
+                    topic={value}
+                    onCommentButton={this.onCommentButton.bind(this)}
+                    onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
+      />
+    )
+  }
+  renderNoComment() {
+    if (this.props.commentsTotalCount == 0) {
+      return (
+        <Text style={{alignSelf: 'center', paddingTop: 20}}>
+          目前没有评论，快来抢沙发吧！~~~
+        </Text>
+      )
+    }
+  }
+
+  submitComment(commentData) {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    }
+    else {
+      this.props.publishTopicFormData({
+        ...commentData,
+        topicId: this.props.topic.objectId,
+        userId: this.props.userInfo.id,
+        commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
+        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
+        success: this.submitSuccessCallback.bind(this),
+        error: this.submitErrorCallback
+      })
+    }
+  }
+
   submitSuccessCallback() {
     Toast.show('评论成功')
     this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
     this.closeModal(()=> {
       Toast.show('发布成功', {duration: 1000})
     })
+  }
+  scrollToComment() {
+    this.refs.scrollView.scrollToPosition(0, this.state.commentY)
   }
   openModel(callback) {
     this.setState({
@@ -70,7 +121,7 @@ export default class Article extends Component {
                 rightImageSource={require("../../assets/images/artical_share.png")}>
 
         </Header>
-        <ScrollView>
+        <KeyboardAwareScrollView style={styles.body} ref={"scrollView"}>
         <View style={styles.cotainer}>
         <View style={styles.titleView}>
           <Text style={{fontSize:normalizeH(17), color:'#636363',marginLeft:normalizeW(12),fontWeight:'bold'}}>{this.props.title}</Text>
@@ -84,13 +135,19 @@ export default class Article extends Component {
                   source= {{html: this.props.content}}
           >
           </WebView>
+          <View style={styles.zanStyle}>
+            <Text style={styles.zanTextStyle}>
+              赞
+            </Text>
           </View>
-        </ScrollView>
+          {this.renderCommentPage()}
+          {this.renderNoComment()}
+          </View>
+        </KeyboardAwareScrollView>
         <View style={styles.shopCommentWrap}>
           <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
             <Text style={styles.shopCommentInput}>写评论...</Text>
           </TouchableOpacity>
-
           <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
             <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
             <View style={styles.commentBtnBadge}>
@@ -116,6 +173,28 @@ export default class Article extends Component {
   }
 
 }
+
+
+const mapStateToProps = (state, ownProps) => {
+  const isLogin = isUserLogined(state)
+  const userInfo = activeUserInfo(state)
+  const topicComments = getTopicComments(state)
+  const isLiked = isTopicLiked(state, ownProps.topic.objectId)
+  const commentsTotalCount = topicComments ? topicComments.length : undefined
+  return {
+    topicComments: topicComments,
+    isLogin: isLogin,
+    isLiked: isLiked,
+    userInfo: userInfo,
+    commentsTotalCount: commentsTotalCount
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Article)
 
 const styles = StyleSheet.create(
   {

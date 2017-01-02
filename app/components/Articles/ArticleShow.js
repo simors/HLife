@@ -21,8 +21,9 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
-import {fetchLikers,fetchCommentsArticle,fetchCommentsCount} from '../../action/articleAction'
-import {getArticleItem,getLikerList,getcommentList,getcommentCount} from '../../selector/articleSelector'
+import {fetchIsUP,upArticle,unUpArticle,fetchCommentsArticle,fetchCommentsCount,fetchUpCount} from '../../action/articleAction'
+import {getIsUp,getcommentList,getcommentCount,getUpCount} from '../../selector/articleSelector'
+import * as Toast from '../common/Toast'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -37,12 +38,44 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   componentDidMount() {
    // console.log('DidMountisHere-====--------->',this.props)
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchLikers(this.props.articleId,this.props.categoryId)
+     // this.props.fetchLikers(this.props.articleId,this.props.categoryId)//
+      this.props.fetchUpCount({articleId: this.props.articleId,upType:'article'})
       //this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
       this.props.fetchCommentsCount(this.props.articleId,this.props.categoryId)
+      this.props.fetchIsUP({articleId: this.props.articleId,upType:'article'})
     })
 
   }
+   upSuccessCallback() {
+     InteractionManager.runAfterInteractions(() => {
+       this.props.fetchUpCount({articleId: this.props.articleId,upType:'article'})
+       //this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
+       this.props.fetchCommentsCount(this.props.articleId,this.props.categoryId)
+       this.props.fetchIsUP({articleId: this.props.articleId,upType:'article'})
+     })
+   }
+
+   likeErrorCallback(error) {
+     Toast.show(error.message)
+   }
+   onLikeButton() {
+     if (this.props.isUp) {
+       this.props.unUpArticle({
+         articleId: this.props.articleId,
+         upType: 'article',
+         success: this.upSuccessCallback.bind(this),
+         error: this.likeErrorCallback
+       })
+     }
+     else {
+       this.props.upArticle({
+         articleId: this.props.articleId,
+         upType: 'article',
+         success: this.upSuccessCallback.bind(this),
+         error: this.likeErrorCallback
+       })
+     }
+   }
 
   renderArticles() {
     if (this.props.articleId) {
@@ -129,14 +162,18 @@ const PAGE_HEIGHT = Dimensions.get('window').height
                 </TouchableOpacity>
                 <View style={styles.threeArticleInfo}>
                   <Image style={styles.threeAvatar} source={{uri: this.props.avatar}}></Image>
-                  <Text style={{fontSize: normalizeW(15), color: '#929292'}}>{this.props.nickname}</Text>
-                <View style={styles.threelike}>
-                  <Image source={require('../../assets/images/artical_like_unselect.png')}></Image>
+                  <Text style={{width:normalizeW(180),fontSize: normalizeW(15), color: '#929292'}}>{this.props.nickname}</Text>
+                  <TouchableOpacity  onPress={()=>this.onLikeButton()}>
+                  <View style={styles.threelike}>
+                  <Image  source={this.props.isUp ?
+                    require("../../assets/images/like_select.png") :
+                    require("../../assets/images/like_unselect.png")}/>
                 </View>
-                  <Text style={styles.threeLikeT}>{this.props.likerList?this.props.likerList.length:0}</Text>
-                  <View style={styles.comments}></View>
+                    </TouchableOpacity>
+                  <Text style={styles.threelikeT}>{this.props.upCount?this.props.upCount:0}</Text>
+                  {/*<View style={styles.comments}></View>*/}
                    <Image source={require('../../assets/images/artical_comments_unselect.png')}></Image>
-                  <Text>{this.props.commentCount?this.props.commentCount:0}</Text>
+                  <Text style={styles.threelikeT}>{this.props.commentCount?this.props.commentCount:0}</Text>
                 </View>
               </View>
             </View>
@@ -158,25 +195,33 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 const mapStateToProps = (state, ownProps) => {
 //  let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
-  let likerList = getLikerList(state,ownProps.articleId,ownProps.categoryId)
+  //let likerList = getLikerList(state,ownProps.articleId,ownProps.categoryId)
   let commentList = getcommentList(state,ownProps.articleId,ownProps.categoryId)
   let commentCount = getcommentCount(state,ownProps.articleId,ownProps.categoryId)
+  let upCount = getUpCount(state,ownProps.articleId,ownProps.categoryId)
   //console.log('articleItem=======>',articleItem)
  // console.log('likerList=======>',likerList)
  // console.log('commentList=======>',commentList)
-
+  let isUp = getIsUp(state,ownProps.articleId)
+  console.log('isUp=======>',isUp)
   return{
-    likerList: likerList,
+    // likerList: likerList,
     commentList: commentList,
+    upCount: upCount,
+    isUp: isUp,
    // articleItem : articleItem,
     commentCount:commentCount
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchLikers,
+ // fetchLikers,
   fetchCommentsArticle,
   fetchCommentsCount,
+  fetchUpCount,
+  fetchIsUP,
+  upArticle,
+  unUpArticle,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleShow)
@@ -261,6 +306,7 @@ const styles = StyleSheet.create(
       width:normalizeW(25),
     },
     threelikeT:{
+      marginTop: normalizeW(5),
       color:'#B6B6B6',
       fontSize:em(11),
     }
