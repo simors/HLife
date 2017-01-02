@@ -12,6 +12,7 @@ import {
   Image,
 } from 'react-native'
 import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import Header from '../../common/Header'
