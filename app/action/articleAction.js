@@ -133,3 +133,20 @@ export function fetchCommentsCount(articleId,columnId) {
     })
   }
 }
+
+
+export function submitArticleComment(payload) {
+  return (dispatch, getState) => {
+    laArticle.submitArticleComment(payload).then((result) => {
+      let updateAction = createAction(articleTypes.SUBMIT_ARTICLE_COMMENT_SUCCESS)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}

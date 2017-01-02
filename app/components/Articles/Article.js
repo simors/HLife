@@ -12,7 +12,8 @@ import {
   Modal,
   ScrollView,
   TouchableHighlight,
-  WebView
+  WebView,
+  InteractionManager,
 } from 'react-native'
 import Header from '../common/Header'
 import {connect} from 'react-redux'
@@ -24,8 +25,13 @@ import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
 import {CommonWebView} from '../common/CommonWebView'
 import CommentPublic from './CommentPublic'
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import {fetchIsUP,upArticle,unUpArticle,fetchCommentsArticle,fetchCommentsCount,fetchUpCount,submitArticleComment} from '../../action/articleAction'
+import {getIsUp,getcommentList,getcommentCount,getUpCount} from '../../selector/articleSelector'
 import Comment from '../common/Comment'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import articleComment from './comment'
+import * as Toast from '../common/Toast'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -33,15 +39,24 @@ const PAGE_HEIGHT = Dimensions.get('window').height
  class Article extends Component {
   constructor(props) {
     super(props)
-    this.state = {
+      this.state = {
       modalVisible: false,
-      commentY:0
+      commentY: 0,
+      comment: undefined
     }
   }
+
+   componentDidMount() {
+     InteractionManager.runAfterInteractions(() => {
+       this.props.fetchCommentsArticle({articleId: this.props.articleId, upType:'article'})
+       this.props.fetchIsUP({articleId: this.props.articleId, upType:'article'})
+     })
+   }
+
   renderCommentPage() {
-    if (this.props.topicComments) {
+    if (this.props.articleComments) {
       return (
-        this.props.topicComments.map((value, key)=> {
+        this.props.articleComments.map((value, key)=> {
           return (
             this.renderCommentItem(value, key)
           )
@@ -51,8 +66,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   }
   renderCommentItem(value, key) {
     return (
-      <TopicComment key={key}
-                    topic={value}
+      <articleComment key={key}
+                    comment={value}
                     onCommentButton={this.onCommentButton.bind(this)}
                     onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
       />
@@ -73,12 +88,10 @@ const PAGE_HEIGHT = Dimensions.get('window').height
       Actions.LOGIN()
     }
     else {
-      this.props.publishTopicFormData({
+      this.props.submitArticleComment({
         ...commentData,
-        topicId: this.props.topic.objectId,
-        userId: this.props.userInfo.id,
-        commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
-        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
+        topicId: this.props.articleId,
+        replyId: (this.state.comment) ? this.state.comment.objectId : undefined,
         success: this.submitSuccessCallback.bind(this),
         error: this.submitErrorCallback
       })
@@ -87,7 +100,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
   submitSuccessCallback() {
     Toast.show('评论成功')
-    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+    this.props.fetchTopicCommentsByTopicId({articleId: this.props.articleId})
     this.closeModal(()=> {
       Toast.show('发布成功', {duration: 1000})
     })
@@ -178,20 +191,28 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
-  const topicComments = getTopicComments(state)
-  const isLiked = isTopicLiked(state, ownProps.topic.objectId)
-  const commentsTotalCount = topicComments ? topicComments.length : undefined
+  const articleComments = getcommentList(state,ownProps.articleId)
+  const isUp = getIsUp(state, ownProps.articleId)
+  const upCount = getUpCount(state,ownProps.articleId)
+  const commentsTotalCount = getcommentCount (state,ownProps.articleId)
   return {
-    topicComments: topicComments,
+    articleComments: articleComments,
     isLogin: isLogin,
-    isLiked: isLiked,
+    isUp: isUp,
     userInfo: userInfo,
+    upCount:upCount,
     commentsTotalCount: commentsTotalCount
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  fetchIsUP,
+  upArticle,
+  unUpArticle,
+  fetchCommentsArticle,
+  fetchCommentsCount,
+  fetchUpCount,
+  submitArticleComment
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Article)

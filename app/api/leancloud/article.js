@@ -190,17 +190,32 @@ export function getComment(payload) {
   })
 }
 
-export function publishComment(payload) {
-  let comments = AV.Object.extend('ArticleComment')
-  let comment = new comments()
-
-  var articleId = AV.Object.createWithoutData('Articles', payload.articleId);
-  comment.set('author',payload.author)
-  comment.set('articleId', articleId);
-  comment.set('replyId', payload.replyId)
-  comment.set('content', payload.content)
-
-  return comment.save().then(function (comment) {
+export function submitArticleComment(payload) {
+  let articleId = payload.articleId
+  let content = payload.content
+  let replyId = payload.replyId
+  let article = AV.Object.createWithoutData('Articles', articleId)
+  let currentUser = AV.User.current()
+  let reply = AV.Object.createWithoutData('ArticleComment', replyId)
+  let ArticleComment = AV.Object.extend('ArticleComment')
+  let articleComment = new ArticleComment()
+  articleComment.set('user', currentUser)
+  articleComment.set('articleId', article)
+  articleComment.set('content', content)
+  if (payload.commentId) {
+    articleComment.set('replyId', reply)
+  }
+  return articleComment.save().then(function (result) {
+    if (result) {
+      let relation = article.relation('comments')
+      relation.add(ArticleComment);
+      //topic.increment("commentNum", 1)
+      return article.save().then(function (result) {
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

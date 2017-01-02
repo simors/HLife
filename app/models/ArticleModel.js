@@ -81,7 +81,7 @@ export const ArticleCommentItem = Record({
   commentId: undefined,   //评论识别码
   articleId: undefined,   //评论的文章引用 为POINTER
   content: undefined,     //评论内容
-  reply: undefined,       //回复评论引用  为POINTER
+  replyId: undefined,       //回复评论引用  为POINTER
   author: undefined,      //作者
   avatar: undefined,
   nickname: undefined,
@@ -105,18 +105,32 @@ export class ArticleComment extends ArticleCommentItem {
         nickname = hidePhoneNumberDetail(phoneNumber)
       }
     }
+    let parentUserPoint = undefined
+    let parentCommentUser = "吾爱用户"
 
+    //有父评论的情况下
+    // if (attrs.replyId) {
+    //   parentUserPoint = attrs.replyId.attributes.user
+    //   //父用户昵称解析
+    //   if (parentUserPoint) {
+    //     parentCommentUser = parentUserPoint.get('nickname')
+    //     if (!parentCommentUser) {
+    //       let phoneNumber = parentUserPoint.getMobilePhoneNumber()
+    //       parentCommentUser = hidePhoneNumberDetail(phoneNumber)
+    //     }
+    //   }
+    // }
     return commentItem.withMutations((record)=> {
       record.set('author', attrs.author.id)
     //  console.log('author====>',record)
-      record.set('reply', attrs.replyId?attrs.replyId.id:undefined)
     //  console.log('author====>',record)
       record.set('content', attrs.content)
       record.set('articleId', attrs.articleId.id)
       record.set('commentId', lcObj.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)
-     // record.set('createdAt', lcObj.createdAt)
+      record.set('replyId', attrs.replyId?attrs.replyId:undefined)
+      // record.set('createdAt', lcObj.createdAt)
      //     console.log('articleItem====>',record)
     })
   }

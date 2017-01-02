@@ -14,21 +14,29 @@ import {
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
+import {connect} from 'react-redux'
 import TopicImageViewer from '../../components/common/TopicImageViewer'
 import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
-import {getArticleItem} from '../../selector/articleSelector'
+import {getArticleItem,getIsUp,getcommentCount,getUpCount} from '../../selector/articleSelector'
+import {fetchIsUP,upArticle,unUpArticle,fetchCommentsCount,fetchUpCount} from '../../action/articleAction'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-export class TopicComment extends Component {
+export class articleComment extends Component {
   constructor(props) {
     super(props)
     this.state = {}
   }
 
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchIsUP({articleId: this.props.comment.articleId, upType:'articleComment'})
+      this.props.fetchUpCount({articleId: this.props.comment.articleId, upType:'topicComment'})
+    })
+  }
   renderParentComment() {
     if (this.props.hasParentComment) {
       return (
@@ -53,20 +61,20 @@ export class TopicComment extends Component {
         <View style={styles.avatarViewStyle}>
           <TouchableOpacity>
             <Image style={styles.avatarStyle}
-                   source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+                   source={this.props.comment.avatar ? {uri: this.props.comment.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
           </TouchableOpacity>
         </View>
 
         <View style={styles.commentContainerStyle}>
 
           <TouchableOpacity>
-            <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
+            <Text style={styles.userNameStyle}>{this.props.comment.nickname}</Text>
           </TouchableOpacity>
 
           {this.renderParentComment()}
 
           <Text style={styles.contentStyle}>
-            {this.props.topic.content}
+            {this.props.comment.content}
           </Text>
 
           <View style={styles.timeLocationStyle}>
@@ -93,21 +101,24 @@ export class TopicComment extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
-  console.log('articleItem=======>',articleItem)
-
+ // let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
+ // console.log('articleItem=======>',articleItem)
+  let upCount = getUpCount(state,ownProps.comment.articleId)
+  let isUp = getIsUp(state,ownProps.comment.articleId)
   return{
-    articleItem : articleItem
+    upCount: upCount,
+    isUP: isUp
+  //  articleItem : articleItem
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArticleShow)
+export default connect(mapStateToProps, mapDispatchToProps)(articleComment)
 
 
-TopicComment.defaultProps = {
+articleComment.defaultProps = {
   // style
   containerStyle: {},
   numberOfValues: 3,
