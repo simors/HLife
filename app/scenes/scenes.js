@@ -38,6 +38,8 @@ import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
 import DocterFinder from '../components/Health/DocterFinder'
 import Inguiry from '../components/Home/Inquiry/index'
+import HealthRecord from '../components/Home/Inquiry/HealthRecord'
+import QA from '../components/Home/Inquiry/QA'
 
 const styles = StyleSheet.create({
   container: {
@@ -58,7 +60,7 @@ export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
       <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
-      <Scene key="LOGIN" component={Login}/>
+      <Scene key="LOGIN" component={Login} />
       <Scene key="REGIST" component={Regist} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
       <Scene key="FIND_PWD_VERIFY_CODE" component={FindPwdVerifyCode}/>
@@ -86,6 +88,9 @@ export const scenes = Actions.create(
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />
       <Scene key="INQUIRY" component={Inguiry} />
+      <Scene key="HEALTHRECORD" component={HealthRecord} />
+      <Scene key="QA" component={QA}/>
+
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

@@ -11,38 +11,57 @@ import {
   ScrollView,
   Image,
 } from 'react-native'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {Actions} from 'react-native-router-flux'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import Header from '../../common/Header'
-import TextAreaInput from '../../common/Input/TextAreaInput'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import MultilineText from '../../common/Input/MultilineText'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
+import {activeUserId} from '../../../selector/authSelector'
+import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let commonForm = Symbol('commonForm')
-const multiInput = {
-  formKey: commonForm,
-  stateKey: Symbol('multiInput'),
+let inquiryForm = Symbol('inquiryForm')
+const questionInput = {
+  formKey: inquiryForm,
+  stateKey: Symbol('questionInput'),
   type: 'content'
 }
 
-const imageGroupInput = {
-  formKey: commonForm,
-  stateKey: Symbol('imageGroupInput'),
+const diseaseImagesInput = {
+  formKey: inquiryForm,
+  stateKey: Symbol('diseaseImagesInput'),
   type: 'imgGroup'
 }
 
-
-
-export default class Inguiry extends Component {
+class Inguiry extends Component {
   constructor(props) {
     super(props)
   }
-  onButtonPress= () => {
 
+  submitSuccessCallback(doctorInfo) {
+    Toast.show('提交成功')
+    Actions.HEALTHRECORD()
+  }
+
+  submitErrorCallback(error) {
+
+    Toast.show(error.message)
+  }
+
+  onButtonPress= () => {
+    this.props.submitFormData({
+      formKey: inquiryForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT,
+      id: this.props.currentUser && this.props.currentUser,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
   }
 
   render(){
@@ -57,7 +76,7 @@ export default class Inguiry extends Component {
           titleStyle={styles.titile}
           rightType="text"
           rightText="下一步"
-          rightPress={this.onButtonPress()}
+          rightPress={() => this.onButtonPress()}
         />
         <View style={styles.body}>
           <KeyboardAwareScrollView style={styles.scrollViewStyle} contentContainerStyle={{flex: 1}}>
@@ -65,13 +84,13 @@ export default class Inguiry extends Component {
               <MultilineText containerStyle={{height: normalizeH(232)}}
                              placeholder="请详细描述您的症状和身体状况，便于医生更准确的分析，我们将确保您的隐私安全。为了描述清楚，描述字数应至少12个字符。"
                              inputStyle={{height: normalizeH(232)}}
-                             {...multiInput}/>
+                             {...questionInput}/>
             </View>
             <View style={{flex: 1,backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
               <Text style={styles.trip}>病症部位、检查报告或其他病情资料</Text>
 
               <View style={{position: 'absolute', left: normalizeW(0), top: normalizeH(0), backgroundColor: 'rgba(0, 0, 0, 0)'}}>
-                <ImageGroupInput {...imageGroupInput}
+                <ImageGroupInput {...diseaseImagesInput}
                                  number={9}
                                  addImage={require('../../../assets/images/upload_picture.png')}
                                  imageLineCnt={4}/>
@@ -84,6 +103,18 @@ export default class Inguiry extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currentUser: activeUserId(state),
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData,
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Inguiry)
 
 const styles = StyleSheet.create({
   container: {
@@ -103,8 +134,6 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     width: PAGE_WIDTH,
-    // paddingLeft: normalizeW(20),
-    // paddingRight: normalizeW(20),
     marginTop: normalizeH(64),
     backgroundColor: '#FFFFFF',
   },
