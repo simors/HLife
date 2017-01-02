@@ -19,15 +19,15 @@ const RATIO_WIDTH = PAGE_WIDTH / IPHONE6_PAGE_WIDTH
 const RATIO_HEIGHT = PAGE_HEIGHT / IPHONE6_PAGE_HEIGHT
 
 export function em(value) {
-  return +(RATIO_WIDTH * value).toFixed(2)
+  return Math.floor(+(RATIO_WIDTH * value).toFixed(2))
 }
 
 export function normalizeW(value) {
-  return +(RATIO_WIDTH * value).toFixed(2)
+  return Math.floor(+(RATIO_WIDTH * value).toFixed(2))
 }
 
 export function normalizeH(value) {
-  return +(RATIO_HEIGHT * value).toFixed(2)
+  return Math.floor(+(RATIO_HEIGHT * value).toFixed(2))
 }
 
 /**

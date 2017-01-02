@@ -19,6 +19,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
+  INQUIRY_SUBMIT: 'INQUIRY_SUBMIT',
 }
 
 export function submitFormData(payload) {
@@ -51,6 +52,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
         dispatch(handleShopCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT:
+        dispatch()
         break
     }
   }
@@ -413,4 +417,8 @@ export function unFollowUser(payload) {
       }
     })
   }
+}
+
+export function handleInquirySubmit(payload) {
+
 }
