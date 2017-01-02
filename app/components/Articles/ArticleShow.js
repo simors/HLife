@@ -60,6 +60,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
    }
    onLikeButton() {
      if (this.props.isUp) {
+     //  console.log('hereiscode')
        this.props.unUpArticle({
          articleId: this.props.articleId,
          upType: 'article',
@@ -68,6 +69,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
        })
      }
      else {
+       console.log('hereiscode')
        this.props.upArticle({
          articleId: this.props.articleId,
          upType: 'article',
@@ -203,7 +205,7 @@ const mapStateToProps = (state, ownProps) => {
  // console.log('likerList=======>',likerList)
  // console.log('commentList=======>',commentList)
   let isUp = getIsUp(state,ownProps.articleId)
-  console.log('isUp=======>',isUp)
+ // console.log('isUp=======>',isUp)
   return{
     // likerList: likerList,
     commentList: commentList,

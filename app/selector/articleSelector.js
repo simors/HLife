@@ -73,6 +73,6 @@ export function getUpCount(state,articleId,categoryId) {
 }
 
 export function getIsUp(state,articleId) {
-  console.log('=========>',articleId)
-  return getArticles(state).isUp[articleId] || []
+//  console.log('=========>',articleId)
+  return getArticles(state).isUp[articleId]
 }

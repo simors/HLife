@@ -91,7 +91,9 @@ export function getIsUps(payload) {
   return query.first().then((result) =>{
     let userUpShopInfo = undefined
     if(result && result.attributes) {
+   //   console.log('result===>',result)
       userUpShopInfo = Up.fromLeancloudObject(result)
+    //  console.log('userUpShopInfo===>',userUpShopInfo)
     }
     return userUpShopInfo
   }, function (err) {
@@ -102,6 +104,7 @@ export function getIsUps(payload) {
 
 
 export function upArticle(payload) {
+  console.log('hereiscodeupArticle====》',payload)
   let articleId = payload.articleId
   let upType = payload.upType
   let currentUser = AV.User.current()
@@ -109,7 +112,7 @@ export function upArticle(payload) {
     if (!userLikeTopicInfo) {
       let Up = AV.Object.extend('Up')
       let up = new Up()
-      up.set('targetId', topicId)
+      up.set('targetId', articleId)
       up.set('upType', upType)
       up.set('user', currentUser)
       return up.save()
@@ -139,6 +142,7 @@ export function upArticle(payload) {
 }
 
 export function unUpArticle(payload) {
+//  console.log('hereiscode')
   let articleId = payload.articleId
   return getIsUps(payload).then((userLikeTopicInfo) => {
     if (userLikeTopicInfo && userLikeTopicInfo.id) {

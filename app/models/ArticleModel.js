@@ -3,6 +3,7 @@
  */
 import {Map, List, Record} from 'immutable'
 import {hidePhoneNumberDetail} from '../util/numberUtils'
+import * as numberUtils from '../util/numberUtils'
 
 export const ArticleItemConfig = Record({
   articleId: undefined,     // 唯一识别码
@@ -121,6 +122,7 @@ export class ArticleComment extends ArticleCommentItem {
   }
 }
 
+
 export const UpRecord = Record({
   id: undefined, // 点赞id
   upType: '', //点赞类型: enum('shop', 'shopComment', 'article', 'articleComment', 'topic', 'topicComment')
@@ -141,7 +143,6 @@ export class Up extends UpRecord {
       record.set('upType', attrs.upType)
       record.set('targetId', attrs.targetId)
       record.set('status', attrs.status)
-
       let userAttrs = attrs.user.attributes
       let user = {}
       user.id = attrs.user.id
@@ -153,6 +154,7 @@ export class Up extends UpRecord {
     })
   }
 }
+
 
 export const Articles = Record({
   articleList: Map(),

@@ -33,7 +33,7 @@ export function fetchUps(articleId,columnId) {
   return (dispatch, getState) => {
    // let articleId = payload
     laArticle.getUps(articleId).then((upList) => {
-      console.log('likersList======>',upList)
+     // console.log('likersList======>',upList)
       dispatch(addUpsAction({upList:upList,articleId:articleId}))
     }).catch((error) => {
       if(payload.error) {
@@ -60,9 +60,9 @@ export function fetchUpCount(payload) {
 
 export function fetchIsUP(payload){
   return (dispatch, getState) => {
-    laArticle.getIsUps(payload).then((userLikeInfo) => {
+    laArticle.getIsUps(payload).then((userUpInfo) => {
       //let updateAction = createAction(articleTypes.UPDATE_ISUP)
-      dispatch(addIsUpAction({articleId: payload.articleId, userLikeInfo: userLikeInfo}))
+      dispatch(addIsUpAction({articleId: payload.articleId, userUpInfo: userUpInfo}))
       if (payload.success) {
         payload.success()
       }
@@ -81,7 +81,7 @@ export function upArticle(payload) {
         payload.success()
       }
       let publishAction = createAction(articleTypes.UP_ARTICLE_SUCCESS)
-      dispatch(publishAction({stateKey: payload.stateKey}))
+      dispatch(publishAction({articleId: payload.articleId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -91,13 +91,14 @@ export function upArticle(payload) {
 }
 
 export function unUpArticle(payload) {
+ // console.log('hereiscode')
   return (dispatch, getState) => {
     laArticle.unUpArticle(payload).then(() => {
       if (payload.success) {
         payload.success()
       }
       let publishAction = createAction(articleTypes.UNUP_ARTICLE_SUCCESS)
-      dispatch(publishAction({stateKey: payload.stateKey}))
+      dispatch(publishAction({articleId: payload.articleId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -123,7 +124,7 @@ export function fetchCommentsCount(articleId,columnId) {
   return (dispatch, getState) => {
     // let articleId = payload
     laArticle.getCommentCount(articleId).then((commentsCount) => {
-      console.log('commentsCount',commentsCount)
+     // console.log('commentsCount',commentsCount)
       dispatch(addCommentCountAction({commentsCount:commentsCount,articleId:articleId}))
     }).catch((error) => {
       if(payload.error) {
