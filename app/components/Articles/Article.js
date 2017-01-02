@@ -24,6 +24,7 @@ import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
 import {CommonWebView} from '../common/CommonWebView'
 import CommentPublic from './CommentPublic'
+import Comment from '../common/Comment'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -31,10 +32,35 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export default class Article extends Component {
   constructor(props) {
     super(props)
-
+    this.state = {
+      modalVisible: false,
+      commentY:0
+    }
+  }
+  submitSuccessCallback() {
+    Toast.show('评论成功')
+    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId})
+    this.closeModal(()=> {
+      Toast.show('发布成功', {duration: 1000})
+    })
+  }
+  openModel(callback) {
+    this.setState({
+      modalVisible: true
+    })
+    if (callback && typeof callback == 'function') {
+      callback()
+    }
   }
 
-
+  closeModal(callback) {
+    this.setState({
+      modalVisible: false
+    })
+    if (callback && typeof callback == 'function') {
+      callback()
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -57,13 +83,34 @@ export default class Article extends Component {
           <WebView style={styles.articleView}
                   source= {{html: this.props.content}}
           >
-
           </WebView>
           </View>
         </ScrollView>
-        <View style={styles.commentView}>
-          <CommentPublic></CommentPublic>
+        <View style={styles.shopCommentWrap}>
+          <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
+            <Text style={styles.shopCommentInput}>写评论...</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
+            <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
+            <View style={styles.commentBtnBadge}>
+              <Text
+                style={styles.commentBtnBadgeTxt}>{this.props.commentsTotalCount > 99 ? '99+' : this.props.commentsTotalCount}</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
+          }}>
+            <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+          </TouchableOpacity>
         </View>
+        <Comment
+          showModules={["content"]}
+          modalVisible={this.state.modalVisible}
+          modalTitle="写评论"
+          closeModal={() => this.closeModal()}
+          submitComment={this.submitComment.bind(this)}
+        />
       </View>
     )
   }
@@ -101,5 +148,53 @@ const styles = StyleSheet.create(
       height: normalizeH(50),
       width: PAGE_WIDTH,
       backgroundColor:'#FAFAFA'
-    }
+    },
+    shopCommentWrap: {
+      height: 50,
+      paddingLeft: 10,
+      borderTopWidth: normalizeBorder(),
+      borderTopColor: THEME.colors.lighterA,
+      backgroundColor: 'rgba(0,0,0,0.005)',
+      flexDirection: 'row',
+      alignItems: 'center'
+    },
+    shopCommentInputBox: {
+      flex: 1,
+      marginRight: 10,
+      padding: 6,
+      borderWidth: normalizeBorder(),
+      borderColor: THEME.colors.lighterA,
+      borderRadius: 10,
+      backgroundColor: '#fff'
+    },
+    shopCommentInput: {
+      fontSize: em(17),
+      color: '#8f8e94'
+    },
+    commentBtnWrap: {
+      width: 60,
+      height: 38,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    commentBtnBadge: {
+      alignItems: 'center',
+      width: 30,
+      backgroundColor: '#f5a623',
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      borderRadius: 10,
+      borderWidth: normalizeBorder(),
+      borderColor: '#f5a623'
+    },
+    commentBtnBadgeTxt: {
+      fontSize: 9,
+      color: '#fff'
+    },
+    shopUpWrap: {
+      width: 60,
+      alignItems: 'center'
+    },
+
   })

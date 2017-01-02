@@ -59,9 +59,9 @@ class ArticleColumn extends Component {
     if (this.props.column) {
       return (
         this.props.column.map((value, key) => {
-          // console.log('=========<<<<<<<<',value)
           if (key == payload.i) {
-           this.setState({columnId: value.columnId})
+           // console.log('=========<<<<<<<<',value)
+            this.setState({columnId: value.columnId})
             this.props.fetchArticle(value.columnId)
           }
         })
@@ -76,7 +76,7 @@ class ArticleColumn extends Component {
             return (
               <View key={key} tabLabel={value.title}
                     style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-                {this.renderArticleList(value.columnId)}
+                {this.renderArticleList(this.state.columnId)}
               </View>
             )
           }
@@ -98,11 +98,19 @@ class ArticleColumn extends Component {
   }
 
   renderArticleList(columnId) {
-
     let columnArticles = this.props.columnArticles
-    let articles = columnArticles.find(value => {
-      return (value.id === columnId)
-    })
+    //console.log('columnArticles=====>',columnArticles)
+    //console.log('columnId=====>',columnId)
+
+    let articles = columnArticles.get(columnId)
+    // find(value => {
+    //   console.log('columnId=====>',columnId)
+    //   console.log('value=====>',value)
+    //   console.log('categoryId=====>',value)
+    //   return (value.categoryId === 'columnId')
+
+    // })
+   // console.log('articles=====>',articles)
     if (!articles) {
       return (
         <View/>
@@ -112,7 +120,7 @@ class ArticleColumn extends Component {
       let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
       let articleSource
 
-      articleSource = ds.cloneWithRows(articles.articles)
+      articleSource = ds.cloneWithRows(articles.toJS())
 
       return (
         <ListView dataSource={articleSource}
@@ -157,7 +165,7 @@ class ArticleColumn extends Component {
 const mapStateToProps = (state, ownProps) => {
   let column = getColumn(state)
   let columnArticles = getArticleCollection(state)
-
+  // console.log('columnArticles',columnArticles)
   return {
     column: column,
     columnArticles: columnArticles,
@@ -166,7 +174,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchArticle,
-  fetchLikers,
+
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleColumn)
