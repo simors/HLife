@@ -174,6 +174,7 @@ export function getComment(payload) {
   let article = AV.Object.createWithoutData('Articles',payload)
   let relation = article.relation('comments')
   let query = relation.query()
+  query.include(['author'])
   return query.find().then(function (results) {
 
     let comment = []
@@ -210,12 +211,14 @@ export function submitArticleComment(payload) {
   return articleComment.save().then(function (result) {
     if (result) {
       let relation = article.relation('comments')
-      relation.add(result)
       console.log('result======>',relation)
-
-      //topic.increment("commentNum", 1)
+      relation.add(articleComment)
+      console.log('relation======>', relation)
       return article.save().then(function (data) {
+        console.log('result======>',data)
+
       }, function (err) {
+        console.log(err)
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })

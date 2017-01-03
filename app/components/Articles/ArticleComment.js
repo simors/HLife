@@ -16,6 +16,7 @@ import {
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import TopicImageViewer from '../../components/common/TopicImageViewer'
 import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
@@ -26,7 +27,7 @@ import {fetchIsUP,upArticle,unUpArticle,fetchCommentsCount,fetchUpCount} from '.
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-export class articleComment extends Component {
+class ArticleComment extends Component {
   constructor(props) {
     console.log('didmount======>')
     super(props)
@@ -102,7 +103,7 @@ export class articleComment extends Component {
 
 const mapStateToProps = (state, ownProps) => {
  // let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
-  console.log('ownProps=======>',ownProps.comment)
+ // console.log('ownProps=======>',ownProps.comment)
 
   let upCount = getUpCount(state,ownProps.comment.articleId)
   let isUp = getIsUp(state,ownProps.comment.articleId)
@@ -119,10 +120,10 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUpCount
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(articleComment)
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleComment)
 
 
-articleComment.defaultProps = {
+ArticleComment.defaultProps = {
   // style
   containerStyle: {},
   numberOfValues: 3,
