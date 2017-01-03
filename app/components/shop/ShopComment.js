@@ -22,9 +22,9 @@ import {Actions} from 'react-native-router-flux'
 import Expander from '../common/Expander'
 import ScoreShow from '../common/ScoreShow'
 import FollowUser from '../common/FollowUser'
-import ShopCommentReplyList from './ShopCommentReplyList'
+import ReplyList from './ShopCommentReply/ReplyList'
+import Reply from './ShopCommentReply/Reply'
 import UpShopComment from './UpShopComment'
-import ShopCommentReply from './ShopCommentReply'
 
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -96,11 +96,11 @@ class ShopComment extends Component {
             <Text style={[styles.commentTime]}>刚刚</Text>
             <View style={styles.upReplyWrap}>
               <UpShopComment />
-              <ShopCommentReply />
+              <Reply />
             </View>
           </View>
 
-          <ShopCommentReplyList
+          <ReplyList
 
           />
           
