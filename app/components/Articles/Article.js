@@ -55,6 +55,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
   renderCommentPage() {
     if (this.props.articleComments) {
+     // console.log('articlecomments------->',this.props.articleComments)
       return (
         this.props.articleComments.map((value, key)=> {
           return (
@@ -95,6 +96,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
    }
   renderCommentItem(value, key) {
     console.log('value=========',value)
+    console.log('key=========',key)
     return (
       <articleComment key={key}
                     comment={value}
@@ -114,13 +116,14 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   }
 
   submitComment(commentData) {
+    //console.log('commentData====',commentData)
     if (!this.props.isLogin) {
       Actions.LOGIN()
     }
     else {
       this.props.submitArticleComment({
         ...commentData,
-        topicId: this.props.articleId,
+        articleId: this.props.articleId,
         replyId: (this.state.comment) ? this.state.comment.objectId : undefined,
         success: this.submitSuccessCallback.bind(this),
         error: this.submitErrorCallback
@@ -130,7 +133,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
   submitSuccessCallback() {
     Toast.show('评论成功')
-    this.props.fetchTopicCommentsByTopicId({articleId: this.props.articleId})
+    this.props.fetchCommentsArticle({articleId: this.props.articleId})
     this.closeModal(()=> {
       Toast.show('发布成功', {duration: 1000})
     })
@@ -225,7 +228,7 @@ const mapStateToProps = (state, ownProps) => {
   const isUp = getIsUp(state, ownProps.articleId)
   const upCount = getUpCount(state,ownProps.articleId)
   const commentsTotalCount = getcommentCount (state,ownProps.articleId)
-  console.log('articleComment===>',articleComments)
+  //console.log('articleComment===>',articleComments)
 
   return {
     articleComments: articleComments,

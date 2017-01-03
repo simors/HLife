@@ -28,12 +28,12 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 export class articleComment extends Component {
   constructor(props) {
+    console.log('didmount======>')
     super(props)
     this.state = {}
   }
 
   componentDidMount() {
-    console.log('didmount',this.props.comment)
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchIsUP({articleId: this.props.comment.articleId, upType:'articleComment'})
       this.props.fetchUpCount({articleId: this.props.comment.articleId, upType:'topicComment'})
