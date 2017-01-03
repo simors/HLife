@@ -20,6 +20,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
 import Header from '../common/Header'
+import Expander from '../common/Expander'
 import CommonListView from '../common/CommonListView'
 import Triangle from '../common/Triangle'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
@@ -38,12 +39,6 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class ShopComment extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      showExpander: false,
-      expander: true,
-      numberOfLines: 5,
-    }
   }
 
   componentWillMount() {
@@ -108,22 +103,6 @@ class ShopComment extends Component {
     }
   }
 
-  _onCommentTextLayout(event) {
-    const evtHeight = event.nativeEvent.layout.height
-    if(evtHeight > 100) {
-      this.setState({
-        showExpander: true,
-      })
-    }
-  }
-
-  _toggleExpander() {
-    this.setState({
-      numberOfLines: this.state.expander ? undefined : 5,
-      expander: !this.state.expander,
-    })
-  }
-
   render() {
     const scoreWidth = this.props.score / 5.0 * 62
     let userIsFollowedTheUser = this.userIsFollowedTheUser(this.props.userId)
@@ -156,16 +135,9 @@ class ShopComment extends Component {
             </View>
           </View>
           <View style={[styles.commentLine, {marginBottom: 10}]}>
-            <Text numberOfLines={this.state.numberOfLines} style={[styles.commentContent]}>{this.props.content}</Text>
-            <Text onLayout={this._onCommentTextLayout.bind(this)} style={[styles.commentContent, {position:'absolute', left:-9999}]}>{this.props.content}</Text>
-            {this.state.showExpander
-              ? <TouchableWithoutFeedback onPress={this._toggleExpander.bind(this)}>
-                  <View>
-                    <Text style={styles.expanderTxt}>{this.state.expander ? '全文' : '收起'}</Text>
-                  </View>
-                </TouchableWithoutFeedback>
-              : null
-            }
+            <Expander
+              content={this.props.content}
+            />
           </View>
 
           {
@@ -357,15 +329,6 @@ const styles = StyleSheet.create({
   commentTime: {
     fontSize: em(12),
     color: '#8f8e94'
-  },
-  commentContent: {
-    fontSize: em(15),
-    color: '#8f8e94',
-  },
-  expanderTxt: {
-    color: THEME.colors.green,
-    lineHeight: 20,
-    fontSize: em(12)
   },
   replyWrap: {
     backgroundColor: '#fff'
