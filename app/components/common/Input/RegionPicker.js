@@ -13,7 +13,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { FormInput } from 'react-native-elements'
 import Picker from 'react-native-picker'
-import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import './region/province.json'
@@ -42,6 +42,10 @@ class RegionPicker extends Component {
     if (formInfo.initValue.text.length > 0) {
       this.setState({showClear: true})
     }
+  }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   generatePickerData() {
@@ -184,7 +188,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
-  inputFormUpdate
+  inputFormUpdate,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegionPicker)
