@@ -11,6 +11,7 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  InteractionManager,
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -32,6 +33,7 @@ export class articleComment extends Component {
   }
 
   componentDidMount() {
+    console.log('didmount',this.props.comment)
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchIsUP({articleId: this.props.comment.articleId, upType:'articleComment'})
       this.props.fetchUpCount({articleId: this.props.comment.articleId, upType:'topicComment'})
@@ -70,9 +72,7 @@ export class articleComment extends Component {
           <TouchableOpacity>
             <Text style={styles.userNameStyle}>{this.props.comment.nickname}</Text>
           </TouchableOpacity>
-
           {this.renderParentComment()}
-
           <Text style={styles.contentStyle}>
             {this.props.comment.content}
           </Text>
@@ -102,9 +102,11 @@ export class articleComment extends Component {
 
 const mapStateToProps = (state, ownProps) => {
  // let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
- // console.log('articleItem=======>',articleItem)
+  console.log('ownProps=======>',ownProps.comment)
+
   let upCount = getUpCount(state,ownProps.comment.articleId)
   let isUp = getIsUp(state,ownProps.comment.articleId)
+
   return{
     upCount: upCount,
     isUP: isUp
@@ -113,6 +115,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchIsUP,
+  fetchUpCount
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(articleComment)
