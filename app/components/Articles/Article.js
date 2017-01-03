@@ -64,12 +64,42 @@ const PAGE_HEIGHT = Dimensions.get('window').height
       )
     }
   }
+   onUpCommentButton(payload) {
+     if (payload.isUp) {
+       this.props.unUpArticle({
+         topicId: payload.articleId,
+         upType: 'articleComment',
+         success: payload.success,
+         error: this.likeErrorCallback
+       })
+     }
+     else {
+       this.props.upArticle({
+         topicId: payload.articleId,
+         upType: 'articleComment',
+         success: payload.success,
+         error: this.likeErrorCallback
+       })
+     }
+   }
+
+   likeErrorCallback(error) {
+     Toast.show(error.message)
+   }
+
+   onCommentButton(article) {
+     this.setState({
+       comment: article
+     })
+     this.openModel()
+   }
   renderCommentItem(value, key) {
+    console.log('value=========',value)
     return (
       <articleComment key={key}
                     comment={value}
                     onCommentButton={this.onCommentButton.bind(this)}
-                    onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
+                    onLikeCommentButton={(payload)=>this.onUpCommentButton(payload)}
       />
     )
   }
@@ -195,6 +225,8 @@ const mapStateToProps = (state, ownProps) => {
   const isUp = getIsUp(state, ownProps.articleId)
   const upCount = getUpCount(state,ownProps.articleId)
   const commentsTotalCount = getcommentCount (state,ownProps.articleId)
+  console.log('articleComment===>',articleComments)
+
   return {
     articleComments: articleComments,
     isLogin: isLogin,

@@ -196,6 +196,7 @@ export function submitArticleComment(payload) {
   let replyId = payload.replyId
   let article = AV.Object.createWithoutData('Articles', articleId)
   let currentUser = AV.User.current()
+  console.log('user======>',currentUser)
   let reply = AV.Object.createWithoutData('ArticleComment', replyId)
   let ArticleComment = AV.Object.extend('ArticleComment')
   let articleComment = new ArticleComment()

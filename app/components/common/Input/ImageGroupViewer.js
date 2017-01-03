@@ -22,25 +22,28 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export default class ImageGroupViewer extends Component {
   constructor(props) {
     super(props)
-    this.marginSize = 5
-    this.calImgSize = 107
     this.state = {
       imgModalShow: false,
       showImg: '',
+      marginSize: 5,
+      calImgSize: 107
     }
   }
 
   imageContainerOnLayout(event) {
     const containerWidth = event.nativeEvent.layout.width
-    this.calImgSize = this.calculateImageWidth(containerWidth)
+    this.calculateImageWidth(containerWidth)
   }
 
   calculateImageWidth(containerWidth) {
     let calImgSize = 107
     if('oneLine' != this.props.showMode) {
-      calImgSize = (containerWidth - (this.props.imageLineCnt - 1) * this.marginSize) / this.props.imageLineCnt
+      calImgSize = (containerWidth - (this.props.imageLineCnt - 1) * this.state.marginSize) / this.props.imageLineCnt
     }
-    return calImgSize
+    this.setState({
+      ...this.state,
+      calImgSize : calImgSize
+    })
   }
 
   renderImageModal() {
@@ -67,14 +70,18 @@ export default class ImageGroupViewer extends Component {
   }
 
   toggleModal(isShow, src) {
-    this.setState({imgModalShow: isShow, showImg: src})
+    this.setState({
+      ...this.state,
+      imgModalShow: isShow,
+      showImg: src
+    })
   }
 
   renderImageBrowse(src) {
-    const imageStyle = {marginRight:this.marginSize, width: this.calImgSize, height: this.calImgSize}
+    const imageStyle = {marginRight:this.state.marginSize, width: this.state.calImgSize, height: this.state.calImgSize}
     if (this.props.browse) {
       return (
-        <TouchableOpacity style={imageStyle} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
+        <TouchableOpacity style={{flex:1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
           <Image style={imageStyle} source={{uri: src}}/>
         </TouchableOpacity>
       )
@@ -86,7 +93,6 @@ export default class ImageGroupViewer extends Component {
   }
 
   renderImage(src) {
-    const imageStyle = {width: this.calImgSize, height: this.calImgSize}
     return (
       <View style={[
         styles.defaultContainerStyle,
@@ -100,7 +106,6 @@ export default class ImageGroupViewer extends Component {
 
   renderImageRow() {
     let imgComp = this.props.images.map((item, key) => {
-      const imageStyle = {width: this.calImgSize, height: this.calImgSize}
       return (
         <View key={key} style={{flex: 1}}>
           {this.renderImage(item)}

@@ -61,6 +61,7 @@ function handleAddComments(state, action) {
   let commentList = action.payload.commentList
   let _map = state.get('commentList')
   _map = _map.set(articleId, commentList)
+ // console.log('map================================',_map)
   state = state.set('commentList',_map)
   return state
 }

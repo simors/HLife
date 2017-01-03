@@ -107,11 +107,12 @@ export function unUpArticle(payload) {
   }
 }
 
-export function fetchCommentsArticle(articleId,columnId) {
+export function fetchCommentsArticle(payload) {
+  //console.log('comment===>',payload)
   return (dispatch, getState) => {
    // let articleId = payload
-    laArticle.getComment(articleId).then((commentList) => {
-      dispatch(addCommentAction({commentList:commentList,articleId:articleId}))
+    laArticle.getComment(payload.articleId).then((commentList) => {
+      dispatch(addCommentAction({commentList:commentList,articleId:payload.articleId}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
