@@ -19,9 +19,9 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
-import Header from '../common/Header'
 import Expander from '../common/Expander'
-import CommonListView from '../common/CommonListView'
+import ScoreShow from '../common/ScoreShow'
+import FollowUser from '../common/FollowUser'
 import Triangle from '../common/Triangle'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -51,74 +51,15 @@ class ShopComment extends Component {
 
   }
 
-  followUser(userId) {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    const that = this
-    let payload = {
-      userId: userId,
-      success: function(result) {
-        that.props.fetchUserFollowees()
-        Toast.show(result.message, {duration: 1500})
-      },
-      error: function(error) {
-        Toast.show(error.message, {duration: 1500})
-      }
-    }
-    this.props.followUser(payload)
-
-  }
-
-  unFollowUser(userId) {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    const that = this
-    let payload = {
-      userId: userId,
-      success: function(result) {
-        that.props.fetchUserFollowees()
-        Toast.show(result.message, {duration: 1500})
-      },
-      error: function(error) {
-        Toast.show(error.message, {duration: 1500})
-      }
-    }
-    this.props.unFollowUser(payload)
-
-  }
-
-  userIsFollowedTheUser(userId) {
-    let userFollowees = this.props.userFollowees
-    if(userFollowees && userFollowees.length) {
-      for(let i = 0; i < userFollowees.length; i++) {
-        if(userFollowees[i].id == userId) {
-          return true
-        }
-      }
-      return false
-    }
-  }
-
   render() {
-    const scoreWidth = this.props.score / 5.0 * 62
-    let userIsFollowedTheUser = this.userIsFollowedTheUser(this.props.userId)
     return (
       <View key={"shop_comment_" + this.props.userId} style={styles.commentContainer}>
         <View style={styles.commentAvatarBox}>
           <Image style={styles.commentAvatar} source={{uri: this.props.avatar}}/>
 
-          {userIsFollowedTheUser
-            ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(this.props.userId)}}>
-            <Text style={styles.userAttentionedTxt}>取消关注</Text>
-          </TouchableOpacity>
-            : <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
-            <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
-          </TouchableOpacity>
-          }
+          <FollowUser
+            userId={this.props.userId}
+          />
 
         </View>
         <View style={styles.commentRight}>
@@ -126,13 +67,9 @@ class ShopComment extends Component {
             <Text style={styles.commentTitle}>{this.props.userNickname}</Text>
           </View>
           <View style={[styles.commentLine, {marginBottom: 10}]}>
-            <View style={styles.scoresWrap}>
-              <View style={styles.scoreIconGroup}>
-                <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-              </View>
-              <Text style={styles.score}>{this.props.score}</Text>
-            </View>
+            <ScoreShow
+              score={this.props.score}
+            />
           </View>
           <View style={[styles.commentLine, {marginBottom: 10}]}>
             <Expander
@@ -209,8 +146,7 @@ class ShopComment extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    isUserLogined: false,
-    userFollowees: [],
+
   }
 }
 
