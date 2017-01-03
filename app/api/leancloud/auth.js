@@ -327,3 +327,25 @@ export function unFollowUser(payload) {
     throw err
   })
 }
+
+export function inquirySubmit(payload) {
+  console.log("inquirySubmit:", payload)
+  var userInfo = AV.Object.createWithoutData('_User', payload.id);
+
+  let Question = AV.Object.extend('Question')
+  let question = new Question()
+
+  question.set('connnet', payload.question)
+  question.set('diseaseImages', payload.diseaseImages)
+  question.set('quizzer', userInfo)
+  question.set('status', 2) //待分配
+
+  return question.save().then((questionInfo) => {
+
+    },
+  function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+}

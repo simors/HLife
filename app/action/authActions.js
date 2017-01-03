@@ -54,7 +54,7 @@ export function submitFormData(payload) {
         dispatch(handleShopCertification(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT:
-        dispatch()
+        dispatch(handleInquirySubmit(payload, formData))
         break
     }
   }
@@ -419,6 +419,23 @@ export function unFollowUser(payload) {
   }
 }
 
-export function handleInquirySubmit(payload) {
+export function handleInquirySubmit(payload, formData) {
+  console.log("handleInquirySubmit payload", payload)
+  return (dispatch, getState) => {
+    let inquiryPayload = {
+      id: payload.id,
+      question: formData.content.text,
+      diseaseImages: formData.imgGroup.text,
+    }
 
+    lcAuth.inquirySubmit(inquiryPayload).then((result) => {
+      console.log("handleInquirySubmit success")
+
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+
+  }
 }
