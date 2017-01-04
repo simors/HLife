@@ -17,14 +17,27 @@ import THEME from '../../../constants/themes/theme1'
 export default class ToolBarContent extends Component {
 
   static defaultProps = {
-    composerHeight: Platform.select({
-      ios: 33,
-      android: 41,
-    }),
-    placeholder: '回复...',
+    placeholder: '回复:',
     multiline: true
   }
 
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      content: ''
+    }
+  }
+
+  onSend() {
+    this.props.onSend(this.state.content)
+  }
+
+  onChangeText(text) {
+    this.setState({
+      content: text
+    })
+  }
 
   render() {
     return (
@@ -35,6 +48,7 @@ export default class ToolBarContent extends Component {
           placeholderTextColor={this.props.placeholderTextColor}
           multiline={this.props.multiline}
           onChange={this.props.onChange}
+          onChangeText={this.onChangeText.bind(this)}
           style={[styles.textInput, this.props.textInputStyle]}
           value={this.props.text}
           enablesReturnKeyAutomatically={true}
@@ -44,9 +58,7 @@ export default class ToolBarContent extends Component {
 
         <TouchableOpacity
           style={[styles.btnContainer, this.props.btnContainerStyle]}
-          onPress={() => {
-            this.props.onSend({text: this.props.text.trim()}, true);
-          }}
+          onPress={() => {this.onSend()}}
         >
           <Text style={[styles.btnText, this.props.btnTextStyle]}>{this.props.label || '发表'}</Text>
         </TouchableOpacity>

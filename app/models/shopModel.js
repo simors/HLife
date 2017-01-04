@@ -185,6 +185,47 @@ export class Up extends UpRecord {
   }
 }
 
+export const ShopCommentReplyRecord = Record({
+  id: undefined, // id
+  content: undefined, // 回复内容
+  replyId: undefined, // 回复的id
+  user: {}, // 发表回复的用户
+  replyShopComment: {}, // 回复的评论
+  createdDate: '', //格式化后的创建时间
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+})
+
+export class ShopCommentReply extends ShopCommentReplyRecord {
+  static fromLeancloudObject(lcObj) {
+    let shopCommentReply = new ShopCommentReply()
+    let attrs = lcObj.attributes
+    return shopCommentReply.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('content', attrs.content)
+
+      let userAttrs = attrs.user.attributes
+      let user = {}
+      user.id = attrs.user.id
+      user.nickname = userAttrs.nickname
+      user.avatar = userAttrs.avatar
+      record.set('user', user)
+
+      record.set('replyId', attrs.replyId)
+
+      let replyShopCommentAttrs = attrs.replyShopComment.attributes
+      let replyShopComment = {}
+      replyShopComment.id = attrs.replyShopComment.id
+      replyShopComment.score = replyShopCommentAttrs.score
+      record.set('replyShopComment', replyShopComment)
+
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+}
+
 export const Shop = Record({
   shopList: List(),
   shopAnnouncements: Map(),

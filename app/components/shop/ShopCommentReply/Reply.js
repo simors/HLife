@@ -41,8 +41,8 @@ class Reply extends Component {
   }
 
   reply() {
-    if(this.props.replyInput) {
-      this.props.replyInput.focus()
+    if(this.props.onReplyClick) {
+      this.props.onReplyClick(this.props.shopCommentId)
     }
   }
 

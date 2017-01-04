@@ -97,7 +97,8 @@ class ShopComment extends Component {
             <View style={styles.upReplyWrap}>
               <UpShopComment />
               <Reply
-                replyInput={this.props.replyInput}
+                onReplyClick={this.props.onReplyClick}
+                shopCommentId={this.props.shopCommentId}
               />
             </View>
           </View>
