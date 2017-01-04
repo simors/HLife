@@ -31,7 +31,7 @@ export default class ImageGroupViewer extends Component {
   }
 
   imageContainerOnLayout(event) {
-    const containerWidth = event.nativeEvent.layout.width
+    const containerWidth = event.nativeEvent.layout.width || PAGE_WIDTH
     this.calculateImageWidth(containerWidth)
   }
 
