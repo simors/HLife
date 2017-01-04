@@ -10,8 +10,9 @@ import {TypedMessagePlugin}from 'leancloud-realtime-plugin-typed-messages'
 import * as LC_CONFIG from '../constants/appConfig'
 import * as msgTypes from '../constants/messageActionTypes'
 import {Conversation, Message} from '../models/messageModels'
-import {activeUserId} from '../selector/authSelector'
+import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
+import {selectShopDetail} from '../selector/shopSelector'
 
 class TextMessage extends TypedMessage {
 }
@@ -285,7 +286,10 @@ function onRecvNormalMessage(message, conversation) {
 
 function onRecvNotifyMessage(message, conversation) {
   return (dispatch, getState) => {
+    let msgType = message.type
+    if (msgType === msgTypes.MSG_TOPIC_COMMENT) {
 
+    }
   }
 }
 
@@ -376,19 +380,26 @@ export function notifyTopicComment(payload) {
 
 export function notifyShopComment(payload) {
   return (dispatch, getState) => {
+    let shopId = payload.shopId
+    let shopDetail = selectShopDetail(getState(), shopId)
+    if (!shopDetail) {
+      console.log('can\'t find shop by shop id ' + shopId)
+      return
+    }
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: payload.toPeers,   // 可以是一个数组
+      members: shopDetail.owner.id,   // 可以是一个数组
       unique: true
     }
     dispatch(createLcConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_SHOP_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_COMMENT,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
-        shopId: payload.shopId,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
+        shopId: shopId,
       }
-      let text = payload.nickname + '在您的店铺中发表了评论'
+      let text = currentUser.nickname + '在您的店铺中发表了评论'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -425,19 +436,26 @@ export function notifyTopicLike(payload) {
 
 export function notifyShopLike(payload) {
   return (dispatch, getState) => {
+    let shopId = payload.shopId
+    let shopDetail = selectShopDetail(getState(), shopId)
+    if (!shopDetail) {
+      console.log('can\'t find shop by shop id ' + shopId)
+      return
+    }
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: payload.toPeers,   // 可以是一个数组
+      members: shopDetail.owner.id,
       unique: true
     }
     dispatch(createLcConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_SHOP_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_LIKE,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
-        shopId: payload.shopId,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
+        shopId: shopId,
       }
-      let text = payload.nickname + '在您的店铺中点了赞'
+      let text = currentUser.nickname + '在您的店铺中点了赞'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
