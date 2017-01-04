@@ -48,6 +48,7 @@ const LOAD_DRAFT = 'LOAD_DRAFT'
 const COUNTER = 'COUNTER'
 const CONTENTS = 'CONTENTS'
 const HEIGHT = 'HEIGHT'
+const ABSTRACT = 'ABSTRACT'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -66,6 +67,7 @@ class RichTextInput extends Component {
       webViewHeight: MIN_RTE_HEIGHT,
       keyboardPadding: 0,
     }
+    this.abstract = ""
     this.lastText = ""
     this.lastWordCnt = 0
     this.insertImages = []
@@ -105,7 +107,12 @@ class RichTextInput extends Component {
   articleContentChange(data) {
     let updateData = {
       text: this.lastText,
-      wordCount: this.lastWordCnt
+      wordCount: this.lastWordCnt,
+      abstract: this.abstract,
+    }
+    if (data.abstract) {
+      updateData.abstract = data.abstract
+      this.abstract = data.abstract
     }
     if (data.text) {
       updateData.text = data.text
@@ -315,6 +322,9 @@ class RichTextInput extends Component {
           this.setState({
             webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 200 + padding : MIN_RTE_HEIGHT,
           })
+        } else if (message.indexOf(ABSTRACT) == 0) {
+          let abstract = message.substr(message.lastIndexOf('_') + 1, message.length)
+          this.articleContentChange({abstract: abstract})
         }
         break
     }
