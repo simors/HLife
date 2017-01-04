@@ -24,7 +24,7 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {fetchShopCommentList, reply} from '../../action/shopAction'
+import {fetchShopCommentList, reply, fetchShopCommentReplyList} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectUserIsFollowShop, selectShopComments} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
@@ -51,7 +51,7 @@ class ShopCommentList extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-
+      this.refreshData()
     })
   }
 
@@ -68,6 +68,7 @@ class ShopCommentList extends Component {
         avatar={rowData.user.avatar}
         score={rowData.score}
         content={rowData.content}
+        shopCommentTime={rowData.shopCommentTime}
         createdDate={rowData.createdDate}
         blueprints={rowData.blueprints}
         onReplyClick={this.onReplyClick.bind(this)}
@@ -76,11 +77,29 @@ class ShopCommentList extends Component {
   }
 
   refreshData() {
-
+    this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh) {
-
+    let payload = {
+      id: this.props.shopId,
+      lastCreatedAt: this.props.lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchShopCommentList(payload)
   }
   
   onReplyClick(replyShopCommentId, replyId, replyUserNickName) {
@@ -157,12 +176,22 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
-  const shopCommentList = ShopDetailTestData.shopComments
+  // const shopCommentList = ShopDetailTestData.shopComments
+  let shopId = '5858e68a8e450a006cba3cff'
+  const shopCommentList = selectShopComments(state, shopId)
+  // const shopCommentList = selectShopComments(state, ownProps.shopId)
   const isUserLogined = authSelector.isUserLogined(state)
+
+  let lastCreatedAt = ''
+  if(shopCommentList && shopCommentList.length) {
+    lastCreatedAt = shopCommentList[shopCommentList.length-1].createdAt
+  }
 
   return {
     ds: ds.cloneWithRows(shopCommentList),
-    isUserLogined: isUserLogined
+    isUserLogined: isUserLogined,
+    lastCreatedAt: lastCreatedAt,
+    shopId: shopId
   }
 }
 

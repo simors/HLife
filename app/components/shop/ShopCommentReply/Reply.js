@@ -50,7 +50,7 @@ class Reply extends Component {
     return (
       <View>
         <TouchableOpacity style={styles.commentReplyWrap} onPress={this.reply.bind(this)}>
-          <Image source={require('../../../assets/images/comments_unselect.png')}/>
+          <Image style={styles.image} resizeMode="cover" source={require('../../../assets/images/comments_unselect.png')}/>
           <Text style={styles.reply}>回复</Text>
         </TouchableOpacity>
       </View>
@@ -75,6 +75,10 @@ const styles = StyleSheet.create({
   commentReplyWrap: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  image: {
+    width:16,
+    height:17,
   },
   reply: {
     marginLeft: 5,
