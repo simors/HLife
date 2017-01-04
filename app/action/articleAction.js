@@ -108,7 +108,7 @@ export function unUpArticle(payload) {
 }
 
 export function fetchCommentsArticle(payload) {
-  //console.log('comment===>',payload)
+  console.log('comment===>',payload)
   return (dispatch, getState) => {
    // let articleId = payload
     laArticle.getComment(payload.articleId).then((commentList) => {

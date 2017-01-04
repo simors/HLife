@@ -147,6 +147,8 @@ export function publishTopicComments(payload) {
       let relation = topic.relation('comments')
       relation.add(topicComment);
       topic.increment("commentNum", 1)
+      console.log('relation======>', relation)
+
       return topic.save().then(function (result) {
       }, function (err) {
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
