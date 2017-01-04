@@ -28,12 +28,36 @@
     toolbarHidden: true
   });
 
+  function getAbstract(text, n) {
+    if (text.replace(/[\u4e00-\u9fa5]/g, "**").length <= n) {
+      return text;
+    } else {
+      var len = 0;
+      var tmpStr = "";
+      for (var i = 0; i < text.length; i++) {//遍历字符串
+        if (/[\u4e00-\u9fa5]/.test(text[i])) {//中文 长度为两字节
+          len += 2;
+        }
+        else {
+          len += 1;
+        }
+        if (len > n) {
+          break;
+        }
+        else {
+          tmpStr += text[i];
+        }
+      }
+      return tmpStr + "...";
+    }
+  }
+
   var simditorBody = $('.simditor-body');
   editor.on('valuechanged', function(event,src) {
     var TEXT = simditorBody.text();
     var COUNTER = TEXT.length;
     var CONTENTS = simditorBody.html();
-    var ABSTRACT = TEXT.substr(0, 100);
+    var ABSTRACT = getAbstract(TEXT, 100);
     WebViewBridge.send('COUNTER_' + COUNTER);
     WebViewBridge.send('CONTENTS_' + CONTENTS);
     WebViewBridge.send('HEIGHT_' + simditorBody.height());
