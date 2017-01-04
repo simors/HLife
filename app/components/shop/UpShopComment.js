@@ -42,7 +42,7 @@ class UpShopComment extends Component {
   render() {
     return (
       <TouchableOpacity style={styles.commentUpWrap}>
-        <Image source={require('../../assets/images/artical_like_unselect.png')}/>
+        <Image style={styles.image} resizeMode="contain" source={require('../../assets/images/artical_like_unselect.png')}/>
         <Text style={styles.up}>赞</Text>
       </TouchableOpacity>
     )
@@ -66,6 +66,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 15,
+  },
+  image: {
+    width:17,
+    height:16,
   },
   up: {
     marginLeft: 5,

@@ -96,10 +96,14 @@ export function submitShopComment(payload) {
 export function fetchShopCommentList(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopCommentList(payload).then((shopComments)=>{
-      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS)
+      let actionType = ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.FETCH_PAGING_SHOP_COMMENT_LIST_SUCCESS
+      }
+      let updateAction = createAction(actionType)
       dispatch(updateAction({shopId: payload.id, shopComments: shopComments}))
       if(payload.success){
-        payload.success(result)
+        payload.success(shopComments)
       }
     }).catch((error) => {
       if(payload.error){
@@ -196,6 +200,25 @@ export function reply(payload) {
       dispatch(updateAction(result))
       if(payload.success){
         payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopCommentReplyList(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopCommentReplyList(payload).then((shopCommentReplyList) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_REPLY_LIST_SUCCESS)
+      dispatch(updateAction({
+        replyShopCommentId: payload.replyShopCommentId,
+        shopCommentReplyList: shopCommentReplyList
+      }))
+      if(payload.success){
+        payload.success(shopCommentReplyList)
       }
     }).catch((error) => {
       if(payload.error){
