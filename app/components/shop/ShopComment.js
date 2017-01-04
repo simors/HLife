@@ -96,7 +96,9 @@ class ShopComment extends Component {
             <Text style={[styles.commentTime]}>刚刚</Text>
             <View style={styles.upReplyWrap}>
               <UpShopComment />
-              <Reply />
+              <Reply
+                replyInput={this.props.replyInput}
+              />
             </View>
           </View>
 

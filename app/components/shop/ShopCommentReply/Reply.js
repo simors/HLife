@@ -19,6 +19,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
+
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -39,12 +40,21 @@ class Reply extends Component {
 
   }
 
+  reply() {
+    if(this.props.replyInput) {
+      this.props.replyInput.focus()
+    }
+  }
+
   render() {
     return (
-      <TouchableOpacity style={styles.commentReplyWrap}>
-        <Image source={require('../../../assets/images/comments_unselect.png')}/>
-        <Text style={styles.reply}>回复</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity style={styles.commentReplyWrap} onPress={this.reply.bind(this)}>
+          <Image source={require('../../../assets/images/comments_unselect.png')}/>
+          <Text style={styles.reply}>回复</Text>
+        </TouchableOpacity>
+      </View>
+
     )
   }
 }
