@@ -4583,10 +4583,10 @@
       range = this.editor.selection.range();
       range.deleteContents();
       this.editor.selection.range(range);
-      $img = $('<img/>').attr('src', 'http://file.quweiwu.com/news/20150526102555652.jpg');
+      $img = $('<img/>').attr('src', 'http://ac-k5rltwmf.clouddn.com/5ff4269976107abe4b38.gif');
       range.insertNode($img[0]);
       this.editor.selection.setRangeAfter($img, range);
-      this.editor.trigger('valuechanged');
+      // this.editor.trigger('valuechanged');
       return $img;
     };
 

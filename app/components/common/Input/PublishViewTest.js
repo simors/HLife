@@ -43,6 +43,12 @@ class PublishViewTest extends Component {
       closeTips: false,
       rteFocused: false,    // 富文本获取到焦点
     }
+    this.insertImages = []
+  }
+
+  getRichTextImages(images) {
+    this.insertImages = images
+    console.log('images list', this.insertImages)
   }
 
   onRteFocusChanged = (val) => {
@@ -64,6 +70,7 @@ class PublishViewTest extends Component {
         onFocus={this.onRteFocusChanged}
         shouldFocus={shouldFocus}
         simplify={true}
+        getImages={(images) => this.getRichTextImages(images)}
       />
     )
   }

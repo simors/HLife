@@ -42,18 +42,6 @@ var tools = [
   {type: 'image', icon: toolDefault[3]},
 ]
 
-var simplifyToolDefault = [
-  require('../../../assets/images/insert_picture.png'),
-]
-
-var simplifyToolSelect = [
-  require('../../../assets/images/insert_picture.png'),
-]
-
-var simplifyTools = [
-  {type: 'image', icon: simplifyToolDefault[0]},
-]
-
 const GET_FOCUS = 'GET_FOCUS'
 const LOSE_FOCUS = 'LOSE_FOCUS'
 const LOAD_DRAFT = 'LOAD_DRAFT'
@@ -75,14 +63,12 @@ class RichTextInput extends Component {
       toolSelect: tools.map((tool, index) => {
         return {select: false, index: index}
       }),
-      simplifyToolSelect: simplifyTools.map((tool, index) => {
-        return {select: false, index: index}
-      }),
       webViewHeight: MIN_RTE_HEIGHT,
       keyboardPadding: 0,
     }
     this.lastText = ""
     this.lastWordCnt = 0
+    this.insertImages = []
   }
 
   componentDidMount() {
@@ -124,6 +110,15 @@ class RichTextInput extends Component {
     if (data.text) {
       updateData.text = data.text
       this.lastText = data.text
+
+      // 更新图片列表
+      if (this.props.getImages) {
+        let tmpImgs = this.insertImages
+        this.insertImages = tmpImgs.filter((img) => {
+          return updateData.text.indexOf(img) != -1
+        })
+        this.props.getImages(this.insertImages)
+      }
     }
     if (data.wordCount) {
       updateData.wordCount = data.wordCount
@@ -166,7 +161,7 @@ class RichTextInput extends Component {
 
     // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
     const height = this.state.webViewHeight
-    console.log("webview height: ", height)
+    // console.log("webview height: ", height)
 
     return (
       <ScrollView>
@@ -190,7 +185,10 @@ class RichTextInput extends Component {
     if (this.props.simplify) {
       return (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <TouchableOpacity style={[styles.editToolKeyboardHide, {borderColor: '#eeeeee', borderRadius: 30}]}
+          <TouchableOpacity style={[
+                              styles.editToolKeyboardHide,
+                              {width: 60, height: 60, borderRadius: 30, backgroundColor: '#eeeeee'}
+                              ]}
                             onPress={() => {this.webView.sendToBridge('keyboard_hide')}}>
             <Image style={{width: 30, height: 30}}
                    source={require('../../../assets/images/close_keyboard.png')}/>
@@ -218,30 +216,24 @@ class RichTextInput extends Component {
           <View style={[styles.editToolView,
             {
               position: 'absolute',
-              right: 100,
+              right: 150,
               bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
             }]}
           >
-            <View style={{flexDirection: 'row', flex: 1}}>
-              {simplifyTools.map((tool, index) => {
-                return (
-                  <EditToolView
-                    key={"tool_" + index}
-                    click={() => {
-                      this.toolToBridge(tool.type, index)
-                    }}
-                    icon={this.state.simplifyToolSelect[index].select ?
-                      simplifyToolSelect[index] : simplifyToolDefault[index]
-                    }
-                  />
-                )
-              })}
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <TouchableOpacity onPress={() => {this.simplifyInsertImage()}}
+                                style={{alignItems: 'center', justifyContent: 'center', width: 60, height: 60, borderRadius: 30, backgroundColor: '#eeeeee'}}>
+                <Image
+                  style={{width: 30, height: 30}}
+                  source={require('../../../assets/images/insert_picture.png')}>
+                </Image>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={[styles.editToolView,
             {
               position: 'absolute',
-              right: 30,
+              right: 50,
               bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
             }]}
           >
@@ -296,7 +288,7 @@ class RichTextInput extends Component {
   }
 
   onBridgeMessage(message) {
-    console.log(message)
+    // console.log(message)
     switch (message) {
       case GET_FOCUS:
         this.props.onFocus(true)
@@ -319,8 +311,6 @@ class RichTextInput extends Component {
           this.articleContentChange({text: content})
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
-          console.log("text height: ", height)
-          console.log("keyboard padding: ", this.state.keyboardPadding)
           let padding = (Platform.OS == 'ios' ? 0 : this.state.keyboardPadding)
           this.setState({
             webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 200 + padding : MIN_RTE_HEIGHT,
@@ -330,31 +320,27 @@ class RichTextInput extends Component {
     }
   }
 
-  toolToBridge = (type, toolIndex) => {
-    let toolLen = 1
-    if (this.props.simplify) {
-      this.setState({
-        simplifyToolSelect: this.state.simplifyToolSelect.map((toolSel, index) => {
-          if (toolIndex == index) {
-            toolSel.select = !toolSel.select
-          }
-          return toolSel
-        })
-      })
-      toolLen = simplifyTools.length
-    } else {
-      this.setState({
-        toolSelect: this.state.toolSelect.map((toolSel, index) => {
-          if (toolIndex == index) {
-            toolSel.select = !toolSel.select
-          }
-          return toolSel
-        })
-      })
-      toolLen = tools.length
-    }
+  simplifyInsertImage = () => {
+    this.webView.sendToBridge("preInsertImg_")
+    selectPhotoTapped({
+      start: this.pickAvatarStart,
+      failed: this.pickAvatarFailed,
+      cancelled: this.pickAvatarCancelled,
+      succeed: this.pickImageSucceed
+    })
+  }
 
-    if (toolIndex == toolLen - 1) {
+  toolToBridge = (type, toolIndex) => {
+    this.setState({
+      toolSelect: this.state.toolSelect.map((toolSel, index) => {
+        if (toolIndex == index) {
+          toolSel.select = !toolSel.select
+        }
+        return toolSel
+      })
+    })
+
+    if (toolIndex == tools.length - 1) {
       this.webView.sendToBridge("preInsertImg_")
       selectPhotoTapped({
         start: this.pickAvatarStart,
@@ -395,6 +381,10 @@ class RichTextInput extends Component {
 
     uploadFile(uploadPayload).then((saved) => {
       let leanImgUrl = saved.savedPos
+      if (this.props.getImages) {
+        this.insertImages.push(leanImgUrl)
+        this.props.getImages(this.insertImages)
+      }
       this.webView.sendToBridge('editImg_' + leanImgUrl)
     }).catch((error) => {
       console.log('upload failed:', error)
@@ -430,14 +420,18 @@ class SimplifyEditToolView extends Component {
 
   render() {
     return (
-      <View style={styles.editToolImgView}>
+      <View style={[
+        {alignItems: 'center', justifyContent: 'center'},
+        {width: 60, height: 60, borderRadius: 30, backgroundColor: '#50E3C2'}
+        ]}
+      >
         <TouchableOpacity
           onPress={() => {
             this.props.click()
           }}
         >
           <Image
-            style={styles.simplifyEditToolImg}
+            style={styles.editToolImg}
             source={this.props.icon}>
           </Image>
         </TouchableOpacity>
@@ -460,7 +454,7 @@ const injectedJavaScript = `
             var editStr = message.substr(message.indexOf('_') + 1, message.length);
             set_editStr(editStr);
           }else if(message.indexOf('preInsertImg_') == 0){
-            lostFocus();
+            //lostFocus();
           }else{
             set_any(message);
           }
@@ -531,15 +525,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 30,
     height: 30,
-  },
-  simplifyEditToolImg: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 60,
-    height: 60,
-    borderWidth: 1,
-    borderColor: '#eeeeee',
-    borderRadius: 30,
   },
   editToolKeyboardHide: {
     alignItems: "center",
