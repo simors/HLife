@@ -224,7 +224,7 @@ class RichTextInput extends Component {
             {
               position: 'absolute',
               right: 150,
-              bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
+              bottom: this.state.keyboardPadding + this.props.wrapHeight + (Platform.OS == 'ios' ? 0 : 25) + 50,
             }]}
           >
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -241,7 +241,7 @@ class RichTextInput extends Component {
             {
               position: 'absolute',
               right: 50,
-              bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
+              bottom: this.state.keyboardPadding + this.props.wrapHeight + (Platform.OS == 'ios' ? 0 : 25) + 50,
             }]}
           >
             {this.renderHideEditToolView()}
@@ -404,6 +404,7 @@ class RichTextInput extends Component {
 
 RichTextInput.defaultProps = {
   simplify: false,
+  wrapHeight: 0,
 }
 
 class EditToolView extends Component {
