@@ -67,7 +67,7 @@ export class TopicShow extends Component {
           </View>
           <ImageGroupViewer images={image}
                             imageLineCnt={1}
-                            containerStyle={{width: PAGE_WIDTH * 2 / 7}}/>
+                            containerStyle={{width: PAGE_WIDTH * 2 / 7, marginRight: 0}}/>
         </View>
       )
     }
