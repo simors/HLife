@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  Platform,
   Image,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
@@ -156,16 +157,14 @@ class DoctorInfo extends Component {
               </View>
 
             </View>
-            <View style={[styles.zone, {alignItems: 'flex-start'}]}>
+            <View style={[styles.zone, {flex: 1, alignItems: 'flex-start'}]}>
               <View style={styles.imageHeader}>
                 <Text style={styles.maintext}>
                   认证凭证
                 </Text>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                <ImageGroupViewer images={this.props.doctorInfo.certificate} imageLineCnt={4}/>
 
-              </View>
+              <ImageGroupViewer containerStyle={{width:PAGE_WIDTH}} images={this.props.doctorInfo.certificate} imageLineCnt={4}/>
             </View>
 
           </ScrollView>
@@ -207,7 +206,14 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     width: PAGE_WIDTH,
-    marginTop: normalizeH(64),
+    ...Platform.select({
+      ios: {
+        marginTop: normalizeH(64),
+      },
+      android: {
+        marginTop: normalizeH(44),
+      }
+    })
   },
   zone: {
     marginTop: normalizeH(15),

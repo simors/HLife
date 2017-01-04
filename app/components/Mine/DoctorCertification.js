@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  Platform,
   Image,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
@@ -214,8 +215,7 @@ class DoctorCertification extends Component {
                 <Text style={[styles.triptext, {paddingLeft: 0}]}>
                   参考图像及拍摄说明
                 </Text>
-                <View style={{width: normalizeW(109), height: normalizeH(81), backgroundColor: 'yellow'}}>
-                  {/*<ImageGroupViewer images={''} imageLineCnt={1}/>*/}
+                <View style={{width: normalizeW(109), height: normalizeH(81)}}>
                   <Image source={require('../../assets/images/card_portrait.png')}/>
 
                 </View>
@@ -289,12 +289,19 @@ const styles = StyleSheet.create({
     letterSpacing: -0.41,
   },
   body: {
+    ...Platform.select({
+      ios: {
+        marginTop: normalizeH(64),
+      },
+      android: {
+        marginTop: normalizeH(44)
+      }
+    }),
     flex: 1,
     width: PAGE_WIDTH,
-    marginTop: normalizeH(64),
   },
   zone: {
-    marginTop: normalizeH(15),
+    // marginTop: normalizeH(15),
     backgroundColor: '#FFFFFF',
   },
   inputBox: {

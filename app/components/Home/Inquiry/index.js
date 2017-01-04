@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  Platform,
   Image,
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -136,8 +137,15 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     width: PAGE_WIDTH,
-    marginTop: normalizeH(64),
     backgroundColor: '#FFFFFF',
+    ...Platform.select({
+      ios: {
+        marginTop: normalizeH(64),
+      },
+      android: {
+        marginTop: normalizeH(44)
+      }
+    }),
   },
   scrollViewStyle: {
     flex: 1,
