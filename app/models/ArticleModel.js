@@ -93,7 +93,9 @@ export class ArticleComment extends ArticleCommentItem {
     let commentItem = new ArticleCommentItem()
     let attrs = lcObj.attributes
     let user = attrs.author.attributes
-    //console.log('user====>',user)
+    console.log('user====>',user)
+    console.log('attrs====>',attrs)
+
 
     let nickname = "吾爱用户"
     let avatar = undefined

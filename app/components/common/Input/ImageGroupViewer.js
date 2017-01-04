@@ -31,7 +31,7 @@ export default class ImageGroupViewer extends Component {
   }
 
   imageContainerOnLayout(event) {
-    const containerWidth = event.nativeEvent.layout.width
+    const containerWidth = event.nativeEvent.layout.width || PAGE_WIDTH
     this.calculateImageWidth(containerWidth)
   }
 
@@ -105,9 +105,10 @@ export default class ImageGroupViewer extends Component {
   }
 
   renderImageRow() {
+    const imageStyle = {width: this.state.calImgSize + this.state.marginSize, height: this.state.calImgSize}
     let imgComp = this.props.images.map((item, key) => {
       return (
-        <View key={key} style={{flex: 1}}>
+        <View key={key} style={imageStyle}>
           {this.renderImage(item)}
         </View>
       )
@@ -190,7 +191,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 5,
-    justifyContent: 'space-between'
   },
 
 })

@@ -24,11 +24,13 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {fetchShopCommentList} from '../../action/shopAction'
+import {fetchShopCommentList, reply, fetchShopCommentReplyList} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectUserIsFollowShop, selectShopComments} from '../../selector/shopSelector'
+import * as authSelector from '../../selector/authSelector'
 import ShopComment from './ShopComment'
-
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import ToolBarContent from './ShopCommentReply/ToolBarContent'
 import * as ShopDetailTestData from './ShopDetailTestData'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -37,11 +39,19 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class ShopCommentList extends Component {
   constructor(props) {
     super(props)
+
+    this.replyInput = null
+    
+    this.state = {
+      replyId : '',
+      replyUserNickName : '',
+      replyShopCommentId: '',
+    }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-
+      this.refreshData()
     })
   }
 
@@ -50,26 +60,76 @@ class ShopCommentList extends Component {
   }
 
   renderRow(rowData, rowId) {
-
     return (
       <ShopComment
+        shopCommentId={rowData.id}
         userId={rowData.user.id}
         userNickname={rowData.user.nickname}
         avatar={rowData.user.avatar}
         score={rowData.score}
         content={rowData.content}
+        shopCommentTime={rowData.shopCommentTime}
         createdDate={rowData.createdDate}
         blueprints={rowData.blueprints}
+        onReplyClick={this.onReplyClick.bind(this)}
       />
     )
   }
 
   refreshData() {
-
+    this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh) {
+    let payload = {
+      id: this.props.shopId,
+      lastCreatedAt: this.props.lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchShopCommentList(payload)
+  }
+  
+  onReplyClick(replyShopCommentId, replyId, replyUserNickName) {
+    if(this.replyInput) {
+      this.replyInput.focus()
+    }
+    this.setState({
+      ...this.state,
+      replyShopCommentId: replyShopCommentId,
+      replyUserNickName: replyUserNickName,
+      replyId: replyId
+    })
+  }
 
+  sendReply(content) {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    this.props.reply({
+      replyShopCommentId : this.state.replyShopCommentId,
+      replyId : this.state.replyId,
+      replyContent : content,
+      success: (result) => {
+        Toast.show('回复成功', {duration: 1500})
+      },
+      error: (err) => {
+        Toast.show(err.message, {duration: 1500})
+      }
+    })
   }
 
   render() {
@@ -92,6 +152,15 @@ class ShopCommentList extends Component {
             ref={(listView) => this.listView = listView}
           />
         </View>
+        <KeyboardAwareToolBar
+          initKeyboardHeight={-50}
+        >
+          <ToolBarContent
+            replyInputRefCallBack={(input)=>{this.replyInput = input}}
+            onSend={(content) => {this.sendReply(content)}}
+            placeholder={this.state.replyUserNickName ? '回复' + this.state.replyUserNickName + ':' : '回复:'}
+          />
+        </KeyboardAwareToolBar>
       </View>
     )
   }
@@ -107,15 +176,28 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
-  const shopCommentList = ShopDetailTestData.shopComments
+  // const shopCommentList = ShopDetailTestData.shopComments
+  let shopId = '5858e68a8e450a006cba3cff'
+  const shopCommentList = selectShopComments(state, shopId)
+  // const shopCommentList = selectShopComments(state, ownProps.shopId)
+  const isUserLogined = authSelector.isUserLogined(state)
+
+  let lastCreatedAt = ''
+  if(shopCommentList && shopCommentList.length) {
+    lastCreatedAt = shopCommentList[shopCommentList.length-1].createdAt
+  }
 
   return {
     ds: ds.cloneWithRows(shopCommentList),
+    isUserLogined: isUserLogined,
+    lastCreatedAt: lastCreatedAt,
+    shopId: shopId
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  fetchShopCommentList,
+  reply
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCommentList)

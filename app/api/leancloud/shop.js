@@ -8,7 +8,8 @@ import {
   ShopInfo,
   ShopAnnouncement,
   ShopComment,
-  Up
+  Up,
+  ShopCommentReply
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -176,8 +177,6 @@ export function submitShopComment(payload) {
   let shopComment = new ShopComment()
   shopComment.set('user', currentUser)
   shopComment.set('targetShop', shop)
-  shopComment.set('score', shop)
-  shopComment.set('targetShop', shop)
   shopComment.set('score', score)
   shopComment.set('content', content)
   shopComment.set('blueprints', blueprints)
@@ -194,13 +193,21 @@ export function submitShopComment(payload) {
 export function fetchShopCommentList(payload) {
   let shopId = payload.id
   let query = new AV.Query('ShopComment')
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  if(!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
+
   //构建内嵌查询
   let innerQuery = new AV.Query('Shop')
   innerQuery.equalTo('objectId', shopId)
   //执行内嵌查询
   query.matchesQuery('targetShop', innerQuery)
   query.include(['targetShop', 'user'])
+
   query.addDescending('createdAt')
+  query.limit(5) // 最多返回 5 条结果
   return query.find().then((results)=>{
     // console.log('fetchShopCommentList.results=', results)
     let shopComment = []
@@ -313,6 +320,51 @@ export function userUnUpShop(payload) {
       message: '取消点赞成功'
     }
   }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function reply(payload) {
+  let replyShopCommentId = payload.replyShopCommentId
+  let replyId = payload.replyId
+  let currentUser = AV.User.current()
+  let replyContent = payload.replyContent
+
+  let replyShopComment = AV.Object.createWithoutData('ShopComment', replyShopCommentId)
+
+  let ShopCommentReply = AV.Object.extend('ShopCommentReply')
+  let shopCommentReply = new ShopCommentReply()
+  shopCommentReply.set('content', replyContent)
+  shopCommentReply.set('replyId', replyId)
+  shopCommentReply.set('replyShopComment', replyShopComment)
+  shopCommentReply.set('user', currentUser)
+
+  return shopCommentReply.save().then((results) => {
+    return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopCommentReplyList(payload) {
+  let replyShopCommentId = payload.replyShopCommentId
+  let replyShopComment = AV.Object.createWithoutData('ShopComment', replyShopCommentId)
+
+  let query = new AV.Query('ShopCommentReply')
+  query.equalTo('replyShopComment', replyShopComment)
+
+  return query.find().then((results)=>{
+    let replyList = []
+    console.log('fetchShopCommentReplyList...results===========', results)
+    if(results && results.attributes && results.attributes.length) {
+      results.forEach((result)=>{
+        replyList.push(ShopCommentReply.fromLeancloudObject(result))
+      })
+    }
+    return new List(replyList)
+  }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

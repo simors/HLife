@@ -3,7 +3,8 @@
 import React, {Component} from 'react'
 import {
   Dimensions,
-  PixelRatio
+  PixelRatio,
+  StyleSheet
 } from 'react-native'
 
 export const PAGE_WIDTH = Dimensions.get('window').width
@@ -34,6 +35,11 @@ export function normalizeH(value) {
  * 根据像素比实现一像素边框
  */
 export function normalizeBorder(borderWidth = 1) {
+
+  if(1 === borderWidth) {
+    return StyleSheet.hairlineWidth
+  }
+
   if(__DEV__) {
     return borderWidth
   }

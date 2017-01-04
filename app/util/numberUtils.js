@@ -116,11 +116,16 @@ export function formatLeancloudTime(lcTime, format) {
   format = format || 'YYYY-MM-DD HH:mm:SS'
   if(lcTime) {
     fullYear = lcTime.getFullYear()
-    month = lcTime.getMonth()
+    month = lcTime.getMonth() + 1
+    month = month < 10 ? '0' + month : month
     date = lcTime.getDate()
+    date = date < 10 ? '0' + date : date
     hours = lcTime.getHours()
+    hours = hours < 10 ? '0' + hours : hours
     minutes = lcTime.getMinutes()
+    minutes = minutes < 10 ? '0' + minutes : minutes
     seconds = lcTime.getSeconds()
+    seconds = seconds < 10 ? '0' + seconds : seconds
   }
   const result = format.replace('YYYY', fullYear).replace('MM', month).replace('DD', date)
     .replace('HH', hours).replace('mm', minutes).replace('SS', seconds)

@@ -174,6 +174,7 @@ export function getComment(payload) {
   let article = AV.Object.createWithoutData('Articles',payload)
   let relation = article.relation('comments')
   let query = relation.query()
+  query.include(['author'])
   return query.find().then(function (results) {
 
     let comment = []
@@ -191,6 +192,7 @@ export function getComment(payload) {
 }
 
 export function submitArticleComment(payload) {
+  console.log('payload----->',payload)
   let articleId = payload.articleId
   let content = payload.content
   let replyId = payload.replyId
@@ -200,7 +202,7 @@ export function submitArticleComment(payload) {
   let reply = AV.Object.createWithoutData('ArticleComment', replyId)
   let ArticleComment = AV.Object.extend('ArticleComment')
   let articleComment = new ArticleComment()
-  articleComment.set('user', currentUser)
+  articleComment.set('author', currentUser)
   articleComment.set('articleId', article)
   articleComment.set('content', content)
   if (payload.commentId) {
@@ -209,10 +211,14 @@ export function submitArticleComment(payload) {
   return articleComment.save().then(function (result) {
     if (result) {
       let relation = article.relation('comments')
-      relation.add(ArticleComment);
-      //topic.increment("commentNum", 1)
-      return article.save().then(function (result) {
+      console.log('result======>',relation)
+      relation.add(articleComment)
+      console.log('relation======>', relation)
+      return article.save().then(function (data) {
+        console.log('result======>',data)
+
       }, function (err) {
+        console.log(err)
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })

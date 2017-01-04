@@ -4587,7 +4587,7 @@
       $img = $('<img/>').attr('src', 'http://ac-k5rltwmf.clouddn.com/5ff4269976107abe4b38.gif');
       range.insertNode($img[0]);
       this.editor.selection.setRangeAfter($img, range);
-      this.editor.trigger('valuechanged');
+      //this.editor.trigger('valuechanged');
       return $img;
     };
 

@@ -22,9 +22,9 @@ import {Actions} from 'react-native-router-flux'
 import Expander from '../common/Expander'
 import ScoreShow from '../common/ScoreShow'
 import FollowUser from '../common/FollowUser'
-import ShopCommentReplyList from './ShopCommentReplyList'
+import ReplyList from './ShopCommentReply/ReplyList'
+import Reply from './ShopCommentReply/Reply'
 import UpShopComment from './UpShopComment'
-import ShopCommentReply from './ShopCommentReply'
 
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -58,7 +58,10 @@ class ShopComment extends Component {
     return (
       <View key={"shop_comment_" + this.props.userId} style={styles.commentContainer}>
         <View style={styles.commentAvatarBox}>
-          <Image style={styles.commentAvatar} source={{uri: this.props.avatar}}/>
+          {this.props.avatar
+            ? <Image style={styles.commentAvatar} source={{uri: this.props.avatar}}/>
+            : <Image style={styles.commentAvatar} source={require('../../assets/images/default_portrait.png')}/>
+          }
 
           <FollowUser
             userId={this.props.userId}
@@ -93,14 +96,17 @@ class ShopComment extends Component {
           }
 
           <View style={[styles.commentLine, styles.commentFootLine]}>
-            <Text style={[styles.commentTime]}>刚刚</Text>
+            <Text style={[styles.commentTime]}>{this.props.shopCommentTime}</Text>
             <View style={styles.upReplyWrap}>
               <UpShopComment />
-              <ShopCommentReply />
+              <Reply
+                onReplyClick={this.props.onReplyClick}
+                shopCommentId={this.props.shopCommentId}
+              />
             </View>
           </View>
 
-          <ShopCommentReplyList
+          <ReplyList
 
           />
           

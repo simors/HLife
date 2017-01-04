@@ -19,12 +19,13 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import THEME from '../../constants/themes/theme1'
+
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class ShopCommentReply extends Component {
+class Reply extends Component {
   constructor(props) {
     super(props)
   }
@@ -39,12 +40,21 @@ class ShopCommentReply extends Component {
 
   }
 
+  reply() {
+    if(this.props.onReplyClick) {
+      this.props.onReplyClick(this.props.shopCommentId)
+    }
+  }
+
   render() {
     return (
-      <TouchableOpacity style={styles.commentReplyWrap}>
-        <Image source={require('../../assets/images/comments_unselect.png')}/>
-        <Text style={styles.reply}>回复</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity style={styles.commentReplyWrap} onPress={this.reply.bind(this)}>
+          <Image style={styles.image} resizeMode="cover" source={require('../../../assets/images/comments_unselect.png')}/>
+          <Text style={styles.reply}>回复</Text>
+        </TouchableOpacity>
+      </View>
+
     )
   }
 }
@@ -59,12 +69,16 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShopCommentReply)
+export default connect(mapStateToProps, mapDispatchToProps)(Reply)
 
 const styles = StyleSheet.create({
   commentReplyWrap: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  image: {
+    width:16,
+    height:17,
   },
   reply: {
     marginLeft: 5,
