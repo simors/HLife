@@ -220,33 +220,4 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: "#9b9b9b"
   },
-
-  //评论和点赞按钮
-  commentContainerStyle: {
-    flex: 1,
-    marginBottom: normalizeH(8),
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-around',
-  },
-  commentStyle: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#E9E9E9',
-    height: normalizeH(32),
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderRadius: 100,
-    flexDirection: 'row',
-  },
-  commentImageStyle: {
-    marginLeft: normalizeW(20),
-    marginRight: normalizeW(20),
-  },
-  commentTextStyle: {
-    fontSize: em(15),
-    marginRight: normalizeW(20),
-    color: THEME.colors.lighter
-  }
 })
