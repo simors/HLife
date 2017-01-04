@@ -33,7 +33,7 @@ const articleContent ={
   formKey: articleForm,
   stateKey: Symbol('articleContent'),
   type: 'articleContent',
-  initValue: '\<p\>这是个初始加载内容\<\/p\>'
+  // initValue: '\<p\>这是个初始加载内容\<\/p\>'
 }
 
 class PublishViewTest extends Component {
@@ -63,6 +63,7 @@ class PublishViewTest extends Component {
         {...articleContent}
         onFocus={this.onRteFocusChanged}
         shouldFocus={shouldFocus}
+        simplify={true}
       />
     )
   }

@@ -42,6 +42,18 @@ var tools = [
   {type: 'image', icon: toolDefault[3]},
 ]
 
+var simplifyToolDefault = [
+  require('../../../assets/images/insert_picture.png'),
+]
+
+var simplifyToolSelect = [
+  require('../../../assets/images/insert_picture.png'),
+]
+
+var simplifyTools = [
+  {type: 'image', icon: simplifyToolDefault[0]},
+]
+
 const GET_FOCUS = 'GET_FOCUS'
 const LOSE_FOCUS = 'LOSE_FOCUS'
 const LOAD_DRAFT = 'LOAD_DRAFT'
@@ -61,6 +73,9 @@ class RichTextInput extends Component {
     this.state = {
       closeTips: {height: 0},
       toolSelect: tools.map((tool, index) => {
+        return {select: false, index: index}
+      }),
+      simplifyToolSelect: simplifyTools.map((tool, index) => {
         return {select: false, index: index}
       }),
       webViewHeight: MIN_RTE_HEIGHT,
@@ -172,47 +187,98 @@ class RichTextInput extends Component {
   }
 
   renderHideEditToolView = () => {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <View style={{width: 1, backgroundColor: '#eeeeee'}}/>
-        <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
-          this.webView.sendToBridge('keyboard_hide')
-        }}>
-          <Image style={{width: 30, height: 30}} source={require('../../../assets/images/close_keyboard.png')}/>
-        </TouchableOpacity>
-      </View>
-    )
+    if (this.props.simplify) {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <TouchableOpacity style={[styles.editToolKeyboardHide, {borderColor: '#eeeeee', borderRadius: 30}]}
+                            onPress={() => {this.webView.sendToBridge('keyboard_hide')}}>
+            <Image style={{width: 30, height: 30}}
+                   source={require('../../../assets/images/close_keyboard.png')}/>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{width: 1, backgroundColor: '#eeeeee'}}/>
+          <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
+            this.webView.sendToBridge('keyboard_hide')
+          }}>
+            <Image style={{width: 30, height: 30}} source={require('../../../assets/images/close_keyboard.png')}/>
+          </TouchableOpacity>
+        </View>
+      )
+    }
   }
 
   renderEditToolView() {
-    return (
-      <View style={[styles.editToolView,
-        {
-          position: 'absolute',
-          left: 0,
-          bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25),
-        }]}
-      >
-        <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
-          <View style={{flexDirection: 'row', flex: 4}}>
-            {tools.map((tool, index) => {
-              return (
-                <EditToolView
-                  key={"tool_" + index}
-                  click={() => {
-                    this.toolToBridge(tool.type, index)
-                  }}
-                  icon={this.state.toolSelect[index].select ?
-                    toolSelect[index] : toolDefault[index]
-                  }
-                />
-              )
-            })}
+    if (this.props.simplify) {
+      return (
+        <View>
+          <View style={[styles.editToolView,
+            {
+              position: 'absolute',
+              right: 100,
+              bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
+            }]}
+          >
+            <View style={{flexDirection: 'row', flex: 1}}>
+              {simplifyTools.map((tool, index) => {
+                return (
+                  <EditToolView
+                    key={"tool_" + index}
+                    click={() => {
+                      this.toolToBridge(tool.type, index)
+                    }}
+                    icon={this.state.simplifyToolSelect[index].select ?
+                      simplifyToolSelect[index] : simplifyToolDefault[index]
+                    }
+                  />
+                )
+              })}
+            </View>
           </View>
-          {this.renderHideEditToolView()}
+          <View style={[styles.editToolView,
+            {
+              position: 'absolute',
+              right: 30,
+              bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
+            }]}
+          >
+            {this.renderHideEditToolView()}
+          </View>
         </View>
-      </View>
-    )
+      )
+    } else {
+      return (
+        <View style={[styles.editToolView,
+          {
+            position: 'absolute',
+            left: 0,
+            bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25),
+          }]}
+        >
+          <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
+            <View style={{flexDirection: 'row', flex: 4}}>
+              {tools.map((tool, index) => {
+                return (
+                  <EditToolView
+                    key={"tool_" + index}
+                    click={() => {
+                      this.toolToBridge(tool.type, index)
+                    }}
+                    icon={this.state.toolSelect[index].select ?
+                      toolSelect[index] : toolDefault[index]
+                    }
+                  />
+                )
+              })}
+            </View>
+            {this.renderHideEditToolView()}
+          </View>
+        </View>
+      )
+    }
   }
 
   render() {
@@ -265,15 +331,30 @@ class RichTextInput extends Component {
   }
 
   toolToBridge = (type, toolIndex) => {
-    this.setState({
-      toolSelect: this.state.toolSelect.map((toolSel, index) => {
-        if (toolIndex == index) {
-          toolSel.select = !toolSel.select
-        }
-        return toolSel
+    let toolLen = 1
+    if (this.props.simplify) {
+      this.setState({
+        simplifyToolSelect: this.state.simplifyToolSelect.map((toolSel, index) => {
+          if (toolIndex == index) {
+            toolSel.select = !toolSel.select
+          }
+          return toolSel
+        })
       })
-    })
-    if (toolIndex == tools.length - 1) {
+      toolLen = simplifyTools.length
+    } else {
+      this.setState({
+        toolSelect: this.state.toolSelect.map((toolSel, index) => {
+          if (toolIndex == index) {
+            toolSel.select = !toolSel.select
+          }
+          return toolSel
+        })
+      })
+      toolLen = tools.length
+    }
+
+    if (toolIndex == toolLen - 1) {
       this.webView.sendToBridge("preInsertImg_")
       selectPhotoTapped({
         start: this.pickAvatarStart,
@@ -321,6 +402,10 @@ class RichTextInput extends Component {
   }
 }
 
+RichTextInput.defaultProps = {
+  simplify: false,
+}
+
 class EditToolView extends Component {
 
   render() {
@@ -333,6 +418,26 @@ class EditToolView extends Component {
         >
           <Image
             style={styles.editToolImg}
+            source={this.props.icon}>
+          </Image>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
+
+class SimplifyEditToolView extends Component {
+
+  render() {
+    return (
+      <View style={styles.editToolImgView}>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.click()
+          }}
+        >
+          <Image
+            style={styles.simplifyEditToolImg}
             source={this.props.icon}>
           </Image>
         </TouchableOpacity>
@@ -426,6 +531,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 30,
     height: 30,
+  },
+  simplifyEditToolImg: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 60,
+    height: 60,
+    borderWidth: 1,
+    borderColor: '#eeeeee',
+    borderRadius: 30,
   },
   editToolKeyboardHide: {
     alignItems: "center",
