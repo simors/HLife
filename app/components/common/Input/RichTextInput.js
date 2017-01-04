@@ -295,7 +295,7 @@ class RichTextInput extends Component {
   }
 
   onBridgeMessage(message) {
-    // console.log(message)
+    console.log(message)
     switch (message) {
       case GET_FOCUS:
         this.props.onFocus(true)
