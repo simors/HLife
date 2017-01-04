@@ -15,119 +15,80 @@ import {
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
-import TopicImageViewer from '../../components/common/TopicImageViewer'
+import ImageGroupViewer from '../../components/common/Input/ImageGroupViewer'
 import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
-import {getTopicLikedTotalCount, isTopicLiked} from '../../selector/topicSelector'
-import {fetchTopicLikesCount, fetchTopicIsLiked} from '../../action/topicActions'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 export class TopicShow extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      numberOfLines: null,
-      expandText: '全文',
-      expanded: true,
-      showExpandText: false,
-      measureFlag: true,
-      liked: false,
-      likedChange: false
     }
-  }
-
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topic'})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
-    })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.topic.content != nextProps.topic.content) {
-      this.setState({measureFlag: true})
-      this.setState({expanded: true})
-      this.setState({expandText: '全文'})
-      this.setState({showExpandText: false})
-      this.setState({numberOfLines: null})
-    }
-  }
-
-  _onTextLayout(event) {
-    if (this.state.measureFlag) {
-      if (this.state.expanded) {
-        this.maxHeight = event.nativeEvent.layout.height;
-        this.setState({expanded: false, numberOfLines: this.props.numberOfValues});
-      }
-      else {
-        this.mixHeight = event.nativeEvent.layout.height;
-        if (this.mixHeight != this.maxHeight) {
-          this.setState({showExpandText: true})
-        }
-        this.setState({measureFlag: false})
-      }
-    }
-  }
-
-  _onPressExpand() {
-    if (!this.state.expanded) {
-      this.setState({numberOfLines: null, expandText: '收起', expanded: true})
-    } else {
-      this.setState({numberOfLines: this.props.numberOfValues, expandText: '全文', expanded: false})
-    }
-  }
-
-  renderExpandText() {
-    if (this.state.showExpandText) {
-      return (
-        <Text style={styles.showExpandTextStyle}
-              onPress={this._onPressExpand.bind(this)}>
-          {this.state.expandText}
-        </Text>
-      )
-    }
-
-  }
-
-  successCallback() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topic'})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
-    })
-  }
-
-  onLikeButton() {
-    this.props.onLikeButton({
-      topic: this.props.topic,
-      isLiked: this.props.isLiked,
-      success: this.successCallback.bind(this)
-    })
   }
 
   commentButtonPress() {
     Actions.TOPIC_DETAIL({topic: this.props.topic})
   }
 
-  renderCommentAndLikeButton() {
-    if (this.props.showCommentAndLikeButton) {
+  renderContentImage() {
+
+    //没有图片的显示规则
+    if ((!this.props.topic.imgGroup) || ((this.props.topic.imgGroup.length == 0))) {
       return (
-        <View style={styles.commentContainerStyle}>
-          <View>
-            <TouchableOpacity style={styles.commentStyle} onPress={()=>this.onLikeButton()}>
-              <Image style={styles.commentImageStyle}
-                     source={this.props.isLiked ?
-                       require("../../assets/images/like_select.png") :
-                       require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>{this.props.likesCount?this.props.likesCount:0}</Text>
-            </TouchableOpacity>
+        <View style={styles.contentWrapStyle}>
+          <Text style={styles.contentTitleStyle} numberOfLines={1}>
+            {this.props.topic.title}
+          </Text>
+          <Text style={styles.contentStyle} numberOfLines={2}>
+            {this.props.topic.content}
+          </Text>
+        </View>
+      )
+    }
+
+    //一张到2张图片的显示规则
+    else if (this.props.topic.imgGroup && (this.props.topic.imgGroup.length < 3)) {
+      let image = []
+      image.push(this.props.topic.imgGroup[0])
+      return (
+        <View style={[styles.contentWrapStyle, {flexDirection: 'row'}]}>
+          <View style={{flex: 1}}>
+            <Text style={styles.contentTitleStyle} numberOfLines={2}>
+              {this.props.topic.title}
+            </Text>
+            <Text style={styles.contentStyle} numberOfLines={3}>
+              {this.props.topic.content}
+            </Text>
           </View>
-          <View>
-            <TouchableOpacity style={styles.commentStyle} onPress={()=> this.commentButtonPress()}>
-              <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>{this.props.topic.commentNum}</Text>
-            </TouchableOpacity>
-          </View>
+          <ImageGroupViewer images={image}
+                            imageLineCnt={1}
+                            containerStyle={{width: PAGE_WIDTH * 2 / 7}}/>
+        </View>
+      )
+    }
+
+    //3张以上图片的显示规则
+    else if (this.props.topic.imgGroup && (this.props.topic.imgGroup.length >= 3)) {
+      let image = []
+      image.push(this.props.topic.imgGroup[0])
+      image.push(this.props.topic.imgGroup[1])
+      image.push(this.props.topic.imgGroup[2])
+      return (
+        <View style={styles.contentWrapStyle}>
+          <Text style={styles.contentTitleStyle} numberOfLines={1}>
+            {this.props.topic.title}
+          </Text>
+          <Text style={styles.contentStyle} numberOfLines={2}>
+            {this.props.topic.content}
+          </Text>
+          <ImageGroupViewer images={image}
+                            imageLineCnt={3}
+                            containerStyle={{flex: 1, marginLeft: 0, marginRight: 0}}/>
         </View>
       )
     }
@@ -162,22 +123,8 @@ export class TopicShow extends Component {
           </View>
         </View>
 
-
-        <View>
-          <View style={styles.contentWrapStyle}>
-            <Text style={styles.contentStyle}
-                  numberOfLines={this.state.numberOfLines}
-                  onLayout={this._onTextLayout.bind(this)}>
-              {this.props.topic.content}
-            </Text>
-            {this.renderExpandText()}
-          </View>
-          <View style={styles.imagesWrapStyle}>
-            <TopicImageViewer images={this.props.topic.imgGroup}/>
-          </View>
-        </View>
-
-        {this.renderCommentAndLikeButton()}
+        {this.renderContentImage()}
+        {/*{this.renderCommentAndLikeButton()}*/}
 
       </View>
 
@@ -198,18 +145,10 @@ TopicShow.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
-  const isLiked = isTopicLiked(state, ownProps.topic.objectId)
-  return {
-    likesCount: likesCount,
-    isLiked: isLiked
-  }
+  return {}
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchTopicLikesCount,
-  fetchTopicIsLiked
-}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicShow)
 
@@ -264,24 +203,22 @@ const styles = StyleSheet.create({
 
   //文章和图片
   contentWrapStyle: {
+    flex: 1,
     marginTop: normalizeH(13),
-    marginLeft: normalizeW(12)
+    marginLeft: normalizeW(35),
+    marginRight: normalizeW(12)
   },
-  contentStyle: {
+  contentTitleStyle: {
     fontSize: em(17),
     lineHeight: 20,
+    marginBottom: normalizeH(5),
     color: "#4a4a4a"
   },
-  imagesWrapStyle: {
-    marginTop: normalizeH(9),
+  contentStyle: {
     marginBottom: normalizeH(13),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  showExpandTextStyle: {
-    fontSize: em(12),
-    marginTop: normalizeH(10),
-    color: THEME.colors.green
+    fontSize: em(15),
+    lineHeight: 20,
+    color: "#9b9b9b"
   },
 
   //评论和点赞按钮
