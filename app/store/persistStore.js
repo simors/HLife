@@ -13,7 +13,6 @@ const messageFilter = createFilter(
   'MESSAGE',
   [
     'activeConversation',
-    'conversationMap',
     'unReadMsgCnt',
     'OrderedConversation'
   ]
