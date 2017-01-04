@@ -55,6 +55,7 @@ export class ShopInfo extends ShopRecord {
       if(ownerAttrs) {
         owner.nickname = ownerAttrs.nickname
         owner.avatar = ownerAttrs.avatar
+        owner.id = attrs.owner.id
       }
       record.set('owner', owner)
 

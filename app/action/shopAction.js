@@ -6,6 +6,7 @@ import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as ShopActionTypes from '../constants/shopActionTypes'
 import * as lcShop from '../api/leancloud/shop'
+import * as msgAction from './messageAction'
 
 export function fetchShopList(payload) {
   return (dispatch ,getState) => {
@@ -146,6 +147,10 @@ export function userUpShop(payload) {
       if(result && '10008' == result.code) {
         let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_SUCCESS)
         dispatch(updateAction(result))
+        let params = {
+          shopId: payload.id
+        }
+        msgAction.notifyShopLike(params)
         if(payload.success){
           payload.success(result)
         }
