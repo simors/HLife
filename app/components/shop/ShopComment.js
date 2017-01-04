@@ -58,7 +58,10 @@ class ShopComment extends Component {
     return (
       <View key={"shop_comment_" + this.props.userId} style={styles.commentContainer}>
         <View style={styles.commentAvatarBox}>
-          <Image style={styles.commentAvatar} source={{uri: this.props.avatar}}/>
+          {this.props.avatar
+            ? <Image style={styles.commentAvatar} source={{uri: this.props.avatar}}/>
+            : <Image style={styles.commentAvatar} source={require('../../assets/images/default_portrait.png')}/>
+          }
 
           <FollowUser
             userId={this.props.userId}
@@ -93,10 +96,13 @@ class ShopComment extends Component {
           }
 
           <View style={[styles.commentLine, styles.commentFootLine]}>
-            <Text style={[styles.commentTime]}>刚刚</Text>
+            <Text style={[styles.commentTime]}>{this.props.shopCommentTime}</Text>
             <View style={styles.upReplyWrap}>
               <UpShopComment />
-              <Reply />
+              <Reply
+                onReplyClick={this.props.onReplyClick}
+                shopCommentId={this.props.shopCommentId}
+              />
             </View>
           </View>
 

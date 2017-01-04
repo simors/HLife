@@ -48,6 +48,7 @@ const LOAD_DRAFT = 'LOAD_DRAFT'
 const COUNTER = 'COUNTER'
 const CONTENTS = 'CONTENTS'
 const HEIGHT = 'HEIGHT'
+const ABSTRACT = 'ABSTRACT'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -66,8 +67,10 @@ class RichTextInput extends Component {
       webViewHeight: MIN_RTE_HEIGHT,
       keyboardPadding: 0,
     }
+    this.abstract = ""
     this.lastText = ""
     this.lastWordCnt = 0
+    this.insertImages = []
   }
 
   componentDidMount() {
@@ -104,11 +107,25 @@ class RichTextInput extends Component {
   articleContentChange(data) {
     let updateData = {
       text: this.lastText,
-      wordCount: this.lastWordCnt
+      wordCount: this.lastWordCnt,
+      abstract: this.abstract,
+    }
+    if (data.abstract) {
+      updateData.abstract = data.abstract
+      this.abstract = data.abstract
     }
     if (data.text) {
       updateData.text = data.text
       this.lastText = data.text
+
+      // 更新图片列表
+      if (this.props.getImages) {
+        let tmpImgs = this.insertImages
+        this.insertImages = tmpImgs.filter((img) => {
+          return updateData.text.indexOf(img) != -1
+        })
+        this.props.getImages(this.insertImages)
+      }
     }
     if (data.wordCount) {
       updateData.wordCount = data.wordCount
@@ -151,7 +168,7 @@ class RichTextInput extends Component {
 
     // const height = PAGE_HEIGHT - navBarPadding - this.state.keyboardPadding - (Platform.OS == 'android' ? 20 : 0)
     const height = this.state.webViewHeight
-    console.log("webview height: ", height)
+    // console.log("webview height: ", height)
 
     return (
       <ScrollView>
@@ -172,47 +189,95 @@ class RichTextInput extends Component {
   }
 
   renderHideEditToolView = () => {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <View style={{width: 1, backgroundColor: '#eeeeee'}}/>
-        <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
-          this.webView.sendToBridge('keyboard_hide')
-        }}>
-          <Image style={{width: 30, height: 30}} source={require('../../../assets/images/close_keyboard.png')}/>
-        </TouchableOpacity>
-      </View>
-    )
+    if (this.props.simplify) {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <TouchableOpacity style={[
+                              styles.editToolKeyboardHide,
+                              {width: 60, height: 60, borderRadius: 30, backgroundColor: '#eeeeee'}
+                              ]}
+                            onPress={() => {this.webView.sendToBridge('keyboard_hide')}}>
+            <Image style={{width: 30, height: 30}}
+                   source={require('../../../assets/images/close_keyboard.png')}/>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{width: 1, backgroundColor: '#eeeeee'}}/>
+          <TouchableOpacity style={styles.editToolKeyboardHide} onPress={() => {
+            this.webView.sendToBridge('keyboard_hide')
+          }}>
+            <Image style={{width: 30, height: 30}} source={require('../../../assets/images/close_keyboard.png')}/>
+          </TouchableOpacity>
+        </View>
+      )
+    }
   }
 
   renderEditToolView() {
-    return (
-      <View style={[styles.editToolView,
-        {
-          position: 'absolute',
-          left: 0,
-          bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25),
-        }]}
-      >
-        <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
-          <View style={{flexDirection: 'row', flex: 4}}>
-            {tools.map((tool, index) => {
-              return (
-                <EditToolView
-                  key={"tool_" + index}
-                  click={() => {
-                    this.toolToBridge(tool.type, index)
-                  }}
-                  icon={this.state.toolSelect[index].select ?
-                    toolSelect[index] : toolDefault[index]
-                  }
-                />
-              )
-            })}
+    if (this.props.simplify) {
+      return (
+        <View>
+          <View style={[styles.editToolView,
+            {
+              position: 'absolute',
+              right: 150,
+              bottom: this.state.keyboardPadding + this.props.wrapHeight + (Platform.OS == 'ios' ? 0 : 25) + 50,
+            }]}
+          >
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <TouchableOpacity onPress={() => {this.simplifyInsertImage()}}
+                                style={{alignItems: 'center', justifyContent: 'center', width: 60, height: 60, borderRadius: 30, backgroundColor: '#eeeeee'}}>
+                <Image
+                  style={{width: 30, height: 30}}
+                  source={require('../../../assets/images/insert_picture.png')}>
+                </Image>
+              </TouchableOpacity>
+            </View>
           </View>
-          {this.renderHideEditToolView()}
+          <View style={[styles.editToolView,
+            {
+              position: 'absolute',
+              right: 50,
+              bottom: this.state.keyboardPadding + this.props.wrapHeight + (Platform.OS == 'ios' ? 0 : 25) + 50,
+            }]}
+          >
+            {this.renderHideEditToolView()}
+          </View>
         </View>
-      </View>
-    )
+      )
+    } else {
+      return (
+        <View style={[styles.editToolView,
+          {
+            position: 'absolute',
+            left: 0,
+            bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25),
+          }]}
+        >
+          <View style={{flexDirection: 'row', width: PAGE_WIDTH}}>
+            <View style={{flexDirection: 'row', flex: 4}}>
+              {tools.map((tool, index) => {
+                return (
+                  <EditToolView
+                    key={"tool_" + index}
+                    click={() => {
+                      this.toolToBridge(tool.type, index)
+                    }}
+                    icon={this.state.toolSelect[index].select ?
+                      toolSelect[index] : toolDefault[index]
+                    }
+                  />
+                )
+              })}
+            </View>
+            {this.renderHideEditToolView()}
+          </View>
+        </View>
+      )
+    }
   }
 
   render() {
@@ -230,7 +295,7 @@ class RichTextInput extends Component {
   }
 
   onBridgeMessage(message) {
-    console.log(message)
+    // console.log(message)
     switch (message) {
       case GET_FOCUS:
         this.props.onFocus(true)
@@ -253,15 +318,26 @@ class RichTextInput extends Component {
           this.articleContentChange({text: content})
         } else if (message.indexOf(HEIGHT) == 0) {
           const height = message.substr(message.lastIndexOf('_') + 1, message.length)
-          console.log("text height: ", height)
-          console.log("keyboard padding: ", this.state.keyboardPadding)
           let padding = (Platform.OS == 'ios' ? 0 : this.state.keyboardPadding)
           this.setState({
             webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 200 + padding : MIN_RTE_HEIGHT,
           })
+        } else if (message.indexOf(ABSTRACT) == 0) {
+          let abstract = message.substr(message.lastIndexOf('_') + 1, message.length)
+          this.articleContentChange({abstract: abstract})
         }
         break
     }
+  }
+
+  simplifyInsertImage = () => {
+    this.webView.sendToBridge("preInsertImg_")
+    selectPhotoTapped({
+      start: this.pickAvatarStart,
+      failed: this.pickAvatarFailed,
+      cancelled: this.pickAvatarCancelled,
+      succeed: this.pickImageSucceed
+    })
   }
 
   toolToBridge = (type, toolIndex) => {
@@ -273,6 +349,7 @@ class RichTextInput extends Component {
         return toolSel
       })
     })
+
     if (toolIndex == tools.length - 1) {
       this.webView.sendToBridge("preInsertImg_")
       selectPhotoTapped({
@@ -314,6 +391,10 @@ class RichTextInput extends Component {
 
     uploadFile(uploadPayload).then((saved) => {
       let leanImgUrl = saved.savedPos
+      if (this.props.getImages) {
+        this.insertImages.push(leanImgUrl)
+        this.props.getImages(this.insertImages)
+      }
       this.webView.sendToBridge('editImg_' + leanImgUrl)
     }).catch((error) => {
       console.log('upload failed:', error)
@@ -321,11 +402,40 @@ class RichTextInput extends Component {
   }
 }
 
+RichTextInput.defaultProps = {
+  simplify: false,
+  wrapHeight: 0,
+}
+
 class EditToolView extends Component {
 
   render() {
     return (
       <View style={styles.editToolImgView}>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.click()
+          }}
+        >
+          <Image
+            style={styles.editToolImg}
+            source={this.props.icon}>
+          </Image>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
+
+class SimplifyEditToolView extends Component {
+
+  render() {
+    return (
+      <View style={[
+        {alignItems: 'center', justifyContent: 'center'},
+        {width: 60, height: 60, borderRadius: 30, backgroundColor: '#50E3C2'}
+        ]}
+      >
         <TouchableOpacity
           onPress={() => {
             this.props.click()
@@ -355,7 +465,7 @@ const injectedJavaScript = `
             var editStr = message.substr(message.indexOf('_') + 1, message.length);
             set_editStr(editStr);
           }else if(message.indexOf('preInsertImg_') == 0){
-            lostFocus();
+            //lostFocus();
           }else{
             set_any(message);
           }

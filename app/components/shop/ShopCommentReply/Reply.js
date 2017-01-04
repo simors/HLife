@@ -19,6 +19,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
+
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -39,12 +40,21 @@ class Reply extends Component {
 
   }
 
+  reply() {
+    if(this.props.onReplyClick) {
+      this.props.onReplyClick(this.props.shopCommentId)
+    }
+  }
+
   render() {
     return (
-      <TouchableOpacity style={styles.commentReplyWrap}>
-        <Image source={require('../../../assets/images/comments_unselect.png')}/>
-        <Text style={styles.reply}>回复</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity style={styles.commentReplyWrap} onPress={this.reply.bind(this)}>
+          <Image style={styles.image} resizeMode="cover" source={require('../../../assets/images/comments_unselect.png')}/>
+          <Text style={styles.reply}>回复</Text>
+        </TouchableOpacity>
+      </View>
+
     )
   }
 }
@@ -65,6 +75,10 @@ const styles = StyleSheet.create({
   commentReplyWrap: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  image: {
+    width:16,
+    height:17,
   },
   reply: {
     marginLeft: 5,

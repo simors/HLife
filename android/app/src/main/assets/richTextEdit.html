@@ -33,9 +33,11 @@
     var TEXT = simditorBody.text();
     var COUNTER = TEXT.length;
     var CONTENTS = simditorBody.html();
+    var ABSTRACT = TEXT.substr(0, 100);
     WebViewBridge.send('COUNTER_' + COUNTER);
     WebViewBridge.send('CONTENTS_' + CONTENTS);
     WebViewBridge.send('HEIGHT_' + simditorBody.height());
+    WebViewBridge.send('ABSTRACT_' + ABSTRACT);
   });
 
   function set_any(type) {

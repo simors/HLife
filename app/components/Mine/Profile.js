@@ -13,6 +13,7 @@ import {
   ScrollView,
   Dimensions,
   Picker,
+  Platform,
 } from 'react-native'
 
 import {bindActionCreators} from 'redux'
@@ -102,67 +103,68 @@ class Profile extends Component {
           title="个人信息"
           rightType=""
         />
-        <ScrollView keyboardShouldPersistTaps= {true} keyboardDismissMode= {'on-drag'}>
-          <View style={styles.zonea}>
-            <ImageInput {...avatarInput} initValue={this.props.userInfo.avatar? this.props.userInfo.avatar: undefined} containerStyle={styles.imageInputStyle}
-                        addImage={require('../../assets/images/default_portrait.png')}
-                        addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
-            />
-          </View>
-          <View style={styles.zoneb}>
-            <View style={styles.tab}>
-              <View style={{flex: 1, justifyContent: 'center'}}>
-                <Text style={styles.mainText}>昵称</Text>
-              </View>
-              <View style={{flex: 2, justifyContent: 'center'}}>
-                <CommonTextInput {...nicknameInput}
-                                 initValue={this.props.userInfo.nickname? this.props.userInfo.nickname: undefined}
-                                 containerStyle={{height: normalizeH(38), }}
-                                 inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
-              </View>
-              <View>
+        <View style={styles.body}>
+          <ScrollView keyboardShouldPersistTaps= {true} keyboardDismissMode= {'on-drag'}>
+            <View style={styles.zonea}>
+              <ImageInput {...avatarInput} initValue={this.props.userInfo.avatar? this.props.userInfo.avatar: undefined} containerStyle={styles.imageInputStyle}
+                          addImage={require('../../assets/images/default_portrait.png')}
+                          addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
+              />
+            </View>
+            <View style={styles.zoneb}>
+              <View style={styles.tab}>
+                <View style={{flex: 1, justifyContent: 'center'}}>
+                  <Text style={styles.mainText}>昵称</Text>
+                </View>
+                <View style={{flex: 2, justifyContent: 'center'}}>
+                  <CommonTextInput {...nicknameInput}
+                                   initValue={this.props.userInfo.nickname? this.props.userInfo.nickname: undefined}
+                                   containerStyle={{height: normalizeH(38), }}
+                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                </View>
+                <View>
+
+                </View>
 
               </View>
+              <View style={styles.tab}>
+                <View style={{flex: 1, justifyContent: 'center'}}>
+                  <Text style={styles.mainText}>手机号</Text>
+                </View>
+                <View style={{flex: 2, justifyContent: 'center'}}>
+                  <PhoneInput {...phoneInput}
+                              initValue={this.props.userInfo.phone? this.props.userInfo.phone: undefined}
+                              inputStyle={styles.phoneInputStyle}/>
+                </View>
+              </View>
+            </View>
+            <View style={[styles.zoneb, {marginTop: normalizeH(20)}]}>
+              <View style={styles.tab}>
+                <View style={{flex: 1, justifyContent: 'center'}}>
+                  <Text style={styles.mainText}>性别</Text>
+                </View>
+                <View style={{flex: 2, paddingLeft: normalizeW(30)}}>
+                  <GenderSelector {...genderInput}
+                                  initValue={this.props.userInfo.gender? this.props.userInfo.gender: undefined} />
+                </View>
+              </View>
+              <View style={styles.tab}>
+                <View style={{flex: 1, justifyContent: 'center', }}>
+                  <Text style={styles.mainText}>出生年月</Text>
+                </View>
+                <View style={{flex: 2, justifyContent: 'center', }}>
+                  <DateTimeInput {...dtPicker}
+                                 initValue={this.props.userInfo.birthday? this.props.userInfo.birthday: undefined}
+                                 value="2016-05-18" PickerStyle={{backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
+                </View>
+              </View>
+            </View>
+            <View style={{flex: 1, marginTop: normalizeH(40)}}>
+              <CommonButton title="保存信息" onPress={() => this.onButtonPress()}/>
+            </View>
 
-            </View>
-            <View style={styles.tab}>
-              <View style={{flex: 1, justifyContent: 'center'}}>
-                <Text style={styles.mainText}>手机号</Text>
-              </View>
-              <View style={{flex: 2, justifyContent: 'center'}}>
-                <PhoneInput {...phoneInput}
-                            initValue={this.props.userInfo.phone? this.props.userInfo.phone: undefined}
-                            inputStyle={styles.phoneInputStyle}/>
-              </View>
-            </View>
-          </View>
-          <View style={[styles.zoneb, {marginTop: normalizeH(20)}]}>
-            <View style={styles.tab}>
-              <View style={{flex: 1, justifyContent: 'center'}}>
-                <Text style={styles.mainText}>性别</Text>
-              </View>
-              <View style={{flex: 2, paddingLeft: normalizeW(30)}}>
-                <GenderSelector {...genderInput}
-                                initValue={this.props.userInfo.gender? this.props.userInfo.gender: undefined} />
-              </View>
-            </View>
-            <View style={styles.tab}>
-              <View style={{flex: 1, justifyContent: 'center', }}>
-                <Text style={styles.mainText}>出生年月</Text>
-              </View>
-              <View style={{flex: 2, justifyContent: 'center', }}>
-                <DateTimeInput {...dtPicker}
-                               initValue={this.props.userInfo.birthday? this.props.userInfo.birthday: undefined}
-                               value="2016-05-18" PickerStyle={{backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
-              </View>
-            </View>
-          </View>
-          <View style={{flex: 1, marginTop: normalizeH(40)}}>
-            <CommonButton title="保存信息" onPress={() => this.onButtonPress()}/>
-          </View>
-
-        </ScrollView>
-
+          </ScrollView>
+        </View>
       </View>
       )
 
@@ -187,8 +189,18 @@ const  styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
+  body: {
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(64),
+      },
+      android: {
+        paddingTop: normalizeH(44)
+      }
+    }),
+    flex: 1,
+  },
   zonea: {
-    marginTop: normalizeH(64),
     height: normalizeH(144),
     justifyContent: 'center',
     alignItems: 'center',

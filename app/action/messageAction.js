@@ -10,8 +10,9 @@ import {TypedMessagePlugin}from 'leancloud-realtime-plugin-typed-messages'
 import * as LC_CONFIG from '../constants/appConfig'
 import * as msgTypes from '../constants/messageActionTypes'
 import {Conversation, Message} from '../models/messageModels'
-import {activeUserId} from '../selector/authSelector'
+import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
+import {selectShopDetail} from '../selector/shopSelector'
 
 class TextMessage extends TypedMessage {
 }
@@ -25,13 +26,37 @@ class AudioMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_AUDIO)(AudioMessage)
 
-class CommentMessage extends TypedMessage {
+class ArticleCommentMessage extends TypedMessage {
 }
-messageType(msgTypes.MSG_COMMENT)(CommentMessage)
+messageType(msgTypes.MSG_ARTICLE_COMMENT)(ArticleCommentMessage)
 
-class LikeMessage extends TypedMessage {
+class TopicCommentMessage extends TypedMessage {
 }
-messageType(msgTypes.MSG_LIKE)(LikeMessage)
+messageType(msgTypes.MSG_TOPIC_COMMENT)(TopicCommentMessage)
+
+class ShopCommentMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_SHOP_COMMENT)(ShopCommentMessage)
+
+class ArticleLikeMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_ARTICLE_LIKE)(ArticleLikeMessage)
+
+class TopicLikeMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_TOPIC_LIKE)(TopicLikeMessage)
+
+class ShopLikeMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_SHOP_LIKE)(ShopLikeMessage)
+
+class UserFollowMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_USER_FOLLOW)(UserFollowMessage)
+
+class ShopFollowMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_SHOP_FOLLOW)(ShopFollowMessage)
 
 
 //we should move this to the server to avoid reverse-engineering
@@ -51,8 +76,14 @@ const realtime = new Realtime({
 realtime.register(TextMessage)
 realtime.register(ImageMessage)
 realtime.register(AudioMessage)
-realtime.register(CommentMessage)
-realtime.register(LikeMessage)
+realtime.register(ArticleCommentMessage)
+realtime.register(TopicCommentMessage)
+realtime.register(ShopCommentMessage)
+realtime.register(ArticleLikeMessage)
+realtime.register(TopicLikeMessage)
+realtime.register(ShopLikeMessage)
+realtime.register(UserFollowMessage)
+realtime.register(ShopFollowMessage)
 
 const initMessenger = createAction(msgTypes.INIT_MESSENGER_CLIENT)
 const onCreateConversation = createAction(msgTypes.ON_CONVERSATION_CREATED)
@@ -230,7 +261,15 @@ function onReceiveMsg(message, conversation) {
     if (msgType === msgTypes.MSG_TEXT || msgType === msgTypes.MSG_AUDIO || msgType === msgTypes.MSG_IMAGE) {
       dispatch(onRecvNormalMessage(message, conversation))
     }
-    if (msgType === msgTypes.MSG_COMMENT || msgType === msgTypes.MSG_LIKE || msgType === msgTypes.MSG_SYSTEM) {
+    if (msgType === msgTypes.MSG_ARTICLE_COMMENT
+        || msgType === msgTypes.MSG_TOPIC_COMMENT
+        || msgType === msgTypes.MSG_SHOP_COMMENT
+        || msgType === msgTypes.MSG_ARTICLE_LIKE
+        || msgType === msgTypes.MSG_TOPIC_LIKE
+        || msgType === msgTypes.MSG_SHOP_LIKE
+        || msgType === msgTypes.MSG_USER_FOLLOW
+        || msgType === msgTypes.MSG_SHOP_FOLLOW
+        || msgType === msgTypes.MSG_SYSTEM) {
       dispatch(onRecvNotifyMessage(message, conversation))
     }
   }
@@ -247,7 +286,10 @@ function onRecvNormalMessage(message, conversation) {
 
 function onRecvNotifyMessage(message, conversation) {
   return (dispatch, getState) => {
+    let msgType = message.type
+    if (msgType === msgTypes.MSG_TOPIC_COMMENT) {
 
+    }
   }
 }
 
@@ -286,4 +328,186 @@ function sendAudioMessage(conversation, payload) {
   }).then((message)=> {
     return Message.fromLeancloudMessage(message, payload)
   })
+}
+
+function createTypedMessage(msgType) {
+  switch (msgType) {
+    case msgTypes.MSG_ARTICLE_COMMENT:
+      return new ArticleCommentMessage()
+    case msgTypes.MSG_ARTICLE_LIKE:
+      return new ArticleLikeMessage()
+    case msgTypes.MSG_TOPIC_COMMENT:
+      return new TopicCommentMessage()
+    case msgTypes.MSG_TOPIC_LIKE:
+      return new TopicLikeMessage()
+    case msgTypes.MSG_SHOP_COMMENT:
+      return new ShopCommentMessage()
+    case msgTypes.MSG_SHOP_LIKE:
+      return new ShopLikeMessage()
+    case msgTypes.MSG_USER_FOLLOW:
+      return new UserFollowMessage()
+    case msgTypes.MSG_SHOP_FOLLOW:
+      return new ShopFollowMessage()
+    default:
+      return new TextMessage()
+  }
+}
+
+export function notifyTopicComment(payload) {
+  return (dispatch, getState) => {
+    let notifyConv = {
+      members: payload.toPeers,   // 可以是一个数组
+      unique: true
+    }
+    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_TOPIC_COMMENT)
+      let attrs = {
+        msgType: msgTypes.MSG_TOPIC_COMMENT,
+        nickname: payload.nickname,
+        avatar: payload.avatar,
+        topicId: payload.topicId,
+        title: payload.title,
+      }
+      let text = payload.nickname + '在您的文章《' + payload.title + '》中发表了评论'
+      message.setText(text)
+      message.setAttribute(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
+}
+
+export function notifyShopComment(payload) {
+  return (dispatch, getState) => {
+    let shopId = payload.shopId
+    let shopDetail = selectShopDetail(getState(), shopId)
+    if (!shopDetail) {
+      console.log('can\'t find shop by shop id ' + shopId)
+      return
+    }
+    let currentUser = activeUserInfo(getState())
+    let notifyConv = {
+      members: shopDetail.owner.id,   // 可以是一个数组
+      unique: true
+    }
+    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_SHOP_COMMENT)
+      let attrs = {
+        msgType: msgTypes.MSG_SHOP_COMMENT,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
+        shopId: shopId,
+      }
+      let text = currentUser.nickname + '在您的店铺中发表了评论'
+      message.setText(text)
+      message.setAttribute(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
+}
+
+export function notifyTopicLike(payload) {
+  return (dispatch, getState) => {
+    let notifyConv = {
+      members: payload.toPeers,   // 可以是一个数组
+      unique: true
+    }
+    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_TOPIC_LIKE)
+      let attrs = {
+        msgType: msgTypes.MSG_TOPIC_LIKE,
+        nickname: payload.nickname,
+        avatar: payload.avatar,
+        topicId: payload.topicId,
+        title: payload.title,
+      }
+      let text = payload.nickname + '在您的文章《' + payload.title + '》中点了赞'
+      message.setText(text)
+      message.setAttribute(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
+}
+
+export function notifyShopLike(payload) {
+  return (dispatch, getState) => {
+    let shopId = payload.shopId
+    let shopDetail = selectShopDetail(getState(), shopId)
+    if (!shopDetail) {
+      console.log('can\'t find shop by shop id ' + shopId)
+      return
+    }
+    let currentUser = activeUserInfo(getState())
+    let notifyConv = {
+      members: shopDetail.owner.id,
+      unique: true
+    }
+    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_SHOP_LIKE)
+      let attrs = {
+        msgType: msgTypes.MSG_SHOP_LIKE,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
+        shopId: shopId,
+      }
+      let text = currentUser.nickname + '在您的店铺中点了赞'
+      message.setText(text)
+      message.setAttribute(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
+}
+
+export function notifyUserFollow(payload) {
+  return (dispatch, getState) => {
+    let notifyConv = {
+      members: payload.toPeers,   // 可以是一个数组
+      unique: true
+    }
+    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_USER_FOLLOW)
+      let attrs = {
+        msgType: msgTypes.MSG_USER_FOLLOW,
+        nickname: payload.nickname,
+        avatar: payload.avatar,
+      }
+      let text = payload.nickname + '专注了您'
+      message.setText(text)
+      message.setAttribute(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
+}
+
+export function notifyShopFollow(payload) {
+  return (dispatch, getState) => {
+    let notifyConv = {
+      members: payload.toPeers,   // 可以是一个数组
+      unique: true
+    }
+    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_SHOP_FOLLOW)
+      let attrs = {
+        msgType: msgTypes.MSG_SHOP_FOLLOW,
+        nickname: payload.nickname,
+        avatar: payload.avatar,
+        shopId: payload.shopId,
+      }
+      let text = payload.nickname + '专注了您的店铺'
+      message.setText(text)
+      message.setAttribute(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
 }

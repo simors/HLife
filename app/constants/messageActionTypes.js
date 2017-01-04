@@ -6,8 +6,17 @@ export const MSG_SYSTEM = 1
 export const MSG_IMAGE = 2
 export const MSG_AUDIO = 3
 
-export const MSG_COMMENT = 4
-export const MSG_LIKE = 5
+export const MSG_ARTICLE_COMMENT  = 20      // 文章评论
+export const MSG_TOPIC_COMMENT    = 21      // 话题评论
+export const MSG_SHOP_COMMENT     = 22      // 店铺评论
+
+
+export const MSG_ARTICLE_LIKE     = 30      // 文章点赞
+export const MSG_TOPIC_LIKE       = 31      // 话题点赞
+export const MSG_SHOP_LIKE        = 32      // 店铺点赞
+
+export const MSG_USER_FOLLOW      = 40      // 关注用户
+export const MSG_SHOP_FOLLOW      = 41      // 关注店铺
 
 export const INIT_MESSENGER_CLIENT = 'INIT_MESSENGER_CLIENT'
 export const CLOSE_MESSENGER_CLIENT = 'CLOSE_MESSENGER_CLIENT'

@@ -6,6 +6,7 @@ import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as ShopActionTypes from '../constants/shopActionTypes'
 import * as lcShop from '../api/leancloud/shop'
+import * as msgAction from './messageAction'
 
 export function fetchShopList(payload) {
   return (dispatch ,getState) => {
@@ -95,10 +96,14 @@ export function submitShopComment(payload) {
 export function fetchShopCommentList(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopCommentList(payload).then((shopComments)=>{
-      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS)
+      let actionType = ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.FETCH_PAGING_SHOP_COMMENT_LIST_SUCCESS
+      }
+      let updateAction = createAction(actionType)
       dispatch(updateAction({shopId: payload.id, shopComments: shopComments}))
       if(payload.success){
-        payload.success(result)
+        payload.success(shopComments)
       }
     }).catch((error) => {
       if(payload.error){
@@ -146,6 +151,10 @@ export function userUpShop(payload) {
       if(result && '10008' == result.code) {
         let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_SUCCESS)
         dispatch(updateAction(result))
+        let params = {
+          shopId: payload.id
+        }
+        msgAction.notifyShopLike(params)
         if(payload.success){
           payload.success(result)
         }
@@ -175,6 +184,41 @@ export function userUnUpShop(payload) {
         if(payload.error){
           payload.error(result)
         }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function reply(payload) {
+  return (dispatch, getState) => {
+    lcShop.reply(payload).then((result) => {
+      let updateAction = createAction(ShopActionTypes.REPLY_SHOP_COMMENT_SUCCESS)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopCommentReplyList(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopCommentReplyList(payload).then((shopCommentReplyList) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_REPLY_LIST_SUCCESS)
+      dispatch(updateAction({
+        replyShopCommentId: payload.replyShopCommentId,
+        shopCommentReplyList: shopCommentReplyList
+      }))
+      if(payload.success){
+        payload.success(shopCommentReplyList)
       }
     }).catch((error) => {
       if(payload.error){
