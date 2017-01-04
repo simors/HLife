@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
@@ -30,6 +30,10 @@ class MultilineText extends Component {
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
+  }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   validInput(data) {
@@ -79,7 +83,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
-  inputFormUpdate
+  inputFormUpdate,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MultilineText)

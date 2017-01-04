@@ -22,6 +22,8 @@ import MultilineText from '../../common/Input/MultilineText'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import {activeUserId} from '../../../selector/authSelector'
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import * as Toast from '../../common/Toast'
+
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -51,7 +53,6 @@ class Inguiry extends Component {
   }
 
   submitErrorCallback(error) {
-
     Toast.show(error.message)
   }
 

@@ -28,7 +28,8 @@ import {fetchShopCommentList} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectUserIsFollowShop, selectShopComments} from '../../selector/shopSelector'
 import ShopComment from './ShopComment'
-
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import ToolBarContent from './ShopCommentReply/ToolBarContent'
 import * as ShopDetailTestData from './ShopDetailTestData'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -37,6 +38,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class ShopCommentList extends Component {
   constructor(props) {
     super(props)
+
+    this.replyInput = null
   }
 
   componentWillMount() {
@@ -60,6 +63,7 @@ class ShopCommentList extends Component {
         content={rowData.content}
         createdDate={rowData.createdDate}
         blueprints={rowData.blueprints}
+        replyInput={this.replyInput}
       />
     )
   }
@@ -92,6 +96,11 @@ class ShopCommentList extends Component {
             ref={(listView) => this.listView = listView}
           />
         </View>
+        <KeyboardAwareToolBar>
+          <ToolBarContent
+            replyInputRefCallBack={(input)=>{this.replyInput = input}}
+          />
+        </KeyboardAwareToolBar>
       </View>
     )
   }

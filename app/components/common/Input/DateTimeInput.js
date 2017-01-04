@@ -13,7 +13,7 @@ import DatePicker from 'react-native-datepicker'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import THEME from '../../../constants/themes/theme1'
-import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -32,6 +32,10 @@ class DateTimeInput extends Component {
       checkValid: this.validDate
     }
     this.props.initInputForm(formInfo)
+  }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   validDate() {
@@ -103,7 +107,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
-  inputFormUpdate
+  inputFormUpdate,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DateTimeInput)

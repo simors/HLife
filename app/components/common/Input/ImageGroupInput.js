@@ -19,7 +19,7 @@ import ImagePicker from 'react-native-image-picker'
 import CommonButton from '../CommonButton'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
-import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
@@ -47,6 +47,10 @@ class ImageGroupInput extends Component {
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
+  }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   calculateImageWidth() {
@@ -284,7 +288,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
-  inputFormUpdate
+  inputFormUpdate,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageGroupInput)
