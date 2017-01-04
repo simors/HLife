@@ -184,3 +184,19 @@ export function userUnUpShop(payload) {
   }
 }
 
+export function reply(payload) {
+  return (dispatch, getState) => {
+    lcShop.reply(payload).then((result) => {
+      let updateAction = createAction(ShopActionTypes.REPLY_SHOP_COMMENT_SUCCESS)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+

@@ -176,8 +176,6 @@ export function submitShopComment(payload) {
   let shopComment = new ShopComment()
   shopComment.set('user', currentUser)
   shopComment.set('targetShop', shop)
-  shopComment.set('score', shop)
-  shopComment.set('targetShop', shop)
   shopComment.set('score', score)
   shopComment.set('content', content)
   shopComment.set('blueprints', blueprints)
@@ -313,6 +311,29 @@ export function userUnUpShop(payload) {
       message: '取消点赞成功'
     }
   }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function reply(payload) {
+  let replyShopCommentId = payload.replyShopCommentId
+  let replyId = payload.replyId
+  let currentUser = AV.User.current()
+  let replyContent = payload.replyContent
+
+  let replyShopComment = AV.Object.createWithoutData('ShopComment', replyShopCommentId)
+
+  let ShopCommentReply = AV.Object.extend('ShopCommentReply')
+  let shopCommentReply = new ShopCommentReply()
+  shopCommentReply.set('content', replyContent)
+  shopCommentReply.set('replyId', replyId)
+  shopCommentReply.set('replyShopComment', replyShopComment)
+  shopCommentReply.set('user', currentUser)
+
+  return shopCommentReply.save().then((results) => {
+    return results
+  }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

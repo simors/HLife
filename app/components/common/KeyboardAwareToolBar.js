@@ -23,7 +23,7 @@ export default class KeyboardAwareToolBar extends Component {
     super(props)
 
     this.state = {
-      keyboardHeight : new Animated.Value(0),
+      keyboardHeight : new Animated.Value(this.props.initKeyboardHeight || 0),
       isTypingDisabled : false,
       touchStarted : false
     }
@@ -69,7 +69,7 @@ export default class KeyboardAwareToolBar extends Component {
     if (this.props.isAnimated === true) {
       Animated.timing(this.state.keyboardHeight, {
         toValue: height,
-        duration: 210,
+        duration: 260,
       }).start()
     }else {
       this.setState({
@@ -93,7 +93,7 @@ export default class KeyboardAwareToolBar extends Component {
 
   onKeyboardWillHide() {
     this.setIsTypingDisabled(true)
-    this.setKeyboardHeight(0)
+    this.setKeyboardHeight(this.props.initKeyboardHeight || 0)
   }
 
   onKeyboardDidShow(e) {
