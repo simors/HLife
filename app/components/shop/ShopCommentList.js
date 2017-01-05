@@ -18,6 +18,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 import Header from '../common/Header'
 import CommonListView from '../common/CommonListView'
@@ -120,12 +121,18 @@ class ShopCommentList extends Component {
       Actions.LOGIN()
       return
     }
+    const that = this
     this.props.reply({
       replyShopCommentId : this.state.replyShopCommentId,
       replyId : this.state.replyId,
       replyContent : content,
       success: (result) => {
+        dismissKeyboard()
         Toast.show('回复成功', {duration: 1500})
+        that.props.fetchShopCommentReplyList({
+          shopId: that.props.shopId,
+          replyShopCommentId: this.state.replyShopCommentId
+        })
       },
       error: (err) => {
         Toast.show(err.message, {duration: 1500})
@@ -198,7 +205,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCommentList,
-  reply
+  reply,
+  fetchShopCommentReplyList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCommentList)
