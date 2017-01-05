@@ -13,6 +13,7 @@ export function getArticle(payload) {
     let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
    // console.log('getLikers.category=====', articleCategory)
     query.equalTo('Category', articleCategory)
+    query.equalTo('enable',true)
     query.include(['user'])
     query.descending('createdAt')
   }
@@ -174,6 +175,7 @@ export function getComment(payload) {
   let article = AV.Object.createWithoutData('Articles',payload)
   let relation = article.relation('comments')
   let query = relation.query()
+  query.equalTo('enable',true)
   query.include(['author'])
   return query.find().then(function (results) {
 
