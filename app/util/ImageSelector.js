@@ -18,7 +18,6 @@ export function selectPhotoTapped(callbacks) {
   callbacks.start()
 
   ImagePicker.showImagePicker(options, (response) => {
-    console.log('Response:', response)
 
     if (response.didCancel) {
       callbacks.cancelled()
@@ -29,7 +28,6 @@ export function selectPhotoTapped(callbacks) {
     } else if (response.customButton) {
       console.log('User tapped custom button:', response.customButton)
     } else {
-      console.log('filePath:', response.uri)
       let source
       if (Platform.OS === 'android') {
         source = {

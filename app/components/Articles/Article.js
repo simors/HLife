@@ -296,7 +296,7 @@ const styles = StyleSheet.create(
     titleView: {
       height: normalizeH(39),
       width: PAGE_WIDTH,
-      marginTop: normalizeH(64),
+     // marginTop: normalizeH(64),
       borderBottomWidth: normalizeBorder(3),
       borderColor: '#E6E6E6',
       justifyContent: 'center',

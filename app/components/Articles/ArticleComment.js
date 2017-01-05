@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     width: normalizeW(35),
     borderRadius: 17.5,
     borderWidth: 1,
-    borderStyle: 'solid',
+   // borderStyle: 'solid',
     borderColor: 'transparent',
     marginTop: normalizeH(10),
     marginLeft: normalizeW(12),

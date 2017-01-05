@@ -33,7 +33,7 @@ const articleContent ={
   formKey: articleForm,
   stateKey: Symbol('articleContent'),
   type: 'articleContent',
-  initValue: '\<p\>这是个初始加载内容\<\/p\>'
+  // initValue: '\<p\>这是个初始加载内容\<\/p\>'
 }
 
 class PublishViewTest extends Component {
@@ -43,6 +43,12 @@ class PublishViewTest extends Component {
       closeTips: false,
       rteFocused: false,    // 富文本获取到焦点
     }
+    this.insertImages = []
+  }
+
+  getRichTextImages(images) {
+    this.insertImages = images
+    console.log('images list', this.insertImages)
   }
 
   onRteFocusChanged = (val) => {
@@ -63,6 +69,8 @@ class PublishViewTest extends Component {
         {...articleContent}
         onFocus={this.onRteFocusChanged}
         shouldFocus={shouldFocus}
+        simplify={true}
+        getImages={(images) => this.getRichTextImages(images)}
       />
     )
   }

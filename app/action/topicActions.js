@@ -38,8 +38,10 @@ export function publishTopicFormData(payload) {
 function handlePublishTopic(payload, formData) {
   return (dispatch, getState) => {
     let publishTopicPayload = {
-      content: formData.content.text,
-      imgGroup: formData.imgGroup.text,
+      title:formData.topicName.text,
+      content: formData.topicContent.text,
+      abstract: formData.topicContent.abstract,
+      imgGroup: payload.images,
       categoryId: payload.categoryId,
       userId: payload.userId
     }

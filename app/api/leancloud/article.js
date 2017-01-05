@@ -192,13 +192,13 @@ export function getComment(payload) {
 }
 
 export function submitArticleComment(payload) {
-  console.log('payload----->',payload)
+  //console.log('payload----->',payload)
   let articleId = payload.articleId
   let content = payload.content
   let replyId = payload.replyId
   let article = AV.Object.createWithoutData('Articles', articleId)
   let currentUser = AV.User.current()
-  console.log('user======>',currentUser)
+ // console.log('user======>',currentUser)
   let reply = AV.Object.createWithoutData('ArticleComment', replyId)
   let ArticleComment = AV.Object.extend('ArticleComment')
   let articleComment = new ArticleComment()
@@ -211,14 +211,14 @@ export function submitArticleComment(payload) {
   return articleComment.save().then(function (result) {
     if (result) {
       let relation = article.relation('comments')
-      console.log('result======>',relation)
+    //  console.log('result======>',relation)
       relation.add(articleComment)
-      console.log('relation======>', relation)
+    //  console.log('relation======>', relation)
       return article.save().then(function (data) {
-        console.log('result======>',data)
+      //  console.log('result======>',data)
 
       }, function (err) {
-        console.log(err)
+      //  console.log(err)
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })

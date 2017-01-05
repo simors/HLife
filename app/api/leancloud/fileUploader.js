@@ -5,14 +5,11 @@ import AV from 'leancloud-storage'
 import {Platform} from 'react-native'
 
 export function uploadFile(payload) {
-  console.log("in uploadFile", payload)
   try {
     let uri = payload.fileUri
     if (uri.startsWith('http://') || uri.startsWith('https://')) {
-      console.log("upload net file: ", uri)
       return uploadNetFile(payload)
     }
-    console.log("upload local file: ", uri)
     return uploadLocalFile(payload)
   } catch (e) {
     console.log("uploadFile:", e)

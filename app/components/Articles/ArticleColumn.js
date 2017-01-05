@@ -133,10 +133,10 @@ class ArticleColumn extends Component {
   renderTabBar() {
     return (
       <ScrollableTabBar
-        activeTextColor={this.props.activeTextColor}
-        inactiveTextColor={this.props.inactiveTextColor}
-        style={[styles.tarBarStyle, this.props.tarBarStyle && this.props.tarBarStyle]}
-        underlineStyle={[styles.tarBarUnderlineStyle, this.props.tarBarUnderlineStyle && this.props.tarBarUnderlineStyle]}
+        activeTextColor={'#50E3C2'}
+        inactiveTextColor={'#686868'}
+        style={styles.tarBarStyle}
+        underlineStyle={styles.tarBarUnderlineStyle}
         textStyle={[styles.tabBarTextStyle, this.props.tabBarTextStyle && this.props.tabBarTextStyle]}
         tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
         backgroundColor={this.props.backgroundColor}
@@ -219,14 +219,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   tabBarTextStyle: {
-    fontSize: 16,
-    paddingBottom: 10,
+    fontSize: em(15),
+  //  paddingBottom: 10,
+    letterSpacing: em(-0.4),
+    color:'#686868'
   },
 
   tabBarTabStyle: {
-    paddingBottom: 0,
-    paddingLeft: 12,
-    paddingRight: 12
+    paddingBottom: em(10),
+    paddingLeft: em(12),
+    paddingRight: em(12),
+    paddingTop: em(10)
   },
 
 
@@ -242,4 +245,15 @@ const styles = StyleSheet.create({
     height:normalizeH(20),
     width:normalizeW(20)
   },
+  activeTextColor:{
+    fontSize:em(17),
+    color:'#50E3C2',
+    letterSpacing:em(-0.4)
+  },
+  inactiveTextColor:{
+    fontSize: em(15),
+    //  paddingBottom: 10,
+    letterSpacing: em(-0.4),
+    color:'#686868'
+  }
 })
