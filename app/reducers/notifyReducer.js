@@ -3,7 +3,7 @@
  */
 import {Map, List} from 'immutable'
 import * as msgActionTypes from '../constants/messageActionTypes'
-import {NotifyMessage} from '../models/notifyModel'
+import {NotifyMessage, TypedNotifyMsgRecord} from '../models/notifyModel'
 
 const initialState = new NotifyMessage()
 
@@ -17,5 +17,13 @@ export default function notifyReducer(state = initialState, action) {
 }
 
 function handleAddNotifyMsg(state, action) {
-
+  let message = action.payload.message
+  let msgType = message.msgType
+  state = state.setIn(['messageMap', message.msgId], message)
+  let typedNotifyMsg = new TypedNotifyMsgRecord()
+  typedNotifyMsg.type = msgType
+  typedNotifyMsg.unReadCount = 1
+  typedNotifyMsg.messageList.push(message.msgId)
+  state = state.setIn(['notifyMsgByType', msgType], typedNotifyMsg)
+  return state
 }
