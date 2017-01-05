@@ -20,7 +20,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import THEME from '../../constants/themes/theme1'
+import THEME,{INNER_CSS} from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
 import {CommonWebView} from '../common/CommonWebView'
@@ -42,6 +42,7 @@ import Comment from '../common/Comment'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import ArticleComment from './ArticleComment'
 import * as Toast from '../common/Toast'
+import WebHtmlView from 'react-native-webhtmlview'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -61,6 +62,8 @@ class Article extends Component {
       this.props.fetchCommentsArticle({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsFavorite({articleId: this.props.articleId})
+      this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
+
     })
   }
 
@@ -91,6 +94,36 @@ class Article extends Component {
   likeErrorCallback(error) {
     Toast.show(error.message)
   }
+
+  upSuccessCallback() {
+      InteractionManager.runAfterInteractions(() => {
+       // this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
+       // this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
+      //  this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
+        this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
+      })
+    }
+
+  onLikeButton() {
+      if (this.props.isUp) {
+        //  console.log('hereiscode')
+        this.props.unUpArticle({
+          articleId: this.props.articleId,
+          upType: 'article',
+          success: this.upSuccessCallback.bind(this),
+          error: this.likeErrorCallback
+        })
+      }
+      else {
+        console.log('hereiscode')
+        this.props.upArticle({
+          articleId: this.props.articleId,
+          upType: 'article',
+          success: this.upSuccessCallback.bind(this),
+          error: this.likeErrorCallback
+        })
+      }
+    }
 
   onCommentButton(article) {
     this.setState({
@@ -213,15 +246,10 @@ class Article extends Component {
                 marginLeft: normalizeW(12)
               }}>{this.props.nickname}</Text>
             </View>
-
-            <WebView
-              scalesPageToFit={true}
-              automaticallyAdjustContentInsets={true}
-              contentInset={{left:12,right:12}}
-              style={styles.articleView}
+            <WebHtmlView
               source={{html: this.props.content}}
-            >
-            </WebView>
+              innerCSS={INNER_CSS}
+            />
             <View style={styles.zanStyle} onLayout={this.measureMyComponent.bind(this)}>
               <Text style={styles.zanTextStyle}>
                 赞
@@ -243,9 +271,10 @@ class Article extends Component {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
-          }}>
-            <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+          <TouchableOpacity style={styles.shopUpWrap} onPress={()=>this.onLikeButton()}>
+            <Image style={{}} source={this.props.isUp ?
+                                     require("../../assets/images/like_select.png") :
+                                     require("../../assets/images/like_unselect.png")}/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
           }}>
@@ -399,4 +428,22 @@ const styles = StyleSheet.create(
       backgroundColor: '#E5E5E5',
       width: PAGE_WIDTH,
     },
+    zanStyle: {
+      backgroundColor: THEME.colors.green,
+      borderWidth: 1,
+      borderStyle: 'solid',
+      borderColor: 'transparent',
+      height: normalizeH(35),
+      alignSelf: 'center',
+      borderRadius: 100,
+      marginLeft: normalizeW(12),
+      width: normalizeW(35),
+    },
+    zanTextStyle: {
+      fontSize: em(17),
+      color: "#ffffff",
+      marginTop: normalizeH(7),
+      alignSelf: 'center',
+    },
+
   })
