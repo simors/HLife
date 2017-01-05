@@ -8,6 +8,7 @@ import articleReducer from './articleReducer'
 import topicReducer from './topicReducer'
 import shopReducer from './shopReducer'
 import doctorReducer from './doctorReducer'
+import notifyReducer from './notifyReducer'
 
 const rootReducers = combineReducers({
   CONFIG: configReducer,
@@ -17,7 +18,8 @@ const rootReducers = combineReducers({
   ARTICLE: articleReducer,
   TOPIC: topicReducer,
   SHOP: shopReducer,
-  DOCTOR: doctorReducer
+  DOCTOR: doctorReducer,
+  NOTICE: notifyReducer,
 })
 
 const rootReducersWrapper = (state, action) => {

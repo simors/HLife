@@ -27,6 +27,10 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdateUserUnUpShopSuccess(state, action)
     case ShopActionTypes.UPDATE_USER_UP_SHOP_INFO:
       return handleUpdateUserUpShopInfo(state, action)
+    case ShopActionTypes.FETCH_SHOP_COMMENT_UPED_USER_LIST_SUCCESS:
+      return handleFetchShopCommentUpedUserList(state, action)
+    case ShopActionTypes.FETCH_SHOP_COMMENT_REPLY_LIST_SUCCESS:
+      return handleFetchShopCommentReplyList(state, action)
     default:
       return state
   }
@@ -105,7 +109,7 @@ function handleUpdateShopCommentTotalCount(state, action) {
 function handleUpdateUserUpShopSuccess(state, action) {
   let payload = action.payload
   let shopId = payload.shopId
-  console.log('handleUpdateUserUpShopSuccess.payload===', payload)
+  // console.log('handleUpdateUserUpShopSuccess.payload===', payload)
   let userUpShopsInfo = state.get('userUpShopsInfo')
   userUpShopsInfo = userUpShopsInfo.set(shopId, true)
   state = state.set('userUpShopsInfo', userUpShopsInfo)
@@ -128,5 +132,36 @@ function handleUpdateUserUpShopInfo(state, action) {
   let userUpShopsInfo = state.get('userUpShopsInfo')
   userUpShopsInfo = userUpShopsInfo.set(shopId, status)
   state = state.set('userUpShopsInfo', userUpShopsInfo)
+  return state
+}
+
+function handleFetchShopCommentUpedUserList(state, action) {
+  let payload = action.payload
+  return state
+}
+
+function handleFetchShopCommentReplyList(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let replyShopCommentId = payload.replyShopCommentId
+  let shopCommentReplyList = payload.shopCommentReplyList
+
+  let shopCommentsMap = state.get('shopComments')
+  let shopCommentList = shopCommentsMap.get(shopId)
+  let shopCommentIndex = -1
+  if(shopCommentList && shopCommentList.size > 0) {
+    shopCommentIndex = shopCommentList.findIndex((_shopComment)=>{
+      let _shopCommentId = _shopComment.get('id')
+      return _shopCommentId == replyShopCommentId
+    })
+  }
+  if(shopCommentIndex != -1) {
+    let shopComment = shopCommentList.get(shopCommentIndex)
+    shopComment = shopComment.set('containedReply', shopCommentReplyList)
+    shopCommentList = shopCommentList.set(shopCommentIndex, shopComment)
+    shopCommentsMap = shopCommentsMap.set(shopId, shopCommentList)
+    state = state.set('shopComments', shopCommentsMap)
+  }
+
   return state
 }
