@@ -16,6 +16,8 @@ export function publishTopics(payload) {
   topic.set('user', user)
   topic.set('imgGroup', payload.imgGroup)
   topic.set('content', payload.content)
+  topic.set('title', payload.title)
+  topic.set('abstract', payload.abstract)
   topic.set('commentNum', 0)
 
   return topic.save().then(function (result) {
