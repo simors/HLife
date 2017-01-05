@@ -107,7 +107,7 @@ class ShopComment extends Component {
           </View>
 
           <ReplyList
-
+            replys={this.props.containedReply}
           />
           
         </View>
