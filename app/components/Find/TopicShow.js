@@ -45,7 +45,7 @@ export class TopicShow extends Component {
             {this.props.topic.title}
           </Text>
           <Text style={styles.contentStyle} numberOfLines={2}>
-            {this.props.topic.content}
+            {this.props.topic.abstract}
           </Text>
         </View>
       )
@@ -62,7 +62,7 @@ export class TopicShow extends Component {
               {this.props.topic.title}
             </Text>
             <Text style={styles.contentStyle} numberOfLines={3}>
-              {this.props.topic.content}
+              {this.props.topic.abstract}
             </Text>
           </View>
           <ImageGroupViewer images={image}
@@ -84,7 +84,7 @@ export class TopicShow extends Component {
             {this.props.topic.title}
           </Text>
           <Text style={styles.contentStyle} numberOfLines={2}>
-            {this.props.topic.content}
+            {this.props.topic.abstract}
           </Text>
           <ImageGroupViewer images={image}
                             imageLineCnt={3}

@@ -87,6 +87,7 @@ export default class KeyboardAwareToolBar extends Component {
   }
 
   onKeyboardWillShow(e) {
+    // console.log('onKeyboardWillShow.e=', e)
     this.setIsTypingDisabled(true)
     this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
   }

@@ -95,7 +95,7 @@ export function submitShopComment(payload) {
 
 export function fetchShopCommentList(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchShopCommentList(payload).then((shopComments)=>{
+    lcShop.fetchShopCommentListByCloudFunc(payload).then((shopComments)=>{
       let actionType = ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.FETCH_PAGING_SHOP_COMMENT_LIST_SUCCESS

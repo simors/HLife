@@ -35,22 +35,68 @@ class MessageBox extends Component {
           title="消息通知"
         />
         <View style={styles.itemContainer}>
-          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+          <View style={styles.itemView}>
             <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
               <Image source={require('../../assets/images/mine_collection.png')}></Image>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>我的服务</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
             </TouchableOpacity>
           </View>
-          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+          <View style={styles.itemView}>
             <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
               <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>评论</Text>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>我的私信</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
             </TouchableOpacity>
           </View>
-          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+          <View style={styles.itemView}>
             <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
               <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>点赞</Text>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>文章评论</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.itemView}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>店铺评论</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.itemView}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>文章点赞</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.itemView}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>店铺点赞</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.itemView}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>我的关注</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.itemView}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>店铺关注</Text>
+              <View style={{flex: 1}}></View>
+              <View style={styles.noticeTip}></View>
             </TouchableOpacity>
           </View>
         </View>
@@ -83,6 +129,11 @@ const styles = StyleSheet.create({
       }
     }),
   },
+  itemView: {
+    borderBottomWidth: 1,
+    borderColor: '#F7F7F7',
+    alignItems: 'center',
+  },
   selectItem: {
     flexDirection: 'row',
     height: normalizeH(45),
@@ -96,5 +147,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#4A4A4A',
     letterSpacing: 0.43,
-  }
+  },
+  noticeTip: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: 'red',
+    marginRight: 20,
+  },
 })

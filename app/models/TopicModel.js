@@ -7,6 +7,7 @@ import {Map, Record,List} from 'immutable'
 export const TopicsConfig = Record({
   content: undefined, //话题内容
   title: undefined,
+  abstract:undefined,
   imgGroup: undefined, //图片
   objectId: undefined,  //话题id
   categoryId: undefined,  //属于的分类
@@ -38,6 +39,7 @@ export class TopicsItem extends TopicsConfig {
 
     return topicsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
+      record.set('abstract', attrs.abstract)
       record.set('title', attrs.title)
       record.set('imgGroup', attrs.imgGroup)
       record.set('createdAt', lcObj.createdAt)

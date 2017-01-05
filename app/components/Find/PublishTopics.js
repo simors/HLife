@@ -20,8 +20,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {getTopicCategories} from '../../selector/configSelector'
-import MultilineText from '../common/Input/MultilineText'
-import ImageGroupInput from '../common/Input/ImageGroupInput'
+import CommonTextInput from '../common/Input/CommonTextInput'
+import RichTextInput from '../common/Input/RichTextInput'
 import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
@@ -30,17 +30,28 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let formKey = Symbol('multiForm')
-const multiInput = {
-  formKey: formKey,
-  stateKey: Symbol('multiInput'),
-  type: 'content'
+let topicForm = Symbol('topicForm')
+const topicName = {
+  formKey: topicForm,
+  stateKey: Symbol('topicName'),
+  type: "topicName",
 }
 
-const imageGroupInput = {
-  formKey: formKey,
-  stateKey: Symbol('imageGroupInput'),
-  type: 'imgGroup'
+const topicContent ={
+  formKey: topicForm,
+  stateKey: Symbol('topicContent'),
+  type: 'topicContent',
+}
+
+const rteHeight = {
+  ...Platform.select({
+    ios: {
+      height: normalizeH(65+88),
+    },
+    android: {
+      height: normalizeH(45+88)
+    }
+  })
 }
 
 class PublishTopics extends Component {
@@ -49,7 +60,9 @@ class PublishTopics extends Component {
     this.state = {
       isDisabled: false,
       selectedTopic: undefined,
+      rteFocused: false,    // 富文本获取到焦点
     };
+    this.insertImages = []
   }
 
   submitSuccessCallback() {
@@ -64,7 +77,8 @@ class PublishTopics extends Component {
   onButtonPress = () => {
     if (this.props.isLogin) {
       this.props.publishTopicFormData({
-        formKey: formKey,
+        formKey: topicForm,
+        images:this.insertImages,
         categoryId: this.state.selectedTopic.objectId,
         userId: this.props.userInfo.id,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
@@ -123,6 +137,31 @@ class PublishTopics extends Component {
     }
   }
 
+  getRichTextImages(images) {
+    this.insertImages = images
+    console.log('images list', this.insertImages)
+  }
+
+  onRteFocusChanged = (val) => {
+    this.setState({
+      rteFocused: val,
+    })
+  }
+
+  renderRichText() {
+    const shouldFocus = this.state.rteFocused
+    return (
+      <RichTextInput
+        {...topicContent}
+        onFocus={this.onRteFocusChanged}
+        shouldFocus={shouldFocus}
+        simplify={true}
+        wrapHeight={rteHeight.height}
+        getImages={(images) => this.getRichTextImages(images)}
+      />
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -139,22 +178,22 @@ class PublishTopics extends Component {
 
         <View style={styles.body}>
 
-          <KeyboardAwareScrollView style={styles.scrollViewStyle}>
+          <View style={styles.scrollViewStyle}>
             <TouchableOpacity style={styles.toSelectContainer} onPress={this.openModal.bind(this)}>
               {this.renderSelectedTopic()}
               <Image style={styles.imageStyle} source={require("../../assets/images/unfold_topic@2x.png")}/>
             </TouchableOpacity>
-
-            <MultilineText containerStyle={{height: normalizeH(232)}}
-                           inputStyle={{height: normalizeH(232)}}
-                           {...multiInput}/>
-
-            <View style={{marginTop: 10}}>
-              <ImageGroupInput {...imageGroupInput}
-                               number={9}
-                               imageLineCnt={4}/>
+            <View>
+              <CommonTextInput containerStyle={styles.titleContainerStyle}
+                               inputStyle={styles.titleInputStyle}
+                               {...topicName}
+                               placeholder="输入文章标题" />
             </View>
-          </KeyboardAwareScrollView>
+
+            <View>
+              {this.renderRichText()}
+            </View>
+          </View>
 
           <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
             <KeyboardAwareScrollView style={styles.scrollViewStyle}>
@@ -206,17 +245,12 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH
   },
 
-  scrollViewStyle: {
-    flex: 1,
-    width: PAGE_WIDTH,
-  },
-
   //选择话题的对话框的样式
   toSelectContainer: {
     height: normalizeH(44),
     flexDirection: 'row',
     alignItems: 'flex-start',
-    borderBottomWidth: normalizeBorder(),
+    borderBottomWidth: 1,
     borderBottomColor: "#E6E6E6"
   },
   selectedTopicStyle: {
@@ -246,8 +280,21 @@ const styles = StyleSheet.create({
     height: normalizeH(24),
     alignSelf: 'flex-end',
   },
-
-
+  titleContainerStyle:{
+    flex:1,
+    height:normalizeH(44),
+    paddingLeft:0,
+    paddingRight:0,
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    borderBottomColor: '#E9E9E9',
+  },
+  titleInputStyle:{
+    flex:1,
+    backgroundColor: '#FFFFFF',
+    color:'#4a4a4a',
+    fontFamily:'.PingFangSC-Semibold'
+  },
   //modal 所有子组件的样式
   modalStyle: {
     width: PAGE_WIDTH,
