@@ -363,6 +363,7 @@ export function notifyTopicComment(payload) {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_COMMENT,
+        userId: payload.userId,
         nickname: payload.nickname,
         avatar: payload.avatar,
         topicId: payload.topicId,
@@ -395,6 +396,7 @@ export function notifyShopComment(payload) {
       let message = createTypedMessage(msgTypes.MSG_SHOP_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_COMMENT,
+        userId: currentUser.id,
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         shopId: shopId,
@@ -419,6 +421,7 @@ export function notifyTopicLike(payload) {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_LIKE,
+        userId: payload.userId,
         nickname: payload.nickname,
         avatar: payload.avatar,
         topicId: payload.topicId,
@@ -451,6 +454,7 @@ export function notifyShopLike(payload) {
       let message = createTypedMessage(msgTypes.MSG_SHOP_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_LIKE,
+        userId: currentUser.id,
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         shopId: shopId,
@@ -475,10 +479,11 @@ export function notifyUserFollow(payload) {
       let message = createTypedMessage(msgTypes.MSG_USER_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_USER_FOLLOW,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+          userId: payload.userId,
+          nickname: payload.nickname,
+          avatar: payload.avatar,
       }
-      let text = payload.nickname + '专注了您'
+      let text = payload.nickname + '关注了您'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -498,11 +503,12 @@ export function notifyShopFollow(payload) {
       let message = createTypedMessage(msgTypes.MSG_SHOP_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_FOLLOW,
+        userId: payload.userId,
         nickname: payload.nickname,
         avatar: payload.avatar,
         shopId: payload.shopId,
       }
-      let text = payload.nickname + '专注了您的店铺'
+      let text = payload.nickname + '关注了您的店铺'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)

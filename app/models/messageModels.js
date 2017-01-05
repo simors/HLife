@@ -10,7 +10,6 @@ export const MessengerRecord = Record({
   unReadMsgCnt: 0,                          // 未读消息个数
   activeConversation: undefined,            // 当前处于聊天状态的会话
   OrderedConversation: List(),              // 将所有会话按更新时间排序
-  notifyMsg: Map(),                         // 通知信息列表，键值为会话id
 }, 'MessengerRecord')
 
 export const ConversationRecord = Record({
