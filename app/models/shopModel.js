@@ -153,6 +153,23 @@ export class ShopComment extends ShopCommentRecord {
       record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
   }
+  
+  static fromLeancloudJson(lcJson) {
+    let shopComment = new ShopCommentRecord()
+    return shopComment.withMutations((record)=>{
+      record.set('id', lcJson.id)
+      record.set('content', lcJson.content)
+      record.set('blueprints', lcJson.blueprints)
+      record.set('score', lcJson.score)
+      record.set('targetShop', lcJson.targetShop)
+      record.set('user', lcJson.user)
+      record.set('shopCommentTime', lcJson.shopCommentTime)
+      record.set('createdDate', lcJson.createdDate)
+      record.set('createdAt', lcJson.createdAt)
+      record.set('updatedAt', lcJson.updatedAt)
+      record.set('containedReply', lcJson.replys)
+    })
+  }
 }
 
 export const UpRecord = Record({

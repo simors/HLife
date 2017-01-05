@@ -71,6 +71,7 @@ class ShopCommentList extends Component {
         shopCommentTime={rowData.shopCommentTime}
         createdDate={rowData.createdDate}
         blueprints={rowData.blueprints}
+        containedReply={rowData.containedReply}
         onReplyClick={this.onReplyClick.bind(this)}
       />
     )

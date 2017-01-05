@@ -190,6 +190,7 @@ export function submitShopComment(payload) {
   })
 }
 
+//deprecated
 export function fetchShopCommentList(payload) {
   let shopId = payload.id
   let query = new AV.Query('ShopComment')
@@ -204,18 +205,37 @@ export function fetchShopCommentList(payload) {
   innerQuery.equalTo('objectId', shopId)
   //执行内嵌查询
   query.matchesQuery('targetShop', innerQuery)
+
   query.include(['targetShop', 'user'])
 
   query.addDescending('createdAt')
   query.limit(5) // 最多返回 5 条结果
   return query.find().then((results)=>{
-    // console.log('fetchShopCommentList.results=', results)
+    console.log('fetchShopCommentList.results=', results)
     let shopComment = []
     results.forEach((result)=>{
       shopComment.push(ShopComment.fromLeancloudObject(result))
     })
     return new List(shopComment)
   }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+
+export function fetchShopCommentListByCloudFunc(payload) {
+  console.log('fetchShopCommentListByCloudFunc=', payload)
+  return AV.Cloud.run('hLifeFetchShopCommentList', payload).then((results)=>{
+    console.log('fetchShopCommentListByCloudFunc=', results)
+    let shopComments = []
+    results.forEach((result)=>{
+      shopComments.push(ShopComment.fromLeancloudJson(result))
+    })
+    return new List(shopComments)
+  }, (err) => {
+    console.log('err=======', err)
+    console.log('err.code=======', err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -332,11 +352,14 @@ export function reply(payload) {
   let replyContent = payload.replyContent
 
   let replyShopComment = AV.Object.createWithoutData('ShopComment', replyShopCommentId)
-
   let ShopCommentReply = AV.Object.extend('ShopCommentReply')
   let shopCommentReply = new ShopCommentReply()
+
   shopCommentReply.set('content', replyContent)
-  shopCommentReply.set('replyId', replyId)
+  if(replyId) {
+    let parentReply = AV.Object.createWithoutData('ShopCommentReply', replyId)
+    shopCommentReply.set('parentReply', parentReply)
+  }
   shopCommentReply.set('replyShopComment', replyShopComment)
   shopCommentReply.set('user', currentUser)
 
