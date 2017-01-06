@@ -22,3 +22,8 @@ export function getMessages(state, cid) {
   }
   return []
 }
+
+export function hasNewMessage(state) {
+  const unReadCnt = state.MESSAGE.get('unReadMsgCnt')
+  return unReadCnt > 0 ? true : false
+}

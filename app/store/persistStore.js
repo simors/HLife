@@ -30,7 +30,7 @@ export default function persist(store) {
     //   }),
     // ],
     transforms: [messageFilter],
-    whitelist: ['AUTH', 'CONFIG', 'MESSAGE', 'ARTICLE', 'TOPIC', 'COMMENT_ARTICLE'],
+    whitelist: ['AUTH', 'CONFIG', 'MESSAGE', 'ARTICLE', 'TOPIC', 'SHOP', 'DOCTOR', 'NOTICE'],
   }, () => {
     store.dispatch(restoreFromPersistence())
   })
