@@ -2,7 +2,7 @@
  * Created by lilu on 2016/12/29.
  */
 
-import {ArticleItem, LikersItem,ArticleComment,Up} from '../../models/ArticleModel'
+import {ArticleItem, LikersItem,ArticleComment,Up,Favorite} from '../../models/ArticleModel'
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 
@@ -26,6 +26,95 @@ export function getArticle(payload) {
 
     return new List(article)
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function getIsFavorite(payload) {
+  let articleId = payload.articleId
+  let upType = payload.upType
+  let article = AV.Object.createWithoutData('Articles', articleId)
+  let currentUser = AV.User.current()
+  let query = new AV.Query('ArticleFavorite')
+  query.equalTo('article', article)
+  query.equalTo('user', currentUser)
+  query.include('user')
+  return query.first().then((result) =>{
+    let userUpShopInfo = undefined
+    if(result && result.attributes) {
+      //   console.log('result===>',result)
+      userUpShopInfo = Favorite.fromLeancloudObject(result)
+      //  console.log('userUpShopInfo===>',userUpShopInfo)
+    }
+    return userUpShopInfo
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function favoriteArticle(payload) {
+//  console.log('hereiscodeupArticle====》',payload)
+  let articleId = payload.articleId
+  let article = AV.Object.createWithoutData('Articles', articleId)
+  let currentUser = AV.User.current()
+  return getIsUps(payload).then((userLikeTopicInfo) => {
+    if (!userLikeTopicInfo) {
+      let Favorite = AV.Object.extend('ArticleFavorite')
+      let favorite = new Favorite()
+      favorite.set('article', article)
+      // favorite.set('upType', upType)
+      favorite.set('user', currentUser)
+      return favorite.save()
+    }
+    else if (userLikeTopicInfo.id && !userLikeTopicInfo.status) {
+      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+      up.set('status', true)
+      return up.save()
+    }
+    return {
+      code: '10107',
+      message: '您已经赞过该话题了'
+    }
+  }).then((result) => {
+    if (result && '10107' == result.code) {
+      return result
+    }
+    return {
+      articleId: articleId,
+      code: '10108',
+      message: '成功点赞'
+    }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function unfavoriteArticle(payload) {
+//  console.log('hereiscode')
+  let articleId = payload.articleId
+  return getIsUps(payload).then((userLikeTopicInfo) => {
+    if (userLikeTopicInfo && userLikeTopicInfo.id) {
+      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+      up.set('status', false)
+      return up.save()
+    }
+    return {
+      code: '10009',
+      message: '您还没有赞过该话题'
+    }
+  }).then((result) => {
+    if (result && '10009' == result.code) {
+      return result
+    }
+    return {
+      articleId: articleId,
+      code: '10010',
+      message: '取消点赞成功'
+    }
+  }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

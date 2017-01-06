@@ -184,7 +184,8 @@ class PublishTopics extends Component {
               <Image style={styles.imageStyle} source={require("../../assets/images/unfold_topic@2x.png")}/>
             </TouchableOpacity>
             <View>
-              <CommonTextInput containerStyle={styles.titleContainerStyle}
+              <CommonTextInput maxLength={36}
+                               containerStyle={styles.titleContainerStyle}
                                inputStyle={styles.titleInputStyle}
                                {...topicName}
                                placeholder="输入文章标题" />

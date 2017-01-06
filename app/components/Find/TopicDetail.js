@@ -22,6 +22,7 @@ import {bindActionCreators} from 'redux'
 import TopicShow from './TopicShow'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import TopicComment from './TopicComment'
+import TopicContent from './TopicContent'
 import Comment from '../common/Comment'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
@@ -210,9 +211,7 @@ export class TopicDetail extends Component {
         />
 
         <KeyboardAwareScrollView style={styles.body} ref={"scrollView"}>
-          <TopicShow topic={this.props.topic}
-                     numberOfValues={null}
-                     showCommentAndLikeButton={false}/>
+          <TopicContent topic={this.props.topic}/>
           <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
             <View style={styles.zanStyle}>
               <Text style={styles.zanTextStyle}>

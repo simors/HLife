@@ -10,6 +10,15 @@ import {TypedMessagePlugin}from 'leancloud-realtime-plugin-typed-messages'
 import * as LC_CONFIG from '../constants/appConfig'
 import * as msgTypes from '../constants/messageActionTypes'
 import {Conversation, Message} from '../models/messageModels'
+import {
+  TopicCommentMsg,
+  ShopCommentMsg,
+  TopicLikeMsg,
+  ShopLikeMsg,
+  UserFollowMsg,
+  ShopFollowMsg,
+  NotifyMessage,
+} from '../models/notifyModel'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
 import {selectShopDetail} from '../selector/shopSelector'
@@ -287,8 +296,37 @@ function onRecvNormalMessage(message, conversation) {
 function onRecvNotifyMessage(message, conversation) {
   return (dispatch, getState) => {
     let msgType = message.type
+    let addNotifyMsg = createAction(msgTypes.ADD_NOTIFY_MSG)
     if (msgType === msgTypes.MSG_TOPIC_COMMENT) {
-
+      dispatch(addNotifyMsg({
+        message: TopicCommentMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
+    } else if (msgType === msgTypes.MSG_SHOP_COMMENT) {
+      dispatch(addNotifyMsg({
+        message: ShopCommentMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
+    } else if (msgType === msgTypes.MSG_TOPIC_LIKE) {
+      dispatch(addNotifyMsg({
+        message: TopicLikeMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
+    } else if (msgType === msgTypes.MSG_SHOP_LIKE) {
+      dispatch(addNotifyMsg({
+        message: ShopLikeMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
+    } else if (msgType === msgTypes.MSG_USER_FOLLOW) {
+      dispatch(addNotifyMsg({
+        message: UserFollowMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
+    } else if (msgType === msgTypes.MSG_SHOP_FOLLOW) {
+      dispatch(addNotifyMsg({
+        message: ShopFollowMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
     }
   }
 }
@@ -355,6 +393,7 @@ function createTypedMessage(msgType) {
 
 export function notifyTopicComment(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -363,12 +402,13 @@ export function notifyTopicComment(payload) {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_COMMENT,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         topicId: payload.topicId,
         title: payload.title,
       }
-      let text = payload.nickname + '在您的文章《' + payload.title + '》中发表了评论'
+      let text = currentUser.nickname + '在您的文章《' + payload.title + '》中发表了评论'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -395,6 +435,7 @@ export function notifyShopComment(payload) {
       let message = createTypedMessage(msgTypes.MSG_SHOP_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_COMMENT,
+        userId: currentUser.id,
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         shopId: shopId,
@@ -411,6 +452,7 @@ export function notifyShopComment(payload) {
 
 export function notifyTopicLike(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -419,12 +461,13 @@ export function notifyTopicLike(payload) {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_LIKE,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         topicId: payload.topicId,
         title: payload.title,
       }
-      let text = payload.nickname + '在您的文章《' + payload.title + '》中点了赞'
+      let text = currentUser.nickname + '在您的文章《' + payload.title + '》中点了赞'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -451,6 +494,7 @@ export function notifyShopLike(payload) {
       let message = createTypedMessage(msgTypes.MSG_SHOP_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_LIKE,
+        userId: currentUser.id,
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         shopId: shopId,
@@ -467,6 +511,7 @@ export function notifyShopLike(payload) {
 
 export function notifyUserFollow(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -475,10 +520,11 @@ export function notifyUserFollow(payload) {
       let message = createTypedMessage(msgTypes.MSG_USER_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_USER_FOLLOW,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
       }
-      let text = payload.nickname + '专注了您'
+      let text = currentUser.nickname + '关注了您'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -490,6 +536,7 @@ export function notifyUserFollow(payload) {
 
 export function notifyShopFollow(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -498,11 +545,12 @@ export function notifyShopFollow(payload) {
       let message = createTypedMessage(msgTypes.MSG_SHOP_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_FOLLOW,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         shopId: payload.shopId,
       }
-      let text = payload.nickname + '专注了您的店铺'
+      let text = currentUser.nickname + '关注了您的店铺'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
