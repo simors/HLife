@@ -16,36 +16,28 @@ import {
 import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import Header from '../common/Header'
-import {getDocterList} from '../../action/doctorAction'
-import {activeUserId, isUserLogined} from '../../selector/authSelector'
-import {getDoctorList} from '../../selector/doctorSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import Header from '../../common/Header'
+import {activeUserId, isUserLogined} from '../../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
-class DocterFinder extends Component {
+class QAList extends Component {
   constructor(props) {
     super(props)
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.getDocterList({})
-    })
+    console.log("componentDidMount", this.props.doctors)
   }
 
   consult(doctor) {
-    if (!this.props.isLogin) {
-      Actions.LOGIN()
-    } else {
-      let payload = {
-        name: doctor.phone,
-        members: [this.props.currentUser, doctor.id]
-      }
-      Actions.CHATROOM(payload)
+    let payload = {
+      name: doctor.phone,
+      members: [this.props.currentUser, doctor.id]
     }
+    Actions.CHATROOM(payload)
   }
 
   renderDocs() {
@@ -55,8 +47,8 @@ class DocterFinder extends Component {
         return (
           <View key={key} style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.consult(value)}>
-              <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>{value.nickname ? value.nickname : value.phone}</Text>
+              <Image source={{uri: value.avatar}}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>{value.username ? value.username : value.phone}</Text>
             </TouchableOpacity>
           </View>
         )
@@ -71,7 +63,7 @@ class DocterFinder extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="找名医"
+          title="咨询室"
         />
         <View style={styles.itemContainer}>
           {this.renderDocs()}
@@ -82,19 +74,15 @@ class DocterFinder extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let doctors = getDoctorList(state)
   return {
-    doctors,
     currentUser: activeUserId(state),
-    isLogin: isUserLogined(state)
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  getDocterList,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocterFinder)
+export default connect(mapStateToProps, mapDispatchToProps)(QAList)
 
 const styles = StyleSheet.create({
   container: {
