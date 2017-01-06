@@ -35,6 +35,7 @@ import {
   fetchUpCount,
   submitArticleComment,
   fetchIsFavorite,
+  unFavoriteArticle,
   favoriteArticle,
 } from '../../action/articleAction'
 import {getIsUp,getIsFavorite, getcommentList, getcommentCount, getUpCount} from '../../selector/articleSelector'
@@ -61,7 +62,7 @@ class Article extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchCommentsArticle({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
-     // this.props.fetchIsFavorite({articleId: this.props.articleId})
+      this.props.fetchIsFavorite({articleId: this.props.articleId})
       this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
 
     })
@@ -101,6 +102,7 @@ class Article extends Component {
        // this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
       //  this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
         this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
+        this.props.fetchIsFavorite({articleId: this.props.articleId})
       })
     }
 
@@ -125,6 +127,26 @@ class Article extends Component {
       }
     }
 
+  onFavoriteButton(){
+    if (this.props.isFavorite) {
+        console.log('hereiscode')
+      this.props.unFavoriteArticle({
+        articleId: this.props.articleId,
+      //  upType: 'article',
+        success: this.upSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+    else {
+      // console.log('hereiscode')
+      this.props.favoriteArticle({
+        articleId: this.props.articleId,
+      //  upType: 'article',
+        success: this.upSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+  }
   onCommentButton(comment) {
     this.setState({
       comment: comment
@@ -279,9 +301,10 @@ class Article extends Component {
                                      require("../../assets/images/like_select.png") :
                                      require("../../assets/images/like_unselect.png")}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
-          }}>
-            <Image style={{}} source={require('../../assets/images/artical_favorite_unselect.png')}/>
+          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> this.onFavoriteButton()}>
+            <Image style={{}} source={this.props.isFavorite ?
+              require("../../assets/images/artical_favorite_select.png") :
+              require("../../assets/images/artical_favorite_unselect.png")}/>
           </TouchableOpacity>
         </View>
         <Comment
@@ -329,7 +352,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchCommentsCount,
   fetchUpCount,
   submitArticleComment,
-  fetchIsFavorite
+  fetchIsFavorite,
+  unFavoriteArticle
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Article)

@@ -60,6 +60,21 @@ export function favoriteArticle(payload) {
     })
   }
 }
+export function unFavoriteArticle(payload) {
+  return (dispatch, getState) => {
+    laArticle.unFavoriteArticle(payload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(articleTypes.FAVORITE_ARTICLE)
+      dispatch(publishAction({articleId: payload.articleId}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
 
 export function fetchUps(articleId,columnId) {
  // console.log('<><><><><>fetchLikers',payload)
