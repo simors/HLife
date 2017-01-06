@@ -19,11 +19,23 @@ export default function notifyReducer(state = initialState, action) {
 function handleAddNotifyMsg(state, action) {
   let message = action.payload.message
   let msgType = message.msgType
+  let unReadCnt = state.get('unReadCount')
+
   state = state.setIn(['messageMap', message.msgId], message)
-  let typedNotifyMsg = new TypedNotifyMsgRecord()
-  typedNotifyMsg.type = msgType
-  typedNotifyMsg.unReadCount = 1
-  typedNotifyMsg.messageList.push(message.msgId)
-  state = state.setIn(['notifyMsgByType', msgType], typedNotifyMsg)
+  state = state.set('unReadCount', unReadCnt+1)
+
+  let msg = state.getIn(['notifyMsgByType', msgType])
+  if (!msg) {
+    let typedNotifyMsg = new TypedNotifyMsgRecord()
+    typedNotifyMsg.type = msgType
+    typedNotifyMsg.unReadCount = 1
+    typedNotifyMsg.messageList.push(message.msgId)
+    state = state.setIn(['notifyMsgByType', msgType], typedNotifyMsg)
+  } else {
+    msg.unReadCount += 1
+    msg.messageList.push(message.msgId)
+    state = state.setIn(['notifyMsgByType', msgType], msg)
+  }
+
   return state
 }

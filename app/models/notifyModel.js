@@ -4,6 +4,7 @@
 import {Map, List, Record} from 'immutable'
 
 export const NotifyMsgRecord = Record({
+  unReadCount: 0,
   messageMap: Map(),              // 键为消息id，值为消息内容，类型可以是TopicCommentMsg，ShopCommentMsg，TopicLikeMsg，ShopLikeMsg，UserFollowMsg，ShopFollowMsg
   notifyMsgByType: Map(),         // 建为消息类型，值的类型为TypedNotifyMsgRecord
 }, 'NotifyMsgRecord')
@@ -19,12 +20,13 @@ export const TopicCommentMsgRecord = Record({
   msgId: undefined,
   msgType: undefined,
   userId: undefined,
+  text: undefined,
+  timestamp: undefined,
+  status: undefined,          // 消息的状态，可以为unread,read
   nickname: undefined,
   avatar: undefined,
   topicId: undefined,
   title: undefined,
-  text: undefined,
-  timestamp: undefined,
 }, 'TopicCommentMsg')
 
 export const ShopCommentMsgRecord = Record({
@@ -32,11 +34,12 @@ export const ShopCommentMsgRecord = Record({
   msgId: undefined,
   msgType: undefined,
   userId: undefined,
+  text: undefined,
+  timestamp: undefined,
+  status: undefined,          // 消息的状态，可以为unread,read
   nickname: undefined,
   avatar: undefined,
   shopId: undefined,
-  text: undefined,
-  timestamp: undefined,
 }, 'ShopCommentMsg')
 
 export const TopicLikeMsgRecord = Record({
@@ -44,12 +47,13 @@ export const TopicLikeMsgRecord = Record({
   msgId: undefined,
   msgType: undefined,
   userId: undefined,
+  text: undefined,
+  timestamp: undefined,
+  status: undefined,          // 消息的状态，可以为unread,read
   nickname: undefined,
   avatar: undefined,
   topicId: undefined,
   title: undefined,
-  text: undefined,
-  timestamp: undefined,
 }, 'TopicLikeMsg')
 
 export const ShopLikeMsgRecord = Record({
@@ -57,11 +61,12 @@ export const ShopLikeMsgRecord = Record({
   msgId: undefined,
   msgType: undefined,
   userId: undefined,
+  text: undefined,
+  timestamp: undefined,
+  status: undefined,          // 消息的状态，可以为unread,read
   nickname: undefined,
   avatar: undefined,
   shopId: undefined,
-  text: undefined,
-  timestamp: undefined,
 }, 'ShopLikeMsg')
 
 export const UserFollowMsgRecord = Record({
@@ -69,10 +74,11 @@ export const UserFollowMsgRecord = Record({
   msgId: undefined,
   msgType: undefined,
   userId: undefined,
-  nickname: undefined,
-  avatar: undefined,
   text: undefined,
   timestamp: undefined,
+  status: undefined,          // 消息的状态，可以为unread,read
+  nickname: undefined,
+  avatar: undefined,
 }, 'UserFollowMsg')
 
 export const ShopFollowMsgRecord = Record({
@@ -80,11 +86,12 @@ export const ShopFollowMsgRecord = Record({
   msgId: undefined,
   msgType: undefined,
   userId: undefined,
+  text: undefined,
+  timestamp: undefined,
+  status: undefined,          // 消息的状态，可以为unread,read
   nickname: undefined,
   avatar: undefined,
   shopId: undefined,
-  text: undefined,
-  timestamp: undefined,
 }, 'ShopFollowMsg')
 
 export class TopicCommentMsg extends TopicCommentMsgRecord {
@@ -106,6 +113,7 @@ export class TopicCommentMsg extends TopicCommentMsgRecord {
       record.set('msgType', messageType)
       record.set('text', text)
       record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
 
       let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
       record.set('nickname', attrs.nickname)
@@ -135,6 +143,7 @@ export class ShopCommentMsg extends ShopCommentMsgRecord {
       record.set('msgType', messageType)
       record.set('text', text)
       record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
 
       let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
       record.set('nickname', attrs.nickname)
@@ -163,6 +172,7 @@ export class TopicLikeMsg extends TopicLikeMsgRecord {
       record.set('msgType', messageType)
       record.set('text', text)
       record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
 
       let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
       record.set('nickname', attrs.nickname)
@@ -192,6 +202,7 @@ export class ShopLikeMsg extends ShopLikeMsgRecord {
       record.set('msgType', messageType)
       record.set('text', text)
       record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
 
       let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
       record.set('nickname', attrs.nickname)
@@ -220,6 +231,7 @@ export class UserFollowMsg extends UserFollowMsgRecord {
       record.set('msgType', messageType)
       record.set('text', text)
       record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
 
       let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
       record.set('nickname', attrs.nickname)
@@ -247,6 +259,7 @@ export class ShopFollowMsg extends ShopFollowMsgRecord {
       record.set('msgType', messageType)
       record.set('text', text)
       record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
 
       let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
       record.set('nickname', attrs.nickname)

@@ -393,6 +393,7 @@ function createTypedMessage(msgType) {
 
 export function notifyTopicComment(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -401,13 +402,13 @@ export function notifyTopicComment(payload) {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_COMMENT,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         topicId: payload.topicId,
         title: payload.title,
       }
-      let text = payload.nickname + '在您的文章《' + payload.title + '》中发表了评论'
+      let text = currentUser.nickname + '在您的文章《' + payload.title + '》中发表了评论'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -451,6 +452,7 @@ export function notifyShopComment(payload) {
 
 export function notifyTopicLike(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -459,13 +461,13 @@ export function notifyTopicLike(payload) {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_LIKE,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         topicId: payload.topicId,
         title: payload.title,
       }
-      let text = payload.nickname + '在您的文章《' + payload.title + '》中点了赞'
+      let text = currentUser.nickname + '在您的文章《' + payload.title + '》中点了赞'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -509,6 +511,7 @@ export function notifyShopLike(payload) {
 
 export function notifyUserFollow(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -517,11 +520,11 @@ export function notifyUserFollow(payload) {
       let message = createTypedMessage(msgTypes.MSG_USER_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_USER_FOLLOW,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
       }
-      let text = payload.nickname + '关注了您'
+      let text = currentUser.nickname + '关注了您'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
@@ -533,6 +536,7 @@ export function notifyUserFollow(payload) {
 
 export function notifyShopFollow(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: payload.toPeers,   // 可以是一个数组
       unique: true
@@ -541,12 +545,12 @@ export function notifyShopFollow(payload) {
       let message = createTypedMessage(msgTypes.MSG_SHOP_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_FOLLOW,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         shopId: payload.shopId,
       }
-      let text = payload.nickname + '关注了您的店铺'
+      let text = currentUser.nickname + '关注了您的店铺'
       message.setText(text)
       message.setAttribute(attrs)
       conversation.send(message)
