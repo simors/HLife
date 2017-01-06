@@ -268,7 +268,7 @@ export function fetchUserUpShopInfo(payload) {
   query.equalTo('user', currentUser)
   query.include('user')
   return query.first().then((result) =>{
-    let userUpShopInfo = undefined
+    let userUpShopInfo = {}
     if(result && result.attributes) {
       userUpShopInfo = Up.fromLeancloudObject(result)
     }

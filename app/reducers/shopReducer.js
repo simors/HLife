@@ -109,7 +109,6 @@ function handleUpdateShopCommentTotalCount(state, action) {
 function handleUpdateUserUpShopSuccess(state, action) {
   let payload = action.payload
   let shopId = payload.shopId
-  // console.log('handleUpdateUserUpShopSuccess.payload===', payload)
   let userUpShopsInfo = state.get('userUpShopsInfo')
   userUpShopsInfo = userUpShopsInfo.set(shopId, true)
   state = state.set('userUpShopsInfo', userUpShopsInfo)
@@ -129,9 +128,11 @@ function handleUpdateUserUpShopInfo(state, action) {
   let payload = action.payload
   let shopId = payload.targetId
   let status = payload.status
-  let userUpShopsInfo = state.get('userUpShopsInfo')
-  userUpShopsInfo = userUpShopsInfo.set(shopId, status)
-  state = state.set('userUpShopsInfo', userUpShopsInfo)
+  if(shopId) {
+    let userUpShopsInfo = state.get('userUpShopsInfo')
+    userUpShopsInfo = userUpShopsInfo.set(shopId, status)
+    state = state.set('userUpShopsInfo', userUpShopsInfo)
+  }
   return state
 }
 
@@ -140,7 +141,6 @@ function handleFetchShopCommentUpedUserList(state, action) {
   let shopId = payload.shopId
   let shopCommentId = payload.shopCommentId
   let shopCommentUpedUserList = payload.shopCommentUpedUserList
-  console.log('handleFetchShopCommentUpedUserList.payload=', payload)
 
   let shopCommentsMap = state.get('shopComments')
   let shopCommentList = shopCommentsMap.get(shopId)
@@ -151,7 +151,6 @@ function handleFetchShopCommentUpedUserList(state, action) {
       return _shopCommentId == shopCommentId
     })
   }
-  console.log('handleFetchShopCommentUpedUserList.shopCommentIndex=', shopCommentIndex)
   if(shopCommentIndex != -1) {
     let shopComment = shopCommentList.get(shopCommentIndex)
     shopComment = shopComment.set('containedUps', shopCommentUpedUserList)
@@ -159,7 +158,6 @@ function handleFetchShopCommentUpedUserList(state, action) {
     shopCommentsMap = shopCommentsMap.set(shopId, shopCommentList)
     state = state.set('shopComments', shopCommentsMap)
   }
-  console.log('handleFetchShopCommentUpedUserList.state=', state)
   return state
 }
 
