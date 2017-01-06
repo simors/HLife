@@ -111,8 +111,10 @@ class ShopComment extends Component {
           </View>
 
           <ReplyList
+            onReplyClick={this.props.onReplyClick}
             replys={this.props.containedReply}
             ups={this.props.containedUps}
+            shopCommentId={this.props.shopCommentId}
           />
           
         </View>

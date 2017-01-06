@@ -39,6 +39,12 @@ class ReplyList extends Component {
   componentWillReceiveProps(nextProps) {
 
   }
+  
+  reply(replyId, replyUserNickName) {
+    if(this.props.onReplyClick) {
+      this.props.onReplyClick(this.props.shopCommentId, replyId, replyUserNickName)
+    }
+  }
 
   renderReplys() {
     if(this.props.replys && this.props.replys.length) {
@@ -64,9 +70,9 @@ class ReplyList extends Component {
               </View>
             </View>
 
-            <View style={styles.replyContentWrap}>
+            <TouchableOpacity style={styles.replyContentWrap} onPress={()=>{this.reply(item.id, item.user.nickname)}}>
               <Text style={styles.replyContent}>{item.content}</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         )
       })
