@@ -63,6 +63,7 @@ class ShopCommentList extends Component {
   renderRow(rowData, rowId) {
     return (
       <ShopComment
+        shopId={this.props.shopId}
         shopCommentId={rowData.id}
         userId={rowData.user.id}
         userNickname={rowData.user.nickname}
@@ -73,6 +74,7 @@ class ShopCommentList extends Component {
         createdDate={rowData.createdDate}
         blueprints={rowData.blueprints}
         containedReply={rowData.containedReply}
+        containedUps={rowData.containedUps}
         onReplyClick={this.onReplyClick.bind(this)}
       />
     )

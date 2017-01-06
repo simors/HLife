@@ -10,7 +10,8 @@ import {
   ShopComment,
   Up,
   ShopCommentReply,
-  ShopCommentUp
+  ShopCommentUp,
+  ShopCommentUp4Cloud
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -344,6 +345,7 @@ export function userUnUpShop(payload) {
   })
 }
 
+//deprecated
 export function fetchShopCommentUpedUserList(payload) {
   let shopCommentId = payload.shopCommentId
   let targetShopComment = AV.Object.createWithoutData('ShopComment', shopCommentId)
@@ -360,6 +362,23 @@ export function fetchShopCommentUpedUserList(payload) {
     }
     return new List(shopCommentUpedUserList)
   }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopCommentUpedUserListByCloudFunc(payload) {
+  return AV.Cloud.run('hLifeFetchShopCommentUpedUserList', payload).then((results)=>{
+    console.log('hLifeFetchShopCommentUpedUserList.results===', results)
+    let shopCommentUpedUsers = []
+    results.forEach((result)=>{
+      shopCommentUpedUsers.push(ShopCommentUp4Cloud.fromLeancloudJson(result))
+    })
+    console.log('hLifeFetchShopCommentUpedUserList.shopCommentUpedUsers===', shopCommentUpedUsers)
+    return new List(shopCommentUpedUsers)
+  }, (err) => {
+    console.log('err=======', err)
+    console.log('err.code=======', err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

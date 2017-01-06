@@ -195,7 +195,8 @@ export function userUnUpShop(payload) {
 
 export function fetchShopCommentUpedUserList(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchShopCommentUpedUserList(payload).then((shopCommentUpedUserList) => {
+    lcShop.fetchShopCommentUpedUserListByCloudFunc(payload).then((shopCommentUpedUserList) => {
+      console.log('fetchShopCommentUpedUserList.action===', shopCommentUpedUserList)
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_UPED_USER_LIST_SUCCESS)
 
       let params = {}

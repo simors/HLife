@@ -137,6 +137,29 @@ function handleUpdateUserUpShopInfo(state, action) {
 
 function handleFetchShopCommentUpedUserList(state, action) {
   let payload = action.payload
+  let shopId = payload.shopId
+  let shopCommentId = payload.shopCommentId
+  let shopCommentUpedUserList = payload.shopCommentUpedUserList
+  console.log('handleFetchShopCommentUpedUserList.payload=', payload)
+
+  let shopCommentsMap = state.get('shopComments')
+  let shopCommentList = shopCommentsMap.get(shopId)
+  let shopCommentIndex = -1
+  if(shopCommentList && shopCommentList.size > 0) {
+    shopCommentIndex = shopCommentList.findIndex((_shopComment)=>{
+      let _shopCommentId = _shopComment.get('id')
+      return _shopCommentId == shopCommentId
+    })
+  }
+  console.log('handleFetchShopCommentUpedUserList.shopCommentIndex=', shopCommentIndex)
+  if(shopCommentIndex != -1) {
+    let shopComment = shopCommentList.get(shopCommentIndex)
+    shopComment = shopComment.set('containedUps', shopCommentUpedUserList)
+    shopCommentList = shopCommentList.set(shopCommentIndex, shopComment)
+    shopCommentsMap = shopCommentsMap.set(shopId, shopCommentList)
+    state = state.set('shopComments', shopCommentsMap)
+  }
+  console.log('handleFetchShopCommentUpedUserList.state=', state)
   return state
 }
 
