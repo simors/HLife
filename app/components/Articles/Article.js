@@ -251,11 +251,13 @@ class Article extends Component {
               source={{html: this.props.content}}
               innerCSS={INNER_CSS}
             />
+            <View style={styles.upList}>
             <View style={styles.zanStyle} onLayout={this.measureMyComponent.bind(this)}>
               <Text style={styles.zanTextStyle}>
                 赞
               </Text>
             </View>
+              </View>
             {this.renderCommentPage()}
             {this.renderNoComment()}
           </View>
@@ -447,5 +449,10 @@ const styles = StyleSheet.create(
       marginTop: normalizeH(7),
       alignSelf: 'center',
     },
-
+    upList:{
+      backgroundColor: '#E5E5E5',
+      height: normalizeH(59),
+      alignItems: 'flex-start',
+      flexDirection: 'row',
+    },
   })
