@@ -365,6 +365,22 @@ export function fetchUserFollowees(payload) {
   }
 }
 
+export function fetchUserFavoriteArticles(payload) {
+  return (dispatch, getState) => {
+    lcAuth.fetchUserFollowees(payload).then((result)=> {
+      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS)
+      dispatch(updateAction(result))
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function userIsFollowedTheUser(payload) {
   return (dispatch, getState) => {
     lcAuth.userIsFollowedTheUser(payload).then((result)=> {

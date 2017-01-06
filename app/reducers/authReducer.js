@@ -24,6 +24,8 @@ export default function authReducer(state = initialState, action) {
       return handleAddUserProfile(state, action)
     case AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS:
       return handleFetchUserFolloweesSuccess(state, action)
+    case AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS:
+      return handleFetchUserFavoriteArticleSuccess(state,action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -70,6 +72,13 @@ function handleFetchUserFolloweesSuccess(state, action) {
   let currentUserId = action.payload.currentUserId
   let followees = action.payload.followees
   state = state.setIn(['followees', currentUserId], followees)
+  return state
+}
+
+function handleFetchUserFavoriteArticleSuccess(state,action){
+  let currentUserId = action.payload.currentUserId
+  let favoriteArticles = action.payload.favoriteArticles
+  state = state.setIn(['favoriteArticles',currentUserId],favoriteArticles)
   return state
 }
 
