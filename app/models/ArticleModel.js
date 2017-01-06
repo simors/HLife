@@ -186,24 +186,27 @@ export const FavoriteRecord = Record({
   articleId: '', //点赞类型对应的对象id
   status: false, //是否点赞
   createdDate: '', //格式化后的创建时间
-  user: {},
+  user: undefined,
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
 })
 
 export class Favorite extends FavoriteRecord {
   static fromLeancloudObject(lcObj) {
-    let up = new UpRecord()
+    let favorite = new FavoriteRecord()
     let attrs = lcObj.attributes
-    return up.withMutations((record) => {
+    return favorite.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('articleId', attrs.article.id)
+     // console.log('zhelizuizhongyao',lcObj)
+
       record.set('status', attrs.status)
-      let userAttrs = attrs.user.attributes
-      let user = {}
-      user.id = attrs.user.id
-      user.nickname = userAttrs.nickname
-      record.set('user', user)
+     // let userAttrs = attrs.user.attributes
+     // let user = {}
+      //user.id = attrs.user.id
+      //user.nickname = userAttrs.nickname
+
+      record.set('user', attrs.user)
       record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())
