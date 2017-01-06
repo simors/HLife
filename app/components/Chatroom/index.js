@@ -40,6 +40,7 @@ class Chatroom extends Component {
       this.props.createConversation({
         members: this.props.members,
         name: this.props.name,
+        type: this.props.conversationType,
       })
     })
   }

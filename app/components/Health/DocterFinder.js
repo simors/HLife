@@ -21,6 +21,7 @@ import Header from '../common/Header'
 import {getDocterList} from '../../action/doctorAction'
 import {activeUserId, isUserLogined} from '../../selector/authSelector'
 import {getDoctorList} from '../../selector/doctorSelector'
+import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -42,7 +43,8 @@ class DocterFinder extends Component {
     } else {
       let payload = {
         name: doctor.phone,
-        members: [this.props.currentUser, doctor.id]
+        members: [this.props.currentUser, doctor.id],
+        conversationType: INQUIRY_CONVERSATION,
       }
       Actions.CHATROOM(payload)
     }
@@ -55,7 +57,7 @@ class DocterFinder extends Component {
           <View key={key} style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.consult(value)}>
               <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>{value.nickname ? value.nickname : value.phone}</Text>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>{value.username ? value.username : value.phone}</Text>
             </TouchableOpacity>
           </View>
         )
