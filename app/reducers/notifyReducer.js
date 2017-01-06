@@ -26,14 +26,19 @@ function handleAddNotifyMsg(state, action) {
 
   let msg = state.getIn(['notifyMsgByType', msgType])
   if (!msg) {
-    let typedNotifyMsg = new TypedNotifyMsgRecord()
-    typedNotifyMsg.type = msgType
-    typedNotifyMsg.unReadCount = 1
-    typedNotifyMsg.messageList.push(message.msgId)
+    let msgLst = new List([message.msgId])
+    let typedNotifyMsg = new TypedNotifyMsgRecord({
+      type: msgType,
+      unReadCount: 1,
+      messageList: msgLst,
+    })
     state = state.setIn(['notifyMsgByType', msgType], typedNotifyMsg)
   } else {
-    msg.unReadCount += 1
-    msg.messageList.push(message.msgId)
+    unReadCnt = msg.get('unReadCount')
+    msg = msg.set('unReadCount', unReadCnt+1)
+    let msgList = msg.get('messageList')
+    msgList = msgList.push(message.msgId)
+    msg = msg.set('messageList', msgList)
     state = state.setIn(['notifyMsgByType', msgType], msg)
   }
 
