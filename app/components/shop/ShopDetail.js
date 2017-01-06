@@ -183,10 +183,10 @@ class ShopDetail extends Component {
     }
     const that = this
     let payload = {
-      id: this.props.shopDetail.id,
+      id: this.props.id,
       ...commentData,
       success: () => {
-        that.props.fetchShopCommentList({id: that.props.shopDetail.id})
+        that.props.fetchShopCommentList({isRefresh: true, id: that.props.id})
         that.props.fetchShopCommentTotalCount({id: that.props.id})
         that.closeModal(()=>{
           Toast.show('发布成功', {duration: 1000})
