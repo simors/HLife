@@ -109,7 +109,6 @@ function handleUpdateShopCommentTotalCount(state, action) {
 function handleUpdateUserUpShopSuccess(state, action) {
   let payload = action.payload
   let shopId = payload.shopId
-  // console.log('handleUpdateUserUpShopSuccess.payload===', payload)
   let userUpShopsInfo = state.get('userUpShopsInfo')
   userUpShopsInfo = userUpShopsInfo.set(shopId, true)
   state = state.set('userUpShopsInfo', userUpShopsInfo)
@@ -129,14 +128,36 @@ function handleUpdateUserUpShopInfo(state, action) {
   let payload = action.payload
   let shopId = payload.targetId
   let status = payload.status
-  let userUpShopsInfo = state.get('userUpShopsInfo')
-  userUpShopsInfo = userUpShopsInfo.set(shopId, status)
-  state = state.set('userUpShopsInfo', userUpShopsInfo)
+  if(shopId) {
+    let userUpShopsInfo = state.get('userUpShopsInfo')
+    userUpShopsInfo = userUpShopsInfo.set(shopId, status)
+    state = state.set('userUpShopsInfo', userUpShopsInfo)
+  }
   return state
 }
 
 function handleFetchShopCommentUpedUserList(state, action) {
   let payload = action.payload
+  let shopId = payload.shopId
+  let shopCommentId = payload.shopCommentId
+  let shopCommentUpedUserList = payload.shopCommentUpedUserList
+
+  let shopCommentsMap = state.get('shopComments')
+  let shopCommentList = shopCommentsMap.get(shopId)
+  let shopCommentIndex = -1
+  if(shopCommentList && shopCommentList.size > 0) {
+    shopCommentIndex = shopCommentList.findIndex((_shopComment)=>{
+      let _shopCommentId = _shopComment.get('id')
+      return _shopCommentId == shopCommentId
+    })
+  }
+  if(shopCommentIndex != -1) {
+    let shopComment = shopCommentList.get(shopCommentIndex)
+    shopComment = shopComment.set('containedUps', shopCommentUpedUserList)
+    shopCommentList = shopCommentList.set(shopCommentIndex, shopComment)
+    shopCommentsMap = shopCommentsMap.set(shopId, shopCommentList)
+    state = state.set('shopComments', shopCommentsMap)
+  }
   return state
 }
 

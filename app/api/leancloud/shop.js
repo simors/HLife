@@ -10,7 +10,8 @@ import {
   ShopComment,
   Up,
   ShopCommentReply,
-  ShopCommentUp
+  ShopCommentUp,
+  ShopCommentUp4Cloud
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -233,8 +234,6 @@ export function fetchShopCommentListByCloudFunc(payload) {
     })
     return new List(shopComments)
   }, (err) => {
-    console.log('err=======', err)
-    console.log('err.code=======', err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -267,7 +266,7 @@ export function fetchUserUpShopInfo(payload) {
   query.equalTo('user', currentUser)
   query.include('user')
   return query.first().then((result) =>{
-    let userUpShopInfo = undefined
+    let userUpShopInfo = {}
     if(result && result.attributes) {
       userUpShopInfo = Up.fromLeancloudObject(result)
     }
@@ -284,8 +283,7 @@ export function userUpShop(payload) {
   let currentUser = AV.User.current()
 
   return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
-    // console.log('userUpShop.userUpShopInfo=', userUpShopInfo)
-    if(!userUpShopInfo) {
+    if(!userUpShopInfo || !userUpShopInfo.id) {
       let Up = AV.Object.extend('Up')
       let up = new Up()
       up.set('targetId', shopId)
@@ -344,6 +342,7 @@ export function userUnUpShop(payload) {
   })
 }
 
+//deprecated
 export function fetchShopCommentUpedUserList(payload) {
   let shopCommentId = payload.shopCommentId
   let targetShopComment = AV.Object.createWithoutData('ShopComment', shopCommentId)
@@ -352,7 +351,7 @@ export function fetchShopCommentUpedUserList(payload) {
   query.include(['user'])
   return query.find().then((results) =>{
     let shopCommentUpedUserList = []
-    console.log('fetchShopCommentUpedUserList...results===========', results)
+    // console.log('fetchShopCommentUpedUserList...results===========', results)
     if(results && results.attributes && results.attributes.length) {
       results.forEach((result)=>{
         shopCommentUpedUserList.push(ShopCommentUp.fromLeancloudObject(result))
@@ -360,6 +359,23 @@ export function fetchShopCommentUpedUserList(payload) {
     }
     return new List(shopCommentUpedUserList)
   }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopCommentUpedUserListByCloudFunc(payload) {
+  return AV.Cloud.run('hLifeFetchShopCommentUpedUserList', payload).then((results)=>{
+    // console.log('hLifeFetchShopCommentUpedUserList.results===', results)
+    let shopCommentUpedUsers = []
+    results.forEach((result)=>{
+      shopCommentUpedUsers.push(ShopCommentUp4Cloud.fromLeancloudJson(result))
+    })
+    // console.log('hLifeFetchShopCommentUpedUserList.shopCommentUpedUsers===', shopCommentUpedUsers)
+    return new List(shopCommentUpedUsers)
+  }, (err) => {
+    // console.log('err=======', err)
+    // console.log('err.code=======', err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -450,7 +466,7 @@ export function fetchShopCommentReplyList(payload) {
 
   return query.find().then((results)=>{
     let replyList = []
-    console.log('fetchShopCommentReplyList...results===========', results)
+    // console.log('fetchShopCommentReplyList...results===========', results)
     if(results && results.attributes && results.attributes.length) {
       results.forEach((result)=>{
         replyList.push(ShopCommentReply.fromLeancloudObject(result))
@@ -470,8 +486,6 @@ export function fetchShopCommentReplyListByCloudFunc(payload) {
   return AV.Cloud.run('hLifeFetchShopCommentReplyList', payload).then((results)=>{
     return results
   }, (err) => {
-    console.log('err=======', err)
-    console.log('err.code=======', err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

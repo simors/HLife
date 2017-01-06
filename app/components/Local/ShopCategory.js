@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   shopCategory: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    paddingLeft: normalizeW(10),
     alignItems: 'center',
   },
   image: {

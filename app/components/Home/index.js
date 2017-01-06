@@ -176,6 +176,15 @@ class Home extends Component {
 
   }
 
+  renderHeadMessage() {
+    return (
+      <View>
+        <Image source={require("../../assets/images/home_message.png")} />
+        <View style={styles.noticeTip}></View>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -186,8 +195,7 @@ class Home extends Component {
           leftImageLabel="长沙"
           leftPress={() => Actions.pop()}
           title="近来"
-          rightType="image"
-          rightImageSource={require("../../assets/images/home_message.png")}
+          rightComponent={() => this.renderHeadMessage()}
           rightPress={() => Actions.MESSAGE_BOX()}
         />
 
@@ -298,6 +306,15 @@ const styles = StyleSheet.create({
 
   dailyChosenModule: {
     marginTop: normalizeH(15),
+  },
+  noticeTip: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
   },
 
 })

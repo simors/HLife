@@ -112,6 +112,7 @@ export const ShopCommentRecord = Record({
   content: '', //评论内容
   blueprints: [], //晒图
   containedReply: [], //回复列表
+  containedUps: [], //点赞列表
   targetShop: {}, //目标店铺
   score: 4, // 用户打分
   user: {}, //评论用户详细信息
@@ -168,6 +169,32 @@ export class ShopComment extends ShopCommentRecord {
       record.set('createdAt', lcJson.createdAt)
       record.set('updatedAt', lcJson.updatedAt)
       record.set('containedReply', lcJson.replys)
+      record.set('containedUps', lcJson.ups)
+    })
+  }
+}
+
+export const ShopCommentUp4CloudRecord = Record({
+  id: undefined, //点赞id
+  status: false, //是否点赞
+  user: {}, //点赞用户
+  shopCommentUpTime: undefined, //友好显示时间
+  createdDate: undefined, //格式化后的创建时间
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined, //更新时间戳
+})
+
+export class ShopCommentUp4Cloud extends ShopCommentUp4CloudRecord {
+  static fromLeancloudJson(lcJson) {
+    let ShopCommentUp4Cloud = new ShopCommentUp4CloudRecord()
+    return ShopCommentUp4Cloud.withMutations((record)=>{
+      record.set('id', lcJson.id)
+      record.set('status', lcJson.status)
+      record.set('user', lcJson.user)
+      record.set('shopCommentUpTime', lcJson.shopCommentUpTime)
+      record.set('createdDate', lcJson.createdDate)
+      record.set('createdAt', lcJson.createdAt)
+      record.set('updatedAt', lcJson.updatedAt)
     })
   }
 }

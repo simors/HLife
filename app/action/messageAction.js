@@ -227,12 +227,34 @@ function createLcConversation(payload) {
       console.log('leancloud Messenger init failed, can\'t get client')
       return undefined
     }
+    if (payload.type === msgTypes.INQUIRY_CONVERSATION) {
+      payload.members.push('wuaiSystemDocter')
+    }
     return client.createConversation({
       members: payload.members,
       name: payload.name,
       unique: true,
+      type: payload.type,   // 会话的类型，可以是问诊（INQUIRY_CONVERSATION），或私信（PERSONAL_CONVERSATION）
     }).then((conversation) => {
       return Conversation.fromLeancloudConversation(conversation)
+    })
+  }
+}
+
+function createOriginalConversation(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+      console.log('leancloud Messenger init failed, can\'t get client')
+      return undefined
+    }
+    return client.createConversation({
+      members: payload.members,
+      name: payload.name,
+      unique: true,
     })
   }
 }
@@ -393,23 +415,24 @@ function createTypedMessage(msgType) {
 
 export function notifyTopicComment(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: payload.toPeers,   // 可以是一个数组
+      members: [payload.toPeers],   // 可以是一个数组
       unique: true
     }
-    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_COMMENT,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         topicId: payload.topicId,
         title: payload.title,
       }
-      let text = payload.nickname + '在您的文章《' + payload.title + '》中发表了评论'
+      let text = currentUser.nickname + '在您的文章《' + payload.title + '》中发表了评论'
       message.setText(text)
-      message.setAttribute(attrs)
+      message.setAttributes(attrs)
       conversation.send(message)
     }, (err) => {
       console.log(err)
@@ -427,10 +450,10 @@ export function notifyShopComment(payload) {
     }
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: shopDetail.owner.id,   // 可以是一个数组
+      members: [shopDetail.owner.id],   // 可以是一个数组
       unique: true
     }
-    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_SHOP_COMMENT)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_COMMENT,
@@ -441,7 +464,7 @@ export function notifyShopComment(payload) {
       }
       let text = currentUser.nickname + '在您的店铺中发表了评论'
       message.setText(text)
-      message.setAttribute(attrs)
+      message.setAttributes(attrs)
       conversation.send(message)
     }, (err) => {
       console.log(err)
@@ -451,23 +474,24 @@ export function notifyShopComment(payload) {
 
 export function notifyTopicLike(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: payload.toPeers,   // 可以是一个数组
+      members: [payload.toPeers],   // 可以是一个数组
       unique: true
     }
-    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_TOPIC_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_TOPIC_LIKE,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         topicId: payload.topicId,
         title: payload.title,
       }
-      let text = payload.nickname + '在您的文章《' + payload.title + '》中点了赞'
+      let text = currentUser.nickname + '在您的文章《' + payload.title + '》中点了赞'
       message.setText(text)
-      message.setAttribute(attrs)
+      message.setAttributes(attrs)
       conversation.send(message)
     }, (err) => {
       console.log(err)
@@ -485,10 +509,10 @@ export function notifyShopLike(payload) {
     }
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: shopDetail.owner.id,
+      members: [shopDetail.owner.id],
       unique: true
     }
-    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_SHOP_LIKE)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_LIKE,
@@ -499,7 +523,7 @@ export function notifyShopLike(payload) {
       }
       let text = currentUser.nickname + '在您的店铺中点了赞'
       message.setText(text)
-      message.setAttribute(attrs)
+      message.setAttributes(attrs)
       conversation.send(message)
     }, (err) => {
       console.log(err)
@@ -509,21 +533,22 @@ export function notifyShopLike(payload) {
 
 export function notifyUserFollow(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: payload.toPeers,   // 可以是一个数组
+      members: [payload.toPeers],   // 可以是一个数组
       unique: true
     }
-    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_USER_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_USER_FOLLOW,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
       }
-      let text = payload.nickname + '关注了您'
+      let text = currentUser.nickname + '关注了您'
       message.setText(text)
-      message.setAttribute(attrs)
+      message.setAttributes(attrs)
       conversation.send(message)
     }, (err) => {
       console.log(err)
@@ -533,22 +558,23 @@ export function notifyUserFollow(payload) {
 
 export function notifyShopFollow(payload) {
   return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: payload.toPeers,   // 可以是一个数组
+      members: [payload.toPeers],   // 可以是一个数组
       unique: true
     }
-    dispatch(createLcConversation(notifyConv)).then((conversation) => {
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
       let message = createTypedMessage(msgTypes.MSG_SHOP_FOLLOW)
       let attrs = {
         msgType: msgTypes.MSG_SHOP_FOLLOW,
-        userId: payload.userId,
-        nickname: payload.nickname,
-        avatar: payload.avatar,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
         shopId: payload.shopId,
       }
-      let text = payload.nickname + '关注了您的店铺'
+      let text = currentUser.nickname + '关注了您的店铺'
       message.setText(text)
-      message.setAttribute(attrs)
+      message.setAttributes(attrs)
       conversation.send(message)
     }, (err) => {
       console.log(err)

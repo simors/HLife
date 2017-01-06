@@ -63,6 +63,7 @@ class ShopCommentList extends Component {
   renderRow(rowData, rowId) {
     return (
       <ShopComment
+        shopId={this.props.shopId}
         shopCommentId={rowData.id}
         userId={rowData.user.id}
         userNickname={rowData.user.nickname}
@@ -73,6 +74,7 @@ class ShopCommentList extends Component {
         createdDate={rowData.createdDate}
         blueprints={rowData.blueprints}
         containedReply={rowData.containedReply}
+        containedUps={rowData.containedUps}
         onReplyClick={this.onReplyClick.bind(this)}
       />
     )
@@ -128,7 +130,7 @@ class ShopCommentList extends Component {
       replyContent : content,
       success: (result) => {
         dismissKeyboard()
-        Toast.show('回复成功', {duration: 1500})
+        // Toast.show('回复成功', {duration: 1500})
         that.props.fetchShopCommentReplyList({
           shopId: that.props.shopId,
           replyShopCommentId: this.state.replyShopCommentId
@@ -185,9 +187,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   // const shopCommentList = ShopDetailTestData.shopComments
-  let shopId = '5858e68a8e450a006cba3cff'
-  const shopCommentList = selectShopComments(state, shopId)
-  // const shopCommentList = selectShopComments(state, ownProps.shopId)
+  // let shopId = '5858e68a8e450a006cba3cff'
+  // const shopCommentList = selectShopComments(state, shopId)
+  const shopCommentList = selectShopComments(state, ownProps.shopId)
   const isUserLogined = authSelector.isUserLogined(state)
 
   let lastCreatedAt = ''
@@ -198,8 +200,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     ds: ds.cloneWithRows(shopCommentList),
     isUserLogined: isUserLogined,
-    lastCreatedAt: lastCreatedAt,
-    shopId: shopId
+    lastCreatedAt: lastCreatedAt
   }
 }
 
