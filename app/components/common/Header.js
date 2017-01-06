@@ -20,6 +20,17 @@ export default class Header extends Component {
   }
 
   renderLeft() {
+    if (this.props.leftComponent) {
+      return (
+        <View style={styles.leftWrap}>
+          <TouchableOpacity style={[styles.leftContainer, this.props.leftContainerStyle]}
+                            onPress={() => this.props.leftPress()}>
+            {this.props.leftComponent()}
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
     if (this.props.leftType == 'icon') {
       return (
         <View style={styles.leftWrap}>
@@ -63,6 +74,17 @@ export default class Header extends Component {
   }
 
   renderRight() {
+    if (this.props.rightComponent) {
+      return (
+        <View style={styles.rightWrap}>
+          <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]}
+                            onPress={() => this.props.rightPress()}>
+            {this.props.rightComponent()}
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
     if (this.props.rightType == 'icon') {
       return (
         <View style={styles.rightWrap}>
