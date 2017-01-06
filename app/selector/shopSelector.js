@@ -64,3 +64,43 @@ export function selectUserIsUpedShop(state, shopId) {
   }
   return false
 }
+
+export function selectShopCommentUps(state, shopId, shopCommentId) {
+  let shopComments = selectShop(state).shopComments[shopId]
+  let containedUps = []
+  if(shopComments && shopComments.length) {
+    for(let i = 0; i < shopComments.length; i++) {
+      if(shopComments[i].id == shopCommentId) {
+        containedUps = shopComments[i].containedUps
+      }
+    }
+  }
+  return containedUps
+}
+
+export function selectActiveUserIsUpedShopComment(state, shopId, shopCommentId, activeUserId) {
+  let shopCommentUps = selectShopCommentUps(state, shopId, shopCommentId)
+  if(shopCommentUps && shopCommentUps.length) {
+    for(let i = 0; i < shopCommentUps.length; i++) {
+      if(shopCommentUps[i].user.id == activeUserId) {
+        if(shopCommentUps[i].status) {
+          return true
+        }
+        return false
+      }
+    }
+  }
+  return false
+}
+
+export function selectShopCommentUpId(state, shopId, shopCommentId, activeUserId) {
+  let shopCommentUps = selectShopCommentUps(state, shopId, shopCommentId)
+  if(shopCommentUps && shopCommentUps.length) {
+    for(let i = 0; i < shopCommentUps.length; i++) {
+      if(shopCommentUps[i].user.id == activeUserId) {
+        return shopCommentUps[i].id
+      }
+    }
+  }
+  return false
+}

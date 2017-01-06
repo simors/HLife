@@ -73,22 +73,30 @@ class ReplyList extends Component {
     }
   }
 
+  renderUps() {
+    if(this.props.ups && this.props.ups.length) {
+      return this.props.ups.map((item, index)=> {
+        return (
+          <TouchableOpacity key={"up_" + item.id + "_" + index} style={styles.upUserBox}>
+            <Text style={styles.upUser}>{item.user.nickname}</Text>
+          </TouchableOpacity>
+        )
+      })
+    }
+  }
+
   render() {
-    if(this.props.replys && this.props.replys.length) {
+    if( (this.props.replys && this.props.replys.length) ||
+        (this.props.ups && this.props.ups.length)
+      ) {
       return (
         <View style={styles.replyWrap}>
           <Triangle width={8} height={5} color="rgba(0,0,0,0.05)" style={[styles.triangle]} direction="up"/>
           <View style={styles.upReplyContainer}>
             <View style={styles.upUsersContainer}>
               <Image style={{width:10,height:10,marginRight:5}} source={require('../../../assets/images/artical_like_unselect.png')}/>
-              <TouchableOpacity style={styles.upUserBox}>
-                <Text style={styles.upUser}>左凯</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.upUserBox}>
-                <Image style={{width:12,height:12}} source={require('../../../assets/images/artical_like_unselect.png')}/>
-              </TouchableOpacity>
+              {this.renderUps()}
             </View>
-
             {this.renderReplys()}
           </View>
         </View>
