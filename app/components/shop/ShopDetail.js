@@ -19,6 +19,8 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import * as Communications from 'react-native-communications'
+import SendIntentAndroid from 'react-native-send-intent'
 import Header from '../common/Header'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -199,6 +201,14 @@ class ShopDetail extends Component {
       }
     }
     this.props.submitShopComment(payload)
+  }
+
+  makePhoneCall(contactNumber) {
+    if(Platform.OS === 'android') {
+      SendIntentAndroid.sendPhoneCall(contactNumber)
+    }else {
+      Communications.phonecall(contactNumber, false)
+    }
   }
 
   renderGuessYouLikeList() {
@@ -390,7 +400,7 @@ class ShopDetail extends Component {
               </TouchableOpacity>
             </View>
             <View style={styles.contactNumberWrap}>
-              <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{}}>
+              <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
                 <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
                 <View style={styles.contactNumberTxtWrap}>
                   <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
