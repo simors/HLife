@@ -283,8 +283,7 @@ export function userUpShop(payload) {
   let currentUser = AV.User.current()
 
   return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
-    // console.log('userUpShop.userUpShopInfo=', userUpShopInfo)
-    if(!userUpShopInfo) {
+    if(!userUpShopInfo || !userUpShopInfo.id) {
       let Up = AV.Object.extend('Up')
       let up = new Up()
       up.set('targetId', shopId)

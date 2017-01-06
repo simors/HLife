@@ -487,7 +487,6 @@ const mapStateToProps = (state, ownProps) => {
   const shopList = selectShopList(state) || []
   const isUserLogined = authSelector.isUserLogined(state)
   const shopComments = selectShopComments(state, ownProps.id)
-  console.log('shopComments====', shopComments)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
 
