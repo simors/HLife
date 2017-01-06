@@ -170,6 +170,7 @@ export function getUpCount(payload) {
 }
 
 export function getIsUps(payload) {
+//  console.log('payload====>',payload)
   let articleId = payload.articleId
   let upType = payload.upType
   let currentUser = AV.User.current()
@@ -177,8 +178,10 @@ export function getIsUps(payload) {
   query.equalTo('targetId', articleId)
   query.equalTo('upType', upType)
   query.equalTo('user', currentUser)
+  console.log('currentUser==>',currentUser)
   query.include('user')
   return query.first().then((result) =>{
+    console.log('result====>',result)
     let userUpShopInfo = undefined
     if(result && result.attributes) {
    //   console.log('result===>',result)
@@ -194,7 +197,7 @@ export function getIsUps(payload) {
 
 
 export function upArticle(payload) {
-  console.log('hereiscodeupArticle====》',payload)
+ // console.log('hereiscodeupArticle====》',payload)
   let articleId = payload.articleId
   let upType = payload.upType
   let currentUser = AV.User.current()

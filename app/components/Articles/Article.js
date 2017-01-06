@@ -75,7 +75,7 @@ class Article extends Component {
   onUpCommentButton(payload) {
     if (payload.isUp) {
       this.props.unUpArticle({
-        topicId: payload.articleId,
+        articleId: payload.comment.commentId,
         upType: 'articleComment',
         success: payload.success,
         error: this.likeErrorCallback
@@ -83,7 +83,7 @@ class Article extends Component {
     }
     else {
       this.props.upArticle({
-        topicId: payload.articleId,
+        articleId: payload.comment.commentId,
         upType: 'articleComment',
         success: payload.success,
         error: this.likeErrorCallback
@@ -146,13 +146,13 @@ class Article extends Component {
   }
 
   renderCommentItem(value, key) {
-    console.log('value=========', value)
-    console.log('key=========', key)
+  //  console.log('value=========', value)
+   // console.log('key=========', key)
     return (
       <ArticleComment key={key}
                       comment={value}
                       onCommentButton={this.onCommentButton.bind(this)}
-                      onLikeCommentButton={(payload)=>this.onUpCommentButton(payload)}
+                      onUpCommentButton={(payload)=>this.onUpCommentButton(payload)}
       />
     )
   }
