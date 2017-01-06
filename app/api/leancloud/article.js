@@ -178,10 +178,10 @@ export function getIsUps(payload) {
   query.equalTo('targetId', articleId)
   query.equalTo('upType', upType)
   query.equalTo('user', currentUser)
-  console.log('currentUser==>',currentUser)
+  //console.log('currentUser==>',currentUser)
   query.include('user')
   return query.first().then((result) =>{
-    console.log('result====>',result)
+    //console.log('result====>',result)
     let userUpShopInfo = undefined
     if(result && result.attributes) {
    //   console.log('result===>',result)
@@ -264,18 +264,22 @@ export function unUpArticle(payload) {
 
 //根据ARTICLE的RELATION进行查询
 export function getComment(payload) {
+  console.log('payload.......',payload)
   let article = AV.Object.createWithoutData('Articles',payload)
   let relation = article.relation('comments')
   let query = relation.query()
   query.equalTo('enable',true)
   query.include(['author'])
+  query.include(['replyId'])
+  query.include(['replyId.author'])
   return query.find().then(function (results) {
 
     let comment = []
     results.forEach((result) => {
-     // console.log('articleItem====>',result)
 
       comment.push(ArticleComment.fromLeancloudObject(result))
+    //  console.log('comment====>',comment)
+
     })
 
     return new List(comment)
@@ -299,7 +303,7 @@ export function submitArticleComment(payload) {
   articleComment.set('author', currentUser)
   articleComment.set('articleId', article)
   articleComment.set('content', content)
-  if (payload.commentId) {
+  if (payload.replyId) {
     articleComment.set('replyId', reply)
   }
   return articleComment.save().then(function (result) {
