@@ -101,6 +101,7 @@ class ShopComment extends Component {
               <UpShopComment
                 shopId={this.props.shopId}
                 shopCommentId={this.props.shopCommentId}
+                upCallback={this.props.upCallback}
               />
               <Reply
                 onReplyClick={this.props.onReplyClick}

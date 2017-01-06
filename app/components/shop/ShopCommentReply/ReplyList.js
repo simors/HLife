@@ -76,11 +76,13 @@ class ReplyList extends Component {
   renderUps() {
     if(this.props.ups && this.props.ups.length) {
       return this.props.ups.map((item, index)=> {
-        return (
-          <TouchableOpacity key={"up_" + item.id + "_" + index} style={styles.upUserBox}>
-            <Text style={styles.upUser}>{item.user.nickname}</Text>
-          </TouchableOpacity>
-        )
+        if(item.status) {
+          return (
+            <TouchableOpacity key={"up_" + item.id + "_" + index} style={styles.upUserBox}>
+              <Text style={styles.upUser}>{item.user.nickname}</Text>
+            </TouchableOpacity>
+          )
+        }
       })
     }
   }

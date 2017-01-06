@@ -52,7 +52,7 @@ class UpShopComment extends Component {
       shopCommentUpId : this.props.shopCommentUpId,
       shopCommentId : this.props.shopCommentId,
       success: (result) => {
-        Toast.show('点赞成功', {duration: 1500})
+        // Toast.show('点赞成功', {duration: 1500})
         that.props.fetchShopCommentUpedUserList({
           shopId: that.props.shopId,
           shopCommentId: that.props.shopCommentId
@@ -74,7 +74,7 @@ class UpShopComment extends Component {
       shopCommentUpId : this.props.shopCommentUpId,
       shopCommentId : this.props.shopCommentId,
       success: (result) => {
-        Toast.show('取消点赞成功', {duration: 1500})
+        // Toast.show('取消点赞成功', {duration: 1500})
         that.props.fetchShopCommentUpedUserList({
           shopId: that.props.shopId,
           shopCommentId: that.props.shopCommentId
@@ -109,9 +109,7 @@ class UpShopComment extends Component {
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const activeUserId = authSelector.activeUserId(state)
-  console.log('activeUserId=', activeUserId)
   const isUped = shopSelector.selectActiveUserIsUpedShopComment(state, ownProps.shopId, ownProps.shopCommentId, activeUserId)
-  console.log('isUped=', isUped)
   const shopCommentUpId = shopSelector.selectShopCommentUpId(state, ownProps.shopId, ownProps.shopCommentId, activeUserId)
   return {
     isUserLogined: isUserLogined,
