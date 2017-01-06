@@ -227,10 +227,14 @@ function createLcConversation(payload) {
       console.log('leancloud Messenger init failed, can\'t get client')
       return undefined
     }
+    if (payload.type === msgTypes.INQUIRY_CONVERSATION) {
+      payload.members.push('wuaiSystemDocter')
+    }
     return client.createConversation({
       members: payload.members,
       name: payload.name,
       unique: true,
+      type: payload.type,   // 会话的类型，可以是问诊（INQUIRY_CONVERSATION），或私信（PERSONAL_CONVERSATION）
     }).then((conversation) => {
       return Conversation.fromLeancloudConversation(conversation)
     })
