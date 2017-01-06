@@ -452,9 +452,13 @@ class ShopDetail extends Component {
 
             <TouchableOpacity style={styles.commentBtnWrap} onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
               <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-              <View style={styles.commentBtnBadge}>
-                <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
-              </View>
+              {this.props.shopCommentsTotalCount > 0
+                ? <View style={styles.commentBtnBadge}>
+                    <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
+                  </View>
+                : null
+              }
+
             </TouchableOpacity>
 
             {
