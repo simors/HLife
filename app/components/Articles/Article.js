@@ -61,7 +61,7 @@ class Article extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchCommentsArticle({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
-      this.props.fetchIsFavorite({articleId: this.props.articleId})
+     // this.props.fetchIsFavorite({articleId: this.props.articleId})
       this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
 
     })
@@ -75,7 +75,7 @@ class Article extends Component {
   onUpCommentButton(payload) {
     if (payload.isUp) {
       this.props.unUpArticle({
-        topicId: payload.articleId,
+        articleId: payload.comment.commentId,
         upType: 'articleComment',
         success: payload.success,
         error: this.likeErrorCallback
@@ -83,7 +83,7 @@ class Article extends Component {
     }
     else {
       this.props.upArticle({
-        topicId: payload.articleId,
+        articleId: payload.comment.commentId,
         upType: 'articleComment',
         success: payload.success,
         error: this.likeErrorCallback
@@ -125,9 +125,9 @@ class Article extends Component {
       }
     }
 
-  onCommentButton(article) {
+  onCommentButton(comment) {
     this.setState({
-      comment: article
+      comment: comment
     })
     this.openModel()
   }
@@ -146,13 +146,13 @@ class Article extends Component {
   }
 
   renderCommentItem(value, key) {
-    console.log('value=========', value)
-    console.log('key=========', key)
+  //  console.log('value=========', value)
+   // console.log('key=========', key)
     return (
       <ArticleComment key={key}
                       comment={value}
                       onCommentButton={this.onCommentButton.bind(this)}
-                      onLikeCommentButton={(payload)=>this.onUpCommentButton(payload)}
+                      onUpCommentButton={(payload)=>this.onUpCommentButton(payload)}
       />
     )
   }
@@ -176,7 +176,7 @@ class Article extends Component {
       this.props.submitArticleComment({
         ...commentData,
         articleId: this.props.articleId,
-        replyId: (this.state.comment) ? this.state.comment.objectId : undefined,
+        replyId: (this.state.comment) ? this.state.comment.commentId : undefined,
         success: this.submitSuccessCallback.bind(this),
         error: this.submitErrorCallback
       })
@@ -206,7 +206,8 @@ class Article extends Component {
 
   closeModal(callback) {
     this.setState({
-      modalVisible: false
+      modalVisible: false,
+      comment: undefined
     })
     if (callback && typeof callback == 'function') {
       callback()
@@ -285,6 +286,7 @@ class Article extends Component {
           showModules={["content"]}
           modalVisible={this.state.modalVisible}
           modalTitle="写评论"
+          textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
           closeModal={() => this.closeModal()}
           submitComment={this.submitComment.bind(this)}
         />

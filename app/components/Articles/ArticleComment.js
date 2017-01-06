@@ -29,27 +29,44 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 class ArticleComment extends Component {
   constructor(props) {
-    console.log('didmount======>')
+  //  console.log('didmount======>')
     super(props)
     this.state = {}
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchIsUP({articleId: this.props.comment.articleId, upType:'articleComment'})
-      this.props.fetchUpCount({articleId: this.props.comment.articleId, upType:'topicComment'})
+      this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
+      this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
     })
   }
+
+  successCallback() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
+      this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
+    })
+  }
+
+  onUpCommentButton() {
+    this.props.onUpCommentButton({
+      comment: this.props.comment,
+      isUp: this.props.isUp,
+      success: this.successCallback.bind(this)
+    })
+  }
+
   renderParentComment() {
-    if (this.props.hasParentComment) {
+   // console.log('ceshiyixia===>',this.props.comment)
+    if (this.props.comment.replyAuthor) {
       return (
         <View style={styles.parentCommentStyle}>
           <Text style={styles.parentCommentContentStyle}>
             <Text style={styles.commentUserStyle}>
-              {this.props.topic.nickname}:
+              {this.props.comment.replyAuthor}:
             </Text>
             <Text style={styles.parentCommentTextStyle}>
-              {this.props.topic.content}
+              {this.props.comment.replyContent}
             </Text>
           </Text>
         </View>
@@ -82,12 +99,14 @@ class ArticleComment extends Component {
             <Text style={styles.timeTextStyle}>刚刚</Text>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>长沙</Text>
-            <TouchableOpacity style={styles.likeStyle} onPress={()=> {
-            }}>
-              <Image style={styles.likeImageStyle} source={require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>25</Text>
+            <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onUpCommentButton()}>
+              <Image style={styles.likeImageStyle}  source={this.props.isUp ?
+                require("../../assets/images/like_select.png") :
+                require("../../assets/images/like_unselect.png")}/>
+              <Text style={styles.commentTextStyle}>{this.props.upCount}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+              this.props.onCommentButton(this.props.comment)
             }}>
               <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
               <Text style={styles.commentTextStyle}>回复</Text>
@@ -105,12 +124,12 @@ const mapStateToProps = (state, ownProps) => {
  // let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
  // console.log('ownProps=======>',ownProps.comment)
 
-  let upCount = getUpCount(state,ownProps.comment.articleId)
-  let isUp = getIsUp(state,ownProps.comment.articleId)
-
+  let upCount = getUpCount(state,ownProps.comment.commentId)
+  let isUp = getIsUp(state,ownProps.comment.commentId)
+ // console.log('isUp====>',isUp)
   return{
     upCount: upCount,
-    isUP: isUp
+    isUp: isUp
   //  articleItem : articleItem
   }
 }
