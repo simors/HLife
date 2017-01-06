@@ -48,7 +48,7 @@ class ShopDetail extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopAnnouncements({id: this.props.id})
-      this.props.fetchShopCommentList({id: this.props.id})
+      this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
       this.props.fetchShopCommentTotalCount({id: this.props.id})
       if(this.props.isUserLogined) {
         this.props.userIsFollowedShop({id: this.props.id})
@@ -262,6 +262,7 @@ class ShopDetail extends Component {
     if(this.props.shopComments && this.props.shopComments.length) {
       const that = this
       const commentsView = this.props.shopComments.map((item, index) => {
+        if(index > 2) return
         const scoreWidth = item.score / 5.0 * 62
         let userIsFollowedTheUser = that.userIsFollowedTheUser(item.user.id)
         return (
@@ -486,6 +487,7 @@ const mapStateToProps = (state, ownProps) => {
   const shopList = selectShopList(state) || []
   const isUserLogined = authSelector.isUserLogined(state)
   const shopComments = selectShopComments(state, ownProps.id)
+  console.log('shopComments====', shopComments)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
 
