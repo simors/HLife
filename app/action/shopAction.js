@@ -154,7 +154,7 @@ export function userUpShop(payload) {
         let params = {
           shopId: payload.id
         }
-        msgAction.notifyShopLike(params)
+        dispatch(msgAction.notifyShopLike(params))
         if(payload.success){
           payload.success(result)
         }
