@@ -19,6 +19,8 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import * as Communications from 'react-native-communications'
+import SendIntentAndroid from 'react-native-send-intent'
 import Header from '../common/Header'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -48,7 +50,7 @@ class ShopDetail extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopAnnouncements({id: this.props.id})
-      this.props.fetchShopCommentList({id: this.props.id})
+      this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
       this.props.fetchShopCommentTotalCount({id: this.props.id})
       if(this.props.isUserLogined) {
         this.props.userIsFollowedShop({id: this.props.id})
@@ -183,10 +185,10 @@ class ShopDetail extends Component {
     }
     const that = this
     let payload = {
-      id: this.props.shopDetail.id,
+      id: this.props.id,
       ...commentData,
       success: () => {
-        that.props.fetchShopCommentList({id: that.props.shopDetail.id})
+        that.props.fetchShopCommentList({isRefresh: true, id: that.props.id})
         that.props.fetchShopCommentTotalCount({id: that.props.id})
         that.closeModal(()=>{
           Toast.show('发布成功', {duration: 1000})
@@ -199,6 +201,14 @@ class ShopDetail extends Component {
       }
     }
     this.props.submitShopComment(payload)
+  }
+
+  makePhoneCall(contactNumber) {
+    if(Platform.OS === 'android') {
+      SendIntentAndroid.sendPhoneCall(contactNumber)
+    }else {
+      Communications.phonecall(contactNumber, false)
+    }
   }
 
   renderGuessYouLikeList() {
@@ -262,6 +272,7 @@ class ShopDetail extends Component {
     if(this.props.shopComments && this.props.shopComments.length) {
       const that = this
       const commentsView = this.props.shopComments.map((item, index) => {
+        if(index > 2) return
         const scoreWidth = item.score / 5.0 * 62
         let userIsFollowedTheUser = that.userIsFollowedTheUser(item.user.id)
         return (
@@ -389,7 +400,7 @@ class ShopDetail extends Component {
               </TouchableOpacity>
             </View>
             <View style={styles.contactNumberWrap}>
-              <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{}}>
+              <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
                 <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
                 <View style={styles.contactNumberTxtWrap}>
                   <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
@@ -451,9 +462,13 @@ class ShopDetail extends Component {
 
             <TouchableOpacity style={styles.commentBtnWrap} onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
               <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-              <View style={styles.commentBtnBadge}>
-                <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
-              </View>
+              {this.props.shopCommentsTotalCount > 0
+                ? <View style={styles.commentBtnBadge}>
+                    <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
+                  </View>
+                : null
+              }
+
             </TouchableOpacity>
 
             {

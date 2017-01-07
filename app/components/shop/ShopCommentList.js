@@ -18,6 +18,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 import Header from '../common/Header'
 import CommonListView from '../common/CommonListView'
@@ -62,6 +63,7 @@ class ShopCommentList extends Component {
   renderRow(rowData, rowId) {
     return (
       <ShopComment
+        shopId={this.props.shopId}
         shopCommentId={rowData.id}
         userId={rowData.user.id}
         userNickname={rowData.user.nickname}
@@ -71,6 +73,8 @@ class ShopCommentList extends Component {
         shopCommentTime={rowData.shopCommentTime}
         createdDate={rowData.createdDate}
         blueprints={rowData.blueprints}
+        containedReply={rowData.containedReply}
+        containedUps={rowData.containedUps}
         onReplyClick={this.onReplyClick.bind(this)}
       />
     )
@@ -119,12 +123,18 @@ class ShopCommentList extends Component {
       Actions.LOGIN()
       return
     }
+    const that = this
     this.props.reply({
       replyShopCommentId : this.state.replyShopCommentId,
       replyId : this.state.replyId,
       replyContent : content,
       success: (result) => {
-        Toast.show('回复成功', {duration: 1500})
+        dismissKeyboard()
+        // Toast.show('回复成功', {duration: 1500})
+        that.props.fetchShopCommentReplyList({
+          shopId: that.props.shopId,
+          replyShopCommentId: this.state.replyShopCommentId
+        })
       },
       error: (err) => {
         Toast.show(err.message, {duration: 1500})
@@ -177,9 +187,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   // const shopCommentList = ShopDetailTestData.shopComments
-  let shopId = '5858e68a8e450a006cba3cff'
-  const shopCommentList = selectShopComments(state, shopId)
-  // const shopCommentList = selectShopComments(state, ownProps.shopId)
+  // let shopId = '5858e68a8e450a006cba3cff'
+  // const shopCommentList = selectShopComments(state, shopId)
+  const shopCommentList = selectShopComments(state, ownProps.shopId)
   const isUserLogined = authSelector.isUserLogined(state)
 
   let lastCreatedAt = ''
@@ -190,14 +200,14 @@ const mapStateToProps = (state, ownProps) => {
   return {
     ds: ds.cloneWithRows(shopCommentList),
     isUserLogined: isUserLogined,
-    lastCreatedAt: lastCreatedAt,
-    shopId: shopId
+    lastCreatedAt: lastCreatedAt
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCommentList,
-  reply
+  reply,
+  fetchShopCommentReplyList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCommentList)

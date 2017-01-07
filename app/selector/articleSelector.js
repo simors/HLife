@@ -76,3 +76,7 @@ export function getIsUp(state,articleId) {
 //  console.log('=========>',articleId)
   return getArticles(state).isUp[articleId]
 }
+export function getIsFavorite(state,articleId) {
+//  console.log('=========>',articleId)
+  return getArticles(state).isFavorite[articleId]
+}

@@ -61,6 +61,10 @@ export function followShop(payload) {
       let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
       dispatch(updateAction(result))
       if(result && '10002' == result.code) {
+        let params = {
+          shopId: payload.id
+        }
+        dispatch(msgAction.notifyShopFollow(params))
         if(payload.success){
           payload.success(result)
         }
@@ -95,7 +99,7 @@ export function submitShopComment(payload) {
 
 export function fetchShopCommentList(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchShopCommentList(payload).then((shopComments)=>{
+    lcShop.fetchShopCommentListByCloudFunc(payload).then((shopComments)=>{
       let actionType = ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.FETCH_PAGING_SHOP_COMMENT_LIST_SUCCESS
@@ -154,7 +158,7 @@ export function userUpShop(payload) {
         let params = {
           shopId: payload.id
         }
-        msgAction.notifyShopLike(params)
+        dispatch(msgAction.notifyShopLike(params))
         if(payload.success){
           payload.success(result)
         }
@@ -193,6 +197,60 @@ export function userUnUpShop(payload) {
   }
 }
 
+export function fetchShopCommentUpedUserList(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopCommentUpedUserListByCloudFunc(payload).then((shopCommentUpedUserList) => {
+      console.log('fetchShopCommentUpedUserList.action===', shopCommentUpedUserList)
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_UPED_USER_LIST_SUCCESS)
+
+      let params = {}
+      params.shopId = payload.shopId
+      params.shopCommentId = payload.shopCommentId
+      params.shopCommentUpedUserList = shopCommentUpedUserList
+      dispatch(updateAction(params))
+      if(payload.success){
+        payload.success(params)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function userUpShopComment(payload) {
+  return (dispatch, getState) => {
+    lcShop.userUpShopComment(payload).then((result) => {
+      let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_COMMENT_SUCCESS)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function userUnUpShopComment(payload) {
+  return (dispatch, getState) => {
+    lcShop.userUnUpShopComment(payload).then((result) => {
+      let updateAction = createAction(ShopActionTypes.USER_UNUP_SHOP_COMMENT_SUCCESS)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function reply(payload) {
   return (dispatch, getState) => {
     lcShop.reply(payload).then((result) => {
@@ -211,14 +269,16 @@ export function reply(payload) {
 
 export function fetchShopCommentReplyList(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchShopCommentReplyList(payload).then((shopCommentReplyList) => {
+    lcShop.fetchShopCommentReplyListByCloudFunc(payload).then((shopCommentReplyList) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_REPLY_LIST_SUCCESS)
-      dispatch(updateAction({
+      let params = {
+        shopId: payload.shopId,
         replyShopCommentId: payload.replyShopCommentId,
         shopCommentReplyList: shopCommentReplyList
-      }))
+      }
+      dispatch(updateAction(params))
       if(payload.success){
-        payload.success(shopCommentReplyList)
+        payload.success(params)
       }
     }).catch((error) => {
       if(payload.error){

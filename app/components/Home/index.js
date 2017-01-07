@@ -26,7 +26,6 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-
 import {getBanner, getAnnouncement} from '../../selector/configSelector'
 import {fetchBanner, fetchAnnouncement, getAllTopicCategories} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
@@ -40,6 +39,8 @@ import Channels from './Channels'
 import DailyChosen from './DailyChosen'
 import Columns from './Columns'
 import {getTopicCategories} from '../../selector/configSelector'
+import {hasNewMessage} from '../../selector/messageSelector'
+import {hasNewNotice} from '../../selector/notifySelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -176,6 +177,23 @@ class Home extends Component {
 
   }
 
+  renderHeadMessage() {
+    if (this.props.hasNotice) {
+      return (
+        <View>
+          <Image source={require("../../assets/images/home_message.png")} />
+          <View style={styles.noticeTip}></View>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          <Image source={require("../../assets/images/home_message.png")} />
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -186,8 +204,7 @@ class Home extends Component {
           leftImageLabel="长沙"
           leftPress={() => Actions.pop()}
           title="近来"
-          rightType="image"
-          rightImageSource={require("../../assets/images/home_message.png")}
+          rightComponent={() => this.renderHeadMessage()}
           rightPress={() => Actions.MESSAGE_BOX()}
         />
 
@@ -237,11 +254,15 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
+  let newMsg = hasNewMessage(state)
+  let newNotice = hasNewNotice(state)
+
   return {
     announcement: announcement,
     banner: banner,
     topics:pickedTopics,
-    ds: ds.cloneWithRows(dataArray)
+    ds: ds.cloneWithRows(dataArray),
+    hasNotice: newMsg || newNotice,
   }
 }
 
@@ -298,6 +319,15 @@ const styles = StyleSheet.create({
 
   dailyChosenModule: {
     marginTop: normalizeH(15),
+  },
+  noticeTip: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
   },
 
 })

@@ -48,3 +48,62 @@ export default THEME = {
 		red: '#F24016'
 	},
 }
+
+export const INNER_CSS =
+`
+body {
+	color: #555;
+	font-size: 16px;
+	line-height: 1.7;
+	text-align: justify;
+}
+img {
+	display: block;
+	margin: 15px auto;
+	max-width: 100%;
+}
+p ,div {
+	margin: 0;
+	color: #555;
+	font-size: 16px;
+	line-height: 1.7;
+	text-align: justify;
+}
+h1,h2,h3,h4,h5 {
+	margin: 0;
+	line-height: 1.7;
+}
+h1 {
+	font-size: 22px;
+}
+h2 {
+	font-size: 20px;
+}
+h3 {
+	font-size: 18px;
+}
+h4 {
+	font-size: 16px;
+}
+h5 {
+	font-size: 14px;
+}
+ul ,ol {
+	margin: 0;
+}
+ul li ,ol li {
+	line-height: 1.7;
+	list-style: none;
+}
+blockquote {
+	display: block;
+	padding: 12px 10px;
+	margin: 15px 0;
+	line-height: 1.7;
+	font-size: 100%;
+	border-left: 4px solid #D1E7EE;
+	background-color: #f5f5f5;
+}
+blockquote p {
+	margin: 0 0 0 6px;
+}`

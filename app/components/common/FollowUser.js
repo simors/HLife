@@ -47,7 +47,9 @@ class FollowUser extends Component {
       this.setState({
         shouldFetchUserFollowees : false
       })
-      this.props.fetchUserFollowees()
+      if(this.props.isUserLogined) {
+        this.props.fetchUserFollowees()
+      }
     }
   }
 

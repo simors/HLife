@@ -98,7 +98,11 @@ class ShopComment extends Component {
           <View style={[styles.commentLine, styles.commentFootLine]}>
             <Text style={[styles.commentTime]}>{this.props.shopCommentTime}</Text>
             <View style={styles.upReplyWrap}>
-              <UpShopComment />
+              <UpShopComment
+                shopId={this.props.shopId}
+                shopCommentId={this.props.shopCommentId}
+                upCallback={this.props.upCallback}
+              />
               <Reply
                 onReplyClick={this.props.onReplyClick}
                 shopCommentId={this.props.shopCommentId}
@@ -107,7 +111,10 @@ class ShopComment extends Component {
           </View>
 
           <ReplyList
-
+            onReplyClick={this.props.onReplyClick}
+            replys={this.props.containedReply}
+            ups={this.props.containedUps}
+            shopCommentId={this.props.shopCommentId}
           />
           
         </View>

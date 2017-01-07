@@ -21,12 +21,9 @@ export default class KeyboardAwareToolBar extends Component {
 
   constructor(props) {
     super(props)
-
-    this.state = {
-      keyboardHeight : new Animated.Value(this.props.initKeyboardHeight || 0),
-      isTypingDisabled : false,
-      touchStarted : false
-    }
+    this._keyboardHeight = new Animated.Value(this.props.initKeyboardHeight || 0)
+    this._isTypingDisabled = false
+    this._touchStarted = false
 
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
@@ -65,28 +62,40 @@ export default class KeyboardAwareToolBar extends Component {
 
   }
 
+  getKeyboardHeight() {
+    return this._keyboardHeight
+  }
+
   setKeyboardHeight(height) {
     if (this.props.isAnimated === true) {
-      Animated.timing(this.state.keyboardHeight, {
+      Animated.timing(this._keyboardHeight, {
         toValue: height,
         duration: 260,
       }).start()
     }else {
-      this.setState({
-        ...this.state,
-        keyboardHeight : height
-      })
+      this._keyboardHeight = height
     }
+
+  }
+
+  getIsTypingDisabled(){
+    return this._isTypingDisabled
   }
 
   setIsTypingDisabled(value) {
-    this.setState({
-      ...this.state,
-      isTypingDisabled : value
-    })
+    this._isTypingDisabled = value
+  }
+
+  rePosition() {
+    if (Platform.OS === 'android') {
+      return 0
+    }else{
+      return this.getKeyboardHeight()
+    }
   }
 
   onKeyboardWillShow(e) {
+    // console.log('onKeyboardWillShow.e=', e)
     this.setIsTypingDisabled(true)
     this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
   }
@@ -128,7 +137,7 @@ export default class KeyboardAwareToolBar extends Component {
 
   render() {
     return (
-      <Animated.View style={[styles.container, {bottom: this.state.keyboardHeight}, this.props.containerStyle]}>
+      <Animated.View style={[styles.container, {bottom: this.rePosition()}, this.props.containerStyle]}>
         {this.props.children}
       </Animated.View>
     )

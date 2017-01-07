@@ -81,11 +81,13 @@ export const ArticleCommentItem = Record({
   commentId: undefined,   //评论识别码
   articleId: undefined,   //评论的文章引用 为POINTER
   content: undefined,     //评论内容
-  replyId: undefined,       //回复评论引用  为POINTER
+  //replyId: undefined,       //回复评论引用  为POINTER
   author: undefined,      //作者
   avatar: undefined,
   nickname: undefined,
   createAt: undefined,
+  replyAuthor:undefined,
+  replyContent:undefined
 })
 
 export class ArticleComment extends ArticleCommentItem {
@@ -93,8 +95,7 @@ export class ArticleComment extends ArticleCommentItem {
     let commentItem = new ArticleCommentItem()
     let attrs = lcObj.attributes
     let user = attrs.author.attributes
-    console.log('user====>',user)
-    console.log('attrs====>',attrs)
+    // console.log('lcO ====>,'lcObj)
 
 
     let nickname = "吾爱用户"
@@ -110,18 +111,20 @@ export class ArticleComment extends ArticleCommentItem {
     let parentUserPoint = undefined
     let parentCommentUser = "吾爱用户"
 
-    //有父评论的情况下
-    // if (attrs.replyId) {
-    //   parentUserPoint = attrs.replyId.attributes.user
-    //   //父用户昵称解析
-    //   if (parentUserPoint) {
-    //     parentCommentUser = parentUserPoint.get('nickname')
-    //     if (!parentCommentUser) {
-    //       let phoneNumber = parentUserPoint.getMobilePhoneNumber()
-    //       parentCommentUser = hidePhoneNumberDetail(phoneNumber)
-    //     }
-    //   }
-    // }
+   // 有父评论的情况下
+    if (attrs.replyId) {
+    //  console.log('attrs====>',attrs)
+
+      parentUserPoint = attrs.replyId.attributes.author
+      //父用户昵称解析
+      if (parentUserPoint) {
+        parentCommentUser = parentUserPoint.get('nickname')
+        if (!parentCommentUser) {
+          let phoneNumber = parentUserPoint.getMobilePhoneNumber()
+          parentCommentUser = hidePhoneNumberDetail(phoneNumber)
+        }
+      }
+    }
     return commentItem.withMutations((record)=> {
       record.set('author', attrs.author.id)
     //  console.log('author====>',record)
@@ -131,9 +134,16 @@ export class ArticleComment extends ArticleCommentItem {
       record.set('commentId', lcObj.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)
-      record.set('replyId', attrs.replyId?attrs.replyId:undefined)
-      // record.set('createdAt', lcObj.createdAt)
-     //     console.log('articleItem====>',record)
+     // console.log('attrs====>',attrs)
+    //  console.log('record====>',record)
+
+      record.set('replyContent', attrs.replyId?attrs.replyId.attributes.content:undefined)
+     // console.log('record====>',record)
+
+      record.set('replyAuthor', attrs.replyId?parentCommentUser:undefined)
+
+      record.set('createAt', lcObj.createAt)
+         // console.log('articleItem====>',record)
     })
   }
 }
@@ -171,6 +181,39 @@ export class Up extends UpRecord {
   }
 }
 
+export const FavoriteRecord = Record({
+  id: undefined, // 收藏ID
+  articleId: '', //点赞类型对应的对象id
+  status: false, //是否点赞
+  createdDate: '', //格式化后的创建时间
+  user: undefined,
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+})
+
+export class Favorite extends FavoriteRecord {
+  static fromLeancloudObject(lcObj) {
+    let favorite = new FavoriteRecord()
+    let attrs = lcObj.attributes
+    return favorite.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('articleId', attrs.article.id)
+     // console.log('zhelizuizhongyao',lcObj)
+
+      record.set('status', attrs.status)
+     // let userAttrs = attrs.user.attributes
+     // let user = {}
+      //user.id = attrs.user.id
+      //user.nickname = userAttrs.nickname
+
+      record.set('user', attrs.user)
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+}
+
 
 export const Articles = Record({
   articleList: Map(),
@@ -180,4 +223,5 @@ export const Articles = Record({
   upCount: Map(),
   isUp: Map(),
   commentsCount: Map(),
+  isFavorite:Map(),
 }, 'Articles')

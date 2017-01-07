@@ -20,7 +20,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import THEME from '../../constants/themes/theme1'
+import THEME,{INNER_CSS} from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {Actions} from 'react-native-router-flux'
 import {CommonWebView} from '../common/CommonWebView'
@@ -33,13 +33,17 @@ import {
   fetchCommentsArticle,
   fetchCommentsCount,
   fetchUpCount,
-  submitArticleComment
+  submitArticleComment,
+  fetchIsFavorite,
+  unFavoriteArticle,
+  favoriteArticle,
 } from '../../action/articleAction'
-import {getIsUp, getcommentList, getcommentCount, getUpCount} from '../../selector/articleSelector'
+import {getIsUp,getIsFavorite, getcommentList, getcommentCount, getUpCount} from '../../selector/articleSelector'
 import Comment from '../common/Comment'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import ArticleComment from './ArticleComment'
 import * as Toast from '../common/Toast'
+import WebHtmlView from 'react-native-webhtmlview'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -58,6 +62,9 @@ class Article extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchCommentsArticle({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
+      this.props.fetchIsFavorite({articleId: this.props.articleId})
+      this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
+
     })
   }
 
@@ -69,7 +76,7 @@ class Article extends Component {
   onUpCommentButton(payload) {
     if (payload.isUp) {
       this.props.unUpArticle({
-        topicId: payload.articleId,
+        articleId: payload.comment.commentId,
         upType: 'articleComment',
         success: payload.success,
         error: this.likeErrorCallback
@@ -77,7 +84,7 @@ class Article extends Component {
     }
     else {
       this.props.upArticle({
-        topicId: payload.articleId,
+        articleId: payload.comment.commentId,
         upType: 'articleComment',
         success: payload.success,
         error: this.likeErrorCallback
@@ -89,9 +96,60 @@ class Article extends Component {
     Toast.show(error.message)
   }
 
-  onCommentButton(article) {
+  upSuccessCallback() {
+      InteractionManager.runAfterInteractions(() => {
+       // this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
+       // this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
+      //  this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
+        this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
+        this.props.fetchIsFavorite({articleId: this.props.articleId})
+      })
+    }
+
+  onLikeButton() {
+      if (this.props.isUp) {
+        //  console.log('hereiscode')
+        this.props.unUpArticle({
+          articleId: this.props.articleId,
+          upType: 'article',
+          success: this.upSuccessCallback.bind(this),
+          error: this.likeErrorCallback
+        })
+      }
+      else {
+        console.log('hereiscode')
+        this.props.upArticle({
+          articleId: this.props.articleId,
+          upType: 'article',
+          success: this.upSuccessCallback.bind(this),
+          error: this.likeErrorCallback
+        })
+      }
+    }
+
+  onFavoriteButton(){
+    if (this.props.isFavorite) {
+        console.log('hereiscode')
+      this.props.unFavoriteArticle({
+        articleId: this.props.articleId,
+      //  upType: 'article',
+        success: this.upSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+    else {
+      // console.log('hereiscode')
+      this.props.favoriteArticle({
+        articleId: this.props.articleId,
+      //  upType: 'article',
+        success: this.upSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+  }
+  onCommentButton(comment) {
     this.setState({
-      comment: article
+      comment: comment
     })
     this.openModel()
   }
@@ -110,19 +168,19 @@ class Article extends Component {
   }
 
   renderCommentItem(value, key) {
-    console.log('value=========', value)
-    console.log('key=========', key)
+  //  console.log('value=========', value)
+   // console.log('key=========', key)
     return (
       <ArticleComment key={key}
                       comment={value}
                       onCommentButton={this.onCommentButton.bind(this)}
-                      onLikeCommentButton={(payload)=>this.onUpCommentButton(payload)}
+                      onUpCommentButton={(payload)=>this.onUpCommentButton(payload)}
       />
     )
   }
 
   renderNoComment() {
-    if (this.props.commentsTotalCount == 0) {
+    if (this.props.articleComments.length == 0) {
       return (
         <Text style={{alignSelf: 'center', paddingTop: 20}}>
           目前没有评论，快来抢沙发吧！~~~
@@ -140,7 +198,7 @@ class Article extends Component {
       this.props.submitArticleComment({
         ...commentData,
         articleId: this.props.articleId,
-        replyId: (this.state.comment) ? this.state.comment.objectId : undefined,
+        replyId: (this.state.comment) ? this.state.comment.commentId : undefined,
         success: this.submitSuccessCallback.bind(this),
         error: this.submitErrorCallback
       })
@@ -170,7 +228,8 @@ class Article extends Component {
 
   closeModal(callback) {
     this.setState({
-      modalVisible: false
+      modalVisible: false,
+      comment: undefined
     })
     if (callback && typeof callback == 'function') {
       callback()
@@ -203,23 +262,24 @@ class Article extends Component {
                 overflow: 'hidden',
                 borderRadius: normalizeW(15),
                 marginLeft: normalizeW(12)
-              }} source={{uri: this.props.avatar}}></Image>
+              }} source={this.props.avatar ? {uri: this.props.avatar} : require("../../assets/images/default_portrait@2x.png")}></Image>
               <Text style={{
                 fontSize: normalizeH(15),
                 color: '#929292',
                 marginLeft: normalizeW(12)
               }}>{this.props.nickname}</Text>
             </View>
-
-            <WebView style={styles.articleView}
-                     source={{html: this.props.content}}
-            >
-            </WebView>
+            <WebHtmlView
+              source={{html: this.props.content}}
+              innerCSS={INNER_CSS}
+            />
+            <View style={styles.upList}>
             <View style={styles.zanStyle} onLayout={this.measureMyComponent.bind(this)}>
               <Text style={styles.zanTextStyle}>
                 赞
               </Text>
             </View>
+              </View>
             {this.renderCommentPage()}
             {this.renderNoComment()}
           </View>
@@ -236,15 +296,22 @@ class Article extends Component {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
-          }}>
-            <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+          <TouchableOpacity style={styles.shopUpWrap} onPress={()=>this.onLikeButton()}>
+            <Image style={{}} source={this.props.isUp ?
+                                     require("../../assets/images/like_select.png") :
+                                     require("../../assets/images/like_unselect.png")}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> this.onFavoriteButton()}>
+            <Image style={{}} source={this.props.isFavorite ?
+              require("../../assets/images/artical_favorite_select.png") :
+              require("../../assets/images/artical_favorite_unselect.png")}/>
           </TouchableOpacity>
         </View>
         <Comment
           showModules={["content"]}
           modalVisible={this.state.modalVisible}
           modalTitle="写评论"
+          textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
           closeModal={() => this.closeModal()}
           submitComment={this.submitComment.bind(this)}
         />
@@ -262,6 +329,7 @@ const mapStateToProps = (state, ownProps) => {
   const isUp = getIsUp(state, ownProps.articleId)
   const upCount = getUpCount(state, ownProps.articleId)
   const commentsTotalCount = getcommentCount(state, ownProps.articleId)
+  const isFavorite = getIsFavorite(state,ownProps.articleId)
   //console.log('articleComment===>',articleComments)
 
   return {
@@ -270,18 +338,22 @@ const mapStateToProps = (state, ownProps) => {
     isUp: isUp,
     userInfo: userInfo,
     upCount: upCount,
-    commentsTotalCount: commentsTotalCount
+    commentsTotalCount: commentsTotalCount,
+    isFavorite: isFavorite
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchIsUP,
   upArticle,
+  favoriteArticle,
   unUpArticle,
   fetchCommentsArticle,
   fetchCommentsCount,
   fetchUpCount,
-  submitArticleComment
+  submitArticleComment,
+  fetchIsFavorite,
+  unFavoriteArticle
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Article)
@@ -292,25 +364,32 @@ const styles = StyleSheet.create(
       flex: 1,
       backgroundColor: '#E5E5E5',
       justifyContent: 'flex-start',
+      alignItems: 'center'
+
     },
     titleView: {
       height: normalizeH(39),
       width: PAGE_WIDTH,
-      marginTop: normalizeH(64),
-      borderBottomWidth: normalizeBorder(3),
+     // marginTop: normalizeH(64),
+      borderBottomWidth: normalizeBorder(1),
       borderColor: '#E6E6E6',
       justifyContent: 'center',
+      backgroundColor:'#FFFFFF',
     },
     authorView: {
       height: normalizeH(50),
       width: PAGE_WIDTH,
-      marginTop: normalizeH(3),
+      marginTop: normalizeH(1),
       alignItems: 'center',
       flexDirection: 'row',
+      backgroundColor:'#FFFFFF',
     },
     articleView: {
       height: normalizeH(452),
-      width: PAGE_WIDTH,
+      width:PAGE_WIDTH,
+     // paddingLeft:normalizeW(12),
+      //paddingRight:normalizeW(12),
+
     },
     commentView: {
       height: normalizeH(50),
@@ -375,6 +454,29 @@ const styles = StyleSheet.create(
       }),
       flex: 1,
       backgroundColor: '#E5E5E5',
-      width: PAGE_WIDTH
+      width: PAGE_WIDTH,
+    },
+    zanStyle: {
+      backgroundColor: THEME.colors.green,
+      borderWidth: 1,
+      borderStyle: 'solid',
+      borderColor: 'transparent',
+      height: normalizeH(35),
+      alignSelf: 'center',
+      borderRadius: 100,
+      marginLeft: normalizeW(12),
+      width: normalizeW(35),
+    },
+    zanTextStyle: {
+      fontSize: em(17),
+      color: "#ffffff",
+      marginTop: normalizeH(7),
+      alignSelf: 'center',
+    },
+    upList:{
+      backgroundColor: '#E5E5E5',
+      height: normalizeH(59),
+      alignItems: 'flex-start',
+      flexDirection: 'row',
     },
   })

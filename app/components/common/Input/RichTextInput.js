@@ -48,6 +48,7 @@ const LOAD_DRAFT = 'LOAD_DRAFT'
 const COUNTER = 'COUNTER'
 const CONTENTS = 'CONTENTS'
 const HEIGHT = 'HEIGHT'
+const ABSTRACT = 'ABSTRACT'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -66,6 +67,7 @@ class RichTextInput extends Component {
       webViewHeight: MIN_RTE_HEIGHT,
       keyboardPadding: 0,
     }
+    this.abstract = ""
     this.lastText = ""
     this.lastWordCnt = 0
     this.insertImages = []
@@ -105,7 +107,12 @@ class RichTextInput extends Component {
   articleContentChange(data) {
     let updateData = {
       text: this.lastText,
-      wordCount: this.lastWordCnt
+      wordCount: this.lastWordCnt,
+      abstract: this.abstract,
+    }
+    if (data.abstract) {
+      updateData.abstract = data.abstract
+      this.abstract = data.abstract
     }
     if (data.text) {
       updateData.text = data.text
@@ -217,7 +224,7 @@ class RichTextInput extends Component {
             {
               position: 'absolute',
               right: 150,
-              bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
+              bottom: this.state.keyboardPadding + this.props.wrapHeight + (Platform.OS == 'ios' ? 0 : 25) + 50,
             }]}
           >
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -234,7 +241,7 @@ class RichTextInput extends Component {
             {
               position: 'absolute',
               right: 50,
-              bottom: this.state.keyboardPadding + (Platform.OS == 'ios' ? 0 : 25) + 50,
+              bottom: this.state.keyboardPadding + this.props.wrapHeight + (Platform.OS == 'ios' ? 0 : 25) + 50,
             }]}
           >
             {this.renderHideEditToolView()}
@@ -288,7 +295,7 @@ class RichTextInput extends Component {
   }
 
   onBridgeMessage(message) {
-    // console.log(message)
+    console.log(message)
     switch (message) {
       case GET_FOCUS:
         this.props.onFocus(true)
@@ -315,6 +322,9 @@ class RichTextInput extends Component {
           this.setState({
             webViewHeight: MIN_RTE_HEIGHT < parseInt(height) ? parseInt(height) + 200 + padding : MIN_RTE_HEIGHT,
           })
+        } else if (message.indexOf(ABSTRACT) == 0) {
+          let abstract = message.substr(message.lastIndexOf('_') + 1, message.length)
+          this.articleContentChange({abstract: abstract})
         }
         break
     }
@@ -394,6 +404,7 @@ class RichTextInput extends Component {
 
 RichTextInput.defaultProps = {
   simplify: false,
+  wrapHeight: 0,
 }
 
 class EditToolView extends Component {

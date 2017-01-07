@@ -1,6 +1,11 @@
 /**
  * Created by yangyang on 2016/12/20.
  */
+
+// 会话的类型
+export const INQUIRY_CONVERSATION = 'INQUIRY_CONVERSATION'      // 问诊
+export const PERSONAL_CONVERSATION = 'PERSONAL_CONVERSATION'    // 私信
+
 export const MSG_TEXT = -1
 export const MSG_SYSTEM = 1
 export const MSG_IMAGE = 2
@@ -26,3 +31,5 @@ export const ON_LEAVE_CONVERSATION = 'ON_LEAVE_CONVERSATION'
 export const ON_MESSAGE_CREATED = 'ON_MESSAGE_CREATED'
 export const ON_MESSAGE_SENTED = 'ON_MESSAGE_SENTED'
 export const ON_MESSAGE_RECEIVED = 'ON_MESSAGE_RECEIVED'
+
+export const ADD_NOTIFY_MSG = 'ADD_NOTIFY_MSG'

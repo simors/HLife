@@ -11,6 +11,7 @@ const addUpCountAction = createAction(articleTypes.ADD_UP_COUNT)
 const addCommentAction = createAction(articleTypes.ADD_COMMENT)
 const addCommentCountAction = createAction(articleTypes.ADD_COMMENT_COUNT)
 const addIsUpAction = createAction(articleTypes.UPDATE_ISUP)
+const addIsFavoriteAction = createAction(articleTypes.UPDATE_ISFAVORITE)
 
 export function fetchArticle(payload) {
   return (dispatch, getState) => {
@@ -22,6 +23,53 @@ export function fetchArticle(payload) {
       dispatch(addArticleAction({columnId: columnId, articleList: articleList}))
     }).catch((error) => {
       if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchIsFavorite(payload){
+  return (dispatch, getState) => {
+    laArticle.getIsFavorite(payload).then((userInfo) => {
+      //let updateAction = createAction(articleTypes.UPDATE_ISUP)
+      dispatch(addIsFavoriteAction({articleId: payload.articleId, userInfo: userInfo}))
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function favoriteArticle(payload) {
+  return (dispatch, getState) => {
+    laArticle.favoriteArticle(payload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(articleTypes.FAVORITE_ARTICLE)
+      dispatch(publishAction({articleId: payload.articleId}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+export function unFavoriteArticle(payload) {
+  return (dispatch, getState) => {
+    laArticle.unFavoriteArticle(payload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(articleTypes.FAVORITE_ARTICLE)
+      dispatch(publishAction({articleId: payload.articleId}))
+    }).catch((error) => {
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -108,7 +156,7 @@ export function unUpArticle(payload) {
 }
 
 export function fetchCommentsArticle(payload) {
-  console.log('comment===>',payload)
+  //console.log('comment========>>',payload)
   return (dispatch, getState) => {
    // let articleId = payload
     laArticle.getComment(payload.articleId).then((commentList) => {
@@ -137,6 +185,7 @@ export function fetchCommentsCount(articleId,columnId) {
 
 
 export function submitArticleComment(payload) {
+  //console.log('payLoad====>>>>>>>>>>>>',payload)
   return (dispatch, getState) => {
     laArticle.submitArticleComment(payload).then((result) => {
       let updateAction = createAction(articleTypes.SUBMIT_ARTICLE_COMMENT_SUCCESS)

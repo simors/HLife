@@ -10,13 +10,13 @@ export const MessengerRecord = Record({
   unReadMsgCnt: 0,                          // 未读消息个数
   activeConversation: undefined,            // 当前处于聊天状态的会话
   OrderedConversation: List(),              // 将所有会话按更新时间排序
-  notifyMsg: Map(),                         // 通知信息列表，键值为会话id
 }, 'MessengerRecord')
 
 export const ConversationRecord = Record({
   id: undefined,
   members: List(),            // 会话成员列表
   name: undefined,
+  type: undefined,            // 会话的类型，可以是问诊（INQUIRY_CONVERSATION），或私信（PERSONAL_CONVERSATION）
   unreadCount: 0,
   lastMessageAt: undefined,   // 会话最后更新时间
   updatedAt: undefined,
@@ -78,6 +78,7 @@ export class Conversation extends ConversationRecord {
       record.set('id', lcConv.id)
       record.set('name', lcConv.name)
       record.set('members', List(lcConv.members))
+      record.set('type', lcConv.get('type'))
       record.set('lastMessageAt', lcConv.lastMessageAt)
       record.set('createdAt', lcConv.createdAt)
       record.set('updatedAt', lcConv.updatedAt)
