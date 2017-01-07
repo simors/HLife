@@ -219,22 +219,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   tabBarTextStyle: {
-    fontSize: em(15),
+    fontSize: em(17),
   //  paddingBottom: 10,
     letterSpacing: em(-0.4),
     color:'#686868'
   },
 
   tabBarTabStyle: {
-    paddingBottom: em(10),
-    paddingLeft: em(12),
-    paddingRight: em(12),
-    paddingTop: em(10)
+    // paddingBottom: em(10),
+    // paddingLeft: em(12),
+    // paddingRight: em(12),
+    // paddingTop: em(10)
   },
 
 
   tabBarUnderLineStyle: {
-    height: 0,
+     height: 0,
   },
 
   tabBarStyle: {
@@ -255,5 +255,10 @@ const styles = StyleSheet.create({
     //  paddingBottom: 10,
     letterSpacing: em(-0.4),
     color:'#686868'
+  },
+  tarBarUnderlineStyle:{
+    // height:normalizeH(0)
+    backgroundColor:'#50E3C2'
+
   }
 })
