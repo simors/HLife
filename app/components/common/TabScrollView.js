@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   Platform,
   InteractionManager,
-  RefreshControl
+  RefreshControl,
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
@@ -60,7 +60,7 @@ export class TabScrollView extends Component {
         return (
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-            <KeyboardAwareScrollView
+            <ScrollView
               style={styles.scrollViewStyle}
               refreshControl={
                 <RefreshControl
@@ -70,7 +70,7 @@ export class TabScrollView extends Component {
                   progressBackgroundColor="#ffffff"
                 /> }>
               {this.props.renderTopicPage()}
-            </KeyboardAwareScrollView>
+            </ScrollView>
           </View>
         )
       })
@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
   },
   itemLayout: {
     flex: 1,
+    marginBottom:50,
     //  alignItems: 'center',
 //    justifyContent: 'center'
   },
