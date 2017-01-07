@@ -49,7 +49,7 @@ export function getIsFavorite(payload) {
     if(result && result.attributes) {
        //  console.log('result===>',result)
       userUpShopInfo = Favorite.fromLeancloudObject(result)
-        console.log('userUpShopInfo===>',userUpShopInfo)
+       // console.log('userUpShopInfo===>',userUpShopInfo)
     }
     return userUpShopInfo
   }, function (err) {
@@ -273,7 +273,7 @@ export function getComment(payload) {
   let relation = article.relation('comments')
   let query = relation.query()
   query.equalTo('enable',true)
-  query.include(['author'])
+  //query.include(['author'])
   query.include(['replyId'])
   query.include(['replyId.author'])
   return query.find().then(function (results) {
