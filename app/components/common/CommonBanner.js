@@ -50,6 +50,7 @@ export default class CommonBanner extends Component {
           defaultIndex={this.defaultIndex}
           onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
           intent={this.clickListener.bind(this)}
+          useScrollView={true}
         />
       </View>
     )

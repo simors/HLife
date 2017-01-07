@@ -22,6 +22,7 @@ import {
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
 import {selectShopDetail} from '../selector/shopSelector'
+import {getTopicById} from '../selector/topicSelector'
 
 class TextMessage extends TypedMessage {
 }
@@ -415,9 +416,18 @@ function createTypedMessage(msgType) {
 
 export function notifyTopicComment(payload) {
   return (dispatch, getState) => {
+    let toPeers = []
+    let topicInfo = getTopicById(getState(), payload.topicId)
+
+    if (payload.replyTo) {
+      toPeers.push(payload.replyTo)
+    } else {
+      toPeers.push(topicInfo.userId)
+    }
+
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: [payload.toPeers],   // 可以是一个数组
+      members: toPeers,   // 可以是一个数组
       unique: true
     }
     dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
@@ -428,7 +438,7 @@ export function notifyTopicComment(payload) {
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         topicId: payload.topicId,
-        title: payload.title,
+        title: topicInfo.title,
       }
       let text = currentUser.nickname + '在您的文章《' + payload.title + '》中发表了评论'
       message.setText(text)
@@ -442,15 +452,23 @@ export function notifyTopicComment(payload) {
 
 export function notifyShopComment(payload) {
   return (dispatch, getState) => {
+    let toPeers = []
     let shopId = payload.shopId
     let shopDetail = selectShopDetail(getState(), shopId)
     if (!shopDetail) {
       console.log('can\'t find shop by shop id ' + shopId)
       return
     }
+
+    if (payload.replyTo) {
+      toPeers.push(payload.replyTo)
+    } else {
+      toPeers.push(shopDetail.owner.id)
+    }
+
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: [shopDetail.owner.id],   // 可以是一个数组
+      members: toPeers,   // 可以是一个数组
       unique: true
     }
     dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
@@ -474,9 +492,10 @@ export function notifyShopComment(payload) {
 
 export function notifyTopicLike(payload) {
   return (dispatch, getState) => {
+    let topicInfo = getTopicById(getState(), payload.topicId)
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: [payload.toPeers],   // 可以是一个数组
+      members: [topicInfo.userId],   // 可以是一个数组
       unique: true
     }
     dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
@@ -487,7 +506,7 @@ export function notifyTopicLike(payload) {
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         topicId: payload.topicId,
-        title: payload.title,
+        title: topicInfo.title,
       }
       let text = currentUser.nickname + '在您的文章《' + payload.title + '》中点了赞'
       message.setText(text)
@@ -558,9 +577,15 @@ export function notifyUserFollow(payload) {
 
 export function notifyShopFollow(payload) {
   return (dispatch, getState) => {
+    let shopId = payload.shopId
+    let shopDetail = selectShopDetail(getState(), shopId)
+    if (!shopDetail) {
+      console.log('can\'t find shop by shop id ' + shopId)
+      return
+    }
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: [payload.toPeers],   // 可以是一个数组
+      members: [shopDetail.owner.id],   // 可以是一个数组
       unique: true
     }
     dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
@@ -570,7 +595,7 @@ export function notifyShopFollow(payload) {
         userId: currentUser.id,
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
-        shopId: payload.shopId,
+        shopId: shopId,
       }
       let text = currentUser.nickname + '关注了您的店铺'
       message.setText(text)

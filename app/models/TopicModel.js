@@ -12,6 +12,7 @@ export const TopicsConfig = Record({
   objectId: undefined,  //话题id
   categoryId: undefined,  //属于的分类
   nickname: undefined, //所属用户昵称
+  userId:undefined,
   createdAt: undefined,  //创建时间
   avatar: undefined,  //所属用户头像
   commentNum: undefined, //评论数
@@ -26,9 +27,11 @@ export class TopicsItem extends TopicsConfig {
     let user = lcObj.get('user')
     let nickname = "吾爱用户"
     let avatar = undefined
+    let userId = undefined
 
     //用户昵称解析
     if (user) {
+      userId = user.id
       avatar = user.get('avatar')
       nickname = user.get('nickname')
       if (!nickname) {
@@ -36,7 +39,7 @@ export class TopicsItem extends TopicsConfig {
         nickname = hidePhoneNumberDetail(phoneNumber)
       }
     }
-
+    console.log("--->", user)
     return topicsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
       record.set('abstract', attrs.abstract)
@@ -46,6 +49,7 @@ export class TopicsItem extends TopicsConfig {
       record.set('categoryId', attrs.category.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)
+      record.set('userId', userId)
       record.set('objectId', lcObj.id)
       record.set('commentNum', attrs.commentNum)
       record.set('likeUserNum', attrs.likeUserNum)

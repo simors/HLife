@@ -12,6 +12,8 @@ import {
   Image,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import Header from '../../common/Header'
@@ -20,42 +22,61 @@ import CommonTextInput from '../../common/Input/CommonTextInput'
 import DateTimeInput from '../../common/Input/DateTimeInput'
 import GenderSelector from '../../common/Input/GenderSelector'
 import CommonButton from '../../common/CommonButton'
+import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import * as Toast from '../../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let profileForm = Symbol('commonForm')
-const nicknameInput = {
-  formKey: profileForm,
-  stateKey: Symbol('nicknameInput'),
-  type: "nicknameInput",
-}
-
-const genderInput = {
-  formKey: profileForm,
-  stateKey: Symbol('genderInput'),
-  type: "genderInput",
-}
-
-const dtPicker = {
-  formKey: profileForm,
-  stateKey: Symbol('dtPicker'),
-  type: "dtPicker",
-}
-
-
-export default class HealthRecord extends Component {
+class HealthProfile extends Component {
   constructor(props) {
     super(props)
   }
+  componentDidMount() {
+
+  }
+
+  submitSuccessCallback(doctorInfo) {
+    Toast.show('提交成功')
+    Actions.SELECT_DOCTOR()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
   onButtonPress = () => {
-    let payload = {
-      name: '13574897719',
-      members: ['58647b4f61ff4b0068b8b306', '585892e1ac502e006704ffe1']
-    }
-    Actions.QA(payload)
+    // let payload = {
+    //   name: '13574897719',
+    //   members: ['58647b4f61ff4b0068b8b306', '585892e1ac502e006704ffe1']
+    // }
+    // Actions.QA(payload)
+
+    this.props.submitFormData({
+      formKey: this.props.formKey,
+      submitType: INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT,
+      id: this.props.userId && this.props.userId,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
   }
   render() {
+    const nicknameInput = {
+      formKey: this.props.formKey,
+      stateKey: Symbol('nicknameInput'),
+      type: "nicknameInput",
+    }
+
+    const genderInput = {
+      formKey: this.props.formKey,
+      stateKey: Symbol('genderInput'),
+      type: "genderInput",
+    }
+
+    const dtPicker = {
+      formKey: this.props.formKey,
+      stateKey: Symbol('dtPicker'),
+      type: "dtPicker",
+    }
     return (
       <View style={styles.container}>
         <Header
@@ -106,10 +127,20 @@ export default class HealthRecord extends Component {
 
         </View>
       </View>
-
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData,
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(HealthProfile)
 
 const styles = StyleSheet.create({
   container: {
