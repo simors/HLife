@@ -102,7 +102,7 @@ class ReplyList extends Component {
           <Triangle width={8} height={5} color="rgba(0,0,0,0.05)" style={[styles.triangle]} direction="up"/>
           <View style={styles.upReplyContainer}>
             <View style={styles.upUsersContainer}>
-              <Image style={{width:10,height:10,marginRight:5}} source={require('../../../assets/images/artical_like_unselect.png')}/>
+              <Image style={{width:15,height:12,marginRight:5}} source={require('../../../assets/images/artical_like_unselect.png')}/>
               {this.renderUps()}
             </View>
             {this.renderReplys()}
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   },
   upUsersContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     padding:10,
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA
@@ -146,8 +147,8 @@ const styles = StyleSheet.create({
     marginRight:8
   },
   upUser: {
-    fontSize: em(10),
-    color: '#8f8e94',
+    fontSize: em(12),
+    color: THEME.colors.lessDark,
   },
   replyTitleWrap: {
     flex:1,
@@ -167,15 +168,15 @@ const styles = StyleSheet.create({
 
   },
   replyUser: {
-    fontSize: em(10),
+    fontSize: em(12),
     color: THEME.colors.green,
   },
   replyWord: {
-    fontSize: em(10),
+    fontSize: em(12),
     color: '#8f8e94',
   },
   replyTime: {
-    fontSize: em(10),
+    fontSize: em(12),
     color: '#8f8e94',
   },
   replyContentWrap: {
@@ -184,8 +185,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   replyContent: {
-    fontSize: em(12),
-    color: '#8f8e94',
+    fontSize: em(15),
+    color: THEME.colors.lessDark,
   }
 
 })
