@@ -171,7 +171,7 @@ class RichTextInput extends Component {
     // console.log("webview height: ", height)
 
     return (
-      <ScrollView>
+      <ScrollView ref={(scroll) => this.scrollView = scroll}>
         <View style={{flex: 1, height: height}}>
           <WebViewBridge
             ref={(web) => {
@@ -396,6 +396,9 @@ class RichTextInput extends Component {
         this.props.getImages(this.insertImages)
       }
       this.webView.sendToBridge('editImg_' + leanImgUrl)
+
+      this.scrollView.scrollTo({x: 0, y: this.state.webViewHeight-100})
+      this.webView.sendToBridge('keyboard_hide')
     }).catch((error) => {
       console.log('upload failed:', error)
     })

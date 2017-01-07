@@ -4585,8 +4585,12 @@
       range.deleteContents();
       this.editor.selection.range(range);
       $img = $('<img/>').attr('src', 'http://ac-k5rltwmf.clouddn.com/5ff4269976107abe4b38.gif');
+      $endP = $('</p>')
+      $startP = $('<p>')      // 为了配合显示组件，在img标签前后分别加入p标签
+      range.insertNode($endP[0])
       range.insertNode($img[0]);
-      this.editor.selection.setRangeAfter($img, range);
+      range.insertNode($startP[0])
+      this.editor.selection.setRangeAfter($startP, range);
       //this.editor.trigger('valuechanged');
       return $img;
     };
