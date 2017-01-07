@@ -49,6 +49,7 @@ export default class CommonModal extends Component {
         animationType={this.state.animationType}
         transparent={this.state.transparent}
         visible={this.state.visible}
+        onRequestClose={()=>{}}
       >
         <View style={[styles.container, modalBackgroundStyle, this.props.containerStyle]}>
           <View style={styles.modalCntTitleWrap}>
