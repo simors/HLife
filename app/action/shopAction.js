@@ -61,6 +61,10 @@ export function followShop(payload) {
       let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
       dispatch(updateAction(result))
       if(result && '10002' == result.code) {
+        let params = {
+          shopId: payload.id
+        }
+        dispatch(msgAction.notifyShopFollow(params))
         if(payload.success){
           payload.success(result)
         }

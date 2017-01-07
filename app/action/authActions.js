@@ -5,7 +5,7 @@ import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
-import {initMessageClient} from '../action/messageAction'
+import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
@@ -399,6 +399,10 @@ export function followUser(payload) {
   return (dispatch, getState) => {
     lcAuth.followUser(payload).then((result) => {
       if (result && '10003' == result.code) {
+        let params = {
+          toPeers: payload.userId
+        }
+        dispatch(notifyUserFollow(params))
         if (payload.success) {
           payload.success(result)
         }
