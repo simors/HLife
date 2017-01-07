@@ -72,29 +72,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    height: 40,
+    height: 50,
   },
   textInput: {
     flex: 1,
-    marginLeft: 10,
+    margin:0,
+    padding: 10,
     fontSize: 16,
-    lineHeight: 16,
-    marginTop: Platform.select({
-      ios: 6,
-      android: 0,
-    }),
-    marginBottom: Platform.select({
-      ios: 5,
-      android: 3,
-    }),
   },
   btnContainer: {
     padding: 5,
+    width: 60,
     backgroundColor: THEME.colors.green,
     justifyContent: 'center',
   },
   btnText: {
     color: '#fff',
-    fontSize: em(12),
+    textAlign: 'center',
+    fontSize: em(16),
   }
 })

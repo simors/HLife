@@ -86,6 +86,10 @@ export function submitShopComment(payload) {
     lcShop.submitShopComment(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_COMMENT_SUCCESS)
       dispatch(updateAction(result))
+      let params = {
+        shopId: payload.id
+      }
+      dispatch(msgAction.notifyShopComment(params))
       if(payload.success){
         payload.success(result)
       }

@@ -87,17 +87,18 @@ export default class KeyboardAwareToolBar extends Component {
   }
 
   rePosition() {
-    if (Platform.OS === 'android') {
-      return 0
-    }else{
-      return this.getKeyboardHeight()
-    }
+    return this.getKeyboardHeight()
   }
 
   onKeyboardWillShow(e) {
     // console.log('onKeyboardWillShow.e=', e)
     this.setIsTypingDisabled(true)
-    this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
+    if (Platform.OS === 'android') {
+      this.setKeyboardHeight(0)
+    }else{
+      this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
+    }
+
   }
 
   onKeyboardWillHide() {
