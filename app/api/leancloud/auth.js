@@ -338,6 +338,9 @@ export function inquirySubmit(payload) {
   question.set('connnet', payload.question)
   question.set('diseaseImages', payload.diseaseImages)
   question.set('quizzer', userInfo)
+  question.set('name', payload.name)
+  question.set('gender', payload.gender)
+  question.set('birthday', payload.birthday)
   question.set('status', 2) //待分配
 
   return question.save().then((questionInfo) => {

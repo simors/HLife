@@ -38,8 +38,10 @@ import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
 import DocterFinder from '../components/Health/DocterFinder'
 import Inguiry from '../components/Home/Inquiry/index'
-import HealthRecord from '../components/Home/Inquiry/HealthRecord'
+import HealthProfile from '../components/Home/Inquiry/HealthProfile'
+import SelectDoctor from '../components/Home/Inquiry/SelectDoctor'
 import QA from '../components/Home/Inquiry/QA'
+import QAList from '../components/Home/Inquiry/QAList'
 
 const styles = StyleSheet.create({
   container: {
@@ -88,8 +90,10 @@ export const scenes = Actions.create(
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />
       <Scene key="INQUIRY" component={Inguiry} />
-      <Scene key="HEALTHRECORD" component={HealthRecord} />
+      <Scene key="HEALTH_PROFILE" component={HealthProfile} />
+      <Scene key="SELECT_DOCTOR" component={SelectDoctor} />
       <Scene key="QA" component={QA}/>
+      <Scene key="QA_LIST" component={QAList}/>
 
 
 
