@@ -416,10 +416,18 @@ function createTypedMessage(msgType) {
 
 export function notifyTopicComment(payload) {
   return (dispatch, getState) => {
+    let toPeers = []
     let topicInfo = getTopicById(getState(), payload.topicId)
+
+    if (payload.replyTo) {
+      toPeers.push(payload.replyTo)
+    } else {
+      toPeers.push(topicInfo.userId)
+    }
+
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: [topicInfo.userId],   // 可以是一个数组
+      members: toPeers,   // 可以是一个数组
       unique: true
     }
     dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
@@ -444,15 +452,23 @@ export function notifyTopicComment(payload) {
 
 export function notifyShopComment(payload) {
   return (dispatch, getState) => {
+    let toPeers = []
     let shopId = payload.shopId
     let shopDetail = selectShopDetail(getState(), shopId)
     if (!shopDetail) {
       console.log('can\'t find shop by shop id ' + shopId)
       return
     }
+
+    if (payload.replyTo) {
+      toPeers.push(payload.replyTo)
+    } else {
+      toPeers.push(shopDetail.owner.id)
+    }
+
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
-      members: [shopDetail.owner.id],   // 可以是一个数组
+      members: toPeers,   // 可以是一个数组
       unique: true
     }
     dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
