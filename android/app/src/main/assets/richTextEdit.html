@@ -11,6 +11,43 @@
   <script type="text/javascript" src="hotkeys.js"></script>
   <script type="text/javascript" src="simditor.js"></script>
   <link rel="stylesheet" href="simditor.css">
+  <style media="screen">
+    .simditor .simditor-wrapper > textarea {
+      display: none !important;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: monaco;
+      font-size: 18px;
+      line-height: 1.6;
+      border: none;
+      padding: 22px 15px 40px;
+      min-height: 300px;
+      outline: none;
+      background: transparent;
+      resize: none;
+    }
+    .simditor .simditor-wrapper .simditor-placeholder {
+      display: none;
+      position: absolute;
+      left: 0;
+      z-index: 0;
+      padding: 8px;
+      font-size: 18px;
+      font-family: arial, sans-serif;
+      line-height: 1.5;
+      color: #999999;
+      background: transparent;
+    }
+    .simditor .simditor-body, .editor-style {
+      font-size: 18px;
+      font-family: arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      outline: none;
+      word-wrap: break-word;
+      padding-bottom: 100px;
+    }
+  </style>
 </head>
 <body>
 <section id="page">
