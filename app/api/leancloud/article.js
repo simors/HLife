@@ -33,19 +33,23 @@ export function getArticle(payload) {
 
 export function getIsFavorite(payload) {
   let articleId = payload.articleId
-  let upType = payload.upType
+  //let upType = payload.upType
   let article = AV.Object.createWithoutData('Articles', articleId)
   let currentUser = AV.User.current()
   let query = new AV.Query('ArticleFavorite')
   query.equalTo('article', article)
   query.equalTo('user', currentUser)
+  //query.equalTo('status',true)
   query.include('user')
+  //query.include('article')
   return query.first().then((result) =>{
+   // console.log('result====>>>',result)
+
     let userUpShopInfo = undefined
     if(result && result.attributes) {
-      //   console.log('result===>',result)
+       //  console.log('result===>',result)
       userUpShopInfo = Favorite.fromLeancloudObject(result)
-      //  console.log('userUpShopInfo===>',userUpShopInfo)
+        console.log('userUpShopInfo===>',userUpShopInfo)
     }
     return userUpShopInfo
   }, function (err) {
@@ -55,11 +59,10 @@ export function getIsFavorite(payload) {
 }
 
 export function favoriteArticle(payload) {
-//  console.log('hereiscodeupArticle====》',payload)
   let articleId = payload.articleId
   let article = AV.Object.createWithoutData('Articles', articleId)
   let currentUser = AV.User.current()
-  return getIsUps(payload).then((userLikeTopicInfo) => {
+  return getIsFavorite(payload).then((userLikeTopicInfo) => {
     if (!userLikeTopicInfo) {
       let Favorite = AV.Object.extend('ArticleFavorite')
       let favorite = new Favorite()
@@ -69,13 +72,14 @@ export function favoriteArticle(payload) {
       return favorite.save()
     }
     else if (userLikeTopicInfo.id && !userLikeTopicInfo.status) {
-      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+      console.log('hereiscodeupArticle====》',userLikeTopicInfo)
+      let up = AV.Object.createWithoutData('ArticleFavorite', userLikeTopicInfo.id)
       up.set('status', true)
       return up.save()
     }
     return {
       code: '10107',
-      message: '您已经赞过该话题了'
+      message: '您已经收藏过该文章了'
     }
   }).then((result) => {
     if (result && '10107' == result.code) {
@@ -84,7 +88,7 @@ export function favoriteArticle(payload) {
     return {
       articleId: articleId,
       code: '10108',
-      message: '成功点赞'
+      message: '成功收藏'
     }
   }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -92,18 +96,18 @@ export function favoriteArticle(payload) {
   })
 }
 
-export function unfavoriteArticle(payload) {
+export function unFavoriteArticle(payload) {
 //  console.log('hereiscode')
   let articleId = payload.articleId
-  return getIsUps(payload).then((userLikeTopicInfo) => {
+  return getIsFavorite(payload).then((userLikeTopicInfo) => {
     if (userLikeTopicInfo && userLikeTopicInfo.id) {
-      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+      let up = AV.Object.createWithoutData('ArticleFavorite', userLikeTopicInfo.id)
       up.set('status', false)
       return up.save()
     }
     return {
       code: '10009',
-      message: '您还没有赞过该话题'
+      message: '您还没有收藏过该文章'
     }
   }).then((result) => {
     if (result && '10009' == result.code) {
@@ -112,7 +116,7 @@ export function unfavoriteArticle(payload) {
     return {
       articleId: articleId,
       code: '10010',
-      message: '取消点赞成功'
+      message: '取消收藏成功'
     }
   }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -146,7 +150,7 @@ export function getCommentCount(payload) {
   let relation = article.relation('comments')
   let query = relation.query()
   return query.count().then(function (results) {
-    console.log('count==>',results)
+    //console.log('count==>',results)
    return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -178,10 +182,10 @@ export function getIsUps(payload) {
   query.equalTo('targetId', articleId)
   query.equalTo('upType', upType)
   query.equalTo('user', currentUser)
-  console.log('currentUser==>',currentUser)
+  //console.log('currentUser==>',currentUser)
   query.include('user')
   return query.first().then((result) =>{
-    console.log('result====>',result)
+    //console.log('result====>',result)
     let userUpShopInfo = undefined
     if(result && result.attributes) {
    //   console.log('result===>',result)
@@ -217,7 +221,7 @@ export function upArticle(payload) {
     }
     return {
       code: '10107',
-      message: '您已经赞过该话题了'
+      message: '您已经赞过该文章了'
     }
   }).then((result) => {
     if (result && '10107' == result.code) {
@@ -264,18 +268,22 @@ export function unUpArticle(payload) {
 
 //根据ARTICLE的RELATION进行查询
 export function getComment(payload) {
+  //console.log('payload.......',payload)
   let article = AV.Object.createWithoutData('Articles',payload)
   let relation = article.relation('comments')
   let query = relation.query()
   query.equalTo('enable',true)
   query.include(['author'])
+  query.include(['replyId'])
+  query.include(['replyId.author'])
   return query.find().then(function (results) {
 
     let comment = []
     results.forEach((result) => {
-     // console.log('articleItem====>',result)
 
       comment.push(ArticleComment.fromLeancloudObject(result))
+    //  console.log('comment====>',comment)
+
     })
 
     return new List(comment)
@@ -299,7 +307,7 @@ export function submitArticleComment(payload) {
   articleComment.set('author', currentUser)
   articleComment.set('articleId', article)
   articleComment.set('content', content)
-  if (payload.commentId) {
+  if (payload.replyId) {
     articleComment.set('replyId', reply)
   }
   return articleComment.save().then(function (result) {

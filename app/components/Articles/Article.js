@@ -35,6 +35,7 @@ import {
   fetchUpCount,
   submitArticleComment,
   fetchIsFavorite,
+  unFavoriteArticle,
   favoriteArticle,
 } from '../../action/articleAction'
 import {getIsUp,getIsFavorite, getcommentList, getcommentCount, getUpCount} from '../../selector/articleSelector'
@@ -101,6 +102,7 @@ class Article extends Component {
        // this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
       //  this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
         this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
+        this.props.fetchIsFavorite({articleId: this.props.articleId})
       })
     }
 
@@ -125,9 +127,29 @@ class Article extends Component {
       }
     }
 
-  onCommentButton(article) {
+  onFavoriteButton(){
+    if (this.props.isFavorite) {
+        console.log('hereiscode')
+      this.props.unFavoriteArticle({
+        articleId: this.props.articleId,
+      //  upType: 'article',
+        success: this.upSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+    else {
+      // console.log('hereiscode')
+      this.props.favoriteArticle({
+        articleId: this.props.articleId,
+      //  upType: 'article',
+        success: this.upSuccessCallback.bind(this),
+        error: this.likeErrorCallback
+      })
+    }
+  }
+  onCommentButton(comment) {
     this.setState({
-      comment: article
+      comment: comment
     })
     this.openModel()
   }
@@ -176,7 +198,7 @@ class Article extends Component {
       this.props.submitArticleComment({
         ...commentData,
         articleId: this.props.articleId,
-        replyId: (this.state.comment) ? this.state.comment.objectId : undefined,
+        replyId: (this.state.comment) ? this.state.comment.commentId : undefined,
         success: this.submitSuccessCallback.bind(this),
         error: this.submitErrorCallback
       })
@@ -206,7 +228,8 @@ class Article extends Component {
 
   closeModal(callback) {
     this.setState({
-      modalVisible: false
+      modalVisible: false,
+      comment: undefined
     })
     if (callback && typeof callback == 'function') {
       callback()
@@ -250,11 +273,13 @@ class Article extends Component {
               source={{html: this.props.content}}
               innerCSS={INNER_CSS}
             />
+            <View style={styles.upList}>
             <View style={styles.zanStyle} onLayout={this.measureMyComponent.bind(this)}>
               <Text style={styles.zanTextStyle}>
                 赞
               </Text>
             </View>
+              </View>
             {this.renderCommentPage()}
             {this.renderNoComment()}
           </View>
@@ -276,15 +301,17 @@ class Article extends Component {
                                      require("../../assets/images/like_select.png") :
                                      require("../../assets/images/like_unselect.png")}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> {
-          }}>
-            <Image style={{}} source={require('../../assets/images/artical_favorite_unselect.png')}/>
+          <TouchableOpacity style={styles.shopUpWrap} onPress={()=> this.onFavoriteButton()}>
+            <Image style={{}} source={this.props.isFavorite ?
+              require("../../assets/images/artical_favorite_select.png") :
+              require("../../assets/images/artical_favorite_unselect.png")}/>
           </TouchableOpacity>
         </View>
         <Comment
           showModules={["content"]}
           modalVisible={this.state.modalVisible}
           modalTitle="写评论"
+          textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
           closeModal={() => this.closeModal()}
           submitComment={this.submitComment.bind(this)}
         />
@@ -325,7 +352,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchCommentsCount,
   fetchUpCount,
   submitArticleComment,
-  fetchIsFavorite
+  fetchIsFavorite,
+  unFavoriteArticle
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Article)
@@ -445,5 +473,10 @@ const styles = StyleSheet.create(
       marginTop: normalizeH(7),
       alignSelf: 'center',
     },
-
+    upList:{
+      backgroundColor: '#E5E5E5',
+      height: normalizeH(59),
+      alignItems: 'flex-start',
+      flexDirection: 'row',
+    },
   })

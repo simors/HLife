@@ -11,7 +11,8 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
-  InteractionManager
+  InteractionManager,
+  ScrollView
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -19,8 +20,6 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import TopicShow from './TopicShow'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import TopicComment from './TopicComment'
 import TopicContent from './TopicContent'
 import Comment from '../common/Comment'
@@ -210,7 +209,7 @@ export class TopicDetail extends Component {
           rightPress={() => this.onRightPress()}
         />
 
-        <KeyboardAwareScrollView style={styles.body} ref={"scrollView"}>
+        <ScrollView style={styles.body} ref={"scrollView"}>
           <TopicContent topic={this.props.topic}/>
           <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
             <View style={styles.zanStyle}>
@@ -221,7 +220,7 @@ export class TopicDetail extends Component {
           </View>
           {this.renderTopicCommentPage()}
           {this.renderNoComment()}
-        </KeyboardAwareScrollView>
+        </ScrollView>
 
         <View style={styles.shopCommentWrap}>
           <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>

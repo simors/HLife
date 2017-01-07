@@ -60,6 +60,21 @@ export function favoriteArticle(payload) {
     })
   }
 }
+export function unFavoriteArticle(payload) {
+  return (dispatch, getState) => {
+    laArticle.unFavoriteArticle(payload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(articleTypes.FAVORITE_ARTICLE)
+      dispatch(publishAction({articleId: payload.articleId}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
 
 export function fetchUps(articleId,columnId) {
  // console.log('<><><><><>fetchLikers',payload)
@@ -141,7 +156,7 @@ export function unUpArticle(payload) {
 }
 
 export function fetchCommentsArticle(payload) {
-  console.log('comment===>',payload)
+  //console.log('comment========>>',payload)
   return (dispatch, getState) => {
    // let articleId = payload
     laArticle.getComment(payload.articleId).then((commentList) => {
@@ -170,6 +185,7 @@ export function fetchCommentsCount(articleId,columnId) {
 
 
 export function submitArticleComment(payload) {
+  //console.log('payLoad====>>>>>>>>>>>>',payload)
   return (dispatch, getState) => {
     laArticle.submitArticleComment(payload).then((result) => {
       let updateAction = createAction(articleTypes.SUBMIT_ARTICLE_COMMENT_SUCCESS)
