@@ -47,6 +47,7 @@ class ArticleColumn extends Component {
     this.props.column.map((value, key)=> {
       if (value.columnId == this.props.columnId) {
         this.setState({columnItem: key, columnId: value.columnId})
+       // console.log('key==============>',key)
       }
     })
 
@@ -147,6 +148,7 @@ class ArticleColumn extends Component {
 
   render() {
     if (this.props.column) {
+      console.log('state.columnItem===========',this.state.columnItem)
       return (
 
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}

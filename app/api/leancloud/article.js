@@ -273,7 +273,7 @@ export function getComment(payload) {
   let relation = article.relation('comments')
   let query = relation.query()
   query.equalTo('enable',true)
-  //query.include(['author'])
+  query.include(['author'])
   query.include(['replyId'])
   query.include(['replyId.author'])
   return query.find().then(function (results) {

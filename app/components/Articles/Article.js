@@ -461,7 +461,7 @@ const styles = StyleSheet.create(
         },
         android: {
           paddingTop: normalizeH(45),
-          paddingBottom: normalizeH(50)
+          paddingBottom: normalizeH(100)
         }
       }),
       flex: 1,
