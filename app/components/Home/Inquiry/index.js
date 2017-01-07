@@ -50,7 +50,7 @@ class Inguiry extends Component {
 
   submitSuccessCallback(doctorInfo) {
     Toast.show('提交成功')
-    Actions.HEALTHRECORD()
+    Actions.HEALTH_PROFILE()
   }
 
   submitErrorCallback(error) {
@@ -58,13 +58,19 @@ class Inguiry extends Component {
   }
 
   onButtonPress= () => {
-    this.props.submitFormData({
+    // this.props.submitFormData({
+    //   formKey: inquiryForm,
+    //   submitType: INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT,
+    //   id: this.props.currentUser && this.props.currentUser,
+    //   success: this.submitSuccessCallback,
+    //   error: this.submitErrorCallback
+    // })
+    //
+    let payload = {
       formKey: inquiryForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT,
-      id: this.props.currentUser && this.props.currentUser,
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback
-    })
+      userId: this.props.currentUser && this.props.currentUser,
+    }
+    Actions.HEALTH_PROFILE(payload)
   }
 
   render(){
@@ -91,7 +97,6 @@ class Inguiry extends Component {
             </View>
             <View style={{flex: 1,backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
               <Text style={styles.trip}>病症部位、检查报告或其他病情资料</Text>
-
               <View style={{position: 'absolute', left: normalizeW(0), top: normalizeH(0), backgroundColor: 'rgba(0, 0, 0, 0)'}}>
                 <ImageGroupInput {...diseaseImagesInput}
                                  number={9}

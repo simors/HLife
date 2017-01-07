@@ -440,16 +440,22 @@ export function unFollowUser(payload) {
 }
 
 export function handleInquirySubmit(payload, formData) {
-  console.log("handleInquirySubmit payload", payload)
+  console.log("handleInquirySubmit formData", formData)
   return (dispatch, getState) => {
     let inquiryPayload = {
       id: payload.id,
       question: formData.content.text,
       diseaseImages: formData.imgGroup.text,
+      name: formData.nicknameInput.text,
+      gender: formData.genderInput.text,
+      birthday: formData.dtPicker.text,
     }
 
     lcAuth.inquirySubmit(inquiryPayload).then((result) => {
       console.log("handleInquirySubmit success")
+      if (payload.success) {
+        payload.success(result)
+      }
 
     }).catch((error) => {
       if (payload.error) {
