@@ -107,6 +107,9 @@ class Article extends Component {
     }
 
   onLikeButton() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
       if (this.props.isUp) {
         //  console.log('hereiscode')
         this.props.unUpArticle({
@@ -126,13 +129,17 @@ class Article extends Component {
         })
       }
     }
+  }
+  onFavoriteButton() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
 
-  onFavoriteButton(){
     if (this.props.isFavorite) {
-        console.log('hereiscode')
+      console.log('hereiscode')
       this.props.unFavoriteArticle({
         articleId: this.props.articleId,
-      //  upType: 'article',
+        //  upType: 'article',
         success: this.upSuccessCallback.bind(this),
         error: this.likeErrorCallback
       })
@@ -141,11 +148,12 @@ class Article extends Component {
       // console.log('hereiscode')
       this.props.favoriteArticle({
         articleId: this.props.articleId,
-      //  upType: 'article',
+        //  upType: 'article',
         success: this.upSuccessCallback.bind(this),
         error: this.likeErrorCallback
       })
     }
+  }
   }
   onCommentButton(comment) {
     this.setState({
