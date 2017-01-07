@@ -60,16 +60,19 @@ class Article extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchCommentsArticle({articleId: this.props.articleId, upType: 'article'})
-      this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
-      this.props.fetchIsFavorite({articleId: this.props.articleId})
-      this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
-
+      this.props.fetchCommentsArticle({articleId: this.props.articleId})
+       this.props.fetchCommentsCount(this.props.articleId)
+      if(this.props.isLogin)
+      {
+        this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
+        this.props.fetchIsFavorite({articleId: this.props.articleId})
+      }
     })
   }
 
   measureMyComponent(event) {
     this.setState({commentY: (event.nativeEvent.layout.height + event.nativeEvent.layout.y)})
+    //console.log('commentY',this.state.commentY)
   }
 
 
@@ -281,8 +284,8 @@ class Article extends Component {
               source={{html: this.props.content}}
               innerCSS={INNER_CSS}
             />
-            <View style={styles.upList}>
-            <View style={styles.zanStyle} onLayout={this.measureMyComponent.bind(this)}>
+            <View style={styles.upList} onLayout={this.measureMyComponent.bind(this)}>
+            <View style={styles.zanStyle} >
               <Text style={styles.zanTextStyle}>
                 赞
               </Text>
@@ -393,7 +396,7 @@ const styles = StyleSheet.create(
       backgroundColor:'#FFFFFF',
     },
     articleView: {
-      height: normalizeH(452),
+     // height: normalizeH(452),
       width:PAGE_WIDTH,
      // paddingLeft:normalizeW(12),
       //paddingRight:normalizeW(12),
@@ -405,7 +408,7 @@ const styles = StyleSheet.create(
       backgroundColor: '#FAFAFA'
     },
     shopCommentWrap: {
-      height: 50,
+      height: normalizeH(50),
       paddingLeft: 10,
       borderTopWidth: normalizeBorder(),
       borderTopColor: THEME.colors.lighterA,
@@ -457,7 +460,8 @@ const styles = StyleSheet.create(
           paddingTop: normalizeH(65),
         },
         android: {
-          paddingTop: normalizeH(45)
+          paddingTop: normalizeH(45),
+          paddingBottom: normalizeH(50)
         }
       }),
       flex: 1,

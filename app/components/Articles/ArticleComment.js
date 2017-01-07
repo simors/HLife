@@ -22,7 +22,7 @@ import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
 import {getArticleItem,getIsUp,getcommentCount,getUpCount} from '../../selector/articleSelector'
 import {fetchIsUP,upArticle,unUpArticle,fetchCommentsCount,fetchUpCount} from '../../action/articleAction'
-
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -36,8 +36,10 @@ class ArticleComment extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
       this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
+      if(this.props.isLogn){
+        this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
+      }
     })
   }
 
@@ -126,10 +128,13 @@ const mapStateToProps = (state, ownProps) => {
 
   let upCount = getUpCount(state,ownProps.comment.commentId)
   let isUp = getIsUp(state,ownProps.comment.commentId)
- // console.log('isUp====>',isUp)
+  const isLogin = isUserLogined(state)
+
+  // console.log('isUp====>',isUp)
   return{
     upCount: upCount,
-    isUp: isUp
+    isUp: isUp,
+    isLogin : isLogin
   //  articleItem : articleItem
   }
 }
