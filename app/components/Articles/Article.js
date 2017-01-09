@@ -379,7 +379,7 @@ const styles = StyleSheet.create(
 
     },
     titleView: {
-      height: normalizeH(39),
+     // height: normalizeH(39),
       width: PAGE_WIDTH,
      // marginTop: normalizeH(64),
       borderBottomWidth: normalizeBorder(1),
