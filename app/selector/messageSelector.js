@@ -15,12 +15,26 @@ export function activeConversation(state) {
   return state.MESSAGE.get('activeConversation')
 }
 
+export function getMessageById(state, mid) {
+  return state.MESSAGE.getIn(['messages', mid])
+}
+
 export function getMessages(state, cid) {
+  let retMsg = []
   let conversation = getConversationById(state, cid)
-  if (conversation) {
-    return conversation.get('messages').toJS()
+  if (!conversation) {
+    return retMsg
   }
-  return []
+  let messages = conversation.get('messages')
+  if (messages) {
+    messages.forEach((msgId) => {
+      let mess = getMessageById(state, msgId)
+      if (mess) {
+        retMsg.push(mess.toJS())
+      }
+    })
+  }
+  return retMsg
 }
 
 export function hasNewMessage(state) {

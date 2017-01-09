@@ -7,6 +7,7 @@ import * as msgTypes from '../constants/messageActionTypes'
 export const MessengerRecord = Record({
   client: undefined,                        // 客户端id
   conversationMap: Map(),                   // 会话列表，会话id作为键值
+  messages: Map(),                          // 所有的消息，健为消息id，值为Message类型
   unReadMsgCnt: 0,                          // 未读消息个数
   activeConversation: undefined,            // 当前处于聊天状态的会话
   OrderedConversation: List(),              // 将所有会话按更新时间排序
