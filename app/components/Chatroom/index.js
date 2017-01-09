@@ -17,7 +17,7 @@ import {GiftedChat} from './GifedChat/GiftedChat'
 import Header from '../common/Header'
 import CustomInputToolbar from './CustomInputToolbar'
 import CustomMessage from './CustomMessage'
-import {createConversation, leaveConversation, enterConversation, sendMessage} from '../../action/messageAction'
+import {createConversation, leaveConversation, enterConversation, sendMessage, initMessageClient} from '../../action/messageAction'
 import {getUserInfoById} from '../../action/authActions'
 import {activeUserInfo, userInfoById} from '../../selector/authSelector'
 import {activeConversation, getMessages} from '../../selector/messageSelector'
@@ -30,6 +30,10 @@ class Chatroom extends Component {
     super(props)
     this.onSend = this.onSend.bind(this)
   }
+
+  // componentWillMount() {
+  //   this.props.initMessageClient()
+  // }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
@@ -156,6 +160,7 @@ const mapStateToProps = (state, ownProps) => {
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initMessageClient,
   createConversation,
   leaveConversation,
   enterConversation,

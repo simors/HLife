@@ -110,11 +110,12 @@ function onMessageReceived(state, action) {
 }
 
 function createMessage(state, msg) {
+  state = state.setIn(['messages', msg.id], msg)
   state = state.updateIn(['conversationMap', msg.conversation, 'messages'], msgList=> {
-    if (msgList.includes(msg)) {
+    if (msgList.includes(msg.id)) {
       return msgList
     }
-    return msgList.insert(0, msg)   // 消息倒序排列，最新的消息在列表最前面
+    return msgList.insert(0, msg.id)   // 消息倒序排列，最新的消息在列表最前面
   })
   state = state.setIn(['conversationMap', msg.conversation, 'lastMessageAt'], msg.timestamp)
   state = state.setIn(['conversationMap', msg.conversation, 'updatedAt'], msg.timestamp)
@@ -128,6 +129,7 @@ function createMessage(state, msg) {
 }
 
 function deleteMessage(state, msgId, cid) {
+  state = state.deleteIn(['messages', msgId])
   state = state.updateIn(
     ['conversationMap', cid, 'messages'],
     list=>list.filter(msg => msg.id !== msgId)
@@ -157,7 +159,23 @@ function sortConversationList(state) {
 function onRehydrate(state, action) {
   var incoming = action.payload.MESSAGE
   if (incoming) {
+    if (incoming.unReadMsgCnt) {
+      state = state.set('unReadMsgCnt', incoming.unReadMsgCnt)
+    } else {
+      state = state.set('unReadMsgCnt', 0)
+    }
 
+    let messages = Map(incoming.messages)
+    messages.map((msg) => {
+      state = state.updateIn(['messages', msg.id], new Message(), val => val.merge(msg))
+    })
+
+    let conversations = Map(incoming.conversationMap)
+    conversations.map((conv) => {
+      let convId = conv.id
+      state = state.updateIn(['conversationMap', convId], new Conversation(), val => val.merge(conv))
+    })
+    state = sortConversationList(state)
   }
   return state
 }

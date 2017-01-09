@@ -45,6 +45,7 @@ class DocterFinder extends Component {
         name: doctor.phone,
         members: [this.props.currentUser, doctor.userId],
         conversationType: INQUIRY_CONVERSATION,
+        title: doctor.username,
       }
       Actions.CHATROOM(payload)
     }
@@ -53,7 +54,9 @@ class DocterFinder extends Component {
   renderDocs() {
     return (
       this.props.doctors.map((value, key) => {
-        console.log("renderDocs key:", key)
+        if (this.props.currentUser == value.userId) {
+          return <View key={key} />
+        }
         return (
           <View key={key} style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.consult(value)}>
