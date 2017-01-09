@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   commentContent: {
     fontSize: em(15),
-    color: '#8f8e94',
+    color: THEME.colors.lessDark,
   },
   expanderTxt: {
     color: THEME.colors.green,
