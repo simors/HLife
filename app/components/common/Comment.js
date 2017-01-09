@@ -139,7 +139,7 @@ class Comment extends Component {
         modalVisible={this.props.modalVisible}
         modalTitle={this.props.modalTitle}
         closeModal={() => this.props.closeModal()}
-        containerStyle={{position:'absolute'}}
+        containerStyle={styles.containerStyle}
       >
         <ScrollView>
           <View style={styles.modalCommentWrap}>
@@ -192,6 +192,13 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
 
+  },
+  containerStyle: {
+    ...Platform.select({
+      android: {
+        position:'absolute'
+      }
+    }),
   },
   modalRow: {
     flexDirection: 'row',
