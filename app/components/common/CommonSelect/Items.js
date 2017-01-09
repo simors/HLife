@@ -46,10 +46,13 @@ export default class Items extends Component {
   }
 
   componentDidMount() {
-    const { height } = this.props
+    // const { optionListHeight } = this.props
+    // this.animating(optionListHeight)
+  }
 
+  animating(height) {
     Animated.timing(this.state.height, {
-      toValue: height * 3,
+      toValue: height,
       duration: 200,
       easing :  Easing.linear
     }).start()
@@ -59,7 +62,7 @@ export default class Items extends Component {
     const { items, selectedText, selectedValue, positionX, positionY, show, onPress, width, height, optionListHeight } = this.props
 
     if (!show) {
-      return null;
+      return null
     }
 
     const renderedItems = React.Children.map(items, (item) => {
@@ -74,13 +77,8 @@ export default class Items extends Component {
     })
 
     return (
-      <View style={[styles.container, {height: normalizeH(optionListHeight)}]}>
-        <AnimatedScrollView
-          style={{ height: this.state.height}}
-          automaticallyAdjustContentInsets={false}
-          bounces={false}>
-          {renderedItems}
-        </AnimatedScrollView>
+      <View style={[styles.container]}>
+        {renderedItems}
       </View>
     )
   }

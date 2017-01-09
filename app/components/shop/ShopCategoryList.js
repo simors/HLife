@@ -44,7 +44,6 @@ const ds = new ListView.DataSource({
 class ShopCategoryList extends Component {
   constructor(props) {
     super(props)
-    let listView = undefined
 
     this.state = {
       searchForm: {
@@ -57,7 +56,9 @@ class ShopCategoryList extends Component {
         lastGeo: '',
       },
       shopCategoryName: '',
-      selectGroupShow: [false, false, false]
+      selectGroupShow: [false, false, false],
+      selectGroupHeight: 40,
+      overlayHeight: 0,
     }
   }
 
@@ -108,6 +109,7 @@ class ShopCategoryList extends Component {
       selectGroupShow: this.state.selectGroupShow
     })
     // console.log('_onSelectShopCategory.this.state=' , this.state)
+    this.toggleSelectGroupHeight()
     this.refreshData()
   }
 
@@ -122,6 +124,7 @@ class ShopCategoryList extends Component {
       },
       selectGroupShow: this.state.selectGroupShow
     })
+    this.toggleSelectGroupHeight()
     this.refreshData()
   }
 
@@ -136,7 +139,39 @@ class ShopCategoryList extends Component {
       },
       selectGroupShow: this.state.selectGroupShow
     })
+    this.toggleSelectGroupHeight()
     this.refreshData()
+  }
+
+  toggleSelectGroupHeight() {
+    let hasShow = false
+    this.state.selectGroupShow.forEach((item, index) => {
+      if(item) {
+        hasShow = true
+        return
+      }
+    })
+    if(hasShow) {
+      this.state.selectGroupHeight = PAGE_HEIGHT
+      this.setState({
+        selectGroupHeight: this.state.selectGroupHeight,
+        overlayHeight: PAGE_HEIGHT
+      })
+    }else{
+      this.state.selectGroupHeight = 40
+      this.setState({
+        selectGroupHeight: this.state.selectGroupHeight,
+        overlayHeight: 0
+      })
+    }
+  }
+
+  _onOverlayPress() {
+    this.state.selectGroupShow = [false, false, false]
+    this.setState({
+      selectGroupShow: this.state.selectGroupShow
+    })
+    this.toggleSelectGroupHeight()
   }
 
   _onSelectPress(index){
@@ -151,6 +186,8 @@ class ShopCategoryList extends Component {
     this.setState({ //Notes:触发子组件更新
       selectGroupShow: this.state.selectGroupShow
     })
+
+    this.toggleSelectGroupHeight()
   }
 
   renderShopCategoryOptions() {
@@ -244,32 +281,39 @@ class ShopCategoryList extends Component {
             />
           </View>
 
-          <View style={styles.selectGroup}>
-            <View style={{ flex: 1}}>
+          <View style={[styles.selectGroup, {height: this.state.selectGroupHeight}]}>
+            <TouchableWithoutFeedback onPress={()=>{this._onOverlayPress()}}>
+              <View style={[styles.selectOverlay, { height: this.state.overlayHeight }]}>
+              </View>
+            </TouchableWithoutFeedback>
+            <View style={styles.selectContainer}>
               <Select
                 show={this.state.selectGroupShow[0]}
                 onPress={()=>this._onSelectPress(0)}
                 style={{borderBottomWidth:normalizeBorder()}}
                 selectRef="SELECT1"
                 overlayPageX={0}
-                optionListHeight={330}
+                optionListHeight={240}
+                hasOverlay={false}
                 optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
                 defaultText={this.state.shopCategoryName}
                 defaultValue={this.state.searchForm.shopCategoryId}
                 onSelect={this._onSelectShopCategory.bind(this)}>
+
                 <Option key={"shopCategoryOption_-1"} value="">全部分类</Option>
                 {this.renderShopCategoryOptions()}
               </Select>
               <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
             </View>
-            <View style={{ flex: 1}}>
+            <View style={styles.selectContainer}>
               <Select
                 show={this.state.selectGroupShow[1]}
                 onPress={()=>this._onSelectPress(1)}
                 style={{borderWidth:normalizeBorder()}}
                 selectRef="SELECT2"
                 overlayPageX={PAGE_WIDTH/3}
-                optionListHeight={270}
+                optionListHeight={200}
+                hasOverlay={false}
                 optionListRef={()=> this._getOptionList('DISTANCE_OPTION_LIST')}
                 defaultText="全城"
                 defaultValue=""
@@ -282,13 +326,14 @@ class ShopCategoryList extends Component {
               </Select>
               <OptionList ref="DISTANCE_OPTION_LIST"/>
             </View>
-            <View style={{ flex: 1}}>
+            <View style={styles.selectContainer}>
               <Select
                 show={this.state.selectGroupShow[2]}
                 onPress={()=>this._onSelectPress(2)}
                 style={{borderBottomWidth:normalizeBorder()}}
                 selectRef="SELECT3"
                 overlayPageX={PAGE_WIDTH * 2 / 3 }
+                hasOverlay={false}
                 optionListRef={()=> this._getOptionList('SORT_OPTION_LIST')}
                 defaultText="智能排序"
                 defaultValue="0"
@@ -360,11 +405,22 @@ const styles = StyleSheet.create({
   selectGroup: {
     position: 'absolute',
     left: 0,
+    width:PAGE_WIDTH,
     top: 0,
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: THEME.colors.lessWhite,
+    backgroundColor: 'transparent',
+  },
+  selectOverlay: {
+    position: 'absolute',
+    left: 0,
+    width:PAGE_WIDTH,
+    top: 40,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  selectContainer: {
+    flex: 1,
+    height: 40
   },
   shopInfoWrap: {
     flex: 1,
