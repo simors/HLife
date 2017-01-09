@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   Platform,
   InteractionManager,
-  TouchableHighlight
+  TouchableHighlight,
+  ListView,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
@@ -20,7 +21,7 @@ import {getTopicCategories} from '../../selector/configSelector'
 import {getTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
-
+import CommonListView from '../common/CommonListView'
 import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -29,6 +30,10 @@ import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+const ds = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
 
 export class Find extends Component {
   constructor(props) {
@@ -49,7 +54,7 @@ export class Find extends Component {
     if (payload.isLiked) {
       this.props.unLikeTopic({
         topicId: payload.topic.objectId,
-        upType:'topic',
+        upType: 'topic',
         success: payload.success,
         error: this.submitErrorCallback
       })
@@ -57,7 +62,7 @@ export class Find extends Component {
     else {
       this.props.likeTopic({
         topicId: payload.topic.objectId,
-        upType:'topic',
+        upType: 'topic',
         success: payload.success,
         error: this.submitErrorCallback
       })
@@ -84,16 +89,31 @@ export class Find extends Component {
     })
   }
 
-  renderTopicPage() {
-    if (this.props.topics) {
-      return (
-        this.props.topics.map((value, key)=> {
-          return (
-            this.renderTopicItem(value, key)
-          )
-        })
-      )
-    }
+  loadMoreData() {
+
+  }
+
+  renderTopics() {
+    return (
+      this.props.topicCategories.map((value, key)=> {
+        return (
+          <View key={key} tabLabel={value.title}
+                style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
+            <CommonListView
+              contentContainerStyle={{backgroundColor: '#E5E5E5'}}
+              dataSource={this.props.dataSrc}
+              renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
+              loadNewData={()=> {
+                this.refreshTopic()
+              }}
+              loadMoreData={()=> {
+                this.loadMoreData()
+              }}
+            />
+          </View>
+        )
+      })
+    )
   }
 
   render() {
@@ -107,9 +127,8 @@ export class Find extends Component {
         />
         <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.topicId}
-                       refreshTopic={()=>this.refreshTopic()}
-                       onSelected={(index) => this.getSelectedTab(index)}
-                       renderTopicPage={() => this.renderTopicPage()}/>
+                       renderTopics={() => this.renderTopics()}
+                       onSelected={(index) => this.getSelectedTab(index)}/>
         <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
                             onPress={()=> {
                               if (this.props.isLogin) {
@@ -133,6 +152,7 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   return {
+    dataSrc: ds.cloneWithRows(topics),
     topicCategories: topicCategories,
     topics: topics,
     isLogin: isLogin,
@@ -161,5 +181,11 @@ const styles = StyleSheet.create({
     bottom: 61,
     height: 45,
     width: 45
-  }
+  },
+  itemLayout: {
+    flex: 1,
+    marginBottom: 50,
+    //  alignItems: 'center',
+//    justifyContent: 'center'
+  },
 })
