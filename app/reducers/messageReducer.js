@@ -2,6 +2,7 @@
  * Created by yangyang on 2016/12/21.
  */
 import {Map, List} from 'immutable'
+import {REHYDRATE} from 'redux-persist/constants'
 import * as Types from '../constants/messageActionTypes'
 import {Messenger, Conversation, Message} from '../models/messageModels'
 
@@ -23,6 +24,8 @@ export default function messageReducer(state = initialState, action) {
       return onMessageSend(state, action)
     case Types.ON_MESSAGE_RECEIVED:
       return onMessageReceived(state, action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -148,5 +151,13 @@ function sortConversationList(state) {
     })
   )
 
+  return state
+}
+
+function onRehydrate(state, action) {
+  var incoming = action.payload.MESSAGE
+  if (incoming) {
+
+  }
   return state
 }

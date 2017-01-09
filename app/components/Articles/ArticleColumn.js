@@ -47,6 +47,7 @@ class ArticleColumn extends Component {
     this.props.column.map((value, key)=> {
       if (value.columnId == this.props.columnId) {
         this.setState({columnItem: key, columnId: value.columnId})
+       // console.log('key==============>',key)
       }
     })
 
@@ -147,6 +148,7 @@ class ArticleColumn extends Component {
 
   render() {
     if (this.props.column) {
+      console.log('state.columnItem===========',this.state.columnItem)
       return (
 
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
@@ -219,22 +221,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   tabBarTextStyle: {
-    fontSize: em(15),
+    fontSize: em(17),
   //  paddingBottom: 10,
     letterSpacing: em(-0.4),
     color:'#686868'
   },
 
   tabBarTabStyle: {
-    paddingBottom: em(10),
-    paddingLeft: em(12),
-    paddingRight: em(12),
-    paddingTop: em(10)
+    // paddingBottom: em(10),
+    // paddingLeft: em(12),
+    // paddingRight: em(12),
+    // paddingTop: em(10)
   },
 
 
   tabBarUnderLineStyle: {
-    height: 0,
+     height: 0,
   },
 
   tabBarStyle: {
@@ -255,5 +257,10 @@ const styles = StyleSheet.create({
     //  paddingBottom: 10,
     letterSpacing: em(-0.4),
     color:'#686868'
+  },
+  tarBarUnderlineStyle:{
+    // height:normalizeH(0)
+    backgroundColor:'#50E3C2'
+
   }
 })

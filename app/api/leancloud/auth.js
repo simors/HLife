@@ -234,7 +234,6 @@ export function getUserById(payload) {
   return AV.Cloud.run('hLifeGetUserinfoById', params).then((result) => {
     return result
   }, (err) => {
-    console.log(err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

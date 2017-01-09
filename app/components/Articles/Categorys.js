@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   channelText: {
     marginTop: 7,
-    textAlign: 'center',
+  //  textAlign: 'center',
   },
   columnContainer: {
     borderBottomWidth:normalizeBorder(2),

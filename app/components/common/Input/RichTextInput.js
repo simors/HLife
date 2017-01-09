@@ -18,7 +18,7 @@ import RNFS from 'react-native-fs'
 import WebViewBridge from 'react-native-webview-bridge'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
-import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 
 var toolDefault = [
@@ -100,8 +100,6 @@ class RichTextInput extends Component {
       Keyboard.removeListener('keyboardDidShow', this.keyboardWillShow)
       Keyboard.removeListener('keyboardDidHide', this.keyboardWillHide)
     }
-
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   articleContentChange(data) {
@@ -171,7 +169,7 @@ class RichTextInput extends Component {
     // console.log("webview height: ", height)
 
     return (
-      <ScrollView>
+      <ScrollView ref={(scroll) => this.scrollView = scroll}>
         <View style={{flex: 1, height: height}}>
           <WebViewBridge
             ref={(web) => {
@@ -396,6 +394,9 @@ class RichTextInput extends Component {
         this.props.getImages(this.insertImages)
       }
       this.webView.sendToBridge('editImg_' + leanImgUrl)
+
+      this.scrollView.scrollTo({x: 0, y: this.state.webViewHeight-100})
+      this.webView.sendToBridge('keyboard_hide')
     }).catch((error) => {
       console.log('upload failed:', error)
     })
@@ -502,7 +503,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormUpdate,
-  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(RichTextInput)

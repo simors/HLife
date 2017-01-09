@@ -49,7 +49,7 @@ export function getIsFavorite(payload) {
     if(result && result.attributes) {
        //  console.log('result===>',result)
       userUpShopInfo = Favorite.fromLeancloudObject(result)
-        console.log('userUpShopInfo===>',userUpShopInfo)
+       // console.log('userUpShopInfo===>',userUpShopInfo)
     }
     return userUpShopInfo
   }, function (err) {

@@ -22,7 +22,7 @@ import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
 import {getArticleItem,getIsUp,getcommentCount,getUpCount} from '../../selector/articleSelector'
 import {fetchIsUP,upArticle,unUpArticle,fetchCommentsCount,fetchUpCount} from '../../action/articleAction'
-
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -36,8 +36,10 @@ class ArticleComment extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
       this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
+      if(this.props.isLogn){
+        this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
+      }
     })
   }
 
@@ -126,10 +128,13 @@ const mapStateToProps = (state, ownProps) => {
 
   let upCount = getUpCount(state,ownProps.comment.commentId)
   let isUp = getIsUp(state,ownProps.comment.commentId)
- // console.log('isUp====>',isUp)
+  const isLogin = isUserLogined(state)
+
+  // console.log('isUp====>',isUp)
   return{
     upCount: upCount,
-    isUp: isUp
+    isUp: isUp,
+    isLogin : isLogin
   //  articleItem : articleItem
   }
 }
@@ -186,7 +191,7 @@ const styles = StyleSheet.create({
   parentCommentStyle: {
     width: normalizeW(300),
     backgroundColor: '#f2f2f2',
-    marginRight: 8,
+    marginRight: normalizeW(8),
     marginTop: normalizeH(10),
   },
 
@@ -211,14 +216,14 @@ const styles = StyleSheet.create({
   },
   contentStyle: {
     fontSize: em(17),
-    lineHeight: 20,
+    lineHeight: normalizeH(20),
     paddingTop: normalizeH(10),
     paddingRight: normalizeW(8),
     color: "#4a4a4a"
   },
   likeStyle: {
     position: 'absolute',
-    left: 189,
+    left: normalizeW(189),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',
@@ -232,7 +237,7 @@ const styles = StyleSheet.create({
   commentImageStyle: {
     height: normalizeW(19),
     width: normalizeH(18),
-    marginRight: 3
+    marginRight: normalizeW(3)
   },
   commentTextStyle: {
     fontSize: em(12),
@@ -241,7 +246,7 @@ const styles = StyleSheet.create({
   },
   commentStyle: {
     position: 'absolute',
-    left: 259,
+    left: normalizeW(259),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',

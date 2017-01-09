@@ -10,7 +10,7 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { FormInput } from 'react-native-elements'
-import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import {removeSpace, formatPhone} from '../../../util/numberUtils'
@@ -39,10 +39,6 @@ class  PhoneInput extends Component {
     if (formInfo.initValue.text && formInfo.initValue.text.length > 0) {
       this.setState({showClear: true})
     }
-  }
-
-  componentWillUnmount() {
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   validInput(data) {
@@ -167,7 +163,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 	initInputForm,
   inputFormUpdate,
-  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PhoneInput)

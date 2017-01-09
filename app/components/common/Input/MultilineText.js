@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
@@ -30,10 +30,6 @@ class MultilineText extends Component {
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
-  }
-
-  componentWillUnmount() {
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   validInput(data) {
@@ -62,6 +58,7 @@ class MultilineText extends Component {
           placeholder={this.props.placeholder}
           placeholderTextColor="#BABABA"
           value={this.props.data}
+          underlineColorAndroid="transparent"
           onChangeText={(text) => this.inputChange(text)}
         />
       </View>
@@ -84,7 +81,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormUpdate,
-  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MultilineText)
@@ -103,6 +99,8 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     borderBottomWidth: 1,
     borderTopWidth: 1,
-    borderColor: '#E6E6E6'
+    borderColor: '#E6E6E6',
+    textAlign: "left",
+    textAlignVertical: "top"
   }
 })

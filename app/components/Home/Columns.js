@@ -101,7 +101,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
           <TouchableOpacity style={styles.channelWrap} onPress={() => {
             this.openModel()
           }}>
-            <Image source={require("../../assets/images/home_more.png")}/>
+            <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={require("../../assets/images/home_more.png")}/>
             <Text style={styles.channelText}>更多</Text>
           </TouchableOpacity>
         <CommonModal
