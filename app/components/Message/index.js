@@ -36,9 +36,9 @@ class MessageBox extends Component {
         />
         <View style={styles.itemContainer}>
           <View style={styles.itemView}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.INQUIRY_MESSAGE_BOX()}>
               <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>我的服务</Text>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>我的问诊</Text>
               <View style={{flex: 1}}></View>
               <View style={styles.noticeTip}></View>
             </TouchableOpacity>

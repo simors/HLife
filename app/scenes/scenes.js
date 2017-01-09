@@ -42,6 +42,7 @@ import HealthProfile from '../components/Home/Inquiry/HealthProfile'
 import SelectDoctor from '../components/Home/Inquiry/SelectDoctor'
 import QA from '../components/Home/Inquiry/QA'
 import QAList from '../components/Home/Inquiry/QAList'
+import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +87,7 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="TOPIC_DETAIL" component={TopicDetail} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
+      <Scene key="INQUIRY_MESSAGE_BOX" component={InquiryMessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />

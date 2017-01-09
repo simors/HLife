@@ -7,6 +7,15 @@ export function messengerClient(state) {
   return client
 }
 
+export function getConversations(state) {
+  let convs = state.MESSAGE.get('conversationMap')
+  let retConvs = []
+  convs.forEach((conv) => {
+    retConvs.push(conv.toJS())
+  })
+  return retConvs
+}
+
 export function getConversationById(state, id) {
   return state.MESSAGE.getIn(['conversationMap', id])
 }
