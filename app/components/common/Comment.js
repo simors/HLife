@@ -139,6 +139,7 @@ class Comment extends Component {
         modalVisible={this.props.modalVisible}
         modalTitle={this.props.modalTitle}
         closeModal={() => this.props.closeModal()}
+        containerStyle={{position:'absolute'}}
       >
         <ScrollView>
           <View style={styles.modalCommentWrap}>
