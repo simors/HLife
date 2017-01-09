@@ -18,6 +18,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   FORGET_PASSWORD: 'FORGET_PASSWORD',
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
   DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
+  DOCTOR_CERTIFICATION_MODIFY: 'DOCTOR_CERTIFICATION_MODIFY',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
   INQUIRY_SUBMIT: 'INQUIRY_SUBMIT',
@@ -47,6 +48,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION:
         dispatch(handleDoctorCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION_MODIFY:
+        dispatch(handleDoctorCertificationModify(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
         dispatch(handleProfileSubmit(payload, formData))
@@ -222,7 +226,16 @@ function handleDoctorCertification(payload, formData) {
 
 }
 
+function handleDoctorCertificationModify(payload, formData) {
+  return (dispatch, getState) => {
+    dispatch(doctorCertification(payload, formData))
+  }
+}
+
 function doctorCertification(payload, formData) {
+  console.log("doctorCertification payload", payload)
+  console.log("doctorCertification formData", formData)
+
   return (dispatch, getState) => {
     let certPayload = {
       id: payload.id,
@@ -231,7 +244,7 @@ function doctorCertification(payload, formData) {
       phone: formData.phoneInput.text,
       organization: formData.regionPicker.text,
       department: formData.medicalPicker.text,
-      certifiedImage: formData.idImageInput.text,
+      certifiedImage: formData.IDImageInput.text,
       certificate: formData.imgGroup.text,
     }
     lcAuth.certification(certPayload).then((doctor) => {

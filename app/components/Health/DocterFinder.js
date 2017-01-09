@@ -43,7 +43,7 @@ class DocterFinder extends Component {
     } else {
       let payload = {
         name: doctor.phone,
-        members: [this.props.currentUser, doctor.id],
+        members: [this.props.currentUser, doctor.userId],
         conversationType: INQUIRY_CONVERSATION,
       }
       Actions.CHATROOM(payload)

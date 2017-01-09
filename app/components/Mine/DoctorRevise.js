@@ -22,11 +22,12 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import PhoneInput from '../common/Input/PhoneInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ImageInput from '../common/Input/ImageInput'
-import {submitFormData, submitInputData} from '../../action/authActions'
+import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
 import {activeDoctorInfo} from '../../selector/doctorSelector'
+import {activeUserInfo} from '../../selector/authSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -80,6 +81,25 @@ const imageGroupInput = {
 class DoctorRevise extends Component {
   constructor(props) {
     super(props)
+  }
+
+  submitSuccessCallback(doctorInfo) {
+    Toast.show('认证提交成功')
+    Actions.pop()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  onButtonPress = () => {
+    this.props.submitFormData({
+      formKey: commonForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION_MODIFY,
+      id: this.props.userInfo && this.props.userInfo.id,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
   }
 
   render() {
@@ -171,7 +191,7 @@ class DoctorRevise extends Component {
                   认证凭证
                 </Text>
               </View>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', paddingLeft: normalizeW(15)}}>
                 <ImageGroupInput {...imageGroupInput}
                                  number={3}
                                  imageLineCnt={4}/>
@@ -192,9 +212,11 @@ class DoctorRevise extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let userInfo = activeUserInfo(state)
   let doctorInfo = activeDoctorInfo(state)
   return{
     doctorInfo: doctorInfo,
+    userInfo: userInfo,
   }
 }
 

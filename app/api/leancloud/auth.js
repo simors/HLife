@@ -79,33 +79,89 @@ export function certification(payload) {
   console.log("certification", payload)
 
   let userInfo = AV.Object.createWithoutData('_User', payload.id)
+  let query = new AV.Query('Doctor')
+  query.equalTo('user', userInfo)
+  return query.find().then(function (results) {
+    if (results.length == 0) {
+      let Doctor = AV.Object.extend('Doctor')
+      let doctor = new Doctor()
 
-  let Doctor = AV.Object.extend('Doctor')
-  let doctor = new Doctor()
+      doctor.set('name', payload.name)
+      doctor.set('ID', payload.ID)
+      doctor.set('phone', payload.phone)
+      doctor.set('organization', payload.organization)
+      doctor.set('department', payload.department)
+      doctor.set('certifiedImage', payload.certifiedImage)
+      doctor.set('certificate', payload.certificate)
+      doctor.set('status', 2) //审核中
+      doctor.set('user', userInfo)
+      userInfo.addUnique('identity', 'doctor')
+      userInfo.save()
 
-  doctor.set('name', payload.name)
-  doctor.set('ID', payload.ID)
-  doctor.set('phone', payload.phone)
-  doctor.set('organization', payload.organization)
-  doctor.set('department', payload.department)
-  doctor.set('certifiedImage', payload.certifiedImage)
-  doctor.set('certificate', payload.certificate)
-  doctor.set('status', 2) //审核中
-  doctor.set('user', userInfo)
+      return doctor.save().then((doctorInfo)=>{
+        let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+        doctor.id = payload.id
+        return {
+          doctorInfo: doctor,
+        }
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+    } else {
+      let Doctor = AV.Object.createWithoutData('Doctor', results[0].id)
+      Doctor.set('name', payload.name)
+      Doctor.set('ID', payload.ID)
+      Doctor.set('phone', payload.phone)
+      Doctor.set('organization', payload.organization)
+      Doctor.set('department', payload.department)
+      Doctor.set('certifiedImage', payload.certifiedImage)
+      Doctor.set('certificate', payload.certificate)
+      Doctor.set('status', 2) //审核中
+      Doctor.set('user', userInfo)
+      return Doctor.save().then((doctorInfo)=>{
+        let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+        doctor.id = payload.id
+        return {
+          doctorInfo: doctor,
+        }
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
 
-  userInfo.addUnique('identity', 'doctor')
-  userInfo.save()
-
-  return doctor.save().then((doctorInfo)=>{
-    let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
-    doctor.id = payload.id
-    return {
-      doctorInfo: doctor,
     }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
+  // let Doctor = AV.Object.extend('Doctor')
+  // let doctor = new Doctor()
+  //
+  // doctor.set('name', payload.name)
+  // doctor.set('ID', payload.ID)
+  // doctor.set('phone', payload.phone)
+  // doctor.set('organization', payload.organization)
+  // doctor.set('department', payload.department)
+  // doctor.set('certifiedImage', payload.certifiedImage)
+  // doctor.set('certificate', payload.certificate)
+  // doctor.set('status', 2) //审核中
+  // doctor.set('user', userInfo)
+  //
+  // userInfo.addUnique('identity', 'doctor')
+  // userInfo.save()
+  //
+  // return doctor.save().then((doctorInfo)=>{
+  //   let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+  //   doctor.id = payload.id
+  //   return {
+  //     doctorInfo: doctor,
+  //   }
+  // }, function (err) {
+  //   err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+  //   throw err
+  // })
 
 }
 

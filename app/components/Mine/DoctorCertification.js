@@ -79,7 +79,7 @@ const medicalPicker = {
 const idImageInput = {
   formKey: commonForm,
   stateKey: Symbol('idImageInput'),
-  type: "idImageInput",
+  type: "IDImageInput",
 }
 const imageGroupInput = {
   formKey: commonForm,
