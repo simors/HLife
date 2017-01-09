@@ -6,6 +6,7 @@ import * as doctorActionTypes from '../constants/doctorActionTypes'
 import * as lcDoctor from '../api/leancloud/doctor'
 
 export function fetchDoctorInfo(payload) {
+  console.log("fetchDoctorInfo")
   return (dispatch, getState) => {
     lcDoctor.getDoctorInfo(payload).then((doctorInfo) => {
       let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)

@@ -15,7 +15,7 @@ import {
 import {FormInput}  from 'react-native-elements'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
@@ -63,10 +63,6 @@ class CommentInput extends Component {
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
-  }
-
-  componentWillUnmount() {
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   measure = (event) => {
@@ -298,7 +294,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormUpdate,
-  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentInput)

@@ -16,7 +16,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
-import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import Gallery from 'react-native-gallery'
@@ -42,10 +42,6 @@ class ImageInput extends Component {
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
-  }
-
-  componentWillUnmount() {
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   selectImg() {
@@ -223,7 +219,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormUpdate,
-  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageInput)
