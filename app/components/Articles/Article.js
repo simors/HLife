@@ -377,8 +377,7 @@ const styles = StyleSheet.create(
       flex: 1,
       backgroundColor: '#E5E5E5',
       justifyContent: 'flex-start',
-      alignItems: 'center'
-
+     // alignItems: 'center'
     },
     titleView: {
      // height: normalizeH(39),
