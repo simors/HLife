@@ -85,7 +85,10 @@ class ReplyList extends Component {
         if(item.status) {
           return (
             <TouchableOpacity key={"up_" + item.id + "_" + index} style={styles.upUserBox}>
-              <Text style={styles.upUser}>{item.user.nickname}</Text>
+              {this.props.ups.length-1 == index
+                ? <Text style={styles.upUser}>{item.user.nickname}</Text>
+                : <Text style={styles.upUser}>{item.user.nickname},</Text>
+              }
             </TouchableOpacity>
           )
         }
@@ -102,7 +105,7 @@ class ReplyList extends Component {
           <Triangle width={8} height={5} color="rgba(0,0,0,0.05)" style={[styles.triangle]} direction="up"/>
           <View style={styles.upReplyContainer}>
             <View style={styles.upUsersContainer}>
-              <Image style={{width:15,height:12,marginRight:5}} source={require('../../../assets/images/artical_like_unselect.png')}/>
+              <Image style={{width:15,height:12,marginRight:5,marginBottom:3}} source={require('../../../assets/images/artical_like_unselect.png')}/>
               {this.renderUps()}
             </View>
             {this.renderReplys()}
@@ -139,12 +142,14 @@ const styles = StyleSheet.create({
   upUsersContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding:10,
+    flexWrap: 'wrap',
+    padding:5,
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA
   },
   upUserBox: {
-    marginRight:8
+    marginRight:3,
+    marginBottom:3
   },
   upUser: {
     fontSize: em(12),
@@ -155,9 +160,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   replyContainer: {
-    paddingTop:5,
-    paddingLeft: 10,
-    paddingRight: 10
+    padding:5,
+    paddingBottom: 0,
   },
   replyInnerContainer: {
     flex: 1,

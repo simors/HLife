@@ -14,7 +14,7 @@ import {
 
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 
 class GenderInput extends Component {
@@ -37,10 +37,6 @@ class GenderInput extends Component {
       initValue: this.props.initValue
     }
     this.props.initInputForm(formInfo)
-  }
-
-  componentWillUnmount() {
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   selectMale = () => {
@@ -154,7 +150,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormUpdate,
-  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenderInput)

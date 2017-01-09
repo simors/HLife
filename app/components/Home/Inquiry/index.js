@@ -89,10 +89,10 @@ class Inguiry extends Component {
         />
         <View style={styles.body}>
           <KeyboardAwareScrollView style={styles.scrollViewStyle} contentContainerStyle={{flex: 1}}>
-            <View>
+            <View style={{borderWidth:1 ,borderColor: 'red'}}>
               <MultilineText containerStyle={{height: normalizeH(232)}}
                              placeholder="请详细描述您的症状和身体状况，便于医生更准确的分析，我们将确保您的隐私安全。为了描述清楚，描述字数应至少12个字符。"
-                             inputStyle={{height: normalizeH(232)}}
+                             inputStyle={{height: normalizeH(232), borderWidth:1 ,borderColor: 'red'}}
                              {...questionInput}/>
             </View>
             <View style={{flex: 1,backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>

@@ -119,13 +119,9 @@ class Profile extends Component {
                 <View style={{flex: 2, justifyContent: 'center'}}>
                   <CommonTextInput {...nicknameInput}
                                    initValue={this.props.userInfo.nickname? this.props.userInfo.nickname: undefined}
-                                   containerStyle={{height: normalizeH(38), }}
+                                   containerStyle={{height: normalizeH(38)}}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
-                <View>
-
-                </View>
-
               </View>
               <View style={styles.tab}>
                 <View style={{flex: 1, justifyContent: 'center'}}>
@@ -235,7 +231,7 @@ const  styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     width: normalizeW(84),
     height: normalizeH(84),
-    borderWidth: 0,
+    borderWidth: 1,
     borderRadius: normalizeW(42),
     overflow: 'hidden'
   },

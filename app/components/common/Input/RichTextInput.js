@@ -18,7 +18,7 @@ import RNFS from 'react-native-fs'
 import WebViewBridge from 'react-native-webview-bridge'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
-import {initInputForm, inputFormUpdate, inputFormOnDestroy} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 
 var toolDefault = [
@@ -100,8 +100,6 @@ class RichTextInput extends Component {
       Keyboard.removeListener('keyboardDidShow', this.keyboardWillShow)
       Keyboard.removeListener('keyboardDidHide', this.keyboardWillHide)
     }
-
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
   }
 
   articleContentChange(data) {
@@ -505,7 +503,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormUpdate,
-  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(RichTextInput)
