@@ -29,7 +29,7 @@ export default class OptionList extends Component {
       positionX: 0,
       positionY: 0,
 
-      optionListHeight: 102,
+      optionListHeight: 120,
 
       items: [],
       selectedText: '',

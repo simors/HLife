@@ -29,7 +29,7 @@ export default class Select extends Component {
 
   static defaultProps = {
     height: 40,
-    optionListHeight: 102,
+    optionListHeight: 120,
     onSelect: () => { }
   }
 

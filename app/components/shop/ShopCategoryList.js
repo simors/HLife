@@ -282,18 +282,18 @@ class ShopCategoryList extends Component {
           </View>
 
           <View style={[styles.selectGroup, {height: this.state.selectGroupHeight}]}>
+            <TouchableWithoutFeedback onPress={()=>{this._onOverlayPress()}}>
+              <View style={[styles.selectOverlay, { height: this.state.overlayHeight }]}>
+              </View>
+            </TouchableWithoutFeedback>
             <View style={styles.selectContainer}>
-              <TouchableWithoutFeedback onPress={()=>{this._onOverlayPress()}}>
-                <View style={[styles.selectOverlay, { height: this.state.overlayHeight }]}>
-                </View>
-              </TouchableWithoutFeedback>
               <Select
                 show={this.state.selectGroupShow[0]}
                 onPress={()=>this._onSelectPress(0)}
                 style={{borderBottomWidth:normalizeBorder()}}
                 selectRef="SELECT1"
                 overlayPageX={0}
-                optionListHeight={204}
+                optionListHeight={240}
                 hasOverlay={false}
                 optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
                 defaultText={this.state.shopCategoryName}
@@ -312,7 +312,7 @@ class ShopCategoryList extends Component {
                 style={{borderWidth:normalizeBorder()}}
                 selectRef="SELECT2"
                 overlayPageX={PAGE_WIDTH/3}
-                optionListHeight={180}
+                optionListHeight={200}
                 hasOverlay={false}
                 optionListRef={()=> this._getOptionList('DISTANCE_OPTION_LIST')}
                 defaultText="全城"

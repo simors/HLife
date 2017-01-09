@@ -50,10 +50,10 @@ export default class Overlay extends Component {
     // this.setState({
     //   height: this.state.height
     // })
-    Animated.delay(260)
+    // Animated.delay(260)
     Animated.timing(this.state.scrollViewHeight, {
       toValue: scrollViewHeight,
-      duration: 260,
+      duration: 200,
       easing: Easing.linear
     }).start()
 
@@ -62,7 +62,7 @@ export default class Overlay extends Component {
   animatingHide() {
     Animated.timing(this.state.scrollViewHeight, {
       toValue: 0,
-      duration: 260,
+      duration: 200,
       easing: Easing.linear
     }).start()
     // this.state.scrollViewHeight.addListener(({value})=>{
@@ -86,6 +86,7 @@ export default class Overlay extends Component {
           this.animatingHide()
         }
       }else {
+        // console.log('componentWillReceiveProps.nextProps.optionListHeight=', nextProps.optionListHeight)
         this.animatingShow(nextProps.optionListHeight)
       }
 
@@ -97,22 +98,25 @@ export default class Overlay extends Component {
     // if (!show && !userTouching) {
     //   return null
     // }
+    // console.log("this.state.scrollViewHeight========", this.state.scrollViewHeight)
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View>
+        <Animated.View
+          style={[styles.scrollView, {top: 40, left: -overlayPageX,  height: this.state.scrollViewHeight}]}
+        >
           {hasOverlay
-            ? <View style={[styles.overlay, { top: 0, left: -overlayPageX, height: this.state.height }, overlayStyles]}>
+            ? <View style={[styles.overlay, { top: 0, left: 0, height: this.state.height }, overlayStyles]}>
               </View>
             : null
 
           }
-          <AnimatedScrollView
-            style={[styles.scrollView, {top: 0, left: -overlayPageX,  height: this.state.scrollViewHeight}]}
+          <ScrollView
+            style={[{height: this.props.optionListHeight}]}
             automaticallyAdjustContentInsets={false}
             bounces={false}>
             {this.props.children}
-          </AnimatedScrollView>
-        </View>
+          </ScrollView>
+        </Animated.View>
 
       </TouchableWithoutFeedback>
     )
