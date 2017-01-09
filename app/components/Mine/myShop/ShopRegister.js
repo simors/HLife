@@ -128,8 +128,8 @@ class ShopRegister extends Component {
         <View style={styles.body}>
 
           <KeyboardAwareScrollView
-            keyboardShouldPersistTaps={true}
             keyboardDismissMode='on-drag'
+            automaticallyAdjustContentInsets={false}
           >
             <View style={styles.subTitleWrap}>
               <Text style={styles.subTitle}>欢迎加入{appConfig.APP_NAME}，给你的店铺带好更好的收入</Text>

@@ -56,11 +56,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
+    height: 40,
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA
   },
   textStyle: {
-    lineHeight: normalizeH(30),
+    fontSize: em(16)
   },
   selectedIcon: {
     width: 20,

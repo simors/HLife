@@ -17,6 +17,8 @@ export default class OptionList extends Component {
     super(props)
     this.state = {
       show: false,
+      userTouching: false,
+      hasOverlay: false,
 
       width: 0,
       height: 0,
@@ -27,21 +29,21 @@ export default class OptionList extends Component {
       positionX: 0,
       positionY: 0,
 
-      optionListHeight: 150,
+      optionListHeight: 120,
 
       items: [],
       selectedText: '',
       selectedValue: '',
       onSelect: () => { }
     }
+    
   }
 
-  _toggle(show, items, selectedText, selectedValue, positionX, positionY, width, height, optionListHeight, overlayPageX, onSelect) {
+  _toggle(show, hasOverlay, userTouching, items, selectedText, selectedValue, positionX, positionY, width, height, optionListHeight, overlayPageX, onSelect) {
     positionX = positionX - this.state.overlayPageX
     positionY = positionY - this.state.overlayPageY
 
     this.setState({
-      ...this.state,
       positionX,
       positionY,
       overlayPageX,
@@ -52,7 +54,9 @@ export default class OptionList extends Component {
       selectedValue,
       onSelect,
       optionListHeight,
-      show: !!show
+      show: !!show,
+      userTouching: !!userTouching,
+      hasOverlay: !!hasOverlay
     })
   }
 
@@ -86,18 +90,22 @@ export default class OptionList extends Component {
   render() {
     let {
       items, selectedText, selectedValue, overlayPageX, overlayPageY, positionX,
-      positionY, width, height, show, optionListHeight
+      positionY, width, height, show, optionListHeight, userTouching, hasOverlay
     } = this.state
 
     overlayPageY = height
     positionY = positionY
 
     const {overlayStyles} = this.props
+    // console.log('OptionList==this.state====', this.state)
     return (
       <Overlay
         overlayPageX={overlayPageX}
         overlayPageY={overlayPageY}
         show={show}
+        userTouching={userTouching}
+        hasOverlay={hasOverlay}
+        optionListHeight={optionListHeight}
         onPress={ this._onOverlayPress.bind(this) }
         overlayStyles = {overlayStyles} >
         <Items
@@ -110,6 +118,7 @@ export default class OptionList extends Component {
           width={width}
           height={height}
           show={show}
+          userTouching={userTouching}
           onPress={ this._onItemPress.bind(this) }/>
       </Overlay>
     )

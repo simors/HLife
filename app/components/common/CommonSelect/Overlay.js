@@ -7,11 +7,18 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Easing,
+  Animated,
+  ScrollView
 } from 'react-native'
+
+import TimerMixin from 'react-timer-mixin'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView)
 
 export default class Overlay extends Component {
 
@@ -31,39 +38,106 @@ export default class Overlay extends Component {
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      height: 0,
+      scrollViewHeight: new Animated.Value(0),
+    }
+  }
+
+  animatingShow(scrollViewHeight) {
+    // this.state.height = PAGE_HEIGHT
+    // this.setState({
+    //   height: this.state.height
+    // })
+    // Animated.delay(260)
+    Animated.timing(this.state.scrollViewHeight, {
+      toValue: scrollViewHeight,
+      duration: 200,
+      easing: Easing.linear
+    }).start()
+
+  }
+  
+  animatingHide() {
+    Animated.timing(this.state.scrollViewHeight, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.linear
+    }).start()
+    // this.state.scrollViewHeight.addListener(({value})=>{
+    //   if(!value) {
+    //     this.setState({
+    //       height: 0
+    //     })
+    //   }
+    // })
+    // this.setTimeout(()=>{
+    //   this.setState({
+    //     height: 0
+    //   })
+    // }, 200)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.show != nextProps.show) {
+      if(!nextProps.show) {
+        if(nextProps.userTouching) {
+          this.animatingHide()
+        }
+      }else {
+        // console.log('componentWillReceiveProps.nextProps.optionListHeight=', nextProps.optionListHeight)
+        this.animatingShow(nextProps.optionListHeight)
+      }
+
+    }
   }
 
   render() {
-    const { overlayPageX, overlayPageY, show, onPress, overlayStyles } = this.props;
-
-    if (!show) {
-      return null
-    }
-
+    const { show, userTouching, hasOverlay, overlayPageX, overlayPageY, onPress, overlayStyles} = this.props;
+    // if (!show && !userTouching) {
+    //   return null
+    // }
+    // console.log("this.state.scrollViewHeight========", this.state.scrollViewHeight)
     return (
-      <TouchableWithoutFeedback style={styles.container} onPress={onPress}>
-        <View style={[styles.overlay, { top: overlayPageY, left: -overlayPageX }, overlayStyles]}>
-          {this.props.children}
-        </View>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <Animated.View
+          style={[styles.scrollView, {top: 40, left: -overlayPageX,  height: this.state.scrollViewHeight}]}
+        >
+          {hasOverlay
+            ? <View style={[styles.overlay, { top: 0, left: 0, height: this.state.height }, overlayStyles]}>
+              </View>
+            : null
+
+          }
+          <ScrollView
+            style={[{height: this.props.optionListHeight}]}
+            automaticallyAdjustContentInsets={false}
+            bounces={false}>
+            {this.props.children}
+          </ScrollView>
+        </Animated.View>
+
       </TouchableWithoutFeedback>
     )
   }
 }
 
+Object.assign(Overlay.prototype, TimerMixin)
+
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0
+    flex: 1,
   },
   overlay: {
     position: 'absolute',
     width: PAGE_WIDTH,
-    height: PAGE_HEIGHT,
-    flex : 1,
-    justifyContent : "flex-start",
     backgroundColor : "rgba(0,0,0,0.5)"
+  },
+  scrollView: {
+    position: 'absolute',
+    top: 0,
+    width: PAGE_WIDTH,
+    backgroundColor : "#fff"
   }
 })

@@ -29,7 +29,7 @@ export default class Select extends Component {
 
   static defaultProps = {
     height: 40,
-    optionListHeight: 160,
+    optionListHeight: 120,
     onSelect: () => { }
   }
 
@@ -61,36 +61,43 @@ export default class Select extends Component {
     // console.log(this.props.selectRef + '.componentWillReceiveProps.this.props.show=' + this.props.show)
     if(this.props.show != nextProps.show) {
       this.state.show = nextProps.show
-      this.setState({ show: this.state.show })
+      this.setState({
+        ...this.state,
+        show: this.state.show
+      })
       // console.log(this.props.selectRef + '.componentWillReceiveProps.state.show=' + this.state.show)
-      this._toggle()
+      this._toggle(true)
     }
   }
 
   reset() {
     const { defaultText } = this.props
-    this.setState({ text: defaultText })
+    this.setState({
+      ...this.state,
+      text: defaultText
+    })
   }
 
   _onPress() {
     if(this.props.onPress) {
       this.props.onPress()
     }
-    this._toggle()
   }
 
-  _toggle() {
-    const {show, optionListRef, children, onSelect, width, height, overlayPageX, optionListHeight } = this.props
+  _toggle(userTouching) {
+    const {show, hasOverlay, optionListRef, children, onSelect, width, height, overlayPageX, optionListHeight } = this.props
     if (!children.length) {
       return false
     }
     this.overlayPageX = overlayPageX
-    optionListRef()._toggle(this.state.show, children, this.state.text, this.state.value, this.positionX, this.positionY, width, height, optionListHeight, overlayPageX, (text, value=text) => {
+    optionListRef()._toggle(this.state.show, hasOverlay, userTouching, children, this.state.text, this.state.value, this.positionX, this.positionY, width, height, optionListHeight, overlayPageX, (text, value=text) => {
       onSelect(value, text)
       if(value !== null) {
+        this.state.text = text
+        this.state.value = value
         this.setState({
-          text: text,
-          value: value
+          text: this.state.text,
+          value: this.state.value
         })
       }
     })
@@ -114,9 +121,9 @@ export default class Select extends Component {
         borderBottomColor: THEME.colors.green
       }
     }
-
+    // console.log(`this.state.value1=${this.state.value},this.state.text1=${this.state.text}`)
     return (
-      <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
+      <TouchableWithoutFeedback style={{flex: 1}} onPress={this._onPress.bind(this)}>
         <View ref={this.props.selectRef || SELECT} style={[styles.container, style ]}>
           <Option hideSelectedIcon={true} value={this.state.value} style={ [styleOption] } styleText={ [styleText, selectingTxtStatus] }>{this.state.text}</Option>
           <Triangle style={[styles.triangle, selectingTriangleStatus]} direction="right-down"/>
@@ -129,7 +136,8 @@ export default class Select extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: 40,
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     borderColor: THEME.colors.lighterA,
     backgroundColor: THEME.colors.lessWhite,
