@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     borderBottomColor: THEME.colors.lighterA
   },
   textStyle: {
-    lineHeight: normalizeH(30),
+    fontSize: em(16)
   },
   selectedIcon: {
     width: 20,
