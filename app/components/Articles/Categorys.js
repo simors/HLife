@@ -56,6 +56,8 @@ class Categorys extends Component {
     }
   }
 
+
+
   render() {
     return (
       <View style={styles.columnContainer}>
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     marginBottom:normalizeH(20),
     marginLeft: normalizeW(20),
     marginRight:normalizeW(20),
-    height: normalizeH(80),
+   // height: normalizeH(80),
     // width: normalizeW(35),
   },
   channelText: {
