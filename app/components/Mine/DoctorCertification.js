@@ -31,7 +31,6 @@ import RegionPicker from '../common/Input/RegionPicker'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
 import {activeUserInfo} from '../../selector/authSelector'
-import {fetchDoctorInfo} from '../../action/doctorAction'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -109,7 +108,6 @@ class DoctorCertification extends Component {
        success: this.submitSuccessCallback,
        error: this.submitErrorCallback
      })
-     this.props.fetchDoctorInfo({id: this.props.userInfo.id})
    }
 
    smsCode() {
@@ -271,7 +269,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
-  fetchDoctorInfo,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DoctorCertification)
