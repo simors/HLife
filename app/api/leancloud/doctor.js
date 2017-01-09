@@ -7,18 +7,17 @@ import ERROR from '../../constants/errorCode'
 import {DoctorInfo} from '../../models/doctorModel'
 
 export function getDoctorInfo(payload) {
-  console.log("getDoctorInfo")
+  console.log("getDoctorInfo payload", payload)
   let userInfoId = payload.id
   var userInfo = AV.Object.createWithoutData('_User', userInfoId)
   var doctor =new AV.Query('Doctor')
   doctor.equalTo('user', userInfo)
 
   return doctor.find().then(function (doctors) {
+    console.log("getDoctorInfo get ", doctors)
     let doctorInfo = DoctorInfo.fromLeancloudObject(doctors[0])
-    console.log("find success")
     return doctorInfo
     }, function (error) {
-    console.log("find failed")
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error
     }

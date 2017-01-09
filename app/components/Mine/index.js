@@ -6,6 +6,7 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
   Image,
   Platform
 } from 'react-native'
@@ -88,7 +89,13 @@ class Mine extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <ScrollView onScroll={() => {this.props.fetchDoctorInfo({id: this.props.userInfo.id})}}>
+        <ScrollView refreshControl={
+                      <RefreshControl
+                        refreshing={false}
+                        onRefresh={() => {this.props.fetchDoctorInfo({id: this.props.userInfo.id})}}
+                        colors={['#ff0000', '#00ff00','#0000ff','#3ad564']}
+                        progressBackgroundColor="#ffffff"
+                      /> }>
           <View style={styles.azone}>
             <View style={{flex: 1}} >
               <TouchableOpacity style={styles.aindex} onPress= {() => this.doctorCertificationAction(this.props.doctorInfo.status)}>

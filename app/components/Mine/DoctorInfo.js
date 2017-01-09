@@ -163,8 +163,9 @@ class DoctorInfo extends Component {
                   认证凭证
                 </Text>
               </View>
-
-              <ImageGroupViewer containerStyle={{width:PAGE_WIDTH}} images={this.props.doctorInfo.certificate} imageLineCnt={4}/>
+              <View style={{flex: 1, paddingLeft: normalizeW(20)}}>
+                <ImageGroupViewer containerStyle={{width:PAGE_WIDTH}} images={this.props.doctorInfo.certificate} imageLineCnt={4}/>
+              </View>
             </View>
 
           </ScrollView>
