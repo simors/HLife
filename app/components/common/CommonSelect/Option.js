@@ -41,9 +41,16 @@ export default class Option extends Component {
   render() {
     const { style, styleText } = this.props
 
+    let selectContainer = {}
+    let selectTextStyle = {}
+    if(this.props.selectedValue == this.props.value) {
+      selectContainer = {backgroundColor: '#fff'}
+      selectTextStyle = {color: THEME.colors.green}
+    }
+
     return (
-      <View style={[ styles.container, style ]}>
-        <Text style={ [styles.textStyle, styleText] }>{this.props.children}</Text>
+      <View style={[ styles.container, selectContainer, style ]}>
+        <Text style={ [styles.textStyle, styleText, selectTextStyle] }>{this.props.children}</Text>
         {this.renderSelectedIcon()}
       </View>
     )
@@ -58,7 +65,7 @@ const styles = StyleSheet.create({
     padding: 10,
     height: 40,
     borderBottomWidth: normalizeBorder(),
-    borderBottomColor: THEME.colors.lighterA
+    borderBottomColor: THEME.colors.lighter,
   },
   textStyle: {
     fontSize: em(16)

@@ -8,10 +8,12 @@
 import Option from './Option'
 import OptionList from './OptionList'
 import Select from './Select'
+import SelectInput from './SelectInput'
 
 
 module.exports = {
   Option,
   OptionList,
-  Select
+  Select,
+  SelectInput
 }
