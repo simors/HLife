@@ -17,7 +17,7 @@ import {GiftedChat} from './GifedChat/GiftedChat'
 import Header from '../common/Header'
 import CustomInputToolbar from './CustomInputToolbar'
 import CustomMessage from './CustomMessage'
-import {createConversation, leaveConversation, enterConversation, sendMessage} from '../../action/messageAction'
+import {createConversation, leaveConversation, enterConversation, sendMessage, initMessageClient} from '../../action/messageAction'
 import {getUserInfoById} from '../../action/authActions'
 import {activeUserInfo, userInfoById} from '../../selector/authSelector'
 import {activeConversation, getMessages} from '../../selector/messageSelector'
@@ -50,8 +50,8 @@ class Chatroom extends Component {
   }
 
   onSend(messages = []) {
-    let time = new Date()
-    let msgId = this.props.name + '_' + time.getSeconds()
+    let time = Date.parse(new Date())
+    let msgId = this.props.name + '_' + time
 
     let payload = {
       msgId: msgId,
@@ -156,6 +156,7 @@ const mapStateToProps = (state, ownProps) => {
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initMessageClient,
   createConversation,
   leaveConversation,
   enterConversation,

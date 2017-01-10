@@ -12,8 +12,10 @@ import configureStore from '../store/configureStore'
 const messageFilter = createFilter(
   'MESSAGE',
   [
-    'activeConversation',
+    'conversationMap',
     'unReadMsgCnt',
+    'messages',
+    'activeConversation',
     'OrderedConversation'
   ]
 )

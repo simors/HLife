@@ -13,11 +13,11 @@ import {
   Platform,
   InteractionManager,
   RefreshControl,
+  ListView,
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import THEME from '../../constants/themes/theme1'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -27,7 +27,7 @@ export class TabScrollView extends Component {
     super(props)
     this.state = {
       topicItem: 0,
-      isRefreshing:false
+      isRefreshing: false
     }
   }
 
@@ -39,13 +39,6 @@ export class TabScrollView extends Component {
     })
   }
 
-  _onRefresh(){
-    this.setState({isRefreshing: true})
-    setTimeout(() => {
-      this.props.refreshTopic()
-      this.setState({isRefreshing: false})
-    }, 100)
-}
 
   changeTab(payload) {
     if (this.props.onSelected) {
@@ -54,28 +47,6 @@ export class TabScrollView extends Component {
     this.setState({topicItem: payload.i})
   }
 
-  renderTopics() {
-    return (
-      this.props.topics.map((value, key)=> {
-        return (
-          <View key={key} tabLabel={value.title}
-                style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-            <ScrollView
-              style={styles.scrollViewStyle}
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.state.isRefreshing}
-                  onRefresh={this._onRefresh.bind(this)}
-                  colors={['#ff0000', '#00ff00','#0000ff','#3ad564']}
-                  progressBackgroundColor="#ffffff"
-                /> }>
-              {this.props.renderTopicPage()}
-            </ScrollView>
-          </View>
-        )
-      })
-    )
-  }
 
   renderTabBar() {
     return (
@@ -96,11 +67,12 @@ export class TabScrollView extends Component {
       return (
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
                            page={this.state.topicItem}
+                           initialPage={this.state.topicItem}
                            scrollWithoutAnimation={true}
                            renderTabBar={()=> this.renderTabBar()}
                            onChangeTab={(payload) => this.changeTab(payload)}
         >
-          {this.renderTopics()}
+          {this.props.renderTopics()}
         </ScrollableTabView>
       )
     }
@@ -114,6 +86,7 @@ TabScrollView.defaultProps = {
   tarBarUnderlineStyle: {},
   tarBarStyle: {},
   body: {},
+  topicsData: undefined,
 
   inactiveTextColor: '#686868',
   activeTextColor: THEME.colors.green,
@@ -134,12 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: '#E5E5E5',
   },
-  itemLayout: {
-    flex: 1,
-    marginBottom:50,
-    //  alignItems: 'center',
-//    justifyContent: 'center'
-  },
+
   tabBarTextStyle: {
     fontSize: 16,
     paddingBottom: 10,

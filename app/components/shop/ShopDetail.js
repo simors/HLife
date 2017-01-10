@@ -301,7 +301,7 @@ class ShopDetail extends Component {
                     <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
                     <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
                   </View>
-                  <Text style={styles.score}>{this.props.shopDetail.score}</Text>
+                  <Text style={styles.score}>{item.score}</Text>
                 </View>
               </View>
               <View style={[styles.commentFootLine]}>
