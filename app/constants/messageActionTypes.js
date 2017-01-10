@@ -2,6 +2,9 @@
  * Created by yangyang on 2016/12/20.
  */
 
+// 会诊会话中默认加入的系统用户名
+export const WUAI_SYSTEM_DOCTOR = 'wuaiSystemDocter'
+
 // 会话的类型
 export const INQUIRY_CONVERSATION = 'INQUIRY_CONVERSATION'      // 问诊
 export const PERSONAL_CONVERSATION = 'PERSONAL_CONVERSATION'    // 私信

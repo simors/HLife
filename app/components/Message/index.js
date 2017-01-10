@@ -231,7 +231,6 @@ const mapStateToProps = (state, ownProps) => {
   newProps.lastInquiryMsg = lastInquiryMsg
   newProps.newPersonalLetter = newPersonalLetter
   newProps.lastPersonalMsg = lastPersonalMsg
-  console.log('newProps:', newProps)
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
