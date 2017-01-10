@@ -175,6 +175,6 @@ const styles = StyleSheet.create({
   defaultClearBtnStyle: {
     position: 'absolute',
     right: normalizeW(25),
-    top: normalizeH(12)
+    top: normalizeH(12),
   },
 })
