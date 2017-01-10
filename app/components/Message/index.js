@@ -23,6 +23,7 @@ import {hasNewMessageByType, getNewestMessageTips} from '../../selector/messageS
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 const INQUIRY = 'INQUIRY'
+const PERSONAL = 'PERSONAL'
 
 class MessageBox extends Component {
   constructor(props) {
@@ -38,6 +39,12 @@ class MessageBox extends Component {
           )
         }
         break
+      case PERSONAL:
+        if (this.props.newPersonalLetter) {
+          return (
+            <View style={styles.noticeTip}></View>
+          )
+        }
       default:
         return <View/>
     }
@@ -68,6 +75,31 @@ class MessageBox extends Component {
     )
   }
 
+  renderPersonalMessage() {
+    return (
+      <View style={styles.itemView}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={styles.noticeIconView}>
+              <Image style={styles.noticeIcon} source={require('../../assets/images/notice_message.png')}></Image>
+              {this.renderNoticeTip(PERSONAL)}
+            </View>
+            <View style={{flex: 1}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.titleStyle}>私信</Text>
+                <View style={{flex: 1}}></View>
+                <Text style={styles.timeTip}>{this.props.lastPersonalMsg.lastMessageAt}</Text>
+              </View>
+              <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastPersonalMsg.lastMessage}</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -80,26 +112,7 @@ class MessageBox extends Component {
         <View style={styles.itemContainer}>
           <ScrollView style={{height: PAGE_HEIGHT}}>
             {this.renderInquiryMessage()}
-            <View style={styles.itemView}>
-              <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View style={styles.noticeIconView}>
-                    <Image style={styles.noticeIcon} source={require('../../assets/images/notice_message.png')}></Image>
-                    <View style={styles.noticeTip}></View>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>私信</Text>
-                      <View style={{flex: 1}}></View>
-                      <Text style={styles.timeTip}>2017-01-02</Text>
-                    </View>
-                    <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                      <Text numberOfLines={1} style={styles.msgTip}>郝依依医生给您提供的咨询服务对您是否有用，期待您的反馈！</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
+            {this.renderPersonalMessage()}
             <View style={styles.itemView}>
               <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
@@ -211,9 +224,13 @@ const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let newInquiry = hasNewMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
   let lastInquiryMsg = getNewestMessageTips(state, msgTypes.INQUIRY_CONVERSATION)
+  let newPersonalLetter = hasNewMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
+  let lastPersonalMsg = getNewestMessageTips(state, msgTypes.PERSONAL_CONVERSATION)
 
   newProps.newInquiry = newInquiry
   newProps.lastInquiryMsg = lastInquiryMsg
+  newProps.newPersonalLetter = newPersonalLetter
+  newProps.lastPersonalMsg = lastPersonalMsg
   console.log('newProps:', newProps)
   return newProps
 }

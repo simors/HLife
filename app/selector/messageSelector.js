@@ -70,6 +70,8 @@ export function hasNewMessageByType(state, type) {
 }
 
 export function getNewestMessageTips(state, type) {
+  let lastMessage = "还没有收到过消息哦，看来要多与人交流才是呢^_^"
+
   let orderedConvs = state.MESSAGE.get('OrderedConversation')
   if (!orderedConvs) {
     return false
@@ -82,9 +84,12 @@ export function getNewestMessageTips(state, type) {
     return false
   })
 
-  let conversation = getConversationById(state, retConvId).toJS()
+  let conversationRecord = getConversationById(state, retConvId)
+  if (!conversationRecord) {
+    return {lastMessageAt: "", lastMessage}
+  }
+  let conversation = conversationRecord.toJS()
   let msgTime = new Date(conversation.lastMessageAt)
-  let lastMessage = "还没有收到过消息哦，看来要多与人交流才是呢^_^"
   let lastMessageAt = getConversationTime(msgTime.getTime())
   let lastMessageId = conversation.messages[0]
   let messageRecord = getMessageById(state, lastMessageId)
