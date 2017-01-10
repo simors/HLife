@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   aindex: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   bzone: {
     marginTop: normalizeH(15),

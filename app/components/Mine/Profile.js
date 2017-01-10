@@ -120,6 +120,7 @@ class Profile extends Component {
                   <CommonTextInput {...nicknameInput}
                                    initValue={this.props.userInfo.nickname? this.props.userInfo.nickname: undefined}
                                    containerStyle={{height: normalizeH(38)}}
+                                   clearBtnStyle={{right: em(20), top: em(6)}}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
@@ -130,6 +131,7 @@ class Profile extends Component {
                 <View style={{flex: 2, justifyContent: 'center'}}>
                   <PhoneInput {...phoneInput}
                               initValue={this.props.userInfo.phone? this.props.userInfo.phone: undefined}
+                              clearBtnStyle={{right: em(20), top: em(6)}}
                               inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>

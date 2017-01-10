@@ -58,7 +58,7 @@ export default class GetInvitationCode extends Component {
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20)}}
               title="完善店铺资料"
-              onPress={()=>{}}
+              onPress={()=>{Actions.COMPLETE_SHOP_INFO()}}
             />
             <CommonButton
               buttonStyle={{marginTop:normalizeH(15)}}

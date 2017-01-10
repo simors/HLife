@@ -10,7 +10,10 @@ import {
 } from 'react-native'
 
 import Option from './Option'
-import Triangle from '../Triangle'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
@@ -18,7 +21,7 @@ import THEME from '../../../constants/themes/theme1'
 const window = Dimensions.get('window')
 const SELECT = 'SELECT'
 
-export default class Select extends Component {
+class SelectInput extends Component {
 
   static propTypes = {
     height: React.PropTypes.number,
@@ -53,7 +56,36 @@ export default class Select extends Component {
       value: defaultValue ? defaultValue : defaultText,
       text: defaultText,
       show: false,
+      userSelected: false,
+      optionListPos: 0
     }
+  }
+
+  componentDidMount() {
+    let formInfo = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      type: this.props.type,
+      initValue: {text: this.props.initValue},
+      checkValid: this.validInput
+    }
+    this.props.initInputForm(formInfo)
+  }
+
+  validInput(data) {
+    if (data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '输入有误'}
+  }
+
+  inputChange(text) {
+    let inputForm = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      data: {text}
+    }
+    this.props.inputFormUpdate(inputForm)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,18 +102,11 @@ export default class Select extends Component {
     }
   }
 
-  reset() {
-    const { defaultText } = this.props
-    this.setState({
-      ...this.state,
-      text: defaultText
-    })
-  }
-
-  _onPress() {
+  _onPress(e) {
     if(this.props.onPress) {
-      this.props.onPress()
+      this.props.onPress(e)
     }
+
   }
 
   _toggle(userTouching) {
@@ -90,15 +115,19 @@ export default class Select extends Component {
       return false
     }
     this.overlayPageX = overlayPageX
+
     optionListRef()._toggle(this.state.show, hasOverlay, userTouching, children, this.state.text, this.state.value, this.positionX, this.positionY, width, height, optionListHeight, overlayPageX, overlayPageY, (text, value=text) => {
       onSelect(value, text)
       if(value !== null) {
         this.state.text = text
         this.state.value = value
+        this.state.userSelected = true
         this.setState({
           text: this.state.text,
-          value: this.state.value
+          value: this.state.value,
+          userSelected: this.state.userSelected
         })
+        this.inputChange(value)
       }
     })
   }
@@ -112,21 +141,16 @@ export default class Select extends Component {
     const dimensions = { height }
 
     let selectingTxtStatus = {}
-    let selectingTriangleStatus = {}
     if(this.state.show){
       selectingTxtStatus = {
-        color: THEME.colors.green
-      }
-      selectingTriangleStatus = {
-        borderBottomColor: THEME.colors.green
+        color: '#333'
       }
     }
     // console.log(`this.state.value1=${this.state.value},this.state.text1=${this.state.text}`)
     return (
       <TouchableWithoutFeedback style={{flex: 1}} onPress={this._onPress.bind(this)}>
         <View ref={this.props.selectRef || SELECT} style={[styles.container, style ]}>
-          <Option hideSelectedIcon={true} value={this.state.value} style={ [styles.styleOption, styleOption] } styleText={ [styleText, selectingTxtStatus] }>{this.state.text}</Option>
-          <Triangle style={[styles.triangle, selectingTriangleStatus]} direction="right-down"/>
+          <Option hideSelectedIcon={true} value={this.state.value} style={ [styles.styleOption, styleOption] } styleText={ [this.state.userSelected ? styles.selectedStyleText : styles.styleText, styleText, selectingTxtStatus] }>{this.state.text}</Option>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -134,20 +158,34 @@ export default class Select extends Component {
 
 }
 
+const mapStateToProps = (state, ownProps) => {
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  return {
+    data: inputData.text
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  initInputForm,
+  inputFormUpdate,
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(SelectInput)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: THEME.colors.lighterA,
-    backgroundColor: THEME.colors.lessWhite,
+    backgroundColor: '#fff',
   },
   styleOption: {
+    paddingLeft: 14,
     borderBottomWidth: 0
   },
-  triangle: {
-    position: 'absolute',
-    right: 2,
-    bottom: 2
+  styleText: {
+    color: '#b2b2b2'
   },
+  selectedStyleText: {
+    color: '#333'
+  }
 })

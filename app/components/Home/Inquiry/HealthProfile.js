@@ -22,7 +22,8 @@ import CommonTextInput from '../../common/Input/CommonTextInput'
 import DateTimeInput from '../../common/Input/DateTimeInput'
 import GenderSelector from '../../common/Input/GenderSelector'
 import CommonButton from '../../common/CommonButton'
-import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {submitFormData} from '../../../action/inquiryAction'
+import {inputFormOnDestroy} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -32,8 +33,10 @@ class HealthProfile extends Component {
   constructor(props) {
     super(props)
   }
-  componentDidMount() {
 
+  componentWillUnmount() {
+    console.log("HealthProfile: componentWillUnmount=>inputFormOnDestroy")
+    this.props.inputFormOnDestroy(this.props.formKey)
   }
 
   submitSuccessCallback(doctorInfo) {
@@ -45,15 +48,8 @@ class HealthProfile extends Component {
     Toast.show(error.message)
   }
   onButtonPress = () => {
-    // let payload = {
-    //   name: '13574897719',
-    //   members: ['58647b4f61ff4b0068b8b306', '585892e1ac502e006704ffe1']
-    // }
-    // Actions.QA(payload)
-
     this.props.submitFormData({
       formKey: this.props.formKey,
-      submitType: INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT,
       id: this.props.userId && this.props.userId,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
@@ -97,7 +93,8 @@ class HealthProfile extends Component {
                 <View style={{flex: 2, justifyContent: 'center'}}>
                   <CommonTextInput {...nicknameInput}
                                    containerStyle={{height: normalizeH(38), }}
-                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                                   clearBtnStyle={{top:6}}
+                                   inputStyle={{ backgroundColor: '#FFFFFF'}}/>
                 </View>
 
               </View>
@@ -105,15 +102,15 @@ class HealthProfile extends Component {
                 <View style={{flex: 1, justifyContent: 'center'}}>
                   <Text style={styles.mainText}>性别</Text>
                 </View>
-                <View style={{flex: 2, paddingLeft: normalizeW(30)}}>
+                <View style={{flex: 2}}>
                   <GenderSelector {...genderInput}/>
                 </View>
               </View>
               <View style={styles.tab}>
-                <View style={{flex: 1, justifyContent: 'center', }}>
+                <View style={{flex: 1, justifyContent: 'center'}}>
                   <Text style={styles.mainText}>出生年月</Text>
                 </View>
-                <View style={{flex: 2, justifyContent: 'center', }}>
+                <View style={{flex: 2, justifyContent: 'center'}}>
                   <DateTimeInput {...dtPicker}
                                  value="2016-05-18" PickerStyle={{backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
                 </View>
@@ -138,6 +135,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(HealthProfile)
