@@ -24,7 +24,7 @@ import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import {activeUserId} from '../../../selector/authSelector'
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import * as Toast from '../../common/Toast'
-
+import {inputFormCheck} from '../../../action/inquiryAction'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -48,29 +48,24 @@ class Inguiry extends Component {
     super(props)
   }
 
-  submitSuccessCallback(doctorInfo) {
-    Toast.show('提交成功')
-    Actions.HEALTH_PROFILE()
-  }
-
-  submitErrorCallback(error) {
-    Toast.show(error.message)
-  }
-
-  onButtonPress= () => {
-    // this.props.submitFormData({
-    //   formKey: inquiryForm,
-    //   submitType: INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT,
-    //   id: this.props.currentUser && this.props.currentUser,
-    //   success: this.submitSuccessCallback,
-    //   error: this.submitErrorCallback
-    // })
-    //
+  submitSuccessCallback = () => {
     let payload = {
       formKey: inquiryForm,
       userId: this.props.currentUser && this.props.currentUser,
     }
     Actions.HEALTH_PROFILE(payload)
+  }
+
+  submitErrorCallback = (error) => {
+    Toast.show(error.message)
+  }
+
+  onButtonPress= () => {
+    this.props.inputFormCheck({
+      formKey: inquiryForm,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
   }
 
   render(){
@@ -89,10 +84,10 @@ class Inguiry extends Component {
         />
         <View style={styles.body}>
           <KeyboardAwareScrollView style={styles.scrollViewStyle} contentContainerStyle={{flex: 1}}>
-            <View style={{borderWidth:1 ,borderColor: 'red'}}>
+            <View>
               <MultilineText containerStyle={{height: normalizeH(232)}}
                              placeholder="请详细描述您的症状和身体状况，便于医生更准确的分析，我们将确保您的隐私安全。为了描述清楚，描述字数应至少12个字符。"
-                             inputStyle={{height: normalizeH(232), borderWidth:1 ,borderColor: 'red'}}
+                             inputStyle={{height: normalizeH(232)}}
                              {...questionInput}/>
             </View>
             <View style={{flex: 1,backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
@@ -120,6 +115,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
+  inputFormCheck
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inguiry)

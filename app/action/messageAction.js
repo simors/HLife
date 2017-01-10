@@ -265,7 +265,7 @@ function createLcConversation(payload) {
       return undefined
     }
     if (payload.type === msgTypes.INQUIRY_CONVERSATION) {
-      payload.members.push('wuaiSystemDocter')    // 为了区分问诊或私信的会话，如果是问诊的会话，则插入系统医生所为会话参与者
+      payload.members.push(msgTypes.WUAI_SYSTEM_DOCTOR)    // 为了区分问诊或私信的会话，如果是问诊的会话，则插入系统医生所为会话参与者
     }
     return client.createConversation({
       members: payload.members,

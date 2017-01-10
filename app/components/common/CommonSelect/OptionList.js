@@ -39,14 +39,14 @@ export default class OptionList extends Component {
     
   }
 
-  _toggle(show, hasOverlay, userTouching, items, selectedText, selectedValue, positionX, positionY, width, height, optionListHeight, overlayPageX, onSelect) {
+  _toggle(show, hasOverlay, userTouching, items, selectedText, selectedValue, positionX, positionY, width, height, optionListHeight, overlayPageX, overlayPageY, onSelect) {
     positionX = positionX - this.state.overlayPageX
     positionY = positionY - this.state.overlayPageY
-
     this.setState({
       positionX,
       positionY,
       overlayPageX,
+      overlayPageY,
       width,
       height,
       items,
@@ -56,7 +56,7 @@ export default class OptionList extends Component {
       optionListHeight,
       show: !!show,
       userTouching: !!userTouching,
-      hasOverlay: !!hasOverlay
+      hasOverlay: hasOverlay !== false
     })
   }
 
@@ -93,9 +93,9 @@ export default class OptionList extends Component {
       positionY, width, height, show, optionListHeight, userTouching, hasOverlay
     } = this.state
 
-    overlayPageY = height
-    positionY = positionY
-
+    if(!overlayPageY) {
+      overlayPageY = height
+    }
     const {overlayStyles} = this.props
     // console.log('OptionList==this.state====', this.state)
     return (

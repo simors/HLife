@@ -71,7 +71,7 @@ export function hasNewMessageByType(state, type) {
 }
 
 export function getNewestMessageTips(state, type) {
-  let lastMessage = "还没有收到过消息哦，看来要多与人交流才是呢^_^"
+  let lastMessage = "还没有收到过消息哦，多多参与互动吧^_^"
 
   let orderedConvs = state.MESSAGE.get('OrderedConversation')
   if (!orderedConvs) {

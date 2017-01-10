@@ -21,7 +21,6 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   DOCTOR_CERTIFICATION_MODIFY: 'DOCTOR_CERTIFICATION_MODIFY',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
-  INQUIRY_SUBMIT: 'INQUIRY_SUBMIT',
 }
 
 export function submitFormData(payload) {
@@ -57,9 +56,6 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
         dispatch(handleShopCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.INQUIRY_SUBMIT:
-        dispatch(handleInquirySubmit(payload, formData))
         break
     }
   }
@@ -451,29 +447,3 @@ export function unFollowUser(payload) {
   }
 }
 
-export function handleInquirySubmit(payload, formData) {
-  console.log("handleInquirySubmit formData", formData)
-  return (dispatch, getState) => {
-    let inquiryPayload = {
-      id: payload.id,
-      question: formData.content.text,
-      diseaseImages: formData.imgGroup.text,
-      name: formData.nicknameInput.text,
-      gender: formData.genderInput.text,
-      birthday: formData.dtPicker.text,
-    }
-
-    lcAuth.inquirySubmit(inquiryPayload).then((result) => {
-      console.log("handleInquirySubmit success")
-      if (payload.success) {
-        payload.success(result)
-      }
-
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-
-  }
-}

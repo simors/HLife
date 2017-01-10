@@ -176,13 +176,14 @@ const styles = StyleSheet.create({
   },
   leftWrap: {
     flex: 1,
-    paddingLeft: 12
+    // paddingLeft: 12
   },
   leftContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingLeft: em(12)
   },
   left: {
     fontSize: em(24),
@@ -210,13 +211,14 @@ const styles = StyleSheet.create({
   },
   rightWrap: {
     flex: 1,
-    paddingRight: 12
   },
   rightContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingRight: 12
+
   },
   right: {
     fontSize: em(17),

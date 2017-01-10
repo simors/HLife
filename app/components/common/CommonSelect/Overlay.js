@@ -42,52 +42,64 @@ export default class Overlay extends Component {
     this.state = {
       height: 0,
       scrollViewHeight: new Animated.Value(0),
+      optionListHeight: 0
     }
   }
 
-  animatingShow(scrollViewHeight) {
-    // this.state.height = PAGE_HEIGHT
-    // this.setState({
-    //   height: this.state.height
-    // })
-    // Animated.delay(260)
-    Animated.timing(this.state.scrollViewHeight, {
-      toValue: scrollViewHeight,
-      duration: 200,
-      easing: Easing.linear
-    }).start()
+  animatingShow(scrollViewHeight, hasOverlay) {
+    if(hasOverlay) {
+      this.state.height = PAGE_HEIGHT
+      this.setState({
+        height: this.state.height
+      })
+    }
+    // Animated.timing(this.state.scrollViewHeight, {
+    //   toValue: scrollViewHeight,
+    //   duration: 200,
+    //   easing: Easing.linear
+    // }).start()
 
   }
   
-  animatingHide() {
-    Animated.timing(this.state.scrollViewHeight, {
-      toValue: 0,
-      duration: 200,
-      easing: Easing.linear
-    }).start()
-    // this.state.scrollViewHeight.addListener(({value})=>{
-    //   if(!value) {
-    //     this.setState({
-    //       height: 0
-    //     })
-    //   }
-    // })
-    // this.setTimeout(()=>{
-    //   this.setState({
-    //     height: 0
+  animatingHide(hasOverlay) {
+    this.setState({
+      height: 0
+    })
+    // Animated.timing(this.state.scrollViewHeight, {
+    //   toValue: 0,
+    //   duration: 200,
+    //   easing: Easing.linear
+    // }).start()
+    // if(hasOverlay) {
+    //   this.state.scrollViewHeight.addListener(({value})=>{
+    //     if(!value) {
+    //       this.setState({
+    //         height: 0
+    //       })
+    //     }
     //   })
-    // }, 200)
+      // this.setTimeout(()=>{
+      //   this.setState({
+      //     height: 0
+      //   })
+      // }, 200)
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
     if(this.props.show != nextProps.show) {
       if(!nextProps.show) {
         if(nextProps.userTouching) {
-          this.animatingHide()
+          this.animatingHide(nextProps.hasOverlay)
+          this.setState({
+            optionListHeight:0
+          })
         }
       }else {
-        // console.log('componentWillReceiveProps.nextProps.optionListHeight=', nextProps.optionListHeight)
-        this.animatingShow(nextProps.optionListHeight)
+        this.animatingShow(nextProps.optionListHeight, nextProps.hasOverlay)
+        this.setState({
+          optionListHeight:nextProps.optionListHeight
+        })
       }
 
     }
@@ -98,11 +110,10 @@ export default class Overlay extends Component {
     // if (!show && !userTouching) {
     //   return null
     // }
-    // console.log("this.state.scrollViewHeight========", this.state.scrollViewHeight)
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <Animated.View
-          style={[styles.scrollView, {top: 40, left: -overlayPageX,  height: this.state.scrollViewHeight}]}
+        <View
+          style={[styles.scrollView, {top: overlayPageY ? overlayPageY : 40, left: -overlayPageX,  height: hasOverlay ? this.state.height : this.state.optionListHeight}]}
         >
           {hasOverlay
             ? <View style={[styles.overlay, { top: 0, left: 0, height: this.state.height }, overlayStyles]}>
@@ -110,13 +121,17 @@ export default class Overlay extends Component {
             : null
 
           }
-          <ScrollView
-            style={[{height: this.props.optionListHeight}]}
-            automaticallyAdjustContentInsets={false}
-            bounces={false}>
-            {this.props.children}
-          </ScrollView>
-        </Animated.View>
+          <View
+            style={[styles.scrollView, {top: 0, left: 0,  height: this.state.optionListHeight}]}
+          >
+            <ScrollView
+              style={[{height: this.state.optionListHeight}]}
+              automaticallyAdjustContentInsets={false}
+              bounces={false}>
+              {this.props.children}
+            </ScrollView>
+          </View>
+        </View>
 
       </TouchableWithoutFeedback>
     )
@@ -138,6 +153,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: PAGE_WIDTH,
-    backgroundColor : "#fff"
+    backgroundColor : "#f2f2f2"
   }
 })
