@@ -55,7 +55,7 @@ export default class ShopRegisterSuccess extends Component {
           <CommonButton
             buttonStyle={{marginTop:normalizeH(54)}}
             title="完善店铺资料"
-            onPress={()=>{}}
+            onPress={()=>{Actions.COMPLETE_SHOP_INFO()}}
           />
         </View>
       </View>
