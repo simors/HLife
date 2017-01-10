@@ -39,7 +39,6 @@ export class TopicsItem extends TopicsConfig {
         nickname = hidePhoneNumberDetail(phoneNumber)
       }
     }
-    console.log("--->", user)
     return topicsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
       record.set('abstract', attrs.abstract)

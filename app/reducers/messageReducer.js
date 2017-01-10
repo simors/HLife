@@ -12,6 +12,8 @@ export default function messageReducer(state = initialState, action) {
   switch (action.type) {
     case Types.INIT_MESSENGER_CLIENT:
       return onInitMessenger(state, action)
+    case Types.INIT_CONVERSATION:
+      return onInitConversation(state, action)
     case Types.ON_CONVERSATION_CREATED:
       return onConversationCreated(state, action)
     case Types.ON_ENTER_CONVERSATION:
@@ -35,6 +37,19 @@ function onInitMessenger(state, action) {
   let client = action.payload.client
   state = state.set('client', client)
   return state
+}
+
+function onInitConversation(state, action) {
+  let convs = action.payload.conversations
+  convs.map((conv) => {
+    const convId = conv.id
+    state = state.updateIn(
+      ['conversationMap', convId],
+      new Conversation(),
+      val=>val.merge(conv)
+    )
+  })
+  return sortConversationList(state)
 }
 
 function onConversationCreated(state, action) {

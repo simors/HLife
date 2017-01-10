@@ -25,6 +25,7 @@ import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
 import Article from '../components/Articles/Article'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
+import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
@@ -42,6 +43,7 @@ import HealthProfile from '../components/Home/Inquiry/HealthProfile'
 import SelectDoctor from '../components/Home/Inquiry/SelectDoctor'
 import QA from '../components/Home/Inquiry/QA'
 import QAList from '../components/Home/Inquiry/QAList'
+import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 
 const styles = StyleSheet.create({
   container: {
@@ -78,6 +80,7 @@ export const scenes = Actions.create(
       <Scene key="ARTICLES_ARTICLE" component={Article}/>
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
+      <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
@@ -86,6 +89,7 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH" component={PublishTopics} />
       <Scene key="TOPIC_DETAIL" component={TopicDetail} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
+      <Scene key="INQUIRY_MESSAGE_BOX" component={InquiryMessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />

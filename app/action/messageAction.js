@@ -218,6 +218,42 @@ export function leaveConversation(payload) {
   }
 }
 
+export function fetchConversation(payload) {
+  return (dispatch, getState) => {
+    let userId = activeUserId(getState())
+    let params = {
+      userId: userId,
+      type: payload.type,
+    }
+    dispatch(fetchLcConversation(params)).then((convs) => {
+      let initConversations = createAction(msgTypes.INIT_CONVERSATION)
+      dispatch(initConversations({conversations: convs}))
+    })
+  }
+}
+
+function fetchLcConversation(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+      console.log('leancloud Messenger init failed, can\'t get client')
+      return undefined
+    }
+
+    return client.getQuery().containsMembers([payload.userId]).contains('type', payload.type).find()
+      .then((lcConvs) => {
+        let convs = []
+        lcConvs.map((conv) => {
+          convs.unshift(Conversation.fromLeancloudConversation(conv))
+        })
+        return convs
+      })
+  }
+}
+
 function createLcConversation(payload) {
   return (dispatch, getState) => {
     let client = messengerClient(getState())
@@ -294,14 +330,14 @@ function onReceiveMsg(message, conversation) {
       dispatch(onRecvNormalMessage(message, conversation))
     }
     if (msgType === msgTypes.MSG_ARTICLE_COMMENT
-        || msgType === msgTypes.MSG_TOPIC_COMMENT
-        || msgType === msgTypes.MSG_SHOP_COMMENT
-        || msgType === msgTypes.MSG_ARTICLE_LIKE
-        || msgType === msgTypes.MSG_TOPIC_LIKE
-        || msgType === msgTypes.MSG_SHOP_LIKE
-        || msgType === msgTypes.MSG_USER_FOLLOW
-        || msgType === msgTypes.MSG_SHOP_FOLLOW
-        || msgType === msgTypes.MSG_SYSTEM) {
+      || msgType === msgTypes.MSG_TOPIC_COMMENT
+      || msgType === msgTypes.MSG_SHOP_COMMENT
+      || msgType === msgTypes.MSG_ARTICLE_LIKE
+      || msgType === msgTypes.MSG_TOPIC_LIKE
+      || msgType === msgTypes.MSG_SHOP_LIKE
+      || msgType === msgTypes.MSG_USER_FOLLOW
+      || msgType === msgTypes.MSG_SHOP_FOLLOW
+      || msgType === msgTypes.MSG_SYSTEM) {
       dispatch(onRecvNotifyMessage(message, conversation))
     }
   }

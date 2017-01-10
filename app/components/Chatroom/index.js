@@ -31,10 +31,6 @@ class Chatroom extends Component {
     this.onSend = this.onSend.bind(this)
   }
 
-  // componentWillMount() {
-  //   this.props.initMessageClient()
-  // }
-
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       console.log('begin to create conversation:', this.props.name, this.props.members)
@@ -54,8 +50,8 @@ class Chatroom extends Component {
   }
 
   onSend(messages = []) {
-    let time = new Date()
-    let msgId = this.props.name + '_' + time.getSeconds()
+    let time = Date.parse(new Date())
+    let msgId = this.props.name + '_' + time
 
     let payload = {
       msgId: msgId,
