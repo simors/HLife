@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     color:'#686868'
   },
   tarBarUnderlineStyle:{
-    // height:normalizeH(0)
+     height:normalizeH(2),
     backgroundColor:'#50E3C2'
 
 
