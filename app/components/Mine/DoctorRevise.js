@@ -125,7 +125,9 @@ class DoctorRevise extends Component {
                                    initValue={this.props.doctorInfo.name}
                                    placeholder="与身份证姓名保持一致"
                                    containerStyle={{height: normalizeH(38), }}
+                                   clearBtnStyle={{top:5}}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+
                 </View>
               </View>
               <View style={styles.inputBox}>
@@ -134,6 +136,7 @@ class DoctorRevise extends Component {
                   <CommonTextInput {...IDInput}
                                    initValue={this.props.doctorInfo.ID}
                                    containerStyle={{height: normalizeH(38), }}
+                                   clearBtnStyle={{top:5}}
                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
@@ -144,6 +147,7 @@ class DoctorRevise extends Component {
                               initValue={this.props.doctorInfo.phone}
                               placeholder="仅用于客服与你联系"
                               editable={false}
+                              clearBtnStyle={{top:5}}
                               inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>

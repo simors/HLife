@@ -17,6 +17,8 @@ import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
+const today = new Date()
+const TODAY_DATE= (today.toISOString()).slice(0, 10)
 
 class DateTimeInput extends Component {
   constructor(props) {
@@ -72,10 +74,9 @@ class DateTimeInput extends Component {
 
 DateTimeInput.defaultProps = {
   mode: 'date',
-  // date: "2016-12-08",
   format: "YYYY-MM-DD",
-  minDate: "2001-01-01",
-  maxDate: "2020-12-31",
+  minDate: "1917-01-01",
+  maxDate: TODAY_DATE,
   showIcon: false,
   customStyles: {
     dateTouchBody: {

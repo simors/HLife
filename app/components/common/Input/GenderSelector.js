@@ -14,7 +14,7 @@ import {connect} from 'react-redux'
 import {ButtonGroup} from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
-import {em} from '../../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
 const male = () => <View style={{flex:1, justifyContent: 'center'}}><Text style={{alignSelf: 'center', fontSize:em(18)}}>男</Text></View>
 const female = () => <View style={{flex:1, justifyContent: 'center'}}><Text style={{alignSelf: 'center',fontSize:em(18)}}>女</Text></View>
@@ -71,13 +71,16 @@ class GenderSelector extends Component {
 
   render() {
     return (
-      <ButtonGroup
-        onPress={(index) => this.updateIndex(index)}
-        selectedIndex={this.state.selectedIndex}
-        buttons={buttons}
-        containerStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-        selectedBackgroundColor="#50E3C2"
-      />
+      <View style={styles.container}>
+        <ButtonGroup
+          onPress={(index) => this.updateIndex(index)}
+          selectedIndex={this.state.selectedIndex}
+          buttons={buttons}
+          containerStyle={{flex: 1, marginLeft: normalizeW(17), marginRight: normalizeW(17), justifyContent: 'center', alignItems: 'center'}}
+          selectedBackgroundColor="#50E3C2"
+        />
+      </View>
+
     )
   }
 }
@@ -95,3 +98,12 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenderSelector)
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+})
