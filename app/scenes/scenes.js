@@ -25,6 +25,7 @@ import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
 import Article from '../components/Articles/Article'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
+import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
@@ -79,6 +80,7 @@ export const scenes = Actions.create(
       <Scene key="ARTICLES_ARTICLE" component={Article}/>
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
+      <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
