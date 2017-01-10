@@ -3,6 +3,7 @@
  */
 import * as msgTypes from '../constants/messageActionTypes'
 import {getConversationTime} from '../util/numberUtils'
+import {activeUserId} from './authSelector'
 
 export function messengerClient(state) {
   const client = state.MESSAGE.get('client')
@@ -97,6 +98,14 @@ export function getNewestMessageTips(state, type) {
     let message = messageRecord.toJS()
     if (message.type == msgTypes.MSG_TEXT) {
       lastMessage = message.text
+    } else if (message.type == msgTypes.MSG_IMAGE) {
+      if (message.from != activeUserId(state)) {
+        lastMessage = '收到一张图片，请点击查看详情'
+      } else {
+        lastMessage = '发送一张图片给对方'
+      }
+    } else {
+      lastMessage = '暂不支持预览此消息'
     }
   }
   return {lastMessageAt, lastMessage}
