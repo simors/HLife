@@ -17,13 +17,55 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import * as msgTypes from '../../constants/messageActionTypes'
+import {hasNewMessageByType, getNewestMessageTips} from '../../selector/messageSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
+const INQUIRY = 'INQUIRY'
 
 class MessageBox extends Component {
   constructor(props) {
     super(props)
+  }
+
+  renderNoticeTip(type) {
+    switch (type) {
+      case INQUIRY:
+        if (this.props.newInquiry) {
+          return (
+            <View style={styles.noticeTip}></View>
+          )
+        }
+        break
+      default:
+        return <View/>
+    }
+  }
+
+  renderInquiryMessage() {
+    return (
+      <View style={styles.itemView}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.INQUIRY_MESSAGE_BOX()}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={styles.noticeIconView}>
+              <Image style={styles.noticeIcon} source={require('../../assets/images/notice_question.png')}></Image>
+              {this.renderNoticeTip(INQUIRY)}
+            </View>
+            <View style={{flex: 1}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.titleStyle}>问诊</Text>
+                <View style={{flex: 1}}></View>
+                <Text style={styles.timeTip}>{this.props.lastInquiryMsg.lastMessageAt}</Text>
+              </View>
+              <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastInquiryMsg.lastMessage}</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
   }
 
   render() {
@@ -37,26 +79,7 @@ class MessageBox extends Component {
         />
         <View style={styles.itemContainer}>
           <ScrollView style={{height: PAGE_HEIGHT}}>
-            <View style={styles.itemView}>
-              <TouchableOpacity style={styles.selectItem} onPress={() => Actions.INQUIRY_MESSAGE_BOX()}>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View style={styles.noticeIconView}>
-                    <Image style={styles.noticeIcon} source={require('../../assets/images/notice_question.png')}></Image>
-                    <View style={styles.noticeTip}></View>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>问诊</Text>
-                      <View style={{flex: 1}}></View>
-                      <Text style={styles.timeTip}>2017-01-02</Text>
-                    </View>
-                    <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                      <Text numberOfLines={1} style={styles.msgTip}>郝依依医生给您提供的咨询服务对您是否有用，期待您的反馈！</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
+            {this.renderInquiryMessage()}
             <View style={styles.itemView}>
               <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
@@ -185,8 +208,14 @@ class MessageBox extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-  }
+  let newProps = {}
+  let newInquiry = hasNewMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
+  let lastInquiryMsg = getNewestMessageTips(state, msgTypes.INQUIRY_CONVERSATION)
+
+  newProps.newInquiry = newInquiry
+  newProps.lastInquiryMsg = lastInquiryMsg
+  console.log('newProps:', newProps)
+  return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
