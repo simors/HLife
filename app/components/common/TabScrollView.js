@@ -53,7 +53,7 @@ export class TabScrollView extends Component {
       <ScrollableTabBar
         activeTextColor={this.props.activeTextColor}
         inactiveTextColor={this.props.inactiveTextColor}
-        style={[styles.tarBarStyle, this.props.tarBarStyle && this.props.tarBarStyle]}
+        style={[styles.tabBarStyle, this.props.tarBarStyle && this.props.tarBarStyle]}
         underlineStyle={[styles.tarBarUnderlineStyle, this.props.tarBarUnderlineStyle && this.props.tarBarUnderlineStyle]}
         textStyle={[styles.tabBarTextStyle, this.props.tabBarTextStyle && this.props.tabBarTextStyle]}
         tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
 
   tabBarTextStyle: {
     fontSize: 16,
-    paddingBottom: 10,
+    paddingBottom: 11,
+    fontFamily:".PingFangSC-Regular"
   },
 
   tabBarTabStyle: {
@@ -120,8 +121,9 @@ const styles = StyleSheet.create({
   },
 
 
-  tabBarUnderLineStyle: {
-    height: 0,
+  tarBarUnderlineStyle: {
+    height: 2,
+    backgroundColor:THEME.colors.green,
   },
 
   tabBarStyle: {
