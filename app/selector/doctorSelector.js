@@ -19,19 +19,25 @@ export function getDoctorList(state) {
 }
 
 export function getDoctorInfoByUserId(state, userId) {
-  let docMap = state.DOCTOR.get('doctors')
-  return docMap.get(userId)? docMap.get(userId): new DoctorInfo()
+  let doctorRecord = state.DOCTOR.getIn(['doctors', userId])
+  if (doctorRecord) {
+    return doctorRecord.toJS()
+  }
+  return (new DoctorInfo()).toJS()
 }
 
 export function getDoctorInfoByDoctorId(state, doctorId) {
-  let doctor
   let docMap = state.DOCTOR.get('doctors')
   if (docMap) {
-    docMap.forEach((value) => {
-      if (doctorId == value.doctorId) {
-        doctor = value
+    let doctorRecord = docMap.find((doc) => {
+      if (doctorId === doc.doctorId) {
+        return true
       }
+      return false
     })
+    if (doctorRecord) {
+      return doctorRecord.toJS()
+    }
   }
-  return doctor
+  return (new DoctorInfo()).toJS()
 }
