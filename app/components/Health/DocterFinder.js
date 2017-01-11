@@ -20,7 +20,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import Header from '../common/Header'
 import {getDocterList} from '../../action/doctorAction'
 import {activeUserId, isUserLogined} from '../../selector/authSelector'
-import {getDoctorList} from '../../selector/doctorSelector'
+import {getDoctorList, getDoctorInfoByUserId} from '../../selector/doctorSelector'
 import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -87,7 +87,9 @@ class DocterFinder extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let userId
   let doctors = getDoctorList(state)
+  let doctor = getDoctorInfoByUserId(state, userId)
   return {
     doctors,
     currentUser: activeUserId(state),

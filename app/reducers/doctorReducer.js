@@ -19,7 +19,7 @@ export default function doctorReducer(state = initialState, action) {
 }
 
 function handleDoctorUpdate(state, action) {
-  payload = action.payload
+  let payload = action.payload
   state = state.set('doctorInfo', payload.doctor)
   return state
 }

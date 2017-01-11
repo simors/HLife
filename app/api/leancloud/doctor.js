@@ -33,3 +33,7 @@ export function fetchDocterList(payload) {
     throw err
   })
 }
+
+export function fetchDoctorInfo(payload) {
+
+}
