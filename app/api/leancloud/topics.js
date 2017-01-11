@@ -165,9 +165,11 @@ export function publishTopicComments(payload) {
 
 export function getTopics(payload) {
   let categoryId = payload.categoryId
-  var category = AV.Object.createWithoutData('TopicCategory', categoryId);
   let query = new AV.Query('Topics')
-  query.equalTo('category', category)
+  if(categoryId) {
+    var category = AV.Object.createWithoutData('TopicCategory', categoryId);
+    query.equalTo('category', category)
+  }
   query.include(['user']);
   query.descending('createdAt')
   return query.find().then(function (results) {

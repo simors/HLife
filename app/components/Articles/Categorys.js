@@ -110,7 +110,7 @@ Categorys.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   let column = getColumn(state).toJS()
-  console.log('susususususu<><><><><',column)
+  //console.log('susususususu<><><><><',column)
   return {
     column: column,
   }

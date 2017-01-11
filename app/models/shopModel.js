@@ -304,11 +304,34 @@ export class ShopCommentUp extends ShopCommentUpRecord {
   }
 }
 
+export const ShopTagRecord = Record({
+  id: undefined,
+  name: undefined,
+  createdDate: '', //格式化后的创建时间
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+})
+
+export class ShopTag extends ShopTagRecord {
+  static fromLeancloudObject(lcObj) {
+    let shopTag = new ShopTag()
+    let attrs = lcObj.attributes
+    return shopTag.withMutations((record)=>{
+      record.set('id', lcObj.id)
+      record.set('name', attrs.name)
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+}
+
 export const Shop = Record({
   shopList: List(),
   shopAnnouncements: Map(),
   userFollowShopsInfo: Map(),
   shopComments: Map(),
   shopCommentsTotalCounts: Map(),
-  userUpShopsInfo: Map()
+  userUpShopsInfo: Map(),
+  shopTagList: List()
 }, 'Shop')

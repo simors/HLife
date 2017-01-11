@@ -65,13 +65,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF'
   },
   columnsView: {
-    width: PAGE_WIDTH,
-    height: normalizeH(38),
-    flexDirection: 'column',
+    //width: PAGE_WIDTH,
+    // height: normalizeH(38),
+    // flexDirection: 'column',
     flex: 1
   },
   articlesView: {
     flex: 1,
     width: PAGE_WIDTH,
-  }
+  },
+  imageStyle:{
+    position:'absolute',
+    right: 0,
+    // left:330,
+    height:normalizeH(35),
+    width:normalizeW(35),
+    overflow:'hidden',
+    top: 0,
+    }
+
 })

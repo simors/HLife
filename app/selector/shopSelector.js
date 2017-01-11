@@ -104,3 +104,7 @@ export function selectShopCommentUpId(state, shopId, shopCommentId, activeUserId
   }
   return false
 }
+
+export function selectShopTags(state) {
+  return state.SHOP.get('shopTagList').toJS()
+}
