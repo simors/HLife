@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   defaultContainerStyle: {
     borderColor: '#E9E9E9',
     borderWidth: 1,
-    backgroundColor: '#F3F3F3',
+    backgroundColor: '#FFFFFF',
     overflow:'hidden',
   },
   defaultImgShow: {

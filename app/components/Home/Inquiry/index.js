@@ -48,6 +48,10 @@ class Inguiry extends Component {
     super(props)
   }
 
+  componentWillUnmount() {
+    console.log("Inguiry: componentWillUnmount")
+  }
+
   submitSuccessCallback = () => {
     let payload = {
       formKey: inquiryForm,

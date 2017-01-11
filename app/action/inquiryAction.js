@@ -18,12 +18,6 @@ export function inputFormCheck(payload) {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
     let isFormValid = isInputFormValid(getState(), payload.formKey)
-    // if (!isFormValid.isValid) {
-    //   if (payload.error) {
-    //     payload.error({message: isFormValid.errMsg})
-    //   }
-    //   return
-    // }
     if (isFormValid.isValid) {
       if (payload.success) {
         payload.success()

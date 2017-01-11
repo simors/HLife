@@ -44,10 +44,10 @@ export class Find extends Component {
   }
 
   getSelectedTab(index) {
-    this.setState({selectedTab: index})
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopics({categoryId: this.props.topicCategories[index].objectId})
     })
+    this.setState({selectedTab: index})
   }
 
   onLikeButton(payload) {

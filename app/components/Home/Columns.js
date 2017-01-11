@@ -109,7 +109,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
           modalTitle="精选栏目"
           closeModal={() => this.closeModel()}
         >
-          <ScrollView style={{width:PAGE_WIDTH,flexDirection:'row',flexWrap:'wrap'}}>
+          <ScrollView >
             <Categorys    onPress={this._shopCategoryClick.bind(this)}/>
           </ScrollView >
         </CommonModal>

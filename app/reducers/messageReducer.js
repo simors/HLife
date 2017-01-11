@@ -57,7 +57,7 @@ function onConversationCreated(state, action) {
   let cid = conversation.id
 
   // Record active conversation
-  state = state.set('activeConversation', cid)
+  // state = state.set('activeConversation', cid)
 
   if (state.getIn(['conversationMap', cid]) == undefined) {
     state = state.updateIn(['conversationMap', cid], new Conversation(), val => val.merge(conversation))
@@ -70,7 +70,7 @@ function onConversationEntered(state, action) {
   let cid = action.payload.cid
 
   // Mark all read
-  const curUnreadCount = state.getIn(['conversationMap', convId, 'unreadCount'])
+  const curUnreadCount = state.getIn(['conversationMap', cid, 'unreadCount'])
   if (curUnreadCount > 0) {
     state = state.setIn(['conversationMap', cid, 'unreadCount'], 0)
     state = state.update('unReadMsgCnt', val => val - curUnreadCount)

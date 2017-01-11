@@ -14,6 +14,7 @@ import {
   Platform,
   InteractionManager,
   ListView,
+  RefreshControl,
 } from 'react-native'
 import {connect} from 'react-redux'
 import AV from 'leancloud-storage'
@@ -53,6 +54,12 @@ class ArticleColumn extends Component {
 
   }
 
+  refreshArticleList(){
+    InteractionManager.runAfterInteractions(() => {
+    //  console.log('ahahahahahahahahah_______',this.state.columnId)
+      this.props.fetchArticle(this.state.columnId)
+    })
+  }
 
   changeTab(payload) {
 
@@ -102,14 +109,12 @@ class ArticleColumn extends Component {
     let columnArticles = this.props.columnArticles
     //console.log('columnArticles=====>',columnArticles)
     //console.log('columnId=====>',columnId)
-
     let articles = columnArticles.get(columnId)
     // find(value => {
     //   console.log('columnId=====>',columnId)
     //   console.log('value=====>',value)
     //   console.log('categoryId=====>',value)
     //   return (value.categoryId === 'columnId')
-
     // })
    // console.log('articles=====>',articles)
     if (!articles) {
@@ -117,14 +122,17 @@ class ArticleColumn extends Component {
         <View/>
       )
     } else {
-
       let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
       let articleSource
-
       articleSource = ds.cloneWithRows(articles.toJS())
-
       return (
         <ListView dataSource={articleSource}
+                  //initialListSize = {10}
+                  refreshControl={
+                    <RefreshControl onRefresh={()=>this.refreshArticleList()} refreshing={false}>
+
+                      </RefreshControl>
+                  }
                   renderRow={(rowData) => this.renderArticleItem(rowData)} />
       )
     }
@@ -148,11 +156,12 @@ class ArticleColumn extends Component {
 
   render() {
     if (this.props.column) {
-      console.log('state.columnItem===========',this.state.columnItem)
+     // console.log('state.columnItem===========',this.state.columnItem)
       return (
 
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
                            page={this.state.columnItem}
+                           initialPage={this.state.columnItem}
                            scrollWithoutAnimation={true}
                            renderTabBar={()=> this.renderTabBar()}
                            onChangeTab={(payload) => this.changeTab(payload)}
@@ -259,8 +268,9 @@ const styles = StyleSheet.create({
     color:'#686868'
   },
   tarBarUnderlineStyle:{
-    // height:normalizeH(0)
+     height:normalizeH(2),
     backgroundColor:'#50E3C2'
+
 
   }
 })

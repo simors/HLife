@@ -156,6 +156,7 @@ export function createConversation(payload) {
   return (dispatch, getState) => {
     dispatch(createLcConversation(payload)).then((conversation) => {
       dispatch(onCreateConversation(conversation))
+      dispatch(enterConversation({conversationId: conversation.id}))
       if (payload.success) {
         payload.success({meesage: '创建对话成功'})
       }
@@ -265,7 +266,10 @@ function createLcConversation(payload) {
       return undefined
     }
     if (payload.type === msgTypes.INQUIRY_CONVERSATION) {
-      payload.members.push('wuaiSystemDocter')    // 为了区分问诊或私信的会话，如果是问诊的会话，则插入系统医生所为会话参与者
+      let wuaiSysDoctor = payload.members.includes(msgTypes.WUAI_SYSTEM_DOCTOR)
+      if (!wuaiSysDoctor) {
+        payload.members.push(msgTypes.WUAI_SYSTEM_DOCTOR)    // 为了区分问诊或私信的会话，如果是问诊的会话，则插入系统医生所为会话参与者
+      }
     }
     return client.createConversation({
       members: payload.members,

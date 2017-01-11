@@ -64,11 +64,6 @@ export class ColumnItem extends ColumnItemConfig {
   }
 }
 
-export const CommentConfig = Record({
-  commentId: undefined,
-  replyId: undefined,
-  content: undefined,
-})
 
 
 export const TopicCategoryItemConfig = Record({

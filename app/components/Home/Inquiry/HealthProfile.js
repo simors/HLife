@@ -35,13 +35,15 @@ class HealthProfile extends Component {
   }
 
   componentWillUnmount() {
-    console.log("HealthProfile: componentWillUnmount=>inputFormOnDestroy")
-    this.props.inputFormOnDestroy(this.props.formKey)
+    console.log("HealthProfile: componentWillUnmount")
+    // this.props.inputFormOnDestroy(this.props.formKey)
   }
 
-  submitSuccessCallback(doctorInfo) {
+  submitSuccessCallback = () => {
     Toast.show('提交成功')
     Actions.SELECT_DOCTOR()
+    this.props.inputFormOnDestroy({formKey: this.props.formKey})
+
   }
 
   submitErrorCallback(error) {
