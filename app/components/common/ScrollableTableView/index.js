@@ -5,6 +5,7 @@ const {
 } = React;
 const ReactNative = require('react-native');
 const {
+  Image,
   Dimensions,
   View,
   Animated,
@@ -12,6 +13,8 @@ const {
   StyleSheet,
   InteractionManager,
   Platform,
+  TouchableOpacity,
+
 } = ReactNative;
 const TimerMixin = require('react-timer-mixin');
 
@@ -21,14 +24,14 @@ const ScrollableTabBar = require('./ScrollableTabBar');
 
 
 const ScrollableTabView = React.createClass({
-  mixins: [TimerMixin, ],
+  mixins: [TimerMixin,],
   statics: {
     DefaultTabBar,
     ScrollableTabBar,
   },
 
   propTypes: {
-    tabBarPosition: PropTypes.oneOf(['top', 'bottom', 'overlayTop', 'overlayBottom', ]),
+    tabBarPosition: PropTypes.oneOf(['top', 'bottom', 'overlayTop', 'overlayBottom',]),
     initialPage: PropTypes.number,
     page: PropTypes.number,
     onChangeTab: PropTypes.func,
@@ -43,11 +46,11 @@ const ScrollableTabView = React.createClass({
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-        if (this.scrollView && Platform.OS === 'android') {
-            const x = this.props.initialPage * this.state.containerWidth;
-            this.scrollView.scrollTo({ x, animated: false });
-          }
-      });
+      if (this.scrollView && Platform.OS === 'android') {
+        const x = this.props.initialPage * this.state.containerWidth;
+        this.scrollView.scrollTo({x, animated: false});
+      }
+    });
   },
 
   getDefaultProps() {
@@ -55,8 +58,10 @@ const ScrollableTabView = React.createClass({
       tabBarPosition: 'top',
       initialPage: 0,
       page: -1,
-      onChangeTab: () => {},
-      onScroll: () => {},
+      onChangeTab: () => {
+      },
+      onScroll: () => {
+      },
       contentProps: {},
       scrollWithoutAnimation: false,
       locked: false,
@@ -69,13 +74,13 @@ const ScrollableTabView = React.createClass({
       currentPage: this.props.initialPage,
       scrollValue: new Animated.Value(this.props.initialPage),
       containerWidth: Dimensions.get('window').width,
-      sceneKeys: this.newSceneKeys({ currentPage: this.props.initialPage, }),
+      sceneKeys: this.newSceneKeys({currentPage: this.props.initialPage,}),
     };
   },
 
   componentWillReceiveProps(props) {
     if (props.children !== this.props.children) {
-      this.updateSceneKeys({ page: this.state.currentPage, children: props.children, });
+      this.updateSceneKeys({page: this.state.currentPage, children: props.children,});
     }
 
     if (props.page >= 0 && props.page !== this.state.currentPage) {
@@ -86,7 +91,7 @@ const ScrollableTabView = React.createClass({
   goToPage(pageNumber) {
     const offset = pageNumber * this.state.containerWidth;
     if (this.scrollView) {
-      this.scrollView.scrollTo({x: offset, y: 0, animated: !this.props.scrollWithoutAnimation, });
+      this.scrollView.scrollTo({x: offset, y: 0, animated: !this.props.scrollWithoutAnimation,});
     }
 
     const currentPage = this.state.currentPage;
@@ -106,12 +111,15 @@ const ScrollableTabView = React.createClass({
     }
   },
 
-  updateSceneKeys({ page, children = this.props.children, callback = () => {}, }) {
-    let newKeys = this.newSceneKeys({ previousKeys: this.state.sceneKeys, currentPage: page, children, });
-    this.setState({currentPage: page, sceneKeys: newKeys, }, callback);
+  updateSceneKeys({
+    page, children = this.props.children, callback = () => {
+  },
+  }) {
+    let newKeys = this.newSceneKeys({previousKeys: this.state.sceneKeys, currentPage: page, children,});
+    this.setState({currentPage: page, sceneKeys: newKeys,}, callback);
   },
 
-  newSceneKeys({ previousKeys = [], currentPage = 0, children = this.props.children, }) {
+  newSceneKeys({previousKeys = [], currentPage = 0, children = this.props.children,}) {
     let newKeys = [];
     this._children(children).forEach((child, idx) => {
       let key = this._makeSceneKey(child, idx);
@@ -126,7 +134,7 @@ const ScrollableTabView = React.createClass({
   _shouldRenderSceneKey(idx, currentPageKey) {
     let numOfSibling = this.props.prerenderingSiblingsNumber;
     return (idx < (currentPageKey + numOfSibling + 1) &&
-      idx > (currentPageKey - numOfSibling - 1));
+    idx > (currentPageKey - numOfSibling - 1));
   },
 
   _keyExists(sceneKeys, key) {
@@ -143,8 +151,10 @@ const ScrollableTabView = React.createClass({
       horizontal
       pagingEnabled
       automaticallyAdjustContentInsets={false}
-      contentOffset={{ x: this.props.initialPage * this.state.containerWidth, }}
-      ref={(scrollView) => { this.scrollView = scrollView; }}
+      contentOffset={{x: this.props.initialPage * this.state.containerWidth,}}
+      ref={(scrollView) => {
+        this.scrollView = scrollView;
+      }}
       onScroll={(e) => {
         const offsetX = e.nativeEvent.contentOffset.x;
         this._updateScrollValue(offsetX / this.state.containerWidth);
@@ -159,7 +169,7 @@ const ScrollableTabView = React.createClass({
       alwaysBounceVertical={false}
       keyboardDismissMode="on-drag"
       {...this.props.contentProps}
-      >
+    >
       {scenes}
     </ScrollView>;
   },
@@ -170,7 +180,7 @@ const ScrollableTabView = React.createClass({
       return <SceneComponent
         key={child.key}
         shouldUpdated={this._shouldRenderSceneKey(idx, this.state.currentPage)}
-        style={{width: this.state.containerWidth, }}
+        style={{width: this.state.containerWidth,}}
       >
         {this._keyExists(this.state.sceneKeys, key) ? child : <View tabLabel={child.props.tabLabel}/>}
       </SceneComponent>;
@@ -212,10 +222,10 @@ const ScrollableTabView = React.createClass({
   },
 
   _handleLayout(e) {
-    const { width, } = e.nativeEvent.layout;
+    const {width,} = e.nativeEvent.layout;
 
     if (Math.round(width) !== Math.round(this.state.containerWidth)) {
-      this.setState({ containerWidth: width, });
+      this.setState({containerWidth: width,});
       this.requestAnimationFrame(() => {
         this.goToPage(this.state.currentPage);
       });
@@ -260,8 +270,19 @@ const ScrollableTabView = React.createClass({
       };
     }
 
-    return <View style={[styles.container, this.props.style, ]} onLayout={this._handleLayout}>
-      {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
+    return <View style={[styles.container, this.props.style,]} onLayout={this._handleLayout}>
+      <View style={{flexDirection: 'row'}}>
+        {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
+        <TouchableOpacity style={styles.channelWrap} onPress={() => {
+          this.props.onPressMore()
+        }}>
+          <View
+            style={{flex: 1, alignItem: 'center', justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1}}>
+            <Image style={{height: 20, width: 20, marginLeft: 13}}
+                   source={require("../../../assets/images/artical_more.png")}/>
+          </View>
+        </TouchableOpacity>
+      </View>
       {this.renderScrollableContent()}
       {(this.props.tabBarPosition === 'bottom' || overlayTabs) && this.renderTabBar(tabBarProps)}
     </View>;

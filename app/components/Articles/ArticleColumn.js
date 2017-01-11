@@ -26,7 +26,7 @@ import {Actions} from 'react-native-router-flux'
 import THEME from '../../constants/themes/theme1'
 import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
-import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView, {ScrollableTabBar} from '../common/ScrollableTableView';
 import ArticleShow from './ArticleShow'
 import {getArticleCollection} from '../../selector/articleSelector'
 import {fetchArticle} from '../../action/articleAction'
@@ -68,7 +68,7 @@ class ArticleColumn extends Component {
   _shopCategoryClick(payload) {
     // if(payload) {
     console.log('payload====>',payload)
-      this.closeModel(function(){
+      this.closeModel(()=>{
         // Actions.ARTICLES_ARTICLELIST({columnId: columnId})
         this.setState({columnId: payload})
         if (this.props.column) {
