@@ -31,6 +31,7 @@ import {Actions} from 'react-native-router-flux'
 
 import {getBanner, selectShopCategories} from '../../selector/configSelector'
 import {fetchBanner,fetchShopCategories} from '../../action/configAction'
+import {fetchTopics} from '../../action/topicActions'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -39,8 +40,8 @@ import CommonBanner from '../common/CommonBanner'
 import CommonModal from '../common/CommonModal'
 import LocalHealth from './LocalHealth'
 import ShopCategories from './ShopCategories'
-import PickedTopic from './PickedTopic'
-import {getTopic} from '../../selector/configSelector'
+import TopicShow from '../Find/TopicShow'
+import {getTopics} from '../../selector/topicSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -57,8 +58,8 @@ class Local extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       this.props.fetchShopCategories()
+      this.props.fetchTopics({})
     })
-
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
@@ -165,16 +166,39 @@ class Local extends Component {
     }
   }
 
+  renderTopicItem(value, key) {
+    return (
+      <TopicShow key={key}
+                 containerStyle={{marginBottom: 10}}
+                 topic={value}
+      />
+    )
+  }
+
+  renderTopicItems() {
+    if (this.props.topics) {
+      return (
+        this.props.topics.map((value, key)=> {
+          return (
+            this.renderTopicItem(value, key)
+          )
+        })
+      )
+    }
+  }
+
   renderFeaturedTopicsColumn() {
     return (
       <View style={styles.moduleD}>
-        <PickedTopic />
+        {this.renderTopicItems()}
       </View>
     )
   }
 
   refreshData() {
-
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopics({})
+    })
   }
 
   loadMoreData() {
@@ -236,7 +260,7 @@ const mapStateToProps = (state, ownProps) => {
   const banner = getBanner(state, 0)
   const allShopCategories = selectShopCategories(state)
   const shopCategories = allShopCategories.slice(0, 5)
-
+  const topics = getTopics(state)
   // let shopCategories = []
   // let ts = {
   //   imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
@@ -254,13 +278,15 @@ const mapStateToProps = (state, ownProps) => {
     banner: banner,
     shopCategories: shopCategories,
     allShopCategories: allShopCategories,
-    ds: ds.cloneWithRows(dataArray)
+    ds: ds.cloneWithRows(dataArray),
+    topics:topics
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
-  fetchShopCategories
+  fetchShopCategories,
+  fetchTopics
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)

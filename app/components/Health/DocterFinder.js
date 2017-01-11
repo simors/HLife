@@ -18,7 +18,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Header from '../common/Header'
-import {getDocterList} from '../../action/doctorAction'
+import {getDocterList, fetchDoctorGroup} from '../../action/doctorAction'
 import {activeUserId, isUserLogined} from '../../selector/authSelector'
 import {getDoctorList, getDoctorInfoByUserId} from '../../selector/doctorSelector'
 import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
@@ -33,7 +33,8 @@ class DocterFinder extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.getDocterList({})
+      // this.props.getDocterList({})
+      this.props.fetchDoctorGroup({id: ['587492a9b123db4a2ecd5de3', '5872fcc5b123db4a2ec29af5'], idType: 'userId'})
     })
   }
 
@@ -100,6 +101,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getDocterList,
+  fetchDoctorGroup
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DocterFinder)
