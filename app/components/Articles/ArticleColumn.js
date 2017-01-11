@@ -30,6 +30,7 @@ import ScrollableTabView, {ScrollableTabBar} from '../common/ScrollableTableView
 import ArticleShow from './ArticleShow'
 import {getArticleCollection} from '../../selector/articleSelector'
 import {fetchArticle} from '../../action/articleAction'
+import CommonListView from '../common/CommonListView'
 import {fetchLikers} from '../../action/articleAction'
 
 
@@ -55,7 +56,18 @@ class ArticleColumn extends Component {
     })
 
   }
-
+  renderAddMore(){
+    return(
+    <TouchableOpacity onPress={() => {
+      this.openModel(this)
+    }}>
+      <View style={styles.addMore}>
+        <Image style={{height: 20, width: 20, marginLeft: 13,marginTop:7}}
+               source={require("../../assets/images/artical_more.png")}/>
+      </View>
+    </TouchableOpacity>
+    )
+  }
   closeModel(callback) {
     this.setState({
       modalVisible: false
@@ -177,10 +189,23 @@ class ArticleColumn extends Component {
                     </RefreshControl>
                   }
                   renderRow={(rowData) => this.renderArticleItem(rowData)}/>
+    //     <CommonListView
+    //   contentContainerStyle={{backgroundColor: '#E5E5E5'}}
+    //   dataSource={articleSource}
+    //   renderRow={(rowData) => this.renderArticleItem(rowData)}
+    //   loadNewData={()=> {
+    //     this.refreshArticleList()
+    //   }}
+    //   loadMoreData={()=> {
+    //     this.loadMoreData()
+    //   }}
+    // />
       )
+
     }
   }
 
+  loadMoreData(){}
 
   renderTabBar() {
     return (
@@ -212,7 +237,7 @@ class ArticleColumn extends Component {
                            scrollWithoutAnimation={true}
                            renderTabBar={()=> this.renderTabBar()}
                            onChangeTab={(payload) => this.changeTab(payload)}
-                           onPressMore={()=>this.openModel(this)}
+                           onPressMore={()=>this.openModel()}
         >
           {this.renderColumns()}
         </ScrollableTabView>
@@ -220,6 +245,7 @@ class ArticleColumn extends Component {
       modalVisible={this.state.modalVisible}
       modalTitle="精选栏目"
       closeModal={() => this.closeModel()}
+      animationType={'none'}
     >
     <ScrollView >
       <Categorys    onPress={this._shopCategoryClick.bind(this)}/>
@@ -334,5 +360,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#50E3C2'
 
 
+  },
+  addMore: {
+    flex: 1,
+   // alignItem: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    height:38,
   }
 })

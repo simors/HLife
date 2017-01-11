@@ -17,7 +17,7 @@ const {
 
 } = ReactNative;
 const TimerMixin = require('react-timer-mixin');
-
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 const SceneComponent = require('./SceneComponent');
 const DefaultTabBar = require('./DefaultTabBar');
 const ScrollableTabBar = require('./ScrollableTabBar');
@@ -273,12 +273,12 @@ const ScrollableTabView = React.createClass({
     return <View style={[styles.container, this.props.style,]} onLayout={this._handleLayout}>
       <View style={{flexDirection: 'row'}}>
         {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
-        <TouchableOpacity style={styles.channelWrap} onPress={() => {
+        <TouchableOpacity  onPress={() => {
           this.props.onPressMore()
         }}>
           <View
-            style={{flex: 1, alignItem: 'center', justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1}}>
-            <Image style={{height: 20, width: 20, marginLeft: 13}}
+            style={{flex: 1, alignItems: 'center', width:normalizeW(45),justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1,borderLeftColor:'#50E3C2',borderBottomColor:'#50E3C2'}}>
+            <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(13)}}
                    source={require("../../../assets/images/artical_more.png")}/>
           </View>
         </TouchableOpacity>
