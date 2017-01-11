@@ -15,6 +15,8 @@ export default function doctorReducer(state = initialState, action) {
       return handleQueryDoctors(state, action)
     case Types.UPDATE_DOCTOR_LIST:
       return handleUpdateDoctorList(state, action)
+    case Types.UPDATE_DOCTOR_GROUP:
+      return handleUpdateDoctorGroup(state, action)
     default:
       return state
   }
@@ -27,16 +29,25 @@ function handleDoctorUpdate(state, action) {
 }
 
 function handleQueryDoctors(state, action) {
-  let doctors = action.payload.doctors
-  console.log("handleQueryDoctors:", doctors)
-  doctors.forEach((doctor) => {
+  let doctorList = action.payload.doctorList
+  console.log("handleQueryDoctors:", doctorList)
+  doctorList.forEach((doctor) => {
     state = state.setIn(['doctors', doctor.userId], doctor)
   })
   return state
 }
+
 function handleUpdateDoctorList(state, action) {
   let payload = action.payload
-  console.log("handleUpdateDoctorList payload", payload)
   state = state.setIn(['doctors', payload.doctor.userId], payload.doctor.doctorInfo)
+  return state
+}
+
+function handleUpdateDoctorGroup(state, action) {
+  let doctorGroup = action.payload.doctorGroup
+  doctorGroup.forEach((doctorList) => {
+    state = state.setIn(['doctors', doctorList.userId], doctorList)
+  })
+
   return state
 }
