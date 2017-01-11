@@ -32,7 +32,11 @@ import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import PhoneInput from '../../common/Input/PhoneInput'
 import TextAreaInput from '../../common/Input/TextAreaInput'
-import CommonTextInput from '../../common/Input/CommonTextInput'
+import Checkbox from '../../common/Input/Checkbox'
+import TagsInput from '../../common/Input/TagsInput'
+import ShopTagsSelect from './ShopTagsSelect'
+import CommonTextInput from './ShopTagsSelect'
+import * as MyShopTestData from './MyShopTestData'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
@@ -76,14 +80,34 @@ const shopCoverInput = {
   type: 'shopCoverInput'
 }
 
+const tagsInput = {
+  formKey: commonForm,
+  stateKey: Symbol('tagsInput'),
+  type: 'tagsInput'
+}
+
 class CompleteShopInfo extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      selectShow: false,
-      optionListPos: 168,
+    if(Platform.OS == 'ios') {
+      this.state = {
+        selectShow: false,
+        shopTagsSelectShow: false,
+        optionListPos: 179,
+        shopTagsSelectTop: 219,
+        selectedShopTags: []
+      }
+    }else{
+      this.state = {
+        selectShow: false,
+        shopTagsSelectShow: false,
+        optionListPos: 159,
+        shopTagsSelectTop: 199,
+        selectedShopTags: []
+      }
     }
+
   }
 
   componentWillMount() {
@@ -153,8 +177,35 @@ class CompleteShopInfo extends Component {
   }
 
   handleOnScroll(e) {
+    if(Platform.OS == 'ios') {
+      this.setState({
+        optionListPos: 179 - e.nativeEvent.contentOffset.y,
+        shopTagsSelectTop: 219 - e.nativeEvent.contentOffset.y
+      })
+    }else{
+      this.setState({
+        optionListPos: 159 - e.nativeEvent.contentOffset.y,
+        shopTagsSelectTop: 199 - e.nativeEvent.contentOffset.y
+      })
+    }
+  }
+
+  toggleShopTagsSelectShow() {
     this.setState({
-      optionListPos: 168 - e.nativeEvent.contentOffset.y
+      shopTagsSelectShow:!this.state.shopTagsSelectShow
+    })
+  }
+
+  onTagPress(tag, selected) {
+    if(selected) {
+      if(this.state.selectedShopTags.indexOf(tag) >= 0) {
+        this.state.selectedShopTags.splice(this.state.selectedShopTags.indexOf(tag), 1)
+      }
+    }else {
+      this.state.selectedShopTags.push(tag)
+    }
+    this.setState({
+      selectedShopTags: this.state.selectedShopTags
     })
   }
 
@@ -213,6 +264,19 @@ class CompleteShopInfo extends Component {
                     <Option key={"shopCategoryOption_-1"} value="">全部分类</Option>
                     {this.renderShopCategoryOptions()}
                   </SelectInput>
+                </View>
+              </View>
+
+              <View style={styles.inputWrap}>
+                <View style={styles.inputLabelBox}>
+                  <Text style={styles.inputLabel}>店铺标签</Text>
+                </View>
+                <View style={[styles.inputBox, styles.tagsBox]}>
+                  <TagsInput
+                    {...tagsInput}
+                    onPress={()=>{this.toggleShopTagsSelectShow()}}
+                    tags={this.state.selectedShopTags}
+                  />
                 </View>
               </View>
 
@@ -284,6 +348,18 @@ class CompleteShopInfo extends Component {
           </KeyboardAwareScrollView>
 
           <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
+
+          <ShopTagsSelect
+            show={this.state.shopTagsSelectShow}
+            containerStyle={{top: this.state.shopTagsSelectTop}}
+            tagsContainerStyle={{height:280}}
+            onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
+            tags={this.props.allShopTags}
+            selectedTags={this.state.selectedShopTags}
+            onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
+          />
+
+          
         </View>
       </View>
     )
@@ -292,8 +368,10 @@ class CompleteShopInfo extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
+  const allShopTags = MyShopTestData.allShopTags
   return {
     allShopCategories: allShopCategories,
+    allShopTags: allShopTags
   }
 }
 
@@ -312,7 +390,16 @@ const styles = StyleSheet.create({
   },
   headerContainerStyle: {
     borderBottomWidth: 0,
-    backgroundColor: THEME.colors.green
+    backgroundColor: THEME.colors.green,
+    ...Platform.select({
+      ios: {
+        paddingTop: 20,
+        height: 64
+      },
+      android: {
+        height: 44
+      }
+    }),
   },
   headerLeftStyle: {
     color: '#fff',
@@ -333,10 +420,10 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(64),
+        paddingTop: 64,
       },
       android: {
-        paddingTop: normalizeH(44)
+        paddingTop: 44
       }
     }),
     flex: 1,
@@ -352,7 +439,6 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(20),
   },
   inputLabelBox: {
-    width: normalizeW(70),
     justifyContent: 'center',
     alignItems: 'flex-start'
 

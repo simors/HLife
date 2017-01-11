@@ -20,7 +20,7 @@ export default class CommonButton extends Component {
   }
 
   pressAction() {
-    console.log("onPress", this.props.onPress)
+    // console.log("onPress", this.props.onPress)
     if (this.props.onPress) {
       this.props.onPress()
     }
