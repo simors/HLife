@@ -39,9 +39,11 @@ import CommonTextInput from './ShopTagsSelect'
 import * as MyShopTestData from './MyShopTestData'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
+import {fetchShopTags} from '../../../action/shopAction'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import * as Toast from '../../common/Toast'
 import {selectShopCategories} from '../../../selector/configSelector'
+import {selectShopTags} from '../../../selector/shopSelector'
 import {fetchShopCategories} from '../../../action/configAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -113,6 +115,7 @@ class CompleteShopInfo extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopCategories()
+      this.props.fetchShopTags()
     })
   }
 
@@ -359,7 +362,6 @@ class CompleteShopInfo extends Component {
             onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
           />
 
-          
         </View>
       </View>
     )
@@ -368,7 +370,7 @@ class CompleteShopInfo extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
-  const allShopTags = MyShopTestData.allShopTags
+  const allShopTags = selectShopTags(state)
   return {
     allShopCategories: allShopCategories,
     allShopTags: allShopTags
@@ -378,7 +380,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
-  fetchShopCategories
+  fetchShopCategories,
+  fetchShopTags
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CompleteShopInfo)

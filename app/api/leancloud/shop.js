@@ -11,7 +11,8 @@ import {
   Up,
   ShopCommentReply,
   ShopCommentUp,
-  ShopCommentUp4Cloud
+  ShopCommentUp4Cloud,
+  ShopTag
 } from '../../models/shopModel'
 
 export function getShopList(payload) {
@@ -467,7 +468,7 @@ export function fetchShopCommentReplyList(payload) {
   return query.find().then((results)=>{
     let replyList = []
     // console.log('fetchShopCommentReplyList...results===========', results)
-    if(results && results.attributes && results.attributes.length) {
+    if(results && results.length) {
       results.forEach((result)=>{
         replyList.push(ShopCommentReply.fromLeancloudObject(result))
       })
@@ -485,6 +486,24 @@ export function fetchShopCommentReplyListByCloudFunc(payload) {
   payload.shopCommentId = replyShopCommentId
   return AV.Cloud.run('hLifeFetchShopCommentReplyList', payload).then((results)=>{
     return results
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopTags(payload) {
+  let query = new AV.Query('ShopTag')
+  return query.find().then((results)=>{
+    // console.log('fetchShopTags.results===', results)
+    let shopTags = []
+    if(results && results.length) {
+      results.forEach((result)=>{
+        shopTags.push(ShopTag.fromLeancloudObject(result))
+      })
+    }
+    // console.log('fetchShopTags.shopTags===', shopTags)
+    return new List(shopTags)
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

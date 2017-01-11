@@ -292,3 +292,16 @@ export function fetchShopCommentReplyList(payload) {
   }
 }
 
+export function fetchShopTags(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopTags(payload).then((shopTags) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_TAGS_SUCCESS)
+      dispatch(updateAction({shopTags: shopTags}))
+    }).catch((error)=> {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
