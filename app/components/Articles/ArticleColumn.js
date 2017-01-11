@@ -48,15 +48,15 @@ class ArticleColumn extends Component {
     this.props.column.map((value, key)=> {
       if (value.columnId == this.props.columnId) {
         this.setState({columnItem: key, columnId: value.columnId})
-       // console.log('key==============>',key)
+        // console.log('key==============>',key)
       }
     })
 
   }
 
-  refreshArticleList(){
+  refreshArticleList() {
     InteractionManager.runAfterInteractions(() => {
-    //  console.log('ahahahahahahahahah_______',this.state.columnId)
+      //  console.log('ahahahahahahahahah_______',this.state.columnId)
       this.props.fetchArticle(this.state.columnId)
     })
   }
@@ -68,7 +68,7 @@ class ArticleColumn extends Component {
       return (
         this.props.column.map((value, key) => {
           if (key == payload.i) {
-           // console.log('=========<<<<<<<<',value)
+            // console.log('=========<<<<<<<<',value)
             this.setState({columnId: value.columnId})
             this.props.fetchArticle(value.columnId)
           }
@@ -96,7 +96,7 @@ class ArticleColumn extends Component {
   renderArticleItem(rowData) {
     let value = rowData
 
-   // console.log('value=====>',value)
+    // console.log('value=====>',value)
     return (
       <View
         style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
@@ -116,7 +116,7 @@ class ArticleColumn extends Component {
     //   console.log('categoryId=====>',value)
     //   return (value.categoryId === 'columnId')
     // })
-   // console.log('articles=====>',articles)
+    // console.log('articles=====>',articles)
     if (!articles) {
       return (
         <View/>
@@ -127,13 +127,12 @@ class ArticleColumn extends Component {
       articleSource = ds.cloneWithRows(articles.toJS())
       return (
         <ListView dataSource={articleSource}
-                  //initialListSize = {10}
+          //initialListSize = {10}
                   refreshControl={
                     <RefreshControl onRefresh={()=>this.refreshArticleList()} refreshing={false}>
-
-                      </RefreshControl>
+                    </RefreshControl>
                   }
-                  renderRow={(rowData) => this.renderArticleItem(rowData)} />
+                  renderRow={(rowData) => this.renderArticleItem(rowData)}/>
       )
     }
   }
@@ -141,22 +140,21 @@ class ArticleColumn extends Component {
 
   renderTabBar() {
     return (
-      <ScrollableTabBar
-        activeTextColor={'#50E3C2'}
-        inactiveTextColor={'#686868'}
-        style={styles.tarBarStyle}
-        underlineStyle={styles.tarBarUnderlineStyle}
-        textStyle={[styles.tabBarTextStyle, this.props.tabBarTextStyle && this.props.tabBarTextStyle]}
-        tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
-        backgroundColor={this.props.backgroundColor}
-      />
-
+        <ScrollableTabBar
+          activeTextColor={'#000000'}
+          inactiveTextColor={'#FFFFFF'}
+          style={styles.tarBarStyle}
+          underlineStyle={styles.tarBarUnderlineStyle}
+          textStyle={[styles.tabBarTextStyle, this.props.tabBarTextStyle && this.props.tabBarTextStyle]}
+          tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
+          backgroundColor={this.props.backgroundColor}
+        />
     )
   }
 
   render() {
     if (this.props.column) {
-     // console.log('state.columnItem===========',this.state.columnItem)
+      // console.log('state.columnItem===========',this.state.columnItem)
       return (
 
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
@@ -230,46 +228,50 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   tabBarTextStyle: {
-    fontSize: em(17),
-  //  paddingBottom: 10,
+    fontSize: em(15),
+    //  paddingBottom: 10,
     letterSpacing: em(-0.4),
-    color:'#686868'
+    color: '#686868'
   },
-
+  tarBarStyle: {
+    height: normalizeH(38),
+    width: normalizeW(330)
+  },
   tabBarTabStyle: {
-    // paddingBottom: em(10),
+    height: normalizeH(38),
+    paddingBottom: em(10),
     // paddingLeft: em(12),
     // paddingRight: em(12),
-    // paddingTop: em(10)
+    paddingTop: em(10)
   },
 
 
   tabBarUnderLineStyle: {
-     height: 0,
+    height: 0,
   },
 
   tabBarStyle: {
     height: normalizeH(38),
-    width:normalizeW(339)
+    width: normalizeW(339)
   },
-  moreColumns:{
-    height:normalizeH(20),
-    width:normalizeW(20)
+  moreColumns: {
+    height: normalizeH(20),
+    width: normalizeW(20)
   },
-  activeTextColor:{
-    fontSize:em(17),
-    color:'#50E3C2',
-    letterSpacing:em(-0.4)
+  activeTextColor: {
+    fontSize: em(17),
+    color: '#50E3C2',
+    letterSpacing: em(-0.4)
   },
-  inactiveTextColor:{
+  inactiveTextColor: {
     fontSize: em(15),
     //  paddingBottom: 10,
     letterSpacing: em(-0.4),
-    color:'#686868'
+    color: '#686868'
   },
-  tarBarUnderlineStyle:{
-     height:normalizeH(2),
-    backgroundColor:'#50E3C2'
+  tarBarUnderlineStyle: {
+    height: normalizeH(2),
+    backgroundColor: '#50E3C2'
 
 
   }
