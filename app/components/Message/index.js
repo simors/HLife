@@ -122,7 +122,7 @@ class MessageBox extends Component {
                   </View>
                   <View style={{flex: 1}}>
                     <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>话题评论</Text>
+                      <Text style={styles.titleStyle}>话题互动</Text>
                       <View style={{flex: 1}}></View>
                       <Text style={styles.timeTip}>2017-01-02</Text>
                     </View>
@@ -142,7 +142,7 @@ class MessageBox extends Component {
                   </View>
                   <View style={{flex: 1}}>
                     <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>话题点赞</Text>
+                      <Text style={styles.titleStyle}>店铺消息</Text>
                       <View style={{flex: 1}}></View>
                       <Text style={styles.timeTip}>2017-01-02</Text>
                     </View>
@@ -157,52 +157,12 @@ class MessageBox extends Component {
               <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <View style={styles.noticeIconView}>
-                    <Image style={styles.noticeIcon} source={require('../../assets/images/notice_shop_comments.png')}></Image>
+                    <Image style={styles.noticeIcon} source={require('../../assets/images/System_notice.png')}></Image>
                     <View style={styles.noticeTip}></View>
                   </View>
                   <View style={{flex: 1}}>
                     <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>店铺评论</Text>
-                      <View style={{flex: 1}}></View>
-                      <Text style={styles.timeTip}>2017-01-02</Text>
-                    </View>
-                    <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                      <Text numberOfLines={1} style={styles.msgTip}>郝依依医生给您提供的咨询服务对您是否有用，期待您的反馈！</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.itemView}>
-              <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View style={styles.noticeIconView}>
-                    <Image style={styles.noticeIcon} source={require('../../assets/images/notice_love_shop.png')}></Image>
-                    <View style={styles.noticeTip}></View>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>店铺点赞</Text>
-                      <View style={{flex: 1}}></View>
-                      <Text style={styles.timeTip}>2017-01-02</Text>
-                    </View>
-                    <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                      <Text numberOfLines={1} style={styles.msgTip}>郝依依医生给您提供的咨询服务对您是否有用，期待您的反馈！</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.itemView}>
-              <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View style={styles.noticeIconView}>
-                    <Image style={styles.noticeIcon} source={require('../../assets/images/notice_follow_shop.png')}></Image>
-                    <View style={styles.noticeTip}></View>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>店铺关注</Text>
+                      <Text style={styles.titleStyle}>系统公告</Text>
                       <View style={{flex: 1}}></View>
                       <Text style={styles.timeTip}>2017-01-02</Text>
                     </View>
