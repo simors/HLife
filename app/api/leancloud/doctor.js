@@ -6,7 +6,7 @@ import {Map, List, Record} from 'immutable'
 import ERROR from '../../constants/errorCode'
 import {DoctorInfo} from '../../models/doctorModel'
 
-export function getDoctorInfo(payload) {
+export function getDoctorInfoByUserId(payload) {
   console.log("getDoctorInfo payload", payload)
   let userInfoId = payload.id
   var userInfo = AV.Object.createWithoutData('_User', userInfoId)
@@ -16,12 +16,31 @@ export function getDoctorInfo(payload) {
   return doctor.find().then(function (doctors) {
     console.log("getDoctorInfo get ", doctors)
     let doctorInfo = DoctorInfo.fromLeancloudObject(doctors[0])
-    return doctorInfo
+    return {
+      userId: payload.id,
+      doctorInfo: doctorInfo
+    }
     }, function (error) {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error
     }
   )
+}
+
+export function getDoctorInfoById(payload) {
+  console.log("getDoctorInfoById", payload)
+  let doctorId = payload.id
+  var query = new AV.Query('Doctor')
+  return query.get(doctorId).then(function (doctor) {
+    let doctorInfo = DoctorInfo.fromLeancloudObject(doctor)
+    return {
+      userId: payload.id,
+      doctorInfo: doctorInfo
+    }
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
 }
 
 export function fetchDocterList(payload) {
@@ -32,8 +51,4 @@ export function fetchDocterList(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-}
-
-export function fetchDoctorInfo(payload) {
-
 }

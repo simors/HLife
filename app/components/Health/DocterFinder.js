@@ -97,6 +97,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getDocterList,
 }, dispatch)

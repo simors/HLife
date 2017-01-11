@@ -13,6 +13,8 @@ export default function doctorReducer(state = initialState, action) {
       return handleDoctorUpdate(state, action)
     case Types.QUERY_DOCTORS:
       return handleQueryDoctors(state, action)
+    case Types.UPDATE_DOCTOR_LIST:
+      return handleUpdateDoctorList(state, action)
     default:
       return state
   }
@@ -20,7 +22,7 @@ export default function doctorReducer(state = initialState, action) {
 
 function handleDoctorUpdate(state, action) {
   let payload = action.payload
-  state = state.set('doctorInfo', payload.doctor)
+  state = state.set('doctorInfo', payload.doctor.doctorInfo)
   return state
 }
 
@@ -30,5 +32,11 @@ function handleQueryDoctors(state, action) {
   doctors.forEach((doctor) => {
     state = state.setIn(['doctors', doctor.userId], doctor)
   })
+  return state
+}
+function handleUpdateDoctorList(state, action) {
+  let payload = action.payload
+  console.log("handleUpdateDoctorList payload", payload)
+  state = state.setIn(['doctors', payload.doctor.userId], payload.doctor.doctorInfo)
   return state
 }
