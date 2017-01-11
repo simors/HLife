@@ -16,7 +16,7 @@ import {
   ListView,
 } from 'react-native'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
-import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView, {ScrollableTabBar} from '../../components/common/ScrollableTableView';
 import THEME from '../../constants/themes/theme1'
 
 const PAGE_WIDTH = Dimensions.get('window').width
