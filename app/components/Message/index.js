@@ -18,7 +18,7 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import * as msgTypes from '../../constants/messageActionTypes'
-import {hasNewMessageByType, getNewestMessageTips} from '../../selector/messageSelector'
+import {hasNewMessageByType, getNewestMessageByType} from '../../selector/messageSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -223,9 +223,9 @@ class MessageBox extends Component {
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let newInquiry = hasNewMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
-  let lastInquiryMsg = getNewestMessageTips(state, msgTypes.INQUIRY_CONVERSATION)
+  let lastInquiryMsg = getNewestMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
   let newPersonalLetter = hasNewMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
-  let lastPersonalMsg = getNewestMessageTips(state, msgTypes.PERSONAL_CONVERSATION)
+  let lastPersonalMsg = getNewestMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
 
   newProps.newInquiry = newInquiry
   newProps.lastInquiryMsg = lastInquiryMsg

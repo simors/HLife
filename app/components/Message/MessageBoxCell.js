@@ -15,9 +15,11 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {getUserInfoById} from '../../action/authActions'
-import {userInfoById} from '../../selector/authSelector'
+import {userInfoById, activeUserId, isUserLogined} from '../../selector/authSelector'
+import {hasNewMessageById, getNewestMessageById} from '../../selector/messageSelector'
+import {WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
 
 class MessageBoxCell extends Component {
   constructor(props) {
@@ -25,34 +27,76 @@ class MessageBoxCell extends Component {
   }
 
   componentDidMount() {
+    let memberId = this.props.members.find((member) => {
+      if (member === WUAI_SYSTEM_DOCTOR) {
+        return false
+      }
+      if (member === this.props.currentUser) {
+        return false
+      }
+      return true
+    })
     InteractionManager.runAfterInteractions(() => {
-      this.props.getUserInfoById({userId: this.props.memberId})
+      this.props.getUserInfoById({userId: memberId})
     })
   }
 
+  enterChatroom() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      let payload = {
+        name: this.props.title,
+        members: this.props.members,
+        conversationType: this.props.type,
+        title: this.props.title,
+      }
+      Actions.CHATROOM(payload)
+    }
+  }
+
   renderNoticeTip() {
-    return (
-      <View></View>
-    )
+    if (this.props.newMessage) {
+      return (
+        <View style={styles.noticeTip}></View>
+      )
+    } else {
+      return (
+        <View></View>
+      )
+    }
+  }
+
+  renderChatIcon() {
+    let cnt = this.props.users.length
+    if (cnt == 1) {
+      return (
+        <View>
+          <Image style={styles.noticeIcon} source={{uri: this.props.users[0].avatar}}></Image>
+        </View>
+      )
+    } else {
+      return <View/>
+    }
   }
 
   render() {
     return (
       <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => this.enterChatroom()}>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={styles.noticeIconView}>
-              <Image style={styles.noticeIcon} source={{uri: this.props.userInfo.avatar}}></Image>
+              {this.renderChatIcon()}
               {this.renderNoticeTip()}
             </View>
             <View style={{flex: 1}}>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.titleStyle}>{this.props.userInfo.nickname}</Text>
+                <Text style={styles.titleStyle}>{this.props.title}</Text>
                 <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>sfsdfsdfs</Text>
+                <Text style={styles.timeTip}>{this.props.lastMessage.lastMessageAt}</Text>
               </View>
               <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>fsdfgalfasflkasdflafa</Text>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastMessage.lastMessage}</Text>
               </View>
             </View>
           </View>
@@ -64,12 +108,25 @@ class MessageBoxCell extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
-  let userInfoRecord = userInfoById(state, ownProps.memberId)
-  let userInfo
-  if (userInfoRecord) {
-    userInfo = userInfoRecord.toJS()
-  }
-  newProps.userInfo = userInfo
+  let users = []
+  ownProps.members.forEach((member) => {
+    if (member !== activeUserId(state) && member !== WUAI_SYSTEM_DOCTOR) {
+      let userInfoRecord = userInfoById(state, member)
+      let userInfo
+      if (userInfoRecord) {
+        userInfo = userInfoRecord.toJS()
+        users.push(userInfo)
+      }
+    }
+  })
+
+  let newMessage = hasNewMessageById(state, ownProps.conversation)
+  let lastMessage = getNewestMessageById(state, ownProps.conversation)
+  newProps.newMessage = newMessage
+  newProps.lastMessage = lastMessage
+  newProps.currentUser = activeUserId(state)
+  newProps.isLogin = isUserLogined(state)
+  newProps.users = users
   return newProps
 }
 
@@ -114,8 +171,8 @@ const styles = StyleSheet.create({
   noticeIcon: {
     width: 50,
     height: 50,
-    borderRadius: 25,
-    overflow: 'hidden',
+    // borderRadius: 25,
+    // overflow: 'hidden',
   },
   noticeTip: {
     width: 12,
