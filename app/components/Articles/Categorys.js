@@ -30,31 +30,67 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class Categorys extends Component {
   constructor(props) {
     super(props)
+    this.state={
+      imgSize: normalizeW(45),
+      columnCnt: this.props.column.size,
 
-  }
-
-  renderColumns() {
-    if (this.props.column) {
-      return (
-        this.props.column.map((value, key) => {
-          let imageUrl = value.imageSource
-          return (
-            <TouchableOpacity onPress={()=>this.props.onPress(value.columnId)}>
-              <View key={key} style={styles.channelWrap}>
-                <View style={styles.defaultImageStyles}>
-                  <Image style={styles.defaultImageStyles} source={{uri: imageUrl}}/>
-                </View>
-                <View style={styles.channelText}>
-                  <Text style={ {fontSize: normalizeW(15),
-                    color: '#929292'}}>{value.title}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )
-        })
-      )
     }
   }
+
+  renderColumn(value){
+    //console.log('value====>',value)
+    return(
+      <TouchableOpacity onPress={()=>this.props.onPress(value.columnId)}>
+        <View  style={styles.channelWrap}>
+            <Image style={styles.defaultImageStyles} source={{uri: value.imageSource}}/>
+            <Text style={ {marginTop:normalizeH(7),fontSize: em(15), color: '#929292'}}>{value.title}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  renderRows(){
+    const imageStyle={
+      flex:1,
+    }
+    let imgComp = this.props.column.map((item, key) => {
+      return (
+        <View key={key} style={imageStyle}>
+          {this.renderColumn(item)}
+        </View>
+      )
+    })
+    return imgComp
+  }
+
+  renderCutColumn(){
+    let imgComp = this.renderRows()
+    let compList = []
+    let comp = []
+      for (let i = 0; i < imgComp.length; i++) {
+      comp.push(imgComp[i])
+      if ((i + 1) % 4 == 0) {
+        compList.push(comp)
+        comp = []
+      }
+    }
+      compList.push(comp)
+    return compList
+  }
+
+  renderColumns(){
+    let compList = this.renderCutColumn()
+    return (
+      compList.map((item, key) => {
+        return (
+          <View  key={key} style={[styles.container, this.props.containerStyle]}>
+            {item}
+          </View>
+        )
+      })
+    )
+  }
+
 
   render() {
     return (
@@ -73,7 +109,8 @@ Categorys.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let column = getColumn(state)
+  let column = getColumn(state).toJS()
+  console.log('susususususu<><><><><',column)
   return {
     column: column,
   }
@@ -97,25 +134,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // overflow: 'hidden',
-    marginTop: normalizeH(20),
-    marginBottom:normalizeH(20),
-    marginLeft: normalizeW(20),
-    marginRight:normalizeW(20),
-    height: normalizeH(80),
+    height:normalizeH(80),
+     width:normalizeW(93),
+    overflow: 'hidden',
+    marginTop: normalizeH(10),
+    marginBottom:normalizeH(10),
+    // marginLeft: normalizeW(20),
+    // marginRight:normalizeW(20),
+   // height: normalizeH(80),
     // width: normalizeW(35),
   },
   channelText: {
     marginTop: 7,
   //  textAlign: 'center',
   },
-  columnContainer: {
-    borderBottomWidth:normalizeBorder(2),
+  container:{
+    borderBottomWidth:normalizeBorder(1),
     width: PAGE_WIDTH,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    //  flexWrap: 'wrap',
+    //justifyContent: 'center',
     borderColor:'#E6E6E6',
-    borderTopWidth:normalizeH(2),
+    borderTopWidth:normalizeBorder(1),
+     // paddingTop:normalizeH(10),
+     // paddingBottom:normalizeH(10),
+  },
+  columnContainer: {
+    flex:1
+  //   borderBottomWidth:normalizeBorder(1),
+  //   width: PAGE_WIDTH,
+  //   flexDirection: 'row',
+  // //  flexWrap: 'wrap',
+  //   justifyContent: 'center',
+  //   borderColor:'#E6E6E6',
+  //   borderTopWidth:normalizeH(1),
   },
 })

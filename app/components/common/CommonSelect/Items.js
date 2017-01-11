@@ -86,6 +86,6 @@ export default class Items extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor : "#fff"
+    backgroundColor : "#f2f2f2"
   }
 })

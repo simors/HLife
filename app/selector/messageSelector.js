@@ -70,8 +70,17 @@ export function hasNewMessageByType(state, type) {
   return conv ? true : false
 }
 
-export function getNewestMessageTips(state, type) {
-  let lastMessage = "还没有收到过消息哦，看来要多与人交流才是呢^_^"
+export function hasNewMessageById(state, id) {
+  let conversation = getConversationById(state, id)
+  if (conversation.get('unreadCount')) {
+    let unreadCount = conversation.get('unreadCount')
+    return unreadCount > 0 ? true : false
+  }
+  return false
+}
+
+export function getNewestMessageByType(state, type) {
+  let lastMessage = "还没有收到过消息哦，多多参与互动吧^_^"
 
   let orderedConvs = state.MESSAGE.get('OrderedConversation')
   if (!orderedConvs) {
@@ -86,6 +95,35 @@ export function getNewestMessageTips(state, type) {
   })
 
   let conversationRecord = getConversationById(state, retConvId)
+  if (!conversationRecord) {
+    return {lastMessageAt: "", lastMessage}
+  }
+  let conversation = conversationRecord.toJS()
+  let msgTime = new Date(conversation.lastMessageAt)
+  let lastMessageAt = getConversationTime(msgTime.getTime())
+  let lastMessageId = conversation.messages[0]
+  let messageRecord = getMessageById(state, lastMessageId)
+  if (messageRecord) {
+    let message = messageRecord.toJS()
+    if (message.type == msgTypes.MSG_TEXT) {
+      lastMessage = message.text
+    } else if (message.type == msgTypes.MSG_IMAGE) {
+      if (message.from != activeUserId(state)) {
+        lastMessage = '收到一张图片，请点击查看详情'
+      } else {
+        lastMessage = '发送一张图片给对方'
+      }
+    } else {
+      lastMessage = '暂不支持预览此消息'
+    }
+  }
+  return {lastMessageAt, lastMessage}
+}
+
+export function getNewestMessageById(state, id) {
+  let lastMessage = "还没有收到过消息哦，赶快联系他／她吧^_^"
+
+  let conversationRecord = getConversationById(state, id)
   if (!conversationRecord) {
     return {lastMessageAt: "", lastMessage}
   }

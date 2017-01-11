@@ -129,6 +129,9 @@ class ShopCategoryList extends Component {
   }
 
   _onSelectDistance(distance) {
+    if('全城' == distance) {
+      distance = ''
+    }
     this.state.selectGroupShow = [false, false, false]
     this.state.searchForm.distance = distance
     this.setState({
@@ -322,7 +325,7 @@ class ShopCategoryList extends Component {
                 <Option key={"distanceOption_1"} value="2">2km</Option>
                 <Option key={"distanceOption_2"} value="5">5km</Option>
                 <Option key={"distanceOption_3"} value="10">10km</Option>
-                <Option key={"distanceOption_4"} value="">全城</Option>
+                <Option key={"distanceOption_4"} value="全城">全城</Option>
               </Select>
               <OptionList ref="DISTANCE_OPTION_LIST"/>
             </View>

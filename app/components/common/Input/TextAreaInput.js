@@ -158,6 +158,8 @@ const styles = StyleSheet.create({
     color: '#B2B2B2',
     paddingLeft:10,
     paddingRight:40,
+    textAlign: "left",
+    textAlignVertical: "top"
   },
   defaultClearBtnStyle: {
     position: 'absolute',

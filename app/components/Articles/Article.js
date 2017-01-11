@@ -260,7 +260,9 @@ class Article extends Component {
           <View style={styles.cotainer}>
             <View style={styles.titleView}>
               <Text style={{
-                fontSize: normalizeH(17),
+                marginTop:normalizeH(12),
+                marginBottom:normalizeH(10),
+                fontSize: em(22),
                 color: '#636363',
                 marginLeft: normalizeW(12),
                 fontWeight: 'bold'
@@ -275,7 +277,7 @@ class Article extends Component {
                 marginLeft: normalizeW(12)
               }} source={this.props.avatar ? {uri: this.props.avatar} : require("../../assets/images/default_portrait@2x.png")}></Image>
               <Text style={{
-                fontSize: normalizeH(15),
+                fontSize: em(18),
                 color: '#929292',
                 marginLeft: normalizeW(12)
               }}>{this.props.nickname}</Text>
@@ -375,11 +377,10 @@ const styles = StyleSheet.create(
       flex: 1,
       backgroundColor: '#E5E5E5',
       justifyContent: 'flex-start',
-      alignItems: 'center'
-
+     // alignItems: 'center'
     },
     titleView: {
-      height: normalizeH(39),
+     // height: normalizeH(39),
       width: PAGE_WIDTH,
      // marginTop: normalizeH(64),
       borderBottomWidth: normalizeBorder(1),
