@@ -18,6 +18,7 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import AV from 'leancloud-storage'
+import CommonModal from '../common/CommonModal'
 import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Categorys from '../Articles/Categorys'
@@ -38,6 +39,7 @@ class ArticleColumn extends Component {
     this.state = {
       columnItem: 0,
       columnId: 0,
+      modalVisible: false
     }
   }
 
@@ -53,6 +55,48 @@ class ArticleColumn extends Component {
     })
 
   }
+
+  closeModel(callback) {
+    this.setState({
+      modalVisible: false
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
+  }
+
+  _shopCategoryClick(payload) {
+    // if(payload) {
+    console.log('payload====>',payload)
+      this.closeModel(function(){
+        // Actions.ARTICLES_ARTICLELIST({columnId: columnId})
+        this.setState({columnId: payload})
+        if (this.props.column) {
+          return (
+            this.props.column.map((value, key) => {
+              if (value.columnId == payload) {
+                // console.log('=========<<<<<<<<',value)
+                this.setState({columnItem: key})
+                this.props.fetchArticle(value.columnId)
+              }
+            })
+          )
+        }
+      })
+    // }else{
+    //   this.openModel()
+    // }
+  }
+
+  openModel(callback) {
+    this.setState({
+      modalVisible: true
+    })
+    if(callback && typeof callback == 'function'){
+      callback()
+    }
+  }
+
 
   refreshArticleList() {
     InteractionManager.runAfterInteractions(() => {
@@ -156,6 +200,11 @@ class ArticleColumn extends Component {
     if (this.props.column) {
       // console.log('state.columnItem===========',this.state.columnItem)
       return (
+        <View style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: '#F5FCFF',
+        }}>
 
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
                            page={this.state.columnItem}
@@ -163,9 +212,20 @@ class ArticleColumn extends Component {
                            scrollWithoutAnimation={true}
                            renderTabBar={()=> this.renderTabBar()}
                            onChangeTab={(payload) => this.changeTab(payload)}
+                           onPressMore={()=>this.openModel(this)}
         >
           {this.renderColumns()}
         </ScrollableTabView>
+        <CommonModal
+      modalVisible={this.state.modalVisible}
+      modalTitle="精选栏目"
+      closeModal={() => this.closeModel()}
+    >
+    <ScrollView >
+      <Categorys    onPress={this._shopCategoryClick.bind(this)}/>
+    </ScrollView >
+      </CommonModal>
+            </View>
       )
     }
   }
