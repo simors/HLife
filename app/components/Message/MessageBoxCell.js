@@ -21,6 +21,8 @@ import {userInfoById, activeUserId, isUserLogined} from '../../selector/authSele
 import {hasNewMessageById, getNewestMessageById} from '../../selector/messageSelector'
 import {WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
 
+const ICON_SIZE = 50
+
 class MessageBoxCell extends Component {
   constructor(props) {
     super(props)
@@ -67,6 +69,21 @@ class MessageBoxCell extends Component {
     }
   }
 
+  renderImageIcon(size) {
+    return (
+      this.props.users.map((user, index) => {
+        if (index >= 9) {
+          return <View/>
+        }
+        return (
+          <View>
+            <Image style={{width: size, height: size}} source={{uri: this.props.users[index].avatar}}></Image>
+          </View>
+        )
+      })
+    )
+  }
+
   renderChatIcon() {
     let cnt = this.props.users.length
     if (cnt == 1) {
@@ -75,8 +92,18 @@ class MessageBoxCell extends Component {
           <Image style={styles.noticeIcon} source={{uri: this.props.users[0].avatar}}></Image>
         </View>
       )
+    } else if (cnt == 2 || cnt == 4){
+      return (
+        <View style={[styles.noticeIcon, {justifyContent: 'center', alignItems: 'center'}]}>
+          {this.renderImageIcon(Math.floor(ICON_SIZE/2))}
+        </View>
+      )
     } else {
-      return <View/>
+      return (
+        <View style={[styles.noticeIcon, {justifyContent: 'center', alignItems: 'center'}]}>
+          {this.renderImageIcon(Math.floor(ICON_SIZE/3))}
+        </View>
+      )
     }
   }
 
@@ -169,8 +196,8 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(19)
   },
   noticeIcon: {
-    width: 50,
-    height: 50,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     // borderRadius: 25,
     // overflow: 'hidden',
   },
