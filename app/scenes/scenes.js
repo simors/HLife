@@ -43,6 +43,8 @@ import HealthProfile from '../components/Home/Inquiry/HealthProfile'
 import SelectDoctor from '../components/Home/Inquiry/SelectDoctor'
 import QA from '../components/Home/Inquiry/QA'
 import QAList from '../components/Home/Inquiry/QAList'
+import DoctorIntro from '../components/Mine/DoctorIntro'
+import DoctorSpec from '../components/Mine/DoctorSpec'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 
 const styles = StyleSheet.create({
@@ -98,6 +100,8 @@ export const scenes = Actions.create(
       <Scene key="SELECT_DOCTOR" component={SelectDoctor} />
       <Scene key="QA" component={QA}/>
       <Scene key="QA_LIST" component={QAList}/>
+      <Scene key="DOCTOR_INTRO" component={DoctorIntro}/>
+      <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
 
 
 

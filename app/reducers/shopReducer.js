@@ -31,6 +31,8 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchShopCommentUpedUserList(state, action)
     case ShopActionTypes.FETCH_SHOP_COMMENT_REPLY_LIST_SUCCESS:
       return handleFetchShopCommentReplyList(state, action)
+    case ShopActionTypes.FETCH_SHOP_TAGS_SUCCESS:
+      return handleFetchShopTagsSuccess(state, action)
     default:
       return state
   }
@@ -184,5 +186,14 @@ function handleFetchShopCommentReplyList(state, action) {
     state = state.set('shopComments', shopCommentsMap)
   }
 
+  return state
+}
+
+function handleFetchShopTagsSuccess(state, action) {
+  let payload = action.payload
+  let shopTags = payload.shopTags
+  if(shopTags && shopTags.size) {
+    state = state.set('shopTagList', shopTags)
+  }
   return state
 }

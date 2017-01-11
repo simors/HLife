@@ -16,10 +16,10 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {activeUserId} from '../../selector/authSelector'
 import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION, WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
 import {fetchConversation} from '../../action/messageAction'
 import {getConversations} from '../../selector/messageSelector'
+import {activeUserId} from '../../selector/authSelector'
 import MessageBoxCell from './MessageBoxCell'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -38,7 +38,7 @@ class InquiryMessageBox extends Component {
 
   renderInquiryMsgBox(rowData) {
     let members = rowData.members
-    let memberId = members.find((member) => {
+    let otherMem = members.filter((member) => {
       if (member === WUAI_SYSTEM_DOCTOR) {
         return false
       }
@@ -47,8 +47,9 @@ class InquiryMessageBox extends Component {
       }
       return true
     })
+    let title = otherMem.join(',')
     return (
-      <MessageBoxCell memberId={memberId} />
+      <MessageBoxCell members={members} conversation={rowData.id} type={INQUIRY_CONVERSATION} title={title} />
     )
   }
 

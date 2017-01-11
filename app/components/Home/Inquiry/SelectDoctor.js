@@ -36,6 +36,11 @@ class SelectDoctor extends Component {
     }
   }
 
+  componentWillUnmount() {
+    console.log("SelectDoctor: componentWillUnmount")
+    // this.props.inputFormOnDestroy(this.props.formKey)
+  }
+
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getDocterList({})

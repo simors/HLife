@@ -46,8 +46,8 @@ export class TopicDetail extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType:'topic'})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topic'})
+      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
     })
   }
 
@@ -56,7 +56,7 @@ export class TopicDetail extends Component {
 
   submitSuccessCallback() {
     Toast.show('评论成功')
-    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType:'topic'})
+    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
     this.closeModal(()=> {
       Toast.show('发布成功', {duration: 1000})
     })
@@ -146,7 +146,7 @@ export class TopicDetail extends Component {
   }
 
   scrollToComment() {
-    this.refs.scrollView.scrollToPosition(0, this.state.commentY)
+    this.refs.scrollView.scrollTo(this.state.commentY)
   }
 
   onLikeButton() {
@@ -208,48 +208,49 @@ export class TopicDetail extends Component {
           rightText="..."
           rightPress={() => this.onRightPress()}
         />
-
-        <ScrollView style={styles.body} ref={"scrollView"}>
-          <TopicContent topic={this.props.topic}/>
-          <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
-            <View style={styles.zanStyle}>
-              <Text style={styles.zanTextStyle}>
-                赞
-              </Text>
+        <View style={styles.body} >
+          <ScrollView style={{}} ref={"scrollView"}>
+            <TopicContent topic={this.props.topic}/>
+            <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
+              <View style={styles.zanStyle}>
+                <Text style={styles.zanTextStyle}>
+                  赞
+                </Text>
+              </View>
             </View>
+            {this.renderTopicCommentPage()}
+            {this.renderNoComment()}
+          </ScrollView>
+
+          <View style={styles.shopCommentWrap}>
+            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
+              <Text style={styles.shopCommentInput}>写评论...</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
+              <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
+              <View style={styles.commentBtnBadge}>
+                <Text style={styles.commentBtnBadgeTxt}>
+                  {this.props.commentsTotalCount > 99 ? '99+' : this.props.commentsTotalCount}
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.shopUpWrap} onPress={this.onLikeButton.bind(this)}>
+              <Image style={{}} source={this.props.isLiked ?
+                require("../../assets/images/like_select.png") :
+                require("../../assets/images/like_unselect.png")}/>
+            </TouchableOpacity>
           </View>
-          {this.renderTopicCommentPage()}
-          {this.renderNoComment()}
-        </ScrollView>
-
-        <View style={styles.shopCommentWrap}>
-          <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
-            <Text style={styles.shopCommentInput}>写评论...</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
-            <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-            <View style={styles.commentBtnBadge}>
-              <Text style={styles.commentBtnBadgeTxt}>
-                {this.props.commentsTotalCount > 99 ? '99+' : this.props.commentsTotalCount}
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.shopUpWrap} onPress={this.onLikeButton.bind(this)}>
-            <Image style={{}} source={this.props.isLiked ?
-              require("../../assets/images/like_select.png") :
-              require("../../assets/images/like_unselect.png")}/>
-          </TouchableOpacity>
+          <Comment
+            showModules={["content"]}
+            modalVisible={this.state.modalVisible}
+            modalTitle="写评论"
+            textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
+            closeModal={() => this.closeModal()}
+            submitComment={this.submitComment.bind(this)}
+          />
         </View>
-        <Comment
-          showModules={["content"]}
-          modalVisible={this.state.modalVisible}
-          modalTitle="写评论"
-          textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
-          closeModal={() => this.closeModal()}
-          submitComment={this.submitComment.bind(this)}
-        />
       </View>
     )
   }

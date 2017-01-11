@@ -17,3 +17,27 @@ export function getDoctorList(state) {
   }
   return doctors
 }
+
+export function getDoctorInfoByUserId(state, userId) {
+  let doctorRecord = state.DOCTOR.getIn(['doctors', userId])
+  if (doctorRecord) {
+    return doctorRecord.toJS()
+  }
+  return (new DoctorInfo()).toJS()
+}
+
+export function getDoctorInfoByDoctorId(state, doctorId) {
+  let docMap = state.DOCTOR.get('doctors')
+  if (docMap) {
+    let doctorRecord = docMap.find((doc) => {
+      if (doctorId === doc.doctorId) {
+        return true
+      }
+      return false
+    })
+    if (doctorRecord) {
+      return doctorRecord.toJS()
+    }
+  }
+  return (new DoctorInfo()).toJS()
+}

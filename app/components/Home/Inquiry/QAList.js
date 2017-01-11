@@ -19,6 +19,7 @@ import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import Header from '../../common/Header'
 import {activeUserId, isUserLogined} from '../../../selector/authSelector'
+import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -28,6 +29,10 @@ class QAList extends Component {
     super(props)
   }
 
+  componentWillUnmount() {
+    console.log("QAList: componentWillUnmount")
+    // this.props.inputFormOnDestroy(this.props.formKey)
+  }
   componentDidMount() {
     console.log("componentDidMount", this.props.doctors)
   }
@@ -35,7 +40,9 @@ class QAList extends Component {
   consult(doctor) {
     let payload = {
       name: doctor.phone,
-      members: [this.props.currentUser, doctor.id]
+      members: [this.props.currentUser, doctor.userId],
+      conversationType: INQUIRY_CONVERSATION,
+      title: doctor.username,
     }
     Actions.CHATROOM(payload)
   }
