@@ -277,7 +277,7 @@ const ScrollableTabView = React.createClass({
           this.props.onPressMore()
         }}>
           <View
-            style={{flex: 1, alignItem: 'center', justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1}}>
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1}}>
             <Image style={{height: 20, width: 20, marginLeft: 13}}
                    source={require("../../../assets/images/artical_more.png")}/>
           </View>

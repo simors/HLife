@@ -175,16 +175,22 @@ class Local extends Component {
     )
   }
 
+  renderTopicItems() {
+    if (this.props.topics) {
+      return (
+        this.props.topics.map((value, key)=> {
+          return (
+            this.renderTopicItem(value, key)
+          )
+        })
+      )
+    }
+  }
+
   renderFeaturedTopicsColumn() {
     return (
       <View style={styles.moduleD}>
-        <CommonListView
-          contentContainerStyle={{backgroundColor: '#E5E5E5'}}
-          dataSource={this.props.topicDs}
-          renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
-          loadNewData={()=>{this.refreshData()}}
-          loadMoreData={()=>{this.loadMoreData()}}
-        />
+        {this.renderTopicItems()}
       </View>
     )
   }
@@ -273,7 +279,7 @@ const mapStateToProps = (state, ownProps) => {
     shopCategories: shopCategories,
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
-    topicDs:ds.cloneWithRows(topics)
+    topics:topics
   }
 }
 
