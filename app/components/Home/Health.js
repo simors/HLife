@@ -29,19 +29,19 @@ export default class Health extends Component {
         <View style={styles.healthBottom}>
           <View style={styles.findDoctor}>
             <Thumbnail
+              sourceImage={require("../../assets/images/home_question.png")}
+              thumbnailTitle="快速问诊"
+              thumbnailIntro="专业医生在线答疑"
+              onPress={()=>{Actions.INQUIRY()}}
+            />
+          </View>
+          <View style={styles.line}/>
+          <View style={styles.findHospital}>
+            <Thumbnail
               sourceImage={require("../../assets/images/home_doctor.png")}
               thumbnailTitle="找名医"
               thumbnailIntro="一对一对症咨询"
               onPress={()=>{Actions.DOCTER_FINDER()}}
-            />
-          </View>
-          <View style={styles.line}></View>
-          <View style={styles.findHospital}>
-            <Thumbnail
-              sourceImage={require("../../assets/images/home_hospital.png")}
-              thumbnailTitle="找医院"
-              thumbnailIntro="找对对症的好医院"
-              onPress={()=>{Actions.LOGIN()}}
             />
           </View>
         </View>
