@@ -33,8 +33,7 @@ class DocterFinder extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      // this.props.getDocterList({})
-      this.props.fetchDoctorGroup({id: ['587492a9b123db4a2ecd5de3', '5872fcc5b123db4a2ec29af5'], idType: 'userId'})
+      this.props.getDocterList({})
     })
   }
 

@@ -34,7 +34,6 @@ export function submitDoctorFormData(payload) {
 }
 
 function handleDoctorCertification(payload, formData) {
-  console.log("handleDoctorCertification start", formData)
   return (dispatch, getState) => {
     let smsPayload = {
       phone: formData.phoneInput.text,
@@ -100,7 +99,6 @@ export function fetchDoctorInfo(payload) {
 }
 
 export function fetchDoctorByUserId(payload) {
-  console.log("fetchDoctorByUserId", payload)
   return (dispatch, getState) => {
     lcDoctor.getDoctorInfoByUserId(payload).then((doctor) => {
       let updateDoctorListAction = createAction(doctorActionTypes.UPDATE_DOCTOR_LIST)
@@ -129,8 +127,10 @@ export function fetchDoctorById(payload) {
 export function fetchDoctorGroup(paylaod) {
   return (dispatch, getState) => {
     lcDoctor.getDoctorGroup(paylaod).then((doctorList) => {
-      let updateDoctorGroupAction = createAction(doctorActionTypes.UPDATE_DOCTOR_GROUP)
-      dispatch(updateDoctorGroupAction({doctorGroup: doctorList}))
+      if (doctorList.length != 0) {
+        let updateDoctorGroupAction = createAction(doctorActionTypes.UPDATE_DOCTOR_GROUP)
+        dispatch(updateDoctorGroupAction({doctorGroup: doctorList}))
+      }
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
