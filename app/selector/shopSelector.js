@@ -111,6 +111,7 @@ export function selectShopTags(state) {
 
 export function selectUserOwnedShopInfo(state) {
   if(state.SHOP.get('userOwnedShopInfo').size) {
+    // console.log('state.SHOP.get(userOwnedShopInfo).toJS()[0]===', state.SHOP.get('userOwnedShopInfo').toJS()[0])
     return state.SHOP.get('userOwnedShopInfo').toJS()[0]
   }
   return {}

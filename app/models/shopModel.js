@@ -21,7 +21,7 @@ export const ShopRecord = Record({
   score: 4.5, //店铺评分
   ourSpecial: '', //本店特色
   openTime: '', //营业时间
-  album: [], //店铺相册
+  album: List(), //店铺相册
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
   owner: {}, //店铺拥有者信息
@@ -49,6 +49,8 @@ export class ShopInfo extends ShopRecord {
           targetShopCategory.shopCategoryId = targetShopCategoryAttrs.shopCategoryId
           targetShopCategory.status = targetShopCategoryAttrs.status
           targetShopCategory.text = targetShopCategoryAttrs.text
+          targetShopCategory.id = attrs.targetShopCategory.id
+
         }
         record.set('targetShopCategory', targetShopCategory)
 
@@ -61,8 +63,21 @@ export class ShopInfo extends ShopRecord {
         }
         record.set('owner', owner)
 
-        record.set('containedTag', attrs.containedTag)
-
+        let containedTag = []
+        if(attrs.containedTag && attrs.containedTag.length) {
+          attrs.containedTag.forEach((item)=>{
+            let containedTagAttrs = item.attributes
+            let tag = {
+              id: item.id,
+              name: containedTagAttrs.name,
+              createdDate: numberUtils.formatLeancloudTime(item.createdAt, 'YYYY-MM-DD HH:mm:SS'),
+              createdAt: item.createdAt.valueOf(),
+              updatedAt: item.updatedAt.valueOf(),
+            }
+            containedTag.push(tag)
+          })
+        }
+        record.set('containedTag', containedTag)
         if(lcObj.userCurGeo) {
           record.set('geo', attrs.geo)
           let geo = new AV.GeoPoint(attrs.geo)
@@ -74,7 +89,7 @@ export class ShopInfo extends ShopRecord {
         record.set('score', attrs.score)
         record.set('ourSpecial', attrs.ourSpecial)
         record.set('openTime', attrs.openTime)
-        record.set('album', attrs.album)
+        record.set('album', new List(attrs.album))
         record.set('createdAt', lcObj.createdAt.valueOf())
         record.set('updatedAt', lcObj.updatedAt.valueOf())
       })

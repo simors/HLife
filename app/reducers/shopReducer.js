@@ -203,7 +203,7 @@ function handleFetchShopTagsSuccess(state, action) {
 function handleFetchUserOwnedShopInfoSuccess(state, action) {
   let payload = action.payload
   let shopInfo = payload.shopInfo
-  console.log('handleFetchUserOwnedShopInfoSuccess.shopInfo===', shopInfo)
+  // console.log('handleFetchUserOwnedShopInfoSuccess.shopInfo===', shopInfo)
   if(shopInfo && shopInfo.size) {
     state = state.set('userOwnedShopInfo', shopInfo)
   }
