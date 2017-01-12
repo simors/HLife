@@ -362,7 +362,9 @@ class ShopDetail extends Component {
                     <Text style={styles.score}>{this.props.shopDetail.score}</Text>
                   </View>
                   <Text style={styles.distance}>{this.props.shopDetail.geoName}</Text>
-                  <Text style={styles.distance}>{this.props.shopDetail.distance}km</Text>
+                  {this.props.shopDetail.distance &&
+                    <Text style={styles.distance}>{this.props.shopDetail.distance}km</Text>
+                  }
                 </View>
               </View>
               <View style={styles.shopHeadRight}>
@@ -408,30 +410,32 @@ class ShopDetail extends Component {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.shopAnnouncementWrap}>
-              <View style={styles.shopAnnouncementContainer}>
-                <View style={styles.shopAnnouncementCoverWrap}>
-                  <Image style={styles.shopAnnouncementCover} source={announcementCover}/>
+            {this.props.latestShopAnnouncement.content &&
+              <View style={styles.shopAnnouncementWrap}>
+                <View style={styles.shopAnnouncementContainer}>
+                  <View style={styles.shopAnnouncementCoverWrap}>
+                    <Image style={styles.shopAnnouncementCover} source={announcementCover}/>
+                  </View>
+                  <View style={styles.shopAnnouncementCnt}>
+                    <View style={styles.shopAnnouncementTitleWrap}>
+                      <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
+                        {this.props.latestShopAnnouncement.content}
+                      </Text>
+                    </View>
+                    <View style={styles.shopAnnouncementSubTitleWrap}>
+                      <Image style={styles.shopAnnouncementIcon} source={{uri: this.props.shopDetail.owner.avatar}}/>
+                      <Text style={styles.shopAnnouncementSubTxt}>{this.props.shopDetail.owner.nickname}</Text>
+                      <Text style={styles.shopAnnouncementSubTxt}>{this.props.latestShopAnnouncement.createdDate}</Text>
+                    </View>
+                  </View>
                 </View>
-                <View style={styles.shopAnnouncementCnt}>
-                  <View style={styles.shopAnnouncementTitleWrap}>
-                    <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
-                      {this.props.latestShopAnnouncement.content}
-                    </Text>
-                  </View>
-                  <View style={styles.shopAnnouncementSubTitleWrap}>
-                    <Image style={styles.shopAnnouncementIcon} source={{uri: this.props.shopDetail.owner.avatar}}/>
-                    <Text style={styles.shopAnnouncementSubTxt}>{this.props.shopDetail.owner.nickname}</Text>
-                    <Text style={styles.shopAnnouncementSubTxt}>{this.props.latestShopAnnouncement.createdDate}</Text>
-                  </View>
+                <View style={styles.shopAnnouncementBadge}>
+                  <Image style={styles.shopAnnouncementBadgeIcon} source={require('../../assets/images/background_everyday.png')}>
+                    <Text style={styles.shopAnnouncementBadgeTxt}>店铺公告</Text>
+                  </Image>
                 </View>
               </View>
-              <View style={styles.shopAnnouncementBadge}>
-                <Image style={styles.shopAnnouncementBadgeIcon} source={require('../../assets/images/background_everyday.png')}>
-                  <Text style={styles.shopAnnouncementBadgeTxt}>店铺公告</Text>
-                </Image>
-              </View>
-            </View>
+            }
 
             {this.renderComments()}
 
@@ -446,7 +450,9 @@ class ShopDetail extends Component {
                 </View>
                 <View style={styles.shopSpecial}>
                   <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
-                  <Text style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
+                  <View style={{flex:1, paddingRight:10}}>
+                    <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -759,8 +765,6 @@ const styles = StyleSheet.create({
   commentWrap: {
     paddingLeft: normalizeW(10),
     paddingTop: normalizeH(10),
-    marginTop: normalizeW(10),
-    marginBottom: normalizeW(10),
     backgroundColor: '#fff'
   },
   commentHead: {
@@ -831,6 +835,7 @@ const styles = StyleSheet.create({
     color: THEME.colors.green
   },
   serviceInfoWrap: {
+    marginTop: normalizeW(10),
     paddingLeft: normalizeW(10),
     marginBottom: normalizeW(10),
     backgroundColor: '#fff'

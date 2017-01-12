@@ -104,3 +104,15 @@ export function selectShopCommentUpId(state, shopId, shopCommentId, activeUserId
   }
   return false
 }
+
+export function selectShopTags(state) {
+  return state.SHOP.get('shopTagList').toJS()
+}
+
+export function selectUserOwnedShopInfo(state) {
+  if(state.SHOP.get('userOwnedShopInfo').size) {
+    // console.log('state.SHOP.get(userOwnedShopInfo).toJS()[0]===', state.SHOP.get('userOwnedShopInfo').toJS()[0])
+    return state.SHOP.get('userOwnedShopInfo').toJS()[0]
+  }
+  return {}
+}

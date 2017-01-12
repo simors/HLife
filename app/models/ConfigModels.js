@@ -89,6 +89,7 @@ export class TopicCategoryItem extends TopicCategoryItemConfig {
 }
 
 export const ShopCategoryConfig = Record({
+  id: undefined,
   status: 0, // 0-关闭, 1-启用
   shopCategoryId: undefined,
   imageSource: undefined,
@@ -100,6 +101,7 @@ export class ShopCategory extends ShopCategoryConfig {
     let shopCategoryConfig = new ShopCategoryConfig()
     let attrs = lcObj.attributes
     return shopCategoryConfig.withMutations((record)=> {
+      record.set('id', lcObj.id)
       record.set('status', attrs.status)
       record.set('shopCategoryId', attrs.shopCategoryId)
       record.set('imageSource', attrs.imageSource)

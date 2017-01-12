@@ -15,6 +15,16 @@ export const DoctorInfoRecord = Record({
   desc:           undefined, //备注
   }, 'DoctorInfoRecord')
 
+export const DoctorListRecode = Record({
+  userId: undefined, //用户信息表id
+  doctorId: undefined, //医生信息表id
+  username: undefined, //真实姓名
+  department: undefined, //科室
+  phone: undefined, //手机号码
+  organization: undefined,  //执业地点
+  avatar: undefined, //头像
+})
+
 export class DoctorInfo extends DoctorInfoRecord {
 
     static fromLeancloudObject(lcObj) {
@@ -33,7 +43,24 @@ export class DoctorInfo extends DoctorInfoRecord {
         })
       return doctorInfo
     }
+}
 
+export class DoctorList extends DoctorListRecode {
+
+  static fromLeancloudObject(lcObj) {
+    let doctorList = new DoctorList()
+    let attrs = lcObj.attributes
+    doctorList = doctorList.withMutations((record) => {
+      record.set('userId', attrs.userId)
+      record.set('doctorId', attrs.doctorId)
+      record.set('username', attrs.username)
+      record.set('department', attrs.department)
+      record.set('phone', attrs.phone)
+      record.set('organization', attrs.organization)
+      record.set('avatar', attrs.avatar)
+    })
+    return doctorList
+  }
 }
 
 export const Doctor = Record({

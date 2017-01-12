@@ -50,8 +50,9 @@ function handleLoginSuccess(state, action) {
 }
 
 function handleShopCertificationSuccess(state, action) {
-
-  state = state.set('shop',  action.payload)
+  let payload = action.payload
+  let shop = payload.shop
+  state = state.set('shop',  shop)
   return state
 }
 

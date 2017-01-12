@@ -30,7 +30,8 @@ import {Actions} from 'react-native-router-flux'
 // import Modal from 'react-native-modalbox'
 
 import {getBanner, selectShopCategories} from '../../selector/configSelector'
-import {fetchBanner,fetchShopCategories} from '../../action/configAction'
+import {fetchBanner, fetchShopCategories} from '../../action/configAction'
+import {fetchTopics} from '../../action/topicActions'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -39,8 +40,8 @@ import CommonBanner from '../common/CommonBanner'
 import CommonModal from '../common/CommonModal'
 import LocalHealth from './LocalHealth'
 import ShopCategories from './ShopCategories'
-import PickedTopic from './PickedTopic'
-import {getTopic} from '../../selector/configSelector'
+import TopicShow from '../Find/TopicShow'
+import {getTopics} from '../../selector/topicSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -49,7 +50,7 @@ class Local extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      modalVisible : false
+      modalVisible: false
     }
   }
 
@@ -57,8 +58,8 @@ class Local extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       this.props.fetchShopCategories()
+      this.props.fetchTopics({})
     })
-
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
@@ -78,11 +79,11 @@ class Local extends Component {
   }
 
   _shopCategoryClick(shopCategoryId, shopCategoryName) {
-    if(shopCategoryId) {
-      this.closeModel(function(){
+    if (shopCategoryId) {
+      this.closeModel(function () {
         Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId, shopCategoryName: shopCategoryName})
       })
-    }else{
+    } else {
       this.openModel()
     }
   }
@@ -91,7 +92,7 @@ class Local extends Component {
     this.setState({
       modalVisible: true
     })
-    if(callback && typeof callback == 'function'){
+    if (callback && typeof callback == 'function') {
       callback()
     }
   }
@@ -100,21 +101,19 @@ class Local extends Component {
     this.setState({
       modalVisible: false
     })
-    if(callback && typeof callback == 'function'){
+    if (callback && typeof callback == 'function') {
       callback()
     }
   }
 
   renderLocalHealthColumn() {
     return (
-      <View style={styles.moduleA}>
-        <LocalHealth />
-      </View>
+      <LocalHealth />
     )
   }
 
   renderShopCategoryColumn() {
-    if(this.props.shopCategories && this.props.shopCategories.length) {
+    if (this.props.shopCategories && this.props.shopCategories.length) {
       return (
         <View style={styles.moduleB}>
           <ShopCategories
@@ -133,7 +132,7 @@ class Local extends Component {
   }
 
   renderAllShopCategories() {
-    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+    if (this.props.allShopCategories && this.props.allShopCategories.length) {
       return (
         <View style={styles.modalCnt}>
           <ShopCategories
@@ -155,7 +154,7 @@ class Local extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.moduleC}>
-          <CommonBanner banners={this.props.banner} />
+          <CommonBanner banners={this.props.banner}/>
         </View>
       )
     } else {
@@ -165,16 +164,46 @@ class Local extends Component {
     }
   }
 
+  renderTopicItem(value, key) {
+    return (
+      <TopicShow key={key}
+                 containerStyle={{marginBottom: 10}}
+                 topic={value}
+      />
+    )
+  }
+
+  renderTopicItems() {
+    if (this.props.topics) {
+      return (
+        <View>
+          {
+            this.props.topics.map((value, key)=> {
+              return (
+                this.renderTopicItem(value, key)
+              )
+            })
+          }
+          <Image style={styles.badgeStyle} source={require("../../assets/images/background_everyday.png")}>
+            <Text style={styles.badgeTextStyle}>最新话题</Text>
+          </Image>
+        </View>
+      )
+    }
+  }
+
   renderFeaturedTopicsColumn() {
     return (
       <View style={styles.moduleD}>
-        <PickedTopic />
+        {this.renderTopicItems()}
       </View>
     )
   }
 
   refreshData() {
-
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopics({})
+    })
   }
 
   loadMoreData() {
@@ -197,8 +226,12 @@ class Local extends Component {
             contentContainerStyle={{backgroundColor: '#E5E5E5'}}
             dataSource={this.props.ds}
             renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
-            loadNewData={()=>{this.refreshData()}}
-            loadMoreData={()=>{this.loadMoreData()}}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
           />
         </View>
 
@@ -219,7 +252,7 @@ class Local extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let ds = undefined
-  if(ownProps.ds) {
+  if (ownProps.ds) {
     ds = ownProps.ds
   } else {
     ds = new ListView.DataSource({
@@ -229,14 +262,14 @@ const mapStateToProps = (state, ownProps) => {
 
   let dataArray = []
   dataArray.push({type: 'LOCAL_HEALTH_COLUMN'})
-  dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
   dataArray.push({type: 'BANNER_COLUMN'})
+  dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
   const allShopCategories = selectShopCategories(state)
   const shopCategories = allShopCategories.slice(0, 5)
-
+  const topics = getTopics(state)
   // let shopCategories = []
   // let ts = {
   //   imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
@@ -254,13 +287,15 @@ const mapStateToProps = (state, ownProps) => {
     banner: banner,
     shopCategories: shopCategories,
     allShopCategories: allShopCategories,
-    ds: ds.cloneWithRows(dataArray)
+    ds: ds.cloneWithRows(dataArray),
+    topics: topics
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
-  fetchShopCategories
+  fetchShopCategories,
+  fetchTopics
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)
@@ -287,9 +322,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     backgroundColor: '#E5E5E5',
   },
-  moduleA: {
-    height: normalizeH(84),
-  },
   moduleB: {
     height: normalizeH(183),
     marginTop: normalizeH(15),
@@ -303,5 +335,20 @@ const styles = StyleSheet.create({
   moduleD: {
     marginTop: normalizeH(15),
   },
-
+  badgeStyle: {
+    position: 'absolute',
+    left: 0,
+    top: -10,
+    width: 65,
+    height: 20,
+    justifyContent: "center",
+  },
+  badgeTextStyle: {
+    backgroundColor: "transparent",
+    fontSize: 11,
+    paddingLeft: 10,
+    color: "#ffffff",
+    fontFamily: ".PingFangSC-Regular",
+    letterSpacing: 0.13
+  },
 })

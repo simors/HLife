@@ -17,6 +17,7 @@ export const UserStateRecord = Record({
   token: undefined,
   followees: Map(),
   favoriteArticles: Map(),
+  shop: List()
 }, 'UserStateRecord')
 
 export class UserInfo extends UserInfoRecord {

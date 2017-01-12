@@ -21,57 +21,82 @@ export const ShopRecord = Record({
   score: 4.5, //店铺评分
   ourSpecial: '', //本店特色
   openTime: '', //营业时间
-  album: [], //店铺相册
+  album: List(), //店铺相册
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
   owner: {}, //店铺拥有者信息
+  containedTag: [], //店铺拥有的标签
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
   static fromLeancloudObject(lcObj) {
-    let shopRecord = new ShopRecord()
-    let attrs = lcObj.attributes
-    return shopRecord.withMutations((record) => {
-      record.set('id', lcObj.id)
-      record.set('name', attrs.name)
-      record.set('phone', attrs.phone)
-      record.set('shopName', attrs.shopName)
-      record.set('shopAddress', attrs.shopAddress)
-      record.set('coverUrl', attrs.coverUrl)
-      record.set('contactNumber', attrs.contactNumber)
+    try{
+      let shopRecord = new ShopRecord()
+      let attrs = lcObj.attributes
+      return shopRecord.withMutations((record) => {
+        record.set('id', lcObj.id)
+        record.set('name', attrs.name)
+        record.set('phone', attrs.phone)
+        record.set('shopName', attrs.shopName)
+        record.set('shopAddress', attrs.shopAddress)
+        record.set('coverUrl', attrs.coverUrl)
+        record.set('contactNumber', attrs.contactNumber)
 
-      let targetShopCategory = {}
-      let targetShopCategoryAttrs = attrs.targetShopCategory.attributes
-      if(targetShopCategoryAttrs) {
-        targetShopCategory.imageSource = attrs.targetShopCategory.attributes.imageSource
-        targetShopCategory.shopCategoryId = attrs.targetShopCategory.attributes.shopCategoryId
-        targetShopCategory.status = attrs.targetShopCategory.attributes.status
-        targetShopCategory.text = attrs.targetShopCategory.attributes.text
-      }
-      record.set('targetShopCategory', targetShopCategory)
+        let targetShopCategory = {}
+        if(attrs.targetShopCategory && attrs.targetShopCategory.attributes) {
+          let targetShopCategoryAttrs = attrs.targetShopCategory.attributes
+          targetShopCategory.imageSource = targetShopCategoryAttrs.imageSource
+          targetShopCategory.shopCategoryId = targetShopCategoryAttrs.shopCategoryId
+          targetShopCategory.status = targetShopCategoryAttrs.status
+          targetShopCategory.text = targetShopCategoryAttrs.text
+          targetShopCategory.id = attrs.targetShopCategory.id
 
-      let owner = {}
-      let ownerAttrs = attrs.owner.attributes
-      if(ownerAttrs) {
-        owner.nickname = ownerAttrs.nickname
-        owner.avatar = ownerAttrs.avatar
-        owner.id = attrs.owner.id
-      }
-      record.set('owner', owner)
+        }
+        record.set('targetShopCategory', targetShopCategory)
 
-      record.set('geo', attrs.geo)
-      let geo = new AV.GeoPoint(attrs.geo)
-      let distance = geo.kilometersTo(lcObj.userCurGeo)
-      record.set('distance', Number(distance).toFixed(0))
-      record.set('geoName', attrs.geoName)
-      record.set('pv', attrs.pv)
-      record.set('score', attrs.score)
-      record.set('ourSpecial', attrs.ourSpecial)
-      record.set('openTime', attrs.openTime)
-      record.set('album', attrs.album)
-      record.set('createdAt', lcObj.createdAt.valueOf())
-      record.set('updatedAt', lcObj.updatedAt.valueOf())
-    })
+        let owner = {}
+        if(attrs.owner && attrs.owner.attributes) {
+          let ownerAttrs = attrs.owner.attributes
+          owner.nickname = ownerAttrs.nickname
+          owner.avatar = ownerAttrs.avatar
+          owner.id = attrs.owner.id
+        }
+        record.set('owner', owner)
+
+        let containedTag = []
+        if(attrs.containedTag && attrs.containedTag.length) {
+          attrs.containedTag.forEach((item)=>{
+            let containedTagAttrs = item.attributes
+            let tag = {
+              id: item.id,
+              name: containedTagAttrs.name,
+              createdDate: numberUtils.formatLeancloudTime(item.createdAt, 'YYYY-MM-DD HH:mm:SS'),
+              createdAt: item.createdAt.valueOf(),
+              updatedAt: item.updatedAt.valueOf(),
+            }
+            containedTag.push(tag)
+          })
+        }
+        record.set('containedTag', containedTag)
+        if(lcObj.userCurGeo) {
+          record.set('geo', attrs.geo)
+          let geo = new AV.GeoPoint(attrs.geo)
+          let distance = geo.kilometersTo(lcObj.userCurGeo)
+          record.set('distance', Number(distance).toFixed(0))
+        }
+        record.set('geoName', attrs.geoName)
+        record.set('pv', attrs.pv)
+        record.set('score', attrs.score)
+        record.set('ourSpecial', attrs.ourSpecial)
+        record.set('openTime', attrs.openTime)
+        record.set('album', new List(attrs.album))
+        record.set('createdAt', lcObj.createdAt.valueOf())
+        record.set('updatedAt', lcObj.updatedAt.valueOf())
+      })
+    }catch(err) {
+      console.log('err=======', err)
+    }
+
   }
 }
 
@@ -304,11 +329,35 @@ export class ShopCommentUp extends ShopCommentUpRecord {
   }
 }
 
+export const ShopTagRecord = Record({
+  id: undefined,
+  name: undefined,
+  createdDate: '', //格式化后的创建时间
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+})
+
+export class ShopTag extends ShopTagRecord {
+  static fromLeancloudObject(lcObj) {
+    let shopTag = new ShopTag()
+    let attrs = lcObj.attributes
+    return shopTag.withMutations((record)=>{
+      record.set('id', lcObj.id)
+      record.set('name', attrs.name)
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+}
+
 export const Shop = Record({
   shopList: List(),
   shopAnnouncements: Map(),
   userFollowShopsInfo: Map(),
   shopComments: Map(),
   shopCommentsTotalCounts: Map(),
-  userUpShopsInfo: Map()
+  userUpShopsInfo: Map(),
+  shopTagList: List(),
+  userOwnedShopInfo:List()
 }, 'Shop')

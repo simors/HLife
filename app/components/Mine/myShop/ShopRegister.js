@@ -333,11 +333,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     paddingLeft: 0,
   },
-  getInvitationWrap: {
-    marginTop: normalizeH(15),
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+
   footer: {
     marginTop: normalizeH(120)
   },

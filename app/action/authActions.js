@@ -1,5 +1,4 @@
 import {createAction} from 'redux-actions'
-import {Actions} from 'react-native-router-flux'
 import * as AuthTypes from '../constants/authActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
@@ -7,7 +6,6 @@ import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
-import * as doctorActionTypes from '../constants/doctorActionTypes'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -17,10 +15,9 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   LOGIN_WITH_PWD: 'LOGIN_WITH_PWD',
   FORGET_PASSWORD: 'FORGET_PASSWORD',
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
-  DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
-  DOCTOR_CERTIFICATION_MODIFY: 'DOCTOR_CERTIFICATION_MODIFY',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
+  COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO'
 }
 
 export function submitFormData(payload) {
@@ -45,17 +42,14 @@ export function submitFormData(payload) {
       case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
         dispatch(handleResetPwdSmsCode(payload, formData))
         break
-      case INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION:
-        dispatch(handleDoctorCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION_MODIFY:
-        dispatch(handleDoctorCertificationModify(payload, formData))
-        break
       case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
         dispatch(handleProfileSubmit(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
         dispatch(handleShopCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
+        dispatch(handleCompleteShopInfo(payload, formData))
         break
     }
   }
@@ -202,62 +196,6 @@ function handleResetPwdSmsCode(payload, formData) {
   }
 }
 
-function handleDoctorCertification(payload, formData) {
-  console.log("handleDoctorCertification start", formData)
-  return (dispatch, getState) => {
-    let smsPayload = {
-      phone: formData.phoneInput.text,
-      smsAuthCode: formData.smsAuthCodeInput.text,
-    }
-
-    // lcAuth.verifySmsCode(smsPayload).then(() => {
-    //   dispatch(doctorCertification(payload, formData))
-    // }).catch((error) => {
-    //   if(payload.error){
-    //     payload.error(error)
-    //   }
-    // })
-    dispatch(doctorCertification(payload, formData))
-  }
-
-}
-
-function handleDoctorCertificationModify(payload, formData) {
-  return (dispatch, getState) => {
-    dispatch(doctorCertification(payload, formData))
-  }
-}
-
-function doctorCertification(payload, formData) {
-  console.log("doctorCertification payload", payload)
-  console.log("doctorCertification formData", formData)
-
-  return (dispatch, getState) => {
-    let certPayload = {
-      id: payload.id,
-      name: formData.nameInput.text,
-      ID: formData.IDInput.text,
-      phone: formData.phoneInput.text,
-      organization: formData.regionPicker.text,
-      department: formData.medicalPicker.text,
-      certifiedImage: formData.IDImageInput.text,
-      certificate: formData.imgGroup.text,
-    }
-    lcAuth.certification(certPayload).then((doctor) => {
-      if (payload.success) {
-        let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
-        dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
-        payload.success(doctor)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-
-}
-
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
     console.log('handleProfileSubmit=', formData)
@@ -290,13 +228,17 @@ function handleShopCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    lcAuth.verifySmsCode(smsPayload).then(() => {
+    if(__DEV__) {
       dispatch(verifyInvitationCode(payload, formData))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
+    }else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(verifyInvitationCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
   }
 }
 
@@ -323,7 +265,7 @@ function shopCertification(payload, formData) {
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
       let cartificationAction = createAction(AuthTypes.SHOP_CERTIFICATION_SUCCESS)
-      dispatch(cartificationAction(shop))
+      dispatch(cartificationAction({shop}))
       if (payload.success) {
         payload.success(shop)
       }
@@ -333,7 +275,32 @@ function shopCertification(payload, formData) {
       }
     })
   }
+}
 
+function handleCompleteShopInfo(payload, formData) {
+  return (dispatch, getState) => {
+    let newPayload = {
+      shopId: payload.shopId,
+      shopCategoryObjectId: formData.shopCategoryInput.text,
+      openTime: formData.serviceTimeInput.text,
+      contactNumber: formData.servicePhoneInput.text,
+      ourSpecial: formData.ourSpecialInput.text,
+      album: formData.shopAlbumInput.text,
+      coverUrlArr: formData.shopCoverInput.text,
+      tagIds: formData.tagsInput.text,
+    }
+    lcAuth.submitCompleteShopInfo(newPayload).then((shop) => {
+      let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+      dispatch(_action(shop))
+      if (payload.success) {
+        payload.success(shop)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }
 
 export function getUserInfoById(payload) {
