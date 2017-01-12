@@ -30,7 +30,7 @@ import {Actions} from 'react-native-router-flux'
 // import Modal from 'react-native-modalbox'
 
 import {getBanner, selectShopCategories} from '../../selector/configSelector'
-import {fetchBanner,fetchShopCategories} from '../../action/configAction'
+import {fetchBanner, fetchShopCategories} from '../../action/configAction'
 import {fetchTopics} from '../../action/topicActions'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -50,7 +50,7 @@ class Local extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      modalVisible : false
+      modalVisible: false
     }
   }
 
@@ -79,11 +79,11 @@ class Local extends Component {
   }
 
   _shopCategoryClick(shopCategoryId, shopCategoryName) {
-    if(shopCategoryId) {
-      this.closeModel(function(){
+    if (shopCategoryId) {
+      this.closeModel(function () {
         Actions.SHOP_CATEGORY_LIST({shopCategoryId: shopCategoryId, shopCategoryName: shopCategoryName})
       })
-    }else{
+    } else {
       this.openModel()
     }
   }
@@ -92,7 +92,7 @@ class Local extends Component {
     this.setState({
       modalVisible: true
     })
-    if(callback && typeof callback == 'function'){
+    if (callback && typeof callback == 'function') {
       callback()
     }
   }
@@ -101,19 +101,19 @@ class Local extends Component {
     this.setState({
       modalVisible: false
     })
-    if(callback && typeof callback == 'function'){
+    if (callback && typeof callback == 'function') {
       callback()
     }
   }
 
   renderLocalHealthColumn() {
     return (
-        <LocalHealth />
+      <LocalHealth />
     )
   }
 
   renderShopCategoryColumn() {
-    if(this.props.shopCategories && this.props.shopCategories.length) {
+    if (this.props.shopCategories && this.props.shopCategories.length) {
       return (
         <View style={styles.moduleB}>
           <ShopCategories
@@ -132,7 +132,7 @@ class Local extends Component {
   }
 
   renderAllShopCategories() {
-    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+    if (this.props.allShopCategories && this.props.allShopCategories.length) {
       return (
         <View style={styles.modalCnt}>
           <ShopCategories
@@ -154,7 +154,7 @@ class Local extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.moduleC}>
-          <CommonBanner banners={this.props.banner} />
+          <CommonBanner banners={this.props.banner}/>
         </View>
       )
     } else {
@@ -176,11 +176,18 @@ class Local extends Component {
   renderTopicItems() {
     if (this.props.topics) {
       return (
-        this.props.topics.map((value, key)=> {
-          return (
-            this.renderTopicItem(value, key)
-          )
-        })
+        <View>
+          {
+            this.props.topics.map((value, key)=> {
+              return (
+                this.renderTopicItem(value, key)
+              )
+            })
+          }
+          <Image style={styles.badgeStyle} source={require("../../assets/images/background_everyday.png")}>
+            <Text style={styles.badgeTextStyle}>最新话题</Text>
+          </Image>
+        </View>
       )
     }
   }
@@ -219,8 +226,12 @@ class Local extends Component {
             contentContainerStyle={{backgroundColor: '#E5E5E5'}}
             dataSource={this.props.ds}
             renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
-            loadNewData={()=>{this.refreshData()}}
-            loadMoreData={()=>{this.loadMoreData()}}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
           />
         </View>
 
@@ -241,7 +252,7 @@ class Local extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let ds = undefined
-  if(ownProps.ds) {
+  if (ownProps.ds) {
     ds = ownProps.ds
   } else {
     ds = new ListView.DataSource({
@@ -277,7 +288,7 @@ const mapStateToProps = (state, ownProps) => {
     shopCategories: shopCategories,
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
-    topics:topics
+    topics: topics
   }
 }
 
@@ -324,5 +335,20 @@ const styles = StyleSheet.create({
   moduleD: {
     marginTop: normalizeH(15),
   },
-
+  badgeStyle: {
+    position: 'absolute',
+    left: 0,
+    top: -10,
+    width: 65,
+    height: 20,
+    justifyContent: "center",
+  },
+  badgeTextStyle: {
+    backgroundColor: "transparent",
+    fontSize: 11,
+    paddingLeft: 10,
+    color: "#ffffff",
+    fontFamily: ".PingFangSC-Regular",
+    letterSpacing: 0.13
+  },
 })
