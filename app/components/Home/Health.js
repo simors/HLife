@@ -27,7 +27,7 @@ export default class Health extends Component {
     return (
       <View style={styles.healthWrap}>
         <View style={styles.healthBottom}>
-          <View style={styles.findDoctor}>
+          <View style={styles.homeQuesStyle}>
             <Thumbnail
               sourceImage={require("../../assets/images/home_question.png")}
               thumbnailTitle="快速问诊"
@@ -36,7 +36,7 @@ export default class Health extends Component {
             />
           </View>
           <View style={styles.line}/>
-          <View style={styles.findHospital}>
+          <View style={styles.findDoctorStyle}>
             <Thumbnail
               sourceImage={require("../../assets/images/home_doctor.png")}
               thumbnailTitle="找名医"
@@ -55,20 +55,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  healthTop: {
-    flex: 1,
-  },
   healthBottom: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'stretch'
   },
-  fastTask: {
-    flex: 1,
-    borderBottomColor: '#E5E5E5',
-    borderBottomWidth: normalizeBorder(3),
-  },
-  findDoctor: {
+  homeQuesStyle: {
     flex: 1,
   },
   line: {
@@ -77,7 +69,7 @@ const styles = StyleSheet.create({
     borderRightWidth: normalizeBorder(3),
     borderRightColor: '#E5E5E5',
   },
-  findHospital: {
+  findDoctorStyle: {
     flex: 1,
   },
 })

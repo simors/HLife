@@ -108,9 +108,7 @@ class Local extends Component {
 
   renderLocalHealthColumn() {
     return (
-      <View style={styles.moduleA}>
         <LocalHealth />
-      </View>
     )
   }
 
@@ -253,8 +251,8 @@ const mapStateToProps = (state, ownProps) => {
 
   let dataArray = []
   dataArray.push({type: 'LOCAL_HEALTH_COLUMN'})
-  dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
   dataArray.push({type: 'BANNER_COLUMN'})
+  dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
   dataArray.push({type: 'FEATURED_TOPICS_COLUMN'})
 
   const banner = getBanner(state, 0)
@@ -312,9 +310,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: '#E5E5E5',
-  },
-  moduleA: {
-    height: normalizeH(84),
   },
   moduleB: {
     height: normalizeH(183),
