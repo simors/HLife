@@ -25,9 +25,9 @@ export default class DailyChosen extends Component {
   renderBadge() {
     if(this.props.showBadge) {
       return (
-        <View style={styles.badge}>
-          <Text style={styles.badgeTxt}>每日精选</Text>
-        </View>
+        <Image style={styles.badgeStyle} source={require("../../assets/images/background_everyday_yellow.png")}>
+          <Text style={styles.badgeTextStyle}>人气排行</Text>
+        </Image>
       )
     }
   }
@@ -92,17 +92,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#fff'
   },
-  badge: {
+  badgeStyle: {
     position: 'absolute',
     left: 0,
     top: -10,
-    paddingLeft: normalizeW(12),
-    paddingRight: normalizeW(12),
-    backgroundColor: THEME.colors.green,
+    width: 65,
+    height: 20,
+    justifyContent:"center",
   },
-  badgeTxt: {
-    lineHeight: 20,
-    color: '#fff'
+  badgeTextStyle: {
+    backgroundColor:"transparent",
+    fontSize:11,
+    paddingLeft:10,
+    color:"#ffffff",
+    fontFamily:".PingFangSC-Regular",
+    letterSpacing:0.13
   },
   titleWrap: {
     marginTop: 11,
