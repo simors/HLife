@@ -26,16 +26,6 @@ export default class Health extends Component {
   render() {
     return (
       <View style={styles.healthWrap}>
-        <View style={styles.healthTop}>
-          <View style={styles.fastTask}>
-            <Thumbnail
-              sourceImage={require("../../assets/images/home_question.png")}
-              thumbnailTitle="快速问诊"
-              thumbnailIntro="专业医生免费为您解答疑问"
-              onPress={()=>{Actions.INQUIRY()}}
-            />
-          </View>
-        </View>
         <View style={styles.healthBottom}>
           <View style={styles.findDoctor}>
             <Thumbnail

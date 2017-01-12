@@ -234,9 +234,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   let dataArray = []
-  dataArray.push({type: 'HEALTH_COLUMN'})
-  dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
   dataArray.push({type: 'BANNER_COLUMN'})
+  dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
+  dataArray.push({type: 'HEALTH_COLUMN'})
   dataArray.push({type: 'COLUMNS_COLUMN'})
   dataArray.push({type: 'CHANNELS_COLUMN'})
   dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
@@ -297,15 +297,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   healthModule: {
-    height: normalizeH(128),
+    height: normalizeH(64),
+    marginTop: normalizeH(10)
   },
   announcementModule: {
     height: normalizeH(40),
-    marginTop: normalizeH(15),
+ //   marginTop: normalizeH(15),
   },
   advertisementModule: {
     height: normalizeH(136),
-    marginTop: normalizeH(15),
+  //  marginTop: normalizeH(15),
   },
   columnsModule: {
     height: normalizeH(84),
