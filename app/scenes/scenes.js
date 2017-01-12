@@ -46,6 +46,7 @@ import QAList from '../components/Home/Inquiry/QAList'
 import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
+import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 
 const styles = StyleSheet.create({
   container: {
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
+      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar />
       <Scene key="LOGIN" component={Login} />
       <Scene key="REGIST" component={Regist} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
@@ -102,6 +103,7 @@ export const scenes = Actions.create(
       <Scene key="QA_LIST" component={QAList}/>
       <Scene key="DOCTOR_INTRO" component={DoctorIntro}/>
       <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
+      <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} initial={true}/>
 
 
 

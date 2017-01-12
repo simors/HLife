@@ -10,11 +10,14 @@ import {
   Dimensions,
   Keyboard,
   Platform,
+  Text,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput'
+import {selectPhotoTapped} from '../../../util/ImageSelector'
+import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -27,6 +30,9 @@ class ArticleInput extends Component {
     super(props)
     this.state = {
       keyboardPadding: 0,
+      subComp: [this.renderTextInput()],
+      imgWidth: 200,
+      imgHeight: 200,
     }
     this.comp = []
     this.comp.push(this.renderTextInput())
@@ -86,22 +92,103 @@ class ArticleInput extends Component {
     this.props.inputFormUpdate(inputForm)
   }
 
-  renderTextInput() {
+  insertImage() {
+    selectPhotoTapped({
+      start: this.pickImageStart,
+      failed: this.pickImageFailed,
+      cancelled: this.pickImageCancelled,
+      succeed: this.pickImageSucceed
+    })
+  }
+
+  pickImageStart = () => {
+  }
+
+  pickImageFailed = () => {
+  }
+
+  pickImageCancelled = () => {
+  }
+
+  pickImageSucceed = (source) => {
+    this.uploadImg(source)
+  }
+
+  uploadImg = (source) => {
+    let fileUri = ''
+    if (Platform.OS === 'ios') {
+      fileUri = fileUri.concat('file://')
+    }
+    fileUri = fileUri.concat(source.uri)
+
+    let fileName = source.uri.split('/').pop()
+    let uploadPayload = {
+      fileUri: fileUri,
+      fileName: fileName
+    }
+
+    Image.getSize(uploadPayload.fileUri, (width, height) => {
+      let imgWidth = width
+      let imgHeight = height
+      let maxWidth = PAGE_WIDTH - 15
+      if (width > maxWidth) {
+        imgWidth = maxWidth
+        imgHeight = Math.floor((height / width) * height)
+      }
+      this.setState({imgWidth, imgHeight})
+    })
+
+    uploadFile(uploadPayload).then((saved) => {
+      let leanImgUrl = saved.savedPos
+      this.insertImageComponent(leanImgUrl)
+    }).catch((error) => {
+      console.log('upload failed:', error)
+    })
+  }
+
+  deleteImageComponent() {
+
+  }
+
+  insertImageComponent(src) {
+    this.comp.push([this.renderImageInput(src), this.renderTextInput(true)])
+    this.setState({subComp: this.comp})
+  }
+
+  renderTextInput(autoFocus = false) {
     return (
       <AutoGrowingTextInput
         style={styles.InputStyle}
-        placeholder={this.props.placeholder}
+        placeholder={autoFocus ? "" : this.props.placeholder}
         editable={this.props.editable}
         underlineColorAndroid="transparent"
+        autoFocus={autoFocus}
       />
+    )
+  }
+
+  renderImageInput(src) {
+    return (
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <Image resizeMode='contain'
+               style={[styles.imgInputStyle, {width: this.state.imgWidth, height: this.state.imgHeight}]}
+               source={{uri: src}}>
+        </Image>
+        <View style={{position: 'absolute', top: -8, right: 8}}>
+          <TouchableOpacity onPress={() => this.deleteImageComponent()}>
+            <Image style={{width: 30, height: 30, borderRadius: 15, overflow: 'hidden'}}
+                   source={require('../../../assets/images/delete.png')} />
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
 
   renderComponents() {
     return (
-      this.comp.map((component, key) => {
+      this.state.subComp.map((component, index) => {
         return (
-          <View key={key}>
+          <View key={index}>
             {component}
           </View>
         )
@@ -119,8 +206,8 @@ class ArticleInput extends Component {
         }]}
       >
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <TouchableOpacity onPress={() => {this.simplifyInsertImage()}}
-                            style={{alignItems: 'center', justifyContent: 'center', width: 50, height: 50, borderRadius: 25, backgroundColor: '#eeeeee'}}>
+          <TouchableOpacity onPress={() => {this.insertImage()}}
+                            style={styles.toolBtn}>
             <Image
               style={{width: 25, height: 25}}
               source={require('../../../assets/images/insert_picture.png')}>
@@ -179,8 +266,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
     borderColor: '#E6E6E6',
     textAlign: "left",
     textAlignVertical: "top"
@@ -188,5 +273,21 @@ const styles = StyleSheet.create({
   editToolView: {
     flexDirection: 'row',
     backgroundColor: 'white',
+    borderRadius: 25,
+    overflow: 'hidden'
   },
+  imgInputStyle: {
+    maxWidth: PAGE_WIDTH,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  toolBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#eeeeee',
+    overflow: 'hidden'
+  }
 })
