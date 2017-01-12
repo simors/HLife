@@ -48,6 +48,7 @@ function inputFromInit(state, action) {
       stateKey: stateKey,
       type: payload.type,
       validCallback: payload.checkValid,
+      data: undefined,
     })
   }
   let inputs = form.get("inputs")
