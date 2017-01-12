@@ -105,7 +105,7 @@ class Mine extends Component {
 
             </View>
             <View style={{flex: 1}}>
-              <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
+              <TouchableOpacity style={styles.aindex} onPress= {()=> {Actions.PROMOTER_AUTH()}}>
                 <Image source={require('../../assets/images/mine_promote.png')}></Image>
                 <Text style={styles.textStyle}>推广招聘</Text>
               </TouchableOpacity>

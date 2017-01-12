@@ -46,6 +46,9 @@ import QAList from '../components/Home/Inquiry/QAList'
 import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
+import PromoterAuth from '../components/Mine/promote/PromoterAuth'
+import GetInviteCode from '../components/Mine/promote/GetInviteCode'
+
 
 const styles = StyleSheet.create({
   container: {
@@ -102,6 +105,9 @@ export const scenes = Actions.create(
       <Scene key="QA_LIST" component={QAList}/>
       <Scene key="DOCTOR_INTRO" component={DoctorIntro}/>
       <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
+      <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
+      <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
+
 
 
 
