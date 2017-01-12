@@ -23,7 +23,8 @@ import PhoneInput from '../common/Input/PhoneInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import ImageInput from '../common/Input/ImageInput'
-import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../action/doctorAction'
 import * as Toast from '../common/Toast'
 import {isInputValid} from '../../selector/inputFormSelector'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
@@ -101,9 +102,9 @@ class DoctorCertification extends Component {
    }
 
    onButtonPress = () => {
-     this.props.submitFormData({
+     this.props.submitDoctorFormData({
        formKey: commonForm,
-       submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
+       submitType: DOCTOR_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
        id: this.props.userInfo && this.props.userInfo.id,
        success: this.submitSuccessCallback,
        error: this.submitErrorCallback
@@ -267,7 +268,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData,
+  submitDoctorFormData,
   submitInputData,
 }, dispatch)
 

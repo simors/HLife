@@ -22,7 +22,7 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import PhoneInput from '../common/Input/PhoneInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ImageInput from '../common/Input/ImageInput'
-import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../action/doctorAction'
 import MedicalLabPicker from '../common/Input/MedicalLabPicker'
 import RegionPicker from '../common/Input/RegionPicker'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
@@ -93,9 +93,9 @@ class DoctorRevise extends Component {
   }
 
   onButtonPress = () => {
-    this.props.submitFormData({
+    this.props.submitDoctorFormData({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION_MODIFY,
+      submitType: DOCTOR_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION_MODIFY,
       id: this.props.userInfo && this.props.userInfo.id,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
@@ -225,8 +225,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData,
-  submitInputData
+  submitDoctorFormData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DoctorRevise)

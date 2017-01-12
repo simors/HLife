@@ -24,7 +24,7 @@ export default class CommonModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      animationType : 'slide',
+      animationType : this.props.animationType?this.props.animationType:'slide',
       transparent : true,
       visible : false
     }
