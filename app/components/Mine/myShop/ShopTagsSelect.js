@@ -41,11 +41,18 @@ export default class ShopTagsSelect extends Component {
   renderTags() {
     if(this.props.tags && this.props.tags.length) {
       let tagsView = this.props.tags.map((item, index)=>{
+        let isSelected = false
         let selected = false
         let selectedContainerStyle = {}
         let selectedTagTextStyle = {}
         if(this.props.selectedTags && this.props.selectedTags.length) {
-          if(this.props.selectedTags.indexOf(item) >= 0) {
+          this.props.selectedTags.forEach((selectedTag)=>{
+            if(item.id == selectedTag.id) {
+              isSelected = true
+              return
+            }
+          })
+          if(isSelected) {
             selected = true
             selectedContainerStyle = {
               borderColor: THEME.colors.green,

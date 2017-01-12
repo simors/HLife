@@ -42,7 +42,7 @@ class  PhoneInput extends Component {
   }
 
   validInput(data) {
-    if(!data.text){
+    if(!data || !data.text){
       return {isVal:false, errMsg:"手机号不能为空"}
     }
 
@@ -62,7 +62,7 @@ class  PhoneInput extends Component {
 		}
     this.props.inputFormUpdate(formInfo)
 
-    if (text.length > 0) {
+    if (text && text.length > 0) {
       this.setState({showClear: true})
     } else {
       this.setState({showClear: false})

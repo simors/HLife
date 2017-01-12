@@ -61,6 +61,12 @@ class TagsInput extends Component {
         tagsLength: nextProps.tags.length,
         isEmptyChange: false
       })
+
+      let tagIds = []
+      nextProps.tags.forEach((tag)=>{
+        tagIds.push(tag.id)
+      })
+      this.inputChange(tagIds)
     }
   }
 

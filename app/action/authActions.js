@@ -21,6 +21,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   DOCTOR_CERTIFICATION_MODIFY: 'DOCTOR_CERTIFICATION_MODIFY',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
+  COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO'
 }
 
 export function submitFormData(payload) {
@@ -56,6 +57,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
         dispatch(handleShopCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
+        dispatch(handleCompleteShopInfo(payload, formData))
         break
     }
   }
@@ -290,13 +294,17 @@ function handleShopCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    lcAuth.verifySmsCode(smsPayload).then(() => {
+    if(__DEV__) {
       dispatch(verifyInvitationCode(payload, formData))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
+    }else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(verifyInvitationCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
   }
 }
 
@@ -323,7 +331,7 @@ function shopCertification(payload, formData) {
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
       let cartificationAction = createAction(AuthTypes.SHOP_CERTIFICATION_SUCCESS)
-      dispatch(cartificationAction(shop))
+      dispatch(cartificationAction({shop}))
       if (payload.success) {
         payload.success(shop)
       }
@@ -333,7 +341,32 @@ function shopCertification(payload, formData) {
       }
     })
   }
+}
 
+function handleCompleteShopInfo(payload, formData) {
+  return (dispatch, getState) => {
+    let newPayload = {
+      shopId: payload.shopId,
+      shopCategoryObjectId: formData.shopCategoryInput.text,
+      openTime: formData.serviceTimeInput.text,
+      contactNumber: formData.servicePhoneInput.text,
+      ourSpecial: formData.ourSpecialInput.text,
+      album: formData.shopAlbumInput.text,
+      coverUrlArr: formData.shopCoverInput.text,
+      tagIds: formData.tagsInput.text,
+    }
+    lcAuth.submitCompleteShopInfo(newPayload).then((shop) => {
+      let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+      dispatch(_action(shop))
+      if (payload.success) {
+        payload.success(shop)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }
 
 export function getUserInfoById(payload) {

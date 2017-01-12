@@ -23,10 +23,19 @@ import THEME from '../../../constants/themes/theme1'
 import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
+import * as authSelector from '../../../selector/authSelector'
 
-export default class GetInvitationCode extends Component {
+class GetInvitationCode extends Component {
   constructor(props) {
     super(props)
+  }
+
+  completeShopInfo() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }else {
+      Actions.COMPLETE_SHOP_INFO()
+    }
   }
 
   render() {
@@ -58,7 +67,7 @@ export default class GetInvitationCode extends Component {
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20)}}
               title="完善店铺资料"
-              onPress={()=>{Actions.COMPLETE_SHOP_INFO()}}
+              onPress={()=>{this.completeShopInfo()}}
             />
             <CommonButton
               buttonStyle={{marginTop:normalizeH(15)}}
@@ -72,6 +81,18 @@ export default class GetInvitationCode extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  const isUserLogined = authSelector.isUserLogined(state)
+  return {
+    isUserLogined: isUserLogined,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(GetInvitationCode)
 
 const styles = StyleSheet.create({
   container: {

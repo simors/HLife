@@ -108,3 +108,10 @@ export function selectShopCommentUpId(state, shopId, shopCommentId, activeUserId
 export function selectShopTags(state) {
   return state.SHOP.get('shopTagList').toJS()
 }
+
+export function selectUserOwnedShopInfo(state) {
+  if(state.SHOP.get('userOwnedShopInfo').size) {
+    return state.SHOP.get('userOwnedShopInfo').toJS()[0]
+  }
+  return {}
+}

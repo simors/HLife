@@ -68,14 +68,22 @@ export function getShopList(payload) {
   }
   return query.find().then(function (results) {
     // console.log('getShopList.results=', results)
-    return AV.GeoPoint.current().then(function(geoPoint){
+    if(__DEV__) {
       let shopList = []
       results.forEach((result) => {
-        result.userCurGeo = geoPoint
         shopList.push(ShopInfo.fromLeancloudObject(result))
       })
       return new List(shopList)
-    })
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        let shopList = []
+        results.forEach((result) => {
+          result.userCurGeo = geoPoint
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      })
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -504,6 +512,25 @@ export function fetchShopTags(payload) {
     }
     // console.log('fetchShopTags.shopTags===', shopTags)
     return new List(shopTags)
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchUserOwnedShopInfo(payload) {
+  let query = new AV.Query('Shop')
+  let currentUser = AV.User.current()
+  query.equalTo('owner', currentUser)
+  query.include(['owner', 'targetShopCategory', 'containedTag'])
+  return query.first().then((result)=>{
+    console.log('fetchUserOwnedShopInfo.result===', result)
+    let shopInfo = {}
+    if(result){
+      shopInfo = ShopInfo.fromLeancloudObject(result)
+    }
+    console.log('shopInfo=====', shopInfo)
+    return new List([shopInfo])
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

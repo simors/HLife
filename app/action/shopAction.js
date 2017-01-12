@@ -305,3 +305,16 @@ export function fetchShopTags(payload) {
   }
 }
 
+export function fetchUserOwnedShopInfo(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchUserOwnedShopInfo(payload).then((shopInfo) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS)
+      dispatch(updateAction({shopInfo:shopInfo}))
+    }).catch((error)=> {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+

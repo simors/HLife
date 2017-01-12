@@ -73,7 +73,7 @@ class SelectInput extends Component {
   }
 
   validInput(data) {
-    if (data.text && data.text.length > 0) {
+    if (data.text) {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '输入有误'}

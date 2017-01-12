@@ -193,15 +193,17 @@ export function profileSubmit(payload) {
 export function shopCertification(payload) {
   let Shop = AV.Object.extend('Shop')
   let shop = new Shop()
-
+  let currentUser = AV.User.current()
   shop.set('name', payload.name)
   shop.set('phone', payload.phone)
   shop.set('shopName', payload.shopName)
   shop.set('shopAddress', payload.shopAddress)
   shop.set('invitationCode', payload.invitationCode)
+  shop.set('owner', currentUser)
 
   return shop.save().then(function (result) {
-    return ShopInfo.fromLeancloudObject(result)
+    let shopInfo = ShopInfo.fromLeancloudObject(result)
+    return new List([shopInfo])
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -209,11 +211,52 @@ export function shopCertification(payload) {
 
 }
 
+export function submitCompleteShopInfo(payload) {
+  let shopId = payload.shopId
+  let shopCategoryObjectId = payload.shopCategoryObjectId
+  let openTime = payload.openTime
+  let contactNumber = payload.contactNumber
+  let ourSpecial = payload.ourSpecial
+  let album = payload.album
+  let coverUrlArr = payload.coverUrlArr
+  let tagIds = payload.tagIds
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  let targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
+  let containedTag = []
+  if(tagIds && tagIds.length) {
+    tagIds.forEach((tagId) =>{
+      containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
+    })
+  }
+  if(containedTag.length) {
+    shop.set('containedTag', containedTag)
+  }
+  let coverUrl = ''
+  if(coverUrlArr && coverUrlArr.length) {
+    coverUrl = coverUrlArr[0]
+    shop.set('coverUrl', coverUrl)
+  }
+  shop.set('targetShopCategory', targetShopCategory)
+  shop.set('openTime', openTime)
+  shop.set('contactNumber', contactNumber)
+  shop.set('ourSpecial', ourSpecial)
+  shop.set('album', album)
+  console.log('submitCompleteShopInfo.shop====', shop)
+  return shop.save().then(function (result) {
+    return ShopInfo.fromLeancloudObject(result)
+  }, function (err) {
+    console.log('submitCompleteShopInfo.err====', err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+  
+}
+
 export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({
       mobilePhoneNumber:phone,
-      name: '近来',
+      name: '吾爱',
       op: '注册',
       ttl: 10}).then(function () {
       // do nothing
