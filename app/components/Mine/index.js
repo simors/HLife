@@ -84,6 +84,9 @@ class Mine extends Component {
             </View>
           </View>
           <View style={styles.right}>
+            <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(25), alignItems: 'flex-end'}}>
+              <Image style={{width: 20, height: 20}}  source={require('../../assets/images/扫一扫.png')} ></Image>
+            </TouchableOpacity>
             <TouchableOpacity style={{marginTop: normalizeH(14), marginRight: normalizeW(12), alignItems: 'flex-end'}}>
               <Image style={{width: 20, height: 23}}  source={require('../../assets/images/home_message.png')} ></Image>
             </TouchableOpacity>
@@ -145,8 +148,8 @@ class Mine extends Component {
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>
               </View>
               <View style={styles.bindex}>
-                <Image source={require('../../assets/images/mine_comments.png')}></Image>
-                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>评论</Text>
+                <Image source={require('../../assets/images/favorite.png')}></Image>
+                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>收藏</Text>
               </View>
 
             </View>
@@ -155,10 +158,6 @@ class Mine extends Component {
             <View style={styles.cindex}>
               <Image source={require('../../assets/images/mine_wallet.png')}></Image>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>钱包</Text>
-            </View>
-            <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>收藏</Text>
             </View>
             <View style={styles.cindex}>
               <Image source={require('../../assets/images/mine_signin.png')}></Image>
@@ -226,8 +225,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   right: {
-    flex: 1
-
+    flex: 1,
+    flexDirection: 'row',
   },
   credits: {
     flexDirection: 'row',
@@ -272,17 +271,15 @@ const styles = StyleSheet.create({
   },
   bindex: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: normalizeH(7),
-    marginBottom: normalizeH(11),
+    marginTop: normalizeH(11),
     borderRightWidth: 1,
     borderRightColor: '#F4F4F4',
   },
   czone: {
     width: PAGE_WIDTH,
     marginTop: normalizeH(15),
-    height: normalizeH(206),
+    height: normalizeH(175),
   },
   cindex: {
     flex: 1,
@@ -295,7 +292,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontFamily: 'PingFangSC-Regular',
-    fontSize: 15,
+    fontSize: 17,
     color: '#686868',
     letterSpacing: 0.43,
   }
