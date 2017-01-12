@@ -48,6 +48,7 @@ import DoctorSpec from '../components/Mine/DoctorSpec'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
+import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
 
 
 const styles = StyleSheet.create({
@@ -107,7 +108,7 @@ export const scenes = Actions.create(
       <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
       <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
-
+      <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
 
 
 
