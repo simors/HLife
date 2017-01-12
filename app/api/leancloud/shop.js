@@ -524,12 +524,12 @@ export function fetchUserOwnedShopInfo(payload) {
   query.equalTo('owner', currentUser)
   query.include(['owner', 'targetShopCategory', 'containedTag'])
   return query.first().then((result)=>{
-    console.log('fetchUserOwnedShopInfo.result===', result)
+    // console.log('fetchUserOwnedShopInfo.result===', result)
     let shopInfo = {}
     if(result){
       shopInfo = ShopInfo.fromLeancloudObject(result)
     }
-    console.log('shopInfo=====', shopInfo)
+    // console.log('shopInfo=====', shopInfo)
     return new List([shopInfo])
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

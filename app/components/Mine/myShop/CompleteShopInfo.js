@@ -134,6 +134,14 @@ class CompleteShopInfo extends Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.userOwnedShopInfo.containedTag && nextProps.userOwnedShopInfo.containedTag.length) {
+      this.setState({
+        selectedShopTags: nextProps.userOwnedShopInfo.containedTag
+      })
+    }
+  }
+
   submitSuccessCallback() {
     Actions.MINE()
   }
@@ -244,6 +252,21 @@ class CompleteShopInfo extends Component {
   }
 
   render() {
+
+    let targetShopCategory = {}
+    if(this.props.userOwnedShopInfo.targetShopCategory) {
+      targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
+    }
+
+    let coverUrlArr = []
+    if(this.props.userOwnedShopInfo.coverUrl) {
+      coverUrlArr.push(this.props.userOwnedShopInfo.coverUrl)
+    }
+    let albumArr = []
+    if(this.props.userOwnedShopInfo.album && this.props.userOwnedShopInfo.album.length) {
+      albumArr = this.props.userOwnedShopInfo.album
+    }
+
     return (
       <View style={styles.container}>
         <Header
@@ -293,7 +316,8 @@ class CompleteShopInfo extends Component {
                     overlayPageY={this.state.optionListPos}
                     optionListHeight={240}
                     optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                    defaultText='点击选择店铺类型'
+                    defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
+                    defaultValue={targetShopCategory.id}
                     onSelect={this._onSelectShopCategory.bind(this)}>
                     {this.renderShopCategoryOptions()}
                   </SelectInput>
@@ -320,6 +344,7 @@ class CompleteShopInfo extends Component {
                 <View style={[styles.inputBox, styles.datePickerBox]}>
                   <ServiceTimePicker 
                     {...serviceTimeInput}
+                    initValue={this.props.userOwnedShopInfo.openTime}
                   />
                 </View>
               </View>
@@ -335,6 +360,7 @@ class CompleteShopInfo extends Component {
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     clearBtnStyle={{top:6}}
+                    initValue={this.props.userOwnedShopInfo.contactNumber}
                   />
                 </View>
               </View>
@@ -350,6 +376,7 @@ class CompleteShopInfo extends Component {
                     clearBtnStyle={{right: 10,top: 30}}
                     inputStyle={{borderColor: '#bdc6cf', color: '#030303',paddingRight:30}}
                     maxLength={100}
+                    initValue={this.props.userOwnedShopInfo.ourSpecial}
                   />
                 </View>
               </View>
@@ -363,6 +390,7 @@ class CompleteShopInfo extends Component {
                   {...shopCoverInput}
                   number={1}
                   imageLineCnt={3}
+                  initValue={coverUrlArr}
                 />
               </View>
             </View>
@@ -374,6 +402,7 @@ class CompleteShopInfo extends Component {
                   {...shopAlbumInput}
                   number={9}
                   imageLineCnt={3}
+                  initValue={albumArr}
                 />
               </View>
             </View>
@@ -403,8 +432,7 @@ const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
   const allShopTags = selectShopTags(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
-  console.log('userOwnedShopInfo===', userOwnedShopInfo)
-  console.log('isUserLogined===', isUserLogined)
+  // console.log('userOwnedShopInfo===', userOwnedShopInfo)
   return {
     isUserLogined: isUserLogined,
     allShopCategories: allShopCategories,
@@ -551,11 +579,12 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
   },
   albumWrap: {
-    padding: 10,
     marginBottom: 10,
     backgroundColor: '#fff'
   },
   albumTitle: {
+    paddingTop: 10,
+    paddingLeft: 10,
     fontSize: em(17),
     color: THEME.colors.inputLabel
   },
@@ -563,7 +592,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   coverWrap: {
-    padding: 10,
+    paddingBottom: 10,
     marginBottom: 10,
     backgroundColor: '#fff'
   },

@@ -241,7 +241,7 @@ export function submitCompleteShopInfo(payload) {
   shop.set('contactNumber', contactNumber)
   shop.set('ourSpecial', ourSpecial)
   shop.set('album', album)
-  console.log('submitCompleteShopInfo.shop====', shop)
+  // console.log('submitCompleteShopInfo.shop====', shop)
   return shop.save().then(function (result) {
     return ShopInfo.fromLeancloudObject(result)
   }, function (err) {

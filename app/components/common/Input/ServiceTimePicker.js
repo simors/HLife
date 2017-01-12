@@ -58,6 +58,12 @@ class ServiceTimePicker extends Component {
     this.props.initInputForm(formInfo)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.initValue != nextProps.initValue) {
+      this.updateInput(nextProps.initValue)
+    }
+  }
+
   validInput(data) {
     return {isVal: true, errMsg: '验证通过'}
   }
@@ -83,9 +89,9 @@ class ServiceTimePicker extends Component {
       pickerFontSize: 10,
       selectedValue: ["08时", "30分", "--", "22时", "30分"],
       onPickerConfirm: data => {
-        console.log(data)
+        // console.log(data)
         let text = data[0].replace('时', ':') + data[1].replace('分', '') + data[2] + data[3].replace('时', ':') + data[4].replace('分', '')
-        console.log(text)
+        // console.log(text)
         this.updateInput(text)
       },
       onPickerCancel: data => {

@@ -40,6 +40,12 @@ class  PhoneInput extends Component {
       this.setState({showClear: true})
     }
   }
+  
+  componentWillReceiveProps(nextProps) {
+    if(this.props.initValue != nextProps.initValue) {
+      this.inputChange(nextProps.initValue)
+    }
+  }
 
   validInput(data) {
     if(!data || !data.text){

@@ -44,7 +44,8 @@ class ImageGroupInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      checkValid: this.validInput
+      checkValid: this.validInput,
+      initValue: {text: this.props.initValue}
     }
     this.props.initInputForm(formInfo)
   }
@@ -103,6 +104,31 @@ class ImageGroupInput extends Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.initValue && nextProps.initValue.length) {
+      if(this.props.initValue) {
+        if(this.props.initValue.length != nextProps.initValue.length) {
+          this.imgList = nextProps.initValue
+          this.inputChange(this.imgList)
+        }
+      }else {
+        this.imgList = nextProps.initValue
+        this.inputChange(this.imgList)
+      }
+    }
+  }
+
+  inputChange(text) {
+    let inputForm = {
+      formKey: this.props.formKey,
+      stateKey: this.props.stateKey,
+      data: {text: text}
+    }
+    this.props.inputFormUpdate(inputForm)
+
+    this.setState({imgCnt: text.length})
+  }
+
   validInput(data) {
     return {isVal: true, errMsg: '验证通过'}
   }
@@ -122,14 +148,7 @@ class ImageGroupInput extends Component {
 
   imageSelectedChange(url) {
     this.imgList.push(url)
-    let inputForm = {
-      formKey: this.props.formKey,
-      stateKey: this.props.stateKey,
-      data: {text: this.imgList}
-    }
-    this.props.inputFormUpdate(inputForm)
-
-    this.setState({imgCnt: this.imgList.length})
+    this.inputChange(this.imgList)
   }
 
   uploadImg = (source) => {
@@ -213,6 +232,9 @@ class ImageGroupInput extends Component {
   }
 
   renderImageRow() {
+    if (this.props.data) {
+      this.imgList = this.props.data
+    }
     let imgComp = this.imgList.map((item, key) => {
       return (
         <View key={key}>

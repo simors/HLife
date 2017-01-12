@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     color: '#b2b2b2',
-    fontSize: 15,
+    fontSize: em(16),
   },
   tagContainer: {
     overflow: 'hidden',
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   tagText: {
     textAlign: 'center',
-    fontSize: 15
+    fontSize: em(16)
   },
   tagMore: {
 
