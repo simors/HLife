@@ -2,7 +2,7 @@
  * Created by yangyang on 2016/12/3.
  */
 import {InputRecord, InputFormRecord} from '../models/inputFormModel'
-import {Map} from 'immutable'
+import Immutable, {Map} from 'immutable'
 import * as uiTypes from '../constants/uiActionTypes'
 
 // (formKey, form)
@@ -40,7 +40,7 @@ function inputFromInit(state, action) {
       stateKey: stateKey,
       type: payload.type,
       validCallback: payload.checkValid,
-      data: payload.initValue,
+      data: Immutable.fromJS(payload.initValue),
     })
   } else {
     input = new InputRecord({
@@ -68,7 +68,7 @@ function inputFormOnChange(state, action) {
   let stateKey = payload.stateKey
 
   let path = [formKey, "inputs", stateKey, 'data']
-  state = state.updateIn(path, {}, text => payload.data)
+  state = state.updateIn(path, {}, text => Immutable.fromJS(payload.data))
 
   // 校验input组件并更新state
   state = checkInputValid(state, formKey, stateKey, payload.data)

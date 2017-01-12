@@ -25,17 +25,34 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
+const COMP_TEXT = 'COMP_TEXT'
+const COMP_IMG = 'COMP_IMG'
+
+
+/****************************************************************
+ *
+ * 数据格式：将所有组件中的数据组织为一个数组，每一个数组中数据结构如下：
+ * {
+ *    type: [COMP_TEXT | COMP_IMG],
+ *    text: 当type为COMP_TEXT时有效，为<Text>元素中的文本内容
+ *    url: 当type为COMP_IMG时有效，为<Image>元素的图片地址
+ *    width: 当type为COMP_IMG时有效，表示图片的宽度
+ *    height: 当type为COMP_IMG时有效，表示图片的高度
+ * }
+ *
+ **/
+
 class ArticleInput extends Component {
   constructor(props) {
     super(props)
     this.state = {
       keyboardPadding: 0,
-      subComp: [this.renderTextInput()],
+      subComp: [this.renderTextInput("", 0, true)],
       imgWidth: 200,
       imgHeight: 200,
+      cursor: 0,
     }
-    this.comp = []
-    this.comp.push(this.renderTextInput())
+    this.comp = [this.renderTextInput("", 0, true)]
   }
 
   componentDidMount() {
@@ -47,14 +64,45 @@ class ArticleInput extends Component {
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
 
+    let initText = []
+    if (this.props.initValue) {
+      initText = this.props.initValue
+    } else {
+      initText = [
+        {
+          type: COMP_TEXT,
+          text: ""
+        }
+      ]
+    }
+
     let formInfo = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: {text: this.props.initValue},
+      initValue: {text: initText},
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
+  }
+
+  componentWillReceiveProps(newProps) {
+    console.log("data:", newProps.data)
+    if (this.props.data != newProps.data) {
+      this.comp = []
+      if (!newProps.data) {
+        this.comp.push(this.renderTextInput("", 0, true))
+      } else {
+        newProps.data.map((comp, index) => {
+          if (comp.type === COMP_TEXT) {
+            this.comp.push(this.renderTextInput(comp.text, index))
+          } else if (comp.type === COMP_IMG) {
+            this.comp.push(this.renderImageInput(comp.url, index))
+          }
+        })
+      }
+      this.setState({subComp: this.comp})
+    }
   }
 
   componentWillUnmount() {
@@ -146,16 +194,37 @@ class ArticleInput extends Component {
     })
   }
 
-  deleteImageComponent() {
-
+  deleteImageComponent(index) {
+    let data = this.props.data
+    data.splice(index, 1)
+    this.inputChange(data)
   }
 
   insertImageComponent(src) {
-    this.comp.push([this.renderImageInput(src), this.renderTextInput(true)])
-    this.setState({subComp: this.comp})
+    let data = this.props.data
+    let imgData = {
+      type: COMP_IMG,
+      url: src,
+      width: this.state.imgWidth,
+      height: this.state.imgHeight,
+    }
+    let textData = {
+      type: COMP_TEXT,
+      text: ""
+    }
+    data.splice(this.state.cursor + 1, 0, imgData, textData)
+    console.log("data image change: ", data)
+    this.inputChange(data)
   }
 
-  renderTextInput(autoFocus = false) {
+  updateTextInput(index, content) {
+    let data = this.props.data
+    data[index].text = content
+    console.log("data text change: ", data)
+    this.inputChange(data)
+  }
+
+  renderTextInput(content, index, autoFocus = false) {
     return (
       <AutoGrowingTextInput
         style={styles.InputStyle}
@@ -163,11 +232,14 @@ class ArticleInput extends Component {
         editable={this.props.editable}
         underlineColorAndroid="transparent"
         autoFocus={autoFocus}
+        value={content}
+        onChangeText={(text) => this.updateTextInput(index, text)}
+        onFocus={() => this.setState({cursor: index})}
       />
     )
   }
 
-  renderImageInput(src) {
+  renderImageInput(src, index) {
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Image resizeMode='contain'
@@ -175,7 +247,7 @@ class ArticleInput extends Component {
                source={{uri: src}}>
         </Image>
         <View style={{position: 'absolute', top: -8, right: 8}}>
-          <TouchableOpacity onPress={() => this.deleteImageComponent()}>
+          <TouchableOpacity onPress={() => this.deleteImageComponent(index)}>
             <Image style={{width: 30, height: 30, borderRadius: 15, overflow: 'hidden'}}
                    source={require('../../../assets/images/delete.png')} />
           </TouchableOpacity>

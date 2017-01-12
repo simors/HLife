@@ -9,7 +9,15 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native'
+import Symbol from 'es6-symbol'
 import ArticleInput from './ArticleInput'
+
+let formKey = Symbol('articleForm')
+const articleEditor = {
+  formKey: formKey,
+  stateKey: Symbol('articleEditor'),
+  type: 'articleEditor',
+}
 
 export default class ArticleInputTest extends Component {
   constructor(props) {
@@ -19,7 +27,7 @@ export default class ArticleInputTest extends Component {
   render() {
     return (
       <View>
-        <ArticleInput/>
+        <ArticleInput {...articleEditor}/>
       </View>
     )
   }
