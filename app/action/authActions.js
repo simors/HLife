@@ -17,7 +17,8 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
-  COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO'
+  COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
+  PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION'
 }
 
 export function submitFormData(payload) {
@@ -50,6 +51,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
         dispatch(handleCompleteShopInfo(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION:
+        dispatch(handlePromoterCertification(payload,formData))
         break
     }
   }
@@ -222,6 +226,64 @@ function handleProfileSubmit(payload, formData) {
   }
 }
 
+
+function handlePromoterCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let smsPayload = {
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    if(__DEV__) {
+      dispatch(verifyInviteCode(payload, formData))
+    }
+    else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(verifyInviteCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
+  }
+}
+
+function verifyInviteCode(payload, formData) {
+  return (dispatch, getState) => {
+    lcAuth.verifyInvitationCode({invitationsCode: formData.inviteCodeInput.text}).then(()=> {
+      dispatch(promoterCertification(payload, formData))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+function promoterCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let certPayload = {
+      name: formData.nameInput.text,
+      phone: formData.phoneInput.text,
+      level: 1,
+      address: formData.regionPicker.text,
+      cardId: formData.IDInput.text,
+      //upUser: payload.upUser,
+    }
+    lcAuth.promoteCertification(certPayload).then((promoter) => {
+     console.log('promoter',promoter)
+      let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
+      dispatch(certificationAction({promoter}))
+      if (payload.success) {
+        payload.success(promoter)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 function handleShopCertification(payload, formData) {
   return (dispatch, getState) => {
     let smsPayload = {
@@ -230,7 +292,8 @@ function handleShopCertification(payload, formData) {
     }
     if(__DEV__) {
       dispatch(verifyInvitationCode(payload, formData))
-    }else {
+    }
+    else {
       lcAuth.verifySmsCode(smsPayload).then(() => {
         dispatch(verifyInvitationCode(payload, formData))
       }).catch((error) => {

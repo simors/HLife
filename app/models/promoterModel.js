@@ -8,25 +8,33 @@ export const PromoterRecord = Record({
   cardId:             undefined, //居民身份证号码
   phone:          undefined, //联系手机号码
  // desc:           undefined, //备注
-  upUser: undefined,
+ // upUser: undefined,
   id:undefined,
   level:undefined,
-  user:undefined,
+  address:undefined
 }, 'PromoterRecord')
 
-export class Promoter extends PromoterRecord {
+export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
-    let Promoter = new DoctorInfo()
+    let promoter = new PromoterInfo()
     let attrs = lcObj.attributes
-    Promoter= Promoter.withMutations((record) => {
+    promoter= promoter.withMutations((record) => {
       record.set('name', attrs.name)
       record.set('cardId', attrs.cardId)
+      console.log('promoter=====>',promoter)
+
       record.set('phone', attrs.phone)
-      record.set('upUser', attrs.upUser)
+  //    record.set('upUser', attrs.upUser)
       record.set('id', lcObj.id)
       record.set('level', attrs.level)
-      record.set('user', attrs.user)
+      record.set('address', attrs.address)
     })
-    return Promoter
+    return promoter
   }
 }
+
+export const Promoter = Record({
+  promoter: Map(),
+  // likerList: Map(),
+}, 'Promoter')
+

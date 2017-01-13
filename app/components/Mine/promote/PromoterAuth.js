@@ -26,7 +26,7 @@ import * as appConfig from '../../../constants/appConfig'
 import CommonTextInput from '../../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import ImageInput from '../../common/Input/ImageInput'
-import {submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {submitInputData,submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../../action/doctorAction'
 import * as Toast from '../../common/Toast'
 import {isInputValid} from '../../../selector/inputFormSelector'
@@ -84,8 +84,22 @@ class promoterAuth extends Component {
     super(props)
   }
 
-  onButtonPress() {
+  onButtonPress = () => {
+    this.props.submitFormData({
+      formKey: commonForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+  }
 
+  submitErrorCallback(error) {
+
+    Toast.show(error.message)
+  }
+
+  submitSuccessCallback(doctorInfo) {
+    Actions.PROMOTER_AUTH_SUCCESS()
   }
 
   smsCode() {
@@ -220,6 +234,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   //submitDoctorFormData,
+  submitFormData,
   submitInputData,
 }, dispatch)
 
