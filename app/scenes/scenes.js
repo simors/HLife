@@ -26,6 +26,7 @@ import ArticleList from '../components/Articles/ArticleList'
 import Article from '../components/Articles/Article'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
+import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
@@ -46,10 +47,10 @@ import QAList from '../components/Home/Inquiry/QAList'
 import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
+import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
 import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
-
 
 const styles = StyleSheet.create({
   container: {
@@ -87,6 +88,7 @@ export const scenes = Actions.create(
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
+      <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
@@ -106,10 +108,10 @@ export const scenes = Actions.create(
       <Scene key="QA_LIST" component={QAList}/>
       <Scene key="DOCTOR_INTRO" component={DoctorIntro}/>
       <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
+      <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
       <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
-
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

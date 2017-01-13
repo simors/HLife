@@ -38,6 +38,14 @@ class ShopRegisterSuccess extends Component {
     }
   }
 
+  goShopManage() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }else {
+      Actions.SHOP_MANAGE_INDEX()
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -65,6 +73,11 @@ class ShopRegisterSuccess extends Component {
             buttonStyle={{marginTop:normalizeH(54)}}
             title="完善店铺资料"
             onPress={()=>{this.completeShopInfo()}}
+          />
+          <CommonButton
+            buttonStyle={{marginTop:normalizeH(54), backgroundColor:'#f2f2f2'}}
+            title="取消"
+            onPress={()=>{this.goShopManage()}}
           />
         </View>
       </View>
