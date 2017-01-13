@@ -97,6 +97,7 @@ export function getShopAnnouncement(payload) {
   let shop = AV.Object.createWithoutData('Shop', shopId)
   let relation = shop.relation('containedAnnouncements')
   let query = relation.query()
+  // console.log('getShopAnnouncement.shopId=====', shopId)
   query.addDescending('createdAt')
   return query.find().then(function(results) {
     // console.log('getShopAnnouncement.results=====', results)
@@ -545,14 +546,14 @@ export function fetchShopFollowers(payload) {
   query.equalTo('shop', shop)
   query.include('follower')
   return query.find().then((results)=> {
-    console.log('fetchShopFollowers.results===', results)
+    // console.log('fetchShopFollowers.results===', results)
     let shopFollowers = []
     if(results && results.length) {
       results.forEach((result)=>{
-        shopFollowers.push(UserInfo.fromLeancloudObject(result))
+        shopFollowers.push(UserInfo.fromShopFollowersLeancloudObject(result))
       })
     }
-    console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
+    // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
     return new List(shopFollowers)
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -566,7 +567,7 @@ export function fetchShopFollowersTotalCount(payload) {
   let shop = AV.Object.createWithoutData('Shop', shopId)
   query.equalTo('shop', shop)
   return query.count().then((results)=>{
-    console.log('fetchShopFollowersTotalCount.results===', results)
+    // console.log('fetchShopFollowersTotalCount.results===', results)
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
