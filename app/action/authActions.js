@@ -18,7 +18,8 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
   COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
-  PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION'
+  PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION',
+  UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
 }
 
 export function submitFormData(payload) {
@@ -54,6 +55,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION:
         dispatch(handlePromoterCertification(payload,formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
+        dispatch(handleShopCover(payload,formData))
         break
     }
   }
@@ -330,6 +334,24 @@ function shopCertification(payload, formData) {
       dispatch(cartificationAction({shop}))
       if (payload.success) {
         payload.success(shop)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function handleShopCover(payload, formData) {
+  return (dispatch, getState) => {
+    let shopPayload = {
+      id: payload.id,
+      coverUrl: formData.shopCoverInput.text
+    }
+    lcAuth.updateShopCover(shopPayload).then((success) => {
+      if (payload.success) {
+        payload.success(success)
       }
     }).catch((error) => {
       if (payload.error) {

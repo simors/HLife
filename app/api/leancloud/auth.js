@@ -238,7 +238,19 @@ export function shopCertification(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
 
+export function updateShopCover(payload) {
+  let id = payload.id
+  let coverUrl = payload.coverUrl
+  let shop = AV.Object.createWithoutData('Shop', id)
+  shop.set('coverUrl', coverUrl)
+  return shop.save().then(function (result) {
+    return true
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
 
 export function submitCompleteShopInfo(payload) {

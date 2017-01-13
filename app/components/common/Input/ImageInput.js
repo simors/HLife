@@ -81,6 +81,9 @@ class ImageInput extends Component {
     if(this.props.closeModalAfterSelectedImg) {
       this.toggleModal(false)
     }
+    if(this.props.imageSelectedChangeCallback) {
+      this.props.imageSelectedChangeCallback(url)
+    }
   }
 
   inputChange(text) {

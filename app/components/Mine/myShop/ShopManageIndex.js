@@ -29,7 +29,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import Symbol from 'es6-symbol'
-
+import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchShopAnnouncements, fetchShopCommentList, fetchShopCommentTotalCount, fetchSimilarShopList} from '../../../action/shopAction'
 import {fetchUserFollowees} from '../../../action/authActions'
 import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectLatestShopAnnouncemment, selectShopComments, selectShopCommentsTotalCount, selectSimilarShopList} from '../../../selector/shopSelector'
@@ -93,10 +93,28 @@ class ShopManageIndex extends Component {
     }
   }
 
+  coverImageSelectedChangeCallback(url) {
+    this.props.submitFormData({
+      formKey: commonForm,
+      id: this.props.userOwnedShopInfo.id,
+      submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+  }
+
+  submitSuccessCallback() {
+    Toast.show('更新成功', {duration: 1000})
+  }
+
+  submitErrorCallback() {
+    Toast.show('更新失败', {duration: 1000})
+  }
+
   renderRowShopFollowers(shopFollowers, rowIndex, totalCount) {
     let shopFollowersView = shopFollowers.map((item, index)=>{
       if(totalCount && shopFollowers.length == (index + 1)) {
-        console.log('renderRowShopFollowers.totalCount===', totalCount)
+        // console.log('renderRowShopFollowers.totalCount===', totalCount)
         return (
           <View key={"shopFollower_totalCount"} style={styles.shopFollowersTotalCountWrap}>
             <Text style={styles.shopFollowersTotalCountTxt}>{totalCount > 99 ? '99+' : totalCount}</Text>
@@ -275,6 +293,7 @@ class ShopManageIndex extends Component {
                 addImage={{uri: 'http://img1.3lian.com/2015/a1/53/d/198.jpg'}}
                 initValue={this.props.userOwnedShopInfo.coverUrl}
                 closeModalAfterSelectedImg={true}
+                imageSelectedChangeCallback={(url)=>{this.coverImageSelectedChangeCallback(url)}}
               />
             </View>
 
@@ -427,6 +446,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData,
+  submitInputData,
   fetchUserOwnedShopInfo,
   fetchShopFollowers,
   fetchShopFollowersTotalCount,
