@@ -330,6 +330,7 @@ class ArticleEditor extends Component {
           style={{flex: 1}}
           keyboardDismissMode="on-drag"
           automaticallyAdjustContentInsets={false}
+          keyboardShouldPersistTaps={true}
         >
           {this.renderComponents()}
         </KeyboardAwareScrollView>
