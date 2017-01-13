@@ -28,6 +28,7 @@ import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
+import Symbol from 'es6-symbol'
 
 import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchShopAnnouncements, fetchShopCommentList, fetchShopCommentTotalCount, } from '../../../action/shopAction'
 import {fetchUserFollowees} from '../../../action/authActions'
@@ -60,6 +61,12 @@ class ShopManageIndex extends Component {
       if(this.props.userOwnedShopInfo.id) {
         this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopAnnouncements({id: this.props.id})
+        this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
+        this.props.fetchShopCommentTotalCount({id: this.props.id})
+      }
+      if(this.props.isUserLogined) {
+        this.props.fetchUserFollowees()
       }
     })
   }
@@ -139,6 +146,70 @@ class ShopManageIndex extends Component {
       return (
         <View style={styles.noAttentionWrap}>
           <Text style={styles.noAttentionTxt}>暂无关注用户,赶紧开始推广吧!!!</Text>
+        </View>
+      )
+    }
+  }
+  
+  renderComments() {
+    if(this.props.shopComments && this.props.shopComments.length) {
+      const that = this
+      const commentsView = this.props.shopComments.map((item, index) => {
+        if(index > 2) return
+        const scoreWidth = item.score / 5.0 * 62
+        let userIsFollowedTheUser = that.userIsFollowedTheUser(item.user.id)
+        return (
+          <View key={"shop_comment_" + index} style={styles.commentContainer}>
+            <View style={styles.commentAvatarBox}>
+              <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
+              
+              {userIsFollowedTheUser
+                ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>
+                <Text style={styles.userAttentionedTxt}>取消关注</Text>
+              </TouchableOpacity>
+                : <TouchableOpacity onPress={()=>{this.followUser(item.user.id)}}>
+                <Image style={styles.commentAttention} source={require('../../../assets/images/give_attention_head.png')}/>
+              </TouchableOpacity>
+              }
+            
+            </View>
+            <View style={styles.commentRight}>
+              <View style={[styles.commentLine, styles.commentHeadLine]}>
+                <Text style={styles.commentTitle}>{item.user.nickname}</Text>
+                <Text style={styles.commentTime}>{item.createdDate}</Text>
+              </View>
+              <View style={styles.commentLine}>
+                <View style={styles.scoresWrap}>
+                  <View style={styles.scoreIconGroup}>
+                    <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
+                    <Image style={styles.scoreIcon} source={require('../../../assets/images/star_empty.png')}/>
+                  </View>
+                  <Text style={styles.score}>{item.score}</Text>
+                </View>
+              </View>
+              <View style={[styles.commentFootLine]}>
+                
+                <Text numberOfLines={2} style={styles.comment}>{item.content}</Text>
+              
+              </View>
+            </View>
+          </View>
+        )
+      })
+      
+      return (
+        <View style={styles.commentWrap}>
+          <View style={styles.commentHead}>
+            <Text style={styles.commentTitle}>吾友点评（{this.props.shopCommentsTotalCount}）</Text>
+          </View>
+          
+          {commentsView}
+          
+          <View style={styles.commentFoot}>
+            <TouchableOpacity onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
+              <Text style={styles.allCommentsLink}>查看全部评价</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )
     }
@@ -231,6 +302,50 @@ class ShopManageIndex extends Component {
               {this.renderShopFollowers()}
             </View>
 
+            <View style={styles.shopAnnouncementWrap}>
+              {this.props.latestShopAnnouncement.content
+                ? <TouchableOpacity onPress={()=>{}}>
+                    <View style={styles.shopAnnouncementContainer}>
+                      <View style={styles.shopAnnouncementCoverWrap}>
+                        <Image style={styles.shopAnnouncementCover} source={announcementCover}/>
+                      </View>
+                      <View style={styles.shopAnnouncementCnt}>
+                        <View style={styles.shopAnnouncementTitleWrap}>
+                          <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
+                            {this.props.latestShopAnnouncement.content}
+                          </Text>
+                        </View>
+                        <View style={styles.shopAnnouncementSubTitleWrap}>
+                          <Image style={styles.shopAnnouncementIcon} source={{uri: this.props.shopDetail.owner.avatar}}/>
+                          <Text style={styles.shopAnnouncementSubTxt}>{this.props.shopDetail.owner.nickname}</Text>
+                          <Text style={styles.shopAnnouncementSubTxt}>{this.props.latestShopAnnouncement.createdDate}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                : <TouchableOpacity onPress={()=>{}}>
+                    <View style={[styles.shopAnnouncementWrap, styles.noShopAnnouncementWrap]}>
+                      <View style={[styles.noShopAnnouncementWrap]}>
+                        <Text style={styles.noShopAnnouncementTxt}>暂无公告,点击添加</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+              }
+              <View style={styles.shopAnnouncementBadge}>
+                <Image style={styles.shopAnnouncementBadgeIcon} source={require('../../../assets/images/background_everyday.png')}>
+                  <Text style={styles.shopAnnouncementBadgeTxt}>店铺公告</Text>
+                </Image>
+              </View>
+              <View style={styles.shopAnnouncementDateWrap}>
+                <Image style={styles.shopAnnouncementDateIcon} source={require('../../../assets/images/notice_date.png')}>
+                  <Text style={styles.shopAnnouncementDateDay}>26</Text>
+                  <Text style={styles.shopAnnouncementDateMonth}>DEC</Text>
+                </Image>
+              </View>
+            </View>
+  
+            {this.renderComments()}
+
           </ScrollView>
 
 
@@ -245,18 +360,30 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
   const shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
+  let latestShopAnnouncement = selectLatestShopAnnouncemment(state, userOwnedShopInfo.id)
+  const shopComments = selectShopComments(state, ownProps.id)
+  const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
+  const userFollowees = authSelector.selectUserFollowees(state)
   return {
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
     shopFollowers: shopFollowers,
-    shopFollowersTotalCount: shopFollowersTotalCount
+    shopFollowersTotalCount: shopFollowersTotalCount,
+    latestShopAnnouncement: latestShopAnnouncement,
+    shopComments: shopComments,
+    shopCommentsTotalCount: shopCommentsTotalCount,
+    userFollowees: userFollowees,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   fetchShopFollowers,
-  fetchShopFollowersTotalCount
+  fetchShopFollowersTotalCount,
+  fetchShopAnnouncements,
+  fetchShopCommentList,
+  fetchShopCommentTotalCount,
+  fetchUserFollowees,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopManageIndex)
@@ -391,7 +518,6 @@ const styles = StyleSheet.create({
   },
   attentionWrap: {
     marginTop: 10,
-    marginBottom: 10,
     backgroundColor: '#fff',
     padding: 12
   },
@@ -429,7 +555,96 @@ const styles = StyleSheet.create({
   shopFollowersTotalCountTxt: {
     color: '#fff',
     fontSize: em(15),
-  }
+  },
+  shopAnnouncementWrap: {
+    backgroundColor: 'transparent',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  shopAnnouncementContainer: {
+    flexDirection: 'row',
+    marginTop: normalizeH(10),
+    padding: 10,
+    backgroundColor: '#fff'
+  },
+  shopAnnouncementCoverWrap: {
+    borderWidth: normalizeBorder(),
+    borderColor: THEME.colors.lighterA,
+    marginRight: normalizeW(15),
+  },
+  shopAnnouncementCover: {
+    width:84,
+    height: 84
+  },
+  shopAnnouncementCnt: {
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  shopAnnouncementTitleWrap: {
 
+  },
+  shopAnnouncementTitle: {
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  shopAnnouncementSubTitleWrap: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  shopAnnouncementIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 5
+  },
+  shopAnnouncementSubTxt: {
+    marginRight: normalizeW(22),
+    fontSize: em(12),
+    color: '#8f8e94'
+  },
+  shopAnnouncementBadge: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  shopAnnouncementBadgeIcon: {
+    width: normalizeW(65),
+    height: normalizeH(20),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  shopAnnouncementBadgeTxt: {
+    fontSize: em(12),
+    color: '#fff'
+  },
+  noShopAnnouncementWrap: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: normalizeH(110),
+    backgroundColor: '#fff',
+  },
+  noShopAnnouncementTxt: {
+    color: '#b2b2b2',
+    fontSize: em(15),
+  },
+  shopAnnouncementDateWrap: {
+    position: 'absolute',
+    top: 0,
+    right: 10,
+  },
+  shopAnnouncementDateIcon: {
+    paddingTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: normalizeW(32),
+    height: normalizeH(42),
+  },
+  shopAnnouncementDateDay: {
+    color: '#fff',
+    fontSize: em(17)
+  },
+  shopAnnouncementDateMonth: {
+    color: '#fff',
+    fontSize: em(10),
+  }
 
 })
