@@ -39,6 +39,12 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchShopFollowersSuccess(state, action)
     case ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS:
       return handleFetchShopFollowersTotalCountSuccess(state, action)
+    case ShopActionTypes.FETCH_SIMILAR_SHOP_LIST_SUCCESS:
+      return handleFetchSimilarShopListSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_DETAIL_SUCCESS:
+      return handleFetchShopDetailSuccess(state, action)
+    case ShopActionTypes.FETCH_GUESS_YOU_LIKE_SHOP_LIST_SUCCESS:
+      return handleFetchGuessYouLikeShopListSuccess(state, action)
     default:
       return state
   }
@@ -227,5 +233,28 @@ function handleFetchShopFollowersTotalCountSuccess(state, action) {
   let shopId = payload.id
   let shopFollowerTotalCount = payload.shopFollowerTotalCount
   state = state.setIn(['shopFollowersTotalCount', shopId], shopFollowerTotalCount)
+  return state
+}
+
+function handleFetchSimilarShopListSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let similarShopList = payload.similarShopList
+  state = state.setIn(['similarShops', shopId], similarShopList)
+  return state
+}
+
+function handleFetchShopDetailSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let shopInfo = payload.shopInfo
+  state = state.setIn(['shopDetails', shopId], shopInfo)
+  return state
+}
+
+function handleFetchGuessYouLikeShopListSuccess(state, action) {
+  let payload = action.payload
+  let shopList = payload.shopList
+  state = state.set('guessYouLikeShopList', shopList)
   return state
 }

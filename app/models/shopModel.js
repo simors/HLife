@@ -85,7 +85,7 @@ export class ShopInfo extends ShopRecord {
           record.set('distance', Number(distance).toFixed(0))
         }
         record.set('geoName', attrs.geoName)
-        record.set('pv', attrs.pv)
+        record.set('pv', numberUtils.formatNum(attrs.pv))
         record.set('score', attrs.score)
         record.set('ourSpecial', attrs.ourSpecial)
         record.set('openTime', attrs.openTime)
@@ -365,5 +365,8 @@ export const Shop = Record({
   shopTagList: List(),
   userOwnedShopInfo:List(),
   shopFollowers: Map(),
-  shopFollowersTotalCount: Map()
+  shopFollowersTotalCount: Map(),
+  similarShops: Map(),
+  shopDetails: Map(),
+  guessYouLikeShopList: List(),
 }, 'Shop')
