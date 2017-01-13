@@ -281,7 +281,7 @@ export function fetchShopCommentReplyList(payload) {
         shopCommentReplyList: shopCommentReplyList
       }
       dispatch(updateAction(params))
-      if(payload.success){
+      if(payload && payload.success){
         payload.success(params)
       }
     }).catch((error) => {
@@ -297,6 +297,9 @@ export function fetchShopTags(payload) {
     lcShop.fetchShopTags(payload).then((shopTags) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_TAGS_SUCCESS)
       dispatch(updateAction({shopTags: shopTags}))
+      if(payload && payload.success){
+        payload.success(shopTags)
+      }
     }).catch((error)=> {
       if(payload.error){
         payload.error(error)
@@ -310,7 +313,42 @@ export function fetchUserOwnedShopInfo(payload) {
     lcShop.fetchUserOwnedShopInfo(payload).then((shopInfo) => {
       let updateAction = createAction(ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS)
       dispatch(updateAction({shopInfo:shopInfo}))
+      if(payload && payload.success){
+        payload.success(shopInfo)
+      }
     }).catch((error)=> {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopFollowers(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopFollowers(payload).then((shopFollowers) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS)
+      dispatch(updateAction({id: payload.id, shopFollowers: shopFollowers}))
+      if(payload && payload.success){
+        payload.success(shopFollowers)
+      }
+    }).catch((error)=> {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopFollowersTotalCount(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopFollowersTotalCount(payload).then((shopFollowerTotalCount) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS)
+      dispatch(updateAction({shopId: payload.id, shopFollowerTotalCount: shopFollowerTotalCount}))
+      if(payload.success){
+        payload.success(shopFollowerTotalCount)
+      }
+    }).catch((error) => {
       if(payload.error){
         payload.error(error)
       }

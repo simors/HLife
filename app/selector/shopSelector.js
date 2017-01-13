@@ -116,3 +116,17 @@ export function selectUserOwnedShopInfo(state) {
   }
   return {}
 }
+
+export function selectShopFollowers(state, shopId) {
+  if(state.SHOP.getIn(['shopFollowers', shopId])) {
+    return state.SHOP.getIn(['shopFollowers', shopId]).toJS()
+  }
+  return []
+}
+
+export function selectShopFollowersTotalCount(state, shopId) {
+  if(state.SHOP.getIn(['shopFollowersTotalCount', shopId])) {
+    return state.SHOP.getIn(['shopFollowersTotalCount', shopId])
+  }
+  return 0
+}

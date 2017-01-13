@@ -14,6 +14,7 @@ import {
   ShopCommentUp4Cloud,
   ShopTag
 } from '../../models/shopModel'
+import {UserInfo} from '../../models/userModels'
 
 export function getShopList(payload) {
   let shopCategoryId = payload.shopCategoryId
@@ -532,6 +533,42 @@ export function fetchUserOwnedShopInfo(payload) {
     // console.log('shopInfo=====', shopInfo)
     return new List([shopInfo])
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopFollowers(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopFollower')
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  query.equalTo('shop', shop)
+  query.include('follower')
+  return query.find().then((results)=> {
+    console.log('fetchShopFollowers.results===', results)
+    let shopFollowers = []
+    if(results && results.length) {
+      results.forEach((result)=>{
+        shopFollowers.push(UserInfo.fromLeancloudObject(result))
+      })
+    }
+    console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
+    return new List(shopFollowers)
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopFollowersTotalCount(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopFollower')
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  query.equalTo('shop', shop)
+  return query.count().then((results)=>{
+    console.log('fetchShopFollowersTotalCount.results===', results)
+    return results
+  }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

@@ -29,9 +29,9 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 
-import {fetchUserOwnedShopInfo, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
-import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../../action/authActions'
-import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../../selector/shopSelector'
+import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchShopAnnouncements, fetchShopCommentList, fetchShopCommentTotalCount, } from '../../../action/shopAction'
+import {fetchUserFollowees} from '../../../action/authActions'
+import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectLatestShopAnnouncemment, selectShopComments, selectShopCommentsTotalCount} from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
 import Comment from '../../common/Comment'
 
@@ -56,7 +56,11 @@ class ShopManageIndex extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-
+      this.props.fetchUserOwnedShopInfo()
+      if(this.props.userOwnedShopInfo.id) {
+        this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
+      }
     })
   }
 
@@ -73,6 +77,70 @@ class ShopManageIndex extends Component {
       SendIntentAndroid.sendPhoneCall(contactNumber)
     }else {
       Communications.phonecall(contactNumber, false)
+    }
+  }
+
+  renderRowShopFollowers(shopFollowers, rowIndex, totalCount) {
+    let shopFollowersView = shopFollowers.map((item, index)=>{
+      if(totalCount && shopFollowers.length == (index + 1)) {
+        console.log('renderRowShopFollowers.totalCount===', totalCount)
+        return (
+          <View key={"shopFollower_totalCount"} style={styles.shopFollowersTotalCountWrap}>
+            <Text style={styles.shopFollowersTotalCountTxt}>{totalCount > 99 ? '99+' : totalCount}</Text>
+          </View>
+        )
+      }
+
+      let source = require('../../../assets/images/default_portrait.png')
+      if(item.avatar) {
+        source = {uri: item.avatar}
+      }
+      return (
+        <Image
+          key={"shopFollower_" + (8 * (rowIndex-1) + index)}
+          resizeMethod="scale"
+          resizeMode="contain"
+          style={styles.attentionAvatar}
+          source={source}
+        />
+      )
+    })
+
+    return (
+      <View key={"shopFollower_row_" + rowIndex} style={styles.attentionAvatarWrap}>
+        {shopFollowersView}
+      </View>
+    )
+  }
+
+  renderShopFollowers() {
+    if(this.props.shopFollowers && this.props.shopFollowers.length) {
+      if(this.props.shopFollowers.length <= 8) {
+        return this.renderRowShopFollowers(this.props.shopFollowers, 1)
+      }else if (this.props.shopFollowers.length <= 16) {
+        let multiRow = []
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(0, 8), 1))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(8), 2))
+        return multiRow
+      }else if (this.props.shopFollowers.length <= 24) {
+        let multiRow = []
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(0, 8), 1))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(8, 16), 2))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(16), 3))
+        return multiRow
+      }else {
+        let multiRow = []
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(0, 8), 1))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(8, 16), 2))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(16, 24), 3, this.props.shopFollowersTotalCount))
+        return multiRow
+      }
+    }else {
+      return (
+        <View style={styles.noAttentionWrap}>
+          <Text style={styles.noAttentionTxt}>暂无关注用户,赶紧开始推广吧!!!</Text>
+        </View>
+      )
     }
   }
 
@@ -160,15 +228,7 @@ class ShopManageIndex extends Component {
 
             <View style={styles.attentionWrap}>
               <Text style={styles.attentionTitle}>关注我的</Text>
-              <View style={styles.attentionAvatarWrap}>
-                <Image
-                  resizeMethod="scale"
-                  resizeMode="contain"
-                  style={styles.attentionAvatar}
-                  source={require('../../../assets/images/default_portrait.png')}
-                />
-              </View>
-
+              {this.renderShopFollowers()}
             </View>
 
           </ScrollView>
@@ -183,14 +243,20 @@ class ShopManageIndex extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  const shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
+  const shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
   return {
     userOwnedShopInfo: userOwnedShopInfo,
-    isUserLogined: isUserLogined
+    isUserLogined: isUserLogined,
+    shopFollowers: shopFollowers,
+    shopFollowersTotalCount: shopFollowersTotalCount
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  fetchShopFollowers,
+  fetchShopFollowersTotalCount
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopManageIndex)
@@ -339,9 +405,30 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   attentionAvatar: {
-    marginRight: 5,
+    marginRight: normalizeW(10),
     width: normalizeW(35),
     height: normalizeW(35)
+  },
+  noAttentionWrap: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  noAttentionTxt: {
+    color: '#b2b2b2',
+    fontSize: em(15),
+  },
+  shopFollowersTotalCountWrap: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(10),
+    width: normalizeW(35),
+    height: normalizeW(35),
+    borderRadius: normalizeW(35/2),
+    backgroundColor: THEME.colors.green
+  },
+  shopFollowersTotalCountTxt: {
+    color: '#fff',
+    fontSize: em(15),
   }
 
 
