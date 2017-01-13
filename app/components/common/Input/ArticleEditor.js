@@ -145,11 +145,41 @@ class ArticleEditor extends Component {
     return {isVal: true, errMsg: '验证通过'}
   }
 
+  getAbstract(n) {
+    let data = this.props.data
+    let text = ""
+    data.forEach((item) => {
+      if (item.type === COMP_TEXT) {
+        text += item.text
+      }
+    })
+    if (text.replace(/[\u4e00-\u9fa5]/g, "**").length <= n) {
+      return text;
+    } else {
+      let len = 0;
+      let tmpStr = "";
+      for (var i = 0; i < text.length; i++) {//遍历字符串
+        if (/[\u4e00-\u9fa5]/.test(text[i])) {//中文 长度为两字节
+          len += 2;
+        } else {
+          len += 1;
+        }
+        if (len > n) {
+          break;
+        } else {
+          tmpStr += text[i];
+        }
+      }
+      return tmpStr + "...";
+    }
+  }
+
   inputChange(text) {
+    let abstract = this.getAbstract(100)
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      data: {text}
+      data: {text, abstract}
     }
     this.props.inputFormUpdate(inputForm)
   }
