@@ -22,12 +22,18 @@ const articleEditor = {
 export default class ArticleInputTest extends Component {
   constructor(props) {
     super(props)
+    this.imgList = []
+  }
+
+  getImageList(imgs) {
+    this.imgList = imgs
+    console.log('images:', this.imgList)
   }
 
   render() {
     return (
       <View>
-        <ArticleEditor {...articleEditor}/>
+        <ArticleEditor {...articleEditor} getImages={(images) => this.getImageList(images)}/>
       </View>
     )
   }

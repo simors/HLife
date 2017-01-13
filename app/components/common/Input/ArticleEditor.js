@@ -102,6 +102,10 @@ class ArticleEditor extends Component {
         })
       }
       this.setState({subComp: this.comp})
+
+      if (this.props.getImages) {
+        this.props.getImages(this.getImageCollection(newProps.data))
+      }
     }
   }
 
@@ -125,6 +129,16 @@ class ArticleEditor extends Component {
     this.setState({
       keyboardPadding: 0,
     })
+  }
+
+  getImageCollection(data) {
+    let images = []
+    data.forEach((item) => {
+      if (item.type === COMP_IMG) {
+        images.push(item.url)
+      }
+    })
+    return images
   }
 
   validInput(data) {
