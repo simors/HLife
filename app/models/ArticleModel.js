@@ -33,7 +33,7 @@ export class LikersItem extends LikersItemConfig {
     let likerItem = new LikersItemConfig()
     // let attrs = lcObj.attributes
     return likerItem.withMutations((record)=> {
-      //    console.log('zhelishurule',lcObj.avatar)
+       //   console.log('zhelishurule',lcObj.avatar)
       record.set('avatar', lcObj.avatar)
       record.set('authorId', lcObj.objectId)
       record.set('nickname', lcObj.nickname)
@@ -49,6 +49,8 @@ export class ArticleItem extends ArticleItemConfig {
     let attrs = lcObj.attributes
     let user = lcObj.attributes.user.attributes
     let nickname = "吾爱用户"
+    // console.log('zhelishurule',lcObj)
+
     let avatar = undefined
     if (user) {
       avatar = user.avatar

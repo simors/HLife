@@ -278,7 +278,7 @@ const ScrollableTabView = React.createClass({
         }}>
           <View
 
-            style={{flex: 1, alignItems: 'center', width:normalizeW(45),justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1,borderLeftColor:'#50E3C2',borderBottomColor:'#50E3C2'}}>
+            style={{flex: 1,  width:normalizeW(45),justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1,borderLeftColor:'#50E3C2',borderBottomColor:'#50E3C2'}}>
             <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(13)}}
 
                    source={require("../../../assets/images/artical_more.png")}/>
