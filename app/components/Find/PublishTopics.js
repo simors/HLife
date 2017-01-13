@@ -26,6 +26,7 @@ import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import ArticleEditor from '../common/Input/ArticleEditor'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -37,7 +38,7 @@ const topicName = {
   type: "topicName",
 }
 
-const topicContent ={
+const topicContent = {
   formKey: topicForm,
   stateKey: Symbol('topicContent'),
   type: 'topicContent',
@@ -46,10 +47,10 @@ const topicContent ={
 const rteHeight = {
   ...Platform.select({
     ios: {
-      height: normalizeH(65+88),
+      height: normalizeH(65 + 88),
     },
     android: {
-      height: normalizeH(45+88)
+      height: normalizeH(45 + 88)
     }
   })
 }
@@ -78,7 +79,7 @@ class PublishTopics extends Component {
     if (this.props.isLogin) {
       this.props.publishTopicFormData({
         formKey: topicForm,
-        images:this.insertImages,
+        images: this.insertImages,
         categoryId: this.state.selectedTopic.objectId,
         userId: this.props.userInfo.id,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
@@ -142,20 +143,10 @@ class PublishTopics extends Component {
     console.log('images list', this.insertImages)
   }
 
-  onRteFocusChanged = (val) => {
-    this.setState({
-      rteFocused: val,
-    })
-  }
-
   renderRichText() {
-    const shouldFocus = this.state.rteFocused
     return (
-      <RichTextInput
+      <ArticleEditor
         {...topicContent}
-        onFocus={this.onRteFocusChanged}
-        shouldFocus={shouldFocus}
-        simplify={true}
         wrapHeight={rteHeight.height}
         getImages={(images) => this.getRichTextImages(images)}
       />
@@ -188,12 +179,10 @@ class PublishTopics extends Component {
                                containerStyle={styles.titleContainerStyle}
                                inputStyle={styles.titleInputStyle}
                                {...topicName}
-                               placeholder="输入文章标题" />
+                               placeholder="输入文章标题"/>
             </View>
 
-            <View>
-              {this.renderRichText()}
-            </View>
+            {this.renderRichText()}
           </View>
 
           <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
@@ -281,20 +270,20 @@ const styles = StyleSheet.create({
     height: normalizeH(24),
     alignSelf: 'flex-end',
   },
-  titleContainerStyle:{
-    flex:1,
-    height:normalizeH(44),
-    paddingLeft:0,
-    paddingRight:0,
+  titleContainerStyle: {
+    flex: 1,
+    height: normalizeH(44),
+    paddingLeft: 0,
+    paddingRight: 0,
     borderBottomWidth: 1,
     borderStyle: 'solid',
     borderBottomColor: '#E9E9E9',
   },
-  titleInputStyle:{
-    flex:1,
+  titleInputStyle: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
-    color:'#4a4a4a',
-    fontFamily:'.PingFangSC-Semibold'
+    color: '#4a4a4a',
+    fontFamily: '.PingFangSC-Semibold'
   },
   //modal 所有子组件的样式
   modalStyle: {
