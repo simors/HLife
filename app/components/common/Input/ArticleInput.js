@@ -50,7 +50,8 @@ class ArticleInput extends Component {
       subComp: [this.renderTextInput("", 0, true)],
       imgWidth: 200,
       imgHeight: 200,
-      cursor: 0,
+      cursor: 0,        // 光标所在组件的索引
+      start: 0,         // 光标所在文字的起始位置
     }
     this.comp = [this.renderTextInput("", 0, true)]
   }
@@ -87,7 +88,6 @@ class ArticleInput extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    console.log("data:", newProps.data)
     if (this.props.data != newProps.data) {
       this.comp = []
       if (!newProps.data) {
@@ -95,7 +95,7 @@ class ArticleInput extends Component {
       } else {
         newProps.data.map((comp, index) => {
           if (comp.type === COMP_TEXT) {
-            this.comp.push(this.renderTextInput(comp.text, index))
+            this.comp.push(this.renderTextInput(comp.text, index, true))
           } else if (comp.type === COMP_IMG) {
             this.comp.push(this.renderImageInput(comp.url, comp.width, comp.height, index))
           }
@@ -223,16 +223,24 @@ class ArticleInput extends Component {
       type: COMP_TEXT,
       text: ""
     }
+    let content = data[this.state.cursor].text
+    let begin = content.substring(0, this.state.start)
+    let end = content.substring(this.state.start)
+    data[this.state.cursor].text = begin
+    textData.text = end
     data.splice(this.state.cursor + 1, 0, imgData, textData)
-    console.log("data image change: ", data)
     this.inputChange(data)
   }
 
   updateTextInput(index, content) {
     let data = this.props.data
     data[index].text = content
-    console.log("data text change: ", data)
     this.inputChange(data)
+  }
+
+  selectChange(event) {
+    let start = event.nativeEvent.selection.start
+    this.setState({start: start})
   }
 
   renderTextInput(content, index, autoFocus = false) {
@@ -246,6 +254,7 @@ class ArticleInput extends Component {
         value={content}
         onChangeText={(text) => this.updateTextInput(index, text)}
         onFocus={() => this.setState({cursor: index})}
+        onSelectionChange={(event) => this.selectChange(event)}
       />
     )
   }
