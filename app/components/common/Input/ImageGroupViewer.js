@@ -26,7 +26,7 @@ export default class ImageGroupViewer extends Component {
       imgModalShow: false,
       showImg: '',
       marginSize: 5,
-      calImgSize: 107
+      calImgSize: this.props.imgSize || 107
     }
   }
 
