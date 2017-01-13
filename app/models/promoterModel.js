@@ -11,10 +11,10 @@ export const PromoterRecord = Record({
   upUser: undefined,
   id:undefined,
   level:undefined,
-  user:undefined,
+  address:undefined
 }, 'PromoterRecord')
 
-export class Promoter extends PromoterRecord {
+export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let Promoter = new DoctorInfo()
     let attrs = lcObj.attributes
@@ -25,8 +25,14 @@ export class Promoter extends PromoterRecord {
       record.set('upUser', attrs.upUser)
       record.set('id', lcObj.id)
       record.set('level', attrs.level)
-      record.set('user', attrs.user)
+      record.set('address', attrs.address)
     })
     return Promoter
   }
 }
+
+export const Promoter = Record({
+  promoter: Map(),
+  // likerList: Map(),
+}, 'Promoter')
+

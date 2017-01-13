@@ -2,6 +2,7 @@ import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 import {UserInfo, UserDetail} from '../../models/userModels'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
+import {PromoterInfo} from '../../models/promoterModel'
 import {DoctorInfo} from '../../models/doctorModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
@@ -165,6 +166,30 @@ export function certification(payload) {
 
 }
 
+
+export function promoteCertification(payload) {
+  let Promoter = AV.Object.extend('promoter')
+  let promoter = new Promoter()
+  let currentUser = AV.User.current()
+  promoter.set('name', payload.name)
+  promoter.set('phone', payload.phone)
+  promoter.set('cardId', payload.cardId)
+  promoter.set('level', payload.level+1)
+ // promoter.set('upUser', payload.upUser)
+  promoter.set('id', currentUser.id)
+  promoter.set('address', payload.address)
+  currentUser.addUnique('identity', 'promoter')
+  currentUser.save()
+  return promoter.save().then(function (result) {
+    let promoterInfo = PromoterInfo.fromLeancloudObject(result)
+    return promoterInfo
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+}
+
 export function profileSubmit(payload) {
 
   console.log("profileSubmit:payload=", payload)
@@ -307,6 +332,7 @@ export function modifyMobilePhoneVerified(payload) {
     throw err
   })
 }
+
 
 export function verifyInvitationCode(payload) {
   let params = {}
