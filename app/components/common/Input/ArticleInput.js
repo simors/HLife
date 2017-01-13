@@ -97,7 +97,7 @@ class ArticleInput extends Component {
           if (comp.type === COMP_TEXT) {
             this.comp.push(this.renderTextInput(comp.text, index))
           } else if (comp.type === COMP_IMG) {
-            this.comp.push(this.renderImageInput(comp.url, index))
+            this.comp.push(this.renderImageInput(comp.url, comp.width, comp.height, index))
           }
         })
       }
@@ -239,11 +239,11 @@ class ArticleInput extends Component {
     )
   }
 
-  renderImageInput(src, index) {
+  renderImageInput(src, width, height, index) {
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Image resizeMode='contain'
-               style={[styles.imgInputStyle, {width: this.state.imgWidth, height: this.state.imgHeight}]}
+               style={[styles.imgInputStyle, {width, height}]}
                source={{uri: src}}>
         </Image>
         <View style={{position: 'absolute', top: -8, right: 8}}>
