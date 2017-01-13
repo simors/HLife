@@ -327,7 +327,7 @@ class ArticleEditor extends Component {
     return (
       <View style={styles.container}>
         <KeyboardAwareScrollView
-          style={{flex: 1}}
+          style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}
           keyboardDismissMode="on-drag"
           automaticallyAdjustContentInsets={false}
           keyboardShouldPersistTaps={true}
