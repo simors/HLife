@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.burnweb.rnsendintent.RNSendIntentPackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.beefe.picker.PickerViewPackage;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.rnfs.RNFSPackage;
@@ -30,11 +32,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSendIntentPackage(),
+            new ReactNativeRestartPackage(),
             new PickerViewPackage(),
             new WebViewBridgePackage(),
             new RNFSPackage(),
-            new ImagePickerPackage(),
-            new RNSendIntentPackage()
+            new ImagePickerPackage()
       );
     }
   };
