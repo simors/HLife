@@ -19,43 +19,12 @@ import THEME from '../../constants/themes/theme1'
 import {getConversationTime} from '../../util/numberUtils'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import HTML from 'react-native-fence-html'
+import ArticleViewer from '../common/Input/ArticleViewer'
 
 const BASE_PADDING_SIZE = normalizeW(12)
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 const IMAGE_MAX_WIDTH = PAGE_WIDTH - 2 * BASE_PADDING_SIZE
-
-const renderers = {
-  p: (htmlAttribs, children, passProps) => {
-    return (
-      <Text
-        style={{
-          marginTop: 5,
-          marginBottom: 5,
-          color: '#555',
-          fontSize: 18,
-          lineHeight:24,
-        }}
-      >
-        {children}
-      </Text>
-    )
-  } ,
-  img: (htmlAttribs, children, passProps) => {
-    let size = htmlAttribs["data-image-size"].split(',')
-    return (
-      <Image
-        source={{uri: htmlAttribs.src}}
-        style={{
-          width: IMAGE_MAX_WIDTH < parseInt(size[0]) ? IMAGE_MAX_WIDTH : parseInt(size[0]),
-          height: IMAGE_MAX_WIDTH < parseInt(size[0]) ? parseInt(size[1]) * IMAGE_MAX_WIDTH / parseInt(size[0]) : parseInt(size[1]),
-          resizeMode: 'contain',
-          marginTop: normalizeH(10)
-        }}
-        {...passProps} />)
-  }
-}
 
 export class TopicContent extends Component {
   constructor(props) {
@@ -95,15 +64,7 @@ export class TopicContent extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{
-          marginLeft: BASE_PADDING_SIZE,
-          marginRight: BASE_PADDING_SIZE
-        }}>
-          <HTML
-            html={this.props.topic.content}
-            renderers={renderers}
-          />
-        </View>
+          <ArticleViewer artlcleContent={JSON.parse(this.props.topic.content)} />
       </View>
 
     )
