@@ -36,6 +36,7 @@ import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCo
 import * as authSelector from '../../../selector/authSelector'
 import Comment from '../../common/Comment'
 import FollowUser from '../../common/FollowUser'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -109,6 +110,16 @@ class ShopManageIndex extends Component {
 
   submitErrorCallback() {
     Toast.show('更新失败', {duration: 1000})
+  }
+
+  _handleActionSheetPress(index) {
+    if(0 == index) { //编辑封面
+      Actions.UPDATE_SHOP_COVER({id: this.props.userOwnedShopInfo.id})
+    }else if(1 == index) { //编辑相册
+      Toast.show(index)
+    }else if(2 == index) { //编辑公告
+      Toast.show(index)
+    }
   }
 
   renderRowShopFollowers(shopFollowers, rowIndex, totalCount) {
@@ -405,7 +416,7 @@ class ShopManageIndex extends Component {
               }
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.bottomTabWrap} onPress={()=>{}}>
+            <TouchableOpacity style={styles.bottomTabWrap} onPress={()=>{this.ActionSheet.show()}}>
               <Image style={{}} source={require('../../../assets/images/shop_edite.png')}/>
               <Text style={styles.bottomTabTxt}>编辑店铺</Text>
             </TouchableOpacity>
@@ -416,6 +427,16 @@ class ShopManageIndex extends Component {
             </TouchableOpacity>
 
           </View>
+
+          <ActionSheet
+            ref={(o) => this.ActionSheet = o}
+            title="编辑店铺"
+            options={['编辑封面', '编辑相册', '编辑公告', '取消']}
+            cancelButtonIndex={3}
+            onPress={this._handleActionSheetPress.bind(this)}
+          />
+
+
         </View>
       </View>
     )
