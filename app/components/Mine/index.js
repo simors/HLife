@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   RefreshControl,
   Image,
-  Platform
+  Platform,
+  InteractionManager
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -17,6 +18,9 @@ import {activeDoctorInfo} from '../../selector/doctorSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {fetchDoctorInfo} from '../../action/doctorAction'
+import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
+import {fetchUserOwnedShopInfo} from '../../action/shopAction'
+import * as authSelector from '../../selector/authSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -26,8 +30,21 @@ class Mine extends Component {
   constructor(props) {
     super(props)
   }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchUserOwnedShopInfo()
+      this.props.fetchDoctorInfo({id: this.props.userInfo.id})
+    })
+  }
+
   componentDidMount() {
+
+  }
+
+  _onRefresh() {
     this.props.fetchDoctorInfo({id: this.props.userInfo.id})
+    this.props.fetchUserOwnedShopInfo()
   }
 
   doctorCertificationImage(status) {
@@ -63,6 +80,20 @@ class Mine extends Component {
     }
   }
 
+  shopManage() {
+    // console.log('mine.index...this.props.userOwnedShopInfo===', this.props.userOwnedShopInfo)
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }else {
+      if(this.props.userOwnedShopInfo.id) {
+        Actions.SHOP_MANAGE_INDEX()
+      }else {
+        Actions.SHOPR_EGISTER()
+      }
+
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -95,7 +126,7 @@ class Mine extends Component {
         <ScrollView refreshControl={
                       <RefreshControl
                         refreshing={false}
-                        onRefresh={() => {this.props.fetchDoctorInfo({id: this.props.userInfo.id})}}
+                        onRefresh={() => {this._onRefresh()}}
                         colors={['#ff0000', '#00ff00','#0000ff','#3ad564']}
                         progressBackgroundColor="#ffffff"
                       /> }>
@@ -115,7 +146,7 @@ class Mine extends Component {
 
             </View>
             <View style={{flex: 1}}>
-              <TouchableOpacity style={styles.aindex} onPress= {()=> {Actions.SHOPR_EGISTER()}}>
+              <TouchableOpacity style={styles.aindex} onPress= {()=> {this.shopManage()}}>
                 <Image source={require('../../assets/images/mine_store.png')}></Image>
                 <Text style={styles.textStyle}>我的店铺</Text>
               </TouchableOpacity>
@@ -182,14 +213,19 @@ class Mine extends Component {
 const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
   let doctorInfo = activeDoctorInfo(state)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  const isUserLogined = authSelector.isUserLogined(state)
   return {
     userInfo: userInfo,
     doctorInfo: doctorInfo,
+    userOwnedShopInfo: userOwnedShopInfo,
+    isUserLogined: isUserLogined
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchDoctorInfo,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)
