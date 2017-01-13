@@ -42,7 +42,7 @@ const COMP_IMG = 'COMP_IMG'
  *
  **/
 
-class ArticleInput extends Component {
+class ArticleEditor extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -326,7 +326,7 @@ class ArticleInput extends Component {
   }
 }
 
-ArticleInput.defaultProps = {
+ArticleEditor.defaultProps = {
   editable: true,
   placeholder: '输入文字...',
   wrapHeight: 0,
@@ -344,7 +344,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormUpdate,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArticleInput)
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleEditor)
 
 const styles = StyleSheet.create({
   container: {

@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from 'react-native'
 import Symbol from 'es6-symbol'
-import ArticleInput from './ArticleInput'
+import ArticleEditor from './ArticleEditor'
 
 let formKey = Symbol('articleForm')
 const articleEditor = {
@@ -27,7 +27,7 @@ export default class ArticleInputTest extends Component {
   render() {
     return (
       <View>
-        <ArticleInput {...articleEditor}/>
+        <ArticleEditor {...articleEditor}/>
       </View>
     )
   }
