@@ -30,12 +30,8 @@ class promoterAuthSuccess extends Component {
     super(props)
   }
 
-  completeShopInfo() {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-    }else {
-      Actions.COMPLETE_SHOP_INFO()
-    }
+  newerGift(){
+
   }
 
   render() {
@@ -59,12 +55,12 @@ class promoterAuthSuccess extends Component {
           <CommonButton
             buttonStyle={{marginTop:normalizeH(69)}}
             title="点击获取新手大礼包"
-            onPress={()=>{this.completeShopInfo()}}
+            onPress={()=>{this.newerGift()}}
           />
           <CommonButton
             buttonStyle={{marginTop:normalizeH(15)}}
             title="直接开始使用"
-            onPress={()=>{Actions.MINE_INDEX()}}
+            onPress={()=>{}}
           />
         </View>
       </View>
@@ -110,9 +106,12 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+    alignItems:'center'
   },
   image: {
-    height:normalizeH(59)
+    height:normalizeH(220),
+    width:normalizeW(220),
+    marginTop:normalizeH(59)
   },
   congratulationWrap: {
     marginTop: normalizeH(20),

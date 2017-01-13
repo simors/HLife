@@ -236,15 +236,15 @@ function handlePromoterCertification(payload, formData) {
     if(__DEV__) {
       dispatch(verifyInviteCode(payload, formData))
     }
-    // else {
-    //   lcAuth.(smsPayload).then(() => {
-    //     dispatch(verifyInviteCode(payload, formData))
-    //   }).catch((error) => {
-    //     if (payload.error) {
-    //       payload.error(error)
-    //     }
-    //   })
-    // }
+    else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(verifyInviteCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
   }
 }
 
@@ -270,6 +270,7 @@ function promoterCertification(payload, formData) {
       //upUser: payload.upUser,
     }
     lcAuth.promoteCertification(certPayload).then((promoter) => {
+     //console.log('promoter',promoter)
       let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
       dispatch(certificationAction({promoter}))
       if (payload.success) {
@@ -292,15 +293,15 @@ function handleShopCertification(payload, formData) {
     if(__DEV__) {
       dispatch(verifyInvitationCode(payload, formData))
     }
-    // else {
-    //   lcAuth.(smsPayload).then(() => {
-    //     dispatch(verifyInvitationCode(payload, formData))
-    //   }).catch((error) => {
-    //     if (payload.error) {
-    //       payload.error(error)
-    //     }
-    //   })
-    // }
+    else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(verifyInvitationCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
   }
 }
 

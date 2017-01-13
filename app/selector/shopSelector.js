@@ -21,6 +21,13 @@ export function selectShopDetail(state, id) {
       }
     })
   }
+
+  if(!shopDetail.id) {
+    if(state.SHOP.getIn(['shopDetails', id])) {
+      return state.SHOP.getIn(['shopDetails', id]).toJS()
+    }
+  }
+
   // console.log('shopDetail=', shopDetail)
   return shopDetail
 }
@@ -129,4 +136,18 @@ export function selectShopFollowersTotalCount(state, shopId) {
     return state.SHOP.getIn(['shopFollowersTotalCount', shopId])
   }
   return 0
+}
+
+export function selectSimilarShopList(state, shopId) {
+  if(state.SHOP.getIn(['similarShops', shopId])) {
+    return state.SHOP.getIn(['similarShops', shopId]).toJS()
+  }
+  return []
+}
+
+export function selectGuessYouLikeShopList(state) {
+  if(state.SHOP.get('guessYouLikeShopList')) {
+    return state.SHOP.get('guessYouLikeShopList').toJS()
+  }
+  return []
 }

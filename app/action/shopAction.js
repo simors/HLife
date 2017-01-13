@@ -7,6 +7,7 @@ import {Actions} from 'react-native-router-flux'
 import * as ShopActionTypes from '../constants/shopActionTypes'
 import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
+import {activeUserId, activeUserInfo} from '../selector/authSelector'
 
 export function fetchShopList(payload) {
   return (dispatch ,getState) => {
@@ -301,7 +302,7 @@ export function fetchShopTags(payload) {
         payload.success(shopTags)
       }
     }).catch((error)=> {
-      if(payload.error){
+      if(payload && payload.error){
         payload.error(error)
       }
     })
@@ -317,7 +318,7 @@ export function fetchUserOwnedShopInfo(payload) {
         payload.success(shopInfo)
       }
     }).catch((error)=> {
-      if(payload.error){
+      if(payload && payload.error){
         payload.error(error)
       }
     })
@@ -349,6 +350,54 @@ export function fetchShopFollowersTotalCount(payload) {
         payload.success(shopFollowerTotalCount)
       }
     }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchSimilarShopList(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchSimilarShopList(payload).then((similarShopList) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SIMILAR_SHOP_LIST_SUCCESS)
+      dispatch(updateAction({id: payload.id, similarShopList: similarShopList}))
+      if(payload && payload.success){
+        payload.success(similarShopList)
+      }
+    }).catch((error)=> {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopDetail(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopDetail(payload).then((shopInfo) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
+      dispatch(updateAction({id: payload.id, shopInfo: shopInfo}))
+      if(payload && payload.success){
+        payload.success(shopInfo)
+      }
+    }).catch((error)=> {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchGuessYouLikeShopList(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchGuessYouLikeShopList(payload).then((shopList) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_GUESS_YOU_LIKE_SHOP_LIST_SUCCESS)
+      dispatch(updateAction({shopList: shopList}))
+      if(payload && payload.success){
+        payload.success(shopList)
+      }
+    }).catch((error)=> {
       if(payload.error){
         payload.error(error)
       }

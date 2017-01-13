@@ -168,7 +168,8 @@ export function certification(payload) {
 
 
 export function promoteCertification(payload) {
-  let Promoter = AV.Object.extend('promoter')
+ // console.log('payload=====>',payload)
+  let Promoter = AV.Object.extend('Promoter')
   let promoter = new Promoter()
   let currentUser = AV.User.current()
   promoter.set('name', payload.name)
@@ -176,14 +177,18 @@ export function promoteCertification(payload) {
   promoter.set('cardId', payload.cardId)
   promoter.set('level', payload.level+1)
  // promoter.set('upUser', payload.upUser)
-  promoter.set('id', currentUser.id)
+  promoter.set('user', currentUser)
   promoter.set('address', payload.address)
+ // console.log('currentUser=====>',currentUser)
   currentUser.addUnique('identity', 'promoter')
   currentUser.save()
+
   return promoter.save().then(function (result) {
+   // console.log('result=====>',result)
     let promoterInfo = PromoterInfo.fromLeancloudObject(result)
     return promoterInfo
   }, function (err) {
+   // console.log(err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

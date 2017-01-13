@@ -131,3 +131,12 @@ export function formatLeancloudTime(lcTime, format) {
     .replace('HH', hours).replace('mm', minutes).replace('SS', seconds)
   return result
 }
+
+export function formatNum(num) {
+  let formatedNum = num
+  if(num > 10000) {
+    num = Number(num / 10000).toFixed(0)
+    formatedNum = num + 'w+'
+  }
+  return formatedNum
+}

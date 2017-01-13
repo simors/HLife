@@ -27,9 +27,9 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
-import {fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
+import {fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
-import {selectShopDetail,selectShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
+import {selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import Comment from '../common/Comment'
 
@@ -52,6 +52,7 @@ class ShopDetail extends Component {
       this.props.fetchShopAnnouncements({id: this.props.id})
       this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
       this.props.fetchShopCommentTotalCount({id: this.props.id})
+      this.props.fetchGuessYouLikeShopList({id: this.props.id})
       if(this.props.isUserLogined) {
         this.props.userIsFollowedShop({id: this.props.id})
         this.props.fetchUserFollowees()
@@ -62,7 +63,11 @@ class ShopDetail extends Component {
   }
 
   componentDidMount() {
-
+    InteractionManager.runAfterInteractions(()=>{
+      if(!this.props.shopDetail.id) {
+        this.props.fetchShopDetail({id: this.props.id})
+      }
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -504,7 +509,7 @@ class ShopDetail extends Component {
 const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
-  const shopList = selectShopList(state) || []
+  // const shopList = selectShopList(state) || []
   const isUserLogined = authSelector.isUserLogined(state)
   const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
@@ -514,6 +519,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const userIsUpedShop = selectUserIsUpedShop(state, ownProps.id)
 
+  const guessYouLikeList = selectGuessYouLikeShopList(state)
+
   // let shopDetail = ShopDetailTestData.shopDetail
   // const shopComments = ShopDetailTestData.shopComments
   // const shopCommentsTotalCount = 1368
@@ -522,14 +529,14 @@ const mapStateToProps = (state, ownProps) => {
   // const isUserLogined = true
   // const isFollowedShop = true
 
-  if(shopList.length > 3) {
-    shopList.splice(0, shopList.length-3)
-  }
+  // if(shopList.length > 3) {
+  //   shopList.splice(0, shopList.length-3)
+  // }
 
   return {
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
-    guessYouLikeList: shopList,
+    guessYouLikeList: guessYouLikeList,
     isUserLogined: isUserLogined,
     isFollowedShop: isFollowedShop,
     shopComments: shopComments,
@@ -540,6 +547,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchShopDetail,
   fetchShopAnnouncements,
   userIsFollowedShop,
   followShop,
@@ -552,7 +560,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserFollowees,
   fetchUserUpShopInfo,
   userUpShop,
-  userUnUpShop
+  userUnUpShop,
+  fetchGuessYouLikeShopList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

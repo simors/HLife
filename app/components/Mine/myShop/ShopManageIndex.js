@@ -30,9 +30,9 @@ import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import Symbol from 'es6-symbol'
 
-import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchShopAnnouncements, fetchShopCommentList, fetchShopCommentTotalCount, } from '../../../action/shopAction'
+import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchShopAnnouncements, fetchShopCommentList, fetchShopCommentTotalCount, fetchSimilarShopList} from '../../../action/shopAction'
 import {fetchUserFollowees} from '../../../action/authActions'
-import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectLatestShopAnnouncemment, selectShopComments, selectShopCommentsTotalCount} from '../../../selector/shopSelector'
+import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectLatestShopAnnouncemment, selectShopComments, selectShopCommentsTotalCount, selectSimilarShopList} from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
 import Comment from '../../common/Comment'
 import FollowUser from '../../common/FollowUser'
@@ -65,6 +65,11 @@ class ShopManageIndex extends Component {
         this.props.fetchShopAnnouncements({id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopCommentList({isRefresh: true, id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopCommentTotalCount({id: this.props.userOwnedShopInfo.id})
+
+        this.props.fetchSimilarShopList({
+          id: this.props.userOwnedShopInfo.id,
+          targetShopCategoryId: this.props.userOwnedShopInfo.targetShopCategory.id
+        })
       }
       if(this.props.isUserLogined) {
         this.props.fetchUserFollowees()
@@ -200,6 +205,46 @@ class ShopManageIndex extends Component {
     }
   }
 
+  renderSimilarShops() {
+    if(this.props.similarShopList.length) {
+      return (
+        <View style={styles.guessYouLikeWrap}>
+          <View style={styles.guessYouLikeTitleWrap}>
+            <Text style={styles.guessYouLikeTitle}>同类店铺</Text>
+          </View>
+          {this.renderSimilarShopList()}
+        </View>
+      )
+    }
+  }
+
+  renderSimilarShopList() {
+    let similarShopListView = <View/>
+    if(this.props.similarShopList.length) {
+      similarShopListView = this.props.similarShopList.map((item, index)=> {
+        return (
+          <TouchableWithoutFeedback key={"similar_shop_" + index} onPress={()=>{Actions.SHOP_DETAIL({id: item.id})}}>
+            <View style={styles.shopInfoWrap}>
+              <View style={styles.coverWrap}>
+                <Image style={styles.cover} source={{uri: item.coverUrl}}/>
+              </View>
+              <View style={[styles.shopIntroWrap]}>
+                <Text style={styles.gylShopName} numberOfLines={1}>{item.shopName}</Text>
+                <ScoreShow
+                  score={item.score}
+                />
+                <View style={styles.subInfoWrap}>
+                  <Text style={styles.subTxt}>{item.pv}人看过</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        )
+      })
+    }
+    return similarShopListView
+  }
+
   render() {
 
     return (
@@ -326,9 +371,32 @@ class ShopManageIndex extends Component {
   
             {this.renderComments()}
 
-
+            {this.renderSimilarShops()}
 
           </ScrollView>
+
+          <View style={styles.bottomTabsWrap}>
+            <TouchableOpacity style={styles.bottomTabWrap} onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.userOwnedShopInfo.id})}}>
+              <Image style={{}} source={require('../../../assets/images/artical_comments_unselect.png')}/>
+              <Text style={styles.bottomTabTxt}>全部评论</Text>
+              {this.props.shopCommentsTotalCount > 0 &&
+                <View style={styles.commentBtnBadge}>
+                  <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
+                </View>
+              }
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.bottomTabWrap} onPress={()=>{}}>
+              <Image style={{}} source={require('../../../assets/images/shop_edite.png')}/>
+              <Text style={styles.bottomTabTxt}>编辑店铺</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.bottomTabWrap} onPress={()=>{Actions.SHOP_DETAIL({id: this.props.userOwnedShopInfo.id})}}>
+              <Image style={{}} source={require('../../../assets/images/shop_review.png')}/>
+              <Text style={styles.bottomTabTxt}>查看我的</Text>
+            </TouchableOpacity>
+
+          </View>
         </View>
       </View>
     )
@@ -344,6 +412,7 @@ const mapStateToProps = (state, ownProps) => {
   const shopComments = selectShopComments(state, userOwnedShopInfo.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
   const userFollowees = authSelector.selectUserFollowees(state)
+  const similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
   return {
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
@@ -353,6 +422,7 @@ const mapStateToProps = (state, ownProps) => {
     shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
     userFollowees: userFollowees,
+    similarShopList: similarShopList
   }
 }
 
@@ -364,6 +434,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCommentList,
   fetchShopCommentTotalCount,
   fetchUserFollowees,
+  fetchSimilarShopList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopManageIndex)
@@ -704,5 +775,88 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     color: THEME.colors.green
   },
+  guessYouLikeWrap: {
+    marginBottom: normalizeW(10),
+  },
+  guessYouLikeTitleWrap: {
+    paddingLeft: normalizeW(10),
+    paddingTop: normalizeH(15),
+    paddingBottom: normalizeH(15),
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
+    backgroundColor: '#fff',
+  },
+  guessYouLikeTitle: {
+    fontSize: em(17),
+    color: "#8f8e94"
+  },
+  shopInfoWrap: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 10,
+    backgroundColor: '#fff',
+    marginBottom: 10
+  },
+  coverWrap: {
+    width: 80,
+    height: 80
+  },
+  cover: {
+    flex: 1
+  },
+  shopIntroWrap: {
+    flex: 1,
+    paddingLeft: 10,
+    justifyContent: 'space-between'
+  },
+  gylShopName: {
+    lineHeight: 20,
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  subInfoWrap: {
+    flexDirection: 'row',
+  },
+  subTxt: {
+    marginRight: normalizeW(10),
+    color: '#d8d8d8',
+    fontSize: em(12)
+  },
+  bottomTabsWrap: {
+    height:50,
+    paddingLeft:10,
+    borderTopWidth:normalizeBorder(),
+    borderTopColor: '#686868',
+    backgroundColor:'rgba(0,0,0,0.005)',
+    flexDirection:'row',
+    justifyContent: 'space-around',
+    alignItems:'center'
+  },
+  bottomTabWrap: {
+    width:60,
+    height:38,
+    justifyContent:'center',
+    alignItems: 'center'
+  },
+  commentBtnBadge:{
+    alignItems: 'center',
+    width: 30,
+    backgroundColor:'#f5a623',
+    position:'absolute',
+    right:0,
+    top:0,
+    borderRadius:10,
+    borderWidth:normalizeBorder(),
+    borderColor: '#f5a623'
+  },
+  commentBtnBadgeTxt:{
+    fontSize: 9,
+    color: '#fff'
+  },
+  bottomTabTxt: {
+    marginTop: 3,
+    fontSize: em(15),
+    color: '#8f8e94'
+  }
 
 })
