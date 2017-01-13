@@ -20,6 +20,7 @@ import {getConversationTime} from '../../util/numberUtils'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import ArticleViewer from '../common/Input/ArticleViewer'
+import FollowUser from '../../components/common/FollowUser'
 
 const BASE_PADDING_SIZE = normalizeW(12)
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -59,9 +60,11 @@ export class TopicContent extends Component {
                 <Text style={styles.timeTextStyle}>长沙</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.attentionStyle}>
-              <Image source={require("../../assets/images/give_attention_shop.png")}/>
-            </TouchableOpacity>
+            <View style={styles.attentionStyle}>
+              <FollowUser
+                userId={this.props.topic.userId}
+              />
+            </View>
           </View>
         </View>
           <ArticleViewer artlcleContent={JSON.parse(this.props.topic.content)} />

@@ -274,7 +274,7 @@ function promoterCertification(payload, formData) {
       //upUser: payload.upUser,
     }
     lcAuth.promoteCertification(certPayload).then((promoter) => {
-     console.log('promoter',promoter)
+     //console.log('promoter',promoter)
       let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
       dispatch(certificationAction({promoter}))
       if (payload.success) {

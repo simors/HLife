@@ -21,7 +21,7 @@ export class PromoterInfo extends PromoterRecord {
     promoter= promoter.withMutations((record) => {
       record.set('name', attrs.name)
       record.set('cardId', attrs.cardId)
-      console.log('promoter=====>',promoter)
+    //  console.log('promoter=====>',promoter)
 
       record.set('phone', attrs.phone)
   //    record.set('upUser', attrs.upUser)

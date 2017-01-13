@@ -54,6 +54,7 @@ class ArticleEditor extends Component {
       start: 0,         // 光标所在文字的起始位置
     }
     this.comp = [this.renderTextInput("", 0, true)]
+    this.compHeight = 0
   }
 
   componentDidMount() {
@@ -64,6 +65,8 @@ class ArticleEditor extends Component {
       Keyboard.addListener('keyboardDidShow', this.keyboardWillShow)
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
+
+    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight
 
     let initText = []
     if (this.props.initValue) {
@@ -337,7 +340,7 @@ class ArticleEditor extends Component {
         {
           position: 'absolute',
           right: 50,
-          bottom: this.state.keyboardPadding + this.props.wrapHeight + 50,
+          bottom: this.state.keyboardPadding + 50,
         }]}
       >
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -355,12 +358,13 @@ class ArticleEditor extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <KeyboardAwareScrollView
-          style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}
+          style={{width: PAGE_WIDTH, height: this.compHeight}}
           keyboardDismissMode="on-drag"
           automaticallyAdjustContentInsets={false}
           keyboardShouldPersistTaps={true}
+          extraHeight={this.props.wrapHeight + 50}
         >
           {this.renderComponents()}
         </KeyboardAwareScrollView>
