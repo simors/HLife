@@ -3,6 +3,10 @@
  */
 import {createAction} from 'redux-actions'
 import * as doctorActionTypes from '../constants/doctorActionTypes'
+import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
+
+import * as uiTypes from '../constants/uiActionTypes'
+
 import * as lcDoctor from '../api/leancloud/doctor'
 
 export const DOCTOR_FORM_SUBMIT_TYPE = {
@@ -70,7 +74,7 @@ function doctorCertification(payload, formData) {
       certifiedImage: formData.IDImageInput.text,
       certificate: formData.imgGroup.text,
     }
-    lcAuth.certification(certPayload).then((doctor) => {
+    lcDoctor.certification(certPayload).then((doctor) => {
       if (payload.success) {
         let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
         dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
@@ -82,7 +86,6 @@ function doctorCertification(payload, formData) {
       }
     })
   }
-
 }
 
 export function fetchDoctorInfo(payload) {
