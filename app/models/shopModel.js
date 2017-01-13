@@ -105,6 +105,8 @@ export const ShopAnnouncementRecord = Record({
   content: '', //店铺公告内容
   coverUrl: '', //公告封面
   createdDate: '', //创建日期
+  createdDay: '', //创建日期:日
+  createdMonth: '', //创建日期:月
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
 })
@@ -126,6 +128,8 @@ export class ShopAnnouncement extends ShopAnnouncementRecord {
       let seconds = lcObj.createdAt.getSeconds()
       let createdDate = fullYear + '-' + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
       record.set('createdDate', createdDate)
+      record.set('createdDay', date)
+      record.set('createdMonth', month)
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
@@ -359,5 +363,7 @@ export const Shop = Record({
   shopCommentsTotalCounts: Map(),
   userUpShopsInfo: Map(),
   shopTagList: List(),
-  userOwnedShopInfo:List()
+  userOwnedShopInfo:List(),
+  shopFollowers: Map(),
+  shopFollowersTotalCount: Map()
 }, 'Shop')

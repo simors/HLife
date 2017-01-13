@@ -28,12 +28,14 @@ import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
+import Symbol from 'es6-symbol'
 
-import {fetchUserOwnedShopInfo, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
-import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../../action/authActions'
-import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../../selector/shopSelector'
+import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchShopAnnouncements, fetchShopCommentList, fetchShopCommentTotalCount, } from '../../../action/shopAction'
+import {fetchUserFollowees} from '../../../action/authActions'
+import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectLatestShopAnnouncemment, selectShopComments, selectShopCommentsTotalCount} from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
 import Comment from '../../common/Comment'
+import FollowUser from '../../common/FollowUser'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -56,7 +58,17 @@ class ShopManageIndex extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-
+      this.props.fetchUserOwnedShopInfo()
+      if(this.props.userOwnedShopInfo.id) {
+        this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopAnnouncements({id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopCommentList({isRefresh: true, id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopCommentTotalCount({id: this.props.userOwnedShopInfo.id})
+      }
+      if(this.props.isUserLogined) {
+        this.props.fetchUserFollowees()
+      }
     })
   }
 
@@ -73,6 +85,118 @@ class ShopManageIndex extends Component {
       SendIntentAndroid.sendPhoneCall(contactNumber)
     }else {
       Communications.phonecall(contactNumber, false)
+    }
+  }
+
+  renderRowShopFollowers(shopFollowers, rowIndex, totalCount) {
+    let shopFollowersView = shopFollowers.map((item, index)=>{
+      if(totalCount && shopFollowers.length == (index + 1)) {
+        console.log('renderRowShopFollowers.totalCount===', totalCount)
+        return (
+          <View key={"shopFollower_totalCount"} style={styles.shopFollowersTotalCountWrap}>
+            <Text style={styles.shopFollowersTotalCountTxt}>{totalCount > 99 ? '99+' : totalCount}</Text>
+          </View>
+        )
+      }
+
+      let source = require('../../../assets/images/default_portrait.png')
+      if(item.avatar) {
+        source = {uri: item.avatar}
+      }
+      return (
+        <View
+          key={"shopFollower_" + (8 * (rowIndex-1) + index)}
+          style={styles.attentionAvatar}
+        >
+          <Image
+            style={styles.attentionAvatarImg}
+            source={source}
+          />
+        </View>
+      )
+    })
+
+    return (
+      <View key={"shopFollower_row_" + rowIndex} style={styles.attentionAvatarWrap}>
+        {shopFollowersView}
+      </View>
+    )
+  }
+
+  renderShopFollowers() {
+    if(this.props.shopFollowers && this.props.shopFollowers.length) {
+      if(this.props.shopFollowers.length <= 8) {
+        return this.renderRowShopFollowers(this.props.shopFollowers, 1)
+      }else if (this.props.shopFollowers.length <= 16) {
+        let multiRow = []
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(0, 8), 1))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(8), 2))
+        return multiRow
+      }else if (this.props.shopFollowers.length <= 24) {
+        let multiRow = []
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(0, 8), 1))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(8, 16), 2))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(16), 3))
+        return multiRow
+      }else {
+        let multiRow = []
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(0, 8), 1))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(8, 16), 2))
+        multiRow.push(this.renderRowShopFollowers(this.props.shopFollowers.slice(16, 24), 3, this.props.shopFollowersTotalCount))
+        return multiRow
+      }
+    }else {
+      return (
+        <View style={styles.noAttentionWrap}>
+          <Text style={styles.noAttentionTxt}>暂无关注用户,赶紧开始推广吧!!!</Text>
+        </View>
+      )
+    }
+  }
+  
+  renderComments() {
+    if(this.props.shopComments && this.props.shopComments.length) {
+      const commentsView = this.props.shopComments.map((item, index) => {
+        if(index > 2) return
+        return (
+          <View key={"shop_comment_" + index} style={styles.commentContainer}>
+            <View style={styles.commentAvatarBox}>
+              <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
+              <FollowUser
+                userId={item.user.id}
+              />
+            </View>
+            <View style={styles.commentRight}>
+              <View style={[styles.commentLine, styles.commentHeadLine]}>
+                <Text style={styles.commentTitle}>{item.user.nickname}</Text>
+                <Text style={styles.commentTime}>{item.createdDate}</Text>
+              </View>
+              <View style={styles.commentLine}>
+                <ScoreShow
+                  score={item.score}
+                />
+              </View>
+              <View style={[styles.commentFootLine]}>
+                <Text numberOfLines={2} style={styles.comment}>{item.content}</Text>
+              </View>
+            </View>
+          </View>
+        )
+      })
+      
+      return (
+        <View style={styles.commentWrap}>
+          <View style={styles.commentHead}>
+            <Text style={styles.commentTitle}>吾友点评（{this.props.shopCommentsTotalCount}）</Text>
+          </View>
+          {commentsView}
+          <View style={styles.commentFoot}>
+            <TouchableOpacity onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.userOwnedShopInfo.id})}}>
+              <Text style={styles.allCommentsLink}>查看全部评价</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
     }
   }
 
@@ -160,20 +284,51 @@ class ShopManageIndex extends Component {
 
             <View style={styles.attentionWrap}>
               <Text style={styles.attentionTitle}>关注我的</Text>
-              <View style={styles.attentionAvatarWrap}>
-                <Image
-                  resizeMethod="scale"
-                  resizeMode="contain"
-                  style={styles.attentionAvatar}
-                  source={require('../../../assets/images/default_portrait.png')}
-                />
-              </View>
-
+              {this.renderShopFollowers()}
             </View>
 
+            <View style={styles.shopAnnouncementWrap}>
+              {this.props.latestShopAnnouncement.content
+                ? <TouchableOpacity onPress={()=>{}}>
+                    <View style={styles.shopAnnouncementContainer}>
+                      <View style={styles.shopAnnouncementCoverWrap}>
+                        <Image style={styles.shopAnnouncementCover} source={{uri: this.props.latestShopAnnouncement.coverUrl}}/>
+                      </View>
+                      <View style={styles.shopAnnouncementCnt}>
+                        <View style={styles.shopAnnouncementTitleWrap}>
+                          <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
+                            {this.props.latestShopAnnouncement.content}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                : <TouchableOpacity onPress={()=>{}}>
+                    <View style={[styles.shopAnnouncementWrap, styles.noShopAnnouncementWrap]}>
+                      <View style={[styles.noShopAnnouncementWrap]}>
+                        <Text style={styles.noShopAnnouncementTxt}>暂无公告,点击添加</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+              }
+              <View style={styles.shopAnnouncementBadge}>
+                <Image style={styles.shopAnnouncementBadgeIcon} source={require('../../../assets/images/background_everyday.png')}>
+                  <Text style={styles.shopAnnouncementBadgeTxt}>店铺公告</Text>
+                </Image>
+              </View>
+              <View style={styles.shopAnnouncementDateWrap}>
+                <Image style={styles.shopAnnouncementDateIcon} source={require('../../../assets/images/notice_date.png')}>
+                  <Text style={styles.shopAnnouncementDateDay}>{this.props.latestShopAnnouncement.createdDay}</Text>
+                  <Text style={styles.shopAnnouncementDateMonth}>{this.props.latestShopAnnouncement.createdMonth}</Text>
+                </Image>
+              </View>
+            </View>
+  
+            {this.renderComments()}
+
+
+
           </ScrollView>
-
-
         </View>
       </View>
     )
@@ -183,14 +338,32 @@ class ShopManageIndex extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  const shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
+  const shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
+  let latestShopAnnouncement = selectLatestShopAnnouncemment(state, userOwnedShopInfo.id)
+  const shopComments = selectShopComments(state, userOwnedShopInfo.id)
+  const shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
+  const userFollowees = authSelector.selectUserFollowees(state)
   return {
     userOwnedShopInfo: userOwnedShopInfo,
-    isUserLogined: isUserLogined
+    isUserLogined: isUserLogined,
+    shopFollowers: shopFollowers,
+    shopFollowersTotalCount: shopFollowersTotalCount,
+    latestShopAnnouncement: latestShopAnnouncement,
+    shopComments: shopComments,
+    shopCommentsTotalCount: shopCommentsTotalCount,
+    userFollowees: userFollowees,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  fetchShopFollowers,
+  fetchShopFollowersTotalCount,
+  fetchShopAnnouncements,
+  fetchShopCommentList,
+  fetchShopCommentTotalCount,
+  fetchUserFollowees,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopManageIndex)
@@ -325,7 +498,6 @@ const styles = StyleSheet.create({
   },
   attentionWrap: {
     marginTop: 10,
-    marginBottom: 10,
     backgroundColor: '#fff',
     padding: 12
   },
@@ -339,10 +511,198 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   attentionAvatar: {
-    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(10),
+  },
+  attentionAvatarImg: {
     width: normalizeW(35),
-    height: normalizeW(35)
-  }
+    height: normalizeW(35),
+    borderRadius: normalizeW(35/2),
+  },
+  noAttentionWrap: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  noAttentionTxt: {
+    color: '#b2b2b2',
+    fontSize: em(15),
+  },
+  shopFollowersTotalCountWrap: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(10),
+    width: normalizeW(35),
+    height: normalizeW(35),
+    borderRadius: normalizeW(35/2),
+    backgroundColor: THEME.colors.green
+  },
+  shopFollowersTotalCountTxt: {
+    color: '#fff',
+    fontSize: em(15),
+  },
+  shopAnnouncementWrap: {
+    backgroundColor: 'transparent',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  shopAnnouncementContainer: {
+    flexDirection: 'row',
+    marginTop: normalizeH(10),
+    padding: 10,
+    backgroundColor: '#fff'
+  },
+  shopAnnouncementCoverWrap: {
+    borderWidth: normalizeBorder(),
+    borderColor: THEME.colors.lighterA,
+    marginRight: normalizeW(15),
+  },
+  shopAnnouncementCover: {
+    width:84,
+    height: 84
+  },
+  shopAnnouncementCnt: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  shopAnnouncementTitleWrap: {
+    marginTop: normalizeH(10)
+  },
+  shopAnnouncementTitle: {
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  shopAnnouncementSubTitleWrap: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  shopAnnouncementIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 5
+  },
+  shopAnnouncementSubTxt: {
+    marginRight: normalizeW(22),
+    fontSize: em(12),
+    color: '#8f8e94'
+  },
+  shopAnnouncementBadge: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  shopAnnouncementBadgeIcon: {
+    width: normalizeW(65),
+    height: normalizeH(20),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  shopAnnouncementBadgeTxt: {
+    fontSize: em(12),
+    color: '#fff'
+  },
+  noShopAnnouncementWrap: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: normalizeH(110),
+    backgroundColor: '#fff',
+  },
+  noShopAnnouncementTxt: {
+    color: '#b2b2b2',
+    fontSize: em(15),
+  },
+  shopAnnouncementDateWrap: {
+    position: 'absolute',
+    top: 0,
+    right: 10,
+  },
+  shopAnnouncementDateIcon: {
+    paddingTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: normalizeW(32),
+    height: normalizeH(42),
+  },
+  shopAnnouncementDateDay: {
+    color: '#fff',
+    fontSize: em(17)
+  },
+  shopAnnouncementDateMonth: {
+    color: '#fff',
+    fontSize: em(10),
+  },
+  commentWrap: {
+    paddingLeft: normalizeW(10),
+    paddingTop: normalizeH(10),
+    backgroundColor: '#fff',
+    marginBottom: 10,
+  },
+  commentHead: {
+    justifyContent: 'center',
+    paddingTop: normalizeH(10),
+    paddingBottom: normalizeH(10),
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
+  },
+  commentTitle: {
+    fontSize: em(17),
+    color: "#8f8e94"
+  },
+  commentContainer: {
+    flexDirection: 'row',
+    paddingTop: normalizeH(16),
+    paddingBottom: normalizeH(16),
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
+  },
+  commentAvatarBox: {
+    alignItems: 'center'
+  },
+  commentAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginBottom: 10
+  },
+  commentAttention: {
 
+  },
+  commentRight: {
+    flex: 1,
+    paddingLeft: normalizeW(12),
+    paddingRight: normalizeW(12)
+  },
+  commentLine: {
+    flex: 1,
+  },
+  commentHeadLine: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: normalizeH(10)
+  },
+  commentFootLine: {
+    marginTop: normalizeH(10)
+  },
+  commentTitle: {
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  commentTime: {
+    fontSize: em(12),
+    color: '#8f8e94'
+  },
+  comment: {
+    fontSize: em(15),
+    color: '#8f8e94'
+  },
+  commentFoot: {
+    alignItems: 'center',
+    paddingTop: normalizeH(10),
+    paddingBottom: normalizeH(10),
+  },
+  allCommentsLink: {
+    fontSize: em(15),
+    color: THEME.colors.green
+  },
 
 })

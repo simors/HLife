@@ -35,6 +35,10 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchShopTagsSuccess(state, action)
     case ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS:
       return handleFetchUserOwnedShopInfoSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS:
+      return handleFetchShopFollowersSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS:
+      return handleFetchShopFollowersTotalCountSuccess(state, action)
     default:
       return state
   }
@@ -207,5 +211,21 @@ function handleFetchUserOwnedShopInfoSuccess(state, action) {
   if(shopInfo && shopInfo.size) {
     state = state.set('userOwnedShopInfo', shopInfo)
   }
+  return state
+}
+
+function handleFetchShopFollowersSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let shopFollowers = payload.shopFollowers
+  state = state.setIn(['shopFollowers', shopId], shopFollowers)
+  return state
+}
+
+function handleFetchShopFollowersTotalCountSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let shopFollowerTotalCount = payload.shopFollowerTotalCount
+  state = state.setIn(['shopFollowersTotalCount', shopId], shopFollowerTotalCount)
   return state
 }
