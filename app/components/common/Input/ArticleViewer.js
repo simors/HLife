@@ -108,8 +108,7 @@ export default class ArticleViewer extends Component {
     return (
       <View key={index} style={{justifyContent: 'center', alignItems: 'center'}}>
         <TouchableOpacity style={{flex:1}} onPress={() => this.toggleModal(!this.state.imgModalShow, url)}>
-          <Image resizeMode='contain'
-                 style={[styles.imgInputStyle, {width: imgWidth, height: imgHeight}]}
+          <Image style={[styles.imgInputStyle, {width: imgWidth, height: imgHeight}]}
                  source={{uri: url}}>
           </Image>
         </TouchableOpacity>
