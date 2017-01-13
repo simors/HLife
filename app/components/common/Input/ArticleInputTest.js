@@ -61,10 +61,8 @@ export default class ArticleInputTest extends Component {
   render() {
     return (
       <View>
-        <ScrollView>
           <ArticleEditor {...articleEditor} getImages={(images) => this.getImageList(images)}/>
           {/*<ArticleViewer artlcleContent={articleData} />*/}
-        </ScrollView>
       </View>
     )
   }

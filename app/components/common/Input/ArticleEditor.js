@@ -276,8 +276,7 @@ class ArticleEditor extends Component {
   renderImageInput(src, width, height, index) {
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <Image resizeMode='contain'
-               style={[styles.imgInputStyle, {width, height}]}
+        <Image style={[styles.imgInputStyle, {width, height}]}
                source={{uri: src}}>
         </Image>
         <View style={{position: 'absolute', top: -8, right: 8}}>
