@@ -97,7 +97,7 @@ class ArticleInput extends Component {
           if (comp.type === COMP_TEXT) {
             this.comp.push(this.renderTextInput(comp.text, index))
           } else if (comp.type === COMP_IMG) {
-            this.comp.push(this.renderImageInput(comp.url, index))
+            this.comp.push(this.renderImageInput(comp.url, comp.width, comp.height, index))
           }
         })
       }
@@ -196,7 +196,18 @@ class ArticleInput extends Component {
 
   deleteImageComponent(index) {
     let data = this.props.data
-    data.splice(index, 1)
+    let len = data.length
+    if (index + 1 < len && index - 1 >= 0) {
+      if (data[index+1].type === COMP_TEXT && data[index-1].type === COMP_TEXT) {
+        data[index-1].text += '\n' + data[index+1].text
+        data.splice(index, 2)
+      } else {
+        data.splice(index, 1)
+      }
+    } else {
+      data.splice(index, 1)
+    }
+
     this.inputChange(data)
   }
 
@@ -239,11 +250,11 @@ class ArticleInput extends Component {
     )
   }
 
-  renderImageInput(src, index) {
+  renderImageInput(src, width, height, index) {
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Image resizeMode='contain'
-               style={[styles.imgInputStyle, {width: this.state.imgWidth, height: this.state.imgHeight}]}
+               style={[styles.imgInputStyle, {width, height}]}
                source={{uri: src}}>
         </Image>
         <View style={{position: 'absolute', top: -8, right: 8}}>
