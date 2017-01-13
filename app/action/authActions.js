@@ -252,7 +252,6 @@ function verifyInvitationCode(payload, formData) {
       }
     })
   }
-
 }
 
 function shopCertification(payload, formData) {

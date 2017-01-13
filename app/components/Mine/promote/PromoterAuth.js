@@ -88,6 +88,20 @@ class promoterAuth extends Component {
 
   }
 
+  smsCode() {
+    this.props.submitInputData({
+      formKey: commonForm,
+      stateKey:phoneInput.stateKey,
+      submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
+      success:() => {
+        Toast.show('发送短信验证码成功,请注意查收')
+      },
+      error: (error) => {
+        Toast.show(error.message)
+      }
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -129,11 +143,25 @@ class promoterAuth extends Component {
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
-
+                <View style={{flex: 1}}>
+                  <PhoneInput {...phoneInput} initValue={this.props.userInfo.phone} placeholder="仅用于客服与你联系" editable={false}
+                              inputStyle={styles.phoneInputStyle}/>
+                </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>验证码</Text>
-
+                <View style={{flex: 1,}}>
+                  <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(38)}}
+                                    textInput={styles.smsAuthCodeTextInput}
+                                    inputContainer={{paddingLeft: 17, paddingRight: 17}}
+                                    placeholder = "填写手机验证码"
+                                    codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
+                                    codeTextContainerDisable={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
+                                    codeText={{fontSize: 12}}
+                                    getSmsAuCode={() => this.smsCode()}
+                                    reset={!this.props.phoneValid}
+                  />
+                </View>
               </View>
             </View>
             <View style={styles.detail}>

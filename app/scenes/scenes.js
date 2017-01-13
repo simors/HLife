@@ -50,6 +50,7 @@ import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
+import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
 
 const styles = StyleSheet.create({
   container: {
@@ -110,7 +111,7 @@ export const scenes = Actions.create(
       <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
       <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
-
+      <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

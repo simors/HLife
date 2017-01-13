@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from 'react-native'
 import Symbol from 'es6-symbol'
-import ArticleInput from './ArticleInput'
+import ArticleEditor from './ArticleEditor'
 
 let formKey = Symbol('articleForm')
 const articleEditor = {
@@ -22,12 +22,18 @@ const articleEditor = {
 export default class ArticleInputTest extends Component {
   constructor(props) {
     super(props)
+    this.imgList = []
+  }
+
+  getImageList(imgs) {
+    this.imgList = imgs
+    console.log('images:', this.imgList)
   }
 
   render() {
     return (
       <View>
-        <ArticleInput {...articleEditor}/>
+        <ArticleEditor {...articleEditor} getImages={(images) => this.getImageList(images)}/>
       </View>
     )
   }
