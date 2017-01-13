@@ -91,6 +91,29 @@ export function getShopList(payload) {
   })
 }
 
+export function fetchShopDetail(payload) {
+  let id = payload.id
+  let query = new AV.Query('Shop')
+  query.equalTo('objectId', id)
+  query.include(['targetShopCategory', 'owner', 'containedTag'])
+  return query.first().then(function (result) {
+    console.log('fetchShopDetail.result=', result)
+    if(__DEV__) {
+      let shopInfo = ShopInfo.fromLeancloudObject(result)
+      return new Map(shopInfo)
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        result.userCurGeo = geoPoint
+        let shopInfo = ShopInfo.fromLeancloudObject(result)
+        return new Map(shopInfo)
+      })
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function getShopAnnouncement(payload) {
   let shopAnnouncements = []
   let shopId = payload.id //店铺id
@@ -574,5 +597,83 @@ export function fetchShopFollowersTotalCount(payload) {
     throw err
   })
 }
+
+export function fetchSimilarShopList(payload) {
+  let shopId = payload.id
+  let targetShopCategoryId = payload.targetShopCategoryId
+  let targetShopCategory = AV.Object.createWithoutData('ShopCategory', targetShopCategoryId)
+  let similarQuery = new AV.Query('Shop')
+  let notQuery = new AV.Query('Shop')
+  similarQuery.equalTo('targetShopCategory', targetShopCategory)
+  notQuery.notEqualTo('objectId', shopId)
+  let andQuery = AV.Query.and(similarQuery, notQuery)
+  andQuery.include(['targetShopCategory', 'owner', 'containedTag'])
+  andQuery.addDescending('createdAt')
+  andQuery.limit(3)
+  return andQuery.find().then(function (results) {
+    // console.log('getShopList.results=', results)
+    if(__DEV__) {
+      let shopList = []
+      results.forEach((result) => {
+        shopList.push(ShopInfo.fromLeancloudObject(result))
+      })
+      return new List(shopList)
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        let shopList = []
+        results.forEach((result) => {
+          result.userCurGeo = geoPoint
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      })
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchGuessYouLikeShopList(payload) {
+  let id = payload.id
+  let query = new AV.Query('Shop')
+  query.notEqualTo('objectId', id)
+  query.include(['targetShopCategory', 'owner', 'containedTag'])
+  let random = Math.random() * 10
+  if(random <= 2) {
+    query.addDescending('createdAt')
+  }else if(random <= 5) {
+    query.addAscending('createdAt')
+  }else if(random <= 7) {
+    query.addDescending('pv')
+  }else {
+    query.addDescending('score')
+  }
+  query.limit(3)
+  return query.find().then(function (results) {
+    // console.log('fetchGuessYouLikeShopList.results=', results)
+    if(__DEV__) {
+      let shopList = []
+      results.forEach((result) => {
+        shopList.push(ShopInfo.fromLeancloudObject(result))
+      })
+      return new List(shopList)
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        let shopList = []
+        results.forEach((result) => {
+          result.userCurGeo = geoPoint
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      })
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+
 
 
