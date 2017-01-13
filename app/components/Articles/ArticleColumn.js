@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
 
   tabBarStyle: {
     height: normalizeH(38),
-    width: normalizeW(339)
+    width: normalizeW(330)
   },
   moreColumns: {
     height: normalizeH(20),

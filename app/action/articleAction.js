@@ -16,6 +16,8 @@ const addIsFavoriteAction = createAction(articleTypes.UPDATE_ISFAVORITE)
 export function fetchArticle(payload) {
   return (dispatch, getState) => {
     let columnId = payload
+   // console.log('columnId======>',columnId)
+
     laArticle.getArticle(columnId).then((articleList) => {
      // console.log('articleListh======>',articleList)
     //  console.log('columnId======>',columnId)
