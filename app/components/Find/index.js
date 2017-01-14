@@ -45,7 +45,10 @@ export class Find extends Component {
 
   getSelectedTab(index) {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({categoryId: this.props.topicCategories[index].objectId})
+      this.props.fetchTopics({
+        type: "topics",
+        categoryId: this.props.topicCategories[index].objectId
+      })
     })
     this.setState({selectedTab: index})
   }

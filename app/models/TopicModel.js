@@ -117,6 +117,8 @@ export class TopicCommentsItem extends TopicCommentsConfig {
 
 export const Topic = Record({
   topics:List(),
+  myTopics:List(),
+  allTopics:List(),
   topicComments:List(),
   TopicLikesNum: Map(),
   IsLikedByCurrentUser: Map(),

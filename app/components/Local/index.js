@@ -41,7 +41,7 @@ import CommonModal from '../common/CommonModal'
 import LocalHealth from './LocalHealth'
 import ShopCategories from './ShopCategories'
 import TopicShow from '../Find/TopicShow'
-import {getTopics} from '../../selector/topicSelector'
+import {getAllTopics} from '../../selector/topicSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -58,7 +58,7 @@ class Local extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       this.props.fetchShopCategories()
-      this.props.fetchTopics({})
+      this.props.fetchTopics({type:"allTopics"})
     })
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
@@ -269,7 +269,7 @@ const mapStateToProps = (state, ownProps) => {
   const banner = getBanner(state, 0)
   const allShopCategories = selectShopCategories(state)
   const shopCategories = allShopCategories.slice(0, 5)
-  const topics = getTopics(state)
+  const topics = getAllTopics(state)
   // let shopCategories = []
   // let ts = {
   //   imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
