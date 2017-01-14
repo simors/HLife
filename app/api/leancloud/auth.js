@@ -253,6 +253,19 @@ export function updateShopCover(payload) {
   })
 }
 
+export function handleShopAlbum(payload) {
+  let id = payload.id
+  let album = payload.album
+  let shop = AV.Object.createWithoutData('Shop', id)
+  shop.set('album', album)
+  return shop.save().then(function (result) {
+    return true
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function submitCompleteShopInfo(payload) {
   let shopId = payload.shopId
   let shopCategoryObjectId = payload.shopCategoryObjectId

@@ -20,6 +20,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
   PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION',
   UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
+  UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
 }
 
 export function submitFormData(payload) {
@@ -58,6 +59,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
         dispatch(handleShopCover(payload,formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_ALBUM:
+        dispatch(handleShopAlbum(payload,formData))
         break
     }
   }
@@ -350,6 +354,24 @@ function handleShopCover(payload, formData) {
       coverUrl: formData.shopCoverInput.text
     }
     lcAuth.updateShopCover(shopPayload).then((success) => {
+      if (payload.success) {
+        payload.success(success)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function handleShopAlbum(payload, formData) {
+  return (dispatch, getState) => {
+    let shopPayload = {
+      id: payload.id,
+      album: formData.shopAlbumInput.text
+    }
+    lcAuth.handleShopAlbum(shopPayload).then((success) => {
       if (payload.success) {
         payload.success(success)
       }

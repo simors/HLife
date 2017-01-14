@@ -113,11 +113,13 @@ class ShopManageIndex extends Component {
   }
 
   _handleActionSheetPress(index) {
-    if(0 == index) { //编辑封面
+    if(0 == index) { //重新认证
+
+    }else if(1 == index) { //编辑封面
       Actions.UPDATE_SHOP_COVER({id: this.props.userOwnedShopInfo.id})
-    }else if(1 == index) { //编辑相册
-      Toast.show(index)
-    }else if(2 == index) { //编辑公告
+    }else if(2 == index) { //编辑相册
+      Actions.UPDATE_SHOP_ALBUM({id: this.props.userOwnedShopInfo.id})
+    }else if(3 == index) { //编辑公告
       Toast.show(index)
     }
   }
@@ -301,7 +303,7 @@ class ShopManageIndex extends Component {
                 containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
                 addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
                 choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
-                addImage={{uri: 'http://img1.3lian.com/2015/a1/53/d/198.jpg'}}
+                addImage={require('../../../assets/images/default_picture.png')}
                 initValue={this.props.userOwnedShopInfo.coverUrl}
                 closeModalAfterSelectedImg={true}
                 imageSelectedChangeCallback={(url)=>{this.coverImageSelectedChangeCallback(url)}}
@@ -431,8 +433,8 @@ class ShopManageIndex extends Component {
           <ActionSheet
             ref={(o) => this.ActionSheet = o}
             title="编辑店铺"
-            options={['编辑封面', '编辑相册', '编辑公告', '取消']}
-            cancelButtonIndex={3}
+            options={['重新认证', '编辑封面', '编辑相册', '编辑公告', '取消']}
+            cancelButtonIndex={4}
             onPress={this._handleActionSheetPress.bind(this)}
           />
 
