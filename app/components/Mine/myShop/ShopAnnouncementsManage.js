@@ -120,11 +120,6 @@ class ShopAnnouncementsManage extends Component {
             </View>
           </View>
         </View>
-        <View style={styles.shopAnnouncementBadge}>
-          <Image style={styles.shopAnnouncementBadgeIcon} source={require('../../../assets/images/background_everyday.png')}>
-            <Text style={styles.shopAnnouncementBadgeTxt}>店铺公告</Text>
-          </Image>
-        </View>
         <View style={styles.shopAnnouncementDateWrap}>
           <Image style={styles.shopAnnouncementDateIcon} source={require('../../../assets/images/notice_date.png')}>
             <Text style={styles.shopAnnouncementDateDay}>{rowData.createdDay}</Text>
@@ -147,8 +142,8 @@ class ShopAnnouncementsManage extends Component {
           headerContainerStyle={styles.headerContainerStyle}
           title="店铺公告管理"
           titleStyle={styles.headerTitleStyle}
-          rightType="text"
-          rightText="● ● ●"
+          rightType="image"
+          rightImageSource={require('../../../assets/images/notice_delete.png')}
           rightPress={()=>{}}
           rightStyle={styles.headerRightStyle}
         />
@@ -163,7 +158,7 @@ class ShopAnnouncementsManage extends Component {
             hideFooter={this.state.hideFooter}
           />
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.PUBLISH_SHOP_ANNOUNCEMENT({id: this.props.id})}}>
             <View style={styles.noticePublishWrap}>
               <Image style={styles.noticePublishIcon} source={require('../../../assets/images/notice_publish.png')}/>
               <Text style={styles.noticePublishTxt}>发布新公告</Text>
@@ -256,7 +251,6 @@ const styles = StyleSheet.create({
   shopAnnouncementWrap: {
     backgroundColor: 'transparent',
     marginTop: 10,
-    marginBottom: 10,
   },
   shopAnnouncementContainer: {
     flexDirection: 'row',
@@ -348,6 +342,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    height: 50,
     backgroundColor: THEME.colors.green,
     flexDirection: 'row',
     justifyContent: 'center',
