@@ -228,7 +228,7 @@ class ArticleEditor extends Component {
       let maxWidth = PAGE_WIDTH - 15
       if (width > maxWidth) {
         imgWidth = maxWidth
-        imgHeight = Math.floor((height / width) * height)
+        imgHeight = Math.floor((imgWidth / width) * height)
       }
       this.setState({imgWidth, imgHeight})
     })
