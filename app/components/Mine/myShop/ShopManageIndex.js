@@ -119,7 +119,9 @@ class ShopManageIndex extends Component {
       Actions.UPDATE_SHOP_COVER({id: this.props.userOwnedShopInfo.id})
     }else if(2 == index) { //编辑相册
       Actions.UPDATE_SHOP_ALBUM({id: this.props.userOwnedShopInfo.id})
-    }else if(3 == index) { //编辑公告
+    }else if(3 == index) { //编辑资料
+      Actions.COMPLETE_SHOP_INFO()
+    }else if(4 == index) { //编辑公告
       Toast.show(index)
     }
   }
@@ -433,7 +435,7 @@ class ShopManageIndex extends Component {
           <ActionSheet
             ref={(o) => this.ActionSheet = o}
             title="编辑店铺"
-            options={['重新认证', '编辑封面', '编辑相册', '编辑公告', '取消']}
+            options={['重新认证', '编辑封面', '编辑相册', '编辑资料', '编辑公告', '取消']}
             cancelButtonIndex={4}
             onPress={this._handleActionSheetPress.bind(this)}
           />

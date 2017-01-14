@@ -19,6 +19,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
   COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
   PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION',
+  PROMOTER_RE_CERTIFICATION: 'PROMOTER_RE_CERTIFICATION',
   UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
   UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
 }
@@ -50,6 +51,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
         dispatch(handleShopCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_RE_CERTIFICATION:
+        dispatch(handleShopReCertification(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
         dispatch(handleCompleteShopInfo(payload, formData))
@@ -304,6 +308,27 @@ function handleShopCertification(payload, formData) {
     else {
       lcAuth.verifySmsCode(smsPayload).then(() => {
         dispatch(verifyInvitationCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
+  }
+}
+
+function handleShopReCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let smsPayload = {
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    if(__DEV__) {
+      dispatch(shopCertification(payload, formData))
+    }
+    else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(shopCertification(payload, formData))
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)

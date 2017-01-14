@@ -62,11 +62,6 @@ const shopAddrInput = {
   stateKey: Symbol('shopAddrInput'),
   type: "shopAddrInput",
 }
-const invitationCodeInput = {
-  formKey: commonForm,
-  stateKey: Symbol('invitationCodeInput'),
-  type: "invitationCodeInput",
-}
 
 class ShopReCertification extends Component {
   constructor(props) {
@@ -81,7 +76,7 @@ class ShopReCertification extends Component {
   }
 
   submitSuccessCallback(doctorInfo) {
-    Actions.SHOPR_EGISTER_SUCCESS()
+    Actions.SHOP_MANAGE_INDEX()
   }
 
   submitErrorCallback(error) {
@@ -92,7 +87,7 @@ class ShopReCertification extends Component {
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION,
+      submitType: INPUT_FORM_SUBMIT_TYPE.SHOP_RE_CERTIFICATION,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -120,7 +115,7 @@ class ShopReCertification extends Component {
           leftType="text"
           leftText="取消"
           leftPress={() => Actions.pop()}
-          title="注册店铺"
+          title="重新认证"
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
@@ -131,9 +126,6 @@ class ShopReCertification extends Component {
             keyboardDismissMode='on-drag'
             automaticallyAdjustContentInsets={false}
           >
-            <View style={styles.subTitleWrap}>
-              <Text style={styles.subTitle}>欢迎加入{appConfig.APP_NAME}，给你的店铺带好更好的收入</Text>
-            </View>
             <View style={styles.inputsWrap}>
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
@@ -209,36 +201,15 @@ class ShopReCertification extends Component {
                   />
                 </View>
               </View>
-
-              <View style={styles.inputWrap}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>邀请码</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <CommonTextInput
-                    {...invitationCodeInput}
-                    placeholder="输入邀请码"
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                  />
-                </View>
-              </View>
             </View>
 
-            <TouchableOpacity style={styles.getInvitationWrap} onPress={()=>Actions.GET_INVITATION_CODE()}>
-              <Text style={{color:THEME.colors.green,fontSize: em(16)}}>如何获取邀请码？</Text>
-            </TouchableOpacity>
+
 
             <View style={styles.footer}>
               <CommonButton
-                title="提交店铺"
+                title="提交认证"
                 onPress={this.onButtonPress}
               />
-
-              <TouchableOpacity style={styles.shopRegistProtocalWrap} onPress={()=>{}}>
-                <Text style={{color:THEME.colors.light,fontSize: em(12)}}>我已阅读</Text>
-                <Text style={{color:THEME.colors.green,fontSize: em(12)}}>《{appConfig.APP_NAME}店铺推广协议》</Text>
-              </TouchableOpacity>
             </View>
 
           </KeyboardAwareScrollView>
