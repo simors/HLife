@@ -25,7 +25,17 @@ export default function topicReducer(state = initialState, action) {
 
 function handleUpdateTopics(state, action) {
   let payload = action.payload
-  state = state.set('topics', payload.topics)
+  switch (payload.type) {
+    case "topics":
+      state = state.set('topics', payload.topics)
+      break
+    case "myTopics":
+      state = state.set('myTopics', payload.topics)
+      break
+    case "allTopics":
+      state = state.set('allTopics', payload.topics)
+      break
+  }
   return state
 }
 

@@ -113,12 +113,16 @@ class ShopManageIndex extends Component {
   }
 
   _handleActionSheetPress(index) {
-    if(0 == index) { //编辑封面
+    if(0 == index) { //重新认证
+      Actions.SHOP_RE_CERTIFICATION({id: this.props.userOwnedShopInfo.id})
+    }else if(1 == index) { //编辑封面
       Actions.UPDATE_SHOP_COVER({id: this.props.userOwnedShopInfo.id})
-    }else if(1 == index) { //编辑相册
-      Toast.show(index)
-    }else if(2 == index) { //编辑公告
-      Toast.show(index)
+    }else if(2 == index) { //编辑相册
+      Actions.UPDATE_SHOP_ALBUM({id: this.props.userOwnedShopInfo.id})
+    }else if(3 == index) { //编辑资料
+      Actions.COMPLETE_SHOP_INFO()
+    }else if(4 == index) { //编辑公告
+      Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: this.props.userOwnedShopInfo.id})
     }
   }
 
@@ -301,7 +305,7 @@ class ShopManageIndex extends Component {
                 containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
                 addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
                 choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
-                addImage={{uri: 'http://img1.3lian.com/2015/a1/53/d/198.jpg'}}
+                addImage={require('../../../assets/images/default_upload.png')}
                 initValue={this.props.userOwnedShopInfo.coverUrl}
                 closeModalAfterSelectedImg={true}
                 imageSelectedChangeCallback={(url)=>{this.coverImageSelectedChangeCallback(url)}}
@@ -364,7 +368,7 @@ class ShopManageIndex extends Component {
 
             <View style={styles.shopAnnouncementWrap}>
               {this.props.latestShopAnnouncement.content
-                ? <TouchableOpacity onPress={()=>{}}>
+                ? <TouchableOpacity onPress={()=>{Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: this.props.userOwnedShopInfo.id})}}>
                     <View style={styles.shopAnnouncementContainer}>
                       <View style={styles.shopAnnouncementCoverWrap}>
                         <Image style={styles.shopAnnouncementCover} source={{uri: this.props.latestShopAnnouncement.coverUrl}}/>
@@ -378,7 +382,7 @@ class ShopManageIndex extends Component {
                       </View>
                     </View>
                   </TouchableOpacity>
-                : <TouchableOpacity onPress={()=>{}}>
+                : <TouchableOpacity onPress={()=>{Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: this.props.userOwnedShopInfo.id})}}>
                     <View style={[styles.shopAnnouncementWrap, styles.noShopAnnouncementWrap]}>
                       <View style={[styles.noShopAnnouncementWrap]}>
                         <Text style={styles.noShopAnnouncementTxt}>暂无公告,点击添加</Text>
@@ -431,8 +435,8 @@ class ShopManageIndex extends Component {
           <ActionSheet
             ref={(o) => this.ActionSheet = o}
             title="编辑店铺"
-            options={['编辑封面', '编辑相册', '编辑公告', '取消']}
-            cancelButtonIndex={3}
+            options={['重新认证', '编辑封面', '编辑相册', '编辑资料', '编辑公告', '取消']}
+            cancelButtonIndex={5}
             onPress={this._handleActionSheetPress.bind(this)}
           />
 

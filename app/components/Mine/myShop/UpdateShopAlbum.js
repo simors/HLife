@@ -23,7 +23,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
-import ImageInput from '../../common/Input/ImageInput'
+import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import * as Toast from '../../common/Toast'
 
@@ -31,14 +31,14 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
-const shopCoverInput = {
+const shopAlbumInput = {
   formKey: commonForm,
-  stateKey: Symbol('shopCoverInput'),
-  type: 'shopCoverInput'
+  stateKey: Symbol('shopAlbumInput'),
+  type: 'shopAlbumInput'
 }
 
 
-class UpdateShopCover extends Component {
+class UpdateShopAlbum extends Component {
   constructor(props) {
     super(props)
   }
@@ -59,11 +59,11 @@ class UpdateShopCover extends Component {
 
   }
 
-  updateShopCover() {
+  updateShopAlbum() {
     this.props.submitFormData({
       formKey: commonForm,
       id: this.props.id,
-      submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER,
+      submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_ALBUM,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -89,24 +89,21 @@ class UpdateShopCover extends Component {
           leftType="text"
           leftText="取消"
           leftPress={() => Actions.pop()}
-          title="编辑封面"
+          title="编辑相册"
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText="完成"
-          rightPress={()=>{this.updateShopCover()}}
+          rightPress={()=>{this.updateShopAlbum()}}
           rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
           <View style={{}}>
-            <ImageInput
-              {...shopCoverInput}
-              containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
-              addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
-              choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
-              addImage={require('../../../assets/images/default_upload.png')}
-              closeModalAfterSelectedImg={true}
+            <ImageGroupInput
+              {...shopAlbumInput}
+              number={9}
+              imageLineCnt={3}
             />
           </View>
         </View>
@@ -127,7 +124,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateShopCover)
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateShopAlbum)
 
 const styles = StyleSheet.create({
   container: {
@@ -169,7 +166,6 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    backgroundColor: '#fff'
   },
 
 })

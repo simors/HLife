@@ -53,7 +53,7 @@ class GetInvitationCode extends Component {
         <View style={styles.body}>
           <ScrollView>
             <View>
-              <Image style={styles.image} source={require("../../../assets/images/shop_congratuation.png")} />
+              <Image style={styles.image} source={require("../../../assets/images/promotion_background.png")} />
               <Text style={styles.title}>加入{appConfig.APP_NAME}店铺</Text>
             </View>
 

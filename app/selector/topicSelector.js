@@ -6,6 +6,14 @@ export function getTopics(state) {
   return state.TOPIC.toJS().topics
 }
 
+export function getAllTopics(state) {
+  return state.TOPIC.toJS().allTopics
+}
+
+export function getMyTopics(state) {
+  return state.TOPIC.toJS().myTopics
+}
+
 export function getTopicComments(state) {
   return state.TOPIC.toJS().topicComments
 }

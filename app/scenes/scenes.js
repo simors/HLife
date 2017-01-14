@@ -28,6 +28,9 @@ import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
 import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
 import UpdateShopCover from '../components/Mine/myShop/UpdateShopCover'
+import ShopReCertification from '../components/Mine/myShop/ShopReCertification'
+import UpdateShopAlbum from '../components/Mine/myShop/UpdateShopAlbum'
+import ShopAnnouncementsManage from '../components/Mine/myShop/ShopAnnouncementsManage'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
@@ -52,7 +55,10 @@ import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
 import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
+
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
+import MyTopic from '../components/Mine/MyTopic'
+
 
 const styles = StyleSheet.create({
   container: {
@@ -92,6 +98,9 @@ export const scenes = Actions.create(
       <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
       <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
       <Scene key="UPDATE_SHOP_COVER" component={UpdateShopCover}/>
+      <Scene key="UPDATE_SHOP_ALBUM" component={UpdateShopAlbum}/>
+      <Scene key="SHOP_RE_CERTIFICATION" component={ShopReCertification}/>
+      <Scene key="SHOP_ANNOUNCEMENTS_MANAGE" component={ShopAnnouncementsManage}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
@@ -116,6 +125,8 @@ export const scenes = Actions.create(
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
+
+      <Scene key="MYTOPIC" component={MyTopic}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

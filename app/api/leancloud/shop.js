@@ -117,10 +117,16 @@ export function fetchShopDetail(payload) {
 export function getShopAnnouncement(payload) {
   let shopAnnouncements = []
   let shopId = payload.id //店铺id
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+
   let shop = AV.Object.createWithoutData('Shop', shopId)
   let relation = shop.relation('containedAnnouncements')
   let query = relation.query()
   // console.log('getShopAnnouncement.shopId=====', shopId)
+  if(!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
   query.addDescending('createdAt')
   return query.find().then(function(results) {
     // console.log('getShopAnnouncement.results=====', results)
