@@ -179,8 +179,10 @@ class Mine extends Component {
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>
               </View>
               <View style={styles.bindex}>
+                <TouchableOpacity onPress={()=>{Actions.FAVORITE_ARTICLES()}}>
                 <Image source={require('../../assets/images/favorite.png')}></Image>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>收藏</Text>
+                  </TouchableOpacity>
               </View>
 
             </View>
