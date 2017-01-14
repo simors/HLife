@@ -2,6 +2,7 @@ import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 import {UserInfo, UserDetail} from '../../models/userModels'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
+import {ArticleItem} from '../../models/ArticleModel'
 import {PromoterInfo} from '../../models/promoterModel'
 import {DoctorInfo} from '../../models/doctorModel'
 import ERROR from '../../constants/errorCode'
@@ -505,4 +506,34 @@ export function inquirySubmit(payload) {
     throw err
   })
 
+}
+
+export function getFavoriteArticles(payload) {
+  // console.log('payload',payload)
+  let currentUser = AV.User.current()
+  let query = new AV.Query('ArticleFavorite')
+  query.equalTo('user',currentUser)
+  query.equalTo('status',true)
+  query.include('article')
+  query.include('article.user')
+  return query.find().then((results) => {
+    // console.log('result-====>',results)
+
+    let article = []
+    results.forEach((result) => {
+      let articleInfo= result.get('article')
+     // console.log('articleInfo-====>=======',articleInfo)
+
+      article.push(ArticleItem.fromLeancloudObject(articleInfo))
+    })
+   //  console.log('article-====>',article)
+    return {
+      currentUserId: AV.User.current().id,
+      favoriteArticles: List(article)
+    }
+  }, (err) => {
+    // console.log(err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }

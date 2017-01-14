@@ -34,3 +34,9 @@ export function selectUserFollowees(state) {
   let userFollowees = state.AUTH.followees.get(activeUser)
   return userFollowees ? userFollowees.toJS() : []
 }
+
+export function selectUserFavoriteArticles(state) {
+  let activeUser = activeUserAndToken(state).activeUser
+  let userFavoriteArticles = state.AUTH.favoriteArticles.get(activeUser)
+  return userFavoriteArticles ? userFavoriteArticles.toJS() : []
+}

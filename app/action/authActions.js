@@ -390,6 +390,7 @@ function handleShopCover(payload, formData) {
   }
 }
 
+
 function handleShopAlbum(payload, formData) {
   return (dispatch, getState) => {
     let shopPayload = {
@@ -471,21 +472,7 @@ export function fetchUserFollowees(payload) {
   }
 }
 
-export function fetchUserFavoriteArticles(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchUserFollowees(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS)
-      dispatch(updateAction(result))
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
+
 
 export function userIsFollowedTheUser(payload) {
   return (dispatch, getState) => {
@@ -545,3 +532,18 @@ export function unFollowUser(payload) {
   }
 }
 
+export function fetchFavoriteArticles(payload) {
+  //console.log('columnId======>')
+  return (dispatch, getState) => {
+   // console.log('columnId======>---------------------')
+    lcAuth.getFavoriteArticles(payload).then((result) => {
+        //console.log('result======>',result)
+      let updateAction = createAction(AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS)
+      dispatch(updateAction(result))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
