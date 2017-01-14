@@ -49,7 +49,7 @@ const shopCoverInput = {
   type: "shopCoverInput",
 }
 
-class ShopManageIndex extends Component {
+class ShopAnnouncementsManage extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -122,7 +122,7 @@ class ShopManageIndex extends Component {
     }else if(3 == index) { //编辑资料
       Actions.COMPLETE_SHOP_INFO()
     }else if(4 == index) { //编辑公告
-      Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: this.props.userOwnedShopInfo.id})
+      Toast.show(index)
     }
   }
 
@@ -288,7 +288,7 @@ class ShopManageIndex extends Component {
           leftPress={() => Actions.pop()}
           leftStyle={styles.headerLeftStyle}
           headerContainerStyle={styles.headerContainerStyle}
-          title="店铺管理"
+          title="店铺公告管理"
           titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText="● ● ●"
@@ -305,7 +305,7 @@ class ShopManageIndex extends Component {
                 containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
                 addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
                 choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
-                addImage={require('../../../assets/images/upload_load.png')}
+                addImage={require('../../../assets/images/default_picture.png')}
                 initValue={this.props.userOwnedShopInfo.coverUrl}
                 closeModalAfterSelectedImg={true}
                 imageSelectedChangeCallback={(url)=>{this.coverImageSelectedChangeCallback(url)}}
@@ -368,7 +368,7 @@ class ShopManageIndex extends Component {
 
             <View style={styles.shopAnnouncementWrap}>
               {this.props.latestShopAnnouncement.content
-                ? <TouchableOpacity onPress={()=>{Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: this.props.userOwnedShopInfo.id})}}>
+                ? <TouchableOpacity onPress={()=>{}}>
                     <View style={styles.shopAnnouncementContainer}>
                       <View style={styles.shopAnnouncementCoverWrap}>
                         <Image style={styles.shopAnnouncementCover} source={{uri: this.props.latestShopAnnouncement.coverUrl}}/>
@@ -382,7 +382,7 @@ class ShopManageIndex extends Component {
                       </View>
                     </View>
                   </TouchableOpacity>
-                : <TouchableOpacity onPress={()=>{Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: this.props.userOwnedShopInfo.id})}}>
+                : <TouchableOpacity onPress={()=>{}}>
                     <View style={[styles.shopAnnouncementWrap, styles.noShopAnnouncementWrap]}>
                       <View style={[styles.noShopAnnouncementWrap]}>
                         <Text style={styles.noShopAnnouncementTxt}>暂无公告,点击添加</Text>
@@ -483,7 +483,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchSimilarShopList
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShopManageIndex)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopAnnouncementsManage)
 
 const styles = StyleSheet.create({
   container: {

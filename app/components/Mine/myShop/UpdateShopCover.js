@@ -105,7 +105,7 @@ class UpdateShopCover extends Component {
               containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
               addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
               choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
-              addImage={require('../../../assets/images/default_picture.png')}
+              addImage={require('../../../assets/images/upload_load.png')}
               closeModalAfterSelectedImg={true}
             />
           </View>
@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+    backgroundColor: '#fff'
   },
 
 })
