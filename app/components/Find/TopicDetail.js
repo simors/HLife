@@ -25,7 +25,7 @@ import TopicContent from './TopicContent'
 import Comment from '../common/Comment'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import {getTopicComments, isTopicLiked} from '../../selector/topicSelector'
+import {getTopicLikedTotalCount,getTopicComments, isTopicLiked} from '../../selector/topicSelector'
 import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic} from '../../action/topicActions'
 
 import * as Toast from '../common/Toast'
@@ -48,6 +48,7 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
     })
   }
 
@@ -153,6 +154,7 @@ export class TopicDetail extends Component {
     if (this.props.isLiked) {
       this.props.unLikeTopic({
         topicId: this.props.topic.objectId,
+        upType: 'topic',
         success: this.likeSuccessCallback.bind(this),
         error: this.likeErrorCallback
       })
@@ -160,6 +162,7 @@ export class TopicDetail extends Component {
     else {
       this.props.likeTopic({
         topicId: this.props.topic.objectId,
+        upType: 'topic',
         success: this.likeSuccessCallback.bind(this),
         error: this.likeErrorCallback
       })
@@ -191,8 +194,8 @@ export class TopicDetail extends Component {
 
   likeSuccessCallback() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId})
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId})
+      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
     })
   }
 
@@ -215,6 +218,11 @@ export class TopicDetail extends Component {
               <View style={styles.zanStyle}>
                 <Text style={styles.zanTextStyle}>
                   赞
+                </Text>
+              </View>
+              <View style={styles.zanStyle}>
+                <Text style={styles.zanTextStyle}>
+                  {this.props.likesCount}
                 </Text>
               </View>
             </View>
@@ -262,10 +270,12 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const topicComments = getTopicComments(state)
+  const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
   const commentsTotalCount = topicComments ? topicComments.length : undefined
   return {
     topicComments: topicComments,
+    likesCount:likesCount,
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
