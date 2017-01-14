@@ -22,7 +22,7 @@ import CommonListView from '../../common/CommonListView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as Toast from '../../common/Toast'
-import TopicShow from '../../Find/TopicShow'
+import MyTopicShow from './MyTopicShow'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 
@@ -47,7 +47,7 @@ export class MyTopic extends Component {
 
   renderTopicItem(value, key) {
     return (
-      <TopicShow key={key}
+      <MyTopicShow key={key}
                  containerStyle={{marginBottom: 10}}
                  topic={value}
                  onLikeButton={(payload)=>this.onLikeButton(payload)}
@@ -75,6 +75,7 @@ export class MyTopic extends Component {
           title="我的话题"
           rightType="none"
         />
+        <View style={styles.body}>
         <CommonListView
           contentContainerStyle={styles.itemLayout}
           dataSource={this.props.dataSrc}
@@ -86,6 +87,7 @@ export class MyTopic extends Component {
             this.loadMoreData()
           }}
         />
+          </View>
       </View>
     )
   }
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#E5E5E5',
   },
   buttonImage: {
     position: 'absolute',
@@ -120,8 +122,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: 45
   },
-  itemLayout: {
-    width: PAGE_WIDTH,
+  body: {
     backgroundColor: '#E5E5E5',
     ...Platform.select({
       ios: {
@@ -131,5 +132,9 @@ const styles = StyleSheet.create({
         paddingTop: normalizeH(45)
       }
     }),
+  },
+  itemLayout: {
+    width: PAGE_WIDTH,
+    backgroundColor: '#E5E5E5',
   },
 })
