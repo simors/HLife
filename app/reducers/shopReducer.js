@@ -13,6 +13,8 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdatePagingShopList(state, action)
     case ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST:
       return handleUpdateShopAnnouncementList(state, action)
+    case ShopActionTypes.UPDATE_PAGING_SHOP_ANNOUNCEMENT_LIST:
+      return handleUpdatePagingShopAnnouncementList(state, action)
     case ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO:
       return handleUpdateUserFollowShopsInfo(state, action)
     case ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS:
@@ -71,6 +73,18 @@ function handleUpdateShopAnnouncementList(state, action) {
   let _map = state.get('shopAnnouncements')
   _map = _map.set(shopId, shopAnnouncements)
   state = state.set('shopAnnouncements',  _map)
+  return state
+}
+
+function handleUpdatePagingShopAnnouncementList(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let shopComments = payload.shopAnnouncements
+  let _map = state.get('shopAnnouncements')
+  let _list = _map.get(shopId) || new List()
+  let newShopComments = _list.concat(shopComments)
+  let _newMap = _map.set(shopId, newShopComments)
+  state = state.set('shopAnnouncements', _newMap)
   return state
 }
 

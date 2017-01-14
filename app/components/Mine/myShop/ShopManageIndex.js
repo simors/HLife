@@ -305,7 +305,7 @@ class ShopManageIndex extends Component {
                 containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
                 addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
                 choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
-                addImage={require('../../../assets/images/upload_load.png')}
+                addImage={require('../../../assets/images/default_upload.png')}
                 initValue={this.props.userOwnedShopInfo.coverUrl}
                 closeModalAfterSelectedImg={true}
                 imageSelectedChangeCallback={(url)=>{this.coverImageSelectedChangeCallback(url)}}

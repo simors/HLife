@@ -32,7 +32,11 @@ export function fetchShopList(payload) {
 export function fetchShopAnnouncements(payload) {
   return (dispatch, getState) => {
     lcShop.getShopAnnouncement(payload).then((shopAnnouncements) =>{
-      let updateAction = createAction(ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST)
+      let actionType = ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.UPDATE_PAGING_SHOP_ANNOUNCEMENT_LIST
+      }
+      let updateAction = createAction(actionType)
       dispatch(updateAction({shopId: payload.id, shopAnnouncements: shopAnnouncements}))
     }).catch((error) => {
       if(payload.error){
