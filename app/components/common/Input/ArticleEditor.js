@@ -294,7 +294,7 @@ class ArticleEditor extends Component {
     return (
       <AutoGrowingTextInput
         style={styles.InputStyle}
-        placeholder={autoFocus ? "" : this.props.placeholder}
+        placeholder={this.props.placeholder}
         editable={this.props.editable}
         underlineColorAndroid="transparent"
         autoFocus={autoFocus}
