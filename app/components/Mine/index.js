@@ -116,10 +116,10 @@ class Mine extends Component {
           </View>
           <View style={styles.right}>
             <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(25), alignItems: 'flex-end'}}>
-              <Image style={{width: 20, height: 20}}  source={require('../../assets/images/扫一扫.png')} ></Image>
+              <Image style={{width: 20, height: 20}}  source={require('../../assets/images/扫一扫.png')} />
             </TouchableOpacity>
             <TouchableOpacity style={{marginTop: normalizeH(14), marginRight: normalizeW(12), alignItems: 'flex-end'}}>
-              <Image style={{width: 20, height: 23}}  source={require('../../assets/images/home_message.png')} ></Image>
+              <Image style={{width: 20, height: 23}}  source={require('../../assets/images/home_message.png')} />
             </TouchableOpacity>
           </View>
         </View>
@@ -133,27 +133,27 @@ class Mine extends Component {
           <View style={styles.azone}>
             <View style={{flex: 1}} >
               <TouchableOpacity style={styles.aindex} onPress= {() => this.doctorCertificationAction(this.props.doctorInfo.status)}>
-                <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}></Image>
+                <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}/>
                 <Text style={styles.textStyle}>医生认证</Text>
               </TouchableOpacity>
 
             </View>
             <View style={{flex: 1}}>
               <TouchableOpacity style={styles.aindex} onPress= {()=> {Actions.PROMOTER_AUTH()}}>
-                <Image source={require('../../assets/images/mine_promote.png')}></Image>
+                <Image source={require('../../assets/images/mine_promote.png')}/>
                 <Text style={styles.textStyle}>推广招聘</Text>
               </TouchableOpacity>
 
             </View>
             <View style={{flex: 1}}>
               <TouchableOpacity style={styles.aindex} onPress= {()=> {this.shopManage()}}>
-                <Image source={require('../../assets/images/mine_store.png')}></Image>
+                <Image source={require('../../assets/images/mine_store.png')}/>
                 <Text style={styles.textStyle}>我的店铺</Text>
               </TouchableOpacity>
             </View>
             <View style={{flex: 1}}>
               <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
-                <Image source={require('../../assets/images/mine_prize.png')}></Image>
+                <Image source={require('../../assets/images/mine_prize.png')}/>
                 <Text style={styles.textStyle}>推荐有奖</Text>
               </TouchableOpacity>
             </View>
@@ -167,19 +167,19 @@ class Mine extends Component {
             </View>
             <View style={styles.bbody}>
               <View style={styles.bindex}>
-                <Image source={require('../../assets/images/mine_ask.png')}></Image>
+                <Image source={require('../../assets/images/mine_ask.png')}/>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>提问</Text>
               </View>
               <View style={styles.bindex}>
-                <Image source={require('../../assets/images/mine_focuson.png')}></Image>
+                <Image source={require('../../assets/images/mine_focuson.png')}/>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>关注</Text>
               </View>
-              <View style={styles.bindex}>
-                <Image source={require('../../assets/images/mine_artical.png')}></Image>
+              <TouchableOpacity style={styles.bindex} onPress= {()=> {Actions.MYTOPIC()}}>
+                <Image source={require('../../assets/images/mine_artical.png')}/>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>
-              </View>
+              </TouchableOpacity>
               <View style={styles.bindex}>
-                <Image source={require('../../assets/images/favorite.png')}></Image>
+                <Image source={require('../../assets/images/favorite.png')}/>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>收藏</Text>
               </View>
 
@@ -187,19 +187,19 @@ class Mine extends Component {
           </View>
           <View style={styles.czone}>
             <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_wallet.png')}></Image>
+              <Image source={require('../../assets/images/mine_wallet.png')}/>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>钱包</Text>
             </View>
             <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_signin.png')}></Image>
+              <Image source={require('../../assets/images/mine_signin.png')}/>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>每日签到</Text>
             </View>
             <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_service.png')}></Image>
+              <Image source={require('../../assets/images/mine_service.png')}/>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>联系客服</Text>
             </View>
             <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_feedback.png')}></Image>
+              <Image source={require('../../assets/images/mine_feedback.png')}/>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>意见反馈</Text>
             </View>
           </View>
