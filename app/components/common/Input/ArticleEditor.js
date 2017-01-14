@@ -66,7 +66,7 @@ class ArticleEditor extends Component {
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
 
-    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight
+    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : 20)
 
     let initText = []
     if (this.props.initValue) {
@@ -312,7 +312,7 @@ class ArticleEditor extends Component {
         <Image style={[styles.imgInputStyle, {width, height}]}
                source={{uri: src}}>
         </Image>
-        <View style={{position: 'absolute', top: -8, right: 8}}>
+        <View style={{position: 'absolute', top: 0, right: 0}}>
           <TouchableOpacity onPress={() => this.deleteImageComponent(index)}>
             <Image style={{width: 30, height: 30, borderRadius: 15, overflow: 'hidden'}}
                    source={require('../../../assets/images/delete.png')} />
