@@ -114,7 +114,7 @@ class ShopManageIndex extends Component {
 
   _handleActionSheetPress(index) {
     if(0 == index) { //重新认证
-
+      Actions.SHOP_RE_CERTIFICATION({id: this.props.userOwnedShopInfo.id})
     }else if(1 == index) { //编辑封面
       Actions.UPDATE_SHOP_COVER({id: this.props.userOwnedShopInfo.id})
     }else if(2 == index) { //编辑相册
