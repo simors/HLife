@@ -27,17 +27,17 @@ export function getDoctorInfoByUserId(state, userId) {
 }
 
 export function getDoctorByGroupUserId(state, userIds) {
-  let doctors = new Map()
+  let doctors = []
   userIds.forEach((userId) => {
-    doctors.set(userId, getDoctorInfoByUserId(state, userId))
+    doctors.push(getDoctorInfoByUserId(state, userId))
   })
   return doctors
 }
 
 export function getDoctorByGroupDoctorId(state, doctorIds) {
-  let doctors = new Map()
+  let doctors = []
   doctorIds.forEach((doctorId) => {
-    doctors.set(doctorId, getDoctorInfoByDoctorId(state, doctorId))
+    doctors.push(getDoctorInfoByDoctorId(state, doctorId))
   })
   return doctors
 }

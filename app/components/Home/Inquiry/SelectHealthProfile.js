@@ -17,6 +17,7 @@ import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import Header from '../../common/Header'
+import {CheckBox} from 'react-native-elements'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import CommonTextInput from '../../common/Input/CommonTextInput'
 import DateTimeInput from '../../common/Input/DateTimeInput'
@@ -24,6 +25,7 @@ import GenderSelector from '../../common/Input/GenderSelector'
 import CommonButton from '../../common/CommonButton'
 import {inputFormOnDestroy} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
+import {getHealthProfileList} from '../../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -44,11 +46,30 @@ class SelectHealthProfile extends Component {
 
   }
 
-  // renderHealthProfile() {
-  //   return (
-  //
-  //   )
-  // }
+  renderHealthProfile() {
+    return(
+      this.props.healthProfiles.map((value, key) => {
+        return(
+          <View key={key} style={styles.healthProfile}>
+            <Image style={{width: normalizeW(35), height: normalizeH(35), borderRadius: normalizeW(17), overflow: 'hidden'}}
+                   source={value.avatar? {uri: value.avatar}: require('../../../assets/images/defualt_portrait_archives.png')}/>
+            <Text style={styles.profileText}>
+              {value.nickname + '  (' + value.gender + ', ' + value.birthday + ')' }
+            </Text>
+            <CheckBox
+              right
+              containerStyle={{position: 'absolute', right: 0, bottom: 0, margin: 0, padding: 0, borderWidth: 0,backgroundColor: '#FFFFFF'}}
+
+            />
+          </View>
+        )
+      })
+    )
+  }
+
+  addHealthProfile() {
+    Actions.HEALTH_PROFILE()
+  }
 
   render() {
     return(
@@ -65,14 +86,16 @@ class SelectHealthProfile extends Component {
         />
         <View style={styles.body}>
           <View style={styles.trip}>
-            <Text style={{fontSize: em(15), color: '#50E3C2'}}>新增健康档案</Text>
+            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.addHealthProfile()}>
+              <Text style={{fontSize: em(15), color: '#50E3C2'}}>新增健康档案</Text>
+            </TouchableOpacity>
           </View>
           <ScrollView style={{marginTop: normalizeH(8), backgroundColor: '#FFFFFF'}}>
             <View style={{paddingLeft: normalizeW(35), justifyContent: 'center', height: normalizeH(40), borderBottomWidth: 1, borderBottomColor: '#F4F4F4'}}>
               <Text style={{fontSize: em(15), color: '#B2B2B2'}}>选择为谁提问</Text>
             </View>
 
-            {/*{this.renderHealthProfile()}*/}
+            {this.renderHealthProfile()}
 
           </ScrollView>
 
@@ -88,7 +111,9 @@ class SelectHealthProfile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let healthProfileList = getHealthProfileList(state)
   return {
+    healthProfiles: healthProfileList,
   }
 }
 
@@ -127,5 +152,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
+  healthProfile: {
+    flexDirection: 'row',
+    height: normalizeH(55),
+    alignItems: 'center',
+    paddingLeft: normalizeW(35),
+    borderBottomColor: '#F4F4F4',
+    borderBottomWidth: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  profileText: {
+    marginLeft: normalizeW(10),
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: em(17),
+    color: '#030303',
+  }
+
 
 })

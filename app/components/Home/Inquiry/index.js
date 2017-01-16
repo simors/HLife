@@ -21,7 +21,7 @@ import Header from '../../common/Header'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import MultilineText from '../../common/Input/MultilineText'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
-import {activeUserId, getHealthjProfileSize} from '../../../selector/authSelector'
+import {activeUserId, getHealthProfileSize} from '../../../selector/authSelector'
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {inputFormOnDestroy} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
@@ -118,7 +118,7 @@ class Inguiry extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let healthProfileSize = getHealthjProfileSize(state)
+  let healthProfileSize = getHealthProfileSize(state)
   return {
     currentUser: activeUserId(state),
     healthProfileSize: healthProfileSize,
