@@ -233,6 +233,18 @@ export function fetchConversation(payload) {
   }
 }
 
+export function fetchChatMessages(payload) {
+  return (dispatch, getState) => {
+    dispatch(fetchLcChatMessages(payload)).then((messages) => {
+      let initMessages = createAction(msgTypes.ON_INIT_MESSAGES)
+      dispatch(initMessages({
+        conversationId: payload.conversationId,
+        messages: messages,
+      }))
+    })
+  }
+}
+
 function fetchLcConversation(payload) {
   return (dispatch, getState) => {
     let client = messengerClient(getState())
@@ -252,6 +264,29 @@ function fetchLcConversation(payload) {
         })
         return convs
       })
+  }
+}
+
+function fetchLcChatMessages(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+      console.log('leancloud Messenger init failed, can\'t get client')
+      return undefined
+    }
+
+    return client.getConversation(payload.conversationId).then((conversation)=> {
+      return conversation.queryMessages({limit: 10})
+    }).then((lcMsgs)=> {
+      let msgs = []
+      lcMsgs.map((msg) => {
+        msgs.unshift(Message.fromLeancloudMessage(msg))
+      })
+      return msgs
+    })
   }
 }
 

@@ -17,6 +17,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {getUserInfoById} from '../../action/authActions'
+import {fetchChatMessages} from '../../action/messageAction'
 import {userInfoById, activeUserId, isUserLogined} from '../../selector/authSelector'
 import {hasNewMessageById, getNewestMessageById} from '../../selector/messageSelector'
 import {WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
@@ -40,6 +41,7 @@ class MessageBoxCell extends Component {
     })
     InteractionManager.runAfterInteractions(() => {
       this.props.getUserInfoById({userId: memberId})
+      this.props.fetchChatMessages({conversationId: this.props.conversation})
     })
   }
 
@@ -159,6 +161,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getUserInfoById,
+  fetchChatMessages,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBoxCell)
