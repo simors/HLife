@@ -67,7 +67,11 @@ export function fetchUserLikeTopicInfo(payload) {
 
 export function likeTopic(payload) {
   let topicId = payload.topicId
-  let topic = AV.Object.createWithoutData('Topics', payload.topicId)
+  let topic = undefined
+  if( payload.upType == "topic")
+    topic = AV.Object.createWithoutData('Topics', payload.topicId)
+  else if (payload.upType == "topicComment")
+    topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
   let upType = payload.upType
   let currentUser = AV.User.current()
   return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
@@ -112,7 +116,11 @@ export function likeTopic(payload) {
 
 export function unLikeTopic(payload) {
   let topicId = payload.topicId
-  let topic = AV.Object.createWithoutData('Topics', payload.topicId)
+  let topic =  undefined
+  if( payload.upType == "topic")
+    topic = AV.Object.createWithoutData('Topics', payload.topicId)
+  else if (payload.upType == "topicComment")
+    topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
   return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
     if (userLikeTopicInfo && userLikeTopicInfo.id) {
       let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
