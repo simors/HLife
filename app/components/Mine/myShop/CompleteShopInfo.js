@@ -144,8 +144,8 @@ class CompleteShopInfo extends Component {
   }
 
   submitSuccessCallback(context) {
-    this.props.fetchUserOwnedShopInfo()
-    if(context.props.popNum <= 1) {
+    context.props.fetchUserOwnedShopInfo()
+    if(!context.props.popNum || context.props.popNum <= 1) {
       Actions.pop()
     }else {
       Actions.pop({
@@ -264,15 +264,6 @@ class CompleteShopInfo extends Component {
     let targetShopCategory = {}
     if(this.props.userOwnedShopInfo.targetShopCategory) {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
-    }
-
-    let coverUrlArr = []
-    if(this.props.userOwnedShopInfo.coverUrl) {
-      coverUrlArr.push(this.props.userOwnedShopInfo.coverUrl)
-    }
-    let albumArr = []
-    if(this.props.userOwnedShopInfo.album && this.props.userOwnedShopInfo.album.length) {
-      albumArr = this.props.userOwnedShopInfo.album
     }
 
     return (
@@ -414,7 +405,7 @@ class CompleteShopInfo extends Component {
                   {...shopAlbumInput}
                   number={9}
                   imageLineCnt={3}
-                  initValue={albumArr}
+                  initValue={this.props.userOwnedShopInfo.album}
                 />
               </View>
             </View>

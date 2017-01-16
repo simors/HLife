@@ -41,7 +41,7 @@ class ShopRegisterSuccess extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.COMPLETE_SHOP_INFO({popNum: 3})
+      Actions.COMPLETE_SHOP_INFO({popNum: 2})
     }
   }
 
@@ -57,35 +57,35 @@ class ShopRegisterSuccess extends Component {
     return (
       <View style={styles.container}>
         <Header
-          leftType="text"
-          leftText="取消"
-          leftPress={() => Actions.pop()}
+          leftType="none"
           title="注册店铺"
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
-          <Image style={styles.image} source={require("../../../assets/images/shop_congratuation.png")} />
-          <View style={styles.congratulationWrap}>
-            <Text style={styles.congratulationTxt}>恭喜您</Text>
-            <Text style={styles.congratulationTxt}>已成功入驻吾爱店铺</Text>
-          </View>
-          <View style={styles.tipWrap}>
-            <Text style={[styles.tip, styles.red]}>我们通过线上推广和传播给您的线下店铺带来更多的生意</Text>
-            <Text style={styles.tip}>请确保店铺信息的真实合法性，平台将不定期对店铺信息进行排查，杜绝非法欺骗的行为</Text>
-          </View>
+          <ScrollView>
+            <Image style={styles.image} source={require("../../../assets/images/shop_congratuation.png")} />
+            <View style={styles.congratulationWrap}>
+              <Text style={styles.congratulationTxt}>恭喜您</Text>
+              <Text style={styles.congratulationTxt}>已成功入驻吾爱店铺</Text>
+            </View>
+            <View style={styles.tipWrap}>
+              <Text style={[styles.tip, styles.red]}>我们通过线上推广和传播给您的线下店铺带来更多的生意</Text>
+              <Text style={styles.tip}>请确保店铺信息的真实合法性，平台将不定期对店铺信息进行排查，杜绝非法欺骗的行为</Text>
+            </View>
 
-          <CommonButton
-            buttonStyle={{marginTop:normalizeH(54)}}
-            title="完善店铺资料"
-            onPress={()=>{this.completeShopInfo()}}
-          />
-          <CommonButton
-            buttonStyle={{marginTop:normalizeH(54), backgroundColor:'#f2f2f2'}}
-            title="取消"
-            onPress={()=>{this.goShopManage()}}
-          />
+            <CommonButton
+              buttonStyle={{marginTop:normalizeH(20)}}
+              title="完善店铺资料"
+              onPress={()=>{this.completeShopInfo()}}
+            />
+            <CommonButton
+              buttonStyle={{marginTop:normalizeH(20), backgroundColor:'#d8d8d8'}}
+              title="取消"
+              onPress={()=>{this.goShopManage()}}
+            />
+          </ScrollView>
         </View>
       </View>
     )
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    height:normalizeH(311)
+    height:normalizeH(280)
   },
   congratulationWrap: {
     marginTop: normalizeH(20),

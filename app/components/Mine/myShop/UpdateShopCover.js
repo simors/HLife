@@ -26,6 +26,8 @@ import Header from '../../common/Header'
 import ImageInput from '../../common/Input/ImageInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import * as Toast from '../../common/Toast'
+import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
+import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -64,16 +66,17 @@ class UpdateShopCover extends Component {
       formKey: commonForm,
       id: this.props.id,
       submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER,
-      success: this.submitSuccessCallback,
+      success: ()=>{this.submitSuccessCallback(this)},
       error: this.submitErrorCallback
     })
   }
 
-  submitSuccessCallback() {
+  submitSuccessCallback(context) {
+    context.props.fetchUserOwnedShopInfo()
     Toast.show('更新成功', {
       duration: 1500,
       onHidden: () =>{
-        Actions.SHOP_MANAGE_INDEX()
+        Actions.pop()
       }
     })
   }
@@ -107,6 +110,7 @@ class UpdateShopCover extends Component {
               choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
               addImage={require('../../../assets/images/default_upload.png')}
               closeModalAfterSelectedImg={true}
+              initValue={this.props.userOwnedShopInfo.coverUrl}
             />
           </View>
         </View>
@@ -116,15 +120,16 @@ class UpdateShopCover extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   return {
-
+    userOwnedShopInfo: userOwnedShopInfo
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdateShopCover)
