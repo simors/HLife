@@ -24,6 +24,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
   UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
   PUBLISH_ANNOUNCEMENT: 'PUBLISH_ANNOUNCEMENT',
+  UPDATE_ANNOUNCEMENT: 'UPDATE_ANNOUNCEMENT',
 }
 
 export function submitFormData(payload) {
@@ -73,6 +74,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT:
         dispatch(handlePublishAnnouncement(payload,formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT:
+        dispatch(handleUpdateAnnouncement(payload,formData))
         break
     }
   }
@@ -451,6 +455,27 @@ function handlePublishAnnouncement(payload, formData) {
     }
     lcAuth.publishAnnouncement(newPayload).then((shop) => {
       let _action = createAction(AuthTypes.PUBLISH_ANNOUNCEMENT_SUCCESS)
+      dispatch(_action(shop))
+      if (payload.success) {
+        payload.success(shop)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function handleUpdateAnnouncement(payload, formData) {
+  return (dispatch, getState) => {
+    let newPayload = {
+      shopAnnouncementId: payload.shopAnnouncementId,
+      announcementContent: formData.announcementContentInput.text,
+      announcementCover: formData.announcementCoverInput.text,
+    }
+    lcAuth.updateAnnouncement(newPayload).then((shop) => {
+      let _action = createAction(AuthTypes.UPDATE_ANNOUNCEMENT_SUCCESS)
       dispatch(_action(shop))
       if (payload.success) {
         payload.success(shop)

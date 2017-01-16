@@ -28,7 +28,7 @@ import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import ActionSheet from 'react-native-actionsheet'
+import {fetchShopAnnouncements, } from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -68,26 +68,40 @@ class PublishShopAnnouncement extends Component {
   }
 
   publishAnnouncement() {
-    this.props.submitFormData({
-      formKey: commonForm,
-      id: this.props.id,
-      submitType: INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT,
-      success: ()=>{this.submitSuccessCallback(this)},
-      error: this.submitErrorCallback
-    })
+    if(this.props.shopAnnouncementId) {
+      this.props.submitFormData({
+        formKey: commonForm,
+        shopAnnouncementId: this.props.shopAnnouncementId,
+        submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT,
+        success: ()=>{this.submitSuccessCallback(this, '更新成功')},
+        error: ()=>{this.submitErrorCallback(this, '更新失败')}
+      })
+    }else {
+      this.props.submitFormData({
+        formKey: commonForm,
+        id: this.props.id,
+        submitType: INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT,
+        success: ()=>{this.submitSuccessCallback(this, '发布成功')},
+        error: ()=>{this.submitErrorCallback(this, '发布失败')}
+      })
+    }
   }
 
-  submitSuccessCallback(context) {
-    Toast.show('发布成功', {
+  submitSuccessCallback(context, message) {
+    this.props.fetchShopAnnouncements({
+      id: context.props.id,
+      isRefresh: true
+    })
+    Toast.show(message, {
       duration: 1000,
       onHidden: ()=>{
-        Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: context.props.id})
+        Actions.pop()
       }
     })
   }
 
-  submitErrorCallback() {
-    Toast.show('发布失败', {duration: 1000})
+  submitErrorCallback(context, message) {
+    Toast.show(message, {duration: 1000})
   }
 
   render() {
@@ -114,6 +128,7 @@ class PublishShopAnnouncement extends Component {
                 containerStyle={{backgroundColor: '#fff'}}
                 placeholder="输入公告内容，关于店铺的动态、活动等，（100字以内）"
                 inputStyle={{height: normalizeH(232)}}
+                initValue={this.props.shopAnnouncementContent}
                 {...announcementContentInput}/>
             </View>
             <View style={styles.bottomWrap}>
@@ -124,6 +139,7 @@ class PublishShopAnnouncement extends Component {
                   choosenImageStyle={{width: 80, height: 80}}
                   {...announcementCoverInput}
                   addImage={require('../../../assets/images/upload_picture.png')}
+                  initValue={this.props.shopAnnouncementCover}
                 />
               </View>
               <Text style={styles.noticeTip}>选择一张图片做为公告封面</Text>
@@ -146,6 +162,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
+  fetchShopAnnouncements
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishShopAnnouncement)

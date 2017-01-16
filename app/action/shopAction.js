@@ -46,6 +46,22 @@ export function fetchShopAnnouncements(payload) {
   }
 }
 
+export function deleteShopAnnouncement(payload) {
+  return (dispatch, getState) => {
+    lcShop.deleteShopAnnouncement(payload).then((success) =>{
+      let updateAction = createAction(ShopActionTypes.DELETE_SHOP_ANNOUNCEMENT_SUCCESS)
+      dispatch(updateAction({shopAnnouncementId: payload.shopAnnouncementId}))
+      if(payload.success){
+        payload.success()
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function userIsFollowedShop(payload) {
   return (dispatch, getState) => {
     lcShop.isFollowedShop(payload).then((result)=>{

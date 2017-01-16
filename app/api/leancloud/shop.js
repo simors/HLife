@@ -97,7 +97,7 @@ export function fetchShopDetail(payload) {
   query.equalTo('objectId', id)
   query.include(['targetShopCategory', 'owner', 'containedTag'])
   return query.first().then(function (result) {
-    console.log('fetchShopDetail.result=', result)
+    // console.log('fetchShopDetail.result=', result)
     if(__DEV__) {
       let shopInfo = ShopInfo.fromLeancloudObject(result)
       return new Map(shopInfo)
@@ -119,6 +119,7 @@ export function getShopAnnouncement(payload) {
   let shopId = payload.id //店铺id
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
+  // let lastUpdatedAt = payload.lastUpdatedAt
 
   let shop = AV.Object.createWithoutData('Shop', shopId)
   let relation = shop.relation('containedAnnouncements')
@@ -128,12 +129,24 @@ export function getShopAnnouncement(payload) {
     query.lessThan('createdAt', new Date(lastCreatedAt))
   }
   query.addDescending('createdAt')
+  query.limit(5)
   return query.find().then(function(results) {
     // console.log('getShopAnnouncement.results=====', results)
     results.forEach((result)=>{
       shopAnnouncements.push(ShopAnnouncement.fromLeancloudObject(result))
     })
     return new List(shopAnnouncements)
+  }, function(err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function deleteShopAnnouncement(payload) {
+  let shopAnnouncementId = payload.shopAnnouncementId
+  let shopAnnouncement = AV.Object.createWithoutData('ShopAnnouncement', shopAnnouncementId)
+  return shopAnnouncement.destroy().then((success)=>{
+    return success
   }, function(err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
