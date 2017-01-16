@@ -308,6 +308,25 @@ export function submitCompleteShopInfo(payload) {
   
 }
 
+export function publishAnnouncement(payload) {
+  let shopId = payload.id
+  let announcementContent = payload.announcementContent
+  let announcementCover = payload.announcementCover
+
+  let shopAnnouncement = new AV.Object('ShopAnnouncement')
+  shopAnnouncement.set('coverUrl', announcementCover)
+  shopAnnouncement.set('content', announcementContent)
+  return shopAnnouncement.save().then((result)=> {
+    let shop = AV.Object.createWithoutData('Shop', shopId)
+    let relation = shop.relation('containedAnnouncements')
+    relation.add(shopAnnouncement)
+    return shop.save()
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({

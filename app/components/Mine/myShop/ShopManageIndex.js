@@ -398,7 +398,7 @@ class ShopManageIndex extends Component {
               <View style={styles.shopAnnouncementDateWrap}>
                 <Image style={styles.shopAnnouncementDateIcon} source={require('../../../assets/images/notice_date.png')}>
                   <Text style={styles.shopAnnouncementDateDay}>{this.props.latestShopAnnouncement.createdDay}</Text>
-                  <Text style={styles.shopAnnouncementDateMonth}>{this.props.latestShopAnnouncement.createdMonth}</Text>
+                  <Text style={styles.shopAnnouncementDateMonth}>{this.props.latestShopAnnouncement.createdMonth+1}</Text>
                 </Image>
               </View>
             </View>

@@ -19,25 +19,15 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import * as Communications from 'react-native-communications'
-import SendIntentAndroid from 'react-native-send-intent'
 import Header from '../../common/Header'
 import CommonListView from '../../common/CommonListView'
-import ScoreShow from '../../common/ScoreShow'
-import ImageInput from '../../common/Input/ImageInput'
-import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {fetchShopAnnouncements, } from '../../../action/shopAction'
-import {fetchUserFollowees} from '../../../action/authActions'
 import {selectShopAnnouncements, } from '../../../selector/shopSelector'
-import * as authSelector from '../../../selector/authSelector'
-import Comment from '../../common/Comment'
-import FollowUser from '../../common/FollowUser'
-import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -107,7 +97,7 @@ class ShopAnnouncementsManage extends Component {
 
   renderRow(rowData, rowId) {
     return (
-      <View style={styles.shopAnnouncementWrap}>
+      <View key={"announcement_" + rowId} style={styles.shopAnnouncementWrap}>
         <View style={styles.shopAnnouncementContainer}>
           <View style={styles.shopAnnouncementCoverWrap}>
             <Image style={styles.shopAnnouncementCover} source={{uri: rowData.coverUrl}}/>
@@ -123,7 +113,7 @@ class ShopAnnouncementsManage extends Component {
         <View style={styles.shopAnnouncementDateWrap}>
           <Image style={styles.shopAnnouncementDateIcon} source={require('../../../assets/images/notice_date.png')}>
             <Text style={styles.shopAnnouncementDateDay}>{rowData.createdDay}</Text>
-            <Text style={styles.shopAnnouncementDateMonth}>{rowData.createdMonth}</Text>
+            <Text style={styles.shopAnnouncementDateMonth}>{rowData.createdMonth+1}</Text>
           </Image>
         </View>
       </View>
@@ -234,8 +224,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   headerRightStyle: {
-    color: '#fff',
-    fontSize: em(12)
+
   },
   body: {
     ...Platform.select({
