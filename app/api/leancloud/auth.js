@@ -327,6 +327,22 @@ export function publishAnnouncement(payload) {
   })
 }
 
+export function updateAnnouncement(payload) {
+  let shopAnnouncementId = payload.shopAnnouncementId
+  let announcementContent = payload.announcementContent
+  let announcementCover = payload.announcementCover
+  
+  let shopAnnouncement = AV.Object.createWithoutData('ShopAnnouncement', shopAnnouncementId)
+  shopAnnouncement.set('coverUrl', announcementCover)
+  shopAnnouncement.set('content', announcementContent)
+  return shopAnnouncement.save().then((result)=> {
+    return true
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({

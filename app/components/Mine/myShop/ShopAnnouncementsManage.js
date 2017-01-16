@@ -51,7 +51,7 @@ class ShopAnnouncementsManage extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.refreshData()
+      //this.refreshData()
     })
   }
 
@@ -77,6 +77,7 @@ class ShopAnnouncementsManage extends Component {
     let payload = {
       id: this.props.id,
       lastCreatedAt: this.props.lastCreatedAt,
+      lastUpdatedAt: this.props.lastUpdatedAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
         if(!this.listView) {
@@ -95,28 +96,40 @@ class ShopAnnouncementsManage extends Component {
     this.props.fetchShopAnnouncements(payload)
   }
 
+  updateAnnouncement(shopAnnouncement) {
+    Actions.PUBLISH_SHOP_ANNOUNCEMENT({
+      id: this.props.id,
+      shopAnnouncementId: shopAnnouncement.id,
+      shopAnnouncementContent: shopAnnouncement.content,
+      shopAnnouncementCover: shopAnnouncement.coverUrl,
+
+    })
+  }
+
   renderRow(rowData, rowId) {
     return (
-      <View key={"announcement_" + rowId} style={styles.shopAnnouncementWrap}>
-        <View style={styles.shopAnnouncementContainer}>
-          <View style={styles.shopAnnouncementCoverWrap}>
-            <Image style={styles.shopAnnouncementCover} source={{uri: rowData.coverUrl}}/>
-          </View>
-          <View style={styles.shopAnnouncementCnt}>
-            <View style={styles.shopAnnouncementTitleWrap}>
-              <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
-                {rowData.content}
-              </Text>
+      <TouchableOpacity key={"announcement_" + rowId} onPress={()=>{this.updateAnnouncement(rowData)}}>
+        <View style={styles.shopAnnouncementWrap}>
+          <View style={styles.shopAnnouncementContainer}>
+            <View style={styles.shopAnnouncementCoverWrap}>
+              <Image style={styles.shopAnnouncementCover} source={{uri: rowData.coverUrl}}/>
+            </View>
+            <View style={styles.shopAnnouncementCnt}>
+              <View style={styles.shopAnnouncementTitleWrap}>
+                <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
+                  {rowData.content}
+                </Text>
+              </View>
             </View>
           </View>
+          <View style={styles.shopAnnouncementDateWrap}>
+            <Image style={styles.shopAnnouncementDateIcon} source={require('../../../assets/images/notice_date.png')}>
+              <Text style={styles.shopAnnouncementDateDay}>{rowData.createdDay}</Text>
+              <Text style={styles.shopAnnouncementDateMonth}>{rowData.createdMonth+1}</Text>
+            </Image>
+          </View>
         </View>
-        <View style={styles.shopAnnouncementDateWrap}>
-          <Image style={styles.shopAnnouncementDateIcon} source={require('../../../assets/images/notice_date.png')}>
-            <Text style={styles.shopAnnouncementDateDay}>{rowData.createdDay}</Text>
-            <Text style={styles.shopAnnouncementDateMonth}>{rowData.createdMonth+1}</Text>
-          </Image>
-        </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -174,9 +187,11 @@ const mapStateToProps = (state, ownProps) => {
   let shopAnnouncementList = selectShopAnnouncements(state, ownProps.id)
 
   let lastCreatedAt = ''
+  let lastUpdatedAt = ''
   let hideFooter = false
   if(shopAnnouncementList && shopAnnouncementList.length) {
     lastCreatedAt = shopAnnouncementList[shopAnnouncementList.length-1].createdAt
+    lastUpdatedAt = shopAnnouncementList[shopAnnouncementList.length-1].updatedAt
     if(shopAnnouncementList.length < 4) {
       hideFooter = true
     }
@@ -187,7 +202,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     ds: ds.cloneWithRows(shopAnnouncementList),
     lastCreatedAt: lastCreatedAt,
-    hideFooter: hideFooter
+    lastUpdatedAt: lastUpdatedAt,
+    hideFooter: hideFooter,
   }
 }
 

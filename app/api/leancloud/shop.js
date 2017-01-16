@@ -119,6 +119,7 @@ export function getShopAnnouncement(payload) {
   let shopId = payload.id //店铺id
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
+  // let lastUpdatedAt = payload.lastUpdatedAt
 
   let shop = AV.Object.createWithoutData('Shop', shopId)
   let relation = shop.relation('containedAnnouncements')
@@ -128,6 +129,7 @@ export function getShopAnnouncement(payload) {
     query.lessThan('createdAt', new Date(lastCreatedAt))
   }
   query.addDescending('createdAt')
+  query.limit(5)
   return query.find().then(function(results) {
     // console.log('getShopAnnouncement.results=====', results)
     results.forEach((result)=>{
