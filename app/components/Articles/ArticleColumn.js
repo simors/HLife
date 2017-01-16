@@ -156,7 +156,7 @@ class ArticleColumn extends Component {
     return (
       <View
         style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-        <ArticleShow {...value}/>
+        <ArticleShow value={value}/>
       </View>
     )
   }

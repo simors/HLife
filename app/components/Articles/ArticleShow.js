@@ -217,19 +217,19 @@ class ArticleShow extends Component {
   }
 
   renderArticleV2() {
-    if (this.props.articleId) {
-      if (this.props.images != undefined) {
-        let imageCount = this.props.images.length
+    if (this.props.value.articleId) {
+      if (this.props.value.images != undefined) {
+        let imageCount = this.props.value.images.length
         switch (imageCount) {
           case 1:
             return (
-              <TouchableOpacity onPress={()=> {Actions.ARTICLES_ARTICLE({...this.props})}} onLongPress={()=>{this.props.unFavorite?this.props.unFavorite():this.longPress()}}>
+              <TouchableOpacity onPress={()=> {Actions.ARTICLES_ARTICLE(this.props.value)}} onLongPress={()=>{this.props.onLongPress?this.props.onLongPress(this.props.value):this.longPress()}}>
 
               <View style={styles.body1}>
-                <Image style={styles.image1} source={{uri: this.props.images[0]}}></Image>
+                <Image style={styles.image1} source={{uri: this.props.value.images[0]}}></Image>
                 <View>
-                  <Text style={styles.title1} numberOfLines={2}>{this.props.title}</Text>
-                  <Text style={styles.abs1} numberOfLines={2}>{this.props.abstract}</Text>
+                  <Text style={styles.title1} numberOfLines={2}>{this.props.value.title}</Text>
+                  <Text style={styles.abs1} numberOfLines={2}>{this.props.value.abstract}</Text>
                 </View>
               </View>
               </TouchableOpacity>
@@ -237,15 +237,15 @@ class ArticleShow extends Component {
             )
           case 3:
             return (
-              <TouchableOpacity onPress={()=> {Actions.ARTICLES_ARTICLE({...this.props})}} onLongPress={()=>{this.props.unFavorite?this.props.unFavorite():this.longPress()}}>
+              <TouchableOpacity onPress={()=> {Actions.ARTICLES_ARTICLE(this.props.value)}} onLongPress={()=>{this.props.onLongPress?this.props.onLongPress(this.props.value):this.longPress()}}>
 
               <View style={styles.body3}>
-                <Text style={styles.title3} numberOfLines={1}>{this.props.title}</Text>
-                <Text style={styles.abs3} numberOfLines={2}>{this.props.abstract}</Text>
+                <Text style={styles.title3} numberOfLines={1}>{this.props.value.title}</Text>
+                <Text style={styles.abs3} numberOfLines={2}>{this.props.value.abstract}</Text>
                 <View style={styles.imageV3}>
-                  <Image style={styles.image3} source={{uri: this.props.images[0]}}></Image>
-                  <Image style={styles.image3} source={{uri: this.props.images[1]}}></Image>
-                  <Image style={styles.image3} source={{uri: this.props.images[2]}}></Image>
+                  <Image style={styles.image3} source={{uri: this.props.value.images[0]}}></Image>
+                  <Image style={styles.image3} source={{uri: this.props.value.images[1]}}></Image>
+                  <Image style={styles.image3} source={{uri: this.props.value.images[2]}}></Image>
                 </View>
               </View>
               </TouchableOpacity>
@@ -256,10 +256,10 @@ class ArticleShow extends Component {
       else {
         //console.log('hereiscode<><><><>')
         return (
-          <TouchableOpacity onPress={()=> {Actions.ARTICLES_ARTICLE({...this.props})}} onLongPress={()=>{this.props.unFavorite?this.props.unFavorite():this.longPress()}}>
+          <TouchableOpacity onPress={()=> {Actions.ARTICLES_ARTICLE(this.props.value)}} onLongPress={()=>{this.props.onLongPress?this.props.onLongPress(this.props.value):this.longPress()}}>
           <View style={styles.body0}>
-            <Text style={styles.title0} numberOfLines={1}>{this.props.title}</Text>
-            <Text style={styles.abs0} numberOfLines={2}>{this.props.abstract}</Text>
+            <Text style={styles.title0} numberOfLines={1}>{this.props.value.title}</Text>
+            <Text style={styles.abs0} numberOfLines={2}>{this.props.value.abstract}</Text>
           </View>
           </TouchableOpacity>
 

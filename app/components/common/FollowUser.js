@@ -28,14 +28,11 @@ import * as authSelector from '../../selector/authSelector'
 class FollowUser extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      shouldFetchUserFollowees : true
-    }
   }
 
   componentWillMount() {
-
+    InteractionManager.runAfterInteractions(()=>{
+    })
   }
 
   componentDidMount() {
@@ -43,14 +40,7 @@ class FollowUser extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.isUserLogined && this.state.shouldFetchUserFollowees) {
-      this.setState({
-        shouldFetchUserFollowees : false
-      })
-      if(this.props.isUserLogined) {
-        this.props.fetchUserFollowees()
-      }
-    }
+    // console.log('nextProps==**********************==', nextProps)
   }
 
   followUser(userId) {

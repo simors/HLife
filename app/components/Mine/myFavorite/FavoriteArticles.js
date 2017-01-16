@@ -29,6 +29,10 @@ import {selectUserFavoriteArticles} from '../../../selector/authSelector'
 import {fetchFavoriteArticles} from '../../../action/authActions'
 import ArticleShow from '../../Articles/ArticleShow'
 import {unFavoriteArticle} from '../../../action/articleAction'
+import ActionSheet from 'react-native-actionsheet'
+
+
+
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
@@ -36,6 +40,9 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 class FavoriteArticles extends Component{
   constructor(props){
     super(props)
+    this.state={
+      choosenOne: undefined,
+    }
   }
 
   componentDidMount() {
@@ -47,21 +54,38 @@ class FavoriteArticles extends Component{
 
   }
 
-  unfavorite(payload){
-    InteractionManager.runAfterInteractions(() => {
-        console.log('asssssssss')
-      this.props.unFavoriteArticle(payload)
+
+
+  unfavorite(){
+
+  }
+  _handleActionSheetPress(index) {
+    if(0 == index) { //取消收藏
+      InteractionManager.runAfterInteractions(() => {
+        this.props.unFavoriteArticle(this.state.choosenOne)
+        this.props.fetchFavoriteArticles()
+      })
+    }
+  }
+
+  show(payload){
+   // console.log('asssssssss',payload)
+
+    this.setState({
+      choosenOne: payload
     })
+   // console.log('asasddddddddd',this.state.choosenOne)
+
+    this.ActionSheet.show()
   }
   renderArticleItem(rowData) {
     let value = rowData
 
-    // console.log('value=====>',value)
+     //console.log('value=====>',value)
     return (
-
       <View
         style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
-        <ArticleShow {...value} unfavorite={this.unfavorite(value)}/>
+        <ArticleShow value={value} onLongPress={this.show.bind(this)}/>
       </View>
 
     )
@@ -107,12 +131,19 @@ class FavoriteArticles extends Component{
         </Header>
         <View style={styles.body}>
           <View style={styles.tabBar}>
-            <Text style={{fontSize:em(15),color:'#50E3C2',marginLeft:normalizeW(86)}}>文章</Text>
+            <Text style={{fontSize:em(15),color:'#50E3C2',marginLeft:normalizeW(86)}} >文章</Text>
             <Text style={{fontSize:em(15),color:'#4A4A4A',marginLeft:normalizeW(143)}}>店铺</Text>
           </View>
           <View>
             {this.renderArticleList()}
           </View>
+          <ActionSheet
+            ref={(o) => this.ActionSheet = o}
+            title="是否删除收藏"
+            options={['删除收藏', '取消']}
+            cancelButtonIndex={1}
+            onPress={this._handleActionSheetPress.bind(this)}
+          />
         </View>
       </View>
     )

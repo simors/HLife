@@ -17,6 +17,7 @@ import {activeUserInfo} from '../../selector/authSelector'
 import {activeDoctorInfo} from '../../selector/doctorSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import {fetchUserFollowees} from '../../action/authActions'
 import {fetchDoctorInfo} from '../../action/doctorAction'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
@@ -33,8 +34,11 @@ class Mine extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchUserOwnedShopInfo()
-      this.props.fetchDoctorInfo({id: this.props.userInfo.id})
+      if(this.props.isUserLogined) {
+        this.props.fetchUserOwnedShopInfo()
+        this.props.fetchDoctorInfo({id: this.props.userInfo.id})
+        this.props.fetchUserFollowees()
+      }
     })
   }
 
@@ -61,7 +65,7 @@ class Mine extends Component {
     }
   }
   doctorCertificationAction= (status)=> {
-    console.log("doctorCertificationAction start status:", status)
+    // console.log("doctorCertificationAction start status:", status)
     if (status === undefined)
       Actions.DCTOR_CERTIFICATION()
     switch (status)
@@ -229,7 +233,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchDoctorInfo,
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  fetchUserFollowees
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)

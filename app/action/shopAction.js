@@ -1,13 +1,14 @@
 /**
  * Created by zachary on 2016/12/15.
  */
-
+import {Map, List, Record} from 'immutable'
 import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as ShopActionTypes from '../constants/shopActionTypes'
 import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
+import {selectShopTags} from '../selector/shopSelector'
 
 export function fetchShopList(payload) {
   return (dispatch ,getState) => {

@@ -42,6 +42,9 @@ class SelectInput extends Component {
     this.positionX = 0
     this.positionY = 0
 
+    this.isAlreadySetDefaultText = false
+    this.isAlreadySetDefaultValue = false
+
     let defaultText = props.defaultText
     let defaultValue = props.defaultValue
     if (!defaultText) {
@@ -100,17 +103,29 @@ class SelectInput extends Component {
       this._toggle(true)
     }
 
-    if(nextProps.defaultText != this.props.defaultText) {
-      this.setState({
-        text: nextProps.defaultText
-      })
+    // console.log('this.props.defaultText====', this.props.defaultText)
+    // console.log('nextProps.defaultText====', nextProps.defaultText)
+    // console.log('*****************************')
+    // console.log('this.props.defaultValue====', this.props.defaultValue)
+    // console.log('nextProps.defaultValue====', nextProps.defaultValue)
+    if(nextProps.defaultText) {
+      if(!this.isAlreadySetDefaultText) {
+        this.setState({
+          text: nextProps.defaultText
+        })
+        this.isAlreadySetDefaultText = true
+      }
+
     }
-    if(nextProps.defaultValue != this.props.defaultValue) {
-      this.setState({
-        value: nextProps.defaultValue,
-        userSelected: true
-      })
-      this.inputChange(nextProps.defaultValue)
+    if(nextProps.defaultValue) {
+      if(!this.isAlreadySetDefaultValue) {
+        this.setState({
+          value: nextProps.defaultValue,
+          userSelected: true
+        })
+        this.inputChange(nextProps.defaultValue)
+        this.isAlreadySetDefaultValue = true
+      }
     }
   }
 
