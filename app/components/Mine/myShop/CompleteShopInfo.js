@@ -145,17 +145,16 @@ class CompleteShopInfo extends Component {
 
   submitSuccessCallback(context) {
     context.props.fetchUserOwnedShopInfo()
-    if(!context.props.popNum || context.props.popNum <= 1) {
-      Actions.pop()
-    }else {
+    if(context.props.popNum && context.props.popNum > 1) {
       Actions.pop({
         popNum: context.props.popNum
       })
+    }else {
+      Actions.SHOP_MANAGE_INDEX()
     }
   }
 
   submitErrorCallback(error) {
-
     Toast.show(error.message)
   }
 
