@@ -51,8 +51,6 @@ const announcementCoverInput = {
 class PublishShopAnnouncement extends Component {
   constructor(props) {
     super(props)
-
-
   }
 
   componentWillMount() {
@@ -69,6 +67,29 @@ class PublishShopAnnouncement extends Component {
 
   }
 
+  publishAnnouncement() {
+    this.props.submitFormData({
+      formKey: commonForm,
+      id: this.props.id,
+      submitType: INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT,
+      success: ()=>{this.submitSuccessCallback(this)},
+      error: this.submitErrorCallback
+    })
+  }
+
+  submitSuccessCallback(context) {
+    Toast.show('发布成功', {
+      duration: 1000,
+      onHidden: ()=>{
+        Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: context.props.id})
+      }
+    })
+  }
+
+  submitErrorCallback() {
+    Toast.show('发布失败', {duration: 1000})
+  }
+
   render() {
 
     return (
@@ -83,7 +104,7 @@ class PublishShopAnnouncement extends Component {
           titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText='完成'
-          rightPress={()=>{}}
+          rightPress={()=>{this.publishAnnouncement()}}
           rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
@@ -105,7 +126,7 @@ class PublishShopAnnouncement extends Component {
                   addImage={require('../../../assets/images/upload_picture.png')}
                 />
               </View>
-              <Text style={styles.noticeTip}>选择一张图片做为公告图片</Text>
+              <Text style={styles.noticeTip}>选择一张图片做为公告封面</Text>
             </View>
           </KeyboardAwareScrollView>
 
