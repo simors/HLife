@@ -126,6 +126,10 @@ class ShopManageIndex extends Component {
     }
   }
 
+  uploadAlbum() {
+    Actions.UPDATE_SHOP_ALBUM({id: this.props.userOwnedShopInfo.id})
+  }
+
   renderRowShopFollowers(shopFollowers, rowIndex, totalCount) {
     let shopFollowersView = shopFollowers.map((item, index)=>{
       if(totalCount && shopFollowers.length == (index + 1)) {
@@ -336,7 +340,7 @@ class ShopManageIndex extends Component {
                     imageStyle={{margin:0,marginRight:2}}
                     imgSize={100}
                   />
-                : <TouchableOpacity onPress={()=>{}}>
+                : <TouchableOpacity onPress={()=>{this.uploadAlbum()}}>
                     <View style={styles.noAlbumWrap}>
                       <Text style={styles.noAlbumText}>暂无相册,点击上传</Text>
                     </View>
@@ -554,6 +558,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   noAlbumWrap: {
+    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: normalizeBorder(),
@@ -562,7 +567,7 @@ const styles = StyleSheet.create({
   noAlbumText: {
     color: THEME.colors.green,
     fontWeight: 'bold',
-    fontSize: em(28)
+    fontSize: em(17)
   },
   locationWrap: {
     paddingLeft: 10,

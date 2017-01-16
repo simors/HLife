@@ -274,7 +274,7 @@ export function submitCompleteShopInfo(payload) {
   let contactNumber = payload.contactNumber
   let ourSpecial = payload.ourSpecial
   let album = payload.album
-  let coverUrlArr = payload.coverUrlArr
+  let coverUrl = payload.coverUrl
   let tagIds = payload.tagIds
   let shop = AV.Object.createWithoutData('Shop', shopId)
   let targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
@@ -284,14 +284,8 @@ export function submitCompleteShopInfo(payload) {
       containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
     })
   }
-  if(containedTag.length) {
-    shop.set('containedTag', containedTag)
-  }
-  let coverUrl = ''
-  if(coverUrlArr && coverUrlArr.length) {
-    coverUrl = coverUrlArr[0]
-    shop.set('coverUrl', coverUrl)
-  }
+  shop.set('containedTag', containedTag)
+  shop.set('coverUrl', coverUrl)
   shop.set('targetShopCategory', targetShopCategory)
   shop.set('openTime', openTime)
   shop.set('contactNumber', contactNumber)
@@ -299,7 +293,7 @@ export function submitCompleteShopInfo(payload) {
   shop.set('album', album)
   // console.log('submitCompleteShopInfo.shop====', shop)
   return shop.save().then(function (result) {
-    return ShopInfo.fromLeancloudObject(result)
+    return true
   }, function (err) {
     console.log('submitCompleteShopInfo.err====', err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

@@ -52,10 +52,10 @@ class  PhoneInput extends Component {
       return {isVal:false, errMsg:"手机号不能为空"}
     }
 
-    let phoneNum = data.text
-    if (!(/^1[34578]\d{9}$/.test(phoneNum))) {
-      return {isVal:false, errMsg:"手机号码格式有误，请重填"}
-    }
+    // let phoneNum = data.text
+    // if (!(/^1[34578]\d{9}$/.test(phoneNum))) {
+    //   return {isVal:false, errMsg:"手机号码格式有误，请重填"}
+    // }
     return {isVal:true, errMsg:"ok"}
   }
 

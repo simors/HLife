@@ -429,16 +429,18 @@ function handleCompleteShopInfo(payload, formData) {
       contactNumber: formData.servicePhoneInput.text,
       ourSpecial: formData.ourSpecialInput.text,
       album: formData.shopAlbumInput.text,
-      coverUrlArr: formData.shopCoverInput.text,
+      coverUrl: formData.shopCoverInput.text,
       tagIds: formData.tagsInput.text,
     }
-    lcAuth.submitCompleteShopInfo(newPayload).then((shop) => {
+    lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
       let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
-      dispatch(_action(shop))
+      dispatch(_action({}))
       if (payload.success) {
-        payload.success(shop)
+        payload.success()
       }
     }).catch((error) => {
+      // console.log('error=======', error)
+      // console.log('error=======', error.code)
       if (payload.error) {
         payload.error(error)
       }

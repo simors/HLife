@@ -143,8 +143,15 @@ class CompleteShopInfo extends Component {
     }
   }
 
-  submitSuccessCallback() {
-    Actions.MINE()
+  submitSuccessCallback(context) {
+    this.props.fetchUserOwnedShopInfo()
+    if(context.props.popNum <= 1) {
+      Actions.pop()
+    }else {
+      Actions.pop({
+        popNum: context.props.popNum
+      })
+    }
   }
 
   submitErrorCallback(error) {
@@ -157,7 +164,7 @@ class CompleteShopInfo extends Component {
       formKey: commonForm,
       shopId: this.props.userOwnedShopInfo.id,
       submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
-      success: this.submitSuccessCallback,
+      success: ()=>{this.submitSuccessCallback(this)},
       error: this.submitErrorCallback
     })
   }
@@ -358,6 +365,7 @@ class CompleteShopInfo extends Component {
                   <PhoneInput
                     {...servicePhoneInput}
                     placeholder="点击输入电话号码"
+                    maxLength={15}
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     clearBtnStyle={{top:6}}
@@ -389,6 +397,7 @@ class CompleteShopInfo extends Component {
               <View style={styles.uploadAlbum}>
                 <ImageInput
                   {...shopCoverInput}
+                  initValue={this.props.userOwnedShopInfo.coverUrl}
                   containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
                   addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
                   choosenImageStyle={{width: PAGE_WIDTH, height: 156}}

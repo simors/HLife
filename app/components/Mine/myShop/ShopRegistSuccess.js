@@ -24,17 +24,24 @@ import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import * as authSelector from '../../../selector/authSelector'
+import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
 
 class ShopRegisterSuccess extends Component {
   constructor(props) {
     super(props)
   }
 
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchUserOwnedShopInfo()
+    })
+  }
+
   completeShopInfo() {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.COMPLETE_SHOP_INFO()
+      Actions.COMPLETE_SHOP_INFO({popNum: 3})
     }
   }
 
@@ -93,6 +100,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopRegisterSuccess)
