@@ -16,9 +16,11 @@ import {
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import {getTopicLikedTotalCount, isTopicLiked} from '../../selector/topicSelector'
+import {isUserLogined} from '../../selector/authSelector'
 import {fetchTopicLikesCount, fetchTopicIsLiked} from '../../action/topicActions'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -32,7 +34,9 @@ export class TopicComment extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topicComment'})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType:'topicComment'})
+      if( this.props.isLogin ) {
+        this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topicComment'})
+      }
     })
   }
 
@@ -61,11 +65,16 @@ export class TopicComment extends Component {
   }
 
   onLikeCommentButton() {
-    this.props.onLikeCommentButton({
-      topic: this.props.topic,
-      isLiked: this.props.isLiked,
-      success: this.successCallback.bind(this)
-    })
+    if (this.props.isLogin) {
+      this.props.onLikeCommentButton({
+        topic: this.props.topic,
+        isLiked: this.props.isLiked,
+        success: this.successCallback.bind(this)
+      })
+    }
+    else{
+      Actions.LOGIN()
+    }
   }
 
   render() {
@@ -133,9 +142,11 @@ TopicComment.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
+  const isLogin = isUserLogined(state)
   return {
     likesCount: likesCount,
-    isLiked: isLiked
+    isLiked: isLiked,
+    isLogin:isLogin,
   }
 }
 

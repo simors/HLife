@@ -47,8 +47,10 @@ export class TopicDetail extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
+      if( this.props.isLogin ){
+        this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+      }
     })
   }
 
@@ -151,21 +153,26 @@ export class TopicDetail extends Component {
   }
 
   onLikeButton() {
-    if (this.props.isLiked) {
-      this.props.unLikeTopic({
-        topicId: this.props.topic.objectId,
-        upType: 'topic',
-        success: this.likeSuccessCallback.bind(this),
-        error: this.likeErrorCallback
-      })
+    if(this.props.isLogin) {
+      if (this.props.isLiked) {
+        this.props.unLikeTopic({
+          topicId: this.props.topic.objectId,
+          upType: 'topic',
+          success: this.likeSuccessCallback.bind(this),
+          error: this.likeErrorCallback
+        })
+      }
+      else {
+        this.props.likeTopic({
+          topicId: this.props.topic.objectId,
+          upType: 'topic',
+          success: this.likeSuccessCallback.bind(this),
+          error: this.likeErrorCallback
+        })
+      }
     }
-    else {
-      this.props.likeTopic({
-        topicId: this.props.topic.objectId,
-        upType: 'topic',
-        success: this.likeSuccessCallback.bind(this),
-        error: this.likeErrorCallback
-      })
+    else{
+      Actions.LOGIN()
     }
   }
 
