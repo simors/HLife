@@ -139,8 +139,8 @@ class FavoriteArticles extends Component{
           </View>
           <ActionSheet
             ref={(o) => this.ActionSheet = o}
-            title="是否取消收藏"
-            options={['取消收藏', '取消']}
+            title="是否删除收藏"
+            options={['删除收藏', '取消']}
             cancelButtonIndex={1}
             onPress={this._handleActionSheetPress.bind(this)}
           />
