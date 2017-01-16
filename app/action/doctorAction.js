@@ -127,9 +127,9 @@ export function fetchDoctorById(payload) {
   }
 }
 
-export function fetchDoctorGroup(paylaod) {
+export function fetchDoctorGroup(payload) {
   return (dispatch, getState) => {
-    lcDoctor.getDoctorGroup(paylaod).then((doctorList) => {
+    lcDoctor.getDoctorGroup(payload).then((doctorList) => {
       if (doctorList.length != 0) {
         let updateDoctorGroupAction = createAction(doctorActionTypes.UPDATE_DOCTOR_GROUP)
         dispatch(updateDoctorGroupAction({doctorGroup: doctorList}))
