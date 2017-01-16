@@ -64,7 +64,6 @@ const mapStateToProps = (state, ownProps) => {
     return true
   })
   let doctors = getDoctorByGroupUserId(state, otherMem)
-  console.log('doctors:', doctors)
   return {
     currentUser: currentUser,
     doctors: doctors,
