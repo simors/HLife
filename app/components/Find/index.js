@@ -100,11 +100,11 @@ export class Find extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopics({
         type: "topics",
-        categoryId: this.props.topicCategories[index].objectId
+        categoryId: this.props.topicCategories[this.state.selectedTab].objectId
       })
     })
   }
-
+  
   loadMoreData() {
 
   }
