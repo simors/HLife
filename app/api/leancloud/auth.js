@@ -1,6 +1,6 @@
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
-import {UserInfo, UserDetail} from '../../models/userModels'
+import {UserInfo, UserDetail, HealthProfileRecord, HealthProfile} from '../../models/userModels'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
 import {ArticleItem} from '../../models/ArticleModel'
 import {PromoterInfo} from '../../models/promoterModel'
@@ -520,11 +520,9 @@ export function unFollowUser(payload) {
 
 export function inquirySubmit(payload) {
   console.log("inquirySubmit:", payload)
-  var userInfo = AV.Object.createWithoutData('_User', payload.id);
-
+  var userInfo = AV.Object.createWithoutData('_User', payload.id)
   let Question = AV.Object.extend('Question')
   let question = new Question()
-
   question.set('connnet', payload.question)
   question.set('diseaseImages', payload.diseaseImages)
   question.set('quizzer', userInfo)
@@ -534,9 +532,29 @@ export function inquirySubmit(payload) {
   question.set('status', 2) //待分配
 
   return question.save().then((questionInfo) => {
-
     },
   function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+}
+
+export function healthProfileSubmit(payload) {
+  var userInfo = AV.Object.createWithoutData('_User', payload.userId)
+  let Healthprofile = AV.Object.extend('HealthProfile')
+  let healthProfile = new Healthprofile()
+  healthProfile.set('user', userInfo)
+  healthProfile.set('nickname', payload.nickname)
+  healthProfile.set('gender', payload.gender)
+  healthProfile.set('birthday', payload.birthday)
+
+  return healthProfile.save().then((result) => {
+    let healthRecord = HealthProfile.fromLeancloudObject(result)
+    return {
+      healthProfile: healthRecord
+    }
+  }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

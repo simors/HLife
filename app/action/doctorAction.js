@@ -3,6 +3,10 @@
  */
 import {createAction} from 'redux-actions'
 import * as doctorActionTypes from '../constants/doctorActionTypes'
+import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
+
+import * as uiTypes from '../constants/uiActionTypes'
+
 import * as lcDoctor from '../api/leancloud/doctor'
 
 export const DOCTOR_FORM_SUBMIT_TYPE = {
@@ -34,7 +38,6 @@ export function submitDoctorFormData(payload) {
 }
 
 function handleDoctorCertification(payload, formData) {
-  console.log("handleDoctorCertification start", formData)
   return (dispatch, getState) => {
     let smsPayload = {
       phone: formData.phoneInput.text,
@@ -71,7 +74,7 @@ function doctorCertification(payload, formData) {
       certifiedImage: formData.IDImageInput.text,
       certificate: formData.imgGroup.text,
     }
-    lcAuth.certification(certPayload).then((doctor) => {
+    lcDoctor.certification(certPayload).then((doctor) => {
       if (payload.success) {
         let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
         dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
@@ -83,14 +86,13 @@ function doctorCertification(payload, formData) {
       }
     })
   }
-
 }
 
 export function fetchDoctorInfo(payload) {
   return (dispatch, getState) => {
-    lcDoctor.getDoctorInfoByUserId(payload).then((doctorInfo) => {
+    lcDoctor.getDoctorInfoByUserId(payload).then((doctor) => {
       let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
-      dispatch(updateDoctorInfoAction({doctor: doctorInfo}))
+      dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
@@ -100,7 +102,6 @@ export function fetchDoctorInfo(payload) {
 }
 
 export function fetchDoctorByUserId(payload) {
-  console.log("fetchDoctorByUserId", payload)
   return (dispatch, getState) => {
     lcDoctor.getDoctorInfoByUserId(payload).then((doctor) => {
       let updateDoctorListAction = createAction(doctorActionTypes.UPDATE_DOCTOR_LIST)
@@ -129,8 +130,10 @@ export function fetchDoctorById(payload) {
 export function fetchDoctorGroup(paylaod) {
   return (dispatch, getState) => {
     lcDoctor.getDoctorGroup(paylaod).then((doctorList) => {
-      let updateDoctorGroupAction = createAction(doctorActionTypes.UPDATE_DOCTOR_GROUP)
-      dispatch(updateDoctorGroupAction({doctorGroup: doctorList}))
+      if (doctorList.length != 0) {
+        let updateDoctorGroupAction = createAction(doctorActionTypes.UPDATE_DOCTOR_GROUP)
+        dispatch(updateDoctorGroupAction({doctorGroup: doctorList}))
+      }
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

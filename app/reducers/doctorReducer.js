@@ -24,13 +24,12 @@ export default function doctorReducer(state = initialState, action) {
 
 function handleDoctorUpdate(state, action) {
   let payload = action.payload
-  state = state.set('doctorInfo', payload.doctor.doctorInfo)
+  state = state.set('doctorInfo', payload.doctor)
   return state
 }
 
 function handleQueryDoctors(state, action) {
   let doctorList = action.payload.doctorList
-  console.log("handleQueryDoctors:", doctorList)
   doctorList.forEach((doctor) => {
     state = state.setIn(['doctors', doctor.userId], doctor)
   })

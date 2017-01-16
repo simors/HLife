@@ -77,7 +77,6 @@ function inputFormOnChange(state, action) {
 }
 
 function inputFormOnDestroy(state, action) {
-  console.log("inputFormOnDestroy state:", state)
   let formKey = action.payload.formKey
   state = state.delete(formKey)
   return state

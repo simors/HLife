@@ -26,6 +26,22 @@ export function getDoctorInfoByUserId(state, userId) {
   return (new DoctorInfo()).toJS()
 }
 
+export function getDoctorByGroupUserId(state, userIds) {
+  let doctors = new Map()
+  userIds.forEach((userId) => {
+    doctors.set(userId, getDoctorInfoByUserId(state, userId))
+  })
+  return doctors
+}
+
+export function getDoctorByGroupDoctorId(state, doctorIds) {
+  let doctors = new Map()
+  doctorIds.forEach((doctorId) => {
+    doctors.set(doctorId, getDoctorInfoByDoctorId(state, doctorId))
+  })
+  return doctors
+}
+
 export function getDoctorInfoByDoctorId(state, doctorId) {
   let docMap = state.DOCTOR.get('doctors')
   if (docMap) {

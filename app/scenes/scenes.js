@@ -45,12 +45,13 @@ import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
 import DocterFinder from '../components/Health/DocterFinder'
 import Inguiry from '../components/Home/Inquiry/index'
-import HealthProfile from '../components/Home/Inquiry/HealthProfile'
+import AddHealthProfile from '../components/Home/Inquiry/AddHealthProfile'
 import SelectDoctor from '../components/Home/Inquiry/SelectDoctor'
 import QA from '../components/Home/Inquiry/QA'
 import QAList from '../components/Home/Inquiry/QAList'
 import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
+import SelectHealthProfile from '../components/Home/Inquiry/SelectHealthProfile'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
@@ -116,12 +117,13 @@ export const scenes = Actions.create(
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />
       <Scene key="INQUIRY" component={Inguiry} />
-      <Scene key="HEALTH_PROFILE" component={HealthProfile} />
+      <Scene key="HEALTH_PROFILE" component={AddHealthProfile} />
       <Scene key="SELECT_DOCTOR" component={SelectDoctor} />
       <Scene key="QA" component={QA}/>
       <Scene key="QA_LIST" component={QAList}/>
       <Scene key="DOCTOR_INTRO" component={DoctorIntro}/>
       <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
+      <Scene key="SELECT_HEALTH_PROFILE" component={SelectHealthProfile}/>
       <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
       <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>

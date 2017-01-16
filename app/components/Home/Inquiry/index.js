@@ -21,8 +21,9 @@ import Header from '../../common/Header'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import MultilineText from '../../common/Input/MultilineText'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
-import {activeUserId} from '../../../selector/authSelector'
+import {activeUserId, getHealthjProfileSize} from '../../../selector/authSelector'
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {inputFormOnDestroy} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import {inputFormCheck} from '../../../action/inquiryAction'
 
@@ -49,7 +50,7 @@ class Inguiry extends Component {
   }
 
   componentWillUnmount() {
-    console.log("Inguiry: componentWillUnmount")
+    this.props.inputFormOnDestroy({formKey: inquiryForm})
   }
 
   submitSuccessCallback = () => {
@@ -57,7 +58,12 @@ class Inguiry extends Component {
       formKey: inquiryForm,
       userId: this.props.currentUser && this.props.currentUser,
     }
-    Actions.HEALTH_PROFILE(payload)
+    if (this.props.healthProfileSize == 0) {
+      Actions.HEALTH_PROFILE(payload)
+    } else {
+      Actions.SELECT_HEALTH_PROFILE(payload)
+    }
+
   }
 
   submitErrorCallback = (error) => {
@@ -112,14 +118,17 @@ class Inguiry extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let healthProfileSize = getHealthjProfileSize(state)
   return {
     currentUser: activeUserId(state),
+    healthProfileSize: healthProfileSize,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
-  inputFormCheck
+  inputFormCheck,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Inguiry)
