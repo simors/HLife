@@ -35,7 +35,7 @@ export function selectUserFollowees(state) {
   return userFollowees ? userFollowees.toJS() : []
 }
 
-export function getHealthjProfileSize(state) {
+export function getHealthProfileSize(state) {
   return state.AUTH.healthProfiles? state.AUTH.healthProfiles.size : 0
 }
 
@@ -43,4 +43,15 @@ export function selectUserFavoriteArticles(state) {
   let activeUser = activeUserAndToken(state).activeUser
   let userFavoriteArticles = state.AUTH.favoriteArticles.get(activeUser)
   return userFavoriteArticles ? userFavoriteArticles.toJS() : []
+}
+
+export function getHealthProfileList(state) {
+  let healthProfileList = []
+  let healthProfileMap = state.AUTH.get('healthProfiles')
+  if (healthProfileMap) {
+    healthProfileMap.forEach((value) => {
+      healthProfileList.push(value)
+    })
+  }
+  return healthProfileList
 }

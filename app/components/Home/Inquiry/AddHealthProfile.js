@@ -23,11 +23,33 @@ import DateTimeInput from '../../common/Input/DateTimeInput'
 import GenderSelector from '../../common/Input/GenderSelector'
 import CommonButton from '../../common/CommonButton'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {activeUserId} from '../../../selector/authSelector'
+
 
 import * as Toast from '../../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+let healthProfileForm = Symbol('healthProfileForm')
+
+const nicknameInput = {
+  formKey: healthProfileForm,
+  stateKey: Symbol('nicknameInput'),
+  type: "nicknameInput",
+}
+
+const genderInput = {
+  formKey: healthProfileForm,
+  stateKey: Symbol('genderInput'),
+  type: "genderInput",
+}
+
+const dtPicker = {
+  formKey: healthProfileForm,
+  stateKey: Symbol('dtPicker'),
+  type: "dtPicker",
+}
 
 class AddHealthProfile extends Component {
   constructor(props) {
@@ -46,33 +68,17 @@ class AddHealthProfile extends Component {
   submitErrorCallback(error) {
     Toast.show(error.message)
   }
+
   onButtonPress = () => {
     this.props.submitFormData({
-      formKey: this.props.formKey,
+      formKey: healthProfileForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT,
-      id: this.props.userId && this.props.userId,
+      id: this.props.currentUser && this.props.currentUser,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
   }
   render() {
-    const nicknameInput = {
-      formKey: this.props.formKey,
-      stateKey: Symbol('nicknameInput'),
-      type: "nicknameInput",
-    }
-
-    const genderInput = {
-      formKey: this.props.formKey,
-      stateKey: Symbol('genderInput'),
-      type: "genderInput",
-    }
-
-    const dtPicker = {
-      formKey: this.props.formKey,
-      stateKey: Symbol('dtPicker'),
-      type: "dtPicker",
-    }
     return (
       <View style={styles.container}>
         <Header
@@ -130,6 +136,7 @@ class AddHealthProfile extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    currentUser: activeUserId(state),
   }
 }
 
