@@ -97,7 +97,7 @@ export function fetchShopDetail(payload) {
   query.equalTo('objectId', id)
   query.include(['targetShopCategory', 'owner', 'containedTag'])
   return query.first().then(function (result) {
-    console.log('fetchShopDetail.result=', result)
+    // console.log('fetchShopDetail.result=', result)
     if(__DEV__) {
       let shopInfo = ShopInfo.fromLeancloudObject(result)
       return new Map(shopInfo)
@@ -136,6 +136,17 @@ export function getShopAnnouncement(payload) {
       shopAnnouncements.push(ShopAnnouncement.fromLeancloudObject(result))
     })
     return new List(shopAnnouncements)
+  }, function(err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function deleteShopAnnouncement(payload) {
+  let shopAnnouncementId = payload.shopAnnouncementId
+  let shopAnnouncement = AV.Object.createWithoutData('ShopAnnouncement', shopAnnouncementId)
+  return shopAnnouncement.destroy().then((success)=>{
+    return success
   }, function(err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

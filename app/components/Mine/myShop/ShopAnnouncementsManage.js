@@ -20,14 +20,16 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../../common/Header'
+import Icon from 'react-native-vector-icons/Ionicons'
 import CommonListView from '../../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import {fetchShopAnnouncements, } from '../../../action/shopAction'
+import {fetchShopAnnouncements, deleteShopAnnouncement} from '../../../action/shopAction'
 import {selectShopAnnouncements, } from '../../../selector/shopSelector'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -40,13 +42,22 @@ const shopCoverInput = {
   type: "shopCoverInput",
 }
 
+let ds = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
+
 class ShopAnnouncementsManage extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      hideFooter: this.props.hideFooter
+      hideFooter: this.props.hideFooter,
+      deleting: false,
+      shopAnnouncementList: props.shopAnnouncementList,
+      ds: ds.cloneWithRows(props.shopAnnouncementList)
     }
+
+    this.deletingShopAnnouncementId = ''
   }
 
   componentWillMount() {
@@ -67,6 +78,11 @@ class ShopAnnouncementsManage extends Component {
         hideFooter: nextProps.hideFooter
       })
     }
+
+    this.setState({
+      shopAnnouncementList: nextProps.shopAnnouncementList,
+      ds: ds.cloneWithRows(nextProps.shopAnnouncementList)
+    })
   }
 
   refreshData() {
@@ -74,6 +90,9 @@ class ShopAnnouncementsManage extends Component {
   }
 
   loadMoreData(isRefresh) {
+    if(this.state.deleting) {
+      return
+    }
     let payload = {
       id: this.props.id,
       lastCreatedAt: this.props.lastCreatedAt,
@@ -96,19 +115,60 @@ class ShopAnnouncementsManage extends Component {
     this.props.fetchShopAnnouncements(payload)
   }
 
-  updateAnnouncement(shopAnnouncement) {
-    Actions.PUBLISH_SHOP_ANNOUNCEMENT({
-      id: this.props.id,
-      shopAnnouncementId: shopAnnouncement.id,
-      shopAnnouncementContent: shopAnnouncement.content,
-      shopAnnouncementCover: shopAnnouncement.coverUrl,
+  editAnnouncement(shopAnnouncement) {
+    if(this.state.deleting) {
+      this.deletingShopAnnouncementId = shopAnnouncement.id
+      this.ActionSheet.show()
 
+    }else {
+      Actions.PUBLISH_SHOP_ANNOUNCEMENT({
+        id: this.props.id,
+        shopAnnouncementId: shopAnnouncement.id,
+        shopAnnouncementContent: shopAnnouncement.content,
+        shopAnnouncementCover: shopAnnouncement.coverUrl,
+
+      })
+    }
+  }
+
+  toggleDeleteState() {
+    this.setState({
+      deleting: !this.state.deleting
+    }, ()=>{
+      if(this.state.shopAnnouncementList && this.state.shopAnnouncementList.length) {
+        let newShopAnnouncementList = []
+        this.state.shopAnnouncementList.forEach((item)=>{
+          item.deleting = this.state.deleting
+          newShopAnnouncementList.push(item)
+        })
+        this.setState({
+          ds: ds.cloneWithRows(newShopAnnouncementList)
+        })
+      }
     })
+  }
+
+  _handleActionSheetPress(index) {
+    if(0 == index) { //确认删除
+      this.props.deleteShopAnnouncement({
+        shopAnnouncementId: this.deletingShopAnnouncementId,
+        success: ()=>{
+          this.setState({
+            deleting: false
+          }, ()=>{
+            this.refreshData()
+          })
+        },
+        error: (err)=>{
+          Toast.show(err.message, {duration: 1000})
+        }
+      })
+    }
   }
 
   renderRow(rowData, rowId) {
     return (
-      <TouchableOpacity key={"announcement_" + rowId} onPress={()=>{this.updateAnnouncement(rowData)}}>
+      <TouchableOpacity key={"announcement_" + rowId} onPress={()=>{this.editAnnouncement(rowData)}}>
         <View style={styles.shopAnnouncementWrap}>
           <View style={styles.shopAnnouncementContainer}>
             <View style={styles.shopAnnouncementCoverWrap}>
@@ -129,6 +189,13 @@ class ShopAnnouncementsManage extends Component {
             </Image>
           </View>
         </View>
+        {rowData.deleting &&
+          <View style={styles.deleteIconWrap}>
+            <Icon
+              name="ios-close-circle"
+              style={[styles.deleteIcon]}/>
+          </View>
+        }
       </TouchableOpacity>
     )
   }
@@ -147,13 +214,13 @@ class ShopAnnouncementsManage extends Component {
           titleStyle={styles.headerTitleStyle}
           rightType="image"
           rightImageSource={require('../../../assets/images/notice_delete.png')}
-          rightPress={()=>{}}
+          rightPress={()=>{this.toggleDeleteState()}}
           rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
           <CommonListView
             contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
-            dataSource={this.props.ds}
+            dataSource={this.state.ds}
             renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
             loadNewData={()=>{this.refreshData()}}
             loadMoreData={()=>{this.loadMoreData()}}
@@ -167,6 +234,15 @@ class ShopAnnouncementsManage extends Component {
               <Text style={styles.noticePublishTxt}>发布新公告</Text>
             </View>
           </TouchableOpacity>
+
+          <ActionSheet
+            ref={(o) => this.ActionSheet = o}
+            title="删除公告"
+            options={['确认删除', '取消']}
+            destructiveButtonIndex={0}
+            cancelButtonIndex={1}
+            onPress={this._handleActionSheetPress.bind(this)}
+          />
 
         </View>
       </View>
@@ -201,6 +277,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     ds: ds.cloneWithRows(shopAnnouncementList),
+    shopAnnouncementList: shopAnnouncementList,
     lastCreatedAt: lastCreatedAt,
     lastUpdatedAt: lastUpdatedAt,
     hideFooter: hideFooter,
@@ -210,7 +287,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
-  fetchShopAnnouncements
+  fetchShopAnnouncements,
+  deleteShopAnnouncement
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopAnnouncementsManage)
@@ -359,7 +437,14 @@ const styles = StyleSheet.create({
   noticePublishTxt: {
     color: '#fff',
     fontSize: em(17)
+  },
+  deleteIconWrap: {
+    position: 'absolute',
+    top: 0,
+    left: PAGE_WIDTH / 2,
+  },
+  deleteIcon: {
+    fontSize: 32,
   }
-
 
 })
