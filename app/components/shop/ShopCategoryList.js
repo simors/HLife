@@ -38,10 +38,6 @@ import {fetchShopList, fetchShopTags} from '../../action/shopAction'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-const ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 != r2,
-})
-
 class ShopCategoryList extends Component {
   constructor(props) {
     super(props)
@@ -231,10 +227,9 @@ class ShopCategoryList extends Component {
     }
   }
 
-  renderRow(rowData, rowId) {
-
-    if(rowData.showTags) {
-      return this.renderTags(rowData.allShopTags)
+  renderRow(rowData, sectionID, rowID, highlightRow) {
+    if(this.props.isFirstPage && this.props.shopList.length == (rowID+1)) {
+      return this.renderTags(this.props.allShopTags)
     }
 
     return (
@@ -300,7 +295,7 @@ class ShopCategoryList extends Component {
             <CommonListView
               contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
               dataSource={this.props.ds}
-              renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+              renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
               loadNewData={()=>{this.refreshData()}}
               loadMoreData={()=>{this.loadMoreData()}}
               ref={(listView) => this.listView = listView}
@@ -394,16 +389,25 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('shopList=', shopList)
   let lastScore = ''
   let lastGeo = []
+  let isFirstPage = false
   if(shopList && shopList.length) {
     lastScore = shopList[shopList.length-1].score
     lastGeo = shopList[shopList.length-1].geo
+    if(shopList.length <= 5) {
+      isFirstPage = true
+    }
   }
+
+  const allShopTags = selectShopTags(state)
 
   return {
     ds: ds.cloneWithRows(shopList),
+    shopList: shopList,
     allShopCategories: allShopCategories,
     lastScore: lastScore,
     lastGeo: lastGeo,
+    isFirstPage: isFirstPage,
+    allShopTags: allShopTags
   }
 }
 

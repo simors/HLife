@@ -16,13 +16,6 @@ export function fetchShopList(payload) {
       let actionType = ShopActionTypes.UPDATE_SHOP_LIST
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
-      }else {
-        const allShopTags = selectShopTags(getState())
-        // console.log('fetchShopList.allShopTags===', allShopTags)
-        shopList = shopList.push(new Record({
-          showTags: true,
-          allShopTags: allShopTags
-        }))
       }
       let updateShopListAction = createAction(actionType)
       dispatch(updateShopListAction({shopList: shopList}))
