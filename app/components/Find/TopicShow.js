@@ -20,6 +20,7 @@ import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import FollowUser from '../../components/common/FollowUser'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -27,8 +28,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export class TopicShow extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-    }
+    this.state = {}
   }
 
   commentButtonPress() {
@@ -56,7 +56,8 @@ export class TopicShow extends Component {
       let image = []
       image.push(this.props.topic.imgGroup[0])
       return (
-        <TouchableOpacity style={[styles.contentWrapStyle, {flexDirection: 'row'}]} onPress={()=>this.commentButtonPress()}>
+        <TouchableOpacity style={[styles.contentWrapStyle, {flexDirection: 'row'}]}
+                          onPress={()=>this.commentButtonPress()}>
           <View style={{flex: 1}}>
             <Text style={styles.contentTitleStyle} numberOfLines={2}>
               {this.props.topic.title}
@@ -117,9 +118,12 @@ export class TopicShow extends Component {
                 <Text style={styles.timeTextStyle}>长沙</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.attentionStyle}>
-              <Image source={require("../../assets/images/give_attention_shop.png")}/>
-            </TouchableOpacity>
+
+            <View style={styles.attentionStyle}>
+            <FollowUser
+                        userId={this.props.topic.userId}
+            />
+            </View>
           </View>
         </View>
 

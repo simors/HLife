@@ -44,7 +44,6 @@ class SelectInput extends Component {
 
     let defaultText = props.defaultText
     let defaultValue = props.defaultValue
-
     if (!defaultText) {
       if (Array.isArray(props.children)) {
         defaultText = props.children[0].props.children
@@ -56,7 +55,7 @@ class SelectInput extends Component {
       value: defaultValue ? defaultValue : defaultText,
       text: defaultText,
       show: false,
-      userSelected: false,
+      userSelected: !!defaultValue,
       optionListPos: 0
     }
   }
@@ -73,7 +72,7 @@ class SelectInput extends Component {
   }
 
   validInput(data) {
-    if (data.text && data.text.length > 0) {
+    if (data.text) {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '输入有误'}
@@ -99,6 +98,19 @@ class SelectInput extends Component {
       })
       // console.log(this.props.selectRef + '.componentWillReceiveProps.state.show=' + this.state.show)
       this._toggle(true)
+    }
+
+    if(nextProps.defaultText != this.props.defaultText) {
+      this.setState({
+        text: nextProps.defaultText
+      })
+    }
+    if(nextProps.defaultValue != this.props.defaultValue) {
+      this.setState({
+        value: nextProps.defaultValue,
+        userSelected: true
+      })
+      this.inputChange(nextProps.defaultValue)
     }
   }
 

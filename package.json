@@ -20,6 +20,7 @@
     "react-addons-shallow-compare": "^15.4.2",
     "react-native": "0.38.0",
     "react-native-actionsheet": "^2.0.5",
+    "react-native-autogrow-textinput": "^3.0.1",
     "react-native-button": "^1.7.1",
     "react-native-communications": "^2.1.4",
     "react-native-datepicker": "^1.4.2",

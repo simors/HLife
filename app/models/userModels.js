@@ -25,6 +25,7 @@ export const UserStateRecord = Record({
   followees: Map(),
   favoriteArticles: Map(),
   healthProfiles: Map(),
+  shop: List()
 }, 'UserStateRecord')
 
 export class UserInfo extends UserInfoRecord {
@@ -56,6 +57,23 @@ export class UserInfo extends UserInfoRecord {
     })
     return info
   }
+
+  static fromShopFollowersLeancloudObject(lcObj) {
+    let attrs = lcObj.attributes
+    let info = new UserInfoRecord()
+    info = info.withMutations((record) => {
+      let fAttrs = lcObj.attributes.follower.attributes
+      record.set('id', lcObj.attributes.follower.id)
+      record.set('avatar',fAttrs.avatar)
+      record.set('phone', fAttrs.mobilePhoneNumber)
+      record.set('nickname', fAttrs.nickname)
+      record.set('gender', fAttrs.gender)
+      record.set('birthday', fAttrs.birthday)
+      record.set('identity', fAttrs.identity)
+    })
+    return info
+  }
+
 }
 
 export class HealthProfile extends HealthProfileRecord{

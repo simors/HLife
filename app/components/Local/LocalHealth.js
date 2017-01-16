@@ -13,13 +13,8 @@ import {
   Platform
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import Icon from 'react-native-vector-icons/Ionicons'
-
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import THEME from '../../constants/themes/theme1'
-import Thumbnail from '../common/Thumbnail'
-
-export default class Health extends Component {
+export default class LocalHealth extends Component {
   constructor(props) {
     super(props)
   }
@@ -27,33 +22,21 @@ export default class Health extends Component {
   render() {
     return (
       <View style={styles.wrapper}>
-        <View style={styles.leftWrap}>
-          <Image source={require("../../assets/images/local_medical.png")}/>
-        </View>
-        <View style={styles.centerWrap}>
-          <View style={styles.centerTop}>
-            <Text style={styles.centerTopTitle}>本地医疗</Text>
-          </View>
-          <View style={styles.centerBottom}>
-            <View style={styles.tagWrap}>
-              <Text style={styles.tag}>药店</Text>
-            </View>
-            <View style={styles.tagWrap}>
-              <Text style={styles.tag}>诊所</Text>
-            </View>
-            <View style={styles.tagWrap}>
-              <Text style={styles.tag}>医生</Text>
-            </View>
-            <View style={styles.tagWrap}>
-              <Text style={styles.tag}>医院</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.rightWrap}>
-          <Icon
-            name='ios-arrow-forward'
-            style={styles.rightIcon} />
-        </View>
+        <TouchableOpacity style={styles.showItemStyle}
+                          onPress={()=> {
+                            Actions.DOCTER_FINDER()
+                          }}>
+          <Image style={styles.itemImageStyle} source={require("../../assets/images/local_drugstore.png")}/>
+          <Text style={styles.itemTextStyle}>周边药店</Text>
+        </TouchableOpacity>
+        <View style={styles.lineStyle}/>
+        <TouchableOpacity style={styles.showItemStyle}
+                          onPress={()=> {
+                            Actions.DOCTER_FINDER()
+                          }}>
+          <Image style={styles.itemImageStyle} source={require("../../assets/images/local_doctor.png")}/>
+          <Text style={styles.itemTextStyle}>附近医生</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -62,54 +45,30 @@ export default class Health extends Component {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    height: normalizeH(107),
     flexDirection: 'row',
     backgroundColor: '#fff',
-    paddingLeft: normalizeW(22),
-    paddingRight: normalizeW(12),
-    paddingTop: normalizeH(20),
-    paddingBottom: normalizeH(16)
   },
-  leftWrap: {
-    justifyContent: 'center',
-  },
-  centerWrap: {
+  showItemStyle: {
     flex: 1,
-    marginLeft: normalizeW(10),
-    paddingLeft: normalizeW(10),
-    borderLeftWidth: normalizeBorder(),
-    borderLeftColor: THEME.colors.lighterA
+    alignItems: "center",
+    paddingTop: normalizeH(17)
   },
-  rightWrap: {
-    alignSelf: 'stretch',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+  itemImageStyle: {
+    width: 40,
+    height: 40
   },
-  centerTop: {
-    flex: 1
+  lineStyle: {
+    marginTop: normalizeH(17),
+    marginBottom: normalizeH(17),
+    borderRightWidth: normalizeBorder(3),
+    borderRightColor: '#E5E5E5',
   },
-  centerBottom: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  centerTopTitle: {
-    fontSize: em(17),
-    color: THEME.colors.dark
-  },
-  tagWrap: {
-    marginRight: normalizeW(9),
-    paddingLeft: normalizeW(6),
-    paddingRight: normalizeW(6),
-    paddingTop: normalizeW(3),
-    paddingBottom: normalizeW(3),
-    backgroundColor: '#F1F1F1',
-    borderRadius:5,
-  },
-  tag: {
-    fontSize: em(15),
-    color: THEME.colors.lessDark
-  },
-  rightIcon: {
-    fontSize: em(30),
-    color: THEME.colors.lightest
+  itemTextStyle: {
+    paddingTop: 15,
+    fontSize: 17,
+    color: "#4a4a4a",
+    fontFamily: ".PingFangSC-Regular",
+    letterSpacing: 0.2
   }
 })

@@ -37,13 +37,13 @@ class CommonTextInput extends Component {
     }
     this.props.initInputForm(formInfo)
 
-    if (formInfo.initValue.text.length > 0) {
+    if (formInfo.initValue && formInfo.initValue.text && formInfo.initValue.text.length > 0) {
       this.setState({showClear: true})
     }
   }
 
   validInput(data) {
-    if (data.text && data.text.length > 0) {
+    if (data && data.text && data.text.length > 0) {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '输入有误'}
@@ -57,7 +57,7 @@ class CommonTextInput extends Component {
     }
     this.props.inputFormUpdate(inputForm)
 
-    if (text.length > 0) {
+    if (text && text.length > 0) {
       this.setState({showClear: true})
     } else {
       this.setState({showClear: false})

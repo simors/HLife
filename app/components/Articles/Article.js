@@ -48,6 +48,7 @@ import WebHtmlView from 'react-native-webhtmlview'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
 class Article extends Component {
   constructor(props) {
     super(props)

@@ -13,6 +13,8 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdatePagingShopList(state, action)
     case ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST:
       return handleUpdateShopAnnouncementList(state, action)
+    case ShopActionTypes.UPDATE_PAGING_SHOP_ANNOUNCEMENT_LIST:
+      return handleUpdatePagingShopAnnouncementList(state, action)
     case ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO:
       return handleUpdateUserFollowShopsInfo(state, action)
     case ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS:
@@ -33,6 +35,18 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchShopCommentReplyList(state, action)
     case ShopActionTypes.FETCH_SHOP_TAGS_SUCCESS:
       return handleFetchShopTagsSuccess(state, action)
+    case ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS:
+      return handleFetchUserOwnedShopInfoSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS:
+      return handleFetchShopFollowersSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS:
+      return handleFetchShopFollowersTotalCountSuccess(state, action)
+    case ShopActionTypes.FETCH_SIMILAR_SHOP_LIST_SUCCESS:
+      return handleFetchSimilarShopListSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_DETAIL_SUCCESS:
+      return handleFetchShopDetailSuccess(state, action)
+    case ShopActionTypes.FETCH_GUESS_YOU_LIKE_SHOP_LIST_SUCCESS:
+      return handleFetchGuessYouLikeShopListSuccess(state, action)
     default:
       return state
   }
@@ -59,6 +73,18 @@ function handleUpdateShopAnnouncementList(state, action) {
   let _map = state.get('shopAnnouncements')
   _map = _map.set(shopId, shopAnnouncements)
   state = state.set('shopAnnouncements',  _map)
+  return state
+}
+
+function handleUpdatePagingShopAnnouncementList(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let shopComments = payload.shopAnnouncements
+  let _map = state.get('shopAnnouncements')
+  let _list = _map.get(shopId) || new List()
+  let newShopComments = _list.concat(shopComments)
+  let _newMap = _map.set(shopId, newShopComments)
+  state = state.set('shopAnnouncements', _newMap)
   return state
 }
 
@@ -195,5 +221,54 @@ function handleFetchShopTagsSuccess(state, action) {
   if(shopTags && shopTags.size) {
     state = state.set('shopTagList', shopTags)
   }
+  return state
+}
+
+function handleFetchUserOwnedShopInfoSuccess(state, action) {
+  let payload = action.payload
+  let shopInfo = payload.shopInfo
+  // console.log('handleFetchUserOwnedShopInfoSuccess.shopInfo===', shopInfo)
+  if(shopInfo && shopInfo.size) {
+    state = state.set('userOwnedShopInfo', shopInfo)
+  }
+  return state
+}
+
+function handleFetchShopFollowersSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let shopFollowers = payload.shopFollowers
+  state = state.setIn(['shopFollowers', shopId], shopFollowers)
+  return state
+}
+
+function handleFetchShopFollowersTotalCountSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let shopFollowerTotalCount = payload.shopFollowerTotalCount
+  state = state.setIn(['shopFollowersTotalCount', shopId], shopFollowerTotalCount)
+  return state
+}
+
+function handleFetchSimilarShopListSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let similarShopList = payload.similarShopList
+  state = state.setIn(['similarShops', shopId], similarShopList)
+  return state
+}
+
+function handleFetchShopDetailSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let shopInfo = payload.shopInfo
+  state = state.setIn(['shopDetails', shopId], shopInfo)
+  return state
+}
+
+function handleFetchGuessYouLikeShopListSuccess(state, action) {
+  let payload = action.payload
+  let shopList = payload.shopList
+  state = state.set('guessYouLikeShopList', shopList)
   return state
 }

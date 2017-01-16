@@ -44,12 +44,11 @@ class SelectHealthProfile extends Component {
 
   }
 
-  renderHealthProfile() {
-    return (
-      
-    )
-
-  }
+  // renderHealthProfile() {
+  //   return (
+  //
+  //   )
+  // }
 
   render() {
     return(
@@ -73,7 +72,7 @@ class SelectHealthProfile extends Component {
               <Text style={{fontSize: em(15), color: '#B2B2B2'}}>选择为谁提问</Text>
             </View>
 
-            {this.renderHealthProfile()}
+            {/*{this.renderHealthProfile()}*/}
 
           </ScrollView>
 

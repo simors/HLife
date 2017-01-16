@@ -39,11 +39,12 @@ import CommonTextInput from './ShopTagsSelect'
 import * as MyShopTestData from './MyShopTestData'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
-import {fetchShopTags} from '../../../action/shopAction'
+import {fetchShopTags, fetchUserOwnedShopInfo} from '../../../action/shopAction'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import * as Toast from '../../common/Toast'
+import * as authSelector from '../../../selector/authSelector'
 import {selectShopCategories} from '../../../selector/configSelector'
-import {selectShopTags} from '../../../selector/shopSelector'
+import {selectShopTags, selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import {fetchShopCategories} from '../../../action/configAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -110,10 +111,18 @@ class CompleteShopInfo extends Component {
       }
     }
 
+    this.headerHeight = 44
+    if(Platform.OS == 'ios') {
+      this.headerHeight = 64
+    }
+    this.shopBaseInfoWrapHeight = 64
+    this.scrollOffSet = 0
+
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchUserOwnedShopInfo()
       this.props.fetchShopCategories()
       this.props.fetchShopTags()
     })
@@ -125,8 +134,16 @@ class CompleteShopInfo extends Component {
     })
   }
 
-  submitSuccessCallback(doctorInfo) {
-    Actions.SHOPR_EGISTER_SUCCESS()
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.userOwnedShopInfo.containedTag && nextProps.userOwnedShopInfo.containedTag.length) {
+      this.setState({
+        selectedShopTags: nextProps.userOwnedShopInfo.containedTag
+      })
+    }
+  }
+
+  submitSuccessCallback() {
+    Actions.MINE()
   }
 
   submitErrorCallback(error) {
@@ -137,7 +154,8 @@ class CompleteShopInfo extends Component {
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION,
+      shopId: this.props.userOwnedShopInfo.id,
+      submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -172,25 +190,39 @@ class CompleteShopInfo extends Component {
     if(this.props.allShopCategories) {
       optionsView = this.props.allShopCategories.map((item, index) => {
         return (
-          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.shopCategoryId}>{item.text}</Option>
+          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.id}>{item.text}</Option>
         )
       })
     }
     return optionsView
   }
 
-  handleOnScroll(e) {
+  onShopBaseInfoWrapLayout(event) {
+    if(event.nativeEvent.layout.height) {
+      this.shopBaseInfoWrapHeight = event.nativeEvent.layout.height
+      this.calNewPos()
+    }
+  }
+
+  calNewPos() {
+    const marginBottomHeight = 10
+    const inputWrapHeight = 40
     if(Platform.OS == 'ios') {
       this.setState({
-        optionListPos: 179 - e.nativeEvent.contentOffset.y,
-        shopTagsSelectTop: 219 - e.nativeEvent.contentOffset.y
+        optionListPos: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
+        shopTagsSelectTop: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
       })
     }else{
       this.setState({
-        optionListPos: 159 - e.nativeEvent.contentOffset.y,
-        shopTagsSelectTop: 199 - e.nativeEvent.contentOffset.y
+        optionListPos: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
+        shopTagsSelectTop: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
       })
     }
+  }
+
+  handleOnScroll(e) {
+    this.scrollOffSet = e.nativeEvent.contentOffset.y
+    this.calNewPos()
   }
 
   toggleShopTagsSelectShow() {
@@ -201,8 +233,15 @@ class CompleteShopInfo extends Component {
 
   onTagPress(tag, selected) {
     if(selected) {
-      if(this.state.selectedShopTags.indexOf(tag) >= 0) {
-        this.state.selectedShopTags.splice(this.state.selectedShopTags.indexOf(tag), 1)
+      let index = -1
+      for(let i = 0; i < this.state.selectedShopTags.length; i++) {
+        if(this.state.selectedShopTags[i].id == tag.id) {
+          index = i
+          break
+        }
+      }
+      if(index >= 0) {
+        this.state.selectedShopTags.splice(index, 1)
       }
     }else {
       this.state.selectedShopTags.push(tag)
@@ -213,6 +252,21 @@ class CompleteShopInfo extends Component {
   }
 
   render() {
+
+    let targetShopCategory = {}
+    if(this.props.userOwnedShopInfo.targetShopCategory) {
+      targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
+    }
+
+    let coverUrlArr = []
+    if(this.props.userOwnedShopInfo.coverUrl) {
+      coverUrlArr.push(this.props.userOwnedShopInfo.coverUrl)
+    }
+    let albumArr = []
+    if(this.props.userOwnedShopInfo.album && this.props.userOwnedShopInfo.album.length) {
+      albumArr = this.props.userOwnedShopInfo.album
+    }
+
     return (
       <View style={styles.container}>
         <Header
@@ -234,12 +288,12 @@ class CompleteShopInfo extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}
           >
-            <View style={styles.shopBaseInfoWrap}>
+            <View onLayout={this.onShopBaseInfoWrapLayout.bind(this)} style={styles.shopBaseInfoWrap}>
               <View style={styles.shopBaseInfoLeftWrap}>
-                <Text style={styles.shopBaseInfoLeftTitle}>乐会港式茶餐厅（奥克斯广场店）</Text>
+                <Text numberOfLines={1} style={styles.shopBaseInfoLeftTitle}>{this.props.userOwnedShopInfo.shopName}</Text>
                 <View style={styles.shopBaseInfoLeftLocBox}>
                   <Image source={require("../../../assets/images/shop_loaction.png")}/>
-                  <Text style={styles.shopBaseInfoLeftLocTxt}>岳麓大道57号奥克斯广场3楼</Text>
+                  <Text numberOfLines={2} style={styles.shopBaseInfoLeftLocTxt}>{this.props.userOwnedShopInfo.shopAddress}</Text>
                 </View>
               </View>
               <View style={styles.shopBaseInfoRightWrap}>
@@ -262,9 +316,9 @@ class CompleteShopInfo extends Component {
                     overlayPageY={this.state.optionListPos}
                     optionListHeight={240}
                     optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                    defaultText='点击选择店铺类型'
+                    defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
+                    defaultValue={targetShopCategory.id}
                     onSelect={this._onSelectShopCategory.bind(this)}>
-                    <Option key={"shopCategoryOption_-1"} value="">全部分类</Option>
                     {this.renderShopCategoryOptions()}
                   </SelectInput>
                 </View>
@@ -290,6 +344,7 @@ class CompleteShopInfo extends Component {
                 <View style={[styles.inputBox, styles.datePickerBox]}>
                   <ServiceTimePicker 
                     {...serviceTimeInput}
+                    initValue={this.props.userOwnedShopInfo.openTime}
                   />
                 </View>
               </View>
@@ -305,6 +360,7 @@ class CompleteShopInfo extends Component {
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     clearBtnStyle={{top:6}}
+                    initValue={this.props.userOwnedShopInfo.contactNumber}
                   />
                 </View>
               </View>
@@ -320,6 +376,7 @@ class CompleteShopInfo extends Component {
                     clearBtnStyle={{right: 10,top: 30}}
                     inputStyle={{borderColor: '#bdc6cf', color: '#030303',paddingRight:30}}
                     maxLength={100}
+                    initValue={this.props.userOwnedShopInfo.ourSpecial}
                   />
                 </View>
               </View>
@@ -333,6 +390,7 @@ class CompleteShopInfo extends Component {
                   {...shopCoverInput}
                   number={1}
                   imageLineCnt={3}
+                  initValue={coverUrlArr}
                 />
               </View>
             </View>
@@ -344,6 +402,7 @@ class CompleteShopInfo extends Component {
                   {...shopAlbumInput}
                   number={9}
                   imageLineCnt={3}
+                  initValue={albumArr}
                 />
               </View>
             </View>
@@ -369,11 +428,16 @@ class CompleteShopInfo extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const isUserLogined = authSelector.isUserLogined(state)
   const allShopCategories = selectShopCategories(state)
   const allShopTags = selectShopTags(state)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  // console.log('userOwnedShopInfo===', userOwnedShopInfo)
   return {
+    isUserLogined: isUserLogined,
     allShopCategories: allShopCategories,
-    allShopTags: allShopTags
+    allShopTags: allShopTags,
+    userOwnedShopInfo: userOwnedShopInfo
   }
 }
 
@@ -381,7 +445,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
   fetchShopCategories,
-  fetchShopTags
+  fetchShopTags,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CompleteShopInfo)
@@ -480,6 +545,7 @@ const styles = StyleSheet.create({
   shopBaseInfoLeftLocBox: {
     flexDirection: 'row',
     marginTop: 10,
+    marginRight:10
   },
   shopBaseInfoLeftLocTxt: {
     marginLeft: 5,
@@ -513,11 +579,12 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
   },
   albumWrap: {
-    padding: 10,
     marginBottom: 10,
     backgroundColor: '#fff'
   },
   albumTitle: {
+    paddingTop: 10,
+    paddingLeft: 10,
     fontSize: em(17),
     color: THEME.colors.inputLabel
   },
@@ -525,7 +592,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   coverWrap: {
-    padding: 10,
+    paddingBottom: 10,
     marginBottom: 10,
     backgroundColor: '#fff'
   },

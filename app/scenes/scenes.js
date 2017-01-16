@@ -26,6 +26,12 @@ import ArticleList from '../components/Articles/ArticleList'
 import Article from '../components/Articles/Article'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
+import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
+import UpdateShopCover from '../components/Mine/myShop/UpdateShopCover'
+import ShopReCertification from '../components/Mine/myShop/ShopReCertification'
+import UpdateShopAlbum from '../components/Mine/myShop/UpdateShopAlbum'
+import ShopAnnouncementsManage from '../components/Mine/myShop/ShopAnnouncementsManage'
+import PublishShopAnnouncement from '../components/Mine/myShop/PublishShopAnnouncement'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
@@ -47,6 +53,14 @@ import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
 import SelectHealthProfile from '../components/Home/Inquiry/SelectHealthProfile'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
+import ArticleInputTest from '../components/common/Input/ArticleInputTest'
+import PromoterAuth from '../components/Mine/promote/PromoterAuth'
+import GetInviteCode from '../components/Mine/promote/GetInviteCode'
+import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
+
+import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
+import MyTopic from '../components/Mine/MyTopic'
+
 
 const styles = StyleSheet.create({
   container: {
@@ -84,6 +98,12 @@ export const scenes = Actions.create(
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
+      <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
+      <Scene key="UPDATE_SHOP_COVER" component={UpdateShopCover}/>
+      <Scene key="UPDATE_SHOP_ALBUM" component={UpdateShopAlbum}/>
+      <Scene key="SHOP_RE_CERTIFICATION" component={ShopReCertification}/>
+      <Scene key="SHOP_ANNOUNCEMENTS_MANAGE" component={ShopAnnouncementsManage}/>
+      <Scene key="PUBLISH_SHOP_ANNOUNCEMENT" component={PublishShopAnnouncement}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
@@ -103,9 +123,14 @@ export const scenes = Actions.create(
       <Scene key="QA_LIST" component={QAList}/>
       <Scene key="DOCTOR_INTRO" component={DoctorIntro}/>
       <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
-      <Scene key="SELECT_HEALTH_PROFILE" component={SelectHealthProfile} initial={true}/>
+      <Scene key="SELECT_HEALTH_PROFILE" component={SelectHealthProfile}/>
+      <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
+      <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
+      <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
+      <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
+      <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
 
-
+      <Scene key="MYTOPIC" component={MyTopic}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

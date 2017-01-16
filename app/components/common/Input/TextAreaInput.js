@@ -42,6 +42,12 @@ class TextAreaInput extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.initValue != nextProps.initValue) {
+      this.inputChange(nextProps.initValue)
+    }
+  }
+
   validInput(data) {
     if (data.text && data.text.length > 0) {
       return {isVal: true, errMsg: '验证通过'}

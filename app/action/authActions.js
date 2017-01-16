@@ -18,6 +18,11 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
   HEALTH_PROFILE_SUBMIT: 'HEALTH_PROFILE_SUBMIT',
+  COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
+  PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION',
+  PROMOTER_RE_CERTIFICATION: 'PROMOTER_RE_CERTIFICATION',
+  UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
+  UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
 }
 
 export function submitFormData(payload) {
@@ -50,6 +55,20 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT:
         dispatch(handleHealthProfileSubmit(payload, formData))
+      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_RE_CERTIFICATION:
+        dispatch(handleShopReCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
+        dispatch(handleCompleteShopInfo(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION:
+        dispatch(handlePromoterCertification(payload,formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
+        dispatch(handleShopCover(payload,formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_ALBUM:
+        dispatch(handleShopAlbum(payload,formData))
         break
     }
   }
@@ -222,19 +241,103 @@ function handleProfileSubmit(payload, formData) {
   }
 }
 
+
+function handlePromoterCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let smsPayload = {
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    if(__DEV__) {
+      dispatch(verifyInviteCode(payload, formData))
+    }
+    else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(verifyInviteCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
+  }
+}
+
+function verifyInviteCode(payload, formData) {
+  return (dispatch, getState) => {
+    lcAuth.verifyInvitationCode({invitationsCode: formData.inviteCodeInput.text}).then(()=> {
+      dispatch(promoterCertification(payload, formData))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+function promoterCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let certPayload = {
+      name: formData.nameInput.text,
+      phone: formData.phoneInput.text,
+      level: 1,
+      address: formData.regionPicker.text,
+      cardId: formData.IDInput.text,
+      //upUser: payload.upUser,
+    }
+    lcAuth.promoteCertification(certPayload).then((promoter) => {
+     //console.log('promoter',promoter)
+      let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
+      dispatch(certificationAction({promoter}))
+      if (payload.success) {
+        payload.success(promoter)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 function handleShopCertification(payload, formData) {
   return (dispatch, getState) => {
     let smsPayload = {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    lcAuth.verifySmsCode(smsPayload).then(() => {
+    if(__DEV__) {
       dispatch(verifyInvitationCode(payload, formData))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
+    }
+    else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(verifyInvitationCode(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
+  }
+}
+
+function handleShopReCertification(payload, formData) {
+  return (dispatch, getState) => {
+    let smsPayload = {
+      phone: formData.phoneInput.text,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    if(__DEV__) {
+      dispatch(shopCertification(payload, formData))
+    }
+    else {
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(shopCertification(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }
   }
 }
 
@@ -248,7 +351,6 @@ function verifyInvitationCode(payload, formData) {
       }
     })
   }
-
 }
 
 function shopCertification(payload, formData) {
@@ -261,7 +363,7 @@ function shopCertification(payload, formData) {
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
       let cartificationAction = createAction(AuthTypes.SHOP_CERTIFICATION_SUCCESS)
-      dispatch(cartificationAction(shop))
+      dispatch(cartificationAction({shop}))
       if (payload.success) {
         payload.success(shop)
       }
@@ -271,7 +373,69 @@ function shopCertification(payload, formData) {
       }
     })
   }
+}
 
+function handleShopCover(payload, formData) {
+  return (dispatch, getState) => {
+    let shopPayload = {
+      id: payload.id,
+      coverUrl: formData.shopCoverInput.text
+    }
+    lcAuth.updateShopCover(shopPayload).then((success) => {
+      if (payload.success) {
+        payload.success(success)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+
+function handleShopAlbum(payload, formData) {
+  return (dispatch, getState) => {
+    let shopPayload = {
+      id: payload.id,
+      album: formData.shopAlbumInput.text
+    }
+    lcAuth.handleShopAlbum(shopPayload).then((success) => {
+      if (payload.success) {
+        payload.success(success)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function handleCompleteShopInfo(payload, formData) {
+  return (dispatch, getState) => {
+    let newPayload = {
+      shopId: payload.shopId,
+      shopCategoryObjectId: formData.shopCategoryInput.text,
+      openTime: formData.serviceTimeInput.text,
+      contactNumber: formData.servicePhoneInput.text,
+      ourSpecial: formData.ourSpecialInput.text,
+      album: formData.shopAlbumInput.text,
+      coverUrlArr: formData.shopCoverInput.text,
+      tagIds: formData.tagsInput.text,
+    }
+    lcAuth.submitCompleteShopInfo(newPayload).then((shop) => {
+      let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+      dispatch(_action(shop))
+      if (payload.success) {
+        payload.success(shop)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }
 
 export function getUserInfoById(payload) {
@@ -311,21 +475,7 @@ export function fetchUserFollowees(payload) {
   }
 }
 
-export function fetchUserFavoriteArticles(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchUserFollowees(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS)
-      dispatch(updateAction(result))
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
+
 
 export function userIsFollowedTheUser(payload) {
   return (dispatch, getState) => {
@@ -400,6 +550,19 @@ export function handleHealthProfileSubmit(payload, formData) {
       if (payload.success) {
         payload.success(result)
       }
+
+    })
+  }
+}
+
+export function fetchFavoriteArticles(payload) {
+  //console.log('columnId======>')
+  return (dispatch, getState) => {
+   // console.log('columnId======>---------------------')
+    lcAuth.getFavoriteArticles(payload).then((result) => {
+        //console.log('result======>',result)
+      let updateAction = createAction(AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS)
+      dispatch(updateAction(result))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

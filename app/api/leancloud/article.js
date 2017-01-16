@@ -7,25 +7,31 @@ import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 
 export function getArticle(payload) {
+ // console.log('payload',payload)
   let query = new AV.Query('Articles')
   if (payload) {
     let categoryId = payload
     let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
-   // console.log('getLikers.category=====', articleCategory)
+    //console.log('getLikers.category=====', articleCategory)
     query.equalTo('Category', articleCategory)
     query.equalTo('enable',true)
     query.include(['user'])
     query.descending('createdAt')
   }
   return query.find().then((results) => {
+   // console.log('result-====>',results)
+
     let article = []
     results.forEach((result) => {
-      article.push(ArticleItem.fromLeancloudObject(result))
+   //   console.log('result-====>=======',result)
 
+      article.push(ArticleItem.fromLeancloudObject(result))
     })
+   // console.log('article-====>',article)
 
     return new List(article)
   }, (err) => {
+   // console.log(err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

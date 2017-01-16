@@ -70,11 +70,27 @@ class ImageInput extends Component {
     this.uploadImg(source)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.initValue != nextProps.initValue) {
+      this.inputChange(nextProps.initValue)
+    }
+  }
+
   imageSelectedChange(url) {
+    this.inputChange(url)
+    if(this.props.closeModalAfterSelectedImg) {
+      this.toggleModal(false)
+    }
+    if(this.props.imageSelectedChangeCallback) {
+      this.props.imageSelectedChangeCallback(url)
+    }
+  }
+
+  inputChange(text) {
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
-      data: {text: url}
+      data: {text: text}
     }
     this.props.inputFormUpdate(inputForm)
   }

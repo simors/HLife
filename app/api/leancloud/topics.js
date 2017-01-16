@@ -149,7 +149,6 @@ export function publishTopicComments(payload) {
       let relation = topic.relation('comments')
       relation.add(topicComment);
       topic.increment("commentNum", 1)
-      console.log('relation======>', relation)
 
       return topic.save().then(function (result) {
       }, function (err) {
@@ -166,10 +165,16 @@ export function publishTopicComments(payload) {
 export function getTopics(payload) {
   let categoryId = payload.categoryId
   let query = new AV.Query('Topics')
-  if(categoryId) {
+  if(payload.type == "topics" && categoryId) {
     var category = AV.Object.createWithoutData('TopicCategory', categoryId);
     query.equalTo('category', category)
   }
+
+  if(payload.type == "myTopics") {
+    let currentUser = AV.User.current()
+    query.equalTo('user', currentUser)
+  }
+
   query.include(['user']);
   query.descending('createdAt')
   return query.find().then(function (results) {

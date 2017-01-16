@@ -14,6 +14,7 @@ import {
   ShopCommentUp4Cloud,
   ShopTag
 } from '../../models/shopModel'
+import {UserInfo} from '../../models/userModels'
 
 export function getShopList(payload) {
   let shopCategoryId = payload.shopCategoryId
@@ -34,7 +35,7 @@ export function getShopList(payload) {
   }
 
   //用 include 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
-  query.include(['targetShopCategory', 'owner'])
+  query.include(['targetShopCategory', 'owner', 'containedTag'])
 
   if(sortId == 1) {
     if(!isRefresh) { //分页查询
@@ -68,14 +69,45 @@ export function getShopList(payload) {
   }
   return query.find().then(function (results) {
     // console.log('getShopList.results=', results)
-    return AV.GeoPoint.current().then(function(geoPoint){
+    if(__DEV__) {
       let shopList = []
       results.forEach((result) => {
-        result.userCurGeo = geoPoint
         shopList.push(ShopInfo.fromLeancloudObject(result))
       })
       return new List(shopList)
-    })
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        let shopList = []
+        results.forEach((result) => {
+          result.userCurGeo = geoPoint
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      })
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopDetail(payload) {
+  let id = payload.id
+  let query = new AV.Query('Shop')
+  query.equalTo('objectId', id)
+  query.include(['targetShopCategory', 'owner', 'containedTag'])
+  return query.first().then(function (result) {
+    console.log('fetchShopDetail.result=', result)
+    if(__DEV__) {
+      let shopInfo = ShopInfo.fromLeancloudObject(result)
+      return new Map(shopInfo)
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        result.userCurGeo = geoPoint
+        let shopInfo = ShopInfo.fromLeancloudObject(result)
+        return new Map(shopInfo)
+      })
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -85,9 +117,16 @@ export function getShopList(payload) {
 export function getShopAnnouncement(payload) {
   let shopAnnouncements = []
   let shopId = payload.id //店铺id
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+
   let shop = AV.Object.createWithoutData('Shop', shopId)
   let relation = shop.relation('containedAnnouncements')
   let query = relation.query()
+  // console.log('getShopAnnouncement.shopId=====', shopId)
+  if(!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
   query.addDescending('createdAt')
   return query.find().then(function(results) {
     // console.log('getShopAnnouncement.results=====', results)
@@ -509,5 +548,138 @@ export function fetchShopTags(payload) {
     throw err
   })
 }
+
+export function fetchUserOwnedShopInfo(payload) {
+  let query = new AV.Query('Shop')
+  let currentUser = AV.User.current()
+  query.equalTo('owner', currentUser)
+  query.include(['owner', 'targetShopCategory', 'containedTag'])
+  return query.first().then((result)=>{
+    // console.log('fetchUserOwnedShopInfo.result===', result)
+    let shopInfo = {}
+    if(result){
+      shopInfo = ShopInfo.fromLeancloudObject(result)
+    }
+    // console.log('shopInfo=====', shopInfo)
+    return new List([shopInfo])
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopFollowers(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopFollower')
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  query.equalTo('shop', shop)
+  query.include('follower')
+  return query.find().then((results)=> {
+    // console.log('fetchShopFollowers.results===', results)
+    let shopFollowers = []
+    if(results && results.length) {
+      results.forEach((result)=>{
+        shopFollowers.push(UserInfo.fromShopFollowersLeancloudObject(result))
+      })
+    }
+    // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
+    return new List(shopFollowers)
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchShopFollowersTotalCount(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopFollower')
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  query.equalTo('shop', shop)
+  return query.count().then((results)=>{
+    // console.log('fetchShopFollowersTotalCount.results===', results)
+    return results
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchSimilarShopList(payload) {
+  let shopId = payload.id
+  let targetShopCategoryId = payload.targetShopCategoryId
+  let targetShopCategory = AV.Object.createWithoutData('ShopCategory', targetShopCategoryId)
+  let similarQuery = new AV.Query('Shop')
+  let notQuery = new AV.Query('Shop')
+  similarQuery.equalTo('targetShopCategory', targetShopCategory)
+  notQuery.notEqualTo('objectId', shopId)
+  let andQuery = AV.Query.and(similarQuery, notQuery)
+  andQuery.include(['targetShopCategory', 'owner', 'containedTag'])
+  andQuery.addDescending('createdAt')
+  andQuery.limit(3)
+  return andQuery.find().then(function (results) {
+    // console.log('getShopList.results=', results)
+    if(__DEV__) {
+      let shopList = []
+      results.forEach((result) => {
+        shopList.push(ShopInfo.fromLeancloudObject(result))
+      })
+      return new List(shopList)
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        let shopList = []
+        results.forEach((result) => {
+          result.userCurGeo = geoPoint
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      })
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchGuessYouLikeShopList(payload) {
+  let id = payload.id
+  let query = new AV.Query('Shop')
+  query.notEqualTo('objectId', id)
+  query.include(['targetShopCategory', 'owner', 'containedTag'])
+  let random = Math.random() * 10
+  if(random <= 2) {
+    query.addDescending('createdAt')
+  }else if(random <= 5) {
+    query.addAscending('createdAt')
+  }else if(random <= 7) {
+    query.addDescending('pv')
+  }else {
+    query.addDescending('score')
+  }
+  query.limit(3)
+  return query.find().then(function (results) {
+    // console.log('fetchGuessYouLikeShopList.results=', results)
+    if(__DEV__) {
+      let shopList = []
+      results.forEach((result) => {
+        shopList.push(ShopInfo.fromLeancloudObject(result))
+      })
+      return new List(shopList)
+    }else {
+      return AV.GeoPoint.current().then(function(geoPoint){
+        let shopList = []
+        results.forEach((result) => {
+          result.userCurGeo = geoPoint
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      })
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+
 
 

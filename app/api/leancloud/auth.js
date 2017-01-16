@@ -2,6 +2,8 @@ import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 import {UserInfo, UserDetail, HealthProfileRecord, HealthProfile} from '../../models/userModels'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
+import {ArticleItem} from '../../models/ArticleModel'
+import {PromoterInfo} from '../../models/promoterModel'
 import {DoctorInfo} from '../../models/doctorModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
@@ -74,6 +76,126 @@ export function register(payload) {
     throw err
   })
 }
+
+export function certification(payload) {
+  console.log("certification", payload)
+
+  let userInfo = AV.Object.createWithoutData('_User', payload.id)
+  let query = new AV.Query('Doctor')
+  query.equalTo('user', userInfo)
+  return query.find().then(function (results) {
+    if (results.length == 0) {
+      let Doctor = AV.Object.extend('Doctor')
+      let doctor = new Doctor()
+
+      doctor.set('name', payload.name)
+      doctor.set('ID', payload.ID)
+      doctor.set('phone', payload.phone)
+      doctor.set('organization', payload.organization)
+      doctor.set('department', payload.department)
+      doctor.set('certifiedImage', payload.certifiedImage)
+      doctor.set('certificate', payload.certificate)
+      doctor.set('status', 2) //审核中
+      doctor.set('user', userInfo)
+      userInfo.addUnique('identity', 'doctor')
+      userInfo.save()
+
+      return doctor.save().then((doctorInfo)=>{
+        let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+        doctor.id = payload.id
+        return {
+          doctorInfo: doctor,
+        }
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+    } else {
+      let Doctor = AV.Object.createWithoutData('Doctor', results[0].id)
+      Doctor.set('name', payload.name)
+      Doctor.set('ID', payload.ID)
+      Doctor.set('phone', payload.phone)
+      Doctor.set('organization', payload.organization)
+      Doctor.set('department', payload.department)
+      Doctor.set('certifiedImage', payload.certifiedImage)
+      Doctor.set('certificate', payload.certificate)
+      Doctor.set('status', 2) //审核中
+      Doctor.set('user', userInfo)
+      return Doctor.save().then((doctorInfo)=>{
+        let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+        doctor.id = payload.id
+        return {
+          doctorInfo: doctor,
+        }
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+  // let Doctor = AV.Object.extend('Doctor')
+  // let doctor = new Doctor()
+  //
+  // doctor.set('name', payload.name)
+  // doctor.set('ID', payload.ID)
+  // doctor.set('phone', payload.phone)
+  // doctor.set('organization', payload.organization)
+  // doctor.set('department', payload.department)
+  // doctor.set('certifiedImage', payload.certifiedImage)
+  // doctor.set('certificate', payload.certificate)
+  // doctor.set('status', 2) //审核中
+  // doctor.set('user', userInfo)
+  //
+  // userInfo.addUnique('identity', 'doctor')
+  // userInfo.save()
+  //
+  // return doctor.save().then((doctorInfo)=>{
+  //   let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
+  //   doctor.id = payload.id
+  //   return {
+  //     doctorInfo: doctor,
+  //   }
+  // }, function (err) {
+  //   err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+  //   throw err
+  // })
+
+}
+
+
+export function promoteCertification(payload) {
+ // console.log('payload=====>',payload)
+  let Promoter = AV.Object.extend('Promoter')
+  let promoter = new Promoter()
+  let currentUser = AV.User.current()
+  promoter.set('name', payload.name)
+  promoter.set('phone', payload.phone)
+  promoter.set('cardId', payload.cardId)
+  promoter.set('level', payload.level+1)
+ // promoter.set('upUser', payload.upUser)
+  promoter.set('user', currentUser)
+  promoter.set('address', payload.address)
+ // console.log('currentUser=====>',currentUser)
+  currentUser.addUnique('identity', 'promoter')
+  currentUser.save()
+
+  return promoter.save().then(function (result) {
+   // console.log('result=====>',result)
+    let promoterInfo = PromoterInfo.fromLeancloudObject(result)
+    return promoterInfo
+  }, function (err) {
+   // console.log(err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+}
+
 export function profileSubmit(payload) {
 
   console.log("profileSubmit:payload=", payload)
@@ -102,27 +224,95 @@ export function profileSubmit(payload) {
 export function shopCertification(payload) {
   let Shop = AV.Object.extend('Shop')
   let shop = new Shop()
-
+  let currentUser = AV.User.current()
   shop.set('name', payload.name)
   shop.set('phone', payload.phone)
   shop.set('shopName', payload.shopName)
   shop.set('shopAddress', payload.shopAddress)
   shop.set('invitationCode', payload.invitationCode)
+  shop.set('owner', currentUser)
 
   return shop.save().then(function (result) {
-    return ShopInfo.fromLeancloudObject(result)
+    let shopInfo = ShopInfo.fromLeancloudObject(result)
+    return new List([shopInfo])
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
 
+export function updateShopCover(payload) {
+  let id = payload.id
+  let coverUrl = payload.coverUrl
+  let shop = AV.Object.createWithoutData('Shop', id)
+  shop.set('coverUrl', coverUrl)
+  return shop.save().then(function (result) {
+    return true
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function handleShopAlbum(payload) {
+  let id = payload.id
+  let album = payload.album
+  let shop = AV.Object.createWithoutData('Shop', id)
+  shop.set('album', album)
+  return shop.save().then(function (result) {
+    return true
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function submitCompleteShopInfo(payload) {
+  let shopId = payload.shopId
+  let shopCategoryObjectId = payload.shopCategoryObjectId
+  let openTime = payload.openTime
+  let contactNumber = payload.contactNumber
+  let ourSpecial = payload.ourSpecial
+  let album = payload.album
+  let coverUrlArr = payload.coverUrlArr
+  let tagIds = payload.tagIds
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  let targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
+  let containedTag = []
+  if(tagIds && tagIds.length) {
+    tagIds.forEach((tagId) =>{
+      containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
+    })
+  }
+  if(containedTag.length) {
+    shop.set('containedTag', containedTag)
+  }
+  let coverUrl = ''
+  if(coverUrlArr && coverUrlArr.length) {
+    coverUrl = coverUrlArr[0]
+    shop.set('coverUrl', coverUrl)
+  }
+  shop.set('targetShopCategory', targetShopCategory)
+  shop.set('openTime', openTime)
+  shop.set('contactNumber', contactNumber)
+  shop.set('ourSpecial', ourSpecial)
+  shop.set('album', album)
+  // console.log('submitCompleteShopInfo.shop====', shop)
+  return shop.save().then(function (result) {
+    return ShopInfo.fromLeancloudObject(result)
+  }, function (err) {
+    console.log('submitCompleteShopInfo.err====', err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+  
 }
 
 export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({
       mobilePhoneNumber:phone,
-      name: '近来',
+      name: '吾爱',
       op: '注册',
       ttl: 10}).then(function () {
       // do nothing
@@ -173,6 +363,7 @@ export function modifyMobilePhoneVerified(payload) {
     throw err
   })
 }
+
 
 export function verifyInvitationCode(payload) {
   let params = {}
@@ -333,4 +524,34 @@ export function healthProfileSubmit(payload) {
     throw err
   })
 
+}
+
+export function getFavoriteArticles(payload) {
+  // console.log('payload',payload)
+  let currentUser = AV.User.current()
+  let query = new AV.Query('ArticleFavorite')
+  query.equalTo('user',currentUser)
+  query.equalTo('status',true)
+  query.include('article')
+  query.include('article.user')
+  return query.find().then((results) => {
+    // console.log('result-====>',results)
+
+    let article = []
+    results.forEach((result) => {
+      let articleInfo= result.get('article')
+     // console.log('articleInfo-====>=======',articleInfo)
+
+      article.push(ArticleItem.fromLeancloudObject(articleInfo))
+    })
+   //  console.log('article-====>',article)
+    return {
+      currentUserId: AV.User.current().id,
+      favoriteArticles: List(article)
+    }
+  }, (err) => {
+    // console.log(err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
