@@ -29,17 +29,14 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
+import ScoreShow from '../common/ScoreShow'
 import {selectShopCategories} from '../../selector/configSelector'
-import {selectShopList} from '../../selector/shopSelector'
+import {selectShopList, selectShopTags} from '../../selector/shopSelector'
 import {fetchShopCategories} from '../../action/configAction'
-import {fetchShopList} from '../../action/shopAction'
+import {fetchShopList, fetchShopTags} from '../../action/shopAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-
-const ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 != r2,
-})
 
 class ShopCategoryList extends Component {
   constructor(props) {
@@ -76,6 +73,7 @@ class ShopCategoryList extends Component {
 
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopCategories()
+      this.props.fetchShopTags()
       this.refreshData()
     })
   }
@@ -209,8 +207,31 @@ class ShopCategoryList extends Component {
     Actions.SHOP_DETAIL({id: id})
   }
 
-  renderRow(rowData, rowId) {
-    const scoreWidth = rowData.score / 5.0 * 62
+  renderTags(allShopTags) {
+    if(allShopTags && allShopTags.length) {
+      let allShopTagsView = allShopTags.map((item, index)=> {
+        return (
+          <TouchableOpacity key={"shop_tag_" + index}>
+            <View style={styles.shopTagBox}>
+              <Text style={styles.shopTag}>{item.name}</Text>
+            </View>
+          </TouchableOpacity>
+        )
+      })
+
+      return (
+        <View key="shopTags" style={styles.shopTagsWrap}>
+          {allShopTagsView}
+        </View>
+      )
+    }
+  }
+
+  renderRow(rowData, sectionID, rowID, highlightRow) {
+    if(this.props.isFirstPage && this.props.shopList.length == (rowID+1)) {
+      return this.renderTags(this.props.allShopTags)
+    }
+
     return (
       <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.id)}}>
         <View style={styles.shopInfoWrap}>
@@ -219,13 +240,10 @@ class ShopCategoryList extends Component {
           </View>
           <View style={styles.shopIntroWrap}>
             <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
-            <View style={styles.scoresWrap}>
-              <View style={styles.scoreIconGroup}>
-                <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-              </View>
-              <Text style={styles.score}>{rowData.score}</Text>
-            </View>
+            <ScoreShow
+              containerStyle={{flex:1}}
+              score={rowData.score}
+            />
             <View style={styles.subInfoWrap}>
               <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
               <Text style={styles.subTxt}>{rowData.geoName}</Text>
@@ -277,7 +295,7 @@ class ShopCategoryList extends Component {
             <CommonListView
               contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
               dataSource={this.props.ds}
-              renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+              renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
               loadNewData={()=>{this.refreshData()}}
               loadMoreData={()=>{this.loadMoreData()}}
               ref={(listView) => this.listView = listView}
@@ -371,21 +389,32 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('shopList=', shopList)
   let lastScore = ''
   let lastGeo = []
+  let isFirstPage = false
   if(shopList && shopList.length) {
     lastScore = shopList[shopList.length-1].score
     lastGeo = shopList[shopList.length-1].geo
+    if(shopList.length <= 5) {
+      isFirstPage = true
+    }
   }
+
+  const allShopTags = selectShopTags(state)
+
   return {
     ds: ds.cloneWithRows(shopList),
+    shopList: shopList,
     allShopCategories: allShopCategories,
     lastScore: lastScore,
     lastGeo: lastGeo,
+    isFirstPage: isFirstPage,
+    allShopTags: allShopTags
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
-  fetchShopList
+  fetchShopList,
+  fetchShopTags
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCategoryList)
@@ -448,30 +477,6 @@ const styles = StyleSheet.create({
     fontSize: em(17),
     color: '#8f8e94'
   },
-  score: {
-    marginLeft: 5,
-    color: '#f5a623',
-    fontSize: em(12)
-  },
-  scoresWrap: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  scoreIconGroup: {
-    width: 62,
-    height: 11,
-    backgroundColor: '#d8d8d8'
-  },
-  scoreBackDrop: {
-    height: 11,
-    backgroundColor: '#f5a623'
-  },
-  scoreIcon: {
-    position: 'absolute',
-    left: 0,
-    top: 0
-  },
   subInfoWrap: {
     flexDirection: 'row',
   },
@@ -479,5 +484,26 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(10),
     color: '#d8d8d8',
     fontSize: em(12)
+  },
+  shopTagsWrap: {
+    padding: 10,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  shopTagBox: {
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  shopTag: {
+    fontSize: em(17),
+    color: '#8f8e94'
   }
 })

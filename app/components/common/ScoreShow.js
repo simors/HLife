@@ -30,7 +30,7 @@ export default class ScoreShow extends Component {
 
   render() {
     return (
-      <View style={styles.scoresWrap}>
+      <View style={[styles.scoresWrap, this.props.containerStyle]}>
         <View style={styles.scoreIconGroup}>
           <View style={[styles.scoreBackDrop, {width: this.state.scoreWidth}]}></View>
           <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>

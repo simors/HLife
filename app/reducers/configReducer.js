@@ -106,7 +106,7 @@ function initColumn(column) {
 }
 
 function handleUpdateConfigShopCategories(state, action) {
-  console.log('handleUpdateConfigShopCategories=', action)
+  // console.log('handleUpdateConfigShopCategories=', action)
   let payload = action.payload
   let shopCategories = payload.shopCategories
   //console.log('handleUpdateConfigShopCategories.12=', shopCategories)
