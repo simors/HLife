@@ -1,13 +1,14 @@
 /**
  * Created by zachary on 2016/12/15.
  */
-
+import {Map, List, Record} from 'immutable'
 import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as ShopActionTypes from '../constants/shopActionTypes'
 import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
+import {selectShopTags} from '../selector/shopSelector'
 
 export function fetchShopList(payload) {
   return (dispatch ,getState) => {
@@ -15,6 +16,13 @@ export function fetchShopList(payload) {
       let actionType = ShopActionTypes.UPDATE_SHOP_LIST
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
+      }else {
+        const allShopTags = selectShopTags(getState())
+        // console.log('fetchShopList.allShopTags===', allShopTags)
+        shopList = shopList.push(new Record({
+          showTags: true,
+          allShopTags: allShopTags
+        }))
       }
       let updateShopListAction = createAction(actionType)
       dispatch(updateShopListAction({shopList: shopList}))

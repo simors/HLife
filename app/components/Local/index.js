@@ -28,6 +28,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 // import Modal from 'react-native-modalbox'
+import {fetchUserFollowees} from '../../action/authActions'
 
 import {getBanner, selectShopCategories} from '../../selector/configSelector'
 import {fetchBanner, fetchShopCategories} from '../../action/configAction'
@@ -42,6 +43,7 @@ import LocalHealth from './LocalHealth'
 import ShopCategories from './ShopCategories'
 import TopicShow from '../Find/TopicShow'
 import {getAllTopics} from '../../selector/topicSelector'
+import * as authSelector from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -59,6 +61,9 @@ class Local extends Component {
       this.props.fetchBanner({type: 0})
       this.props.fetchShopCategories()
       this.props.fetchTopics({type:"allTopics"})
+      if(this.props.isUserLogined) {
+        this.props.fetchUserFollowees()
+      }
     })
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
@@ -270,6 +275,7 @@ const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
   const shopCategories = allShopCategories.slice(0, 5)
   const topics = getAllTopics(state)
+  const isUserLogined = authSelector.isUserLogined(state)
   // let shopCategories = []
   // let ts = {
   //   imageSource: "http://img1.3lian.com/2015/a1/53/d/200.jpg",
@@ -288,14 +294,16 @@ const mapStateToProps = (state, ownProps) => {
     shopCategories: shopCategories,
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
-    topics: topics
+    topics: topics,
+    isUserLogined: isUserLogined
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
   fetchShopCategories,
-  fetchTopics
+  fetchTopics,
+  fetchUserFollowees
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)
