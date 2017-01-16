@@ -38,6 +38,7 @@ import ShopTagsSelect from './ShopTagsSelect'
 import CommonTextInput from './ShopTagsSelect'
 import * as MyShopTestData from './MyShopTestData'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
+import ImageInput from '../../common/Input/ImageInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
 import {fetchShopTags, fetchUserOwnedShopInfo} from '../../../action/shopAction'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
@@ -386,11 +387,13 @@ class CompleteShopInfo extends Component {
             <View style={styles.coverWrap}>
               <Text style={styles.albumTitle}>封面图片</Text>
               <View style={styles.uploadAlbum}>
-                <ImageGroupInput
+                <ImageInput
                   {...shopCoverInput}
-                  number={1}
-                  imageLineCnt={3}
-                  initValue={coverUrlArr}
+                  containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
+                  addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
+                  choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
+                  addImage={require('../../../assets/images/default_upload.png')}
+                  closeModalAfterSelectedImg={true}
                 />
               </View>
             </View>
