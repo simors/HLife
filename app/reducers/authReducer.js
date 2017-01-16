@@ -5,7 +5,7 @@
 import * as AuthTypes from '../constants/authActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Map, List} from 'immutable'
-import {UserState, UserInfo} from '../models/userModels'
+import {UserState, UserInfo, HealthProfile} from '../models/userModels'
 
 
 const initialState = new UserState()
@@ -26,6 +26,8 @@ export default function authReducer(state = initialState, action) {
       return handleFetchUserFolloweesSuccess(state, action)
     case AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS:
       return handleFetchUserFavoriteArticleSuccess(state,action)
+    case AuthTypes.ADD_HEALTH_PROFILE:
+      return handleAddHealthProfile(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -82,8 +84,17 @@ function handleFetchUserFavoriteArticleSuccess(state,action){
   return state
 }
 
+function handleAddHealthProfile(state, action) {
+  let healthProfile = action.payload.result.healthProfile
+  console.log("handleAddHealthProgfile healthProfile", healthProfile)
+  state = state.setIn(['healthProfiles', healthProfile.get('id')], healthProfile)
+  return state
+
+}
+
 function onRehydrate(state, action) {
   var incoming = action.payload.AUTH
+  console.log("onRehydrate incoming", incoming)
   if (incoming) {
     if (!incoming.activeUser) {
       return state
@@ -101,6 +112,19 @@ function onRehydrate(state, action) {
       }
     } catch (e) {
       profiles.clear()
+    }
+
+    const healthProfiles = Map(incoming.healthProfiles)
+    try {
+      for (let [userId, profile] of healthProfiles) {
+        if (userId && profile) {
+          const healthProfile = new HealthProfile({...profile})
+          console.log("healthProfile:", healthProfile)
+          state = state.setIn(['healthProfiles', userId], healthProfile)
+        }
+      }
+    } catch (e) {
+      healthProfiles.clear()
     }
   }
   return state

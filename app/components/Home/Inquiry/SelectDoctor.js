@@ -102,8 +102,9 @@ class SelectDoctor extends Component {
                 <Text style={[styles.tripText, {color: 'red', marginLeft: normalizeW(5)}]}>12元／次</Text>
                 <CheckBox
                   right
-                  containerStyle={{position: 'absolute', right: 0, bottom: 0, margin: 0, padding: 0}}
+                  containerStyle={{position: 'absolute', right: 0, bottom: 0, margin: 0, padding: 0, borderWidth: 0,backgroundColor: '#FFFFFF'}}
                   checked={this.state.doctorChecked[key]}
+                  onPress = {() => this.onPressCheckBox(key)}
                 />
               </View>
             </TouchableOpacity>

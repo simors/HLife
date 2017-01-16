@@ -90,9 +90,9 @@ function doctorCertification(payload, formData) {
 
 export function fetchDoctorInfo(payload) {
   return (dispatch, getState) => {
-    lcDoctor.getDoctorInfoByUserId(payload).then((doctorInfo) => {
+    lcDoctor.getDoctorInfoByUserId(payload).then((doctor) => {
       let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
-      dispatch(updateDoctorInfoAction({doctor: doctorInfo}))
+      dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

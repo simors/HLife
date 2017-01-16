@@ -32,7 +32,7 @@ class Mine extends Component {
 
   doctorCertificationImage(status) {
     if (status === undefined)
-      return require('../../assets/images/mine_doctor.png')
+      return require('../../assets/images/main_doctor.png')
     switch (status)
     {
       case 0: //审核失败
@@ -74,7 +74,8 @@ class Mine extends Component {
           </View>
           <View style={styles.middle}>
             <TouchableOpacity style={{alignItems: 'center', marginTop: normalizeH(26)}} onPress={() => Actions.PROFILE()}>
-              <Image style={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}} source={{uri: this.props.userInfo.avatar}}/>
+              <Image style={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}}
+                     source={this.props.userInfo.avatar? {uri: (this.props.userInfo.avatar)}: require('../../assets/images/login_qq@1x.png')}/>
               <Text style={styles.texts}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '我爱我家'}</Text>
             </TouchableOpacity>
             <View style={styles.credits}>

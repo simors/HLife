@@ -17,6 +17,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
   SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
+  HEALTH_PROFILE_SUBMIT: 'HEALTH_PROFILE_SUBMIT',
 }
 
 export function submitFormData(payload) {
@@ -46,6 +47,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
         dispatch(handleShopCertification(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT:
+        dispatch(handleHealthProfileSubmit(payload, formData))
         break
     }
   }
@@ -380,4 +384,28 @@ export function unFollowUser(payload) {
     })
   }
 }
+
+export function handleHealthProfileSubmit(payload, formData) {
+
+  return (dispatch, getState) => {
+    let healthProfilePayload = {
+      userId: payload.id,
+      nickname: formData.nicknameInput.text,
+      gender: formData.genderInput.text,
+      birthday: formData.dtPicker.text,
+    }
+    lcAuth.healthProfileSubmit(healthProfilePayload).then((result) => {
+      let addHealthProfileAction = createAction(AuthTypes.ADD_HEALTH_PROFILE)
+      dispatch(addHealthProfileAction({result}))
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 

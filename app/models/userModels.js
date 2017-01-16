@@ -11,12 +11,20 @@ export const UserInfoRecord = Record({
   identity: undefined,
 }, 'UserInfoRecord')
 
+export const HealthProfileRecord = Record({
+  id: undefined,           //健康档案提交用户ID
+  nickname: undefined,     //档案用户名
+  gender: undefined,       //档案性别
+  birthday: undefined,     //档案出生年月
+  }, 'HealthProfileRecord')
+
 export const UserStateRecord = Record({
   activeUser: undefined,      // 已登录用户ID
   profiles: Map(),            // 用户个人信息列表，已用户id作为健值
   token: undefined,
   followees: Map(),
   favoriteArticles: Map(),
+  healthProfiles: Map(),
 }, 'UserStateRecord')
 
 export class UserInfo extends UserInfoRecord {
@@ -47,6 +55,20 @@ export class UserInfo extends UserInfoRecord {
       record.set('identity', new List(lcObj.identity))
     })
     return info
+  }
+}
+
+export class HealthProfile extends HealthProfileRecord{
+  static fromLeancloudObject(lcObj) {
+    let attrs = lcObj.attributes
+    let profile = new HealthProfileRecord()
+    profile = profile.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('nickname', attrs.nickname)
+      record.set('gender', attrs.gender)
+      record.set('birthday', attrs.birthday)
+    })
+    return profile
   }
 }
 

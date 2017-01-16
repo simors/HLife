@@ -101,7 +101,7 @@ export function fetchDocterList(payload) {
       doctors = doctors.withMutations((record) => {
         record.set('userId', result.userId)
         record.set('doctorId', result.doctorId)
-        record.set('username', result.name)
+        record.set('username', result.username)
         record.set('department', result.department)
         record.set('phone', result.phone)
         record.set('organization', result.organization)

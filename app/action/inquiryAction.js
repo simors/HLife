@@ -2,15 +2,10 @@
  * Created by wanpeng on 2017/1/9.
  */
 import {createAction} from 'redux-actions'
-import {Actions} from 'react-native-router-flux'
-import * as AuthTypes from '../constants/authActionTypes'
+import * as InquiryTypes from '../constants/inquiryActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
-import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
-import {initMessageClient, notifyUserFollow} from '../action/messageAction'
-import {UserInfo} from '../models/userModels'
-import * as doctorActionTypes from '../constants/doctorActionTypes'
 
 
 export function inputFormCheck(payload) {
@@ -43,6 +38,7 @@ export function submitFormData(payload) {
       return
     }
     const formData = getInputFormData(getState(), payload.formKey)
+    dispatch(handleHealthProfileSubmit(payload,formData))
     dispatch(handleInquirySubmit(payload, formData))
   }
 
@@ -72,5 +68,28 @@ export function handleInquirySubmit(payload, formData) {
       }
     })
 
+  }
+}
+
+export function handleHealthProfileSubmit(payload, formData) {
+  return (dispatch, getState) => {
+    let healthProfilePayload = {
+      userId: payload.id,
+      nickname: formData.nicknameInput.text,
+      gender: formData.genderInput.text,
+      birthday: formData.dtPicker.text,
+    }
+    lcAuth.healthProfileSubmit(healthProfilePayload).then((result) => {
+      let addHealthProfileAction = createAction(InquiryTypes.ADD_HEALTH_PROFILE)
+      dispatch(addHealthProfileAction(result))
+      console.log("healthProfileSubmit success")
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
   }
 }

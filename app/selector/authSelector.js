@@ -34,3 +34,7 @@ export function selectUserFollowees(state) {
   let userFollowees = state.AUTH.followees.get(activeUser)
   return userFollowees ? userFollowees.toJS() : []
 }
+
+export function getHealthjProfileSize(state) {
+  return state.AUTH.healthProfiles? state.AUTH.healthProfiles.size : 0
+}

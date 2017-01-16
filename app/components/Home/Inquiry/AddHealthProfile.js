@@ -22,27 +22,24 @@ import CommonTextInput from '../../common/Input/CommonTextInput'
 import DateTimeInput from '../../common/Input/DateTimeInput'
 import GenderSelector from '../../common/Input/GenderSelector'
 import CommonButton from '../../common/CommonButton'
-import {submitFormData} from '../../../action/inquiryAction'
-import {inputFormOnDestroy} from '../../../action/inputFormActions'
+import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+
 import * as Toast from '../../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class HealthProfile extends Component {
+class AddHealthProfile extends Component {
   constructor(props) {
     super(props)
   }
 
   componentWillUnmount() {
-    console.log("HealthProfile: componentWillUnmount")
-    // this.props.inputFormOnDestroy(this.props.formKey)
   }
 
   submitSuccessCallback = () => {
     Toast.show('提交成功')
     Actions.SELECT_DOCTOR()
-    this.props.inputFormOnDestroy({formKey: this.props.formKey})
 
   }
 
@@ -52,6 +49,7 @@ class HealthProfile extends Component {
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: this.props.formKey,
+      submitType: INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT,
       id: this.props.userId && this.props.userId,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
@@ -137,10 +135,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
-  inputFormOnDestroy
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(HealthProfile)
+export default connect(mapStateToProps, mapDispatchToProps)(AddHealthProfile)
 
 const styles = StyleSheet.create({
   container: {
