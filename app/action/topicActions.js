@@ -3,6 +3,7 @@ import * as topicActionTypes from '../constants/topicActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as lcTopics from '../api/leancloud/topics'
+import {notifyTopicComment, notifyTopicLike} from './messageAction'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -77,6 +78,7 @@ function handlePublishTopicComment(payload, formData) {
       }
       let publishCommentAction = createAction(topicActionTypes.PUBLISH_COMMENT_SUCCESS)
       dispatch(publishCommentAction({stateKey: payload.stateKey}))
+      dispatch(notifyTopicComment({topicId: payload.topicId, replyTo: payload.replyTo}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

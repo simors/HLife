@@ -12,7 +12,7 @@ export const TopicsConfig = Record({
   objectId: undefined,  //话题id
   categoryId: undefined,  //属于的分类
   nickname: undefined, //所属用户昵称
-  userId:undefined,
+  userId:undefined,     // 所属用户的id
   createdAt: undefined,  //创建时间
   avatar: undefined,  //所属用户头像
   commentNum: undefined, //评论数
@@ -62,6 +62,7 @@ export const TopicCommentsConfig = Record({
   nickname: undefined,  //评论用户昵称
   createdAt: undefined, //评论创建时间
   avatar: undefined,    //评论用户头像
+  userId:undefined, //评论用户id
   likeCount:undefined,
   parentCommentContent: undefined,  //父评论正文
   parentCommentUser: undefined,     //父评论的作者昵称
@@ -107,6 +108,7 @@ export class TopicCommentsItem extends TopicCommentsConfig {
       record.set('nickname', nickname)
       record.set('avatar', avatar)
       record.set('objectId', lcObj.id)
+      record.set('userId', user.id)
 
       //有父评论的情况下设置
       if (attrs.parentComment) {

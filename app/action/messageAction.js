@@ -515,7 +515,7 @@ export function notifyTopicComment(payload) {
         topicId: payload.topicId,
         title: topicInfo.title,
       }
-      let text = currentUser.nickname + '在您的文章《' + payload.title + '》中发表了评论'
+      let text = currentUser.nickname + '在您的话题《' + payload.title + '》中发表了评论'
       message.setText(text)
       message.setAttributes(attrs)
       conversation.send(message)
