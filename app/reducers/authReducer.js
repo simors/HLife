@@ -120,7 +120,6 @@ function onRehydrate(state, action) {
       for (let [userId, profile] of healthProfiles) {
         if (userId && profile) {
           const healthProfile = new HealthProfile({...profile})
-          console.log("healthProfile:", healthProfile)
           state = state.setIn(['healthProfiles', userId], healthProfile)
         }
       }

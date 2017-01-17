@@ -19,6 +19,7 @@ export function publishTopics(payload) {
   topic.set('title', payload.title)
   topic.set('abstract', payload.abstract)
   topic.set('commentNum', 0)
+  topic.set('likeCount', 0)
 
   return topic.save().then(function (result) {
   }, function (err) {
@@ -52,9 +53,9 @@ export function fetchUserLikeTopicInfo(payload) {
   query.equalTo('upType', upType)
   query.equalTo('user', currentUser)
   query.include('user')
-  return query.first().then((result) =>{
+  return query.first().then((result) => {
     let userUpShopInfo = undefined
-    if(result && result.attributes) {
+    if (result && result.attributes) {
       userUpShopInfo = Up.fromLeancloudObject(result)
     }
     return userUpShopInfo
@@ -66,6 +67,11 @@ export function fetchUserLikeTopicInfo(payload) {
 
 export function likeTopic(payload) {
   let topicId = payload.topicId
+  let topic = undefined
+  if( payload.upType == "topic")
+    topic = AV.Object.createWithoutData('Topics', payload.topicId)
+  else if (payload.upType == "topicComment")
+    topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
   let upType = payload.upType
   let currentUser = AV.User.current()
   return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
@@ -90,11 +96,18 @@ export function likeTopic(payload) {
     if (result && '10107' == result.code) {
       return result
     }
-    return {
-      topicId: topicId,
-      code: '10108',
-      message: '成功点赞'
-    }
+    topic.increment("likeCount", 1)
+    return topic.save().then(function (result) {
+      return {
+        topicId: topicId,
+        code: '10108',
+        message: '成功点赞'
+      }
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+
   }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -103,6 +116,11 @@ export function likeTopic(payload) {
 
 export function unLikeTopic(payload) {
   let topicId = payload.topicId
+  let topic =  undefined
+  if( payload.upType == "topic")
+    topic = AV.Object.createWithoutData('Topics', payload.topicId)
+  else if (payload.upType == "topicComment")
+    topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
   return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
     if (userLikeTopicInfo && userLikeTopicInfo.id) {
       let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
@@ -117,11 +135,17 @@ export function unLikeTopic(payload) {
     if (result && '10009' == result.code) {
       return result
     }
-    return {
-      topicId: topicId,
-      code: '10010',
-      message: '取消点赞成功'
-    }
+    topic.increment("likeCount", -1)
+    return topic.save().then(function (result) {
+      return {
+        topicId: topicId,
+        code: '10010',
+        message: '取消点赞成功'
+      }
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
   }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -165,12 +189,12 @@ export function publishTopicComments(payload) {
 export function getTopics(payload) {
   let categoryId = payload.categoryId
   let query = new AV.Query('Topics')
-  if(payload.type == "topics" && categoryId) {
+  if (payload.type == "topics" && categoryId) {
     var category = AV.Object.createWithoutData('TopicCategory', categoryId);
     query.equalTo('category', category)
   }
 
-  if(payload.type == "myTopics") {
+  if (payload.type == "myTopics") {
     let currentUser = AV.User.current()
     query.equalTo('user', currentUser)
   }

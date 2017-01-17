@@ -16,7 +16,7 @@ export const TopicsConfig = Record({
   createdAt: undefined,  //创建时间
   avatar: undefined,  //所属用户头像
   commentNum: undefined, //评论数
-  likeUserNum: undefined, //点赞数
+  likeCount: undefined, //点赞数
   likedUsers: undefined  //点赞用户列表
 }, 'TopicsConfig')
 
@@ -51,7 +51,7 @@ export class TopicsItem extends TopicsConfig {
       record.set('userId', userId)
       record.set('objectId', lcObj.id)
       record.set('commentNum', attrs.commentNum)
-      record.set('likeUserNum', attrs.likeUserNum)
+      record.set('likeCount', attrs.likeCount)
     })
   }
 }
@@ -62,6 +62,7 @@ export const TopicCommentsConfig = Record({
   nickname: undefined,  //评论用户昵称
   createdAt: undefined, //评论创建时间
   avatar: undefined,    //评论用户头像
+  likeCount:undefined,
   parentCommentContent: undefined,  //父评论正文
   parentCommentUser: undefined,     //父评论的作者昵称
 }, 'TopicCommentsConfig')
@@ -101,6 +102,7 @@ export class TopicCommentsItem extends TopicCommentsConfig {
     }
     return topicCommentsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
+      record.set('likeCount', attrs.likeCount)
       record.set('createdAt', lcObj.createdAt)
       record.set('nickname', nickname)
       record.set('avatar', avatar)

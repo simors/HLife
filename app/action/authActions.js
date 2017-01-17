@@ -61,6 +61,7 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT:
         dispatch(handleHealthProfileSubmit(payload, formData))
+        break
       case INPUT_FORM_SUBMIT_TYPE.PROMOTER_RE_CERTIFICATION:
         dispatch(handleShopReCertification(payload, formData))
         break
@@ -598,6 +599,8 @@ export function unFollowUser(payload) {
 }
 
 export function handleHealthProfileSubmit(payload, formData) {
+  console.log("handleHealthProfileSubmit payload", payload)
+  console.log("handleHealthProfileSubmit formData", formData)
 
   return (dispatch, getState) => {
     let healthProfilePayload = {

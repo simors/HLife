@@ -61,7 +61,7 @@ class AddHealthProfile extends Component {
 
   submitSuccessCallback = () => {
     Toast.show('提交成功')
-    Actions.SELECT_DOCTOR()
+    Actions.SELECT_HEALTH_PROFILE()
 
   }
 

@@ -98,7 +98,10 @@ export class Find extends Component {
 
   refreshTopic() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({categoryId: this.props.topicCategories[this.state.selectedTab].objectId})
+      this.props.fetchTopics({
+        type: "topics",
+        categoryId: this.props.topicCategories[this.state.selectedTab].objectId
+      })
     })
   }
 
