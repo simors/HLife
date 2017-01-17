@@ -93,6 +93,8 @@ class ShopCategoryList extends Component {
     if(nextProps.lastScore || nextProps.lastGeo || nextProps.lastCreatedAt || nextProps.total) {
       if(this.state.searchForm.lastScore == nextProps.lastScore) {
         this.state.searchForm.skipNum = 6
+      }else {
+        this.state.searchForm.skipNum = 1
       }
       this.state.searchForm.lastScore = nextProps.lastScore
       this.state.searchForm.lastGeo = nextProps.lastGeo
@@ -107,7 +109,9 @@ class ShopCategoryList extends Component {
     // console.log('========componentWillReceiveProps=========',nextProps.isLastPage)
     if(this.isLastPage) {
       this.setTimeout(()=>{
-        this.listView.isLoadUp(false)
+        if(this.listView) {
+          this.listView.isLoadUp(false)
+        }
       }, 1000)
     }
   }
@@ -130,7 +134,6 @@ class ShopCategoryList extends Component {
       },
       selectGroupShow: this.state.selectGroupShow
     }, ()=>{
-      this.isLastPage = false
       this.refreshData()
     })
     // console.log('_onSelectShopCategory.this.state=' , this.state)
@@ -148,7 +151,6 @@ class ShopCategoryList extends Component {
       },
       selectGroupShow: this.state.selectGroupShow
     }, ()=>{
-      this.isLastPage = false
       this.refreshData()
     })
     this.toggleSelectGroupHeight()
@@ -168,7 +170,6 @@ class ShopCategoryList extends Component {
       },
       selectGroupShow: this.state.selectGroupShow
     }, ()=>{
-      this.isLastPage = false
       this.refreshData()
     })
     this.toggleSelectGroupHeight()
@@ -244,22 +245,14 @@ class ShopCategoryList extends Component {
         shopTagId: isSlted ? '' : shopTagId
       }
     }, ()=>{
-      this.isLastPage = false
       this.refreshData()
     })
   }
 
-  renderTags(allShopTags, showAllTags) {
-    if(allShopTags && allShopTags.length) {
-      let randomShowIndex = -1
-      if(allShopTags.length > 6 && !showAllTags) {
-        randomShowIndex = Math.floor(Math.random() * (allShopTags.length - 6))
-      }
-      let allShopTagsView = allShopTags.map((item, index)=> {
-        if((index < randomShowIndex || index >= (randomShowIndex + 6)) && !showAllTags) {
-          return null
-        }
-
+  renderTags(shopTags) {
+    // console.log('renderTags')
+    if(shopTags && shopTags.length) {
+      let allShopTagsView = shopTags.map((item, index)=> {
         let sltedTagBoxStyle = {}
         let sltedShopTagStyle = {}
         let isSlted = false
@@ -316,8 +309,9 @@ class ShopCategoryList extends Component {
   renderRow(rowData, sectionID, rowID, highlightRow) {
     let tagsView = null
     let customStyle = null
-    if(5 == rowID || !this.props.shopList.length || (this.props.shopList.length < 5 && this.props.shopList.length == (+rowID+1))) {
-      tagsView = this.renderTags(this.props.allShopTags)
+    // console.log('renderRow')
+    if(4 == rowID || !this.props.shopList.length || (this.props.shopList.length < 5 && this.props.shopList.length == (+rowID+1))) {
+      tagsView = this.renderTags(this.props.recommendShopTags)
       customStyle = {marginBottom: 0}
     }
 
@@ -339,6 +333,8 @@ class ShopCategoryList extends Component {
   // }
 
   refreshData() {
+    this.isLastPage = false
+
     this.loadMoreData(true)
   }
 
@@ -350,7 +346,7 @@ class ShopCategoryList extends Component {
       if(this.isRefreshRendering) {
         return
       }
-      this.listView.hideFooter(false)
+      // this.listView.hideFooter(false)
     }else {
       this.isRefreshRendering = true
       // this.listView.hideFooter(true)
@@ -391,7 +387,7 @@ class ShopCategoryList extends Component {
     //     <ScrollView
     //       showsVerticalScrollIndicator={true}
     //     >
-    //       {this.renderTags(this.props.allShopTags, true)}
+    //       {this.renderTags(this.props.allShopTags)}
     //     </ScrollView>
     //   </View>
     // )
@@ -402,7 +398,7 @@ class ShopCategoryList extends Component {
     // console.log('e.nativeEvent.contentOffset.y===', e.nativeEvent.contentOffset.y)
     if(e.nativeEvent.contentOffset.y > 0) {
       this.isRefreshRendering = false
-      this.listView.hideFooter(false)
+      //this.listView.hideFooter(false)
     }
   }
 
@@ -418,16 +414,22 @@ class ShopCategoryList extends Component {
         />
         <View style={styles.body}>
           <View style={{paddingTop: 40}}>
-            <CommonListView
-              contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
-              dataSource={this.props.ds}
-              renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
-              loadNewData={()=>{this.refreshData()}}
-              loadMoreData={()=>{this.loadMoreData()}}
-              ref={(listView) => this.listView = listView}
-              renderSectionHeader={this.renderSectionHeader.bind(this)}
-              onScroll={e => this.handleOnScroll(e)}
-            />
+            {this.props.shopList.length
+              ? <CommonListView
+                  contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
+                  dataSource={this.props.ds}
+                  renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
+                  loadNewData={()=>{this.refreshData()}}
+                  loadMoreData={()=>{this.loadMoreData()}}
+                  ref={(listView) => this.listView = listView}
+                  renderSectionHeader={this.renderSectionHeader.bind(this)}
+                  onScroll={e => this.handleOnScroll(e)}
+                />
+              : <View>
+                  {this.renderTags(this.props.recommendShopTags)}
+                </View>
+            }
+
           </View>
 
           <View style={[styles.selectGroup, {height: this.state.selectGroupHeight}]}>
@@ -532,6 +534,20 @@ const mapStateToProps = (state, ownProps) => {
 
   const allShopTags = selectShopTags(state)
 
+  let recommendShopTags = []
+  if(allShopTags && allShopTags.length) {
+    let randomShowIndex = -1
+    if(allShopTags.length > 6) {
+      randomShowIndex = Math.floor(Math.random() * (allShopTags.length - 6))
+    }
+
+    allShopTags.map((item, index)=>{
+      if(index > randomShowIndex && index <= (randomShowIndex + 6)) {
+        recommendShopTags.push(item)
+      }
+    })
+  }
+
   return {
     ds: ds.cloneWithRows(shopList),
     shopList: shopList,
@@ -540,6 +556,7 @@ const mapStateToProps = (state, ownProps) => {
     lastScore: lastScore,
     lastGeo: lastGeo,
     allShopTags: allShopTags,
+    recommendShopTags: recommendShopTags,
     isLastPage: isLastPage
   }
 }
