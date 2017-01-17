@@ -250,10 +250,10 @@ class ShopCategoryList extends Component {
     }
   }
 
-  renderShop(rowData) {
+  renderShop(rowData, customStyle) {
     return (
       <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.id)}}>
-        <View style={styles.shopInfoWrap}>
+        <View style={[styles.shopInfoWrap, customStyle]}>
           <View style={styles.coverWrap}>
             <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
           </View>
@@ -279,6 +279,10 @@ class ShopCategoryList extends Component {
     if(5 == rowID) {
       tagsView = this.renderTags(this.props.allShopTags)
     }
+    let customStyle = null
+    if(4 == rowID) {
+      customStyle = {marginBottom: 0}
+    }
 
     return (
       <View>
@@ -287,7 +291,7 @@ class ShopCategoryList extends Component {
               {tagsView}
               {this.renderShop(rowData)}
             </View>
-          : this.renderShop(rowData)
+          : this.renderShop(rowData, customStyle)
         }
       </View>
     )
@@ -409,6 +413,8 @@ class ShopCategoryList extends Component {
             </View>
           </View>
 
+
+
         </View>
       </View>
     )
@@ -529,6 +535,7 @@ const styles = StyleSheet.create({
   },
   shopTagsWrap: {
     padding: 10,
+    paddingBottom: 0,
     backgroundColor: 'rgba(0,0,0,0.05)',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -539,7 +546,7 @@ const styles = StyleSheet.create({
     width: normalizeW(108),
     marginLeft: normalizeW(5),
     marginRight: normalizeW(5),
-    marginBottom: 5,
+    marginBottom: 10,
     padding: 5,
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),

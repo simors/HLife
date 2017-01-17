@@ -42,7 +42,7 @@ export default class CommonMarquee extends Component {
     return(
       <View style={styles.container}>
         <View style={styles.titleWrap}>
-          <Text style={styles.title}>近来公告</Text>
+          <Text style={styles.title}>吾爱公告</Text>
         </View>
         <View style={[styles.marqueeWrap, {marginTop: (this.props.height-14)/2}]}>
           <Marquee
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   titleWrap: {
-    width: normalizeW(76),
+    width: normalizeW(83),
     marginLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     borderRightWidth: normalizeBorder(),
