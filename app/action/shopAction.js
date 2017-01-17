@@ -17,6 +17,12 @@ export function fetchShopList(payload) {
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
       }
+      // console.log('fetchShopList.payload.isRefresh===',payload.isRefresh)
+      // console.log('fetchShopList.shopList.size===',shopList.size)
+      // console.log('fetchShopList.shopList.size < 5===',(shopList.size < 5))
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
+      dispatch(updateAction({isLastPage: shopList.size < 5}))
+
       let updateShopListAction = createAction(actionType)
       dispatch(updateShopListAction({shopList: shopList}))
       if(payload.success){

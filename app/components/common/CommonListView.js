@@ -50,6 +50,8 @@ export default class CommonListView extends Component {
         onEndReached={this.onLoadMore.bind(this)}
         onEndReachedThreshold={10}
         contentContainerStyle={{backgroundColor: 'white'}}
+        renderSectionHeader={this.props.renderSectionHeader}
+        onScroll={this.props.onScroll}
         renderSeparator={(sectionID, rowID) => this.state.hideSeparator ?
           <View key={`${sectionID}-${rowID}`} style={this.state.separatorStyle}/> : null}
         renderFooter={() => this.state.hideFooter ? null : this.showFootView() }
