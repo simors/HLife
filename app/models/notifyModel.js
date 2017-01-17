@@ -7,6 +7,7 @@ export const NotifyMsgRecord = Record({
   unReadCount: 0,
   messageMap: Map(),              // 键为消息id，值为消息内容，类型可以是TopicCommentMsg，ShopCommentMsg，TopicLikeMsg，ShopLikeMsg，UserFollowMsg，ShopFollowMsg
   notifyMsgByType: Map(),         // 建为消息类型，值的类型为TypedNotifyMsgRecord
+  lastNoticeAt: undefined,
 }, 'NotifyMsgRecord')
 
 export const TypedNotifyMsgRecord = Record({
