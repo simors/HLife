@@ -67,6 +67,7 @@ export class ShopInfo extends ShopRecord {
         if(attrs.containedTag && attrs.containedTag.length) {
           attrs.containedTag.forEach((item)=>{
             let containedTagAttrs = item.attributes
+            // console.log('attrs.containedTag.item=====', item)
             let tag = {
               id: item.id,
               name: containedTagAttrs.name,
@@ -94,7 +95,8 @@ export class ShopInfo extends ShopRecord {
         record.set('updatedAt', lcObj.updatedAt.valueOf())
       })
     }catch(err) {
-      console.log('err=======', err)
+      console.log('shopModel.err=======', err)
+      throw err
     }
 
   }

@@ -78,9 +78,6 @@ class ImageInput extends Component {
 
   imageSelectedChange(url) {
     this.inputChange(url)
-    if(this.props.closeModalAfterSelectedImg) {
-      this.toggleModal(false)
-    }
     if(this.props.imageSelectedChangeCallback) {
       this.props.imageSelectedChangeCallback(url)
     }
@@ -114,6 +111,9 @@ class ImageInput extends Component {
     }).catch((error) => {
       console.log('upload failed:', error)
     })
+    if(this.props.closeModalAfterSelectedImg) {
+      this.toggleModal(false)
+    }
   }
 
   renderReuploadBtn() {

@@ -16,11 +16,10 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION, WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
+import {INQUIRY_CONVERSATION} from '../../constants/messageActionTypes'
 import {fetchConversation} from '../../action/messageAction'
 import {getConversations} from '../../selector/messageSelector'
-import {activeUserId} from '../../selector/authSelector'
-import MessageBoxCell from './MessageBoxCell'
+import InquiryMessageCell from './InquiryMessageCell'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -37,19 +36,8 @@ class InquiryMessageBox extends Component {
   }
 
   renderInquiryMsgBox(rowData) {
-    let members = rowData.members
-    let otherMem = members.filter((member) => {
-      if (member === WUAI_SYSTEM_DOCTOR) {
-        return false
-      }
-      if (member === this.props.currentUser) {
-        return false
-      }
-      return true
-    })
-    let title = otherMem.join(',')
     return (
-      <MessageBoxCell members={members} conversation={rowData.id} type={INQUIRY_CONVERSATION} title={title} />
+      <InquiryMessageCell members={rowData.members} conversation={rowData.id} />
     )
   }
 
@@ -79,7 +67,6 @@ const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let conversations = getConversations(state)
   return {
-    currentUser: activeUserId(state),
     dataSource: ds.cloneWithRows(conversations)
   }
 }

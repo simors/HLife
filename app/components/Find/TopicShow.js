@@ -114,22 +114,25 @@ export class TopicShow extends Component {
                 <Text style={styles.timeTextStyle}>
                   {getConversationTime(this.props.topic.createdAt.valueOf())}
                 </Text>
-                <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
-                <Text style={styles.timeTextStyle}>长沙</Text>
               </View>
             </View>
 
             <View style={styles.attentionStyle}>
-            <FollowUser
-                        userId={this.props.topic.userId}
-            />
+              <FollowUser
+                userId={this.props.topic.userId}
+              />
             </View>
           </View>
         </View>
 
         {this.renderContentImage()}
         {/*{this.renderCommentAndLikeButton()}*/}
-
+        <View style={styles.locationCommentStyle}>
+          <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
+          <Text style={styles.timeTextStyle}>长沙</Text>
+          <Text style={styles.likeTextStyle}>{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}</Text>
+          <Text style={styles.commentTextStyle}>{"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}</Text>
+        </View>
       </View>
 
     )
@@ -223,5 +226,24 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     lineHeight: 20,
     color: "#9b9b9b"
+  },
+
+  //位置，点赞和评论
+  locationCommentStyle: {
+    marginLeft: normalizeW(35),
+    marginBottom: normalizeH(10),
+    flexDirection: 'row'
+  },
+  likeTextStyle: {
+    position: "absolute",
+    left: normalizeW(199),
+    fontSize: em(12),
+    color: THEME.colors.lighter
+  },
+  commentTextStyle: {
+    position: "absolute",
+    left: normalizeW(268),
+    fontSize: em(12),
+    color: THEME.colors.lighter
   },
 })

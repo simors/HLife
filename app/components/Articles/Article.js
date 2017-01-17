@@ -124,7 +124,7 @@ class Article extends Component {
         })
       }
       else {
-        console.log('hereiscode')
+       // console.log('hereiscode')
         this.props.upArticle({
           articleId: this.props.articleId,
           upType: 'article',
@@ -140,7 +140,7 @@ class Article extends Component {
     } else {
 
     if (this.props.isFavorite) {
-      console.log('hereiscode')
+     // console.log('hereiscode')
       this.props.unFavoriteArticle({
         articleId: this.props.articleId,
         //  upType: 'article',

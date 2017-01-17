@@ -17,6 +17,7 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
+import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
 import {getTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
@@ -41,6 +42,15 @@ export class Find extends Component {
     this.state = {
       selectedTab: 0,
     }
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      if(this.props.isLogin) {
+        this.props.fetchUserFollowees()
+      }
+    })
+    // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
   getSelectedTab(index) {
@@ -88,7 +98,10 @@ export class Find extends Component {
 
   refreshTopic() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({categoryId: this.props.topicCategories[this.state.selectedTab].objectId})
+      this.props.fetchTopics({
+        type: "topics",
+        categoryId: this.props.topicCategories[this.state.selectedTab].objectId
+      })
     })
   }
 
@@ -159,14 +172,15 @@ const mapStateToProps = (state, ownProps) => {
     topicCategories: topicCategories,
     topics: topics,
     isLogin: isLogin,
-    userInfo: userInfo
+    userInfo: userInfo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopics,
   likeTopic,
-  unLikeTopic
+  unLikeTopic,
+  fetchUserFollowees
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)

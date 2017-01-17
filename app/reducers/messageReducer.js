@@ -26,6 +26,8 @@ export default function messageReducer(state = initialState, action) {
       return onMessageSend(state, action)
     case Types.ON_MESSAGE_RECEIVED:
       return onMessageReceived(state, action)
+    case Types.ON_INIT_MESSAGES:
+      return onInitMessages(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -42,6 +44,7 @@ function onInitMessenger(state, action) {
 function onInitConversation(state, action) {
   let convs = action.payload.conversations
   convs.map((conv) => {
+    console.log('conv', conv)
     const convId = conv.id
     state = state.updateIn(
       ['conversationMap', convId],
@@ -50,6 +53,20 @@ function onInitConversation(state, action) {
     )
   })
   return sortConversationList(state)
+}
+
+function onInitMessages(state, action) {
+  let conversationId = action.payload.conversationId
+  let messages = action.payload.messages
+
+  let msgLst = List()
+  messages.forEach((msg) => {
+    state = state.setIn(['messages', msg.id], msg)
+    msgLst = msgLst.push(msg.id)
+  })
+
+  state = state.setIn(['conversationMap', conversationId, 'messages'], msgLst)
+  return state
 }
 
 function onConversationCreated(state, action) {
@@ -186,6 +203,7 @@ function onRehydrate(state, action) {
     })
 
     let conversations = Map(incoming.conversationMap)
+    console.log('incoming:', conversations)
     conversations.map((conv) => {
       let convId = conv.id
       state = state.updateIn(['conversationMap', convId], new Conversation(), val => val.merge(conv))

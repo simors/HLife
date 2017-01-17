@@ -31,6 +31,7 @@ import CommonTextInput from '../../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import * as Toast from '../../common/Toast'
+import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -75,7 +76,7 @@ class ShopReCertification extends Component {
     })
   }
 
-  submitSuccessCallback(doctorInfo) {
+  submitSuccessCallback() {
     Actions.SHOP_MANAGE_INDEX()
   }
 
@@ -109,6 +110,7 @@ class ShopReCertification extends Component {
 
 
   render() {
+    console.log('')
     return (
       <View style={styles.container}>
         <Header
@@ -137,6 +139,7 @@ class ShopReCertification extends Component {
                     placeholder="与身份证姓名保持一致"
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
+                    initValue={this.props.userOwnedShopInfo.name}
                   />
                 </View>
               </View>
@@ -150,7 +153,9 @@ class ShopReCertification extends Component {
                     {...phoneInput}
                     placeholder="仅用于客服与你联系"
                     containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}/>
+                    inputStyle={styles.inputStyle}
+                    initValue={this.props.userOwnedShopInfo.phone}
+                  />
                 </View>
               </View>
 
@@ -184,6 +189,7 @@ class ShopReCertification extends Component {
                     placeholder="点击输入店铺名称"
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
+                    initValue={this.props.userOwnedShopInfo.shopName}
                   />
                 </View>
               </View>
@@ -198,6 +204,7 @@ class ShopReCertification extends Component {
                     placeholder="点击输入店铺地址"
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
+                    initValue={this.props.userOwnedShopInfo.shopAddress}
                   />
                 </View>
               </View>
@@ -221,9 +228,9 @@ class ShopReCertification extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   return {
-
+    userOwnedShopInfo: userOwnedShopInfo
   }
 }
 
