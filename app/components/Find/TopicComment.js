@@ -21,6 +21,7 @@ import {fetchTopicLikesCount, fetchTopicIsLiked} from '../../action/topicActions
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import {getConversationTime} from '../../util/numberUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -101,7 +102,7 @@ export class TopicComment extends Component {
           </Text>
 
           <View style={styles.timeLocationStyle}>
-            <Text style={styles.timeTextStyle}>刚刚</Text>
+            <Text style={styles.timeTextStyle}>{getConversationTime(this.props.topic.createdAt.valueOf())}</Text>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>长沙</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
