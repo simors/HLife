@@ -174,3 +174,16 @@ export function fetchTopicIsLiked(payload) {
     })
   }
 }
+
+export function fetchTopicLikeUsers(payload) {
+  return (dispatch, getState) => {
+    lcTopics.fetchTopicLikeUsers(payload).then((topicLikeUsers) => {
+      let updateTopicLikeUsersAction = createAction(topicActionTypes.UPDATE_TOPIC_LIKE_USERS)
+      dispatch(updateTopicLikeUsersAction({topicId: payload.topicId, topicLikeUsers: topicLikeUsers}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

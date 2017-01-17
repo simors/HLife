@@ -10,6 +10,10 @@ export function selectShopList(state) {
   return selectShop(state).shopList
 }
 
+export function selectFetchShopListIsArrivedLastPage(state) {
+  return state.SHOP.get('fetchShopListArrivedLastPage')
+}
+
 export function selectShopDetail(state, id) {
   let shopDetail = {owner: {}}
   let shopList = selectShop(state).shopList

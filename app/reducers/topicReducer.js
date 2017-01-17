@@ -18,6 +18,8 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopicLikesTotalCount(state, action)
     case TopicTypes.FETCH_TOPIC_IS_LIKED_SUCCESS:
       return handleUpdateTopicIsLiked(state, action)
+    case TopicTypes.UPDATE_TOPIC_LIKE_USERS:
+      return handleUpdateTopicLikeUsers(state, action)
     default:
       return state
   }
@@ -52,6 +54,16 @@ function handleUpdateTopicLikesTotalCount(state, action) {
   let _map = state.get('TopicLikesNum')
   _map = _map.set(topicId, topicLikesTotalCount)
   state = state.set('TopicLikesNum',  _map)
+  return state
+}
+
+function handleUpdateTopicLikeUsers(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let topicLikeUsers = payload.topicLikeUsers
+  let _map = state.get('TopicLikeUsers')
+  _map = _map.set(topicId, topicLikeUsers)
+  state = state.set('TopicLikeUsers',  _map)
   return state
 }
 

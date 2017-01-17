@@ -117,11 +117,47 @@ export class TopicCommentsItem extends TopicCommentsConfig {
   }
 }
 
+export const TopicLikeUserConfig = Record({
+  nickname: undefined, //所属用户昵称
+  userId:undefined,
+  createdAt: undefined,  //创建时间
+  avatar: undefined,  //用户头像
+}, 'TopicLikeUserConfig')
+
+export class TopicLikeUser extends TopicLikeUserConfig {
+  static fromLeancloudObject(lcObj) {
+    let topicLikeUserConfig = new TopicLikeUserConfig()
+    let user = lcObj.get('user')
+    let nickname = "吾爱用户"
+    let avatar = undefined
+    let userId = undefined
+
+    //用户昵称解析
+    if (user) {
+      userId = user.id
+      avatar = user.get('avatar')
+      nickname = user.get('nickname')
+      if (!nickname) {
+        let phoneNumber = user.getMobilePhoneNumber()
+        nickname = hidePhoneNumberDetail(phoneNumber)
+      }
+    }
+
+    return topicLikeUserConfig.withMutations((record)=> {
+      record.set('createdAt', lcObj.createdAt)
+      record.set('nickname', nickname)
+      record.set('avatar', avatar)
+      record.set('userId', userId)
+    })
+  }
+}
+
 export const Topic = Record({
   topics:List(),
   myTopics:List(),
   allTopics:List(),
   topicComments:List(),
   TopicLikesNum: Map(),
+  TopicLikeUsers: Map(),
   IsLikedByCurrentUser: Map(),
 }, 'Topic')

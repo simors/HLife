@@ -64,7 +64,7 @@ import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
 
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
-
+import LikeUserList from '../components/Find/LikeUserList'
 
 const styles = StyleSheet.create({
   container: {
@@ -138,7 +138,7 @@ export const scenes = Actions.create(
       <Scene key="EARNINGS" component={Earnings} />
       <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo} />
 
-
+      <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
 
       <Scene key="MYTOPIC" component={MyTopic}/>
 
