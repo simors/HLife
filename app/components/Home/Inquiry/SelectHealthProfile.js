@@ -27,6 +27,7 @@ import {inputFormOnDestroy} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import {getHealthProfileList} from '../../../selector/authSelector'
 import {submitFormData} from '../../../action/inquiryAction'
+import {getAgeFromBirthday} from '../../../util/dateUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -99,8 +100,8 @@ class SelectHealthProfile extends Component {
                 <Text style={styles.profileText}>
                   {value.nickname}
                 </Text>
-                <Text style={[styles.profile, {flex: 2}]}>
-                  {'(' + value.gender + ', ' + value.birthday + ')'}
+                <Text style={[styles.profileText, {flex: 2}]}>
+                  {'(' + (value.gender == 'female'? '女':'男') + ',   ' + getAgeFromBirthday(value.birthday) + '岁)'}
                 </Text>
               </View>
               <CheckBox

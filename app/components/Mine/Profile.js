@@ -143,7 +143,7 @@ class Profile extends Component {
                 </View>
                 <View style={{flex: 2, paddingLeft: normalizeW(30)}}>
                   <GenderSelector {...genderInput}
-                                  initValue={this.props.userInfo.gender? this.props.userInfo.gender: undefined} />
+                                  initValue={this.props.userInfo.gender? this.props.userInfo.gender: 'male'} />
                 </View>
               </View>
               <View style={styles.tab}>
