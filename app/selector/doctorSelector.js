@@ -1,7 +1,7 @@
 /**
  * Created by yangyang on 2016/12/28.
  */
-import {DoctorInfo} from '../models/doctorModel'
+import {DoctorInfo, DoctorList} from '../models/doctorModel'
 
 export function activeDoctorInfo(state) {
   return state.DOCTOR.get('doctorInfo')? state.DOCTOR.get('doctorInfo'): new DoctorInfo()
@@ -23,7 +23,7 @@ export function getDoctorInfoByUserId(state, userId) {
   if (doctorRecord) {
     return doctorRecord.toJS()
   }
-  return (new DoctorInfo()).toJS()
+  return (new DoctorList()).toJS()
 }
 
 export function getDoctorByGroupUserId(state, userIds) {
@@ -55,5 +55,5 @@ export function getDoctorInfoByDoctorId(state, doctorId) {
       return doctorRecord.toJS()
     }
   }
-  return (new DoctorInfo()).toJS()
+  return (new DoctorList()).toJS()
 }

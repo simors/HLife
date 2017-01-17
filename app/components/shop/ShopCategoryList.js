@@ -51,6 +51,7 @@ class ShopCategoryList extends Component {
         geoName: '长沙',
         lastScore: '',
         lastGeo: '',
+        shopTagId: ''
       },
       shopCategoryName: '',
       selectGroupShow: [false, false, false],
@@ -102,13 +103,15 @@ class ShopCategoryList extends Component {
       ...this.state,
       searchForm: {
         ...this.state.searchForm,
-        shopCategoryId: this.state.searchForm.shopCategoryId
+        shopCategoryId: this.state.searchForm.shopCategoryId,
+        shopTagId: ''
       },
       selectGroupShow: this.state.selectGroupShow
+    }, ()=>{
+      this.refreshData()
     })
     // console.log('_onSelectShopCategory.this.state=' , this.state)
     this.toggleSelectGroupHeight()
-    this.refreshData()
   }
 
   _onSelectSort(sortId) {
@@ -121,9 +124,10 @@ class ShopCategoryList extends Component {
         sortId: this.state.searchForm.sortId
       },
       selectGroupShow: this.state.selectGroupShow
+    }, ()=>{
+      this.refreshData()
     })
     this.toggleSelectGroupHeight()
-    this.refreshData()
   }
 
   _onSelectDistance(distance) {
@@ -139,9 +143,10 @@ class ShopCategoryList extends Component {
         distance: this.state.searchForm.distance
       },
       selectGroupShow: this.state.selectGroupShow
+    }, ()=>{
+      this.refreshData()
     })
     this.toggleSelectGroupHeight()
-    this.refreshData()
   }
 
   toggleSelectGroupHeight() {
@@ -207,11 +212,30 @@ class ShopCategoryList extends Component {
     Actions.SHOP_DETAIL({id: id})
   }
 
+  shopTagQuery(shopTagId) {
+    this.setState({
+      searchForm: {
+        ...this.state.searchForm,
+        shopTagId: shopTagId
+      }
+    }, ()=>{
+      this.refreshData()
+    })
+  }
+
   renderTags(allShopTags) {
     if(allShopTags && allShopTags.length) {
+      let randomShowIndex = -1
+      if(allShopTags.length > 6) {
+        randomShowIndex = Math.floor(Math.random() * (allShopTags.length - 6))
+      }
+      console.log('randomShowIndex====', randomShowIndex)
       let allShopTagsView = allShopTags.map((item, index)=> {
+        if(index < randomShowIndex || index >= (randomShowIndex + 6)) {
+          return null
+        }
         return (
-          <TouchableOpacity key={"shop_tag_" + index}>
+          <TouchableOpacity key={"shop_tag_" + index} onPress={()=>{this.shopTagQuery(item.id)}}>
             <View style={styles.shopTagBox}>
               <Text style={styles.shopTag}>{item.name}</Text>
             </View>
@@ -227,11 +251,7 @@ class ShopCategoryList extends Component {
     }
   }
 
-  renderRow(rowData, sectionID, rowID, highlightRow) {
-    if(this.props.isFirstPage && this.props.shopList.length == (rowID+1)) {
-      return this.renderTags(this.props.allShopTags)
-    }
-
+  renderShop(rowData) {
     return (
       <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.id)}}>
         <View style={styles.shopInfoWrap}>
@@ -255,11 +275,34 @@ class ShopCategoryList extends Component {
     )
   }
 
+  renderRow(rowData, sectionID, rowID, highlightRow) {
+    let tagsView = null
+    if(5 == rowID) {
+      tagsView = this.renderTags(this.props.allShopTags)
+    }
+
+    return (
+      <View>
+        {tagsView
+          ? <View>
+              {tagsView}
+              {this.renderShop(rowData)}
+            </View>
+          : this.renderShop(rowData)
+        }
+      </View>
+    )
+  }
+
   refreshData() {
     this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh) {
+    if(!isRefresh && this.props.isLastPage) {
+      this.listView.isLoadUp(false)
+      return
+    }
     let payload = {
       ...this.state.searchForm,
       isRefresh: !!isRefresh,
@@ -389,12 +432,12 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('shopList=', shopList)
   let lastScore = ''
   let lastGeo = []
-  let isFirstPage = false
+  let isLastPage = false
   if(shopList && shopList.length) {
     lastScore = shopList[shopList.length-1].score
     lastGeo = shopList[shopList.length-1].geo
-    if(shopList.length <= 5) {
-      isFirstPage = true
+    if(shopList.length < 5) {
+      isLastPage = true
     }
   }
 
@@ -406,8 +449,8 @@ const mapStateToProps = (state, ownProps) => {
     allShopCategories: allShopCategories,
     lastScore: lastScore,
     lastGeo: lastGeo,
-    isFirstPage: isFirstPage,
-    allShopTags: allShopTags
+    allShopTags: allShopTags,
+    isLastPage: isLastPage
   }
 }
 
@@ -487,17 +530,20 @@ const styles = StyleSheet.create({
   },
   shopTagsWrap: {
     padding: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.05)',
     flexDirection: 'row',
+    alignItems: 'flex-start',
     flexWrap: 'wrap'
   },
   shopTagBox: {
-    flex: 1,
-    marginLeft: 5,
-    marginRight: 5,
+    height: 40,
+    width: normalizeW(108),
+    marginLeft: normalizeW(5),
+    marginRight: normalizeW(5),
+    marginBottom: 5,
     padding: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: normalizeW(10),
+    paddingRight: normalizeW(10),
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center'

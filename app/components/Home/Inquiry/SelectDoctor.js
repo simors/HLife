@@ -109,7 +109,6 @@ class SelectDoctor extends Component {
               </View>
             </TouchableOpacity>
           </View>
-
         )
       })
     )

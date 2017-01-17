@@ -26,6 +26,7 @@ import CommonButton from '../../common/CommonButton'
 import {inputFormOnDestroy} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import {getHealthProfileList} from '../../../selector/authSelector'
+import {submitFormData} from '../../../action/inquiryAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -33,17 +34,57 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class SelectHealthProfile extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      healthProfileChecked: [],
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
+    console.log("componentWillReceiveProps newProps:", newProps)
+    let healthProfileChecked = new Array()
+    for (let i = 0; i < newProps.healthProfiles.length; i++) {
+      healthProfileChecked[i] = false
+    }
+    this.setState({healthProfileChecked})
   }
 
   submitSuccessCallback = () => {
-
+    Actions.SELECT_DOCTOR()
   }
 
   submitErrorCallback(error) {
     Toast.show(error.message)
   }
-  onButtonPress = () => {
 
+  onButtonPress = () => {
+    let selectedHealthProfile
+    let healthProfileChecked = this.state.healthProfileChecked
+    for (let i = 0; i < healthProfileChecked.length; i++) {
+      if (healthProfileChecked[i] == true) {
+        selectedHealthProfile = this.props.healthProfiles[i]
+        break
+      }
+    }
+
+    this.props.submitFormData({
+      formKey: this.props.formKey,
+      id: this.props.userId,
+      healthProfile: selectedHealthProfile,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback,
+    })
+
+  }
+
+  onPressCheckBox(key) {
+    let healthProfileChecked = this.state.healthProfileChecked
+    healthProfileChecked[key] = !healthProfileChecked[key]
+    healthProfileChecked.forEach((value, index) => {
+      if (index != key && healthProfileChecked[key] == true) {
+         healthProfileChecked[index] = !healthProfileChecked[key]
+      }
+    })
+    this.setState({healthProfileChecked})
   }
 
   renderHealthProfile() {
@@ -51,16 +92,24 @@ class SelectHealthProfile extends Component {
       this.props.healthProfiles.map((value, key) => {
         return(
           <View key={key} style={styles.healthProfile}>
-            <Image style={{width: normalizeW(35), height: normalizeH(35), borderRadius: normalizeW(17), overflow: 'hidden'}}
-                   source={value.avatar? {uri: value.avatar}: require('../../../assets/images/defualt_portrait_archives.png')}/>
-            <Text style={styles.profileText}>
-              {value.nickname + '  (' + value.gender + ', ' + value.birthday + ')' }
-            </Text>
-            <CheckBox
-              right
-              containerStyle={{position: 'absolute', right: 0, bottom: 0, margin: 0, padding: 0, borderWidth: 0,backgroundColor: '#FFFFFF'}}
-
-            />
+            <TouchableOpacity style={{flex: 1, flexDirection: 'row', alignItems: 'center', paddingLeft: normalizeW(35)}} onPress={() => this.onPressCheckBox(key)}>
+              <Image style={{width: normalizeW(35), height: normalizeH(35), borderRadius: normalizeW(17), overflow: 'hidden'}}
+                     source={value.avatar? {uri: value.avatar}: require('../../../assets/images/defualt_portrait_archives.png')}/>
+              <View style={styles.profile}>
+                <Text style={styles.profileText}>
+                  {value.nickname}
+                </Text>
+                <Text style={[styles.profile, {flex: 2}]}>
+                  {'(' + value.gender + ', ' + value.birthday + ')'}
+                </Text>
+              </View>
+              <CheckBox
+                right
+                containerStyle={{position: 'absolute', right: 0, bottom: normalizeH(15), margin: 0, padding: 0, borderWidth: 0,backgroundColor: '#FFFFFF'}}
+                checked={this.state.healthProfileChecked[key]}
+                onPress = {() => this.onPressCheckBox(key)}
+              />
+            </TouchableOpacity>
           </View>
         )
       })
@@ -118,6 +167,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData,
   inputFormOnDestroy
 }, dispatch)
 
@@ -153,19 +203,22 @@ const styles = StyleSheet.create({
 
   },
   healthProfile: {
-    flexDirection: 'row',
     height: normalizeH(55),
-    alignItems: 'center',
-    paddingLeft: normalizeW(35),
     borderBottomColor: '#F4F4F4',
     borderBottomWidth: 1,
     backgroundColor: '#FFFFFF',
   },
   profileText: {
+    flex: 1,
     marginLeft: normalizeW(10),
     fontFamily: 'PingFangSC-Regular',
     fontSize: em(17),
     color: '#030303',
+  },
+  profile: {
+    width: normalizeW(240),
+    flexDirection: 'row',
+    alignItems: 'center',
   }
 
 
