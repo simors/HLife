@@ -121,6 +121,9 @@ export function likeTopic(payload) {
       }
       let publishAction = createAction(topicActionTypes.LIKE_TOPIC_SUCCESS)
       dispatch(publishAction({stateKey: payload.stateKey}))
+      if (payload.upType === 'topic') {
+        dispatch(notifyTopicLike({topicId: payload.topicId}))
+      }
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
