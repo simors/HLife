@@ -23,8 +23,10 @@ export function getShopList(payload) {
   let geo = payload.geo
   let geoName = payload.geoName
   let isRefresh = payload.isRefresh
+  // let lastCreatedAt = payload.lastCreatedAt
   let lastScore = payload.lastScore
   let lastGeo = payload.lastGeo
+  let skipNum = payload.skipNum || 1
   let shopTagId = payload.shopTagId
   let query = new AV.Query('Shop')
   if(shopCategoryId){
@@ -40,20 +42,20 @@ export function getShopList(payload) {
 
   if(sortId == 1) {
     if(!isRefresh) { //分页查询
-      query.skip(1)
+      query.skip(skipNum)
       query.lessThanOrEqualTo('score', lastScore)
     }
     query.addDescending('score')
   }else if(sortId == 2) {
     if(!isRefresh) { //分页查询
-      query.skip(1)
+      query.skip(skipNum)
       query.lessThanOrEqualTo('geo', lastGeo)
     }
     query.addDescending('geo')
     query.addDescending('score')
   }else{
     if(!isRefresh) { //分页查询
-      query.skip(1)
+      query.skip(skipNum)
       query.lessThanOrEqualTo('score', lastScore)
     }
     query.addDescending('score')

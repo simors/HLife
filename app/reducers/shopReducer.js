@@ -11,6 +11,8 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdateShopList(state, action)
     case ShopActionTypes.UPDATE_PAGING_SHOP_LIST:
       return handleUpdatePagingShopList(state, action)
+    case ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE:
+      return handleFetchShopListArrivedLastPage(state, action)
     case ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST:
       return handleUpdateShopAnnouncementList(state, action)
     case ShopActionTypes.UPDATE_PAGING_SHOP_ANNOUNCEMENT_LIST:
@@ -63,6 +65,13 @@ function handleUpdatePagingShopList(state, action) {
   let shopList = state.get('shopList')
   shopList = shopList.concat(payload.shopList)
   state = state.set('shopList',  shopList)
+  return state
+}
+
+function handleFetchShopListArrivedLastPage(state, action) {
+  let payload = action.payload
+  let isLastPage = payload.isLastPage
+  state = state.set('fetchShopListArrivedLastPage', isLastPage)
   return state
 }
 

@@ -191,9 +191,7 @@ class ShopAnnouncementsManage extends Component {
         </View>
         {rowData.deleting &&
           <View style={styles.deleteIconWrap}>
-            <Icon
-              name="ios-close-circle"
-              style={[styles.deleteIcon]}/>
+            <Image source={require('../../../assets/images/delete_picture_shop.png')}/>
           </View>
         }
       </TouchableOpacity>
@@ -440,7 +438,7 @@ const styles = StyleSheet.create({
   },
   deleteIconWrap: {
     position: 'absolute',
-    top: 0,
+    top: 10,
     left: PAGE_WIDTH / 2,
   },
   deleteIcon: {

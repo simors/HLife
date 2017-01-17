@@ -57,10 +57,14 @@ import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
 import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
+import Doctor from '../components/Mine/Doctor/index'
+import Acknowledge from '../components/Mine/Doctor/Acknowledge'
+import Earnings from '../components/Mine/Doctor/Earnings'
+import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
 
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
-
+import LikeUserList from '../components/Find/LikeUserList'
 
 const styles = StyleSheet.create({
   container: {
@@ -129,6 +133,12 @@ export const scenes = Actions.create(
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
+      <Scene key="DOCTOR" component={Doctor} />
+      <Scene key="ACKNOWLEDGE" component={Acknowledge} />
+      <Scene key="EARNINGS" component={Earnings} />
+      <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo} />
+
+      <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
 
       <Scene key="MYTOPIC" component={MyTopic}/>
 

@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     fontSize: em(17),
     color: '#030303',
     letterSpacing: -0.41,
+    lineHeight: em(17)
   },
   zone: {
     height: normalizeH(170),

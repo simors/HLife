@@ -1,7 +1,7 @@
 import AV from 'leancloud-storage'
 import {List} from 'immutable'
 import ERROR from '../../constants/errorCode'
-import {TopicsItem, TopicCommentsItem} from '../../models/TopicModel'
+import {TopicsItem, TopicCommentsItem, TopicLikeUser} from '../../models/TopicModel'
 import {Up} from '../../models/shopModel'
 
 export function publishTopics(payload) {
@@ -43,6 +43,27 @@ export function fetchTopicLikesCount(payload) {
   })
 }
 
+export function fetchTopicLikeUsers(payload) {
+  let topicId = payload.topicId
+  let query = new AV.Query('Up')
+  query.include(['user']);
+  query.equalTo('targetId', topicId)
+  query.equalTo('upType', "topic")
+  query.equalTo('status', true)
+  return query.find().then((results)=> {
+    let topicLikeUsers = []
+    if (results) {
+      results.forEach((result) => {
+        topicLikeUsers.push(TopicLikeUser.fromLeancloudObject(result))
+      })
+    }
+    return new List(topicLikeUsers)
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function fetchUserLikeTopicInfo(payload) {
   let shopId = payload.topicId
   let upType = payload.upType
@@ -68,7 +89,7 @@ export function fetchUserLikeTopicInfo(payload) {
 export function likeTopic(payload) {
   let topicId = payload.topicId
   let topic = undefined
-  if( payload.upType == "topic")
+  if (payload.upType == "topic")
     topic = AV.Object.createWithoutData('Topics', payload.topicId)
   else if (payload.upType == "topicComment")
     topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
@@ -116,8 +137,8 @@ export function likeTopic(payload) {
 
 export function unLikeTopic(payload) {
   let topicId = payload.topicId
-  let topic =  undefined
-  if( payload.upType == "topic")
+  let topic = undefined
+  if (payload.upType == "topic")
     topic = AV.Object.createWithoutData('Topics', payload.topicId)
   else if (payload.upType == "topicComment")
     topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
