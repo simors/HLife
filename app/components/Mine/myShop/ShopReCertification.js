@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(20),
   },
   inputLabelBox: {
-    width: normalizeW(70),
+    width: normalizeW(86),
     justifyContent: 'center',
     alignItems: 'flex-start'
     

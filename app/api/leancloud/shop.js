@@ -72,7 +72,6 @@ export function getShopList(payload) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
     query.equalTo('containedTag', shopTag)
   }
-  console.log('getShopList.query=====', query)
   return query.find().then(function (results) {
     // console.log('getShopList.results=', results)
     if(__DEV__) {

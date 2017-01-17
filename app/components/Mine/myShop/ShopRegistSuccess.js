@@ -41,7 +41,7 @@ class ShopRegisterSuccess extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.COMPLETE_SHOP_INFO()
+      Actions.COMPLETE_SHOP_INFO({popNum: 3})
     }
   }
 
@@ -49,7 +49,7 @@ class ShopRegisterSuccess extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.SHOP_MANAGE_INDEX()
+      Actions.SHOP_MANAGE_INDEX({popNum: 3})
     }
   }
 

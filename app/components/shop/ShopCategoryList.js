@@ -229,7 +229,6 @@ class ShopCategoryList extends Component {
       if(allShopTags.length > 6) {
         randomShowIndex = Math.floor(Math.random() * (allShopTags.length - 6))
       }
-      console.log('randomShowIndex====', randomShowIndex)
       let allShopTagsView = allShopTags.map((item, index)=> {
         if(index < randomShowIndex || index >= (randomShowIndex + 6)) {
           return null

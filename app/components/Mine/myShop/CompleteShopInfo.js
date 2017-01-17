@@ -258,6 +258,16 @@ class CompleteShopInfo extends Component {
     })
   }
 
+  goBack() {
+    if(this.props.popNum > 2) {
+      Actions.pop({
+        popNum: this.props.popNum
+      })
+    }else {
+      Actions.pop()
+    }
+  }
+
   render() {
 
     let targetShopCategory = {}
@@ -270,7 +280,7 @@ class CompleteShopInfo extends Component {
         <Header
           leftType="text"
           leftText="取消"
-          leftPress={() => Actions.pop()}
+          leftPress={() => this.goBack()}
           title="完善店铺资料"
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
