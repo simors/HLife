@@ -23,6 +23,9 @@ export function getTopicLikedTotalCount(state, topicId) {
   return state.TOPIC.toJS().TopicLikesNum[topicId]
 }
 
+export function getTopicLikeUsers(state, topicId) {
+  return state.TOPIC.toJS().TopicLikeUsers[topicId]
+}
 
 export function isTopicLiked(state, topicId) {
   return state.TOPIC.toJS().IsLikedByCurrentUser[topicId]

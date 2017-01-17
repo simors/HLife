@@ -25,8 +25,8 @@ import TopicContent from './TopicContent'
 import Comment from '../common/Comment'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import {getTopicLikedTotalCount,getTopicComments, isTopicLiked} from '../../selector/topicSelector'
-import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic} from '../../action/topicActions'
+import {getTopicLikedTotalCount,getTopicComments, isTopicLiked,getTopicLikeUsers} from '../../selector/topicSelector'
+import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic,fetchTopicLikeUsers} from '../../action/topicActions'
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
@@ -48,6 +48,7 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
+      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
       if( this.props.isLogin ){
         this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       }
@@ -203,7 +204,30 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
+      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
     })
+  }
+
+  renderTopicLikeOneUser(value, key) {
+    return (
+        <TouchableOpacity style={{alignSelf: 'center'}}>
+          <Image style={styles.zanAvatarStyle} source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+        </TouchableOpacity>
+    )
+  }
+
+  renderTopicLikeUsers() {
+    if (this.props.topicLikeUsers) {
+      return (
+        this.props.topicLikeUsers.map((value, key)=> {
+          if(key < 6) {
+            return (
+              this.renderTopicLikeOneUser(value, key)
+            )
+          }
+        })
+      )
+    }
   }
 
   render() {
@@ -221,18 +245,21 @@ export class TopicDetail extends Component {
         <View style={styles.body} >
           <ScrollView style={{}} ref={"scrollView"}>
             <TopicContent topic={this.props.topic}/>
-            <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
+            <TouchableOpacity style={styles.likeStyle}
+                              onLayout={this.measureMyComponent.bind(this)}
+                              onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers:this.props.topicLikeUsers})}>
               <View style={styles.zanStyle}>
                 <Text style={styles.zanTextStyle}>
                   赞
                 </Text>
               </View>
+              {this.renderTopicLikeUsers()}
               <View style={styles.zanStyle}>
                 <Text style={styles.zanTextStyle}>
                   {this.props.likesCount}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
             {this.renderTopicCommentPage()}
             {this.renderNoComment()}
           </ScrollView>
@@ -278,10 +305,12 @@ const mapStateToProps = (state, ownProps) => {
   const userInfo = activeUserInfo(state)
   const topicComments = getTopicComments(state)
   const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
+  const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
   const commentsTotalCount = topicComments ? topicComments.length : undefined
   return {
     topicComments: topicComments,
+    topicLikeUsers:topicLikeUsers,
     likesCount:likesCount,
     isLogin: isLogin,
     isLiked: isLiked,
@@ -294,6 +323,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicCommentsByTopicId,
   publishTopicFormData,
   fetchTopicIsLiked,
+  fetchTopicLikeUsers,
   fetchTopicLikesCount,
   likeTopic,
   unLikeTopic
@@ -332,13 +362,19 @@ const styles = StyleSheet.create({
 
   zanStyle: {
     backgroundColor: THEME.colors.green,
-    borderWidth: 1,
-    borderStyle: 'solid',
     borderColor: 'transparent',
     height: normalizeH(35),
     alignSelf: 'center',
     borderRadius: 100,
     marginLeft: normalizeW(12),
+    width: normalizeW(35),
+  },
+  zanAvatarStyle: {
+    borderColor: 'transparent',
+    height: normalizeH(35),
+    alignSelf: 'center',
+    borderRadius: 17.5,
+    marginLeft: normalizeW(10),
     width: normalizeW(35),
   },
   zanTextStyle: {
