@@ -276,11 +276,9 @@ class ShopCategoryList extends Component {
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
     let tagsView = null
-    if(5 == rowID) {
-      tagsView = this.renderTags(this.props.allShopTags)
-    }
     let customStyle = null
-    if(4 == rowID) {
+    if(5 == rowID || !this.props.shopList.length || (this.props.shopList.length < 5 && this.props.shopList.length == (+rowID+1))) {
+      tagsView = this.renderTags(this.props.allShopTags)
       customStyle = {marginBottom: 0}
     }
 
@@ -288,10 +286,10 @@ class ShopCategoryList extends Component {
       <View>
         {tagsView
           ? <View>
+              {this.renderShop(rowData, customStyle)}
               {tagsView}
-              {this.renderShop(rowData)}
             </View>
-          : this.renderShop(rowData, customStyle)
+          : this.renderShop(rowData)
         }
       </View>
     )
@@ -434,7 +432,7 @@ const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
   // console.log('allShopCategories=', allShopCategories)
   const shopList = selectShopList(state) || []
-  // console.log('shopList=', shopList)
+  // console.log('mapStateToProps.shopList=', shopList)
   let lastScore = ''
   let lastGeo = []
   let isLastPage = false
