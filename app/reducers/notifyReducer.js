@@ -3,7 +3,17 @@
  */
 import {Map, List} from 'immutable'
 import * as msgActionTypes from '../constants/messageActionTypes'
-import {NotifyMessage, TypedNotifyMsgRecord} from '../models/notifyModel'
+import {
+  NotifyMessage,
+  TypedNotifyMsgRecord,
+  TopicCommentMsg,
+  ShopCommentMsg,
+  TopicLikeMsg,
+  ShopLikeMsg,
+  UserFollowMsg,
+  ShopFollowMsg,
+} from '../models/notifyModel'
+import {REHYDRATE} from 'redux-persist/constants'
 
 const initialState = new NotifyMessage()
 
@@ -11,6 +21,8 @@ export default function notifyReducer(state = initialState, action) {
   switch (action.type) {
     case msgActionTypes.ADD_NOTIFY_MSG:
       return handleAddNotifyMsg(state, action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -23,6 +35,7 @@ function handleAddNotifyMsg(state, action) {
 
   state = state.setIn(['messageMap', message.msgId], message)
   state = state.set('unReadCount', unReadCnt+1)
+  state = state.set('lastNoticeAt', message.timestamp)
 
   let msg = state.getIn(['notifyMsgByType', msgType])
   if (!msg) {
@@ -42,5 +55,47 @@ function handleAddNotifyMsg(state, action) {
     state = state.setIn(['notifyMsgByType', msgType], msg)
   }
 
+  return state
+}
+
+function onRehydrate(state, action) {
+  var incoming = action.payload.NOTICE
+  if (incoming) {
+    if (incoming.unReadCount) {
+      state = state.set('unReadCount', incoming.unReadCount)
+    } else {
+      state = state.set('unReadCount', 0)
+    }
+    state = state.set('lastNoticeAt', incoming.lastNoticeAt)
+
+    let messageMap = Map(incoming.messageMap)
+    messageMap.map((msg) => {
+      switch (msg.msgType) {
+        case msgActionTypes.MSG_SHOP_COMMENT:
+          state = state.updateIn(['messageMap', msg.msgId], new ShopCommentMsg(), val => val.merge(msg))
+          break
+        case msgActionTypes.MSG_SHOP_LIKE:
+          state = state.updateIn(['messageMap', msg.msgId], new ShopLikeMsg(), val => val.merge(msg))
+          break
+        case msgActionTypes.MSG_SHOP_FOLLOW:
+          state = state.updateIn(['messageMap', msg.msgId], new ShopFollowMsg(), val => val.merge(msg))
+          break
+        case msgActionTypes.MSG_TOPIC_COMMENT:
+          state = state.updateIn(['messageMap', msg.msgId], new TopicCommentMsg(), val => val.merge(msg))
+          break
+        case msgActionTypes.MSG_TOPIC_LIKE:
+          state = state.updateIn(['messageMap', msg.msgId], new TopicLikeMsg(), val => val.merge(msg))
+          break
+        case msgActionTypes.MSG_USER_FOLLOW:
+          state = state.updateIn(['messageMap', msg.msgId], new UserFollowMsg(), val => val.merge(msg))
+          break
+      }
+    })
+
+    let notifyMsgByType = Map(incoming.notifyMsgByType)
+    notifyMsgByType.map((msg) => {
+      state = state.updateIn(['notifyMsgByType', msg.type], new TypedNotifyMsgRecord(), val => val.merge(msg))
+    })
+  }
   return state
 }

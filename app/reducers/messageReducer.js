@@ -203,7 +203,6 @@ function onRehydrate(state, action) {
     })
 
     let conversations = Map(incoming.conversationMap)
-    console.log('incoming:', conversations)
     conversations.map((conv) => {
       let convId = conv.id
       state = state.updateIn(['conversationMap', convId], new Conversation(), val => val.merge(conv))
