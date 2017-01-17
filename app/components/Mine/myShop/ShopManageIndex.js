@@ -282,6 +282,16 @@ class ShopManageIndex extends Component {
     return similarShopListView
   }
 
+  goBack() {
+    if(this.props.popNum > 2) {
+      Actions.pop({
+        popNum: this.props.popNum
+      })
+    }else {
+      Actions.pop()
+    }
+  }
+
   render() {
 
     return (
@@ -289,7 +299,7 @@ class ShopManageIndex extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => this.goBack()}
           leftStyle={styles.headerLeftStyle}
           headerContainerStyle={styles.headerContainerStyle}
           title="店铺管理"
@@ -884,7 +894,6 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   bottomTabWrap: {
-    width:60,
     height:38,
     justifyContent:'center',
     alignItems: 'center'

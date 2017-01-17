@@ -25,6 +25,7 @@ export function getShopList(payload) {
   let isRefresh = payload.isRefresh
   let lastScore = payload.lastScore
   let lastGeo = payload.lastGeo
+  let shopTagId = payload.shopTagId
   let query = new AV.Query('Shop')
   if(shopCategoryId){
     //构建内嵌查询
@@ -66,6 +67,10 @@ export function getShopList(payload) {
     }
   }else {
     query.contains('geoName', geoName)
+  }
+  if(shopTagId) {
+    let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
+    query.equalTo('containedTag', shopTag)
   }
   return query.find().then(function (results) {
     // console.log('getShopList.results=', results)
