@@ -60,7 +60,7 @@ import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
 
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
-
+import LikeUserList from '../components/Find/LikeUserList'
 
 const styles = StyleSheet.create({
   container: {
@@ -129,6 +129,7 @@ export const scenes = Actions.create(
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
+      <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
 
       <Scene key="MYTOPIC" component={MyTopic}/>
 

@@ -245,7 +245,9 @@ export class TopicDetail extends Component {
         <View style={styles.body} >
           <ScrollView style={{}} ref={"scrollView"}>
             <TopicContent topic={this.props.topic}/>
-            <View style={styles.likeStyle} onLayout={this.measureMyComponent.bind(this)}>
+            <TouchableOpacity style={styles.likeStyle}
+                              onLayout={this.measureMyComponent.bind(this)}
+                              onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers:this.props.topicLikeUsers})}>
               <View style={styles.zanStyle}>
                 <Text style={styles.zanTextStyle}>
                   赞
@@ -257,7 +259,7 @@ export class TopicDetail extends Component {
                   {this.props.likesCount}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
             {this.renderTopicCommentPage()}
             {this.renderNoComment()}
           </ScrollView>
