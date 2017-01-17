@@ -33,7 +33,7 @@ class GenderSelector extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: {text: this.props.initValue},
+      initValue: {text: (this.props.initValue? this.props.initValue: 'male')},
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)

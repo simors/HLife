@@ -50,7 +50,7 @@ export function handleInquirySubmit(payload, formData) {
     let inquiryPayload = {
       id: payload.id,
       question: formData.content.text,
-      diseaseImages: formData.imgGroup.text,
+      diseaseImages: (formData.imgGroup? formData.imgGroup.text: undefined),
       name: payload.healthProfile.nickname,
       gender: payload.healthProfile.gender,
       birthday: payload.healthProfile.birthday,
