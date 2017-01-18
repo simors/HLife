@@ -14,6 +14,10 @@ export const MSG_SYSTEM = 1
 export const MSG_IMAGE = 2
 export const MSG_AUDIO = 3
 
+export const TOPIC_TYPE = 'TOPIC_TYPE'
+export const SHOP_TYPE = 'SHOP_TYPE'
+export const SYSTEM_TYPE = 'SYSTEM_TYPE'
+
 export const MSG_ARTICLE_COMMENT  = 20      // 文章评论
 export const MSG_TOPIC_COMMENT    = 21      // 话题评论
 export const MSG_SHOP_COMMENT     = 22      // 店铺评论
