@@ -48,7 +48,7 @@ export function getArticleItem(state,articleId,categoryId)
 
 export function getLikerList(state,articleId,categoryId)
 {
-  return getArticles(state).likerList[articleId] || []
+  return getArticles(state).upList[articleId] || []
   //let likerList= articles.find((value) => {return value.articleId == articleId})
  // return selectShop(state).shopAnnouncements[shopId] || []
 

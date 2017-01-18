@@ -41,7 +41,7 @@ export class LikeUserList extends Component {
 
   renderTopicItem(value, key) {
     return (
-      <View style={{borderBottomWidth: 2,borderColor: '#e5e5e5',}}>
+      <View key={key} style={{borderBottomWidth: 2,borderColor: '#e5e5e5',}}>
         <View style={styles.introWrapStyle}>
           <View style={{flexDirection: 'row'}} onPress={()=> {
           }}>

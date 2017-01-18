@@ -131,14 +131,17 @@ export function unFavoriteArticle(payload) {
 }
 
 export function getUps(payload) {
+  //console.log('payload-=---=>',payload)
   let articleId = payload.articleId
   let upType = payload.upType
-  let query = AV.query('Up')
+  let query = new AV.Query('Up')
   query.equalTo('targetId', articleId)
   query.equalTo('upType', upType)
   query.equalTo('status', true)
-
+  query.include(['user'])
   return query.find().then((results) => {
+    console.log('results======>',results)
+
     let ups = []
     results.forEach((result) => {
       ups.push(Up.fromLeancloudObject(result))
@@ -152,11 +155,16 @@ export function getUps(payload) {
 }
 
 export function getCommentCount(payload) {
-  let article = AV.Object.createWithoutData('Articles',payload)
-  let relation = article.relation('comments')
-  let query = relation.query()
-  return query.count().then(function (results) {
-    //console.log('count==>',results)
+  let query = new AV.Query('ArticleComment')
+  let articleId=payload
+
+  let article = AV.Object.createWithoutData('Articles', articleId)
+
+  query.equalTo('articleId',article)
+  console.log('payload=========>',articleId)
+  query.equalTo('enable',true)
+  return query.count().then((results) =>{
+    console.log('count==>',results)
    return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -166,6 +174,7 @@ export function getCommentCount(payload) {
 
 export function getUpCount(payload) {
   let articleId = payload.articleId
+
   let upType = payload.upType
   let query = new AV.Query('Up')
   query.equalTo('upType', upType)

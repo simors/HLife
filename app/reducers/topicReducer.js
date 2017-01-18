@@ -5,6 +5,7 @@
 import * as TopicTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Topic} from '../models/TopicModel'
+import {Map, List} from 'immutable'
 
 const initialState = Topic()
 
@@ -20,6 +21,8 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopicIsLiked(state, action)
     case TopicTypes.UPDATE_TOPIC_LIKE_USERS:
       return handleUpdateTopicLikeUsers(state, action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -29,7 +32,9 @@ function handleUpdateTopics(state, action) {
   let payload = action.payload
   switch (payload.type) {
     case "topics":
-      state = state.set('topics', payload.topics)
+      let _map = state.get('topics')
+      _map = _map.set(payload.categoryId, payload.topics)
+      state = state.set('topics', _map)
       break
     case "myTopics":
       state = state.set('myTopics', payload.topics)
@@ -79,5 +84,20 @@ function handleUpdateTopicIsLiked(state, action) {
     _map = _map.set(topicId, false)
   }
   state = state.set('IsLikedByCurrentUser',  _map)
+  return state
+}
+
+
+function onRehydrate(state, action) {
+  var incoming = action.payload.TOPIC
+  if (incoming) {
+    state = state.set('topics', Map(incoming.topics))
+    state = state.set('myTopics', List(incoming.myTopics))
+    state = state.set('allTopics', List(incoming.allTopics))
+    state = state.set('topicComments', List(incoming.topicComments))
+    state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))
+    state = state.set('TopicLikeUsers', Map(incoming.TopicLikeUsers))
+    state = state.set('IsLikedByCurrentUser', Map(incoming.IsLikedByCurrentUser))
+  }
   return state
 }

@@ -237,7 +237,8 @@ const styles = StyleSheet.create({
   commentImageStyle: {
     height: normalizeW(19),
     width: normalizeH(18),
-    marginRight: normalizeW(3)
+    marginRight: normalizeW(3),
+    resizeMode:'contain'
   },
   commentTextStyle: {
     fontSize: em(12),

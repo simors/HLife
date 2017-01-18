@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
   defaultImageStyles:{
     height:normalizeH(35),
     width:normalizeW(35),
+    resizeMode:'contain'
   },
   channelWrap: {
     flex: 1,
