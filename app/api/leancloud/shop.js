@@ -239,9 +239,13 @@ export function submitShopComment(payload) {
   let shopComment = new ShopComment()
   shopComment.set('user', currentUser)
   shopComment.set('targetShop', shop)
-  shopComment.set('score', score)
+  if(score) {
+    shopComment.set('score', score)
+  }
+  if(blueprints) {
+    shopComment.set('blueprints', blueprints)
+  }
   shopComment.set('content', content)
-  shopComment.set('blueprints', blueprints)
 
   return shopComment.save().then((results) => {
     // console.log('results=', results)

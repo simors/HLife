@@ -4,6 +4,7 @@
 import React, {Component} from 'react'
 import {
   View,
+  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
@@ -16,15 +17,29 @@ import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
-
+import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH=Dimensions.get('window').width
 
 class ScoreInput extends Component {
 
+  static defaultProps = {
+    placeholder: '满意度打分',
+    scoreDescArr: ['非常不满意', '不满意', '一般', '满意', '非常满意'],
+    scoreDescStyleArr: [
+      {color: 'red'},
+      {color: 'red'},
+      {color: '#8f8e94'},
+      {color: THEME.colors.green},
+      {color: THEME.colors.green}
+    ]
+  }
+
   constructor(props) {
     super(props)
     this.state = {
-      scoreArr : [false, false, false, false, false]
+      scoreArr : [false, false, false, false, false],
+      scoreDesc: props.placeholder,
+      scoreDescStyle: {}
     }
   }
 
@@ -54,7 +69,9 @@ class ScoreInput extends Component {
       }
     }
     this.setState({
-      scoreArr: arr
+      scoreArr: arr,
+      scoreDesc: this.props.scoreDescArr[score-1],
+      scoreDescStyle: this.props.scoreDescStyleArr[score-1]
     })
 
     let inputForm = {
@@ -84,15 +101,16 @@ class ScoreInput extends Component {
 
   render() {
     return (
-      <View style={[styles.container]}>
-        {this.renderScoreView()}
+      <View style={[styles.container, this.props.containerStyle]}>
+        <View style={[styles.scoreImgWrap, this.props.scoreImgWrapStyle]}>
+          {this.renderScoreView()}
+        </View>
+        <View style={[styles.scoreDescWrap, this.props.scoreDescWrapStyle]}>
+          <Text style={[styles.scoreDesc, this.state.scoreDescStyle]}>{this.state.scoreDesc}</Text>
+        </View>
       </View>
     )
   }
-}
-
-ScoreInput.defaultProps = {
-
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -111,13 +129,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(ScoreInput)
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center'
   },
   scoreImage: {
-    width: 20,
-    height:20,
+    width: 30,
+    height:30,
     marginRight:10
   },
+  scoreImgWrap: {
+    flexDirection: 'row'
+  },
+  scoreDescWrap: {
+    marginTop: normalizeH(15)
+  },
+  scoreDesc: {
+    fontSize: em(15),
+    color: '#8f8e94'
+  }
 })
