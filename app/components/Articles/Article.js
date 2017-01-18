@@ -29,6 +29,7 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {
   fetchIsUP,
   upArticle,
+  fetchUps,
   unUpArticle,
   fetchCommentsArticle,
   fetchCommentsCount,
@@ -38,7 +39,7 @@ import {
   unFavoriteArticle,
   favoriteArticle,
 } from '../../action/articleAction'
-import {getIsUp,getIsFavorite, getcommentList, getcommentCount, getUpCount} from '../../selector/articleSelector'
+import {getIsUp,getIsFavorite, getcommentList, getcommentCount, getUpCount,getLikerList} from '../../selector/articleSelector'
 import Comment from '../common/Comment'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import ArticleComment from './ArticleComment'
@@ -63,6 +64,8 @@ class Article extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchCommentsArticle({articleId: this.props.articleId})
        this.props.fetchCommentsCount(this.props.articleId)
+      this.props.fetchUps({articleId: this.props.articleId, upType: 'article'})
+      this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
       if(this.props.isLogin)
       {
         this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
@@ -101,10 +104,13 @@ class Article extends Component {
   }
 
   upSuccessCallback() {
-      InteractionManager.runAfterInteractions(() => {
+
+    InteractionManager.runAfterInteractions(() => {
        // this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
        // this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
       //  this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
+      this.props.fetchUps(this.props.articleId)
+      this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
         this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
         this.props.fetchIsFavorite({articleId: this.props.articleId})
       })
@@ -159,6 +165,30 @@ class Article extends Component {
     }
   }
   }
+
+  renderTopicLikeOneUser(value, key) {
+    console.log('value====>',value)
+
+    return (
+      <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
+        <Image style={styles.zanAvatarStyle} source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+      </TouchableOpacity>
+    )
+  }
+  renderTopicLikeUsers() {
+    if (this.props.upUserList) {
+      return (
+        this.props.upUserList.map((value, key)=> {
+          if(key < 6) {
+            return (
+              this.renderTopicLikeOneUser(value, key)
+            )
+          }
+        })
+      )
+    }
+  }
+
   onCommentButton(comment) {
     this.setState({
       comment: comment
@@ -287,13 +317,21 @@ class Article extends Component {
               source={{html: this.props.content}}
               innerCSS={INNER_CSS}
             />
-            <View style={styles.upList} onLayout={this.measureMyComponent.bind(this)}>
+            <TouchableOpacity style={styles.upList}
+                              onLayout={this.measureMyComponent.bind(this)}
+                              onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers:this.props.upUserList})}>
             <View style={styles.zanStyle} >
               <Text style={styles.zanTextStyle}>
                 赞
               </Text>
             </View>
+              {this.renderTopicLikeUsers()}
+              <View style={styles.zanStyle}>
+                <Text style={styles.zanTextStyle}>
+                  {this.props.upCount}
+                </Text>
               </View>
+              </TouchableOpacity>
             {this.renderCommentPage()}
             {this.renderNoComment()}
           </View>
@@ -344,7 +382,8 @@ const mapStateToProps = (state, ownProps) => {
   const upCount = getUpCount(state, ownProps.articleId)
   const commentsTotalCount = getcommentCount(state, ownProps.articleId)
   const isFavorite = getIsFavorite(state,ownProps.articleId)
-  //console.log('articleComment===>',articleComments)
+  const upUser = getLikerList(state,ownProps.articleId)
+  console.log('articleComment===>',upUser)
 
   return {
     articleComments: articleComments,
@@ -353,7 +392,8 @@ const mapStateToProps = (state, ownProps) => {
     userInfo: userInfo,
     upCount: upCount,
     commentsTotalCount: commentsTotalCount,
-    isFavorite: isFavorite
+    isFavorite: isFavorite,
+    upUserList: upUser
   }
 }
 
@@ -367,7 +407,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUpCount,
   submitArticleComment,
   fetchIsFavorite,
-  unFavoriteArticle
+  unFavoriteArticle,
+  fetchUps,
+  fetch
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Article)
@@ -481,6 +523,14 @@ const styles = StyleSheet.create(
       marginLeft: normalizeW(12),
       width: normalizeW(35),
     },
+    zanAvatarStyle: {
+      borderColor: 'transparent',
+      height: normalizeH(35),
+      alignSelf: 'center',
+      borderRadius: 17.5,
+      marginLeft: normalizeW(10),
+      width: normalizeW(35),
+    },
     zanTextStyle: {
       fontSize: em(17),
       color: "#ffffff",
@@ -493,4 +543,5 @@ const styles = StyleSheet.create(
       alignItems: 'flex-start',
       flexDirection: 'row',
     },
+
   })

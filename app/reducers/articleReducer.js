@@ -51,7 +51,7 @@ function handleAddUps(state, action) {
   let articleId = action.payload.articleId
   let upList = action.payload.upList
   let _map = state.get('upList')
-  _map = _map.set(articleId, likerList)
+  _map = _map.set(articleId, upList)
   state = state.set('upList',_map)
   return state
 

@@ -131,14 +131,17 @@ export function unFavoriteArticle(payload) {
 }
 
 export function getUps(payload) {
+  //console.log('payload-=---=>',payload)
   let articleId = payload.articleId
   let upType = payload.upType
-  let query = AV.query('Up')
+  let query = new AV.Query('Up')
   query.equalTo('targetId', articleId)
   query.equalTo('upType', upType)
   query.equalTo('status', true)
-
+  query.include(['user'])
   return query.find().then((results) => {
+    console.log('results======>',results)
+
     let ups = []
     results.forEach((result) => {
       ups.push(Up.fromLeancloudObject(result))

@@ -78,11 +78,11 @@ export function unFavoriteArticle(payload) {
   }
 }
 
-export function fetchUps(articleId,columnId) {
- // console.log('<><><><><>fetchLikers',payload)
+export function fetchUps(payload) {
+  //console.log('<><><><><>fetchLikers',payload)
   return (dispatch, getState) => {
-   // let articleId = payload
-    laArticle.getUps(articleId).then((upList) => {
+    let articleId = payload.articleId
+    laArticle.getUps(payload).then((upList) => {
      // console.log('likersList======>',upList)
       dispatch(addUpsAction({upList:upList,articleId:articleId}))
     }).catch((error) => {

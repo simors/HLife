@@ -42,6 +42,7 @@ class Categorys extends Component {
     return(
       <TouchableOpacity onPress={()=>this.props.onPress(value.columnId)}>
         <View  style={styles.channelWrap}>
+
             <Image style={styles.defaultImageStyles} source={{uri: value.imageSource}}/>
             <Text style={ {marginTop:normalizeH(7),fontSize: em(15), color: '#929292'}}>{value.title}</Text>
         </View>
@@ -129,6 +130,7 @@ const styles = StyleSheet.create({
   defaultImageStyles: {
     height: normalizeH(45),
     width: normalizeW(45),
+    resizeMode:'contain'
   },
   channelWrap: {
     flex: 1,
