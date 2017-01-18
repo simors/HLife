@@ -26,6 +26,8 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 const INQUIRY = 'INQUIRY'
 const PERSONAL = 'PERSONAL'
 const TOPIC = 'TOPIC'
+const SHOP = 'SHOP'
+const SYSTEM = 'SYSTEM'
 
 class MessageBox extends Component {
   constructor(props) {
@@ -49,7 +51,14 @@ class MessageBox extends Component {
         }
         break
       case TOPIC:
-        if (this.props.newNotice) {
+        if (this.props.newTopicNotice) {
+          return (
+            <View style={styles.noticeTip}></View>
+          )
+        }
+        break
+      case SHOP:
+        if (this.props.newShopNotice) {
           return (
             <View style={styles.noticeTip}></View>
           )
@@ -123,10 +132,35 @@ class MessageBox extends Component {
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.titleStyle}>话题互动</Text>
                 <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>{this.props.lastNoticeMsg.lastMessageAt}</Text>
+                <Text style={styles.timeTip}>{this.props.lastLastNoticeMsg.lastMessageAt}</Text>
               </View>
               <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastNoticeMsg.lastMessage}</Text>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastLastNoticeMsg.lastMessage}</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderShopMessage() {
+    return (
+      <View style={styles.itemView}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={styles.noticeIconView}>
+              <Image style={styles.noticeIcon} source={require('../../assets/images/like_topic.png')}></Image>
+              {this.renderNoticeTip(SHOP)}
+            </View>
+            <View style={{flex: 1}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.titleStyle}>店铺消息</Text>
+                <View style={{flex: 1}}></View>
+                <Text style={styles.timeTip}>{this.props.lastShopNoticeMsg.lastMessageAt}</Text>
+              </View>
+              <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastShopNoticeMsg.lastMessage}</Text>
               </View>
             </View>
           </View>
@@ -149,26 +183,7 @@ class MessageBox extends Component {
             {this.renderInquiryMessage()}
             {this.renderPersonalMessage()}
             {this.renderTopicMessage()}
-            <View style={styles.itemView}>
-              <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View style={styles.noticeIconView}>
-                    <Image style={styles.noticeIcon} source={require('../../assets/images/like_topic.png')}></Image>
-                    <View style={styles.noticeTip}></View>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.titleStyle}>店铺消息</Text>
-                      <View style={{flex: 1}}></View>
-                      <Text style={styles.timeTip}>2017-01-02</Text>
-                    </View>
-                    <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                      <Text numberOfLines={1} style={styles.msgTip}>郝依依医生给您提供的咨询服务对您是否有用，期待您的反馈！</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
+            {this.renderShopMessage()}
             <View style={styles.itemView}>
               <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
@@ -202,15 +217,19 @@ const mapStateToProps = (state, ownProps) => {
   let lastInquiryMsg = getNewestMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
   let newPersonalLetter = hasNewMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
   let lastPersonalMsg = getNewestMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
-  let newNotice = hasNewNoticeByType(state, msgTypes.TOPIC_TYPE)
-  let lastNoticeMsg = getNewestNoticeByType(state, msgTypes.TOPIC_TYPE)
+  let newTopicNotice = hasNewNoticeByType(state, msgTypes.TOPIC_TYPE)
+  let lastTopicNoticeMsg = getNewestNoticeByType(state, msgTypes.TOPIC_TYPE)
+  let newShopNotice = hasNewNoticeByType(state, msgTypes.SHOP_TYPE)
+  let lastShopNoticeMsg = getNewestNoticeByType(state, msgTypes.SHOP_TYPE)
 
   newProps.newInquiry = newInquiry
   newProps.lastInquiryMsg = lastInquiryMsg
   newProps.newPersonalLetter = newPersonalLetter
   newProps.lastPersonalMsg = lastPersonalMsg
-  newProps.newNotice = newNotice
-  newProps.lastNoticeMsg = lastNoticeMsg
+  newProps.newTopicNotice = newTopicNotice
+  newProps.lastLastNoticeMsg = lastTopicNoticeMsg
+  newProps.newShopNotice = newShopNotice
+  newProps.lastShopNoticeMsg = lastShopNoticeMsg
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
