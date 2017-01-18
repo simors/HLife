@@ -20,11 +20,9 @@ import Header from '../../common/Header'
 import {em, normalizeW, normalizeH,} from '../../../util/Responsive'
 import PhoneInput from '../../common/Input/PhoneInput'
 import CommonTextInput from '../../common/Input/CommonTextInput'
-import ImageInput from '../../common/Input/ImageInput'
 import {submitFormData, submitInputData} from '../../../action/authActions'
 import MedicalLabPicker from '../../common/Input/MedicalLabPicker'
 import RegionPicker from '../../common/Input/RegionPicker'
-import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {activeDoctorInfo} from '../../../selector/doctorSelector'
 
 
@@ -144,16 +142,20 @@ class BasicDoctorInfo extends Component {
               <Text style={{fontFamily: "PingFangSC-Regular", fontSize: em(12), color: '#B2B2B2'}}>以上为官方已认证信息，如需修改，请</Text>
               <Text style={{fontFamily: "PingFangSC-Regular", fontSize: em(12), color: '#50E3C2', textDecorationLine: 'underline'}} onPress={() => {}}>重现认证</Text>
             </View>
-            <View style={{height: normalizeH(123), backgroundColor: '#FFFFFF', paddingLeft: normalizeW(12)}}>
-              <View style={{height: normalizeH(38)}}>
+            <View style={{height: normalizeH(123), backgroundColor: '#FFFFFF', paddingLeft: normalizeW(12), paddingRight: normalizeW(20)}}>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', height: normalizeH(38), marginTop: normalizeH(11)}}>
                 <Text>擅长疾病</Text>
-
+                <Image style={{width: normalizeW(20), height: normalizeH(20)}}
+                       source={require('../../../assets/images/edit_doctor.png')}/>
               </View>
 
             </View>
-            <View style={{height: normalizeH(188), backgroundColor: '#FFFFFF', paddingLeft: normalizeW(12)}}>
-              <View>
+            <View style={{height: normalizeH(188), backgroundColor: '#FFFFFF', paddingLeft: normalizeW(12), marginTop: normalizeH(8), paddingRight: normalizeW(20)}}>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: normalizeH(11)}}>
                 <Text>个人简介</Text>
+                <Image style={{width: normalizeW(20), height: normalizeH(20)}}
+                       source={require('../../../assets/images/edit_doctor.png')}/>
+
               </View>
             </View>
 
