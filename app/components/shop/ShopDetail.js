@@ -467,7 +467,7 @@ class ShopDetail extends Component {
           </ScrollView>
 
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
+            <TouchableOpacity style={styles.shopCommentInputBox} onPress={()=>{Actions.PUBLISH_SHOP_COMMENT({id: this.props.id})}}>
               <Text style={styles.shopCommentInput}>写评论...</Text>
             </TouchableOpacity>
 

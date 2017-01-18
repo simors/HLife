@@ -98,6 +98,7 @@ export class TopicDetail extends Component {
         ...commentData,
         topicId: this.props.topic.objectId,
         userId: this.props.userInfo.id,
+        replyTo: (this.state.comment)?this.state.comment.userId:this.props.topic.userId,
         commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
         success: this.submitSuccessCallback.bind(this),

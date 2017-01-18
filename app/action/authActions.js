@@ -4,6 +4,7 @@ import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
+import * as lcShop from '../api/leancloud/shop'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 
@@ -25,6 +26,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
   UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
   PUBLISH_ANNOUNCEMENT: 'PUBLISH_ANNOUNCEMENT',
+  PUBLISH_SHOP_COMMENT: 'PUBLISH_SHOP_COMMENT',
   UPDATE_ANNOUNCEMENT: 'UPDATE_ANNOUNCEMENT',
 }
 
@@ -79,6 +81,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT:
         dispatch(handlePublishAnnouncement(payload,formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.PUBLISH_SHOP_COMMENT:
+        dispatch(handlePublishShopComment(payload,formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT:
         dispatch(handleUpdateAnnouncement(payload,formData))
@@ -471,6 +476,35 @@ function handlePublishAnnouncement(payload, formData) {
       dispatch(_action(shop))
       if (payload.success) {
         payload.success(shop)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function handlePublishShopComment(payload, formData) {
+  return (dispatch, getState) => {
+    let newPayload = {}
+    newPayload.id = payload.id
+    if(formData.content) {
+      newPayload.content = formData.content.text
+    }else{
+      throw new Error('请填写评论内容')
+    }
+    if(formData.score) {
+      newPayload.score = formData.score.text
+    }
+    if(formData.imgGroup) {
+      newPayload.blueprints = formData.imgGroup.text
+    }
+    lcShop.submitShopComment(newPayload).then(() => {
+      let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
+      dispatch(_action({}))
+      if (payload.success) {
+        payload.success()
       }
     }).catch((error) => {
       if (payload.error) {
