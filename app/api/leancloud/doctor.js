@@ -178,3 +178,8 @@ export function certification(payload) {
     throw err
   })
 }
+
+export function submitDoctorDesc(payload) {
+  console.log("submitDoctorDesc", payload)
+
+}

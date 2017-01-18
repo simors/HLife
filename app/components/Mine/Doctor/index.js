@@ -58,9 +58,9 @@ class Doctor extends Component {
                 </View>
                 <View style={{flex: 1, height: normalizeH(112)}}>
                   <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(17), color: '#030303', marginTop: normalizeH(26), marginBottom: normalizeH(9)}}>
-                    {this.props.userInfo.nickname}
+                    {this.props.doctorInfo.name}
                   </Text>
-                  <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B', marginBottom: normalizeH(6)}}>湘雅三医院-内分泌科</Text>
+                  <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B', marginBottom: normalizeH(6)}}>{this.props.doctorInfo.department}</Text>
                   <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B', marginBottom: normalizeH(14)}}>基本信息 待完善</Text>
                 </View>
                 <TouchableOpacity style={{width: normalizeW(50), height: normalizeH(112)}} onPress={() => Actions.BASIC_DOCTOR_INFO()}>
@@ -122,6 +122,7 @@ class Doctor extends Component {
 const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
   let doctorInfo = activeDoctorInfo(state)
+  console.log("Doctor: ", doctorInfo)
 
   return{
     userInfo: userInfo,

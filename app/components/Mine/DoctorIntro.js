@@ -20,15 +20,17 @@ import Header from '../common/Header'
 import MultilineText from '../common/Input/MultilineText'
 import {em, normalizeW, normalizeH,} from '../../util/Responsive'
 import {inputFormCheck} from '../../action/inquiryAction'
+import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../action/doctorAction'
+import {activeUserInfo} from '../../selector/authSelector'
 import * as Toast from '../common/Toast'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
-let doctorInfoForm = Symbol('doctorInfoForm')
+let doctorDescForm = Symbol('doctorDescForm')
 const infoInput = {
-  formKey: doctorInfoForm,
+  formKey: doctorDescForm,
   stateKey: Symbol('infoInput'),
   type: 'content'
 }
@@ -50,10 +52,17 @@ class DoctorIntro extends Component {
   }
 
   onButtonPress= () => {
-    this.props.inputFormCheck({
-      formKey: doctorInfoForm,
+    // this.props.inputFormCheck({
+    //   formKey: doctorDescForm,
+    //   success: this.submitSuccessCallback,
+    //   error: this.submitErrorCallback
+    // })
+    this.props.submitDoctorFormData({
+      formKey: doctorDescForm,
+      submitType: DOCTOR_FORM_SUBMIT_TYPE.SUBMIT_DOCTOR_DESC,
+      id: this.props.userInfo.id,
       success: this.submitSuccessCallback,
-      error: this.submitErrorCallback
+      error: this.submitErrorCallback,
     })
   }
 
@@ -69,7 +78,7 @@ class DoctorIntro extends Component {
           title="完善个人简介"
           titleStyle={styles.left}
           rightType="text"
-          rightText="下一步"
+          rightText="完成"
           rightStyle={styles.left}
           rightPress={() => this.onButtonPress()}
         />
@@ -90,13 +99,17 @@ class DoctorIntro extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-
+  let userInfo = activeUserInfo(state)
+  let doctorInfo = activeDoctorInfo(state)
+  return{
+    userInfo: userInfo,
+    doctorInfo: doctorInfo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormCheck,
+  submitDoctorFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DoctorIntro)

@@ -74,7 +74,7 @@ class Mine extends Component {
         Actions.DCTOR_REVISE()
         break
       case 1:
-        Actions.DOCTOR_INTRO()
+        Actions.DOCTOR()
         break
       case 2:
         Actions.DCTOR_CHECKING()

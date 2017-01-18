@@ -12,6 +12,7 @@ import * as lcDoctor from '../api/leancloud/doctor'
 export const DOCTOR_FORM_SUBMIT_TYPE = {
   DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
   DOCTOR_CERTIFICATION_MODIFY: 'DOCTOR_CERTIFICATION_MODIFY',
+  SUBMIT_DOCTOR_DESC: 'SUBMIT_DOCTOR_DESC',
 }
 
 export function submitDoctorFormData(payload) {
@@ -32,6 +33,9 @@ export function submitDoctorFormData(payload) {
         break
       case DOCTOR_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION_MODIFY:
         dispatch(handleDoctorCertificationModify(payload, formData))
+        break
+      case DOCTOR_FORM_SUBMIT_TYPE.SUBMIT_DOCTOR_DESC:
+        dispatch(handleDoctorDescSubmit(payload, formData))
         break
     }
   }
@@ -148,6 +152,25 @@ export function getDocterList(payload) {
     lcDoctor.fetchDocterList(payload).then((doctorList) => {
       const queryDoctors = createAction(doctorActionTypes.QUERY_DOCTORS)
       dispatch(queryDoctors({doctorList: doctorList}))
+    })
+  }
+}
+
+export function handleDoctorDescSubmit(payload, formData) {
+  console.log("handleDoctorDescSubmit payload", payload)
+  console.log("handleDoctorDescSubmit formData", formData)
+  return (dispatch, getState) => {
+    let descPayload = {
+      id: payload.id,
+      // desc: formData.
+    }
+    lcDoctor.submitDoctorDesc(payload).then((doctor) => {
+      let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
+      dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
     })
   }
 }

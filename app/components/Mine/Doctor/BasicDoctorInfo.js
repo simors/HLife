@@ -153,9 +153,13 @@ class BasicDoctorInfo extends Component {
             <View style={{height: normalizeH(188), backgroundColor: '#FFFFFF', paddingLeft: normalizeW(12), marginTop: normalizeH(8), paddingRight: normalizeW(20)}}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: normalizeH(11)}}>
                 <Text>个人简介</Text>
-                <Image style={{width: normalizeW(20), height: normalizeH(20)}}
-                       source={require('../../../assets/images/edit_doctor.png')}/>
-
+                <TouchableOpacity style={{width: normalizeW(40), height: normalizeH(25)}} onPress= {() => Actions.DOCTOR_INTRO()}>
+                  <Image style={{width: normalizeW(20), height: normalizeH(20)}}
+                         source={require('../../../assets/images/edit_doctor.png')}/>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text>{this.props.doctorInfo.desc}</Text>
               </View>
             </View>
 
