@@ -19,7 +19,7 @@ import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import * as msgTypes from '../../constants/messageActionTypes'
 import {hasNewMessageByType, getNewestMessageByType} from '../../selector/messageSelector'
-import {hasNewNoticeByType} from '../../selector/notifySelector'
+import {hasNewNoticeByType, getNewestNoticeByType} from '../../selector/notifySelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -123,10 +123,10 @@ class MessageBox extends Component {
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.titleStyle}>话题互动</Text>
                 <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>2017-01-02</Text>
+                <Text style={styles.timeTip}>{this.props.lastNoticeMsg.lastMessageAt}</Text>
               </View>
               <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>郝依依医生给您提供的咨询服务对您是否有用，期待您的反馈！</Text>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastNoticeMsg.lastMessage}</Text>
               </View>
             </View>
           </View>
@@ -202,13 +202,15 @@ const mapStateToProps = (state, ownProps) => {
   let lastInquiryMsg = getNewestMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
   let newPersonalLetter = hasNewMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
   let lastPersonalMsg = getNewestMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
-  let newNotice = hasNewNoticeByType(state, msgTypes.MSG_TOPIC_COMMENT) && hasNewNoticeByType(state, msgTypes.MSG_TOPIC_LIKE)
+  let newNotice = hasNewNoticeByType(state, msgTypes.TOPIC_TYPE)
+  let lastNoticeMsg = getNewestNoticeByType(state, msgTypes.TOPIC_TYPE)
 
   newProps.newInquiry = newInquiry
   newProps.lastInquiryMsg = lastInquiryMsg
   newProps.newPersonalLetter = newPersonalLetter
   newProps.lastPersonalMsg = lastPersonalMsg
   newProps.newNotice = newNotice
+  newProps.lastNoticeMsg = lastNoticeMsg
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({

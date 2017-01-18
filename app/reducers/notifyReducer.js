@@ -37,22 +37,37 @@ function handleAddNotifyMsg(state, action) {
   state = state.set('unReadCount', unReadCnt+1)
   state = state.set('lastNoticeAt', message.timestamp)
 
-  let msg = state.getIn(['notifyMsgByType', msgType])
+  let type = msgActionTypes.SYSTEM_TYPE
+  switch (msgType) {
+    case msgActionTypes.MSG_TOPIC_COMMENT:
+    case msgActionTypes.MSG_TOPIC_LIKE:
+      type = msgActionTypes.TOPIC_TYPE
+      break
+    case msgActionTypes.MSG_SHOP_COMMENT:
+    case msgActionTypes.MSG_SHOP_FOLLOW:
+    case msgActionTypes.MSG_SHOP_LIKE:
+      type = msgActionTypes.SHOP_TYPE
+      break
+    default:
+      type = msgActionTypes.SYSTEM_TYPE
+  }
+
+  let msg = state.getIn(['notifyMsgByType', type])
   if (!msg) {
     let msgLst = new List([message.msgId])
     let typedNotifyMsg = new TypedNotifyMsgRecord({
-      type: msgType,
+      type: type,
       unReadCount: 1,
       messageList: msgLst,
     })
-    state = state.setIn(['notifyMsgByType', msgType], typedNotifyMsg)
+    state = state.setIn(['notifyMsgByType', type], typedNotifyMsg)
   } else {
     unReadCnt = msg.get('unReadCount')
     msg = msg.set('unReadCount', unReadCnt+1)
     let msgList = msg.get('messageList')
-    msgList = msgList.push(message.msgId)
+    msgList = msgList.unshift(message.msgId)
     msg = msg.set('messageList', msgList)
-    state = state.setIn(['notifyMsgByType', msgType], msg)
+    state = state.setIn(['notifyMsgByType', type], msg)
   }
 
   return state

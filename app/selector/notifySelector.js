@@ -2,6 +2,8 @@
  * Created by yangyang on 2017/1/6.
  */
 
+import {getConversationTime} from '../util/numberUtils'
+
 export function hasNewNotice(state) {
   const unReadCnt = state.NOTICE.get('unReadCount')
   return unReadCnt > 0 ? true : false
@@ -16,4 +18,27 @@ export function hasNewNoticeByType(state, type) {
     }
   }
   return false
+}
+
+export function getNewestNoticeByType(state, type) {
+  let notifyMsg = state.NOTICE.getIn(['notifyMsgByType', type])
+  if (notifyMsg) {
+    let messageList = notifyMsg.get('messageList')
+    let lastMsgId = messageList.first()
+    if (lastMsgId) {
+      let lastMessageObj = state.NOTICE.getIn(['messageMap', lastMsgId])
+      if (lastMessageObj) {
+        let msgTime = new Date(lastMessageObj.get('timestamp'))
+        let lastMessageAt = getConversationTime(msgTime.getTime())
+        return {
+          lastMessageAt: lastMessageAt,
+          lastMessage: lastMessageObj.get('text')
+        }
+      }
+    }
+  }
+  return {
+    lastMessageAt: "",
+    lastMessage: "还没有收到过通知消息，要多多参与互动哦^_^"
+  }
 }
