@@ -24,7 +24,7 @@ export default class ScoreShow extends Component {
     super(props)
 
     this.state = {
-      scoreWidth : this.props.score / 5.0 * 62
+      scoreWidth : (this.props.score || 0) / 5.0 * 62
     }
   }
 

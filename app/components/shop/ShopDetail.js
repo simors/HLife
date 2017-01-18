@@ -278,7 +278,7 @@ class ShopDetail extends Component {
       const that = this
       const commentsView = this.props.shopComments.map((item, index) => {
         if(index > 2) return
-        const scoreWidth = item.score / 5.0 * 62
+        const scoreWidth = (item.score || 0) / 5.0 * 62
         let userIsFollowedTheUser = that.userIsFollowedTheUser(item.user.id)
         return (
           <View key={"shop_comment_" + index} style={styles.commentContainer}>
