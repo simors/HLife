@@ -58,6 +58,7 @@ class MultilineText extends Component {
           placeholder={this.props.placeholder}
           placeholderTextColor="#BABABA"
           value={this.props.data}
+          maxLength={this.props.maxLength}
           underlineColorAndroid="transparent"
           onChangeText={(text) => this.inputChange(text)}
         />
@@ -68,7 +69,8 @@ class MultilineText extends Component {
 
 MultilineText.defaultProps = {
   editable: true,
-  placeholder: '输入文字...'
+  placeholder: '输入文字...',
+  maxLength: 200
 }
 
 const mapStateToProps = (state, ownProps) => {

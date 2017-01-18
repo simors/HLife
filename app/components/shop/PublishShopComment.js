@@ -22,18 +22,36 @@ import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-
+import ImageGroupInput from '../common/Input/ImageGroupInput'
+import MultilineText from '../common/Input/MultilineText'
+import ScoreInput from '../common/Input/ScoreInput'
+import * as authSelector from '../../selector/authSelector'
 import {submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount} from '../../action/shopAction'
-
+import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+let commonForm = Symbol('commonForm')
+const scoreInput = {
+  formKey: commonForm,
+  stateKey: Symbol('scoreInput'),
+  type: 'score'
+}
+const commentInput = {
+  formKey: commonForm,
+  stateKey: Symbol('contentInput'),
+  type: 'content'
+}
+const imageGroupInput = {
+  formKey: commonForm,
+  stateKey: Symbol('imageGroupInput'),
+  type: 'imgGroup'
+}
 
 class PublishShopComment extends Component {
   constructor(props) {
     super(props)
 
-    this.replyInput = null
-    
     this.state = {
 
     }
@@ -50,13 +68,30 @@ class PublishShopComment extends Component {
   }
 
   submitShopComment() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
 
+    this.props.submitFormData({
+      formKey: commonForm,
+      id: this.props.id,
+      submitType: INPUT_FORM_SUBMIT_TYPE.PUBLISH_SHOP_COMMENT,
+      success: ()=>{
+        this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
+        this.props.fetchShopCommentTotalCount({id: this.props.id})
+        Actions.pop()
+      },
+      error: (err)=>{
+        Toast.show(err.message || '发表评论失败')
+      }
+    })
   }
 
   rightComponent() {
     return (
       <View style={styles.commentBtnWrap}>
-        <Text style={styles.commentBtn}>发表</Text>
+        <Text style={styles.commentBtn}>发  表</Text>
       </View>
     )
   }
@@ -69,11 +104,42 @@ class PublishShopComment extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="发表评价"
-          rightComponent={()=>{this.rightComponent()}}
+          rightComponent={this.rightComponent.bind(this)}
           rightPress={()=>{this.submitShopComment()}}
+          headerContainerStyle={{backgroundColor:'#f9f9f9'}}
         />
         <View style={styles.body}>
+          <ScrollView
+            keyboardDismissMode="on-drag"
+          >
+            <View style={styles.CommentWrap}>
+              <View style={styles.scoreWrap}>
+                <ScoreInput
+                  {...scoreInput}
+                  placeholder="对店铺的满意度"
+                />
+              </View>
 
+              <View style={styles.contentWrap}>
+                <MultilineText
+                  containerStyle={{backgroundColor: '#fff'}}
+                  placeholder="对店铺的服务、环境等的综合评价"
+                  inputStyle={{height: normalizeH(232),borderTopWidth:0,borderBottomWidth:0}}
+                  {...commentInput}/>
+              </View>
+
+              <View style={styles.ImageInputWrap}>
+                <ImageGroupInput
+                  {...imageGroupInput}
+                  number={9}
+                  imageLineCnt={3}
+                />
+              </View>
+
+            </View>
+
+
+          </ScrollView>
         </View>
 
       </View>
@@ -82,15 +148,15 @@ class PublishShopComment extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
+  const isUserLogined = authSelector.isUserLogined(state)
 
   return {
-
+    isUserLogined: isUserLogined
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitShopComment,
+  submitFormData,
   fetchShopCommentList,
   fetchShopCommentTotalCount,
 }, dispatch)
@@ -100,7 +166,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(PublishShopComment)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.05)'
   },
   body: {
     ...Platform.select({
@@ -112,11 +177,13 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+    backgroundColor: '#fff'
   },
   commentBtnWrap: {
-    padding: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingTop: normalizeH(8),
+    paddingBottom: normalizeH(8),
+    paddingLeft: normalizeW(16),
+    paddingRight: normalizeW(16),
     backgroundColor: THEME.colors.green,
     justifyContent: 'center',
     alignItems: 'center',
@@ -127,6 +194,20 @@ const styles = StyleSheet.create({
   commentBtn: {
     color: '#fff',
     fontSize: em(15)
+  },
+  scoreWrap: {
+    marginTop: normalizeH(24),
+    paddingLeft: 6,
+    paddingRight: 6,
+    paddingBottom: 15,
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: '#e6e6e6'
+  },
+  contentWrap: {
+
+  },
+  ImageInputWrap: {
+
   }
 
 })
