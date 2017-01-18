@@ -147,10 +147,10 @@ class MessageBox extends Component {
   renderShopMessage() {
     return (
       <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.SHOP_NOTIFY()}>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={styles.noticeIconView}>
-              <Image style={styles.noticeIcon} source={require('../../assets/images/like_topic.png')}></Image>
+              <Image style={styles.noticeIcon} source={require('../../assets/images/notice_shop.png')}></Image>
               {this.renderNoticeTip(SHOP)}
             </View>
             <View style={{flex: 1}}>
