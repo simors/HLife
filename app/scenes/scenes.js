@@ -136,7 +136,7 @@ export const scenes = Actions.create(
       <Scene key="DOCTOR" component={Doctor} />
       <Scene key="ACKNOWLEDGE" component={Acknowledge} />
       <Scene key="EARNINGS" component={Earnings} />
-      <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo} />
+      <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo}/>
 
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
 
