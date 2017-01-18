@@ -211,7 +211,7 @@ export class TopicDetail extends Component {
 
   renderTopicLikeOneUser(value, key) {
     return (
-        <TouchableOpacity style={{alignSelf: 'center'}}>
+        <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
           <Image style={styles.zanAvatarStyle} source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
         </TouchableOpacity>
     )

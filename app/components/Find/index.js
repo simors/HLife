@@ -172,7 +172,6 @@ export class Find extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log("+_+_+_>", state)
   const topicCategories = getTopicCategories(state)
   const topics = getTopics(state)
   const isLogin = isUserLogined(state)
