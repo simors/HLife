@@ -29,7 +29,9 @@ function handleUpdateTopics(state, action) {
   let payload = action.payload
   switch (payload.type) {
     case "topics":
-      state = state.set('topics', payload.topics)
+      let _map = state.get('topics')
+      _map = _map.set(payload.categoryId, payload.topics)
+      state = state.set('topics', _map)
       break
     case "myTopics":
       state = state.set('myTopics', payload.topics)
