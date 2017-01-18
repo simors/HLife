@@ -26,6 +26,7 @@ import ImageGroupInput from '../common/Input/ImageGroupInput'
 import MultilineText from '../common/Input/MultilineText'
 import ScoreInput from '../common/Input/ScoreInput'
 import * as authSelector from '../../selector/authSelector'
+import Symbol from 'es6-symbol'
 import {submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount} from '../../action/shopAction'
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 const PAGE_WIDTH = Dimensions.get('window').width
