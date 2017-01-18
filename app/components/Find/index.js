@@ -49,6 +49,10 @@ export class Find extends Component {
       if(this.props.isLogin) {
         this.props.fetchUserFollowees()
       }
+      this.props.fetchTopics({
+        type: "topics",
+        categoryId: this.props.topicCategories[this.state.selectedTab].objectId
+      })
     })
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
