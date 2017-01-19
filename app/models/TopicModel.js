@@ -104,7 +104,7 @@ export class TopicCommentsItem extends TopicCommentsConfig {
     return topicCommentsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
       record.set('likeCount', attrs.likeCount)
-      record.set('createdAt', lcObj.createdAt)
+      record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('nickname', nickname)
       record.set('avatar', avatar)
       record.set('objectId', lcObj.id)
