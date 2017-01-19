@@ -94,6 +94,7 @@ class Comment extends Component {
       return (
         <View style={[styles.modalRow]}>
             <TextAreaInput
+              replyInputRefCallBack={(input) =>{this.props.replyInputRefCallBack(input)}}
               {...commentInput}
               placeholder={this.props.textAreaPlaceholder || "回复"}
               clearBtnStyle={{right: normalizeW(10), top: normalizeH(60)}}
@@ -108,27 +109,6 @@ class Comment extends Component {
 
     return (
 
-
-      <Modal
-        animationType={this.state.animationType}
-        transparent={this.state.transparent}
-        visible={this.state.visible}
-        onRequestClose={()=> {
-        }}
-        modalVisible={this.props.modalVisible}
-        closeModal={() => this.props.closeModal()}
-        containerStyle={styles.containerStyle}
-      >
-        <KeyboardAwareScrollView>
-        <View style={styles.container}>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              this.props.closeModal()
-            }}
-          >
-            <View style={styles.closeTop}></View>
-          </TouchableWithoutFeedback>
-
             <View style={styles.modalCommentWrap}>
                {this.renderComment()}
               <TouchableOpacity style={{}} onPress={this.submitComment.bind(this)}>
@@ -137,10 +117,8 @@ class Comment extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-        </View>
-        </KeyboardAwareScrollView>
 
-      </Modal>
+
 
     )
   }
@@ -192,7 +170,8 @@ const styles = StyleSheet.create({
       width:normalizeW(345),
         height:normalizeH(100),
       marginRight:normalizeW(10),
-      backgroundColor:'#FFFFFF'
+      backgroundColor:'#FFFFFF',
+      borderRadius:normalizeBorder(5)
     },
     submitBtnWrap: {
       height: normalizeH(30),

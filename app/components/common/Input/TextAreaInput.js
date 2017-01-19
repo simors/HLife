@@ -100,6 +100,7 @@ class TextAreaInput extends Component {
     return (
       <View style={styles.container}>
         <FormInput
+          textInputRef={(input) =>{this.props.replyInputRefCallBack(input)}}
           multiline={true}
           numberOfLines={6}
           editable={this.props.editable}
