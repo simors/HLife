@@ -307,7 +307,7 @@ export function reply(payload) {
         shopId: payload.shopId,
         replyTo: replyTo,
         commentId: commentId,
-        commentContent: payload.replyContent,
+        content: payload.replyContent,
       }
       // console.log('shop.reply===params=', params)
       dispatch(msgAction.notifyShopComment(params))

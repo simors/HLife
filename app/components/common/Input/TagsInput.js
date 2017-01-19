@@ -215,16 +215,11 @@ const styles = StyleSheet.create({
     fontSize: em(16),
   },
   tagContainer: {
-    overflow: 'hidden',
-    padding: 5,
-    borderWidth: normalizeBorder(),
-    borderColor: '#bdc6cf',
-    borderRadius: 20,
     marginRight: 5,
   },
   tagText: {
     textAlign: 'center',
-    fontSize: em(16)
+    fontSize: em(17)
   },
   tagMore: {
 
