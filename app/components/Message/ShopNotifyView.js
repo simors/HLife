@@ -46,8 +46,23 @@ class ShopNotifyView extends Component {
     return <View/>
   }
 
+  renderMsgContent(notice) {
+    if (notice.msgType === msgActionTypes.MSG_SHOP_COMMENT) {
+      return (
+        <View style={styles.msgViewStyle}>
+          <Expander showLines={3} textStyle={{fontSize: 17, color: '#4a4a4a', lineHeight: 24,}} content={notice.commentContent}/>
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.msgViewStyle}>
+          <Expander showLines={3} textStyle={{fontSize: 17, color: '#4a4a4a', lineHeight: 24,}} content={notice.text}/>
+        </View>
+      )
+    }
+  }
+
   renderNoticeItem(notice) {
-    console.log("notice: ", notice)
     return (
       <View style={styles.itemView}>
         <View style={styles.personView}>
@@ -69,9 +84,7 @@ class ShopNotifyView extends Component {
           <View style={{flex: 1}}/>
           {this.renderReplyBtn(notice)}
         </View>
-        <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: 17, color: '#4a4a4a', lineHeight: 24,}} content={notice.commentContent}/>
-        </View>
+        {this.renderMsgContent(notice)}
         <ShopInfoCell shopId={notice.shopId}/>
       </View>
     )
