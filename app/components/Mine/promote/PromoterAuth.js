@@ -87,19 +87,10 @@ class promoterAuth extends Component {
   onButtonPress = () => {
     this.props.submitFormData({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION,
+      submitType: INPUT_FORM_SUBMIT_TYPE.Pr_CERTIFICATION,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
-  }
-
-  submitErrorCallback(error) {
-
-    Toast.show(error.message)
-  }
-
-  submitSuccessCallback(doctorInfo) {
-    Actions.PROMOTER_AUTH_SUCCESS()
   }
 
   smsCode() {
@@ -144,15 +135,15 @@ class promoterAuth extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>姓名</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...nameInput} placeholder="与身份证姓名保持一致" containerStyle={{height: normalizeH(38),}}
-                                   inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...nameInput} placeholder="与身份证姓名保持一致" containerStyle={{height: normalizeH(42),}}
+                                   inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>身份证号</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...IDInput} containerStyle={{height: normalizeH(38)}} maxLength={18}
-                                   inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...IDInput} containerStyle={{height: normalizeH(42)}} maxLength={18}
+                                   inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
@@ -165,13 +156,13 @@ class promoterAuth extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>验证码</Text>
                 <View style={{flex: 1,}}>
-                  <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(38)}}
+                  <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(42)}}
                                     textInput={styles.smsAuthCodeTextInput}
-                                    inputContainer={{paddingLeft: 17, paddingRight: 17}}
+                                    inputContainer={{paddingLeft: 17, paddingRight: 17,fontSize:em(17)}}
                                     placeholder = "填写手机验证码"
                                     codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
                                     codeTextContainerDisable={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                                    codeText={{fontSize: 12}}
+                                    codeText={{fontSize: em(17)}}
                                     getSmsAuCode={() => this.smsCode()}
                                     reset={!this.props.phoneValid}
                   />
@@ -182,8 +173,8 @@ class promoterAuth extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>地址</Text>
                 <View style={{flex: 1}}>
-                  <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(38)}}
-                                inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(42)}}
+                                inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
@@ -191,8 +182,8 @@ class promoterAuth extends Component {
                 <CommonTextInput
                   {...inviteCodeInput}
                   placeholder="输入邀请码"
-                  containerStyle={{height: normalizeH(38)}} maxLength={18}
-                  inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}
+                  containerStyle={{height: normalizeH(42)}} maxLength={18}
+                  inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}
                 />
               </View>
             </View>
@@ -287,7 +278,7 @@ const styles = StyleSheet.create(
       backgroundColor: '#FFFFFF',
     },
     inputBox: {
-      height: normalizeH(40),
+      height: normalizeH(44),
       borderBottomWidth: 1,
       borderBottomColor: '#C8C7CC',
       flexDirection: 'row',

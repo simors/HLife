@@ -119,6 +119,7 @@ class Article extends Component {
       this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsFavorite({articleId: this.props.articleId})
+      this.props.fetchUps({articleId: this.props.articleId, upType: 'article'})
     })
   }
 
@@ -370,7 +371,6 @@ class Article extends Component {
           <Comment
             showModules={["content"]}
             modalVisible={this.state.modalVisible}
-            modalTitle="写评论"
             textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
             closeModal={() => this.closeModal()}
             submitComment={this.submitComment.bind(this)}
