@@ -25,7 +25,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 
-import {fetchUserFollowers, fetchUserFollowersTotalCount} from '../../action/authActions'
+import {getUserInfoById, fetchUserFollowers, fetchUserFollowersTotalCount} from '../../action/authActions'
 import {getTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo, selectUserFollowers} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
@@ -52,6 +52,7 @@ class PersonalHomePage extends Component {
       if(this.props.isLogin) {
         this.props.fetchUserFollowers()
         this.props.fetchUserFollowersTotalCount()
+        this.props.getUserInfoById({userId: this.props.userId})
       }
       this.refreshData()
     })
@@ -138,8 +139,15 @@ class PersonalHomePage extends Component {
     }
   }
 
-
   renderPersonalInfoColumn() {
+    let avatar = require('../../assets/images/default_portrait.png')
+    if(this.props.userInfo.avatar) {
+      avatar = {uri: this.props.userInfo.avatar}
+    }
+    let genderIcon = require('../../assets/images/male.png')
+    if(this.props.userInfo.gender == 'female') {
+      genderIcon = require('../../assets/images/female.png')
+    }
     return (
       <View style={styles.personalInfoWrap}>
         <View style={[styles.row, styles.baseInfoWrap]}>
@@ -151,14 +159,14 @@ class PersonalHomePage extends Component {
           <View style={styles.thumbnailWrap}>
             <Image
               style={styles.avatarImg}
-              source={require('../../assets/images/default_portrait.png')}
+              source={avatar}
             />
             <View style={styles.sexNameWrap}>
               <Image
                 style={styles.sexImg}
-                source={require('../../assets/images/male.png')}
+                source={genderIcon}
               />
-              <Text style={styles.nickname}>白天不懂夜的黑</Text>
+              <Text style={styles.nickname}>{this.props.userInfo.nickname}</Text>
             </View>
           </View>
           <View style={styles.btnWrap}>
@@ -174,6 +182,7 @@ class PersonalHomePage extends Component {
             </TouchableOpacity>
           </View>
         </View>
+
         <View style={[styles.row, styles.otherInfoWrap]}>
           <TouchableOpacity style={{flex:1}}>
             <View style={[styles.otherInfoBox, styles.borderBottom]}>
@@ -197,12 +206,13 @@ class PersonalHomePage extends Component {
                 style={[styles.arrowForward]}/>
             </View>
           </TouchableOpacity>
-
         </View>
+
         <View style={[styles.row, styles.followersInfoWrap]}>
           <Text style={styles.attentionTitle}>粉丝</Text>
           {this.renderFollowers()}
         </View>
+
       </View>
     )
   }
@@ -257,8 +267,8 @@ const mapStateToProps = (state, ownProps) => {
 
 
   const topics = getTopics(state)
-  const isLogin = isUserLogined(state)
-  const userInfo = activeUserInfo(state)
+  const isLogin = authSelector.isUserLogined(state)
+  const userInfo = authSelector.userInfoById(state, ownProps.userId)
   // const userFollowers = authSelector.selectUserFollowers(state)
   // const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state)
   const userFollowers = [
@@ -305,7 +315,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   likeTopic,
   unLikeTopic,
   fetchUserFollowers,
-  fetchUserFollowersTotalCount
+  fetchUserFollowersTotalCount,
+  getUserInfoById
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
@@ -313,13 +324,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.05)'
+    backgroundColor: 'rgba(0,0,0,0.05)',
+  },
+  personalInfoWrap: {
+
   },
   goBackBox: {
+    paddingLeft: 10,
+    paddingTop: 10,
     marginBottom: 10
   },
   goBack: {
-    fontSize: em(17),
+    fontSize: em(28),
     color: THEME.colors.green
   },
   row: {
@@ -327,7 +343,12 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(10)
   },
   baseInfoWrap: {
-
+    backgroundColor: '#fff',
+    ...Platform.select({
+      ios: {
+        paddingTop: 20,
+      },
+    }),
   },
   thumbnailWrap: {
     justifyContent: 'center',
@@ -374,7 +395,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e6e6e6'
   },
   otherInfoWrap: {
-
+    backgroundColor: '#fff',
   },
   otherInfoBox: {
     flexDirection: 'row',
@@ -395,7 +416,8 @@ const styles = StyleSheet.create({
     color: '#e9e9e9'
   },
   followersInfoWrap: {
-    padding: 10
+    padding: 10,
+    backgroundColor: '#fff',
   },
   attentionTitle: {
     fontSize: em(17),
