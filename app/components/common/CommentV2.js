@@ -108,6 +108,8 @@ class Comment extends Component {
   render() {
 
     return (
+
+
       <Modal
         animationType={this.state.animationType}
         transparent={this.state.transparent}
@@ -127,8 +129,9 @@ class Comment extends Component {
           >
             <View style={styles.closeTop}></View>
           </TouchableWithoutFeedback>
+
             <View style={styles.modalCommentWrap}>
-              {this.renderComment()}
+               {this.renderComment()}
               <TouchableOpacity style={{}} onPress={this.submitComment.bind(this)}>
                 <View style={styles.submitBtnWrap}>
                   <Text style={styles.submitBtn}>发表</Text>
@@ -136,9 +139,11 @@ class Comment extends Component {
               </TouchableOpacity>
             </View>
         </View>
+
         </KeyboardAwareScrollView>
 
       </Modal>
+
     )
   }
 }
@@ -187,7 +192,7 @@ const styles = StyleSheet.create({
       marginTop: normalizeH(10),
       marginLeft: normalizeW(10),
       width:normalizeW(345),
-      //  height:normalizeH(100),
+        height:normalizeH(100),
       marginRight:normalizeW(10),
       backgroundColor:'#FFFFFF'
     },
