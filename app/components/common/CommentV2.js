@@ -15,7 +15,8 @@ import {
   Image,
   Platform,
   InteractionManager,
-  TextInput
+  TextInput,
+  Modal,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -29,6 +30,11 @@ import ImageGroupInput from './Input/ImageGroupInput'
 import TextAreaInput from './Input/TextAreaInput'
 import ScoreInput from './Input/ScoreInput'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../../selector/inputFormSelector'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
 const scoreInput = {
@@ -59,200 +65,147 @@ class Comment extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      score: 0,
       content: '',
-      blueprints: []
+      animationType: this.props.animationType ? this.props.animationType : 'none',
+      transparent: true,
+      visible: false
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      score: nextProps.score,
-      content: nextProps.content,
-      blueprints: nextProps.blueprints
-    })
+  componentWillReceiveProps(newProps) {
+    if (this.props.modalVisible != newProps.modalVisible) {
+      this.setState({
+        visible: newProps.modalVisible,
+        content: newProps.content,
+      })
+    }
   }
+
+  componentDidMount() {
+    this.setState({visible: !!this.props.modalVisible})
+  }
+
 
   submitComment() {
     this.props.submitComment(this.state)
   }
 
-  renderScore() {
-    if(this.props.showModules.indexOf('score') >= 0) {
-      return (
-        <View style={[styles.modalRow, styles.modalScoreWrap]}>
-          <View style={[styles.modalCol, styles.modalColScore]}>
-            <Text style={[styles.modalLabel]}>{this.props.scoreLabel || '请打分:'}</Text>
-          </View>
-          <View style={[styles.modalCol3, styles.modalScoreCol3]}>
-            <ScoreInput
-              {...scoreInput}
-            />
-          </View>
-        </View>
-      )
-    }
-  }
-
   renderComment() {
-    if(this.props.showModules.indexOf('content') >= 0) {
+    if (this.props.showModules.indexOf('content') >= 0) {
       return (
         <View style={[styles.modalRow]}>
-          <View style={[styles.modalCol]}>
-            <Text style={[styles.modalLabel]}>{this.props.contentLabel || '点评:'}</Text>
-          </View>
-          <View style={[styles.modalCol3]}>
             <TextAreaInput
               {...commentInput}
-              placeholder={this.props.textAreaPlaceholder || "请填写评论"}
-              clearBtnStyle={{right: 10,top: 40}}
+              placeholder={this.props.textAreaPlaceholder || "回复"}
+              clearBtnStyle={{right: normalizeW(10), top: normalizeH(60)}}
             />
-
-          </View>
         </View>
       )
     }
   }
 
-  renderBlueprint() {
-    if(this.props.showModules.indexOf('blueprint') >= 0) {
-      return (
-        <View>
-          <View style={[styles.modalRow]}>
-            <View style={[styles.modalCol, {alignItems:'center'}]}>
-              <Text style={[styles.modalLabel]}>{this.props.blueprintLabel || '晒图'}</Text>
-            </View>
-          </View>
-
-          <View style={{flex: 1}}>
-            <View style={[styles.modalCol3]}>
-              <ImageGroupInput {...imageGroupInput} number={9} imageLineCnt={3}/>
-            </View>
-          </View>
-        </View>
-      )
-    }
-  }
 
   render() {
+
     return (
-      <CommonModal
+      <Modal
+        animationType={this.state.animationType}
+        transparent={this.state.transparent}
+        visible={this.state.visible}
+        onRequestClose={()=> {
+        }}
         modalVisible={this.props.modalVisible}
-        modalTitle={this.props.modalTitle}
         closeModal={() => this.props.closeModal()}
         containerStyle={styles.containerStyle}
       >
-        <ScrollView>
-          <View style={styles.modalCommentWrap}>
-            {this.renderScore()}
-            {this.renderComment()}
-            {this.renderBlueprint()}
-          </View>
-        </ScrollView>
-        <TouchableOpacity style={{}} onPress={this.submitComment.bind(this)}>
-          <View style={[styles.modalRow, styles.submitBtnWrap]}>
-            <Text style={styles.submitBtn}>发表评论</Text>
-          </View>
-        </TouchableOpacity>
-      </CommonModal>
+        <KeyboardAwareScrollView>
+        <View style={styles.container}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              this.props.closeModal()
+            }}
+          >
+            <View style={styles.closeTop}></View>
+          </TouchableWithoutFeedback>
+            <View style={styles.modalCommentWrap}>
+              {this.renderComment()}
+              <TouchableOpacity style={{}} onPress={this.submitComment.bind(this)}>
+                <View style={styles.submitBtnWrap}>
+                  <Text style={styles.submitBtn}>发表</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+        </View>
+        </KeyboardAwareScrollView>
+
+      </Modal>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
   const formData = getInputFormData(state, commonForm)
-  let score = 0
   let content = ''
-  let imgGroup = []
-  if(formData) {
-    if(formData.score) {
-      score = formData.score.text
-    }
-    if(formData.content) {
+  if (formData) {
+    if (formData.content) {
       content = formData.content.text
-    }
-    if(formData.imgGroup) {
-      imgGroup = formData.imgGroup.text
     }
   }
   return {
-    score: score,
     content: content,
-    blueprints: imgGroup
   }
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-
-}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Comment)
 
 const styles = StyleSheet.create({
   modalCommentWrap: {
-    paddingTop: 20,
-    paddingBottom: 20,
-
+    width:PAGE_WIDTH,
+    backgroundColor:'#F9F9F9',
+   // height:normalizeH(129)
   },
-  containerStyle: {
+  container: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)'
+  },
+  closeTop: {
+
     ...Platform.select({
+      ios: {
+        height: normalizeH(507),
+      },
       android: {
-        position:'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0
+        height: normalizeH(487)
       }
     }),
   },
-  modalRow: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    paddingLeft:20,
-    paddingRight:20
-  },
-  modalCol: {
-    flex: 1,
-    paddingRight: 10,
-    alignItems: 'flex-end'
-  },
-  modalColScore: {
-    justifyContent: 'center'
-  },
-  modalCol3: {
-    flex: 3,
-    justifyContent: 'center'
-  },
-  modalScoreCol3: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  modalLabel: {
-    fontSize: em(17),
-    color: '#8f8e94'
-  },
-  scoreImage: {
-    width: 20,
-    height:20,
-    marginRight:10
-  },
-  textInputContainer: {
-    height: 100,
-    padding:8,
-    borderColor: THEME.colors.lighter,
-    borderWidth: normalizeBorder()
-  },
-  submitBtnWrap: {
-    height: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: THEME.colors.green
-  },
-  submitBtn: {
-    fontSize: em(17),
-    color: '#fff'
-  }
-})
+
+    modalRow: {
+      // flexDirection: 'row',
+      marginTop: normalizeH(10),
+      marginLeft: normalizeW(10),
+      width:normalizeW(345),
+      //  height:normalizeH(100),
+      marginRight:normalizeW(10),
+      backgroundColor:'#FFFFFF'
+    },
+    submitBtnWrap: {
+      height: normalizeH(30),
+      width:normalizeW(60),
+      marginLeft: normalizeW(300),
+
+      backgroundColor: '#50E3C2',
+      borderRadius:normalizeH(5),
+      alignItems:'center',
+      flexDirection:'row',
+      justifyContent:'center',
+      marginTop:normalizeH(10),
+      marginBottom:normalizeH(10),
+    },
+    submitBtn: {
+      fontSize: em(17),
+      color: '#fff'
+    }
+  })
