@@ -380,7 +380,7 @@ class Article extends Component {
           <KeyboardAwareToolBar
             initKeyboardHeight={-160}
           >
-          <Comment
+          <CommentV2
             replyInputRefCallBack={(input)=>{this.replyInput = input}}
             showModules={["content"]}
             modalVisible={this.state.modalVisible}
