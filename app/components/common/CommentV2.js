@@ -52,7 +52,7 @@ const imageGroupInput = {
   type: 'imgGroup'
 }
 
-class Comment extends Component {
+class CommentV2 extends Component {
   static propTypes = {
     showModules: React.PropTypes.array
   }
@@ -139,7 +139,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Comment)
+export default connect(mapStateToProps, mapDispatchToProps)(CommentV2)
 
 const styles = StyleSheet.create({
   modalCommentWrap: {
