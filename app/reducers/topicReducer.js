@@ -4,7 +4,7 @@
 
 import * as TopicTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Topic} from '../models/TopicModel'
+import {Topic,TopicsItem} from '../models/TopicModel'
 import {Map, List} from 'immutable'
 
 const initialState = Topic()
@@ -94,7 +94,14 @@ function onRehydrate(state, action) {
     const topicMap = Map(incoming.topics)
     topicMap.map((value, key)=> {
       if (value && key) {
-        state = state.setIn(['topics', key], List(value))
+        let topics = []
+        for (let topic of value) {
+          if (topic) {
+            const topicItem = new TopicsItem({...topic})
+            topics.push(topicItem)
+          }
+        }
+        state = state.setIn(['topics', key], List(topics))
       }
     })
     state = state.set('myTopics', List(incoming.myTopics))
