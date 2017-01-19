@@ -425,6 +425,47 @@ export function getUserById(payload) {
 
 }
 
+/**
+ * 查询自己的粉丝总数
+ * @returns {*}
+ */
+export function fetchUserFollowersTotalCount() {
+  let query = AV.User.current().followerQuery()
+  return query.count().then(function(totalCount) {
+    // console.log('fetchUserFollowersTotalCount==totalCount=', totalCount)
+    return totalCount
+  }).catch((err) =>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+ * 查询自己的粉丝
+ * @returns {*}
+ */
+export function fetchUserFollowers() {
+  let query = AV.User.current().followerQuery()
+  query.include('follower')
+  return query.find().then(function(results) {
+    let followers = []
+    results.forEach((result)=>{
+      followers.push(UserInfo.fromLeancloudObject(result))
+    })
+    return {
+      currentUserId: AV.User.current().id,
+      followers: List(followers)
+    }
+  }).catch((err) =>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+ * 查询自己关注的用户列表
+ * @returns {*}
+ */
 export function fetchUserFollowees() {
   let query = AV.User.current().followeeQuery()
   query.include('followee')

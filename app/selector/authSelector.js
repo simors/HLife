@@ -35,6 +35,14 @@ export function selectUserFollowees(state) {
   return userFollowees ? userFollowees.toJS() : []
 }
 
+export function selectUserFollowers(state) {
+  let userFollowers = state.AUTH.followers
+  return userFollowers ? userFollowers.toJS() : []
+}
+export function selectUserFollowersTotalCount(state) {
+  return state.AUTH.followersTotalCount
+}
+
 export function getHealthProfileSize(state) {
   return state.AUTH.healthProfiles? state.AUTH.healthProfiles.size : 0
 }

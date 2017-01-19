@@ -40,9 +40,9 @@ class ReplyList extends Component {
 
   }
   
-  reply(replyId, replyUserNickName) {
+  reply(replyId, replyUserNickName, replyUserId) {
     if(this.props.onReplyClick) {
-      this.props.onReplyClick(this.props.shopCommentId, replyId, replyUserNickName)
+      this.props.onReplyClick(this.props.shopCommentId, this.props.shopCommentUserId, replyId, replyUserNickName, replyUserId)
     }
   }
 
@@ -70,7 +70,7 @@ class ReplyList extends Component {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.replyContentWrap} onPress={()=>{this.reply(item.id, item.user.nickname)}}>
+            <TouchableOpacity style={styles.replyContentWrap} onPress={()=>{this.reply(item.id, item.user.nickname, item.user.id)}}>
               <Text style={styles.replyContent}>{item.content}</Text>
             </TouchableOpacity>
           </View>

@@ -32,6 +32,27 @@ class Doctor extends Component {
     super(props)
   }
 
+  renderInfoStatus () {
+    let integrity = true
+    for (let i in this.props.doctorInfo) {
+      if (!this.props.doctorInfo[i])
+        integrity = false
+    }
+    if (integrity) {
+      return (
+        <View style={{marginLeft: normalizeW(3), width: normalizeW(47), height: normalizeH(17), backgroundColor: '#50E3C2', borderRadius: normalizeH(5), justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={styles.statusText}>完整</Text>
+        </View>
+      )
+    } else {
+      return (
+        <View style={{marginLeft: normalizeW(3), width: normalizeW(47), height: normalizeH(17), backgroundColor: '#50E3C2', borderRadius: normalizeH(5), justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={styles.statusText}>待完善</Text>
+        </View>
+      )
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -57,11 +78,14 @@ class Doctor extends Component {
 
                 </View>
                 <View style={{flex: 1, height: normalizeH(112)}}>
-                  <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(17), color: '#030303', marginTop: normalizeH(26), marginBottom: normalizeH(9)}}>
+                  <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(17), color: '#030303', marginTop: normalizeH(26)}}>
                     {this.props.doctorInfo.name}
                   </Text>
-                  <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B', marginBottom: normalizeH(6)}}>{this.props.doctorInfo.department}</Text>
-                  <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B', marginBottom: normalizeH(14)}}>基本信息 待完善</Text>
+                  <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B'}}>{this.props.doctorInfo.department}</Text>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B'}}>基本信息</Text>
+                    {this.renderInfoStatus()}
+                  </View>
                 </View>
                 <TouchableOpacity style={{width: normalizeW(50), height: normalizeH(112)}} onPress={() => Actions.BASIC_DOCTOR_INFO()}>
                   <Image style={{position: 'absolute', right: normalizeW(12), top: normalizeH(22)}} source={require('../../../assets/images/view.png')}/>
@@ -70,34 +94,34 @@ class Doctor extends Component {
               <View style={styles.attr}>
                 <View style={{height: normalizeH(37), flexDirection: 'row', borderBottomColor: '#E6E6E6', borderBottomWidth: 1}}>
                   <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', borderRightWidth: 1, borderRightColor: '#E6E6E6'}}>
-                    <Text style={styles.titile}>服务次数</Text>
+                    <Text style={styles.title}>服务次数</Text>
                   </View>
                   <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={styles.titile}>好评率</Text>
+                    <Text style={styles.title}>好评率</Text>
                   </View>
                 </View>
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <TouchableOpacity style={styles.action} onPress={() => Actions.INQUIRY_MESSAGE_BOX()}>
-                    <Image style={{width: normalizeW(35), height: normalizeH(35)}}
+                    <Image style={{width: normalizeW(35), height: normalizeH(35), marginBottom: normalizeH(9)}}
                            source={require('../../../assets/images/home_question.png')}/>
-                    <Text style={styles.titile}>问诊咨询</Text>
+                    <Text style={styles.title}>问诊咨询</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.action} onPress={() => Actions.ACKNOWLEDGE()}>
-                    <Image style={{width: normalizeW(35), height: normalizeH(35)}}
+                    <Image style={{width: normalizeW(35), height: normalizeH(35), marginBottom: normalizeH(9)}}
                            source={require('../../../assets/images/in_return.png')}/>
-                    <Text style={styles.titile}>病友问答</Text>
+                    <Text style={styles.title}>病友问答</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.action} onPress={() => Actions.EARNINGS()}>
-                    <Image style={{width: normalizeW(35), height: normalizeH(35)}}
+                    <Image style={{width: normalizeW(35), height: normalizeH(35), marginBottom: normalizeH(9)}}
                            source={require('../../../assets/images/in_return.png')}/>
-                    <Text style={styles.titile}>收益记录</Text>
+                    <Text style={styles.title}>收益记录</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
             <View style={styles.fans}>
               <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B', marginTop: normalizeH(12)}}>
-                粉丝
+                我的病人
               </Text>
               <View style={{flex: 1, marginTop: normalizeH(9)}}>
                 <Image style={{width: normalizeW(35), height: normalizeH(35), borderRadius: normalizeW(17), overflow: 'hidden'}}
@@ -164,8 +188,6 @@ const styles = StyleSheet.create({
     })
   },
   base: {
-    borderWidth: 1,
-    borderColor: 'yellow',
     height: normalizeH(250),
     backgroundColor: '#FFFFFF',
 
@@ -205,6 +227,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRightWidth: 1,
     borderRightColor: '#E6E6E6',
+  },
+  statusText: {
+    width: normalizeW(36),
+    height: normalizeH(14),
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: em(12),
+    color: '#FFFFFF'
   }
 
 

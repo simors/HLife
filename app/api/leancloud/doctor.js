@@ -181,5 +181,39 @@ export function certification(payload) {
 
 export function submitDoctorDesc(payload) {
   console.log("submitDoctorDesc", payload)
+  var userInfo = AV.Object.createWithoutData('_User', payload.id);
+  let query = new AV.Query('Doctor')
+  query.equalTo('user', userInfo)
+  return query.find().then(function (result) {
+    result[0].set('desc', payload.desc)
+    return result[0].save().then(function (doctor) {
+      console.log("submitDoctorDesc doctor:", doctor)
+      let doctorInfo = DoctorInfo.fromLeancloudObject(doctor)
+      return {
+        userId: payload.id,
+        doctorInfo: doctorInfo
+      }
+    })
+
+  })
+
+}
+
+export function submitDoctorSpec(payload) {
+  var userInfo = AV.Object.createWithoutData('_User', payload.id);
+  let query = new AV.Query('Doctor')
+  query.equalTo('user', userInfo)
+  return query.find().then(function (result) {
+    result[0].set('spec', payload.spec)
+    return result[0].save().then(function (doctor) {
+      let doctorInfo = DoctorInfo.fromLeancloudObject(doctor)
+      return {
+        userId: payload.id,
+        doctorInfo: doctorInfo
+      }
+    })
+
+  })
+
 
 }

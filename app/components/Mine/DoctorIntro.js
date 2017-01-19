@@ -22,6 +22,7 @@ import {em, normalizeW, normalizeH,} from '../../util/Responsive'
 import {inputFormCheck} from '../../action/inquiryAction'
 import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../action/doctorAction'
 import {activeUserInfo} from '../../selector/authSelector'
+import {activeDoctorInfo} from '../../selector/doctorSelector'
 import * as Toast from '../common/Toast'
 
 
@@ -29,9 +30,9 @@ const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
 let doctorDescForm = Symbol('doctorDescForm')
-const infoInput = {
+const descInput = {
   formKey: doctorDescForm,
-  stateKey: Symbol('infoInput'),
+  stateKey: Symbol('descInput'),
   type: 'content'
 }
 
@@ -41,10 +42,12 @@ class DoctorIntro extends Component {
   }
 
   submitSuccessCallback = () => {
-    let payload = {
-      formKey: infoInput,
+    Toast.show("提交成功")
+    if (this.props.interKey == 'mine') {
+      this.props.doctorInfo.spec? Actions.DOCTOR(): Actions.DOCTOR_SPEC({interKey: 'Doctor_intro'})
+    } else if (this.props.interKey == 'Basic_doctor_info') {
+      Actions.pop()
     }
-    Actions.DOCTOR_SPEC(payload)
   }
 
   submitErrorCallback = (error) => {
@@ -52,11 +55,6 @@ class DoctorIntro extends Component {
   }
 
   onButtonPress= () => {
-    // this.props.inputFormCheck({
-    //   formKey: doctorDescForm,
-    //   success: this.submitSuccessCallback,
-    //   error: this.submitErrorCallback
-    // })
     this.props.submitDoctorFormData({
       formKey: doctorDescForm,
       submitType: DOCTOR_FORM_SUBMIT_TYPE.SUBMIT_DOCTOR_DESC,
@@ -88,9 +86,10 @@ class DoctorIntro extends Component {
           </View>
           <View style={styles.textArea}>
             <MultilineText containerStyle={{height: normalizeH(232)}}
+                           initValue={this.props.doctorInfo.desc}
                            placeholder="为了让患者更了解你，请填写大致的个人经历和从业经验。"
                            inputStyle={{height: normalizeH(232)}}
-                           {...infoInput}/>
+                           {...descInput}/>
           </View>
         </View>
       </View>

@@ -21,12 +21,21 @@ import MultilineText from '../common/Input/MultilineText'
 import {em, normalizeW, normalizeH,} from '../../util/Responsive'
 import {inputFormCheck} from '../../action/inquiryAction'
 import * as Toast from '../common/Toast'
-import {getDoctorInfoByUserId, getDoctorInfoByDoctorId} from '../../selector/doctorSelector'
+import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../action/doctorAction'
+import {activeUserInfo} from '../../selector/authSelector'
+import {activeDoctorInfo} from '../../selector/doctorSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
+let doctorSpecForm = Symbol('doctorSpecForm')
+
+const specInput = {
+  formKey: doctorSpecForm,
+  stateKey: Symbol('specInput'),
+  type: 'content'
+}
 
 class DoctorSpec extends Component {
   constructor(props) {
@@ -34,7 +43,13 @@ class DoctorSpec extends Component {
   }
 
   submitSuccessCallback = () => {
-
+    Toast.show("提交成功")
+    Actions.pop()
+    if (this.props.interKey == 'Basic_doctor_info') {
+      Actions.pop()
+    } else if (this.props.interKey == 'mine' || this.props.interKey == 'Doctor_intro') {
+      Actions.DOCTOR()
+    }
   }
 
   submitErrorCallback = (error) => {
@@ -42,20 +57,16 @@ class DoctorSpec extends Component {
   }
 
   onButtonPress= () => {
-    this.props.inputFormCheck({
-      formKey: this.props.formKey,
+    this.props.submitDoctorFormData({
+      formKey: doctorSpecForm,
+      submitType: DOCTOR_FORM_SUBMIT_TYPE.SUBMIT_DOCTOR_SPEC,
+      id: this.props.userInfo.id,
       success: this.submitSuccessCallback,
-      error: this.submitErrorCallback
+      error: this.submitErrorCallback,
     })
   }
 
   render() {
-    const specInput = {
-      formKey: this.props.formKey,
-      stateKey: Symbol('specInput'),
-      type: 'content'
-    }
-
     return (
       <View style={styles.container}>
         <Header
@@ -77,6 +88,7 @@ class DoctorSpec extends Component {
           </View>
           <View style={styles.textArea}>
             <MultilineText containerStyle={{height: normalizeH(232)}}
+                           initValue={this.props.doctorInfo.spec}
                            placeholder="请填写您擅长的疾病及科室，让患者更方便地找到你"
                            inputStyle={{height: normalizeH(232)}}
                            {...specInput}/>
@@ -88,12 +100,17 @@ class DoctorSpec extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
+  let userInfo = activeUserInfo(state)
+  let doctorInfo = activeDoctorInfo(state)
+  return{
+    userInfo: userInfo,
+    doctorInfo: doctorInfo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormCheck,
+  submitDoctorFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DoctorSpec)

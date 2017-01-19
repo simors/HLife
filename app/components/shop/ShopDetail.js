@@ -165,6 +165,7 @@ class ShopDetail extends Component {
 
   }
 
+  //deprecated
   openModel(callback) {
     this.setState({
       modalVisible: true
@@ -174,6 +175,7 @@ class ShopDetail extends Component {
     }
   }
 
+  //deprecated
   closeModal(callback) {
     this.setState({
       modalVisible: false
@@ -183,6 +185,7 @@ class ShopDetail extends Component {
     }
   }
 
+  //deprecated
   submitComment(commentData) {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
@@ -191,6 +194,7 @@ class ShopDetail extends Component {
     const that = this
     let payload = {
       id: this.props.id,
+      shopOwnerId: this.props.shopDetail.owner.id,
       ...commentData,
       success: () => {
         that.props.fetchShopCommentList({isRefresh: true, id: that.props.id})
@@ -283,7 +287,9 @@ class ShopDetail extends Component {
         return (
           <View key={"shop_comment_" + index} style={styles.commentContainer}>
             <View style={styles.commentAvatarBox}>
-              <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
+              <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
+                <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
+              </TouchableOpacity>
 
               {userIsFollowedTheUser
                 ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>
@@ -467,7 +473,7 @@ class ShopDetail extends Component {
           </ScrollView>
 
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={styles.shopCommentInputBox} onPress={()=>{Actions.PUBLISH_SHOP_COMMENT({id: this.props.id})}}>
+            <TouchableOpacity style={styles.shopCommentInputBox} onPress={()=>{Actions.PUBLISH_SHOP_COMMENT({id: this.props.id, shopOwnerId: this.props.shopDetail.owner.id})}}>
               <Text style={styles.shopCommentInput}>写评论...</Text>
             </TouchableOpacity>
 
