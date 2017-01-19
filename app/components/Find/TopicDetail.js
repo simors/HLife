@@ -308,9 +308,9 @@ const mapStateToProps = (state, ownProps) => {
   const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
-  const commentsTotalCount = topicComments ? topicComments.length : undefined
+  const commentsTotalCount = topicComments[ownProps.topic.objectId] ? topicComments[ownProps.topic.objectId].length : undefined
   return {
-    topicComments: topicComments,
+    topicComments: topicComments[ownProps.topic.objectId],
     topicLikeUsers:topicLikeUsers,
     likesCount:likesCount,
     isLogin: isLogin,

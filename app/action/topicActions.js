@@ -109,7 +109,7 @@ export function fetchTopicCommentsByTopicId(payload) {
   return (dispatch, getState) => {
     lcTopics.getTopicComments(payload).then((topicComments) => {
       let updateTopicCommentsAction = createAction(topicActionTypes.UPDATE_TOPIC_COMMENTS)
-      dispatch(updateTopicCommentsAction({topicComments: topicComments}))
+      dispatch(updateTopicCommentsAction({topicId:payload.topicId, topicComments: topicComments}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
