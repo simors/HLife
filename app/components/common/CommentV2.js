@@ -52,7 +52,7 @@ const imageGroupInput = {
   type: 'imgGroup'
 }
 
-class Comment extends Component {
+class CommentV2 extends Component {
   static propTypes = {
     showModules: React.PropTypes.array
   }

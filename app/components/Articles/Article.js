@@ -47,7 +47,7 @@ import {
   getUpCount,
   getLikerList
 } from '../../selector/articleSelector'
-import Comment from '../common/CommentV2'
+import CommentV2 from '../common/CommentV2'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import ArticleComment from './ArticleComment'
 import * as Toast from '../common/Toast'
