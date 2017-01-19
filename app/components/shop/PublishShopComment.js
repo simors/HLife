@@ -77,6 +77,7 @@ class PublishShopComment extends Component {
     this.props.submitFormData({
       formKey: commonForm,
       id: this.props.id,
+      shopOwnerId: this.props.shopOwnerId,
       submitType: INPUT_FORM_SUBMIT_TYPE.PUBLISH_SHOP_COMMENT,
       success: ()=>{
         this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})

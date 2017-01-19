@@ -42,7 +42,7 @@ class Reply extends Component {
 
   reply() {
     if(this.props.onReplyClick) {
-      this.props.onReplyClick(this.props.shopCommentId)
+      this.props.onReplyClick(this.props.shopCommentId, this.props.shopCommentUserId)
     }
   }
 

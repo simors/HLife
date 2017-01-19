@@ -7,6 +7,7 @@ import * as lcAuth from '../api/leancloud/auth'
 import * as lcShop from '../api/leancloud/shop'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
+import * as msgAction from './messageAction'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -500,9 +501,17 @@ function handlePublishShopComment(payload, formData) {
     if(formData.imgGroup) {
       newPayload.blueprints = formData.imgGroup.text
     }
-    lcShop.submitShopComment(newPayload).then(() => {
+    lcShop.submitShopComment(newPayload).then((result) => {
       let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
       dispatch(_action({}))
+      let params = {
+        shopId: payload.id,
+        replyTo: payload.shopOwnerId,
+        commentId: result.id,
+        commentContent: newPayload.content,
+      }
+      // console.log('handlePublishShopComment=====params=', params)
+      dispatch(msgAction.notifyShopComment(params))
       if (payload.success) {
         payload.success()
       }
