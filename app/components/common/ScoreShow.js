@@ -28,6 +28,14 @@ export default class ScoreShow extends Component {
     }
   }
 
+  componentWillReceiveProps(newProps) {
+    if (this.props.score != newProps.score) {
+      this.state = {
+        scoreWidth : (newProps.score || 0) / 5.0 * 62
+      }
+    }
+  }
+
   renderStart() {
     if (this.props.bgColor === 'grey') {
       return (
