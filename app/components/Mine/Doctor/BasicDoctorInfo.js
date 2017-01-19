@@ -32,6 +32,10 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
 
+let agrPayload = {
+  interKey: 'Basic_doctor_info',
+}
+
 const nameInput = {
   formKey: commonForm,
   stateKey: Symbol('nameInput'),
@@ -91,8 +95,8 @@ class BasicDoctorInfo extends Component {
                 <Text style={styles.maintext}>姓名</Text>
                 <View style={{flex: 1}}>
                   <CommonTextInput {...nameInput} initValue={this.props.doctorInfo.name} placeholder="与身份证姓名保持一致"
-                                   containerStyle={{height: normalizeH(38), }} editable={false}
-                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                                   containerStyle={{flex: 1}} editable={false}
+                                   inputStyle={{ height: normalizeH(38), backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
@@ -100,9 +104,9 @@ class BasicDoctorInfo extends Component {
                 <View style={{flex: 1}}>
                   <CommonTextInput {...IDInput}
                                    initValue={this.props.doctorInfo.ID}
-                                   containerStyle={{height: normalizeH(38), }}
+                                   containerStyle={{}}
                                    editable={false}
-                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                                   inputStyle={{ height: normalizeH(38), backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
@@ -121,9 +125,9 @@ class BasicDoctorInfo extends Component {
                 <View style={{flex: 1}}>
                   <RegionPicker {...regionPicker}
                                 initValue={this.props.doctorInfo.organization}
-                                containerStyle={{height: normalizeH(38)}}
+                                containerStyle={{}}
                                 editable={false}
-                                inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                                inputStyle={{height: normalizeH(38), backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
@@ -132,9 +136,9 @@ class BasicDoctorInfo extends Component {
 
                   <MedicalLabPicker {...medicalPicker}
                                     initValue={this.props.doctorInfo.department}
-                                    containerStyle={{height: normalizeH(38), }}
+                                    containerStyle={{ }}
                                     editable={false}
-                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                                    inputStyle={{height: normalizeH(38), backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>
             </View>
@@ -145,15 +149,20 @@ class BasicDoctorInfo extends Component {
             <View style={{height: normalizeH(123), backgroundColor: '#FFFFFF', paddingLeft: normalizeW(12), paddingRight: normalizeW(20)}}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', height: normalizeH(38), marginTop: normalizeH(11)}}>
                 <Text>擅长疾病</Text>
+                <TouchableOpacity style={{width: normalizeW(40), height: normalizeH(25)}} onPress= {() => Actions.DOCTOR_SPEC(agrPayload)}>
                 <Image style={{width: normalizeW(20), height: normalizeH(20)}}
                        source={require('../../../assets/images/edit_doctor.png')}/>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text>{this.props.doctorInfo.spec}</Text>
               </View>
 
             </View>
             <View style={{height: normalizeH(188), backgroundColor: '#FFFFFF', paddingLeft: normalizeW(12), marginTop: normalizeH(8), paddingRight: normalizeW(20)}}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: normalizeH(11)}}>
                 <Text>个人简介</Text>
-                <TouchableOpacity style={{width: normalizeW(40), height: normalizeH(25)}} onPress= {() => Actions.DOCTOR_INTRO()}>
+                <TouchableOpacity style={{width: normalizeW(40), height: normalizeH(25)}} onPress= {() => Actions.DOCTOR_INTRO(agrPayload)}>
                   <Image style={{width: normalizeW(20), height: normalizeH(20)}}
                          source={require('../../../assets/images/edit_doctor.png')}/>
                 </TouchableOpacity>
@@ -217,7 +226,7 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     flex: 1,
-    height: normalizeH(40),
+    // height: normalizeH(40),
     borderBottomWidth: 1,
     borderBottomColor: '#C8C7CC',
     flexDirection: 'row',

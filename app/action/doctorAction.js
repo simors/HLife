@@ -13,6 +13,7 @@ export const DOCTOR_FORM_SUBMIT_TYPE = {
   DOCTOR_CERTIFICATION: 'DOCTOR_CERTIFICATION',
   DOCTOR_CERTIFICATION_MODIFY: 'DOCTOR_CERTIFICATION_MODIFY',
   SUBMIT_DOCTOR_DESC: 'SUBMIT_DOCTOR_DESC',
+  SUBMIT_DOCTOR_SPEC: 'SUBMIT_DOCTOR_SPEC',
 }
 
 export function submitDoctorFormData(payload) {
@@ -36,6 +37,9 @@ export function submitDoctorFormData(payload) {
         break
       case DOCTOR_FORM_SUBMIT_TYPE.SUBMIT_DOCTOR_DESC:
         dispatch(handleDoctorDescSubmit(payload, formData))
+        break
+      case DOCTOR_FORM_SUBMIT_TYPE.SUBMIT_DOCTOR_SPEC:
+        dispatch(handleDoctorSpecSubmit(payload, formData))
         break
     }
   }
@@ -157,16 +161,38 @@ export function getDocterList(payload) {
 }
 
 export function handleDoctorDescSubmit(payload, formData) {
-  console.log("handleDoctorDescSubmit payload", payload)
-  console.log("handleDoctorDescSubmit formData", formData)
   return (dispatch, getState) => {
     let descPayload = {
       id: payload.id,
-      // desc: formData.
+      desc: formData.content.text,
     }
-    lcDoctor.submitDoctorDesc(payload).then((doctor) => {
+    lcDoctor.submitDoctorDesc(descPayload).then((doctor) => {
+      console.log("handleDoctorDescSubmit", doctor)
       let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
       dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
+      if (payload.success) {
+        payload.success(doctor)
+      }
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function handleDoctorSpecSubmit(payload, formData) {
+  return (dispatch, getState) => {
+    let specPayload = {
+      id: payload.id,
+      spec: formData.content.text,
+    }
+    lcDoctor.submitDoctorSpec(specPayload).then((doctor) => {
+      let updateDoctorInfoAction = createAction(doctorActionTypes.UPDATE_DOCTORINFO)
+      dispatch(updateDoctorInfoAction({doctor: doctor.doctorInfo}))
+      if (payload.success) {
+        payload.success(doctor)
+      }
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

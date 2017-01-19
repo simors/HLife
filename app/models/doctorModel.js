@@ -13,6 +13,7 @@ export const DoctorInfoRecord = Record({
   certificate:    undefined, //认证凭证
   status:         undefined, //审核状态：0-审核失败 1-审核通过 2-审核中
   desc:           undefined, //备注
+  spec:           undefined, //擅长技能
   }, 'DoctorInfoRecord')
 
 export const DoctorListRecode = Record({
@@ -40,6 +41,7 @@ export class DoctorInfo extends DoctorInfoRecord {
         record.set('certificate', attrs.certificate)
         record.set('status', attrs.status)
         record.set('desc', attrs.desc)
+        record.set('spec', attrs.spec)
         })
       return doctorInfo
     }

@@ -74,7 +74,13 @@ class Mine extends Component {
         Actions.DCTOR_REVISE()
         break
       case 1:
-        Actions.DOCTOR()
+        if (this.props.doctorInfo.desc && this.props.doctorInfo.spec) {
+          Actions.DOCTOR()
+        } else if (!this.props.doctorInfo.desc) {
+          Actions.DOCTOR_INTRO({interKey: 'mine'})
+        } else if (this.props.doctorInfo.desc && !this.props.doctorInfo.spec) {
+          Actions.DOCTOR_SPEC({interKey: 'mine'})
+        }
         break
       case 2:
         Actions.DCTOR_CHECKING()
