@@ -62,10 +62,10 @@ import Doctor from '../components/Mine/Doctor/index'
 import Acknowledge from '../components/Mine/Doctor/Acknowledge'
 import Earnings from '../components/Mine/Doctor/Earnings'
 import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
-
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
 import LikeUserList from '../components/Find/LikeUserList'
+import ShopNotifyView from '../components/Message/ShopNotifyView'
 
 const styles = StyleSheet.create({
   container: {
@@ -139,10 +139,9 @@ export const scenes = Actions.create(
       <Scene key="ACKNOWLEDGE" component={Acknowledge} />
       <Scene key="EARNINGS" component={Earnings} />
       <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo}/>
-
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
-
       <Scene key="MYTOPIC" component={MyTopic}/>
+      <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
