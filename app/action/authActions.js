@@ -439,9 +439,15 @@ function handleShopAlbum(payload, formData) {
 
 function handleCompleteShopInfo(payload, formData) {
   return (dispatch, getState) => {
+    
+    let shopCategoryObjectId = ''
+    if(payload.canModifyShopCategory) {
+      shopCategoryObjectId = formData.shopCategoryInput.text
+    }
+    
     let newPayload = {
       shopId: payload.shopId,
-      shopCategoryObjectId: formData.shopCategoryInput.text,
+      shopCategoryObjectId: shopCategoryObjectId,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
       ourSpecial: formData.ourSpecialInput.text,
