@@ -112,7 +112,7 @@ export class TopicShow extends Component {
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>
                 <Text style={styles.timeTextStyle}>
-                  {getConversationTime(this.props.topic.createdAt.valueOf())}
+                  {getConversationTime(this.props.topic.createdAt)}
                 </Text>
               </View>
             </View>
