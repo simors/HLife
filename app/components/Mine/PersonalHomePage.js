@@ -18,20 +18,17 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-
 import Header from '../common/Header'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-
 import {getUserInfoById, fetchUserFollowers, fetchUserFollowersTotalCount} from '../../action/authActions'
 import {getTopics} from '../../selector/topicSelector'
-import {isUserLogined, activeUserInfo, selectUserFollowers} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as authSelector from '../../selector/authSelector'
-
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -60,6 +57,20 @@ class PersonalHomePage extends Component {
 
   componentWillReceiveProps(nextProps) {
 
+  }
+
+  sendPrivateMessage() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      let payload = {
+        name: this.props.userInfo.phone,
+        members: [this.props.currentUser, this.props.userInfo.id],
+        conversationType: PERSONAL_CONVERSATION,
+        title: this.props.userInfo.nickname,
+      }
+      Actions.CHATROOM(payload)
+    }
   }
 
   renderRow(rowData, sectionId, rowId) {
@@ -175,7 +186,7 @@ class PersonalHomePage extends Component {
                 <Text style={styles.btnTxt}>已关注</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={{flex:1}}>
+            <TouchableOpacity style={{flex:1}} onPress={() => this.sendPrivateMessage()}>
               <View style={styles.btnBox}>
                 <Text style={styles.btnTxt}>发私信</Text>
               </View>
@@ -304,6 +315,7 @@ const mapStateToProps = (state, ownProps) => {
     ds: ds.cloneWithRows(dataArray),
     topics: topics,
     isLogin: isLogin,
+    currentUser: authSelector.activeUserId(state),
     userInfo: userInfo,
     userFollowers: userFollowers,
     userFollowersTotalCount: userFollowersTotalCount
