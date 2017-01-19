@@ -4,7 +4,7 @@
 
 import * as TopicTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Topic,TopicsItem} from '../models/TopicModel'
+import {Topic,TopicsItem, TopicCommentsItem} from '../models/TopicModel'
 import {Map, List} from 'immutable'
 
 const initialState = Topic()
@@ -93,6 +93,7 @@ function handleUpdateTopicIsLiked(state, action) {
 function onRehydrate(state, action) {
   var incoming = action.payload.TOPIC
   if (incoming) {
+
     const topicMap = Map(incoming.topics)
     topicMap.map((value, key)=> {
       if (value && key) {
@@ -106,9 +107,20 @@ function onRehydrate(state, action) {
         state = state.setIn(['topics', key], List(topics))
       }
     })
-    state = state.set('myTopics', List(incoming.myTopics))
-    state = state.set('allTopics', List(incoming.allTopics))
-    state = state.set('topicComments', Map(incoming.topicComments))
+
+    const topicCommentsMap = Map(incoming.topicComments)
+    topicCommentsMap.map((value, key)=> {
+      if (value && key) {
+        let topicComments = []
+        for (let topicComment of value) {
+          if (topicComments) {
+            const topicCommentItem = new TopicCommentsItem({...topicComment})
+            topicComments.push(topicCommentItem)
+          }
+        }
+        state = state.setIn(['topicComments', key], List(topicComments))
+      }
+    })
 
     const topicLikeUsersMap = Map(incoming.TopicLikeUsers)
     topicLikeUsersMap.map((value, key)=> {
@@ -116,6 +128,9 @@ function onRehydrate(state, action) {
         state = state.setIn(['TopicLikeUsers', key], List(value))
       }
     })
+
+    state = state.set('myTopics', List(incoming.myTopics))
+    state = state.set('allTopics', List(incoming.allTopics))
     state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))
     state = state.set('IsLikedByCurrentUser', Map(incoming.IsLikedByCurrentUser))
   }
