@@ -34,5 +34,8 @@ export function isTopicLiked(state, topicId) {
 export function getTopicById(state, topicId) {
   let topicList = state.TOPIC.get('topics')
   let topic = topicList.find((item) => {return item.objectId == topicId})
-  return topic.toJS()
+  if (topic) {
+    return topic.toJS()
+  }
+  return {}
 }
