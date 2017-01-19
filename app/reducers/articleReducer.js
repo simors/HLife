@@ -159,36 +159,6 @@ function onRehydrate(state, action) {
         articleList.clear()
       }
   }
-  // if (incoming) {
-  //   if (!incoming.activeUser) {
-  //     return state
-  //   }
-  //   state = state.set('activeUser', incoming.activeUser)
-  //   state = state.set('token', incoming.token)
-  //
-  //   const profiles = Map(incoming.profiles)
-  //   try {
-  //     for (let [userId, profile] of profiles) {
-  //       if (userId && profile) {
-  //         const userInfo = new UserInfo({...profile})
-  //         state = state.setIn(['profiles', userId], userInfo)
-  //       }
-  //     }
-  //   } catch (e) {
-  //     profiles.clear()
-  //   }
-  //
-  //   const healthProfiles = Map(incoming.healthProfiles)
-  //   try {
-  //     for (let [userId, profile] of healthProfiles) {
-  //       if (userId && profile) {
-  //         const healthProfile = new HealthProfile({...profile})
-  //         state = state.setIn(['healthProfiles', userId], healthProfile)
-  //       }
-  //     }
-  //   } catch (e) {
-  //     healthProfiles.clear()
-  //   }
-  // }
+
   return state
 }
