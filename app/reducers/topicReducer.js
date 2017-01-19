@@ -48,7 +48,9 @@ function handleUpdateTopics(state, action) {
 
 function handleUpdateTopicComments(state, action) {
   let payload = action.payload
-  state = state.set('topicComments', payload.topicComments)
+  let _map = state.get('topicComments')
+  _map = _map.set(payload.topicId, payload.topicComments)
+  state = state.set('topicComments', _map)
   return state
 }
 
@@ -106,8 +108,7 @@ function onRehydrate(state, action) {
     })
     state = state.set('myTopics', List(incoming.myTopics))
     state = state.set('allTopics', List(incoming.allTopics))
-    state = state.set('topicComments', List(incoming.topicComments))
-    state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))
+    state = state.set('topicComments', Map(incoming.topicComments))
 
     const topicLikeUsersMap = Map(incoming.TopicLikeUsers)
     topicLikeUsersMap.map((value, key)=> {
@@ -115,7 +116,7 @@ function onRehydrate(state, action) {
         state = state.setIn(['TopicLikeUsers', key], List(value))
       }
     })
-
+    state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))
     state = state.set('IsLikedByCurrentUser', Map(incoming.IsLikedByCurrentUser))
   }
   return state

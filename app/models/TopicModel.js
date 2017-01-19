@@ -158,7 +158,7 @@ export const Topic = Record({
   topics:Map(),
   myTopics:List(),
   allTopics:List(),
-  topicComments:List(),
+  topicComments:Map(),
   TopicLikesNum: Map(),
   TopicLikeUsers: Map(),
   IsLikedByCurrentUser: Map(),
