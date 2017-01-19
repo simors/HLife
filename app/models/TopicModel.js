@@ -155,7 +155,7 @@ export class TopicLikeUser extends TopicLikeUserConfig {
 }
 
 export const Topic = Record({
-  topics:List(),
+  topics:Map(),
   myTopics:List(),
   allTopics:List(),
   topicComments:List(),

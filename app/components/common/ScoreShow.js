@@ -28,17 +28,32 @@ export default class ScoreShow extends Component {
     }
   }
 
+  renderStart() {
+    if (this.props.bgColor === 'grey') {
+      return (
+        <Image style={styles.scoreIcon} source={require('../../assets/images/star_grey_unselect.png')}/>
+      )
+    }
+    return (
+      <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
+    )
+  }
+
   render() {
     return (
       <View style={[styles.scoresWrap, this.props.containerStyle]}>
         <View style={styles.scoreIconGroup}>
           <View style={[styles.scoreBackDrop, {width: this.state.scoreWidth}]}></View>
-          <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
+          {this.renderStart()}
         </View>
         <Text style={styles.score}>{this.props.score}</Text>
       </View>
     )
   }
+}
+
+ScoreShow.defaultProps = {
+  bgColor: 'white',
 }
 
 const styles = StyleSheet.create({

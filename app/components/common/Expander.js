@@ -26,7 +26,7 @@ export default class Expander extends Component {
     this.state = {
       showExpander: false,
       expander: true,
-      numberOfLines: 5,
+      numberOfLines: this.props.showLines,
     }
   }
 
@@ -41,7 +41,7 @@ export default class Expander extends Component {
 
   _toggleExpander() {
     this.setState({
-      numberOfLines: this.state.expander ? undefined : 5,
+      numberOfLines: this.state.expander ? undefined : this.props.showLines,
       expander: !this.state.expander,
     })
   }
@@ -49,7 +49,7 @@ export default class Expander extends Component {
   render() {
     return (
       <View style={[styles.container, this.props.containerStyle]}>
-        <Text numberOfLines={this.state.numberOfLines} style={[styles.commentContent]}>{this.props.content}</Text>
+        <Text numberOfLines={this.state.numberOfLines} style={[styles.commentContent, this.props.textStyle]}>{this.props.content}</Text>
         <Text onLayout={this._onCommentTextLayout.bind(this)} style={[styles.commentContent, {position:'absolute', left:-9999}]}>{this.props.content}</Text>
         {this.state.showExpander
           ? <TouchableWithoutFeedback onPress={this._toggleExpander.bind(this)}>
@@ -62,6 +62,10 @@ export default class Expander extends Component {
       </View>
     )
   }
+}
+
+Expander.defaultProps = {
+  showLines: 5,
 }
 
 const styles = StyleSheet.create({

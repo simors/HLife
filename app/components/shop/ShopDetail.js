@@ -283,7 +283,9 @@ class ShopDetail extends Component {
         return (
           <View key={"shop_comment_" + index} style={styles.commentContainer}>
             <View style={styles.commentAvatarBox}>
-              <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
+              <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
+                <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
+              </TouchableOpacity>
 
               {userIsFollowedTheUser
                 ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>

@@ -20,28 +20,6 @@ export const ArticleItemConfig = Record({
  // comments: List(),         //评论
 }, 'ArticleItemConfig')
 
-export const LikersItemConfig = Record({
-  avatar: undefined,
-  authorId: undefined,
-  nickname: undefined,
-  username: undefined
-}, 'LikersItemConfig')
-
-export class LikersItem extends LikersItemConfig {
-  static fromLeancloudObject(lcObj) {
-    //  console.log('lcObj====>',lcObj)
-    let likerItem = new LikersItemConfig()
-    // let attrs = lcObj.attributes
-    return likerItem.withMutations((record)=> {
-       //   console.log('zhelishurule',lcObj.avatar)
-      record.set('avatar', lcObj.avatar)
-      record.set('authorId', lcObj.objectId)
-      record.set('nickname', lcObj.nickname)
-      record.set('username', lcObj.username)
-    })
-  }
-}
-
 
 export class ArticleItem extends ArticleItemConfig {
   static fromLeancloudObject(lcObj) {
@@ -78,6 +56,29 @@ export class ArticleItem extends ArticleItemConfig {
     })
   }
 }
+
+// export const LikersItemConfig = Record({
+//   avatar: undefined,
+//   authorId: undefined,
+//   nickname: undefined,
+//   username: undefined
+// }, 'LikersItemConfig')
+//
+// export class LikersItem extends LikersItemConfig {
+//   static fromLeancloudObject(lcObj) {
+//     //  console.log('lcObj====>',lcObj)
+//     let likerItem = new LikersItemConfig()
+//     // let attrs = lcObj.attributes
+//     return likerItem.withMutations((record)=> {
+//        //   console.log('zhelishurule',lcObj.avatar)
+//       record.set('avatar', lcObj.avatar)
+//       record.set('authorId', lcObj.objectId)
+//       record.set('nickname', lcObj.nickname)
+//       record.set('username', lcObj.username)
+//     })
+//   }
+// }
+
 
 export const ArticleCommentItem = Record({
   commentId: undefined,   //评论识别码
@@ -157,7 +158,9 @@ export const UpRecord = Record({
   targetId: '', //点赞类型对应的对象id
   status: false, //是否点赞
   createdDate: '', //格式化后的创建时间
-  user: {},
+  userId:undefined,
+  avatar:undefined,
+  nickname:undefined,
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
 })
@@ -166,16 +169,30 @@ export class Up extends UpRecord {
   static fromLeancloudObject(lcObj) {
     let up = new UpRecord()
     let attrs = lcObj.attributes
+    let user = lcObj.get('user')
+    let nickname = "吾爱用户"
+    let avatar = undefined
+    let userId = undefined
+
+    //用户昵称解析
+    if (user) {
+      userId = user.id
+      avatar = user.get('avatar')
+      nickname = user.get('nickname')
+      if (!nickname) {
+        let phoneNumber = user.getMobilePhoneNumber()
+        nickname = hidePhoneNumberDetail(phoneNumber)
+      }
+    }
     return up.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('upType', attrs.upType)
       record.set('targetId', attrs.targetId)
       record.set('status', attrs.status)
-      let userAttrs = attrs.user.attributes
-      let user = {}
-      user.id = attrs.user.id
-      user.nickname = userAttrs.nickname
-      record.set('user', user)
+     // let userAttrs = attrs.user.attributes
+      record.set('userId', userId)
+      record.set('avatar', avatar)
+      record.set('nickname', nickname)
       record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())

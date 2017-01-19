@@ -572,6 +572,37 @@ export function fetchUserFollowees(payload) {
   }
 }
 
+export function fetchUserFollowers(payload) {
+  return (dispatch, getState) => {
+    lcAuth.fetchUserFollowers(payload).then((result)=> {
+      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS)
+      dispatch(updateAction(result))
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchUserFollowersTotalCount(payload) {
+  return (dispatch, getState) => {
+    lcAuth.fetchUserFollowersTotalCount(payload).then((followersTotalCount)=> {
+      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
+      dispatch(updateAction({followersTotalCount: followersTotalCount}))
+      if (payload.success) {
+        payload.success(followersTotalCount)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
 
 
 export function userIsFollowedTheUser(payload) {

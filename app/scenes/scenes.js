@@ -21,6 +21,7 @@ import DoctorInfo from '../components/Mine/DoctorInfo'
 import DoctorRevise from '../components/Mine/DoctorRevise'
 import DoctorChecking from '../components/Mine/DoctorChecking'
 import Profile from '../components/Mine/Profile'
+import PersonalHomePage from '../components/Mine/PersonalHomePage'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
 import ArticleList from '../components/Articles/ArticleList'
 import Article from '../components/Articles/Article'
@@ -62,10 +63,10 @@ import Doctor from '../components/Mine/Doctor/index'
 import Acknowledge from '../components/Mine/Doctor/Acknowledge'
 import Earnings from '../components/Mine/Doctor/Earnings'
 import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
-
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
 import LikeUserList from '../components/Find/LikeUserList'
+import ShopNotifyView from '../components/Message/ShopNotifyView'
 
 const styles = StyleSheet.create({
   container: {
@@ -98,6 +99,7 @@ export const scenes = Actions.create(
       <Scene key="DCTOR_REVISE" component={DoctorRevise} />
       <Scene key="DCTOR_CHECKING" component={DoctorChecking}/>
       <Scene key="PROFILE" component={Profile} />
+      <Scene key="PERSONAL_HOMEPAGE" component={PersonalHomePage}/>
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
       <Scene key="ARTICLES_ARTICLE" component={Article}/>
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
@@ -139,10 +141,9 @@ export const scenes = Actions.create(
       <Scene key="ACKNOWLEDGE" component={Acknowledge} />
       <Scene key="EARNINGS" component={Earnings} />
       <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo}/>
-
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
-
       <Scene key="MYTOPIC" component={MyTopic}/>
+      <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

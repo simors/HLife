@@ -493,6 +493,7 @@ export function notifyTopicComment(payload) {
   return (dispatch, getState) => {
     let toPeers = []
     let topicInfo = getTopicById(getState(), payload.topicId)
+    console.log('topicInfo:', topicInfo)
 
     if (payload.replyTo) {
       toPeers.push(payload.replyTo)
@@ -514,7 +515,10 @@ export function notifyTopicComment(payload) {
         avatar: currentUser.avatar,
         topicId: payload.topicId,
         title: topicInfo.title,
+        commentId: payload.commentId,
+        commentContent: payload.content,
       }
+      console.log("topic attrs:", attrs)
       let text = currentUser.nickname + '在您的话题《' + topicInfo.title + '》中发表了评论'
       message.setText(text)
       message.setAttributes(attrs)
@@ -554,6 +558,8 @@ export function notifyShopComment(payload) {
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         shopId: shopId,
+        commentId: payload.commentId,
+        commentContent: payload.content,
       }
       let text = currentUser.nickname + '在您的店铺中发表了评论'
       message.setText(text)

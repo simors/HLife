@@ -78,7 +78,12 @@ function handlePublishTopicComment(payload, formData) {
       }
       let publishCommentAction = createAction(topicActionTypes.PUBLISH_COMMENT_SUCCESS)
       dispatch(publishCommentAction({stateKey: payload.stateKey}))
-      dispatch(notifyTopicComment({topicId: payload.topicId, replyTo: payload.replyTo}))
+      dispatch(notifyTopicComment({
+        topicId: payload.topicId,
+        replyTo: payload.replyTo,
+        commentId: payload.commentId,
+        content: payload.content
+      }))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -91,7 +96,7 @@ export function fetchTopics(payload) {
   return (dispatch, getState) => {
     lcTopics.getTopics(payload).then((topics) => {
       let updateTopicsAction = createAction(topicActionTypes.UPDATE_TOPICS)
-      dispatch(updateTopicsAction({type:payload.type, topics: topics}))
+      dispatch(updateTopicsAction({categoryId:payload.categoryId, type:payload.type, topics: topics}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

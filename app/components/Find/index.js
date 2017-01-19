@@ -49,6 +49,10 @@ export class Find extends Component {
       if(this.props.isLogin) {
         this.props.fetchUserFollowees()
       }
+      this.props.fetchTopics({
+        type: "topics",
+        categoryId: this.props.topicCategories[this.state.selectedTab].objectId
+      })
     })
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
@@ -110,6 +114,12 @@ export class Find extends Component {
   }
 
   renderTopics() {
+    let dataSrc = ds.cloneWithRows([])
+    if (this.props.topics){
+      if (this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]) {
+        dataSrc = ds.cloneWithRows(this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId])
+      }
+    }
     return (
       this.props.topicCategories.map((value, key)=> {
         return (
@@ -117,7 +127,7 @@ export class Find extends Component {
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
             <CommonListView
               contentContainerStyle={{backgroundColor: '#E5E5E5'}}
-              dataSource={this.props.dataSrc}
+              dataSource={dataSrc}
               renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
               loadNewData={()=> {
                 this.refreshTopic()
@@ -162,13 +172,12 @@ export class Find extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
   const topicCategories = getTopicCategories(state)
   const topics = getTopics(state)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   return {
-    dataSrc: ds.cloneWithRows(topics),
+    dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,
     topics: topics,
     isLogin: isLogin,

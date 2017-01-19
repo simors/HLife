@@ -28,6 +28,8 @@ export const TopicCommentMsgRecord = Record({
   avatar: undefined,
   topicId: undefined,
   title: undefined,
+  commentId: undefined,
+  commentContent: undefined,
 }, 'TopicCommentMsg')
 
 export const ShopCommentMsgRecord = Record({
@@ -41,6 +43,8 @@ export const ShopCommentMsgRecord = Record({
   nickname: undefined,
   avatar: undefined,
   shopId: undefined,
+  commentId: undefined,
+  commentContent: undefined,
 }, 'ShopCommentMsg')
 
 export const TopicLikeMsgRecord = Record({
@@ -121,6 +125,8 @@ export class TopicCommentMsg extends TopicCommentMsgRecord {
       record.set('avatar', attrs.avatar)
       record.set('topicId', attrs.topicId)
       record.set('title', attrs.title)
+      record.set('commentId', attrs.commentId)
+      record.set('commentContent', attrs.commentContent)
     })
   }
 }
@@ -150,6 +156,8 @@ export class ShopCommentMsg extends ShopCommentMsgRecord {
       record.set('nickname', attrs.nickname)
       record.set('avatar', attrs.avatar)
       record.set('shopId', attrs.shopId)
+      record.set('commentId', attrs.commentId)
+      record.set('commentContent', attrs.commentContent)
     })
   }
 }

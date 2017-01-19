@@ -28,6 +28,8 @@ export default function articleReducer(state = initialState, action) {
       return handleAddComments(state,action)
     case Types.ADD_COMMENT_COUNT:
       return handleAddCommentsCount(state,action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -51,7 +53,7 @@ function handleAddUps(state, action) {
   let articleId = action.payload.articleId
   let upList = action.payload.upList
   let _map = state.get('upList')
-  _map = _map.set(articleId, likerList)
+  _map = _map.set(articleId, upList)
   state = state.set('upList',_map)
   return state
 
@@ -132,3 +134,61 @@ function handleUpdateUpCount(state,action){
 //   state = state.set('isUp', _map)
 //   return state
 // }
+function onRehydrate(state, action) {
+  var incoming = action.payload.ARTICLE
+   console.log("onRehydrate incoming========>", incoming)
+  if(incoming){
+    //state = state.set('articleList',incoming.articleList)
+    const articleList = Map(incoming.articleList)
+   // console.log('articleList=======>',articleList)
+      try {
+        for (let [columnId, article] of articleList) {
+          if (columnId && article) {
+            // console.log('columnId===>',columnId)
+            // console.log('article====>',article)
+            // let articles = []
+            //
+            // article.forEach((result)=>{
+            //   articles.push(Record(result))
+            // })
+            //const articleInfo = new Articles({...article})
+            state = state.setIn(['articleList', columnId], List(article))
+          }
+        }
+      } catch (e) {
+        articleList.clear()
+      }
+  }
+  // if (incoming) {
+  //   if (!incoming.activeUser) {
+  //     return state
+  //   }
+  //   state = state.set('activeUser', incoming.activeUser)
+  //   state = state.set('token', incoming.token)
+  //
+  //   const profiles = Map(incoming.profiles)
+  //   try {
+  //     for (let [userId, profile] of profiles) {
+  //       if (userId && profile) {
+  //         const userInfo = new UserInfo({...profile})
+  //         state = state.setIn(['profiles', userId], userInfo)
+  //       }
+  //     }
+  //   } catch (e) {
+  //     profiles.clear()
+  //   }
+  //
+  //   const healthProfiles = Map(incoming.healthProfiles)
+  //   try {
+  //     for (let [userId, profile] of healthProfiles) {
+  //       if (userId && profile) {
+  //         const healthProfile = new HealthProfile({...profile})
+  //         state = state.setIn(['healthProfiles', userId], healthProfile)
+  //       }
+  //     }
+  //   } catch (e) {
+  //     healthProfiles.clear()
+  //   }
+  // }
+  return state
+}

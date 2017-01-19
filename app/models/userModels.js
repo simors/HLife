@@ -23,6 +23,8 @@ export const UserStateRecord = Record({
   profiles: Map(),            // 用户个人信息列表，已用户id作为健值
   token: undefined,
   followees: Map(),
+  followers: List(),
+  followersTotalCount: 0,
   favoriteArticles: Map(),
   healthProfiles: Map(),
   shop: List()
