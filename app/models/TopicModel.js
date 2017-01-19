@@ -44,7 +44,7 @@ export class TopicsItem extends TopicsConfig {
       record.set('abstract', attrs.abstract)
       record.set('title', attrs.title)
       record.set('imgGroup', attrs.imgGroup)
-      record.set('createdAt', lcObj.createdAt)
+      record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('categoryId', attrs.category.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)

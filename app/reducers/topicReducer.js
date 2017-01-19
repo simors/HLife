@@ -91,12 +91,24 @@ function handleUpdateTopicIsLiked(state, action) {
 function onRehydrate(state, action) {
   var incoming = action.payload.TOPIC
   if (incoming) {
-    state = state.set('topics', Map(incoming.topics))
+    const topicMap = Map(incoming.topics)
+    topicMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['topics', key], List(value))
+      }
+    })
     state = state.set('myTopics', List(incoming.myTopics))
     state = state.set('allTopics', List(incoming.allTopics))
     state = state.set('topicComments', List(incoming.topicComments))
     state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))
-    state = state.set('TopicLikeUsers', Map(incoming.TopicLikeUsers))
+
+    const topicLikeUsersMap = Map(incoming.TopicLikeUsers)
+    topicLikeUsersMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['TopicLikeUsers', key], List(value))
+      }
+    })
+
     state = state.set('IsLikedByCurrentUser', Map(incoming.IsLikedByCurrentUser))
   }
   return state
