@@ -32,7 +32,6 @@ import ScoreInput from './Input/ScoreInput'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../../selector/inputFormSelector'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
-
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -139,7 +138,6 @@ class Comment extends Component {
               </TouchableOpacity>
             </View>
         </View>
-
         </KeyboardAwareScrollView>
 
       </Modal>
@@ -176,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)'
   },
   closeTop: {
-
+    // height:normalizeH(507)
     ...Platform.select({
       ios: {
         height: normalizeH(507),
