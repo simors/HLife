@@ -36,7 +36,7 @@ class ShopInfoCell extends Component {
     }
     return (
       <View style={styles.shopView}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => Actions.SHOP_DETAIL({id: this.props.shopId})}>
           <View style={{flexDirection: 'row', backgroundColor: 'rgba(242,242,242,0.50)'}}>
             <Image style={{width: 80, height: 80}} source={{uri: this.props.shopInfo.coverUrl}}></Image>
             <View style={{paddingLeft: 10, paddingTop: 16, paddingRight: 10}}>
