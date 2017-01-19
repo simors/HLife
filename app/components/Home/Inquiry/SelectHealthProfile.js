@@ -66,14 +66,17 @@ class SelectHealthProfile extends Component {
         break
       }
     }
-
-    this.props.submitFormData({
-      formKey: this.props.formKey,
-      id: this.props.userId,
-      healthProfile: selectedHealthProfile,
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback,
-    })
+    if (selectedHealthProfile) {
+      this.props.submitFormData({
+        formKey: this.props.formKey,
+        id: this.props.userId,
+        healthProfile: selectedHealthProfile,
+        success: this.submitSuccessCallback,
+        error: this.submitErrorCallback,
+      })
+    } else {
+      Toast.show("请选择档案")
+    }
 
   }
 

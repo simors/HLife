@@ -23,6 +23,7 @@ import {activeUserInfo} from '../../../selector/authSelector'
 
 
 
+
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
@@ -134,6 +135,7 @@ class Doctor extends Component {
               <View style={{height: normalizeH(38), borderBottomWidth: 1, borderBottomColor: '#E6E6E6', marginTop: normalizeH(12)}}>
                 <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B'}}>用户评价</Text>
               </View>
+
             </View>
 
           </ScrollView>
