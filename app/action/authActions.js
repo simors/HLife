@@ -508,7 +508,7 @@ function handlePublishShopComment(payload, formData) {
         shopId: payload.id,
         replyTo: payload.shopOwnerId,
         commentId: result.id,
-        commentContent: newPayload.content,
+        content: newPayload.content,
       }
       // console.log('handlePublishShopComment=====params=', params)
       dispatch(msgAction.notifyShopComment(params))
