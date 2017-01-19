@@ -72,7 +72,7 @@ function handlePublishTopicComment(payload, formData) {
       payload.error({message: "输入不能为空"})
       return
     }
-    lcTopics.publishTopicComments(publishTopicCommentPayload).then(() => {
+    lcTopics.publishTopicComments(publishTopicCommentPayload).then((result) => {
       if (payload.success) {
         payload.success()
       }
@@ -81,7 +81,7 @@ function handlePublishTopicComment(payload, formData) {
       dispatch(notifyTopicComment({
         topicId: payload.topicId,
         replyTo: payload.replyTo,
-        commentId: payload.commentId,
+        commentId: result.id,
         content: payload.content
       }))
     }).catch((error) => {
