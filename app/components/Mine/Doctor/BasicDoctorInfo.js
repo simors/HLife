@@ -83,7 +83,7 @@ class BasicDoctorInfo extends Component {
           leftType="text"
           leftStyle={styles.left}
           leftText="取消"
-          leftPress={()=> Actions.MINE_INDEX()}
+          leftPress={()=> Actions.pop()}
           title="基本信息"
           titleStyle={styles.left}
           rightType=""
