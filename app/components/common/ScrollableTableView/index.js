@@ -271,32 +271,25 @@ const ScrollableTabView = React.createClass({
     }
 
     return <View style={[styles.container, this.props.style,]} onLayout={this._handleLayout}>
-      <View style={{flexDirection: 'row', alignItems: 'center',borderBottomWidth: 1,borderBottomColor:'#50E3C2',}}>
+      <View style={{flexDirection: 'row', alignItems: 'center',backgroundColor:'#F2F2F2'}}>
 
         {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
-        {/*<View style={{marginLeft:normalizeW(6),width:normalizeW(3),borderTopLeftRadius:30, height:normalizeH(30),shadowOffset:{width:normalizeW(-5),*/}
-          {/*height:normalizeH(0)},shadowOpacity:0.49,shandowRadius:3,borderBottomLeftRadius:30,shadowColor:'#000'*/}
-        {/*}}></View>*/}
-
+        {/*<View style={{marginLeft:7,width:1,height:30,shadowOpacity:0.49,borderWidth:2,borderColor:'#F2F2F2',*/}
+          {/*shadowOffSet:{height:0,width:-2,},shadowRadius:50,*/}
+          {/*shadowColor:'#000',shadowOpacity:0.49}}></View>*/}
         <TouchableOpacity onPress={() => {
           this.props.onPressMore()
         }}>
           <View
             style={{
-              shadowOpacity:0.49,
-              shadowRadius:3,
-              shadowOffset:{width:normalizeW(1),
-                height:normalizeH(0)},
-              shadowColor:'#000',
-              width: normalizeW(45),
+              width: normalizeW(36),
               justifyContent: 'center',
-             // borderBottomWidth: 1,
               borderLeftWidth: 0,
               borderLeftColor: '#50E3C2',
-             // borderBottomColor: '#50E3C2',
-              height:normalizeH(36),
+              height:normalizeH(30),
+
             }}>
-            <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(13),borderRadius:0.5}}
+            <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(9)}}
                    source={require("../../../assets/images/artical_more.png")}/>
           </View>
         </TouchableOpacity>
