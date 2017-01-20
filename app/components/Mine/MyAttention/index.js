@@ -26,10 +26,14 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {selectUserFollowees} from '../../../selector/authSelector'
 import {fetchUserFollowees} from '../../../action/authActions'
+import CommonListView from '../../common/CommonListView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
+const ds = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
 
 class MyAttention extends Component {
   constructor(props) {
