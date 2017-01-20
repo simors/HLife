@@ -41,5 +41,5 @@ export function getTopicById(state, topicId) {
       return topic.toJS()
     }
   }
-  return {}
+  return undefined
 }

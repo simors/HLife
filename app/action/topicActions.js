@@ -105,6 +105,20 @@ export function fetchTopics(payload) {
   }
 }
 
+export function fetchTopicById(payload) {
+  return (dispatch, getState) => {
+    lcTopics.getTopicById(payload).then((topic) => {
+      console.log("topic:", topic)
+      let addTopic = createAction(topicActionTypes.ADD_TOPIC)
+      dispatch(addTopic({topic: topic}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function fetchTopicCommentsByTopicId(payload) {
   return (dispatch, getState) => {
     lcTopics.getTopicComments(payload).then((topicComments) => {
