@@ -271,16 +271,25 @@ const ScrollableTabView = React.createClass({
     }
 
     return <View style={[styles.container, this.props.style,]} onLayout={this._handleLayout}>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row', alignItems: 'center',backgroundColor:'#F2F2F2'}}>
+
         {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
-        <TouchableOpacity  onPress={() => {
+        {/*<View style={{marginLeft:7,width:1,height:30,shadowOpacity:0.49,borderWidth:2,borderColor:'#F2F2F2',*/}
+          {/*shadowOffSet:{height:0,width:-2,},shadowRadius:50,*/}
+          {/*shadowColor:'#000',shadowOpacity:0.49}}></View>*/}
+        <TouchableOpacity onPress={() => {
           this.props.onPressMore()
         }}>
           <View
+            style={{
+              width: normalizeW(36),
+              justifyContent: 'center',
+              borderLeftWidth: 0,
+              borderLeftColor: '#50E3C2',
+              height:normalizeH(30),
 
-            style={{flex: 1,  width:normalizeW(45),justifyContent: 'center', borderBottomWidth: 1, borderLeftWidth: 1,borderLeftColor:'#50E3C2',borderBottomColor:'#50E3C2'}}>
-            <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(13)}}
-
+            }}>
+            <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(9)}}
                    source={require("../../../assets/images/artical_more.png")}/>
           </View>
         </TouchableOpacity>
@@ -300,4 +309,5 @@ const styles = StyleSheet.create({
   scrollableContentAndroid: {
     flex: 1,
   },
+
 });

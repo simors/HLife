@@ -55,6 +55,7 @@ import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
 import SelectHealthProfile from '../components/Home/Inquiry/SelectHealthProfile'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
+import PrivateMessageBox from '../components/Message/PrivateMessageBox'
 import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
@@ -122,6 +123,7 @@ export const scenes = Actions.create(
       <Scene key="TOPIC_DETAIL" component={TopicDetail} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
       <Scene key="INQUIRY_MESSAGE_BOX" component={InquiryMessageBox} />
+      <Scene key="PRIVATE_MESSAGE_BOX" component={PrivateMessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />

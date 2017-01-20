@@ -97,7 +97,7 @@ class MessageBox extends Component {
   renderPersonalMessage() {
     return (
       <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.CHATROOM()}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PRIVATE_MESSAGE_BOX()}>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={styles.noticeIconView}>
               <Image style={styles.noticeIcon} source={require('../../assets/images/notice_message.png')}></Image>

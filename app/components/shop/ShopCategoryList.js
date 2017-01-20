@@ -433,10 +433,6 @@ class ShopCategoryList extends Component {
           </View>
 
           <View style={[styles.selectGroup, {height: this.state.selectGroupHeight}]}>
-            <TouchableWithoutFeedback onPress={()=>{this._onOverlayPress()}}>
-              <View style={[styles.selectOverlay, { height: this.state.overlayHeight }]}>
-              </View>
-            </TouchableWithoutFeedback>
             <View style={styles.selectContainer}>
               <Select
                 show={this.state.selectGroupShow[0]}
@@ -454,7 +450,7 @@ class ShopCategoryList extends Component {
                 <Option key={"shopCategoryOption_-1"} value="">全部分类</Option>
                 {this.renderShopCategoryOptions()}
               </Select>
-              <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
+
             </View>
             <View style={styles.selectContainer}>
               <Select
@@ -462,7 +458,7 @@ class ShopCategoryList extends Component {
                 onPress={()=>this._onSelectPress(1)}
                 style={{borderWidth:normalizeBorder()}}
                 selectRef="SELECT2"
-                overlayPageX={PAGE_WIDTH/3}
+                overlayPageX={0}
                 optionListHeight={200}
                 hasOverlay={false}
                 optionListRef={()=> this._getOptionList('DISTANCE_OPTION_LIST')}
@@ -475,7 +471,7 @@ class ShopCategoryList extends Component {
                 <Option key={"distanceOption_3"} value="10">10km</Option>
                 <Option key={"distanceOption_4"} value="全城">全城</Option>
               </Select>
-              <OptionList ref="DISTANCE_OPTION_LIST"/>
+
             </View>
             <View style={styles.selectContainer}>
               <Select
@@ -483,7 +479,7 @@ class ShopCategoryList extends Component {
                 onPress={()=>this._onSelectPress(2)}
                 style={{borderBottomWidth:normalizeBorder()}}
                 selectRef="SELECT3"
-                overlayPageX={PAGE_WIDTH * 2 / 3 }
+                overlayPageX={0}
                 hasOverlay={false}
                 optionListRef={()=> this._getOptionList('SORT_OPTION_LIST')}
                 defaultText="智能排序"
@@ -493,12 +489,16 @@ class ShopCategoryList extends Component {
                 <Option key={"sortOption_1"} value="1">好评优先</Option>
                 <Option key={"sortOption_2"} value="2">距离优先</Option>
               </Select>
-              <OptionList ref="SORT_OPTION_LIST"/>
+
             </View>
           </View>
-
-
-
+          <TouchableWithoutFeedback onPress={()=>{this._onOverlayPress()}}>
+            <View style={[styles.selectOverlay, { height: this.state.overlayHeight }]}>
+            </View>
+          </TouchableWithoutFeedback>
+          <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
+          <OptionList ref="DISTANCE_OPTION_LIST"/>
+          <OptionList ref="SORT_OPTION_LIST"/>
         </View>
       </View>
     )

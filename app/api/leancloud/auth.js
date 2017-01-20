@@ -427,7 +427,17 @@ export function getUserById(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
 
+export function getUsers(payload) {
+  let params = {}
+  params.userIds = payload.userIds    // 传入一个数组
+  return AV.Cloud.run('hLifeGetUsers', params).then((result) => {
+    return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
 
 /**

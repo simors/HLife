@@ -571,6 +571,26 @@ export function getUserInfoById(payload) {
   }
 }
 
+export function fetchUsers(payload) {
+  return (dispatch, getState) => {
+    lcAuth.getUsers(payload).then((user) => {
+      let code = user.error
+      if (0 != code) {
+        return
+      }
+      user.users.forEach((lcUser) => {
+        let userInfo = UserInfo.fromLeancloudApi(lcUser)
+        const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
+        dispatch(addUserProfile({userInfo}))
+      })
+    }).catch(error => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function fetchUserFollowees(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowees(payload).then((result)=> {

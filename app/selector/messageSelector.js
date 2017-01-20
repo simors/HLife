@@ -19,6 +19,21 @@ export function getConversations(state) {
   return retConvs
 }
 
+export function getOrderedConvsByType(state, type) {
+  let retConvs = []
+  let orderedConvs = state.MESSAGE.get('OrderedConversation')
+  if (!orderedConvs) {
+    return []
+  }
+  orderedConvs.forEach((convId) => {
+    let conversation = getConversationById(state, convId)
+    if (conversation.get('type') == type) {
+      retConvs.push(conversation.toJS())
+    }
+  })
+  return retConvs
+}
+
 export function getConversationById(state, id) {
   return state.MESSAGE.getIn(['conversationMap', id])
 }

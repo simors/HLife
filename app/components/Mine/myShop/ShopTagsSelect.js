@@ -89,30 +89,32 @@ export default class ShopTagsSelect extends Component {
   }
 
   render() {
-    if(!this.props.show) {
+    if(this.props.show) {
+      return (
+        <View style={[styles.container, this.props.containerStyle]}>
+          <TouchableWithoutFeedback onPress={()=>{this.onOverlayPress()}}>
+            <View style={[styles.overlay, this.props.overlayStyle]}>
+              <View style={[styles.tagsContainer, this.props.tagsContainerStyle]}>
+                <ScrollView
+                  style={[styles.scrollView, this.props.scrollViewStyle]}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={[styles.contentContainerStyle, this.props.contentContainerStyle]}
+                >
+                  {this.renderTags()}
+                </ScrollView>
+                <CommonButton
+                  buttonStyle={{marginTop:10}}
+                  onPress={()=>{this.onBtnPress()}}
+                />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      )
+    }else {
       return null
     }
-    return (
-      <View style={[styles.container, this.props.containerStyle]}>
-        <TouchableWithoutFeedback onPress={()=>{this.onOverlayPress()}}>
-          <View style={[styles.overlay, this.props.overlayStyle]}/>
-        </TouchableWithoutFeedback>
 
-        <View style={[styles.tagsContainer, this.props.tagsContainerStyle]}>
-          <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={[styles.contentContainerStyle, this.props.contentContainerStyle]}
-          >
-            {this.renderTags()}
-          </ScrollView>
-          <CommonButton
-            buttonStyle={{marginTop:10}}
-            onPress={()=>{this.onBtnPress()}}
-          />
-        </View>
-      </View>
-    )
   }
 }
 
@@ -121,17 +123,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    height: PAGE_HEIGHT,
+    bottom: 0,
   },
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)'
   },
   tagsContainer: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: PAGE_WIDTH,
     padding: 10,
     backgroundColor: '#fff'
   },

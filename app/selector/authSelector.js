@@ -24,6 +24,14 @@ export function userInfoById(state, userId) {
   return state.AUTH ? state.AUTH.getUserInfoById(userId) : new UserInfo()
 }
 
+export function userInfoByIds(state, userIds) {
+  let users = []
+  userIds.forEach((id) => {
+    users.push(userInfoById(state, id).toJS())
+  })
+  return users
+}
+
 export function activeUserInfo(state) {
   let activeUser = activeUserId(state)
   return activeUser ? state.AUTH.getUserInfoById(activeUser) : new UserInfo()
