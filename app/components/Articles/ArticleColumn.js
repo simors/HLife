@@ -297,14 +297,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   body: {
-    ...Platform.select({
-      ios: {
-        paddingTop: normalizeH(65),
-      },
-      android: {
-        paddingTop: normalizeH(45)
-      }
-    }),
+
     flex: 1,
   },
   itemLayout: {
