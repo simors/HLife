@@ -210,6 +210,7 @@ class ArticleColumn extends Component {
   renderTabBar() {
     return (
         <ScrollableTabBar
+          tabsContainerStyle={{borderBottomWidth:0}}
           activeTextColor={'#000000'}
           inactiveTextColor={'#FFFFFF'}
           style={styles.tarBarStyle}
