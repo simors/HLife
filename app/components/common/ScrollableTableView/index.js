@@ -271,7 +271,7 @@ const ScrollableTabView = React.createClass({
     }
 
     return <View style={[styles.container, this.props.style,]} onLayout={this._handleLayout}>
-      <View style={{flexDirection: 'row', alignItems: 'center',borderBottomWidth: 1,borderBottomColor:'#50E3C2',}}>
+      <View style={{flexDirection: 'row', alignItems: 'center',backgroundColor:'#F2F2F2'}}>
 
         {this.props.tabBarPosition === 'top' && this.renderTabBar(tabBarProps)}
         <TouchableOpacity onPress={() => {

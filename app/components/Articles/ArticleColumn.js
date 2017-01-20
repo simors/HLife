@@ -210,14 +210,14 @@ class ArticleColumn extends Component {
   renderTabBar() {
     return (
         <ScrollableTabBar
-          tabsContainerStyle={{borderBottomWidth:0}}
+          tabsContainerStyle={{borderBottomWidth:0,}}
           activeTextColor={'#000000'}
           inactiveTextColor={'#FFFFFF'}
           style={styles.tarBarStyle}
           underlineStyle={styles.tarBarUnderlineStyle}
           textStyle={[styles.tabBarTextStyle, this.props.tabBarTextStyle && this.props.tabBarTextStyle]}
           tabStyle={[styles.tabBarTabStyle, this.props.tabBarTabStyle && this.props.tabBarTabStyle]}
-          backgroundColor={this.props.backgroundColor}
+          backgroundColor={'#F2F2F2'}
         />
     )
   }
@@ -329,7 +329,8 @@ const styles = StyleSheet.create({
     paddingBottom: em(10),
     // paddingLeft: em(12),
     // paddingRight: em(12),
-    paddingTop: em(10)
+    paddingTop: em(10),
+    backgroundColor:'#F2F2F2'
   },
 
 
