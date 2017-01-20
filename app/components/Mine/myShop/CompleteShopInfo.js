@@ -320,7 +320,7 @@ class CompleteShopInfo extends Component {
                   <Text style={styles.inputLabel}>店铺类型</Text>
                 </View>
                 <View style={[styles.inputBox, styles.selectBox]}>
-                  {targetShopCategory.id
+                  {!targetShopCategory.id
                     ? <View style={styles.inputInnerBox}>
                         <Text style={styles.inputInnerStyle}>{targetShopCategory.text}</Text>
                       </View>
@@ -429,20 +429,22 @@ class CompleteShopInfo extends Component {
                 />
               </View>
             </View>
-
           </KeyboardAwareScrollView>
+
+          {this.state.shopTagsSelectShow &&
+            <ShopTagsSelect
+              show={this.state.shopTagsSelectShow}
+              containerStyle={{top: this.state.shopTagsSelectTop}}
+              scrollViewStyle={{height:200}}
+              onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
+              tags={this.props.allShopTags}
+              selectedTags={this.state.selectedShopTags}
+              onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
+            />
+          }
 
           <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
 
-          <ShopTagsSelect
-            show={this.state.shopTagsSelectShow}
-            containerStyle={{top: this.state.shopTagsSelectTop}}
-            tagsContainerStyle={{height:280}}
-            onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
-            tags={this.props.allShopTags}
-            selectedTags={this.state.selectedShopTags}
-            onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
-          />
 
         </View>
       </View>
