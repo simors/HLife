@@ -283,8 +283,8 @@ const ScrollableTabView = React.createClass({
         }}>
           <View
             style={{
-              shadowOpacity:0.49,
-              shandowRadius:900,
+              shadowOpacity:0.3,
+              shandowRadius:0.3,
               shadowOffset:{width:normalizeW(-3),
                 height:normalizeH(0)},
               shadowColor:'#000',
