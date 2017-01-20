@@ -16,6 +16,17 @@ export const DoctorInfoRecord = Record({
   spec:           undefined, //擅长技能
   }, 'DoctorInfoRecord')
 
+export const QuestionRecord = Record({
+  answerer: undefined,        //接诊医生
+  content: undefined,         //问诊内容
+  diseaseImages: undefined,   //附图
+  quizzer: undefined,         //咨询者
+  name: undefined,            //咨询档案姓名
+  gender: undefined,          //咨询档案性别
+  birthday: undefined,        //咨询档案出生年月
+  status: undefined,          //问题状态: 1--打开 0--关闭
+}, 'QuestionRecord')
+
 export const DoctorListRecode = Record({
   userId: undefined, //用户信息表id
   doctorId: undefined, //医生信息表id
@@ -65,7 +76,26 @@ export class DoctorList extends DoctorListRecode {
   }
 }
 
+export class Question extends QuestionRecord {
+  static fromLeancloudObject(lcObj) {
+    let attrs = lcObj.attributes
+    let question = new QuestionRecord()
+    question = question.withMutations((record) => {
+      record.set('answerer', attrs.answerer)
+      record.set('content', attrs.content)
+      record.set('diseaseImages', attrs.diseaseImages)
+      record.set('quizzer', attrs.quizzer)
+      record.set('name', attrs.name)
+      record.set('gender', attrs.gender)
+      record.set('birthday', attrs.birthday)
+      record.set('status', attrs.status)
+    })
+    return question
+  }
+}
+
 export const Doctor = Record({
   doctors: Map(),
   doctorInfo: DoctorInfoRecord(),
+  questions: List(),
 }, 'Doctor')

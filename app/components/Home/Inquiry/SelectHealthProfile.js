@@ -121,7 +121,10 @@ class SelectHealthProfile extends Component {
   }
 
   addHealthProfile() {
-    Actions.HEALTH_PROFILE()
+    let payload = {
+      interKey: 'select_health_profile'
+    }
+    Actions.HEALTH_PROFILE(payload)
   }
 
   render() {

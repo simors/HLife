@@ -14,11 +14,14 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import Thumbnail from '../common/Thumbnail'
+import * as authSelector from '../../selector/authSelector'
 
-export default class Health extends Component {
+class Health extends Component {
   constructor(props) {
     super(props)
   }
@@ -32,7 +35,7 @@ export default class Health extends Component {
               sourceImage={require("../../assets/images/home_question.png")}
               thumbnailTitle="快速问诊"
               thumbnailIntro="专业医生在线答疑"
-              onPress={()=>{Actions.INQUIRY()}}
+              onPress={()=>{this.props.isUserLogined? Actions.INQUIRY(): Actions.LOGIN()}}
             />
           </View>
           <View style={styles.line}/>
@@ -49,6 +52,19 @@ export default class Health extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  const isUserLogined = authSelector.isUserLogined(state)
+  return {
+    isUserLogined: isUserLogined
+  }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Health)
 
 const styles = StyleSheet.create({
   healthWrap: {

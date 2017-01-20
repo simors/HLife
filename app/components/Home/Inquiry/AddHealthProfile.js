@@ -61,7 +61,15 @@ class AddHealthProfile extends Component {
 
   submitSuccessCallback = () => {
     Toast.show('提交成功')
-    Actions.SELECT_HEALTH_PROFILE()
+    if (this.props.interKey == 'select_health_profile') {
+      Actions.pop()
+    } else if(this.props.interKey == 'inquiry') {
+      let payload = {
+        formKey: this.props.formKey,
+        userId: this.props.userId,
+      }
+      Actions.SELECT_HEALTH_PROFILE(payload)
+    }
 
   }
 

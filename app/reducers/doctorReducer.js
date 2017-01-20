@@ -4,6 +4,7 @@
 import * as Types from '../constants/doctorActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Doctor} from '../models/doctorModel'
+import {Map, List, Record} from 'immutable'
 
 const initialState = new Doctor()
 
@@ -17,6 +18,8 @@ export default function doctorReducer(state = initialState, action) {
       return handleUpdateDoctorList(state, action)
     case Types.UPDATE_DOCTOR_GROUP:
       return handleUpdateDoctorGroup(state, action)
+    case Types.ADD_QUESTION:
+      return handleAddQuestion(state, action)
     default:
       return state
   }
@@ -48,5 +51,13 @@ function handleUpdateDoctorGroup(state, action) {
     state = state.setIn(['doctors', doctorList.userId], doctorList)
   })
 
+  return state
+}
+
+function handleAddQuestion(state, action) {
+  let question = action.payload.question
+  let questions =List()
+  questions =questions.push(question)
+  state =state.set('questions', questions)
   return state
 }

@@ -13,7 +13,6 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {activeUserInfo} from '../../selector/authSelector'
 import {activeDoctorInfo} from '../../selector/doctorSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -225,7 +224,7 @@ class Mine extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let userInfo = activeUserInfo(state)
+  let userInfo = authSelector.activeUserInfo(state)
   let doctorInfo = activeDoctorInfo(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)

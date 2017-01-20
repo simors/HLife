@@ -1,6 +1,7 @@
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 import {UserInfo, UserDetail, HealthProfileRecord, HealthProfile} from '../../models/userModels'
+import {Question} from '../../models/doctorModel'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
 import {ArticleItem} from '../../models/ArticleModel'
 import {PromoterInfo} from '../../models/promoterModel'
@@ -558,10 +559,9 @@ export function unFollowUser(payload) {
 }
 
 export function inquirySubmit(payload) {
-  console.log("inquirySubmit:", payload)
   var userInfo = AV.Object.createWithoutData('_User', payload.id)
-  let Question = AV.Object.extend('Question')
-  let question = new Question()
+  let avQuestion = AV.Object.extend('Question')
+  let question = new avQuestion()
   question.set('content', payload.question)
   question.set('diseaseImages', payload.diseaseImages)
   question.set('quizzer', userInfo)
@@ -570,7 +570,14 @@ export function inquirySubmit(payload) {
   question.set('birthday', payload.birthday)
   question.set('status', 1) //会话打开
 
-  return question.save().then((questionInfo) => {
+  return question.save().then((record) => {
+      console.log("inquirySubmit lean in:", record)
+
+      let questionRecord = Question.fromLeancloudObject(record)
+    console.log("inquirySubmit lean return:", questionRecord)
+    return {
+      question: questionRecord
+    }
     },
   function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
