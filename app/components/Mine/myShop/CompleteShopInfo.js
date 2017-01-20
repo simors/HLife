@@ -150,7 +150,7 @@ class CompleteShopInfo extends Component {
         popNum: context.props.popNum
       })
     }else {
-      Actions.SHOP_MANAGE_INDEX()
+      Actions.pop()
     }
   }
 
