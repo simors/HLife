@@ -181,10 +181,10 @@ class Mine extends Component {
                 <Image source={require('../../assets/images/mine_ask.png')}/>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>提问</Text>
               </View>
-              <View style={styles.bindex}>
+              <TouchableOpacity style={styles.bindex} onPress= {()=> {Actions.MYATTENTION()}}>
                 <Image source={require('../../assets/images/mine_focuson.png')}/>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>关注</Text>
-              </View>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.bindex} onPress= {()=> {Actions.MYTOPIC()}}>
                 <Image source={require('../../assets/images/mine_artical.png')}/>
                 <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>

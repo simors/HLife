@@ -23,6 +23,10 @@ import CommonButton from '../../common/CommonButton'
 import {em, normalizeH, normalizeW} from '../../../util/Responsive'
 import {getDocterList} from '../../../action/doctorAction'
 import {getDoctorList} from '../../../selector/doctorSelector'
+import {activeUserId} from '../../../selector/authSelector'
+import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
+import * as Toast from '../../common/Toast'
+
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -70,10 +74,24 @@ class SelectDoctor extends Component {
         selectedDoctor.push(this.props.doctors[i])
       }
     }
-    let payload = {
-      doctors: selectedDoctor,
+
+    if (selectedDoctor.length == 1){
+      let payload = {
+        name: selectedDoctor[0].phone,
+        members: [this.props.currentUser, selectedDoctor[0].userId],
+        conversationType: INQUIRY_CONVERSATION,
+        title: selectedDoctor[0].username,
+      }
+      Actions.CHATROOM(payload)
+
+    } else if(selectedDoctor.length >= 1) {
+      let payload = {
+        doctors: selectedDoctor,
+      }
+      Actions.QA_LIST(payload)
+    } else {
+      Toast.show("请选择医生")
     }
-    Actions.QA_LIST(payload)
 
   }
 
@@ -147,7 +165,8 @@ class SelectDoctor extends Component {
 const mapStateToProps = (state, ownProps) => {
   let doctors = getDoctorList(state)
   return {
-    doctors,
+    currentUser: activeUserId(state),
+    doctors: doctors,
   }
 }
 

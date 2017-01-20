@@ -55,6 +55,7 @@ import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
 import SelectHealthProfile from '../components/Home/Inquiry/SelectHealthProfile'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
+import PrivateMessageBox from '../components/Message/PrivateMessageBox'
 import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
@@ -65,6 +66,7 @@ import Earnings from '../components/Mine/Doctor/Earnings'
 import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
+import MyAttention from '../components/Mine/MyAttention'
 import LikeUserList from '../components/Find/LikeUserList'
 import ShopNotifyView from '../components/Message/ShopNotifyView'
 
@@ -121,6 +123,7 @@ export const scenes = Actions.create(
       <Scene key="TOPIC_DETAIL" component={TopicDetail} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
       <Scene key="INQUIRY_MESSAGE_BOX" component={InquiryMessageBox} />
+      <Scene key="PRIVATE_MESSAGE_BOX" component={PrivateMessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="DOCTER_FINDER" component={DocterFinder} />
@@ -143,6 +146,7 @@ export const scenes = Actions.create(
       <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo}/>
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
       <Scene key="MYTOPIC" component={MyTopic}/>
+      <Scene key="MYATTENTION" component={MyAttention}/>
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
