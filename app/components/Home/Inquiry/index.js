@@ -57,6 +57,7 @@ class Inguiry extends Component {
     let payload = {
       formKey: inquiryForm,
       userId: this.props.currentUser && this.props.currentUser,
+      interKey: 'inquiry',
     }
     if (this.props.healthProfileSize == 0) {
       Actions.HEALTH_PROFILE(payload)

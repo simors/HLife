@@ -225,11 +225,12 @@ const styles = StyleSheet.create({
   },
   container: {
     height: 50,
-    borderWidth: 1,
+    //borderWidth: 1,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderColor: '#ccc',
+    backgroundColor:'#F2F2F2'
   },
   tabs: {
     flexDirection: 'row',
