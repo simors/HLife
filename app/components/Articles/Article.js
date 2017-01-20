@@ -84,7 +84,7 @@ class Article extends Component {
     })
   }
   onReplyClick() {
-    console.log('onReplyClick.this.replyInput==', this.replyInput)
+    // console.log('onReplyClick.this.replyInput==', this.replyInput)
     if (this.replyInput) {
       this.replyInput.focus()
     }
@@ -212,7 +212,7 @@ class Article extends Component {
     this.setState({
       comment: comment
     })
-    this.openModel()
+    this.onReplyClick()
   }
 
   renderCommentPage() {
