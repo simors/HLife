@@ -56,7 +56,7 @@ class TagsInput extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.state.tagsLength != nextProps.tags.length) {
+    if(nextProps.tags && this.state.tagsLength != nextProps.tags.length) {
       this.setState({
         tagsLength: nextProps.tags.length,
         isEmptyChange: false
@@ -159,14 +159,15 @@ class TagsInput extends Component {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           onContentSizeChange={this.onContentSizeChange.bind(this)}
+          style={styles.scrollView}
           contentContainerStyle={[styles.contentContainerStyle, this.props.contentContainerStyle]}
         >
-          <TouchableWithoutFeedback onPress={()=>{this.props.onPress()}}>
+          <TouchableWithoutFeedback style={{flex: 1,justifyContent: 'center',alignItems: 'center'}} onPress={()=>{this.props.onPress()}}>
             <View style={styles.scrollViewContentContainer}>
               {this.renderContent()}
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={()=>{this.props.onPress()}}>
+          <TouchableWithoutFeedback style={{flex: 1}} onPress={()=>{this.props.onPress()}}>
             <View style={[styles.emptyView, {width: this.state.emptyWidth, height: this.state.emptyHeight}]}/>
           </TouchableWithoutFeedback>
         </ScrollView>
@@ -200,12 +201,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
     height: 40
   },
+  scrollView: {
+    flex: 1,
+    height: 40
+  },
   contentContainerStyle: {
-
+    flex: 1,
+    alignItems: 'center',
   },
   scrollViewContentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center'
   },
   emptyView: {
     flex: 1,
@@ -215,16 +222,15 @@ const styles = StyleSheet.create({
     fontSize: em(16),
   },
   tagContainer: {
-    overflow: 'hidden',
-    padding: 5,
-    borderWidth: normalizeBorder(),
-    borderColor: '#bdc6cf',
-    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
     marginRight: 5,
   },
   tagText: {
+    alignSelf: 'center',
     textAlign: 'center',
-    fontSize: em(16)
+    fontSize: em(17)
   },
   tagMore: {
 

@@ -159,9 +159,15 @@ class CompleteShopInfo extends Component {
   }
 
   onButtonPress = () => {
+    let targetShopCategory = {}
+    if(this.props.userOwnedShopInfo.targetShopCategory) {
+      targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
+    }
+    
     this.props.submitFormData({
       formKey: commonForm,
       shopId: this.props.userOwnedShopInfo.id,
+      canModifyShopCategory: targetShopCategory.id ? false : true,
       submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
       success: ()=>{this.submitSuccessCallback(this)},
       error: this.submitErrorCallback
@@ -314,21 +320,26 @@ class CompleteShopInfo extends Component {
                   <Text style={styles.inputLabel}>店铺类型</Text>
                 </View>
                 <View style={[styles.inputBox, styles.selectBox]}>
-                  <SelectInput
-                    {...shopCategoryInput}
-                    show={this.state.selectShow}
-                    onPress={(e)=>this._onSelectPress(e)}
-                    style={{}}
-                    selectRef="SELECT"
-                    overlayPageX={0}
-                    overlayPageY={this.state.optionListPos}
-                    optionListHeight={240}
-                    optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                    defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
-                    defaultValue={targetShopCategory.id}
-                    onSelect={this._onSelectShopCategory.bind(this)}>
-                    {this.renderShopCategoryOptions()}
-                  </SelectInput>
+                  {targetShopCategory.id
+                    ? <View style={styles.inputInnerBox}>
+                        <Text style={styles.inputInnerStyle}>{targetShopCategory.text}</Text>
+                      </View>
+                    : <SelectInput
+                        {...shopCategoryInput}
+                        show={this.state.selectShow}
+                        onPress={(e)=>this._onSelectPress(e)}
+                        style={{}}
+                        selectRef="SELECT"
+                        overlayPageX={0}
+                        overlayPageY={this.state.optionListPos}
+                        optionListHeight={240}
+                        optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
+                        defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
+                        defaultValue={targetShopCategory.id}
+                        onSelect={this._onSelectShopCategory.bind(this)}>
+                        {this.renderShopCategoryOptions()}
+                      </SelectInput>
+                  }
                 </View>
               </View>
 
@@ -530,8 +541,20 @@ const styles = StyleSheet.create({
   inputBox: {
     flex: 1
   },
+  tagsBox: {
+    justifyContent: 'center',
+  },
   containerStyle: {
     paddingRight:0,
+  },
+  inputInnerBox: {
+    height: 40,
+    paddingLeft: normalizeW(14),
+    justifyContent: 'center'
+  },
+  inputInnerStyle:{
+    fontSize: em(17),
+    color: '#333'
   },
   inputStyle:{
     height: normalizeH(44),

@@ -65,6 +65,7 @@ import Earnings from '../components/Mine/Doctor/Earnings'
 import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
+import MyAttention from '../components/Mine/MyAttention'
 import LikeUserList from '../components/Find/LikeUserList'
 import ShopNotifyView from '../components/Message/ShopNotifyView'
 
@@ -143,6 +144,7 @@ export const scenes = Actions.create(
       <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo}/>
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
       <Scene key="MYTOPIC" component={MyTopic}/>
+      <Scene key="MYATTENTION" component={MyAttention}/>
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

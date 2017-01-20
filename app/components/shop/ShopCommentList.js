@@ -45,8 +45,10 @@ class ShopCommentList extends Component {
     
     this.state = {
       replyId : '',
+      replyUserId: '',
       replyUserNickName : '',
       replyShopCommentId: '',
+      replyShopCommentUserId: '',
     }
   }
 
@@ -106,14 +108,16 @@ class ShopCommentList extends Component {
     this.props.fetchShopCommentList(payload)
   }
   
-  onReplyClick(replyShopCommentId, replyId, replyUserNickName) {
+  onReplyClick(replyShopCommentId, replyShopCommentUserId, replyId, replyUserNickName, replyUserId) {
     if(this.replyInput) {
       this.replyInput.focus()
     }
     this.setState({
       ...this.state,
       replyShopCommentId: replyShopCommentId,
+      replyShopCommentUserId: replyShopCommentUserId,
       replyUserNickName: replyUserNickName,
+      replyUserId: replyUserId,
       replyId: replyId
     })
   }
@@ -125,8 +129,11 @@ class ShopCommentList extends Component {
     }
     const that = this
     this.props.reply({
+      shopId: this.props.shopId,
       replyShopCommentId : this.state.replyShopCommentId,
       replyId : this.state.replyId,
+      replyUserId : this.state.replyUserId,
+      replyShopCommentUserId : this.state.replyShopCommentUserId,
       replyContent : content,
       success: (result) => {
         dismissKeyboard()

@@ -248,7 +248,7 @@ export function submitShopComment(payload) {
   shopComment.set('content', content)
 
   return shopComment.save().then((results) => {
-    // console.log('results=', results)
+    console.log('submitShopComment.results=', results)
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -277,7 +277,7 @@ export function fetchShopCommentList(payload) {
   query.addDescending('createdAt')
   query.limit(5) // 最多返回 5 条结果
   return query.find().then((results)=>{
-    console.log('fetchShopCommentList.results=', results)
+    // console.log('fetchShopCommentList.results=', results)
     let shopComment = []
     results.forEach((result)=>{
       shopComment.push(ShopComment.fromLeancloudObject(result))

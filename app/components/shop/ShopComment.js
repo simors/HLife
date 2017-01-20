@@ -106,6 +106,7 @@ class ShopComment extends Component {
               <Reply
                 onReplyClick={this.props.onReplyClick}
                 shopCommentId={this.props.shopCommentId}
+                shopCommentUserId={this.props.userId}
               />
             </View>
           </View>
@@ -115,6 +116,7 @@ class ShopComment extends Component {
             replys={this.props.containedReply}
             ups={this.props.containedUps}
             shopCommentId={this.props.shopCommentId}
+            shopCommentUserId={this.props.userId}
           />
           
         </View>

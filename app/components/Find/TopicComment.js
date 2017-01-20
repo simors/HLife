@@ -102,7 +102,7 @@ export class TopicComment extends Component {
           </Text>
 
           <View style={styles.timeLocationStyle}>
-            <Text style={styles.timeTextStyle}>{getConversationTime(this.props.topic.createdAt.valueOf())}</Text>
+            <Text style={styles.timeTextStyle}>{getConversationTime(this.props.topic.createdAt)}</Text>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>长沙</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>

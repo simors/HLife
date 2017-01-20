@@ -277,7 +277,12 @@ export function submitCompleteShopInfo(payload) {
   let coverUrl = payload.coverUrl
   let tagIds = payload.tagIds
   let shop = AV.Object.createWithoutData('Shop', shopId)
-  let targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
+  let targetShopCategory = null
+  if(shopCategoryObjectId) {
+    targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
+    shop.set('targetShopCategory', targetShopCategory)
+  }
+
   let containedTag = []
   if(tagIds && tagIds.length) {
     tagIds.forEach((tagId) =>{
@@ -286,7 +291,6 @@ export function submitCompleteShopInfo(payload) {
   }
   shop.set('containedTag', containedTag)
   shop.set('coverUrl', coverUrl)
-  shop.set('targetShopCategory', targetShopCategory)
   shop.set('openTime', openTime)
   shop.set('contactNumber', contactNumber)
   shop.set('ourSpecial', ourSpecial)

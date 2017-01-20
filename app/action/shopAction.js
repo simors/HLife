@@ -109,13 +109,21 @@ export function followShop(payload) {
   }
 }
 
+/**
+ * deprecated:已过时
+ * @param payload
+ * @returns {function()}
+ */
 export function submitShopComment(payload) {
   return (dispatch, getState) => {
     lcShop.submitShopComment(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_COMMENT_SUCCESS)
       dispatch(updateAction(result))
       let params = {
-        shopId: payload.id
+        shopId: payload.id,
+        replyTo: '',
+        commentId: payload.commentId,
+        commentContent: payload.content,
       }
       dispatch(msgAction.notifyShopComment(params))
       if(payload.success){
@@ -288,6 +296,22 @@ export function reply(payload) {
     lcShop.reply(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.REPLY_SHOP_COMMENT_SUCCESS)
       dispatch(updateAction(result))
+
+      let replyTo = payload.replyShopCommentUserId
+      let commentId = payload.replyShopCommentId
+      if(payload.replyId) {
+        replyTo = payload.replyUserId
+        commentId = payload.replyId
+      }
+      let params = {
+        shopId: payload.shopId,
+        replyTo: replyTo,
+        commentId: commentId,
+        content: payload.replyContent,
+      }
+      // console.log('shop.reply===params=', params)
+      dispatch(msgAction.notifyShopComment(params))
+
       if(payload.success){
         payload.success(result)
       }

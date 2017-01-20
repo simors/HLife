@@ -47,11 +47,13 @@ import {
   getUpCount,
   getLikerList
 } from '../../selector/articleSelector'
-import Comment from '../common/Comment'
+import CommentV2 from '../common/CommentV2'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import ArticleComment from './ArticleComment'
 import * as Toast from '../common/Toast'
 import WebHtmlView from 'react-native-webhtmlview'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -60,6 +62,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class Article extends Component {
   constructor(props) {
     super(props)
+    this.replyInput = null
+
     this.state = {
       modalVisible: false,
       commentY: 0,
@@ -79,7 +83,12 @@ class Article extends Component {
       }
     })
   }
-
+  onReplyClick() {
+    console.log('onReplyClick.this.replyInput==', this.replyInput)
+    if (this.replyInput) {
+      this.replyInput.focus()
+    }
+  }
   measureMyComponent(event) {
     this.setState({commentY: (event.nativeEvent.layout.height + event.nativeEvent.layout.y)})
     //console.log('commentY',this.state.commentY)
@@ -119,6 +128,7 @@ class Article extends Component {
       this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsFavorite({articleId: this.props.articleId})
+      this.props.fetchUps({articleId: this.props.articleId, upType: 'article'})
     })
   }
 
@@ -257,9 +267,9 @@ class Article extends Component {
   }
 
   submitSuccessCallback() {
-    Toast.show('评论成功')
     this.props.fetchCommentsArticle({articleId: this.props.articleId})
     this.closeModal(()=> {
+      dismissKeyboard()
       Toast.show('发布成功', {duration: 1000})
     })
   }
@@ -345,7 +355,7 @@ class Article extends Component {
             {this.renderNoComment()}
           </ScrollView>
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
+            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.onReplyClick.bind(this)}>
               <Text style={styles.shopCommentInput}>写评论...</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
@@ -367,14 +377,18 @@ class Article extends Component {
                 require("../../assets/images/artical_favorite_unselect.png")}/>
             </TouchableOpacity>
           </View>
-          <Comment
+          <KeyboardAwareToolBar
+            initKeyboardHeight={-160}
+          >
+          <CommentV2
+            replyInputRefCallBack={(input)=>{this.replyInput = input}}
             showModules={["content"]}
             modalVisible={this.state.modalVisible}
-            modalTitle="写评论"
             textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
             closeModal={() => this.closeModal()}
             submitComment={this.submitComment.bind(this)}
           />
+            </KeyboardAwareToolBar>
         </View>
       </View>
 

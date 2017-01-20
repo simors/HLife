@@ -97,12 +97,13 @@ export class MyTopicShow extends Component {
 
   render() {
     if (this.props.topic) {
+      let createDate = new Date(this.props.topic.createdAt)
       return (
         <View style={[styles.containerStyle, this.props.containerStyle]}>
 
           <View style={styles.introWrapStyle}>
-            <Text style={styles.dayStyle}>{this.props.topic.createdAt.getDate()}</Text>
-            <Text style={styles.monthStyle}>{getLeancloudTimeToMonth(this.props.topic.createdAt)}</Text>
+            <Text style={styles.dayStyle}>{createDate.getDate()}</Text>
+            <Text style={styles.monthStyle}>{getLeancloudTimeToMonth(new Date(this.props.topic.createdAt))}</Text>
           </View>
           {this.renderContentImage()}
         </View>

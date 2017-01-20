@@ -7,6 +7,7 @@ import * as lcAuth from '../api/leancloud/auth'
 import * as lcShop from '../api/leancloud/shop'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
+import * as msgAction from './messageAction'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -438,9 +439,15 @@ function handleShopAlbum(payload, formData) {
 
 function handleCompleteShopInfo(payload, formData) {
   return (dispatch, getState) => {
+    
+    let shopCategoryObjectId = ''
+    if(payload.canModifyShopCategory) {
+      shopCategoryObjectId = formData.shopCategoryInput.text
+    }
+    
     let newPayload = {
       shopId: payload.shopId,
-      shopCategoryObjectId: formData.shopCategoryInput.text,
+      shopCategoryObjectId: shopCategoryObjectId,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
       ourSpecial: formData.ourSpecialInput.text,
@@ -500,9 +507,17 @@ function handlePublishShopComment(payload, formData) {
     if(formData.imgGroup) {
       newPayload.blueprints = formData.imgGroup.text
     }
-    lcShop.submitShopComment(newPayload).then(() => {
+    lcShop.submitShopComment(newPayload).then((result) => {
       let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
       dispatch(_action({}))
+      let params = {
+        shopId: payload.id,
+        replyTo: payload.shopOwnerId,
+        commentId: result.id,
+        content: newPayload.content,
+      }
+      // console.log('handlePublishShopComment=====params=', params)
+      dispatch(msgAction.notifyShopComment(params))
       if (payload.success) {
         payload.success()
       }
