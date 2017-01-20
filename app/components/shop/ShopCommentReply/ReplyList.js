@@ -53,12 +53,12 @@ class ReplyList extends Component {
           <View key={"reply_" + item.id + "_" + index} style={styles.replyContainer}>
             <View style={styles.replyInnerContainer}>
               <View style={styles.replyTitleWrap}>
-                <TouchableOpacity style={styles.replyUserBox}>
+                <TouchableOpacity style={styles.replyUserBox} onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
                   <Text style={styles.replyUser}>{item.user.nickname}</Text>
                 </TouchableOpacity>
                 <Text style={styles.replyWord}>回复</Text>
                 {item.parentReply && item.parentReply.user
-                  ? <TouchableOpacity style={styles.replyUserBox}>
+                  ? <TouchableOpacity style={styles.replyUserBox} onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.parentReply.user.id})}}>
                       <Text style={styles.replyUser}>{item.parentReply.user.nickname}</Text>
                     </TouchableOpacity>
                   : null

@@ -163,9 +163,11 @@ class PersonalHomePage extends Component {
       <View style={styles.personalInfoWrap}>
         <View style={[styles.row, styles.baseInfoWrap]}>
           <View style={styles.goBackBox}>
-            <Icon
-              name='ios-arrow-back'
-              style={[styles.goBack]}/>
+            <TouchableOpacity onPress={()=>{Actions.pop()}}>
+              <Icon
+                name='ios-arrow-back'
+                style={[styles.goBack]}/>
+            </TouchableOpacity>
           </View>
           <View style={styles.thumbnailWrap}>
             <Image
