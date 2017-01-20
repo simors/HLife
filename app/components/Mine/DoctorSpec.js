@@ -44,7 +44,6 @@ class DoctorSpec extends Component {
 
   submitSuccessCallback = () => {
     Toast.show("提交成功")
-    Actions.pop()
     if (this.props.interKey == 'Basic_doctor_info') {
       Actions.pop()
     } else if (this.props.interKey == 'mine' || this.props.interKey == 'Doctor_intro') {

@@ -15,7 +15,7 @@ export function getDoctorList(state) {
   let docMap = state.DOCTOR.get('doctors')
   if (docMap) {
     docMap.forEach((value) => {
-      doctors.push(value)
+      doctors.push(value.toJS())
     })
   }
   return doctors

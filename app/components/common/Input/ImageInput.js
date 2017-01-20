@@ -131,7 +131,12 @@ class ImageInput extends Component {
   renderImageModal(src) {
     return (
       <View>
-        <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
+        <Modal
+          visible={this.state.imgModalShow}
+          transparent={false}
+          animationType='fade'
+          onRequestClose={()=>{}}
+        >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
               style={{flex: 1, backgroundColor: 'black'}}

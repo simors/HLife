@@ -894,7 +894,7 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   bottomTabWrap: {
-    height:38,
+    height:50,
     justifyContent:'center',
     alignItems: 'center'
   },

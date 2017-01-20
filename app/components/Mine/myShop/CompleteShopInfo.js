@@ -541,6 +541,9 @@ const styles = StyleSheet.create({
   inputBox: {
     flex: 1
   },
+  tagsBox: {
+    justifyContent: 'center',
+  },
   containerStyle: {
     paddingRight:0,
   },
