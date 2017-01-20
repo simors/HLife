@@ -22,8 +22,6 @@ import {em, normalizeW, normalizeH,} from '../../../util/Responsive'
 import {activeUserInfo} from '../../../selector/authSelector'
 
 
-
-
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 

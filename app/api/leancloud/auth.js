@@ -558,13 +558,13 @@ export function inquirySubmit(payload) {
   var userInfo = AV.Object.createWithoutData('_User', payload.id)
   let Question = AV.Object.extend('Question')
   let question = new Question()
-  question.set('connnet', payload.question)
+  question.set('content', payload.question)
   question.set('diseaseImages', payload.diseaseImages)
   question.set('quizzer', userInfo)
   question.set('name', payload.name)
   question.set('gender', payload.gender)
   question.set('birthday', payload.birthday)
-  question.set('status', 2) //待分配
+  question.set('status', 1) //会话打开
 
   return question.save().then((questionInfo) => {
     },
