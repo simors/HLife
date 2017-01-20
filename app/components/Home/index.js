@@ -202,7 +202,7 @@ class Home extends Component {
           leftType="image"
           leftImageSource={require("../../assets/images/local_unselect.png")}
           leftImageLabel="长沙"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {}}
           title="吾爱"
           rightComponent={() => this.renderHeadMessage()}
           rightPress={() => Actions.MESSAGE_BOX()}

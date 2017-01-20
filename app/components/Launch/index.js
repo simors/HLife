@@ -18,7 +18,7 @@ export default class Launch extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      Actions.HOME()
+      Actions.HOME({type:'replace'})
     }, 1000)
   }
 
