@@ -27,6 +27,7 @@ import {connect} from 'react-redux'
 import {selectUserFollowees} from '../../../selector/authSelector'
 import {fetchUserFollowees} from '../../../action/authActions'
 import CommonListView from '../../common/CommonListView'
+import FollowUser from '../../../components/common/FollowUser'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -39,14 +40,71 @@ class MyAttention extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      dataSrc: ds.cloneWithRows(props.userFollowees),
+      tabType: 0
     }
   }
 
   refreshTopic() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchUserFollowees()
+    })
   }
 
   loadMoreData() {
+  }
+
+  renderTopicItem(value, key) {
+    return (
+      <View key={key} style={{borderBottomWidth: 2, borderColor: '#e5e5e5',}}>
+        <View style={styles.introWrapStyle}>
+          <View style={{flexDirection: 'row'}} onPress={()=> {
+          }}>
+            <TouchableOpacity>
+              <Image style={styles.avatarStyle}
+                     source={value.avatar ? {uri: value.avatar} : require("../../../assets/images/default_portrait@2x.png")}/>
+            </TouchableOpacity>
+            <View>
+              <TouchableOpacity>
+                <Text style={styles.userNameStyle}>{value.nickname}</Text>
+              </TouchableOpacity>
+              <View style={styles.timeLocationStyle}>
+                <Text style={styles.timeTextStyle}>
+                  粉丝: 3
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.attentionStyle}>
+              <FollowUser
+                userId={value.id}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  renderAttentionList() {
+    return (
+      <CommonListView
+        contentContainerStyle={styles.itemLayout}
+        dataSource={this.props.userFollowees}
+        renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
+        loadNewData={()=> {
+          this.refreshTopic()
+        }}
+        loadMoreData={()=> {
+          this.loadMoreData()
+        }}
+      />
+    )
+  }
+
+  renderShopList() {
+    return (
+      <View />
+    )
   }
 
   render() {
@@ -60,20 +118,28 @@ class MyAttention extends Component {
         </Header>
         <View style={styles.body}>
           <View style={styles.tabBar}>
-            <Text style={{fontSize: em(15), color: '#50E3C2', marginLeft: normalizeW(86)}}>吾友</Text>
-            <Text style={{fontSize: em(15), color: '#4A4A4A', marginLeft: normalizeW(143)}}>店铺</Text>
+            <TouchableOpacity
+              onPress={()=> {
+                this.setState({tabType: 0})
+              }}>
+              <Text style={{
+                fontSize: em(15),
+                color: this.state.tabType == 0 ? '#50E3C2' : '#4A4A4A',
+                marginLeft: normalizeW(86)
+              }}>吾友</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={()=> {
+                this.setState({tabType: 1})
+              }}>
+              <Text style={{
+                fontSize: em(15),
+                color: this.state.tabType == 1 ? '#50E3C2' : '#4A4A4A',
+                marginLeft: normalizeW(143)
+              }}>店铺</Text>
+            </TouchableOpacity>
           </View>
-          <CommonListView
-            contentContainerStyle={styles.itemLayout}
-            dataSource={this.state.dataSrc}
-            renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
-            loadNewData={()=> {
-              this.refreshTopic()
-            }}
-            loadMoreData={()=> {
-              this.loadMoreData()
-            }}
-          />
+          {this.state.tabType == 0?this.renderAttentionList():this.renderShopList()}
         </View>
       </View>
     )
@@ -83,7 +149,7 @@ class MyAttention extends Component {
 const mapStateToProps = (state, ownProps) => {
   let userFollowees = selectUserFollowees(state)
   return {
-    userFollowees: userFollowees,
+    userFollowees: ds.cloneWithRows(userFollowees),
   }
 }
 
@@ -131,5 +197,46 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginBottom: normalizeH(15),
   },
-
+  //用户、时间、地点信息
+  introWrapStyle: {
+    marginTop: normalizeH(12),
+    marginBottom: normalizeH(12),
+    backgroundColor: '#ffffff',
+  },
+  userNameStyle: {
+    fontSize: em(15),
+    marginTop: 1,
+    marginLeft: 10,
+    color: "#4a4a4a"
+  },
+  attentionStyle: {
+    position: "absolute",
+    right: normalizeW(10),
+    top: normalizeH(6),
+    width: normalizeW(56),
+    height: normalizeH(25)
+  },
+  timeLocationStyle: {
+    marginLeft: normalizeW(11),
+    marginTop: normalizeH(9),
+    flexDirection: 'row'
+  },
+  avatarStyle: {
+    height: normalizeH(44),
+    width: normalizeW(44),
+    marginLeft: normalizeW(12),
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  timeTextStyle: {
+    marginRight: normalizeW(26),
+    fontSize: em(12),
+    color: THEME.colors.lighter
+  },
+  positionStyle: {
+    marginRight: normalizeW(4),
+    width: normalizeW(8),
+    height: normalizeH(12)
+  },
 })
