@@ -229,7 +229,7 @@ class ArticleColumn extends Component {
         <View style={{
           flex: 1,
           alignItems: 'center',
-          backgroundColor: '#F5FCFF',
+          backgroundColor: 'rgba(0,0,0,0.05)',
         }}>
 
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
     alignItems: 'stretch',
-    backgroundColor: '#E5E5E5',
+    backgroundColor: 'rgba(0,0,0,0.05)',
   },
   itemLayout: {
     flex: 1,
