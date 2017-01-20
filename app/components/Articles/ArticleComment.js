@@ -81,7 +81,7 @@ class ArticleComment extends Component {
       <View style={[styles.containerStyle, this.props.containerStyle]}>
 
         <View style={styles.avatarViewStyle}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})}}>
             <Image style={styles.avatarStyle}
                    source={this.props.comment.avatar ? {uri: this.props.comment.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
           </TouchableOpacity>
@@ -89,7 +89,7 @@ class ArticleComment extends Component {
 
         <View style={styles.commentContainerStyle}>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})}}>
             <Text style={styles.userNameStyle}>{this.props.comment.nickname}</Text>
           </TouchableOpacity>
           {this.renderParentComment()}
