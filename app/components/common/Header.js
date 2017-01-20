@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    zIndex: 100,
     backgroundColor: '#fafafa',
     ...Platform.select({
       ios: {
@@ -172,7 +171,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2',
-
   },
   leftWrap: {
     flex: 1,

@@ -104,8 +104,6 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: '#E5E5E5',
   },
 
   tabBarTextStyle: {

@@ -160,8 +160,6 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    alignItems: 'stretch',
-    height:1000
   },
   inputBox: {
     marginBottom: normalizeW(25)

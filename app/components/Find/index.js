@@ -197,8 +197,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Find)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
   buttonImage: {
     position: 'absolute',

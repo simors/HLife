@@ -286,6 +286,8 @@ function fetchLcChatMessages(payload) {
         msgs.unshift(Message.fromLeancloudMessage(msg))
       })
       return msgs
+    }).catch((err) => {
+      console.log(err)
     })
   }
 }
