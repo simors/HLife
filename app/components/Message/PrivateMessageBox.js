@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/1/9.
+ * Created by yangyang on 2017/1/20.
  */
 import React, {Component} from 'react'
 import {
@@ -16,28 +16,28 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {INQUIRY_CONVERSATION} from '../../constants/messageActionTypes'
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import {fetchConversation} from '../../action/messageAction'
 import {getOrderedConvsByType} from '../../selector/messageSelector'
-import InquiryMessageCell from './InquiryMessageCell'
+import PrivateMessageCell from './PrivateMessageCell'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class InquiryMessageBox extends Component {
+class PrivateMessageBox extends Component {
   constructor(props) {
     super(props)
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchConversation({type: INQUIRY_CONVERSATION})
+      this.props.fetchConversation({type: PERSONAL_CONVERSATION})
     })
   }
 
-  renderInquiryMsgBox(rowData) {
+  renderPrivateMsgBox(rowData) {
     return (
-      <InquiryMessageCell members={rowData.members} conversation={rowData.id} />
+      <PrivateMessageCell members={rowData.members} conversation={rowData.id} />
     )
   }
 
@@ -48,13 +48,13 @@ class InquiryMessageBox extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="问诊"
+          title="私信"
         />
         <View style={styles.itemContainer}>
           <ScrollView style={{height: PAGE_HEIGHT}}>
             <ListView
               dataSource={this.props.dataSource}
-              renderRow={(rowData) => this.renderInquiryMsgBox(rowData)}
+              renderRow={(rowData) => this.renderPrivateMsgBox(rowData)}
             />
           </ScrollView>
         </View>
@@ -65,7 +65,7 @@ class InquiryMessageBox extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-  let conversations = getOrderedConvsByType(state, INQUIRY_CONVERSATION)
+  let conversations = getOrderedConvsByType(state, PERSONAL_CONVERSATION)
   return {
     dataSource: ds.cloneWithRows(conversations)
   }
@@ -75,7 +75,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchConversation,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(InquiryMessageBox)
+export default connect(mapStateToProps, mapDispatchToProps)(PrivateMessageBox)
 
 const styles = StyleSheet.create({
   container: {

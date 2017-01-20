@@ -300,7 +300,7 @@ const styles = StyleSheet.create(
       color: '#656565',
     },
     smsAuthCodeTextInput: {
-      height: normalizeH(38),
+      height: normalizeH(42),
       backgroundColor: "#FFFFFF",
       borderWidth: 0,
       paddingLeft: 0,

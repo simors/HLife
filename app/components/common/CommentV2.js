@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
       marginTop: normalizeH(10),
       marginLeft: normalizeW(10),
       width:normalizeW(345),
-        height:normalizeH(100),
+      //  height:normalizeH(100),
       marginRight:normalizeW(10),
       backgroundColor:'#FFFFFF',
       borderRadius:normalizeBorder(5)

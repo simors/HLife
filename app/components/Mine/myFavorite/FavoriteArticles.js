@@ -126,14 +126,14 @@ class FavoriteArticles extends Component{
         <Header headerContainerStyle={styles.header}
                 leftType='icon'
                 leftPress={() => Actions.pop()}
-                title="我的收藏"
+                title="收藏文章"
                 titleStyle={styles.title}>
         </Header>
         <View style={styles.body}>
-          <View style={styles.tabBar}>
-            <Text style={{fontSize:em(15),color:'#50E3C2',marginLeft:normalizeW(86)}} >文章</Text>
-            <Text style={{fontSize:em(15),color:'#4A4A4A',marginLeft:normalizeW(143)}}>店铺</Text>
-          </View>
+          {/*<View style={styles.tabBar}>*/}
+            {/*<Text style={{fontSize:em(15),color:'#50E3C2',marginLeft:normalizeW(86)}} >文章</Text>*/}
+            {/*<Text style={{fontSize:em(15),color:'#4A4A4A',marginLeft:normalizeW(143)}}>店铺</Text>*/}
+          {/*</View>*/}
           <View>
             {this.renderArticleList()}
           </View>
