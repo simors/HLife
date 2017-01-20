@@ -91,7 +91,9 @@ class MessageBoxCell extends Component {
     if (cnt == 1) {
       return (
         <View>
-          <Image style={styles.noticeIcon} source={{uri: this.props.users[0].avatar}}></Image>
+          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.users[0].id})}>
+            <Image style={styles.noticeIcon} source={{uri: this.props.users[0].avatar}}></Image>
+          </TouchableOpacity>
         </View>
       )
     } else if (cnt == 2 || cnt == 4){
