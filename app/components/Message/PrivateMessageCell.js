@@ -10,9 +10,8 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
-import {fetchDoctorGroup} from '../../action/doctorAction'
-import {activeUserId} from '../../selector/authSelector'
-import {getDoctorByGroupUserId} from '../../selector/doctorSelector'
+import {fetchUsers} from '../../action/authActions'
+import {activeUserId, userInfoByIds} from '../../selector/authSelector'
 import MessageBoxCell from './MessageBoxCell'
 
 class PrivateMessageCell extends Component {
@@ -29,17 +28,17 @@ class PrivateMessageCell extends Component {
       return true
     })
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchDoctorGroup({id: otherMem})
+      this.props.fetchUsers({userIds: otherMem})
     })
   }
 
   render() {
     let title = ""
-    let doctorName = []
-    this.props.doctors.map((doctor) => {
-      doctorName.push(doctor.username)
+    let usernames = []
+    this.props.users.map((user) => {
+      usernames.push(user.nickname)
     })
-    title = doctorName.join(',')
+    title = usernames.join(',')
     return (
       <View>
         <MessageBoxCell members={this.props.members} conversation={this.props.conversation} type={PERSONAL_CONVERSATION} title={title} />
@@ -57,15 +56,15 @@ const mapStateToProps = (state, ownProps) => {
     }
     return true
   })
-  let doctors = getDoctorByGroupUserId(state, otherMem)
+  let doctors = userInfoByIds(state, otherMem)
   return {
     currentUser: currentUser,
-    doctors: doctors,
+    users: doctors,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchDoctorGroup,
+  fetchUsers,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrivateMessageCell)
