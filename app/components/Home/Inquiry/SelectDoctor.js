@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
   },
   trip: {
     height: normalizeH(44),
+    paddingLeft: normalizeW(20),
     backgroundColor: 'rgba(80, 226, 193, 0.23)',
     justifyContent: 'center',
     alignItems: 'flex-start'

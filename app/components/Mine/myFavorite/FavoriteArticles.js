@@ -30,24 +30,24 @@ import {fetchFavoriteArticles} from '../../../action/authActions'
 import ArticleShow from '../../Articles/ArticleShow'
 import {unFavoriteArticle} from '../../../action/articleAction'
 import ActionSheet from 'react-native-actionsheet'
+import * as Toast from '../../common/Toast'
 
 
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
-const PAGE_WIDTH=Dimensions.get('window').width
-const PAGE_HEIGHT=Dimensions.get('window').height
 
-
-class FavoriteArticles extends Component{
-  constructor(props){
+class FavoriteArticles extends Component {
+  constructor(props) {
     super(props)
-    this.state={
+    this.state = {
       choosenOne: undefined,
     }
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-    //  console.log('asssssssss')
+      //  console.log('asssssssss')
 
       this.props.fetchFavoriteArticles()
     })
@@ -55,33 +55,42 @@ class FavoriteArticles extends Component{
   }
 
 
-
-  unfavorite(){
+  unfavorite() {
 
   }
+
   _handleActionSheetPress(index) {
-    if(0 == index) { //取消收藏
+    if (0 == index) { //取消收藏
       InteractionManager.runAfterInteractions(() => {
         this.props.unFavoriteArticle(this.state.choosenOne)
-        this.props.fetchFavoriteArticles()
+
+
       })
+      //this.props.fetchFavoriteArticles()
+      //console.log('cancelfavorite=====>')
+      //this.refreshArticleList()
+      setTimeout(()=> {
+        this.refreshArticleList()}, 500
+      )
+      Toast.show('删除成功', {duration: 2000})
     }
   }
 
-  show(payload){
-   // console.log('asssssssss',payload)
+  show(payload) {
+    // console.log('asssssssss',payload)
 
     this.setState({
       choosenOne: payload
     })
-   // console.log('asasddddddddd',this.state.choosenOne)
+    // console.log('asasddddddddd',this.state.choosenOne)
 
     this.ActionSheet.show()
   }
+
   renderArticleItem(rowData) {
     let value = rowData
 
-     //console.log('value=====>',value)
+    //console.log('value=====>',value)
     return (
       <View
         style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
@@ -91,13 +100,15 @@ class FavoriteArticles extends Component{
     )
   }
 
-  refreshArticleList(){
+  refreshArticleList() {
     InteractionManager.runAfterInteractions(() => {
-      //  console.log('asssssssss')
 
       this.props.fetchFavoriteArticles()
+      console.log('asssssssss')
+
     })
   }
+
   renderArticleList() {
     let articleList = this.props.articleList
     let articles = articleList
@@ -120,8 +131,9 @@ class FavoriteArticles extends Component{
 
     }
   }
-  render(){
-    return(
+
+  render() {
+    return (
       <View style={styles.container}>
         <Header headerContainerStyle={styles.header}
                 leftType='icon'
@@ -131,8 +143,8 @@ class FavoriteArticles extends Component{
         </Header>
         <View style={styles.body}>
           {/*<View style={styles.tabBar}>*/}
-            {/*<Text style={{fontSize:em(15),color:'#50E3C2',marginLeft:normalizeW(86)}} >文章</Text>*/}
-            {/*<Text style={{fontSize:em(15),color:'#4A4A4A',marginLeft:normalizeW(143)}}>店铺</Text>*/}
+          {/*<Text style={{fontSize:em(15),color:'#50E3C2',marginLeft:normalizeW(86)}} >文章</Text>*/}
+          {/*<Text style={{fontSize:em(15),color:'#4A4A4A',marginLeft:normalizeW(143)}}>店铺</Text>*/}
           {/*</View>*/}
           <View>
             {this.renderArticleList()}
@@ -151,13 +163,13 @@ class FavoriteArticles extends Component{
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let articleList=selectUserFavoriteArticles(state)
+  let articleList = selectUserFavoriteArticles(state)
   let userInfo = activeUserInfo(state)
 
-  return{
-    articleList : articleList,
+  return {
+    articleList: articleList,
     userInfo: userInfo
- }
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -169,15 +181,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(FavoriteArticles)
 
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1
+  container: {
+    flex: 1
   },
-  header:{
-    backgroundColor:'#F9F9F9'
+  header: {
+    backgroundColor: '#F9F9F9'
   },
-  title:{
-    fontSize:em(17),
-    color:'#030303'
+  title: {
+    fontSize: em(17),
+    color: '#030303'
   },
   body: {
     ...Platform.select({
@@ -190,16 +202,16 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
     width: PAGE_WIDTH,
-    backgroundColor:'rgba(0,0,0,0.05)'
+    backgroundColor: 'rgba(0,0,0,0.05)'
   },
-  tabBar:{
-    height:normalizeH(44),
-    width:PAGE_WIDTH,
-    alignItems:'center',
-    flexDirection:'row',
-   // justifyContent:'center',
-    backgroundColor:'#FFFFFF',
-    marginBottom:normalizeH(15),
+  tabBar: {
+    height: normalizeH(44),
+    width: PAGE_WIDTH,
+    alignItems: 'center',
+    flexDirection: 'row',
+    // justifyContent:'center',
+    backgroundColor: '#FFFFFF',
+    marginBottom: normalizeH(15),
   },
 
 })
