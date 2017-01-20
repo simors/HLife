@@ -537,8 +537,6 @@ const styles = StyleSheet.create(
         }
       }),
       flex: 1,
-      backgroundColor: '#E5E5E5',
-      width: PAGE_WIDTH,
     },
     zanStyle: {
       backgroundColor: THEME.colors.green,
