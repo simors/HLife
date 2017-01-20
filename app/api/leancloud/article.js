@@ -140,7 +140,7 @@ export function getUps(payload) {
   query.equalTo('status', true)
   query.include(['user'])
   return query.find().then((results) => {
-    console.log('results======>',results)
+    //console.log('results======>',results)
 
     let ups = []
     results.forEach((result) => {
@@ -161,10 +161,10 @@ export function getCommentCount(payload) {
   let article = AV.Object.createWithoutData('Articles', articleId)
 
   query.equalTo('articleId',article)
-  console.log('payload=========>',articleId)
+ // console.log('payload=========>',articleId)
   query.equalTo('enable',true)
   return query.count().then((results) =>{
-    console.log('count==>',results)
+   // console.log('count==>',results)
    return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
