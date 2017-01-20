@@ -164,10 +164,10 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: 64,
+        marginTop: 64,
       },
       android: {
-        paddingTop: 44
+        marginTop: 44
       }
     }),
     flex: 1,
