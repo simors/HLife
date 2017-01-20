@@ -96,21 +96,25 @@ class Article extends Component {
 
 
   onUpCommentButton(payload) {
-    if (payload.isUp) {
-      this.props.unUpArticle({
-        articleId: payload.comment.commentId,
-        upType: 'articleComment',
-        success: payload.success,
-        error: this.likeErrorCallback
-      })
-    }
-    else {
-      this.props.upArticle({
-        articleId: payload.comment.commentId,
-        upType: 'articleComment',
-        success: payload.success,
-        error: this.likeErrorCallback
-      })
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      if (payload.isUp) {
+        this.props.unUpArticle({
+          articleId: payload.comment.commentId,
+          upType: 'articleComment',
+          success: payload.success,
+          error: this.likeErrorCallback
+        })
+      }
+      else {
+        this.props.upArticle({
+          articleId: payload.comment.commentId,
+          upType: 'articleComment',
+          success: payload.success,
+          error: this.likeErrorCallback
+        })
+      }
     }
   }
 
