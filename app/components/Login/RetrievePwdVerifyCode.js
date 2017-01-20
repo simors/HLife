@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native'
 
 import {bindActionCreators} from 'redux'
@@ -131,10 +132,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(RetrievePassword)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff'
   },
   body: {
-    paddingTop: normalizeH(108),
-    width: PAGE_WIDTH,
+    ...Platform.select({
+      ios: {
+        marginTop: normalizeH(108),
+      },
+      android: {
+        marginTop: normalizeH(88)
+      }
+    }),
+    flex: 1,
   },
   inputBox: {
     marginBottom: normalizeW(25)
