@@ -5,7 +5,7 @@
 import * as TopicTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Topic,TopicsItem, TopicCommentsItem} from '../models/TopicModel'
-import {Map, List} from 'immutable'
+import Immutable, {Map, List} from 'immutable'
 
 const initialState = Topic()
 
@@ -21,11 +21,24 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopicIsLiked(state, action)
     case TopicTypes.UPDATE_TOPIC_LIKE_USERS:
       return handleUpdateTopicLikeUsers(state, action)
+    case TopicTypes.ADD_TOPIC:
+      return handleAddTopic(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
       return state
   }
+}
+
+function handleAddTopic(state, action) {
+  let topic = action.payload.topic
+  let topicList = state.getIn(['topics', topic.categoryId])
+  if (!topicList) {
+    topicList = new List()
+  }
+  topicList = topicList.push(new TopicsItem(topic))
+  state = state.setIn(['topics', topic.categoryId], topicList)
+  return state
 }
 
 function handleUpdateTopics(state, action) {
