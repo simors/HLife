@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
     width: 45
   },
   body: {
-    backgroundColor: '#E5E5E5',
     ...Platform.select({
       ios: {
         paddingTop: normalizeH(65),

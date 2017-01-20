@@ -170,7 +170,7 @@ class ShopCommentList extends Component {
           />
         </View>
         <KeyboardAwareToolBar
-          initKeyboardHeight={-100}
+          initKeyboardHeight={-50}
         >
           <ToolBarContent
             replyInputRefCallBack={(input)=>{this.replyInput = input}}
