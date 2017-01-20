@@ -226,8 +226,8 @@ class ShopAnnouncementsManage extends Component {
             hideFooter={this.state.hideFooter}
           />
 
-          <TouchableOpacity onPress={()=>{Actions.PUBLISH_SHOP_ANNOUNCEMENT({id: this.props.id})}}>
-            <View style={styles.noticePublishWrap}>
+          <TouchableOpacity style={styles.noticePublishWrap} onPress={()=>{Actions.PUBLISH_SHOP_ANNOUNCEMENT({id: this.props.id})}}>
+            <View style={styles.noticePublishBox}>
               <Image style={styles.noticePublishIcon} source={require('../../../assets/images/notice_publish.png')}/>
               <Text style={styles.noticePublishTxt}>发布新公告</Text>
             </View>
@@ -423,6 +423,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  noticePublishBox: {
     height: 50,
     backgroundColor: THEME.colors.green,
     flexDirection: 'row',
