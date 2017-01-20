@@ -58,20 +58,23 @@ class ShopComment extends Component {
     return (
       <View key={"shop_comment_" + this.props.userId} style={styles.commentContainer}>
         <View style={styles.commentAvatarBox}>
-          {this.props.avatar
-            ? <Image style={styles.commentAvatar} source={{uri: this.props.avatar}}/>
-            : <Image style={styles.commentAvatar} source={require('../../assets/images/default_portrait.png')}/>
-          }
-
+          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.userId})}}>
+            {this.props.avatar
+              ? <Image style={styles.commentAvatar} source={{uri: this.props.avatar}}/>
+              : <Image style={styles.commentAvatar} source={require('../../assets/images/default_portrait.png')}/>
+            }
+          </TouchableOpacity>
           <FollowUser
             userId={this.props.userId}
           />
 
         </View>
         <View style={styles.commentRight}>
-          <View style={[styles.commentLine, styles.commentHeadLine]}>
-            <Text style={styles.commentTitle}>{this.props.userNickname}</Text>
-          </View>
+          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.userId})}}>
+            <View style={[styles.commentLine, styles.commentHeadLine]}>
+              <Text style={styles.commentTitle}>{this.props.userNickname}</Text>
+            </View>
+          </TouchableOpacity>
           <View style={[styles.commentLine, {marginBottom: 10}]}>
             <ScoreShow
               score={this.props.score}

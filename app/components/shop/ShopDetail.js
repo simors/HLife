@@ -302,10 +302,12 @@ class ShopDetail extends Component {
 
             </View>
             <View style={styles.commentRight}>
-              <View style={[styles.commentLine, styles.commentHeadLine]}>
-                <Text style={styles.commentTitle}>{item.user.nickname}</Text>
-                <Text style={styles.commentTime}>{item.createdDate}</Text>
-              </View>
+              <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
+                <View style={[styles.commentLine, styles.commentHeadLine]}>
+                  <Text style={styles.commentTitle}>{item.user.nickname}</Text>
+                  <Text style={styles.commentTime}>{item.createdDate}</Text>
+                </View>
+              </TouchableOpacity>
               <View style={styles.commentLine}>
                 <View style={styles.scoresWrap}>
                   <View style={styles.scoreIconGroup}>
