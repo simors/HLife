@@ -128,7 +128,7 @@ class Mine extends Component {
             <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(25), alignItems: 'flex-end'}}>
               <Image style={{width: 20, height: 20}}  source={require('../../assets/images/扫一扫.png')} />
             </TouchableOpacity>
-            <TouchableOpacity style={{marginTop: normalizeH(14), marginRight: normalizeW(12), alignItems: 'flex-end'}}>
+            <TouchableOpacity style={{marginTop: normalizeH(14), marginRight: normalizeW(12), alignItems: 'flex-end'}} onPress={() =>Actions.MESSAGE_BOX()}>
               <Image style={{width: 20, height: 23}}  source={require('../../assets/images/home_message.png')} />
             </TouchableOpacity>
           </View>

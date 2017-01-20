@@ -241,6 +241,8 @@ export function fetchChatMessages(payload) {
         conversationId: payload.conversationId,
         messages: messages,
       }))
+    }).catch((err) => {
+      console.log(err)
     })
   }
 }

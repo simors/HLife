@@ -120,7 +120,7 @@ class SelectHealthProfile extends Component {
     )
   }
 
-  addHealthProfile() {
+  addHealthProfile= () => {
     let payload = {
       interKey: 'select_health_profile'
     }
@@ -139,6 +139,7 @@ class SelectHealthProfile extends Component {
           titleStyle={styles.titile}
           rightType="text"
           rightText="编辑"
+          rightPress = {() => {}}
         />
         <View style={styles.body}>
           <View style={styles.trip}>
