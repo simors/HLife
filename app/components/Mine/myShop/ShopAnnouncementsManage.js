@@ -73,13 +73,8 @@ class ShopAnnouncementsManage extends Component {
   componentWillReceiveProps(nextProps) {
     // console.log('this.props.hideFooter===', this.props.hideFooter)
     // console.log('nextProps.hideFooter===', nextProps.hideFooter)
-    if(this.props.hideFooter != nextProps.hideFooter) {
-      this.setState({
-        hideFooter: nextProps.hideFooter
-      })
-    }
-
     this.setState({
+      hideFooter: !!nextProps.hideFooter,
       shopAnnouncementList: nextProps.shopAnnouncementList,
       ds: ds.cloneWithRows(nextProps.shopAnnouncementList)
     })
