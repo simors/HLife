@@ -283,9 +283,9 @@ const ScrollableTabView = React.createClass({
         }}>
           <View
             style={{
-              shadowOpacity:0.3,
-              shandowRadius:0.3,
-              shadowOffset:{width:normalizeW(-3),
+              shadowOpacity:0.49,
+              shadowRadius:3,
+              shadowOffset:{width:normalizeW(1),
                 height:normalizeH(0)},
               shadowColor:'#000',
               width: normalizeW(45),
@@ -294,9 +294,9 @@ const ScrollableTabView = React.createClass({
               borderLeftWidth: 0,
               borderLeftColor: '#50E3C2',
              // borderBottomColor: '#50E3C2',
-              height:normalizeH(36)
+              height:normalizeH(36),
             }}>
-            <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(13)}}
+            <Image style={{height: normalizeH(20), width: normalizeW(20), marginLeft: normalizeW(13),borderRadius:0.5}}
                    source={require("../../../assets/images/artical_more.png")}/>
           </View>
         </TouchableOpacity>
