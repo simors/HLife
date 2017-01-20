@@ -311,8 +311,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Local)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: '#F5FCFF'
   },
   contentContainerStyle: {
     paddingBottom: 49
@@ -327,8 +325,6 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: '#E5E5E5',
   },
   moduleB: {
     height: normalizeH(183),

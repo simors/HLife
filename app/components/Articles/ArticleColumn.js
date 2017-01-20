@@ -306,8 +306,6 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: 'rgba(0,0,0,0.05)',
   },
   itemLayout: {
     flex: 1,

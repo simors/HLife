@@ -336,22 +336,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
-    backgroundColor: '#E5E5E5',
-    justifyContent: 'flex-start',
   },
 
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(65),
+        paddingTop: normalizeH(64),
       },
       android: {
-        paddingTop: normalizeH(45)
+        paddingTop: normalizeH(44)
       }
     }),
     flex: 1,
-    backgroundColor: '#E5E5E5',
-    width: PAGE_WIDTH
   },
 
   likeStyle: {

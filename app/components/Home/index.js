@@ -277,8 +277,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Home)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: '#F5FCFF'
   },
   contentContainerStyle: {
     paddingBottom: 49
@@ -286,15 +284,13 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(65),
+        paddingTop: normalizeH(64),
       },
       android: {
-        paddingTop: normalizeH(45)
+        paddingTop: normalizeH(44)
       }
     }),
     flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: '#E5E5E5',
   },
   healthModule: {
     height: normalizeH(64),

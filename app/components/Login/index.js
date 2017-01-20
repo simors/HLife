@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    alignItems: 'stretch'
   },
   logo: {
     alignSelf: 'center',

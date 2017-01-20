@@ -171,7 +171,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2',
-
   },
   leftWrap: {
     flex: 1,
