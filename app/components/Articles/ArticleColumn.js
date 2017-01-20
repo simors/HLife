@@ -229,7 +229,7 @@ class ArticleColumn extends Component {
         <View style={{
           flex: 1,
           alignItems: 'center',
-          backgroundColor: 'rgba(0,0,0,0.05)',
+         // backgroundColor: 'rgba(0,0,0,0.05)',
         }}>
 
         <ScrollableTabView style={[styles.body, this.props.body && this.props.body]}
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(64),
+        paddingTop: normalizeH(65),
       },
       android: {
         paddingTop: normalizeH(45)
