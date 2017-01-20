@@ -30,6 +30,7 @@ import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {fetchShopAnnouncements, } from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -88,6 +89,7 @@ class PublishShopAnnouncement extends Component {
   }
 
   submitSuccessCallback(context, message) {
+    dismissKeyboard()
     this.props.fetchShopAnnouncements({
       id: context.props.id,
       isRefresh: true

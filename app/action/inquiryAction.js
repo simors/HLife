@@ -6,6 +6,7 @@ import * as InquiryTypes from '../constants/inquiryActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as lcAuth from '../api/leancloud/auth'
+import * as doctorTypes from '../constants/doctorActionTypes'
 
 
 export function inputFormCheck(payload) {
@@ -57,7 +58,9 @@ export function handleInquirySubmit(payload, formData) {
     }
 
     lcAuth.inquirySubmit(inquiryPayload).then((result) => {
-      console.log("handleInquirySubmit success")
+      console.log("handleInquirySubmit inquirySubmit:", result)
+      let addQuestionAction = createAction(doctorTypes.ADD_QUESTION)
+      dispatch(addQuestionAction({question: result}))
       if (payload.success) {
         payload.success(result)
       }

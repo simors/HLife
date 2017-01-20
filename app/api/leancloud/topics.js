@@ -234,6 +234,17 @@ export function getTopics(payload) {
   })
 }
 
+export function getTopicById(payload) {
+  let query = new AV.Query('Topics')
+  query.include(['user'])
+  return query.get(payload.topicId).then((topicRecord) => {
+    return TopicsItem.fromLeancloudObject(topicRecord)
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function getTopicComments(payload) {
   let topicId = payload.topicId
   let topic = AV.Object.createWithoutData('Topics', topicId);
