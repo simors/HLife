@@ -1,6 +1,7 @@
 /**
  * Created by zachary on 2016/12/14.
  */
+import {activeUserId} from './authSelector'
 
 export function selectShop(state) {
   return state.SHOP.toJS()
@@ -120,10 +121,14 @@ export function selectShopTags(state) {
   return state.SHOP.get('shopTagList').toJS()
 }
 
-export function selectUserOwnedShopInfo(state) {
-  if(state.SHOP.get('userOwnedShopInfo').size) {
+export function selectUserOwnedShopInfo(state, userId) {
+  let _userId = activeUserId(state)
+  if(userId) {
+    _userId = userId
+  }
+  if(state.SHOP.getIn(['userOwnedShopInfo', _userId]) && state.SHOP.getIn(['userOwnedShopInfo', _userId]).size) {
     // console.log('state.SHOP.get(userOwnedShopInfo).toJS()[0]===', state.SHOP.get('userOwnedShopInfo').toJS()[0])
-    return state.SHOP.get('userOwnedShopInfo').toJS()[0]
+    return state.SHOP.getIn(['userOwnedShopInfo', _userId]).toJS()[0]
   }
   return {}
 }

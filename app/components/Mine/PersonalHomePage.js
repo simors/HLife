@@ -24,10 +24,12 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount} from '../../action/authActions'
+import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {getTopics} from '../../selector/topicSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as authSelector from '../../selector/authSelector'
+import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import FollowUser from '../common/FollowUser'
 
@@ -48,6 +50,7 @@ class PersonalHomePage extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isLogin) {
+        this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
         this.props.fetchOtherUserFollowers({userId: this.props.userId})
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
         this.props.getUserInfoById({userId: this.props.userId})
@@ -71,6 +74,14 @@ class PersonalHomePage extends Component {
         title: this.props.userInfo.nickname,
       }
       Actions.CHATROOM(payload)
+    }
+  }
+
+  onUserShopClick() {
+    if(this.props.userOwnedShopInfo.id) {
+      Actions.SHOP_DETAIL({id: this.props.userOwnedShopInfo.id})
+    }else {
+      Toast.show('该用户暂未注册店铺')
     }
   }
 
@@ -219,7 +230,7 @@ class PersonalHomePage extends Component {
                 style={[styles.arrowForward]}/>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{flex:1}}>
+          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserShopClick()}}>
             <View style={styles.otherInfoBox}>
               <Image
                 source={require('../../assets/images/shop_small.png')}
@@ -293,6 +304,7 @@ const mapStateToProps = (state, ownProps) => {
   const topics = getTopics(state)
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
   const userFollowers = authSelector.selectUserFollowers(state, ownProps.userId)
   const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
   // console.log('mapStateToProps.userFollowers===', userFollowers)
@@ -333,7 +345,8 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: authSelector.activeUserId(state),
     userInfo: userInfo,
     userFollowers: userFollowers,
-    userFollowersTotalCount: userFollowersTotalCount
+    userFollowersTotalCount: userFollowersTotalCount,
+    userOwnedShopInfo: userOwnedShopInfo
   }
 }
 
@@ -343,7 +356,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   unLikeTopic,
   fetchOtherUserFollowers,
   fetchOtherUserFollowersTotalCount,
-  getUserInfoById
+  getUserInfoById,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
