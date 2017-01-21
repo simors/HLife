@@ -54,20 +54,56 @@ function handleAddTopic(state, action) {
   return state
 }
 
+function handleUpdatePagingShopCommentList(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let shopComments = payload.shopComments
+  let _map = state.get('shopComments')
+  let _list = _map.get(shopId) || new List()
+  let newShopComments = _list.concat(shopComments)
+  let _newMap = _map.set(shopId, newShopComments)
+  state = state.set('shopComments', _newMap)
+  return state
+}
 function handleUpdateTopics(state, action) {
   let payload = action.payload
-  switch (payload.type) {
-    case "topics":
-      let _map = state.get('topics')
-      _map = _map.set(payload.categoryId, payload.topics)
-      state = state.set('topics', _map)
-      break
-    case "myTopics":
-      state = state.set('myTopics', payload.topics)
-      break
-    case "allTopics":
-      state = state.set('allTopics', payload.topics)
-      break
+  let _list = undefined
+  let _newList = undefined
+  if (payload.isPaging){
+    switch (payload.type) {
+      case "topics":
+        let _map = state.get('topics')
+        _list = _map.get(payload.categoryId) || new List()
+        let newTopics = _list.concat(payload.topics)
+        let _newMap = _map.set(payload.categoryId, newTopics)
+        state = state.set('topics', _newMap)
+        break
+      case "myTopics":
+        _list = state.get('myTopics') || new List()
+        _newList = _list.concat(payload.topics)
+        state = state.set('myTopics', _newList)
+        break
+      case "allTopics":
+        _list = state.get('allTopics') || new List()
+        _newList = _list.concat(payload.topics)
+        state = state.set('allTopics', _newList)
+        break
+    }
+  }
+  else {
+    switch (payload.type) {
+      case "topics":
+        let _map = state.get('topics')
+        _map = _map.set(payload.categoryId, payload.topics)
+        state = state.set('topics', _map)
+        break
+      case "myTopics":
+        state = state.set('myTopics', payload.topics)
+        break
+      case "allTopics":
+        state = state.set('allTopics', payload.topics)
+        break
+    }
   }
   return state
 }
