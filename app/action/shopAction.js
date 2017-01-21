@@ -301,12 +301,17 @@ export function reply(payload) {
       if(payload.replyId) {
         replyTo = payload.replyUserId
       }
+
+      let replyId = payload.replyId
+      if('SHOP_NOTIFY' == payload.from) {
+        replyId = result.id
+      }
       let params = {
         shopId: payload.shopId,
         replyTo: replyTo,
         commentId: payload.replyShopCommentId,
         content: payload.replyContent,
-        replyId: payload.replyId,
+        replyId: replyId,
         replyContent: payload.replyContent
       }
       // console.log('shop.reply===params=', params)

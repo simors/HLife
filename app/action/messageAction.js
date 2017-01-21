@@ -577,6 +577,7 @@ export function notifyShopComment(payload) {
         replyId: payload.replyId,
         replyContent: payload.replyContent
       }
+      // console.log('payload.replyId===', payload.replyId)
       let text = currentUser.nickname + '在您的店铺中发表了评论'
       if(payload.replyId) {
         text = currentUser.nickname + '在' + shopDetail.shopName + '店铺中回复了您的评论'

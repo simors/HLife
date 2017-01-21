@@ -57,6 +57,7 @@ class ShopNotifyView extends Component {
       replyUserId : this.state.replyUserId,
       replyShopCommentUserId : this.state.replyShopCommentUserId,
       replyContent : content,
+      from: 'SHOP_NOTIFY',
       success: (result) => {
         dismissKeyboard()
         Toast.show('回复成功', {duration: 1500})
@@ -71,6 +72,7 @@ class ShopNotifyView extends Component {
     if(this.replyInput) {
       this.replyInput.focus()
     }
+    // console.log('openReplyBox.notice===', notice)
     this.setState({
       shopId: notice.shopId,
       replyShopCommentId: notice.commentId,
