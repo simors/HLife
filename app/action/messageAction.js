@@ -169,6 +169,10 @@ export function createConversation(payload) {
 export function sendMessage(payload) {
   return (dispatch, getState) => {
 
+    if (!payload.text || payload.text.length == 0) {
+      return
+    }
+
     let attributes = {}
     if (payload.type == msgTypes.MSG_IMAGE) {
       attributes['localUri'] = payload.uri
@@ -331,6 +335,12 @@ function createOriginalConversation(payload) {
       console.log('leancloud Messenger init failed, can\'t get client')
       return undefined
     }
+
+    let wuaiSysSpeaker = payload.members.includes(msgTypes.WUAI_SYSTEM_SPEAKER)
+    if (!wuaiSysSpeaker) {
+      payload.members.push(msgTypes.WUAI_SYSTEM_SPEAKER)    // 为了区分通知消息或私信的会话，如果是通知的会话，则插入系统用户为会话参与者
+    }
+
     return client.createConversation({
       members: payload.members,
       name: payload.name,
