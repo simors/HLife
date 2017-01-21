@@ -32,6 +32,8 @@ import * as authSelector from '../../selector/authSelector'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import FollowUser from '../common/FollowUser'
+import {getDoctorInfoByUserId} from '../../selector/doctorSelector'
+import {fetchDoctorByUserId} from '../../action/doctorAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -54,6 +56,7 @@ class PersonalHomePage extends Component {
         this.props.fetchOtherUserFollowers({userId: this.props.userId})
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
         this.props.getUserInfoById({userId: this.props.userId})
+        this.props.fetchDoctorByUserId({id: this.props.userId})
       }
       this.refreshData()
     })
@@ -74,6 +77,14 @@ class PersonalHomePage extends Component {
         title: this.props.userInfo.nickname,
       }
       Actions.CHATROOM(payload)
+    }
+  }
+
+  onUserDoctorClick() {
+    if(this.props.doctorInfo) {
+
+    }else {
+      Toast.show('该用户还不是医生')
     }
   }
 
@@ -219,7 +230,7 @@ class PersonalHomePage extends Component {
         </View>
 
         <View style={[styles.row, styles.otherInfoWrap]}>
-          <TouchableOpacity style={{flex:1}}>
+          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserDoctorClick()}}>
             <View style={[styles.otherInfoBox, styles.borderBottom]}>
               <Image
                 source={require('../../assets/images/doctor_small.png')}
@@ -302,6 +313,8 @@ const mapStateToProps = (state, ownProps) => {
 
 
   const topics = getTopics(state)
+  const doctorInfo = getDoctorInfoByUserId(state, ownProps.userId)
+  // console.log('doctorInfo========', doctorInfo)
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
@@ -346,7 +359,8 @@ const mapStateToProps = (state, ownProps) => {
     userInfo: userInfo,
     userFollowers: userFollowers,
     userFollowersTotalCount: userFollowersTotalCount,
-    userOwnedShopInfo: userOwnedShopInfo
+    userOwnedShopInfo: userOwnedShopInfo,
+    doctorInfo: doctorInfo
   }
 }
 
@@ -357,7 +371,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchOtherUserFollowers,
   fetchOtherUserFollowersTotalCount,
   getUserInfoById,
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  fetchDoctorByUserId
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
@@ -408,6 +423,8 @@ const styles = StyleSheet.create({
   },
   sexNameWrap: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20
   },
   sexImg: {
