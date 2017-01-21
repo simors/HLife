@@ -240,7 +240,7 @@ export function userUnUpShop(payload) {
 export function fetchShopCommentUpedUserList(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopCommentUpedUserListByCloudFunc(payload).then((shopCommentUpedUserList) => {
-      console.log('fetchShopCommentUpedUserList.action===', shopCommentUpedUserList)
+      // console.log('fetchShopCommentUpedUserList.action===', shopCommentUpedUserList)
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_UPED_USER_LIST_SUCCESS)
 
       let params = {}
@@ -298,16 +298,16 @@ export function reply(payload) {
       dispatch(updateAction(result))
 
       let replyTo = payload.replyShopCommentUserId
-      let commentId = payload.replyShopCommentId
       if(payload.replyId) {
         replyTo = payload.replyUserId
-        commentId = payload.replyId
       }
       let params = {
         shopId: payload.shopId,
         replyTo: replyTo,
-        commentId: commentId,
+        commentId: payload.replyShopCommentId,
         content: payload.replyContent,
+        replyId: payload.replyId,
+        replyContent: payload.replyContent
       }
       // console.log('shop.reply===params=', params)
       dispatch(msgAction.notifyShopComment(params))
