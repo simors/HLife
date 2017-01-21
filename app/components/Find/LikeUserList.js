@@ -131,10 +131,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(65),
+        marginTop: normalizeH(65),
       },
       android: {
-        paddingTop: normalizeH(45)
+        marginTop: normalizeH(45)
       }
     }),
   },
