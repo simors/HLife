@@ -22,6 +22,9 @@ export function publishTopics(payload) {
   topic.set('likeCount', 0)
 
   return topic.save().then(function (result) {
+    let newTopic = result
+    newTopic.attributes.user = AV.User.current()
+    return TopicsItem.fromLeancloudObject(newTopic)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

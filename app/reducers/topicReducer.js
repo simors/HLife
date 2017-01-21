@@ -49,7 +49,7 @@ function handleAddTopic(state, action) {
   if (!topicList) {
     topicList = new List()
   }
-  topicList = topicList.push(new TopicsItem(topic))
+  topicList = topicList.insert(0, new TopicsItem(topic))
   state = state.setIn(['topics', topic.categoryId], topicList)
   return state
 }

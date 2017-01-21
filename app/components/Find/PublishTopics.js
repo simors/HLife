@@ -225,10 +225,10 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(65),
+        marginTop: normalizeH(64),
       },
       android: {
-        paddingTop: normalizeH(45)
+        marginTop: normalizeH(44)
       }
     }),
     height: PAGE_HEIGHT,
