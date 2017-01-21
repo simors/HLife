@@ -4,6 +4,8 @@
 
 // 会诊会话中默认加入的系统用户名
 export const WUAI_SYSTEM_DOCTOR = 'wuaiSystemDocter'
+// 通知消息中加入系统用户
+export const WUAI_SYSTEM_SPEAKER = 'wuaiSystemSpeaker'
 
 // 会话的类型
 export const INQUIRY_CONVERSATION = 'INQUIRY_CONVERSATION'      // 问诊
