@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-  InteractionManager
+  InteractionManager,
+  Platform
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -91,17 +92,19 @@ class Chatroom extends Component {
           leftPress={() => Actions.pop()}
           title={this.props.title}
         />
-        <GiftedChat
-          messages={this.props.messages}
-          onSend={this.onSend}
-          user={{
-            _id: this.props.user.id,
-            name: this.props.user.nickname ? this.props.user.nickname : this.props.user.phone,
-            avatar: this.props.user.avatar,
-          }}
-          renderInputToolbar={(toobarProps) => this.renderCustomInputToolbar(toobarProps)}
-          renderMessage={(messageProps) => this.renderCustomMessage(messageProps)}
-        />
+        <View style={styles.conversationView}>
+          <GiftedChat
+            messages={this.props.messages}
+            onSend={this.onSend}
+            user={{
+              _id: this.props.user.id,
+              name: this.props.user.nickname ? this.props.user.nickname : this.props.user.phone,
+              avatar: this.props.user.avatar,
+            }}
+            renderInputToolbar={(toobarProps) => this.renderCustomInputToolbar(toobarProps)}
+            renderMessage={(messageProps) => this.renderCustomMessage(messageProps)}
+          />
+        </View>
       </View>
     )
   }
@@ -169,10 +172,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  header: {
-    flexDirection: 'row',
-    marginTop: 20,
-    height: 40,
+  conversationView: {
+    flex: 1,
+    ...Platform.select({
+      ios: {
+        marginTop: 65,
+      },
+      android: {
+        marginTop: 45
+      }
+    }),
   },
-  conversationView: {},
 })
