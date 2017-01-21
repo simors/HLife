@@ -96,7 +96,14 @@ export function fetchTopics(payload) {
   return (dispatch, getState) => {
     lcTopics.getTopics(payload).then((topics) => {
       let updateTopicsAction = createAction(topicActionTypes.UPDATE_TOPICS)
-      dispatch(updateTopicsAction({categoryId:payload.categoryId, type:payload.type, topics: topics}))
+      dispatch(updateTopicsAction({
+        isPaging: !payload.isRefresh,
+        categoryId:payload.categoryId,
+        type:payload.type, topics: topics
+      }))
+      if(payload.success) {
+        payload.success(topics.size==0)
+      }
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

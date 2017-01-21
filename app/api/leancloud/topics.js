@@ -238,8 +238,16 @@ export function getTopics(payload) {
     query.equalTo('user', currentUser)
   }
 
-  query.include(['user']);
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  if(!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
+
+  query.limit(5) // 最多返回 5 条结果
+  query.include(['user'])
   query.descending('createdAt')
+
   return query.find().then(function (results) {
     let topics = []
     results.forEach((result) => {
