@@ -367,11 +367,11 @@ export function fetchShopTags(payload) {
 
 export function fetchUserOwnedShopInfo(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchUserOwnedShopInfo(payload).then((shopInfo) => {
+    lcShop.fetchUserOwnedShopInfo(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS)
-      dispatch(updateAction({shopInfo:shopInfo}))
+      dispatch(updateAction(result))
       if(payload && payload.success){
-        payload.success(shopInfo)
+        payload.success(result)
       }
     }).catch((error)=> {
       if(payload && payload.error){

@@ -65,9 +65,9 @@ export class TopicDetail extends Component {
   }
 
   submitSuccessCallback() {
-    Toast.show('评论成功')
-    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
-    this.closeModal()
+    this.closeModal(()=> {
+      Toast.show('评论成功', {duration: 1000})
+    })
   }
 
   submitErrorCallback(error) {

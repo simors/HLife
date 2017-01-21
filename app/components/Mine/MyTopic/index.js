@@ -39,7 +39,7 @@ export class MyTopic extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({type: "myTopics"})
+      this.props.fetchTopics({isRefresh: true, type: "myTopics"})
     })
   }
 
@@ -53,12 +53,36 @@ export class MyTopic extends Component {
   }
 
   refreshTopic() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({type: "myTopics"})
-    })
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
+  loadMoreData(isRefresh) {
+    let lastCreatedAt = undefined
+    if(this.props.topics){
+      let currentTopics = this.props.topics
+      if(currentTopics && currentTopics.length) {
+        lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
+      }
+    }
+    let payload = {
+      type: "myTopics",
+      lastCreatedAt: lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchTopics(payload)
   }
 
   render() {
@@ -80,8 +104,9 @@ export class MyTopic extends Component {
               this.refreshTopic()
             }}
             loadMoreData={()=> {
-              this.loadMoreData()
+              this.loadMoreData(false)
             }}
+            ref={(listView) => this.listView = listView}
           />
         </View>
       </View>
