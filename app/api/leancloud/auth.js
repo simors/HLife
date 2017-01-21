@@ -581,10 +581,8 @@ export function inquirySubmit(payload) {
   question.set('status', 1) //会话打开
 
   return question.save().then((record) => {
-      console.log("inquirySubmit lean in:", record)
 
       let questionRecord = Question.fromLeancloudObject(record)
-    console.log("inquirySubmit lean return:", questionRecord)
     return {
       question: questionRecord
     }

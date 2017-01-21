@@ -49,8 +49,11 @@ class SelectHealthProfile extends Component {
     this.setState({healthProfileChecked})
   }
 
-  submitSuccessCallback = () => {
-    Actions.SELECT_DOCTOR()
+  submitSuccessCallback = (record) => {
+    let payload = {
+      questionId: record.question.id,
+    }
+    Actions.SELECT_DOCTOR(payload)
   }
 
   submitErrorCallback(error) {
