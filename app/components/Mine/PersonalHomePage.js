@@ -29,6 +29,7 @@ import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as authSelector from '../../selector/authSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import FollowUser from '../common/FollowUser'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -150,6 +151,12 @@ class PersonalHomePage extends Component {
     }
   }
 
+  renderNoFollow() {
+    return (
+      <Text style={styles.btnTxt}>关注</Text>
+    )
+  }
+
   renderPersonalInfoColumn() {
     let avatar = require('../../assets/images/default_portrait.png')
     if(this.props.userInfo.avatar) {
@@ -159,6 +166,7 @@ class PersonalHomePage extends Component {
     if(this.props.userInfo.gender == 'female') {
       genderIcon = require('../../assets/images/female.png')
     }
+    
     return (
       <View style={styles.personalInfoWrap}>
         <View style={[styles.row, styles.baseInfoWrap]}>
@@ -183,9 +191,12 @@ class PersonalHomePage extends Component {
             </View>
           </View>
           <View style={styles.btnWrap}>
-            <TouchableOpacity style={{flex:1}}>
+            <TouchableOpacity style={{flex:1}} onPress={() => this.toggleFollow()}>
               <View style={[styles.btnBox, styles.rightBorder]}>
-                <Text style={styles.btnTxt}>已关注</Text>
+                <FollowUser
+                  userId={this.props.userId}
+                  renderNoFollow={this.renderNoFollow.bind(this)}
+                />
               </View>
             </TouchableOpacity>
             <TouchableOpacity style={{flex:1}} onPress={() => this.sendPrivateMessage()}>
