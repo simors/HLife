@@ -19,6 +19,8 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopicLikesTotalCount(state, action)
     case TopicTypes.FETCH_TOPIC_IS_LIKED_SUCCESS:
       return handleUpdateTopicIsLiked(state, action)
+    case TopicTypes.PUBLISH_COMMENT_SUCCESS:
+      return handleAddTopicComment(state, action)
     case TopicTypes.UPDATE_TOPIC_LIKE_USERS:
       return handleUpdateTopicLikeUsers(state, action)
     case TopicTypes.ADD_TOPIC:
@@ -30,13 +32,24 @@ export default function topicReducer(state = initialState, action) {
   }
 }
 
+function handleAddTopicComment(state, action) {
+  let topicComment = action.payload.topicComment
+  let topicCommentList = state.getIn(['topicComments', action.payload.topicId])
+  if (!topicCommentList) {
+    topicCommentList = new List()
+  }
+  topicCommentList = topicCommentList.insert(0, topicComment)
+  state = state.setIn(['topicComments', action.payload.topicId], topicCommentList)
+  return state
+}
+
 function handleAddTopic(state, action) {
   let topic = action.payload.topic
   let topicList = state.getIn(['topics', topic.categoryId])
   if (!topicList) {
     topicList = new List()
   }
-  topicList = topicList.push(new TopicsItem(topic))
+  topicList = topicList.insert(0, new TopicsItem(topic))
   state = state.setIn(['topics', topic.categoryId], topicList)
   return state
 }

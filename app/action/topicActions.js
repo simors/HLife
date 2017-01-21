@@ -46,12 +46,12 @@ function handlePublishTopic(payload, formData) {
       categoryId: payload.categoryId,
       userId: payload.userId
     }
-    lcTopics.publishTopics(publishTopicPayload).then(() => {
+    lcTopics.publishTopics(publishTopicPayload).then((result) => {
       if (payload.success) {
         payload.success()
       }
-      let publishAction = createAction(topicActionTypes.PUBLISH_SUCCESS)
-      dispatch(publishAction({stateKey: payload.stateKey}))
+      let publishAction = createAction(topicActionTypes.ADD_TOPIC)
+      dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -77,11 +77,11 @@ function handlePublishTopicComment(payload, formData) {
         payload.success()
       }
       let publishCommentAction = createAction(topicActionTypes.PUBLISH_COMMENT_SUCCESS)
-      dispatch(publishCommentAction({stateKey: payload.stateKey}))
+      dispatch(publishCommentAction({topicId:payload.topicId, topicComment:result, stateKey: payload.stateKey}))
       dispatch(notifyTopicComment({
         topicId: payload.topicId,
         replyTo: payload.replyTo,
-        commentId: result.id,
+        commentId: result.objectId,
         content: payload.content
       }))
     }).catch((error) => {

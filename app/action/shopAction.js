@@ -301,12 +301,17 @@ export function reply(payload) {
       if(payload.replyId) {
         replyTo = payload.replyUserId
       }
+
+      let replyId = payload.replyId
+      if('SHOP_NOTIFY' == payload.from) {
+        replyId = result.id
+      }
       let params = {
         shopId: payload.shopId,
         replyTo: replyTo,
         commentId: payload.replyShopCommentId,
         content: payload.replyContent,
-        replyId: payload.replyId,
+        replyId: replyId,
         replyContent: payload.replyContent
       }
       // console.log('shop.reply===params=', params)
@@ -362,11 +367,11 @@ export function fetchShopTags(payload) {
 
 export function fetchUserOwnedShopInfo(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchUserOwnedShopInfo(payload).then((shopInfo) => {
+    lcShop.fetchUserOwnedShopInfo(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS)
-      dispatch(updateAction({shopInfo:shopInfo}))
+      dispatch(updateAction(result))
       if(payload && payload.success){
-        payload.success(shopInfo)
+        payload.success(result)
       }
     }).catch((error)=> {
       if(payload && payload.error){

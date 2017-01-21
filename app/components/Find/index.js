@@ -54,17 +54,16 @@ export class Find extends Component {
         categoryId: this.props.topicCategories[this.state.selectedTab].objectId
       })
     })
-    // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
   getSelectedTab(index) {
+    this.setState({selectedTab: index})
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopics({
         type: "topics",
         categoryId: this.props.topicCategories[index].objectId
       })
     })
-    this.setState({selectedTab: index})
   }
 
   onLikeButton(payload) {
@@ -197,6 +196,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Find)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E5E5E5',
   },
   buttonImage: {
     position: 'absolute',

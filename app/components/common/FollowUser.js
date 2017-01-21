@@ -99,15 +99,23 @@ class FollowUser extends Component {
     if(userIsFollowedTheUser) {
       return (
         <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(this.props.userId)}}>
-          <Text style={styles.userAttentionedTxt}>取消关注</Text>
+          <Text style={styles.userAttentionedTxt}>已关注</Text>
         </TouchableOpacity>
       )
     }else {
-      return (
-        <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
-          <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
-        </TouchableOpacity>
-      )
+      if(this.props.renderNoFollow) {
+        return (
+          <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
+            {this.props.renderNoFollow()}
+          </TouchableOpacity>
+        )
+      }else {
+        return (
+          <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
+            <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
+          </TouchableOpacity>
+        )
+      }
     }
   }
 }

@@ -8,20 +8,16 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Alert,
   Dimensions,
   Platform,
-  Modal,
   ScrollView,
-  TouchableHighlight,
-  WebView,
   InteractionManager,
   ListView,
   RefreshControl,
 } from 'react-native'
 import Header from '../../common/Header'
 import {Actions} from 'react-native-router-flux'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {selectUserFollowees} from '../../../selector/authSelector'
@@ -59,12 +55,12 @@ class MyAttention extends Component {
         <View style={styles.introWrapStyle}>
           <View style={{flexDirection: 'row'}} onPress={()=> {
           }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
               <Image style={styles.avatarStyle}
                      source={value.avatar ? {uri: value.avatar} : require("../../../assets/images/default_portrait@2x.png")}/>
             </TouchableOpacity>
             <View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
                 <Text style={styles.userNameStyle}>{value.nickname}</Text>
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>
