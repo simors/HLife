@@ -574,8 +574,13 @@ export function notifyShopComment(payload) {
         shopId: shopId,
         commentId: payload.commentId,
         commentContent: payload.content,
+        replyId: payload.replyId,
+        replyContent: payload.replyContent
       }
       let text = currentUser.nickname + '在您的店铺中发表了评论'
+      if(payload.replyId) {
+        text = currentUser.nickname + '在' + shopDetail.shopName + '店铺中回复了您的评论'
+      }
       message.setText(text)
       message.setAttributes(attrs)
       conversation.send(message)
