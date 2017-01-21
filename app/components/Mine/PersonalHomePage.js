@@ -23,7 +23,7 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {getUserInfoById, fetchUserFollowers, fetchUserFollowersTotalCount} from '../../action/authActions'
+import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount} from '../../action/authActions'
 import {getTopics} from '../../selector/topicSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -47,8 +47,8 @@ class PersonalHomePage extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isLogin) {
-        this.props.fetchUserFollowers()
-        this.props.fetchUserFollowersTotalCount()
+        this.props.fetchOtherUserFollowers({userId: this.props.userId})
+        this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
         this.props.getUserInfoById({userId: this.props.userId})
       }
       this.refreshData()
@@ -282,37 +282,39 @@ const mapStateToProps = (state, ownProps) => {
   const topics = getTopics(state)
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
-  // const userFollowers = authSelector.selectUserFollowers(state)
-  // const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state)
-  const userFollowers = [
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-  ]
-  const userFollowersTotalCount = 200
+  const userFollowers = authSelector.selectUserFollowers(state, ownProps.userId)
+  const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
+  // console.log('mapStateToProps.userFollowers===', userFollowers)
+  // console.log('mapStateToProps.userFollowersTotalCount===', userFollowersTotalCount)
+  // const userFollowers = [
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  // ]
+  // const userFollowersTotalCount = 200
   return {
     ds: ds.cloneWithRows(dataArray),
     topics: topics,
@@ -328,8 +330,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopics,
   likeTopic,
   unLikeTopic,
-  fetchUserFollowers,
-  fetchUserFollowersTotalCount,
+  fetchOtherUserFollowers,
+  fetchOtherUserFollowersTotalCount,
   getUserInfoById
 }, dispatch)
 
