@@ -77,11 +77,11 @@ function handlePublishTopicComment(payload, formData) {
         payload.success()
       }
       let publishCommentAction = createAction(topicActionTypes.PUBLISH_COMMENT_SUCCESS)
-      dispatch(publishCommentAction({stateKey: payload.stateKey}))
+      dispatch(publishCommentAction({topicId:payload.topicId, topicComment:result, stateKey: payload.stateKey}))
       dispatch(notifyTopicComment({
         topicId: payload.topicId,
         replyTo: payload.replyTo,
-        commentId: result.id,
+        commentId: result.objectId,
         content: payload.content
       }))
     }).catch((error) => {

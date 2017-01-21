@@ -194,12 +194,27 @@ export function publishTopicComments(payload) {
       let relation = topic.relation('comments')
       relation.add(topicComment);
       topic.increment("commentNum", 1)
-      topic.save().then(function (result) {
+      let newTopicComment = result
+      newTopicComment.attributes.user = AV.User.current()
+      return topic.save().then(function (result) {
+        if(payload.commentId) {
+          var query = new AV.Query('TopicComments');
+          query.include(['user'])
+          return query.get(payload.commentId).then(function (result) {
+            newTopicComment.attributes.parentComment = result
+            return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+          }, function (err) {
+            err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+            throw err
+          })
+        }
+        else{
+          return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+        }
       }, function (err) {
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })
-      return result
     }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
