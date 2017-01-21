@@ -27,7 +27,7 @@ import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {fetchShopCommentList, reply, fetchShopCommentReplyList} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
-import {selectUserIsFollowShop, selectShopComments} from '../../selector/shopSelector'
+import {selectShopDetail, selectShopComments} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import ShopComment from './ShopComment'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
@@ -160,14 +160,20 @@ class ShopCommentList extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <CommonListView
-            contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
-            dataSource={this.props.ds}
-            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
-            loadNewData={()=>{this.refreshData()}}
-            loadMoreData={()=>{this.loadMoreData()}}
-            ref={(listView) => this.listView = listView}
-          />
+          {this.props.lastCreatedAt
+            ?  <CommonListView
+                contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
+                dataSource={this.props.ds}
+                renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+                loadNewData={()=>{this.refreshData()}}
+                loadMoreData={()=>{this.loadMoreData()}}
+                ref={(listView) => this.listView = listView}
+              />
+            : <TouchableOpacity style={styles.noCommentContainer} onPress={()=>{Actions.PUBLISH_SHOP_COMMENT({id: this.props.shopId, shopOwnerId: this.props.shopDetail.owner.id})}}>
+                <Text style={styles.noCommentTxt}>目前没有评论,快来抢沙发吧! ~~~</Text>
+              </TouchableOpacity>
+          }
+
         </View>
         <KeyboardAwareToolBar
           initKeyboardHeight={-50}
@@ -198,6 +204,7 @@ const mapStateToProps = (state, ownProps) => {
   // const shopCommentList = selectShopComments(state, shopId)
   const shopCommentList = selectShopComments(state, ownProps.shopId)
   const isUserLogined = authSelector.isUserLogined(state)
+  const shopDetail = selectShopDetail(state, ownProps.id)
 
   let lastCreatedAt = ''
   if(shopCommentList && shopCommentList.length) {
@@ -207,7 +214,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     ds: ds.cloneWithRows(shopCommentList),
     isUserLogined: isUserLogined,
-    lastCreatedAt: lastCreatedAt
+    lastCreatedAt: lastCreatedAt,
+    shopDetail: shopDetail,
   }
 }
 
@@ -235,5 +243,14 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
   },
+  noCommentContainer: {
+    padding: 10,
+    paddingTop: 20,
+    alignItems: 'center'
+  },
+  noCommentTxt: {
+    fontSize: em(17),
+    color: "#8f8e94"
+  }
 
 })
