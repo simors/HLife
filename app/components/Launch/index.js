@@ -4,7 +4,8 @@ import {
   View,
   Text,
   Dimensions,
-  StatusBar
+  StatusBar,
+  Image,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 
@@ -24,12 +25,9 @@ export default class Launch extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <StatusBar hidden={true} />
-        <Text>
-          吾爱欢迎界面
-        </Text>
-      </View>
+        <Image source={require('../../assets/images/start_page.png')} style={styles.imageStyle}>
+
+        </Image>
     )
   }
 }
@@ -41,4 +39,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#F5FCFF',
   },
+  imageStyle: {
+    flex: 1,
+    width: null,
+    height: null,
+  }
 })
