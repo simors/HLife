@@ -607,6 +607,53 @@ export function fetchUserFollowees(payload) {
   }
 }
 
+/**
+ * 查询指定用户的粉丝列表
+ * @param payload
+ * @returns {function()}
+ */
+export function fetchOtherUserFollowers(payload) {
+  return (dispatch, getState) => {
+    lcAuth.fetchOtherUserFollowers(payload).then((result)=> {
+      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS)
+      dispatch(updateAction(result))
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+/**
+ * 查询指定用户的粉丝总数
+ * @param payload
+ * @returns {function()}
+ */
+export function fetchOtherUserFollowersTotalCount(payload) {
+  return (dispatch, getState) => {
+    lcAuth.fetchOtherUserFollowersTotalCount(payload).then((result)=> {
+      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
+      dispatch(updateAction(result))
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+/**
+ * 查询自己的粉丝
+ * @param payload
+ * @returns {function()}
+ */
 export function fetchUserFollowers(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowers(payload).then((result)=> {
@@ -625,11 +672,11 @@ export function fetchUserFollowers(payload) {
 
 export function fetchUserFollowersTotalCount(payload) {
   return (dispatch, getState) => {
-    lcAuth.fetchUserFollowersTotalCount(payload).then((followersTotalCount)=> {
+    lcAuth.fetchUserFollowersTotalCount(payload).then((result)=> {
       let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
-      dispatch(updateAction({followersTotalCount: followersTotalCount}))
+      dispatch(updateAction(result))
       if (payload.success) {
-        payload.success(followersTotalCount)
+        payload.success(result)
       }
     }).catch((error) => {
       if (payload.error) {

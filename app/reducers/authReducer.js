@@ -83,14 +83,16 @@ function handleFetchUserFolloweesSuccess(state, action) {
 }
 
 function handleFetchUserFollowersSuccess(state, action) {
+  let userId = action.payload.userId
   let followers = action.payload.followers
-  state = state.set('followers', followers)
+  state = state.setIn(['followers', userId], followers)
   return state
 }
 
 function handleFetchUserFollowersTotalCountSuccess(state, action) {
+  let userId = action.payload.userId
   let followersTotalCount = action.payload.followersTotalCount
-  state = state.set('followersTotalCount', followersTotalCount)
+  state = state.setIn(['followersTotalCount', userId], followersTotalCount)
   return state
 }
 
@@ -103,7 +105,7 @@ function handleFetchUserFavoriteArticleSuccess(state,action){
 
 function handleAddHealthProfile(state, action) {
   let healthProfile = action.payload.result.healthProfile
-  console.log("handleAddHealthProgfile healthProfile", healthProfile)
+  // console.log("handleAddHealthProgfile healthProfile", healthProfile)
   state = state.setIn(['healthProfiles', healthProfile.get('id')], healthProfile)
   return state
 

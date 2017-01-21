@@ -23,16 +23,21 @@ export const UserStateRecord = Record({
   profiles: Map(),            // 用户个人信息列表，已用户id作为健值
   token: undefined,
   followees: Map(),
-  followers: List(),
-  followersTotalCount: 0,
+  followers: Map(),
+  followersTotalCount: Map(),
   favoriteArticles: Map(),
   healthProfiles: Map(),
   shop: List()
 }, 'UserStateRecord')
 
 export class UserInfo extends UserInfoRecord {
-  static fromLeancloudObject(lcObj) {
+  static fromLeancloudObject(lcObj, type) {
     let attrs = lcObj.attributes
+    if(type) {
+      lcObj = attrs[type]
+      attrs = attrs[type].attributes
+    }
+
     let info = new UserInfoRecord()
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)

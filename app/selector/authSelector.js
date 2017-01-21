@@ -37,18 +37,19 @@ export function activeUserInfo(state) {
   return activeUser ? state.AUTH.getUserInfoById(activeUser) : new UserInfo()
 }
 
-export function selectUserFollowees(state) {
+export function selectUserFollowees(state, userId) {
   let activeUser = activeUserAndToken(state).activeUser
   let userFollowees = state.AUTH.followees.get(activeUser)
   return userFollowees ? userFollowees.toJS() : []
 }
 
-export function selectUserFollowers(state) {
-  let userFollowers = state.AUTH.followers
+export function selectUserFollowers(state, userId) {
+  let userFollowers = state.AUTH.followers.get(userId)
   return userFollowers ? userFollowers.toJS() : []
 }
-export function selectUserFollowersTotalCount(state) {
-  return state.AUTH.followersTotalCount
+export function selectUserFollowersTotalCount(state, userId) {
+  let followersTotalCount = state.AUTH.followersTotalCount.get(userId)
+  return followersTotalCount ? followersTotalCount : 0
 }
 
 export function getHealthProfileSize(state) {
