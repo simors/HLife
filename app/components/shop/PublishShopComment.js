@@ -111,9 +111,7 @@ class PublishShopComment extends Component {
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
         />
         <View style={styles.body}>
-          <ScrollView
-            keyboardDismissMode="on-drag"
-          >
+          <ScrollView>
             <View style={styles.CommentWrap}>
               <View style={styles.scoreWrap}>
                 <ScoreInput

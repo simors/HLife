@@ -575,8 +575,13 @@ export function fetchShopTags(payload) {
 
 export function fetchUserOwnedShopInfo(payload) {
   let query = new AV.Query('Shop')
-  let currentUser = AV.User.current()
-  query.equalTo('owner', currentUser)
+  let user = AV.User.current()
+  let userId = user.id
+  if(payload && payload.userId) {
+    userId = payload.userId
+    user = AV.Object.createWithoutData('_User', payload.userId)
+  }
+  query.equalTo('owner', user)
   query.include(['owner', 'targetShopCategory', 'containedTag'])
   return query.first().then((result)=>{
     // console.log('fetchUserOwnedShopInfo.result===', result)
@@ -585,7 +590,10 @@ export function fetchUserOwnedShopInfo(payload) {
       shopInfo = ShopInfo.fromLeancloudObject(result)
     }
     // console.log('shopInfo=====', shopInfo)
-    return new List([shopInfo])
+    return {
+      userId: userId,
+      shopInfo: new List([shopInfo])
+    }
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

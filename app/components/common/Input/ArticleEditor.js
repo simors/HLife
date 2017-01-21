@@ -11,6 +11,9 @@ import {
   Keyboard,
   Platform,
   Text,
+  ScrollView,
+  KeyboardAvoidingView,
+  Animated,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -52,6 +55,7 @@ class ArticleEditor extends Component {
       imgHeight: 200,
       cursor: 0,        // 光标所在组件的索引
       start: 0,         // 光标所在文字的起始位置
+      editorHeight: new Animated.Value(0),
     }
     this.comp = [this.renderTextInput("", 0, true)]
     this.compHeight = 0
@@ -67,6 +71,7 @@ class ArticleEditor extends Component {
     }
 
     this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : 20)
+    this.setState({editorHeight: new Animated.Value(this.compHeight)})
 
     let initText = []
     if (this.props.initValue) {
@@ -123,12 +128,23 @@ class ArticleEditor extends Component {
   }
 
   keyboardWillShow = (e) => {
+    let newEditorHeight = this.compHeight - e.endCoordinates.height
+    Animated.timing(this.state.editorHeight, {
+      toValue: newEditorHeight,
+      duration: 210,
+    }).start();
+
     this.setState({
       keyboardPadding: e.endCoordinates.height,
     })
   }
 
   keyboardWillHide = (e) => {
+    Animated.timing(this.state.editorHeight, {
+      toValue: this.compHeight,
+      duration: 210,
+    }).start();
+
     this.setState({
       keyboardPadding: 0,
     })
@@ -357,20 +373,37 @@ class ArticleEditor extends Component {
   }
 
   render() {
-    return (
-      <View>
-        <KeyboardAwareScrollView
-          style={{width: PAGE_WIDTH, height: this.compHeight}}
-          keyboardDismissMode="on-drag"
-          automaticallyAdjustContentInsets={false}
-          keyboardShouldPersistTaps={true}
-          extraHeight={this.props.wrapHeight + 50}
-        >
-          {this.renderComponents()}
-        </KeyboardAwareScrollView>
-        {this.renderEditToolView()}
-      </View>
-    )
+    if (Platform.OS === 'ios') {
+      return (
+        <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
+          <KeyboardAwareScrollView
+            style={{flex: 1}}
+            keyboardDismissMode="on-drag"
+            automaticallyAdjustContentInsets={false}
+            keyboardShouldPersistTaps={true}
+            extraHeight={this.props.wrapHeight + 50}
+          >
+            {this.renderComponents()}
+          </KeyboardAwareScrollView>
+          {this.renderEditToolView()}
+        </View>
+      )
+    } else {
+      return (
+        <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
+          <Animated.View style={{height: this.state.editorHeight}}>
+            <ScrollView
+              style={{flex: 1}}
+              automaticallyAdjustContentInsets={false}
+              keyboardShouldPersistTaps={true}
+            >
+              {this.renderComponents()}
+            </ScrollView>
+          </Animated.View>
+          {this.renderEditToolView()}
+        </View>
+      )
+    }
   }
 }
 

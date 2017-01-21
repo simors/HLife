@@ -591,6 +591,11 @@ export function fetchUsers(payload) {
   }
 }
 
+/**
+ * 查询自己关注的用户列表
+ * @param payload
+ * @returns {function()}
+ */
 export function fetchUserFollowees(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowees(payload).then((result)=> {

@@ -24,11 +24,16 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount} from '../../action/authActions'
+import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {getTopics} from '../../selector/topicSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as authSelector from '../../selector/authSelector'
+import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import FollowUser from '../common/FollowUser'
+import {getDoctorInfoByUserId} from '../../selector/doctorSelector'
+import {fetchDoctorByUserId} from '../../action/doctorAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -47,9 +52,11 @@ class PersonalHomePage extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isLogin) {
+        this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
         this.props.fetchOtherUserFollowers({userId: this.props.userId})
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
         this.props.getUserInfoById({userId: this.props.userId})
+        this.props.fetchDoctorByUserId({id: this.props.userId})
       }
       this.refreshData()
     })
@@ -70,6 +77,22 @@ class PersonalHomePage extends Component {
         title: this.props.userInfo.nickname,
       }
       Actions.CHATROOM(payload)
+    }
+  }
+
+  onUserDoctorClick() {
+    if(this.props.doctorInfo) {
+
+    }else {
+      Toast.show('该用户还不是医生')
+    }
+  }
+
+  onUserShopClick() {
+    if(this.props.userOwnedShopInfo.id) {
+      Actions.SHOP_DETAIL({id: this.props.userOwnedShopInfo.id})
+    }else {
+      Toast.show('该用户暂未注册店铺')
     }
   }
 
@@ -150,6 +173,12 @@ class PersonalHomePage extends Component {
     }
   }
 
+  renderNoFollow() {
+    return (
+      <Text style={styles.btnTxt}>关注</Text>
+    )
+  }
+
   renderPersonalInfoColumn() {
     let avatar = require('../../assets/images/default_portrait.png')
     if(this.props.userInfo.avatar) {
@@ -159,6 +188,7 @@ class PersonalHomePage extends Component {
     if(this.props.userInfo.gender == 'female') {
       genderIcon = require('../../assets/images/female.png')
     }
+    
     return (
       <View style={styles.personalInfoWrap}>
         <View style={[styles.row, styles.baseInfoWrap]}>
@@ -183,9 +213,12 @@ class PersonalHomePage extends Component {
             </View>
           </View>
           <View style={styles.btnWrap}>
-            <TouchableOpacity style={{flex:1}}>
+            <TouchableOpacity style={{flex:1}} onPress={() => this.toggleFollow()}>
               <View style={[styles.btnBox, styles.rightBorder]}>
-                <Text style={styles.btnTxt}>已关注</Text>
+                <FollowUser
+                  userId={this.props.userId}
+                  renderNoFollow={this.renderNoFollow.bind(this)}
+                />
               </View>
             </TouchableOpacity>
             <TouchableOpacity style={{flex:1}} onPress={() => this.sendPrivateMessage()}>
@@ -197,7 +230,7 @@ class PersonalHomePage extends Component {
         </View>
 
         <View style={[styles.row, styles.otherInfoWrap]}>
-          <TouchableOpacity style={{flex:1}}>
+          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserDoctorClick()}}>
             <View style={[styles.otherInfoBox, styles.borderBottom]}>
               <Image
                 source={require('../../assets/images/doctor_small.png')}
@@ -208,7 +241,7 @@ class PersonalHomePage extends Component {
                 style={[styles.arrowForward]}/>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{flex:1}}>
+          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserShopClick()}}>
             <View style={styles.otherInfoBox}>
               <Image
                 source={require('../../assets/images/shop_small.png')}
@@ -280,8 +313,11 @@ const mapStateToProps = (state, ownProps) => {
 
 
   const topics = getTopics(state)
+  const doctorInfo = getDoctorInfoByUserId(state, ownProps.userId)
+  // console.log('doctorInfo========', doctorInfo)
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
   const userFollowers = authSelector.selectUserFollowers(state, ownProps.userId)
   const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
   // console.log('mapStateToProps.userFollowers===', userFollowers)
@@ -322,7 +358,9 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: authSelector.activeUserId(state),
     userInfo: userInfo,
     userFollowers: userFollowers,
-    userFollowersTotalCount: userFollowersTotalCount
+    userFollowersTotalCount: userFollowersTotalCount,
+    userOwnedShopInfo: userOwnedShopInfo,
+    doctorInfo: doctorInfo
   }
 }
 
@@ -332,7 +370,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   unLikeTopic,
   fetchOtherUserFollowers,
   fetchOtherUserFollowersTotalCount,
-  getUserInfoById
+  getUserInfoById,
+  fetchUserOwnedShopInfo,
+  fetchDoctorByUserId
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
@@ -383,6 +423,8 @@ const styles = StyleSheet.create({
   },
   sexNameWrap: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20
   },
   sexImg: {
