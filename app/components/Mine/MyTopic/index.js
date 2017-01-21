@@ -73,7 +73,7 @@ export class MyTopic extends Component {
         />
         <View style={styles.body}>
           <CommonListView
-            contentContainerStyle={styles.itemLayout}
+            contentContainerStyle={styles.listViewStyle}
             dataSource={this.props.dataSrc}
             renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
             loadNewData={()=> {
@@ -110,25 +110,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E5E5E5',
   },
-  buttonImage: {
-    position: 'absolute',
-    alignItems: 'flex-end',
-    right: 20,
-    bottom: 61,
-    height: 45,
-    width: 45
-  },
   body: {
     ...Platform.select({
       ios: {
-        marginTop: normalizeH(65),
+        marginTop: normalizeH(64),
       },
       android: {
-        marginTop: normalizeH(45)
+        marginTop: normalizeH(44)
       }
     }),
   },
-  itemLayout: {
+  listViewStyle: {
     width: PAGE_WIDTH,
     backgroundColor: '#E5E5E5',
   },

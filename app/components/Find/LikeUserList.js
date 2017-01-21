@@ -45,12 +45,12 @@ export class LikeUserList extends Component {
         <View style={styles.introWrapStyle}>
           <View style={{flexDirection: 'row'}} onPress={()=> {
           }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})}>
               <Image style={styles.avatarStyle}
                      source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
             </TouchableOpacity>
             <View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})}>
                 <Text style={styles.userNameStyle}>{value.nickname}</Text>
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>

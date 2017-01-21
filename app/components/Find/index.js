@@ -54,7 +54,6 @@ export class Find extends Component {
         categoryId: this.props.topicCategories[this.state.selectedTab].objectId
       })
     })
-    // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
   getSelectedTab(index) {
