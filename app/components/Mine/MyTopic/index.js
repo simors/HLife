@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   Platform,
   InteractionManager,
-  TouchableHighlight,
   ListView,
 } from 'react-native'
 import Header from '../../common/Header'
@@ -21,9 +20,8 @@ import {fetchTopics} from '../../../action/topicActions'
 import CommonListView from '../../common/CommonListView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import * as Toast from '../../common/Toast'
 import MyTopicShow from './MyTopicShow'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -41,16 +39,15 @@ export class MyTopic extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({type:"myTopics"})
+      this.props.fetchTopics({type: "myTopics"})
     })
   }
 
   renderTopicItem(value, key) {
     return (
       <MyTopicShow key={key}
-                 containerStyle={{marginBottom: 10}}
-                 topic={value}
-                 onLikeButton={(payload)=>this.onLikeButton(payload)}
+                   containerStyle={{marginBottom: 10}}
+                   topic={value}
       />
     )
   }
@@ -62,7 +59,6 @@ export class MyTopic extends Component {
   }
 
   loadMoreData() {
-
   }
 
   render() {
@@ -76,18 +72,18 @@ export class MyTopic extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-        <CommonListView
-          contentContainerStyle={styles.itemLayout}
-          dataSource={this.props.dataSrc}
-          renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
-          loadNewData={()=> {
-            this.refreshTopic()
-          }}
-          loadMoreData={()=> {
-            this.loadMoreData()
-          }}
-        />
-          </View>
+          <CommonListView
+            contentContainerStyle={styles.itemLayout}
+            dataSource={this.props.dataSrc}
+            renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshTopic()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
+          />
+        </View>
       </View>
     )
   }
