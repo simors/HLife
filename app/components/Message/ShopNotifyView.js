@@ -120,7 +120,7 @@ class ShopNotifyView extends Component {
     return (
       <View style={styles.itemView}>
         <View style={styles.personView}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: notice.userId})}>
             <View style={styles.avtarView}>
               <Image style={styles.avtarStyle} source={{uri: notice.avatar}}></Image>
             </View>
