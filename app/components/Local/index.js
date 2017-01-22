@@ -159,7 +159,10 @@ class Local extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.moduleC}>
-          <CommonBanner banners={this.props.banner}/>
+          <CommonBanner
+            banners={this.props.banner}
+            useScrollView={true}
+          />
         </View>
       )
     } else {
@@ -354,8 +357,8 @@ const styles = StyleSheet.create({
   },
   moduleC: {
     height: normalizeH(136),
+    backgroundColor: '#fff',
     marginTop: normalizeH(15),
-    backgroundColor: '#fff'
   },
   moduleD: {
     marginTop: normalizeH(15),

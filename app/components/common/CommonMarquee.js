@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   marqueeWrap: {
     flex: 1,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   rightIconWrap: {
     width: 24,

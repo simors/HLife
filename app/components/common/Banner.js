@@ -51,7 +51,7 @@ export default class Banner extends React.Component {
             }
           }
           >
-            <Image style={styles.image} source={typeof(image) == 'string' ? {uri: image} : image}/>
+            <Image style={[styles.image]} source={typeof(image) == 'string' ? {uri: image} : image}/>
           </TouchableOpacity>
         )
       })
