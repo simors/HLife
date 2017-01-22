@@ -84,7 +84,7 @@ class ArticleComment extends Component {
         <View style={styles.avatarViewStyle}>
           <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})}}>
             <Image style={styles.avatarStyle}
-                   source={this.props.comment.avatar ? {uri: this.props.comment.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+                   source={this.props.comment.avatar ? {uri: this.props.comment.avatar} : require("../../assets/images/default_portrait.png")}/>
           </TouchableOpacity>
         </View>
 

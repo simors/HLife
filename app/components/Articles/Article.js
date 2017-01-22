@@ -329,7 +329,7 @@ class Article extends Component {
                 borderRadius: normalizeW(15),
                 marginLeft: normalizeW(12)
               }}
-                     source={this.props.avatar ? {uri: this.props.avatar} : require("../../assets/images/default_portrait@2x.png")}></Image>
+                     source={this.props.avatar ? {uri: this.props.avatar} : require("../../assets/images/default_portrait.png")}></Image>
               <Text style={{
                 fontSize: em(18),
                 color: '#929292',
