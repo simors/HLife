@@ -27,9 +27,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-// import Modal from 'react-native-modalbox'
 import {fetchUserFollowees} from '../../action/authActions'
-
 import {getBanner, selectShopCategories} from '../../selector/configSelector'
 import {fetchBanner, fetchShopCategories} from '../../action/configAction'
 import {fetchTopics} from '../../action/topicActions'
@@ -44,6 +42,8 @@ import ShopCategories from './ShopCategories'
 import TopicShow from '../Find/TopicShow'
 import {getAllTopics} from '../../selector/topicSelector'
 import * as authSelector from '../../selector/authSelector'
+import {hasNewMessage} from '../../selector/messageSelector'
+import {hasNewNotice} from '../../selector/notifySelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -159,7 +159,10 @@ class Local extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.moduleC}>
-          <CommonBanner banners={this.props.banner}/>
+          <CommonBanner
+            banners={this.props.banner}
+            useScrollView={true}
+          />
         </View>
       )
     } else {
@@ -215,6 +218,23 @@ class Local extends Component {
 
   }
 
+  renderHeadMessage() {
+    if (this.props.hasNotice) {
+      return (
+        <View>
+          <Image source={require("../../assets/images/home_message.png")} />
+          <View style={styles.noticeTip}></View>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          <Image source={require("../../assets/images/home_message.png")} />
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -222,8 +242,8 @@ class Local extends Component {
           leftType="none"
           title="本地生活"
           rightType="image"
-          rightImageSource={require("../../assets/images/home_message.png")}
-          rightPress={() => Actions.REGIST()}
+          rightComponent={() => this.renderHeadMessage()}
+          rightPress={() => Actions.MESSAGE_BOX()}
         />
 
         <View style={styles.body}>
@@ -289,13 +309,17 @@ const mapStateToProps = (state, ownProps) => {
   // shopCategories.push(ts)
   // allShopCategories = shopCategories
 
+  let newMsg = hasNewMessage(state)
+  let newNotice = hasNewNotice(state)
+
   return {
     banner: banner,
     shopCategories: shopCategories,
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
     topics: topics,
-    isUserLogined: isUserLogined
+    isUserLogined: isUserLogined,
+    hasNotice: newMsg || newNotice,
   }
 }
 
@@ -333,8 +357,8 @@ const styles = StyleSheet.create({
   },
   moduleC: {
     height: normalizeH(136),
+    backgroundColor: '#fff',
     marginTop: normalizeH(15),
-    backgroundColor: '#fff'
   },
   moduleD: {
     marginTop: normalizeH(15),
@@ -354,5 +378,14 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontFamily: ".PingFangSC-Regular",
     letterSpacing: 0.13
+  },
+  noticeTip: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
   },
 })

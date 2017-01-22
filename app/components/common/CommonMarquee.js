@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   titleWrap: {
-    width: normalizeW(83),
     marginLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     borderRightWidth: normalizeBorder(),
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
   marqueeWrap: {
     flex: 1,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   rightIconWrap: {
     width: 24,

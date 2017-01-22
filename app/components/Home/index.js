@@ -112,7 +112,7 @@ class Home extends Component {
     if(this.props.announcement) {
       return (
         <View style={styles.announcementModule}>
-          <CommonMarquee data={this.props.announcement} height={40} />
+          <CommonMarquee data={this.props.announcement} height={normalizeH(40)} />
         </View>
       )
     } else {
@@ -126,7 +126,9 @@ class Home extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.advertisementModule}>
-          <CommonBanner banners={this.props.banner} />
+          <CommonBanner
+            banners={this.props.banner}
+          />
         </View>
       )
     } else {
@@ -302,7 +304,7 @@ const styles = StyleSheet.create({
   },
   advertisementModule: {
     height: normalizeH(136),
-  //  marginTop: normalizeH(15),
+    backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
   },
   columnsModule: {
     height: normalizeH(84),

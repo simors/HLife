@@ -3,12 +3,14 @@
  */
 import React, {Component} from 'react'
 import {
-  View
+  View,
+  Dimensions
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import Banner from './Banner'
 import * as Toast from './Toast'
-
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 export default class CommonBanner extends Component {
 
   constructor(props) {
@@ -50,7 +52,7 @@ export default class CommonBanner extends Component {
           defaultIndex={this.defaultIndex}
           onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
           intent={this.clickListener.bind(this)}
-          useScrollView={true}
+          useScrollView={this.props.useScrollView}
         />
       </View>
     )

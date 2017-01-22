@@ -59,9 +59,9 @@ export default class Marquee extends React.Component {
         horizontal={false}
         showPagination={false}
         whRatio={1.9}
-        autoplayTimeout={4}
+        autoplayTimeout={3}
         loop={true}
-        useScrollView={true}
+        useScrollView={false}
       >
         {titleViews}
       </Swiper>
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   titleWrap: {
-
+    justifyContent: 'center'
   },
   title: {
     fontSize: em(14),
