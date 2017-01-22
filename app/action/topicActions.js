@@ -112,6 +112,27 @@ export function fetchTopics(payload) {
   }
 }
 
+export function fetchTopicsByUserid(payload) {
+  return (dispatch, getState) => {
+    lcTopics.getTopics(payload).then((topics) => {
+      let updateTopicsAction = createAction(topicActionTypes.UPDATE_TOPICS)
+      dispatch(updateTopicsAction({
+        isPaging: !payload.isRefresh,
+        userId:payload.userId,
+        type:payload.type,
+        topics: topics
+      }))
+      if(payload.success) {
+        payload.success(topics.size==0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function fetchTopicById(payload) {
   return (dispatch, getState) => {
     lcTopics.getTopicById(payload).then((topic) => {

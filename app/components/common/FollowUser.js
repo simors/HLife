@@ -98,8 +98,8 @@ class FollowUser extends Component {
 
     if(userIsFollowedTheUser) {
       return (
-        <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(this.props.userId)}}>
-          <Text style={styles.userAttentionedTxt}>已关注</Text>
+        <TouchableOpacity style={[styles.userAttentioned, this.props.attentionedContainerStyle]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
+          <Text style={[styles.userAttentionedTxt, this.props.attentionedTxtStyle]}>已关注</Text>
         </TouchableOpacity>
       )
     }else {
@@ -147,6 +147,8 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
     paddingRight: 4,
     borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   userAttentionedTxt: {
     color: '#fff',
