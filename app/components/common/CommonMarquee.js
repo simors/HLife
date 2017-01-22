@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   titleWrap: {
-    width: normalizeW(83),
     marginLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     borderRightWidth: normalizeBorder(),
