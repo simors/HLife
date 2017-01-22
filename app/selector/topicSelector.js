@@ -43,3 +43,11 @@ export function getTopicById(state, topicId) {
   }
   return undefined
 }
+
+export function selectUserTopics(state, userId) {
+  let userTopicsList = state.TOPIC.getIn(['userTopics', userId])
+  if(userTopicsList) {
+    return userTopicsList.toJS()
+  }
+  return []
+}

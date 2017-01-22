@@ -238,6 +238,11 @@ export function getTopics(payload) {
     query.equalTo('user', currentUser)
   }
 
+  if(payload.userId && payload.type == 'userTopics') {
+    var user = AV.Object.createWithoutData('_User', payload.userId)
+    query.equalTo('user', user)
+  }
+
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
   if(!isRefresh && lastCreatedAt) { //分页查询

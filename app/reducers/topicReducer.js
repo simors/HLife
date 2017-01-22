@@ -68,15 +68,25 @@ function handleUpdatePagingShopCommentList(state, action) {
 function handleUpdateTopics(state, action) {
   let payload = action.payload
   let _list = undefined
+  let _map = undefined
+  let _newMap = undefined
+  let newTopics = undefined
   let _newList = undefined
   if (payload.isPaging){
     switch (payload.type) {
       case "topics":
-        let _map = state.get('topics')
+        _map = state.get('topics')
         _list = _map.get(payload.categoryId) || new List()
-        let newTopics = _list.concat(payload.topics)
-        let _newMap = _map.set(payload.categoryId, newTopics)
+        newTopics = _list.concat(payload.topics)
+        _newMap = _map.set(payload.categoryId, newTopics)
         state = state.set('topics', _newMap)
+        break
+      case "userTopics":
+        _map = state.get('userTopics')
+        _list = _map.get(payload.userId) || new List()
+        newTopics = _list.concat(payload.topics)
+        _newMap = _map.set(payload.userId, newTopics)
+        state = state.set('userTopics', _newMap)
         break
       case "myTopics":
         _list = state.get('myTopics') || new List()
@@ -93,9 +103,14 @@ function handleUpdateTopics(state, action) {
   else {
     switch (payload.type) {
       case "topics":
-        let _map = state.get('topics')
+        _map = state.get('topics')
         _map = _map.set(payload.categoryId, payload.topics)
         state = state.set('topics', _map)
+        break
+      case "userTopics":
+        _map = state.get('userTopics')
+        _map = _map.set(payload.userId, payload.topics)
+        state = state.set('userTopics', _map)
         break
       case "myTopics":
         state = state.set('myTopics', payload.topics)

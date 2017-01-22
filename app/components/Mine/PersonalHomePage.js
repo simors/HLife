@@ -25,8 +25,8 @@ import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount} from '../../action/authActions'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
-import {getTopics} from '../../selector/topicSelector'
-import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
+import {selectUserTopics} from '../../selector/topicSelector'
+import {fetchTopicsByUserid} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as authSelector from '../../selector/authSelector'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
@@ -34,6 +34,7 @@ import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import FollowUser from '../common/FollowUser'
 import {getDoctorInfoByUserId} from '../../selector/doctorSelector'
 import {fetchDoctorByUserId} from '../../action/doctorAction'
+import MyTopicShow from './MyTopic/MyTopicShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -57,8 +58,8 @@ class PersonalHomePage extends Component {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
         this.props.getUserInfoById({userId: this.props.userId})
         this.props.fetchDoctorByUserId({id: this.props.userId})
+        this.refreshData()
       }
-      this.refreshData()
     })
   }
 
@@ -218,6 +219,8 @@ class PersonalHomePage extends Component {
                 <FollowUser
                   userId={this.props.userId}
                   renderNoFollow={this.renderNoFollow.bind(this)}
+                  attentionedContainerStyle={{backgroundColor:'#fff'}}
+                  attentionedTxtStyle={{color: THEME.colors.green, fontSize:em(17)}}
                 />
               </View>
             </TouchableOpacity>
@@ -264,9 +267,23 @@ class PersonalHomePage extends Component {
   }
 
   renderTopicsColumn() {
+
+    let topicShowView = <View />
+    if(this.props.userTopics && this.props.userTopics.length) {
+      topicShowView = this.props.userTopics.map((item, index) =>{
+        return (
+          <MyTopicShow
+            key={index}
+            containerStyle={{marginBottom: 10}}
+            topic={item}
+          />
+        )
+      })
+    }
+
     return (
       <View style={styles.topicsWrap}>
-
+        {topicShowView}
       </View>
     )
   }
@@ -276,9 +293,36 @@ class PersonalHomePage extends Component {
   }
 
   loadMoreData(isRefresh) {
-    this.props.fetchTopics({
-      type: "topics",
-    })
+    let lastCreatedAt = undefined
+    if(!isRefresh) {
+      if(this.props.userTopics && this.props.userTopics.length){
+        lastCreatedAt = this.props.userTopics[this.props.userTopics.length-1].createdAt
+      }else {
+        this.listView.isLoadUp(false)
+        return
+      }
+    }
+
+    let payload = {
+      type: "userTopics",
+      userId: this.props.userId,
+      lastCreatedAt: lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchTopicsByUserid(payload)
   }
   
   render() {
@@ -311,8 +355,6 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'PERSONAL_INFO_COLUMN'})
   dataArray.push({type: 'TOPICS_COLUMN'})
 
-
-  const topics = getTopics(state)
   const doctorInfo = getDoctorInfoByUserId(state, ownProps.userId)
   // console.log('doctorInfo========', doctorInfo)
   const isLogin = authSelector.isUserLogined(state)
@@ -351,23 +393,24 @@ const mapStateToProps = (state, ownProps) => {
   //   {},
   // ]
   // const userFollowersTotalCount = 200
+
+  const userTopics = selectUserTopics(state, ownProps.userId)
+
   return {
     ds: ds.cloneWithRows(dataArray),
-    topics: topics,
     isLogin: isLogin,
     currentUser: authSelector.activeUserId(state),
     userInfo: userInfo,
     userFollowers: userFollowers,
     userFollowersTotalCount: userFollowersTotalCount,
     userOwnedShopInfo: userOwnedShopInfo,
-    doctorInfo: doctorInfo
+    doctorInfo: doctorInfo,
+    userTopics: userTopics
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchTopics,
-  likeTopic,
-  unLikeTopic,
+  fetchTopicsByUserid,
   fetchOtherUserFollowers,
   fetchOtherUserFollowersTotalCount,
   getUserInfoById,
