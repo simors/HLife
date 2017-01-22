@@ -19,6 +19,8 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopicLikesTotalCount(state, action)
     case TopicTypes.FETCH_TOPIC_IS_LIKED_SUCCESS:
       return handleUpdateTopicIsLiked(state, action)
+    case TopicTypes.PUBLISH_COMMENT_SUCCESS:
+      return handleAddTopicComment(state, action)
     case TopicTypes.UPDATE_TOPIC_LIKE_USERS:
       return handleUpdateTopicLikeUsers(state, action)
     case TopicTypes.ADD_TOPIC:
@@ -30,31 +32,93 @@ export default function topicReducer(state = initialState, action) {
   }
 }
 
+function handleAddTopicComment(state, action) {
+  let topicComment = action.payload.topicComment
+  let topicCommentList = state.getIn(['topicComments', action.payload.topicId])
+  if (!topicCommentList) {
+    topicCommentList = new List()
+  }
+  topicCommentList = topicCommentList.insert(0, topicComment)
+  state = state.setIn(['topicComments', action.payload.topicId], topicCommentList)
+  return state
+}
+
 function handleAddTopic(state, action) {
   let topic = action.payload.topic
   let topicList = state.getIn(['topics', topic.categoryId])
   if (!topicList) {
     topicList = new List()
   }
-  topicList = topicList.push(new TopicsItem(topic))
+  topicList = topicList.insert(0, new TopicsItem(topic))
   state = state.setIn(['topics', topic.categoryId], topicList)
   return state
 }
 
+function handleUpdatePagingShopCommentList(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let shopComments = payload.shopComments
+  let _map = state.get('shopComments')
+  let _list = _map.get(shopId) || new List()
+  let newShopComments = _list.concat(shopComments)
+  let _newMap = _map.set(shopId, newShopComments)
+  state = state.set('shopComments', _newMap)
+  return state
+}
 function handleUpdateTopics(state, action) {
   let payload = action.payload
-  switch (payload.type) {
-    case "topics":
-      let _map = state.get('topics')
-      _map = _map.set(payload.categoryId, payload.topics)
-      state = state.set('topics', _map)
-      break
-    case "myTopics":
-      state = state.set('myTopics', payload.topics)
-      break
-    case "allTopics":
-      state = state.set('allTopics', payload.topics)
-      break
+  let _list = undefined
+  let _map = undefined
+  let _newMap = undefined
+  let newTopics = undefined
+  let _newList = undefined
+  if (payload.isPaging){
+    switch (payload.type) {
+      case "topics":
+        _map = state.get('topics')
+        _list = _map.get(payload.categoryId) || new List()
+        newTopics = _list.concat(payload.topics)
+        _newMap = _map.set(payload.categoryId, newTopics)
+        state = state.set('topics', _newMap)
+        break
+      case "userTopics":
+        _map = state.get('userTopics')
+        _list = _map.get(payload.userId) || new List()
+        newTopics = _list.concat(payload.topics)
+        _newMap = _map.set(payload.userId, newTopics)
+        state = state.set('userTopics', _newMap)
+        break
+      case "myTopics":
+        _list = state.get('myTopics') || new List()
+        _newList = _list.concat(payload.topics)
+        state = state.set('myTopics', _newList)
+        break
+      case "allTopics":
+        _list = state.get('allTopics') || new List()
+        _newList = _list.concat(payload.topics)
+        state = state.set('allTopics', _newList)
+        break
+    }
+  }
+  else {
+    switch (payload.type) {
+      case "topics":
+        _map = state.get('topics')
+        _map = _map.set(payload.categoryId, payload.topics)
+        state = state.set('topics', _map)
+        break
+      case "userTopics":
+        _map = state.get('userTopics')
+        _map = _map.set(payload.userId, payload.topics)
+        state = state.set('userTopics', _map)
+        break
+      case "myTopics":
+        state = state.set('myTopics', payload.topics)
+        break
+      case "allTopics":
+        state = state.set('allTopics', payload.topics)
+        break
+    }
   }
   return state
 }

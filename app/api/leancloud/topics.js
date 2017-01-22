@@ -22,6 +22,9 @@ export function publishTopics(payload) {
   topic.set('likeCount', 0)
 
   return topic.save().then(function (result) {
+    let newTopic = result
+    newTopic.attributes.user = AV.User.current()
+    return TopicsItem.fromLeancloudObject(newTopic)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -194,12 +197,27 @@ export function publishTopicComments(payload) {
       let relation = topic.relation('comments')
       relation.add(topicComment);
       topic.increment("commentNum", 1)
-      topic.save().then(function (result) {
+      let newTopicComment = result
+      newTopicComment.attributes.user = AV.User.current()
+      return topic.save().then(function (result) {
+        if(payload.commentId) {
+          var query = new AV.Query('TopicComments');
+          query.include(['user'])
+          return query.get(payload.commentId).then(function (result) {
+            newTopicComment.attributes.parentComment = result
+            return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+          }, function (err) {
+            err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+            throw err
+          })
+        }
+        else{
+          return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+        }
       }, function (err) {
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })
-      return result
     }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -220,8 +238,21 @@ export function getTopics(payload) {
     query.equalTo('user', currentUser)
   }
 
-  query.include(['user']);
+  if(payload.userId && payload.type == 'userTopics') {
+    var user = AV.Object.createWithoutData('_User', payload.userId)
+    query.equalTo('user', user)
+  }
+
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  if(!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
+
+  query.limit(5) // 最多返回 5 条结果
+  query.include(['user'])
   query.descending('createdAt')
+
   return query.find().then(function (results) {
     let topics = []
     results.forEach((result) => {

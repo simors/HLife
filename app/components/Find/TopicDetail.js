@@ -25,8 +25,14 @@ import TopicContent from './TopicContent'
 import Comment from '../common/Comment'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import {getTopicLikedTotalCount,getTopicComments, isTopicLiked,getTopicLikeUsers} from '../../selector/topicSelector'
-import {fetchTopicLikesCount, fetchTopicIsLiked, likeTopic, unLikeTopic,fetchTopicLikeUsers} from '../../action/topicActions'
+import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
+import {
+  fetchTopicLikesCount,
+  fetchTopicIsLiked,
+  likeTopic,
+  unLikeTopic,
+  fetchTopicLikeUsers
+} from '../../action/topicActions'
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
@@ -49,7 +55,7 @@ export class TopicDetail extends Component {
       this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
-      if( this.props.isLogin ){
+      if (this.props.isLogin) {
         this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       }
     })
@@ -59,10 +65,8 @@ export class TopicDetail extends Component {
   }
 
   submitSuccessCallback() {
-    Toast.show('评论成功')
-    this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
     this.closeModal(()=> {
-      Toast.show('发布成功', {duration: 1000})
+      Toast.show('评论成功', {duration: 1000})
     })
   }
 
@@ -98,7 +102,7 @@ export class TopicDetail extends Component {
         ...commentData,
         topicId: this.props.topic.objectId,
         userId: this.props.userInfo.id,
-        replyTo: (this.state.comment)?this.state.comment.userId:this.props.topic.userId,
+        replyTo: (this.state.comment) ? this.state.comment.userId : this.props.topic.userId,
         commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
         success: this.submitSuccessCallback.bind(this),
@@ -155,7 +159,7 @@ export class TopicDetail extends Component {
   }
 
   onLikeButton() {
-    if(this.props.isLogin) {
+    if (this.props.isLogin) {
       if (this.props.isLiked) {
         this.props.unLikeTopic({
           topicId: this.props.topic.objectId,
@@ -173,27 +177,32 @@ export class TopicDetail extends Component {
         })
       }
     }
-    else{
+    else {
       Actions.LOGIN()
     }
   }
 
   onLikeCommentButton(payload) {
-    if (payload.isLiked) {
-      this.props.unLikeTopic({
-        topicId: payload.topic.objectId,
-        upType: 'topicComment',
-        success: payload.success,
-        error: this.likeErrorCallback
-      })
+    if (this.props.isLogin) {
+      if (payload.isLiked) {
+        this.props.unLikeTopic({
+          topicId: payload.topic.objectId,
+          upType: 'topicComment',
+          success: payload.success,
+          error: this.likeErrorCallback
+        })
+      }
+      else {
+        this.props.likeTopic({
+          topicId: payload.topic.objectId,
+          upType: 'topicComment',
+          success: payload.success,
+          error: this.likeErrorCallback
+        })
+      }
     }
     else {
-      this.props.likeTopic({
-        topicId: payload.topic.objectId,
-        upType: 'topicComment',
-        success: payload.success,
-        error: this.likeErrorCallback
-      })
+      Actions.LOGIN()
     }
   }
 
@@ -211,9 +220,10 @@ export class TopicDetail extends Component {
 
   renderTopicLikeOneUser(value, key) {
     return (
-        <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
-          <Image style={styles.zanAvatarStyle} source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
-        </TouchableOpacity>
+      <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
+        <Image style={styles.zanAvatarStyle}
+               source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+      </TouchableOpacity>
     )
   }
 
@@ -221,7 +231,7 @@ export class TopicDetail extends Component {
     if (this.props.topicLikeUsers) {
       return (
         this.props.topicLikeUsers.map((value, key)=> {
-          if(key < 6) {
+          if (key < 6) {
             return (
               this.renderTopicLikeOneUser(value, key)
             )
@@ -243,12 +253,12 @@ export class TopicDetail extends Component {
           rightText="..."
           rightPress={() => this.onRightPress()}
         />
-        <View style={styles.body} >
+        <View style={styles.body}>
           <ScrollView style={{}} ref={"scrollView"}>
             <TopicContent topic={this.props.topic}/>
             <TouchableOpacity style={styles.likeStyle}
                               onLayout={this.measureMyComponent.bind(this)}
-                              onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers:this.props.topicLikeUsers})}>
+                              onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers: this.props.topicLikeUsers})}>
               <View style={styles.zanStyle}>
                 <Text style={styles.zanTextStyle}>
                   赞
@@ -311,8 +321,8 @@ const mapStateToProps = (state, ownProps) => {
   const commentsTotalCount = topicComments[ownProps.topic.objectId] ? topicComments[ownProps.topic.objectId].length : undefined
   return {
     topicComments: topicComments[ownProps.topic.objectId],
-    topicLikeUsers:topicLikeUsers,
-    likesCount:likesCount,
+    topicLikeUsers: topicLikeUsers,
+    likesCount: likesCount,
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
@@ -348,6 +358,7 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+    backgroundColor: '#E5E5E5',
   },
 
   likeStyle: {

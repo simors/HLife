@@ -45,6 +45,8 @@ export const ShopCommentMsgRecord = Record({
   shopId: undefined,
   commentId: undefined,
   commentContent: undefined,
+  replyId: undefined,
+  replyContent: undefined
 }, 'ShopCommentMsg')
 
 export const TopicLikeMsgRecord = Record({
@@ -158,6 +160,8 @@ export class ShopCommentMsg extends ShopCommentMsgRecord {
       record.set('shopId', attrs.shopId)
       record.set('commentId', attrs.commentId)
       record.set('commentContent', attrs.commentContent)
+      record.set('replyId', attrs.replyId)
+      record.set('replyContent', attrs.replyContent)
     })
   }
 }

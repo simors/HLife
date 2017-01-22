@@ -17,6 +17,7 @@ export const DoctorInfoRecord = Record({
   }, 'DoctorInfoRecord')
 
 export const QuestionRecord = Record({
+  id:       undefined,        //问诊咨询表id
   answerer: undefined,        //接诊医生
   content: undefined,         //问诊内容
   diseaseImages: undefined,   //附图
@@ -81,6 +82,7 @@ export class Question extends QuestionRecord {
     let attrs = lcObj.attributes
     let question = new QuestionRecord()
     question = question.withMutations((record) => {
+      record.set('id', lcObj.id)
       record.set('answerer', attrs.answerer)
       record.set('content', attrs.content)
       record.set('diseaseImages', attrs.diseaseImages)

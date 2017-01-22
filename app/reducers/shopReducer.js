@@ -1,7 +1,8 @@
 import {Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as ShopActionTypes from '../constants/shopActionTypes'
-import {Shop} from '../models/shopModel'
+import {Shop, ShopInfo, ShopAnnouncement, ShopComment, ShopCommentUp4Cloud, Up, ShopCommentReply, ShopCommentUp, ShopTag} from '../models/shopModel'
+import {UserInfo} from '../models/userModels'
 
 const initialState = Shop()
 
@@ -49,6 +50,8 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchShopDetailSuccess(state, action)
     case ShopActionTypes.FETCH_GUESS_YOU_LIKE_SHOP_LIST_SUCCESS:
       return handleFetchGuessYouLikeShopListSuccess(state, action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -235,10 +238,11 @@ function handleFetchShopTagsSuccess(state, action) {
 
 function handleFetchUserOwnedShopInfoSuccess(state, action) {
   let payload = action.payload
+  let userId = payload.userId
   let shopInfo = payload.shopInfo
   // console.log('handleFetchUserOwnedShopInfoSuccess.shopInfo===', shopInfo)
   if(shopInfo && shopInfo.size) {
-    state = state.set('userOwnedShopInfo', shopInfo)
+    state = state.setIn(['userOwnedShopInfo', userId], shopInfo)
   }
   return state
 }
@@ -279,5 +283,122 @@ function handleFetchGuessYouLikeShopListSuccess(state, action) {
   let payload = action.payload
   let shopList = payload.shopList
   state = state.set('guessYouLikeShopList', shopList)
+  return state
+}
+
+function onRehydrate(state, action) {
+  let incoming = action.payload.SHOP
+  // console.log('shopReducer.onRehydrate=incoming==', incoming)
+  if (incoming) {
+    const shopAnnouncementsMap = Map(incoming.shopAnnouncements)
+    shopAnnouncementsMap.map((value, key)=> {
+      if (value && key) {
+        let shopAnnouncements = []
+        for (let shopAnnouncement of value) {
+          if (shopAnnouncement) {
+            const record = new ShopAnnouncement({...shopAnnouncement})
+            shopAnnouncements.push(record)
+          }
+        }
+        state = state.setIn(['shopAnnouncements', key], List(shopAnnouncements))
+      }
+    })
+
+    const userFollowShopsInfoMap = Map(incoming.userFollowShopsInfo)
+    userFollowShopsInfoMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['userFollowShopsInfo', key], value)
+      }
+    })
+
+    const shopCommentsMap = Map(incoming.shopComments)
+    shopCommentsMap.map((value, key)=> {
+      if (value && key) {
+        let shopComments = []
+        for (let shopComment of value) {
+          if (shopComment) {
+            const record = new ShopComment({...shopComment})
+            shopComments.push(record)
+          }
+        }
+        state = state.setIn(['shopComments', key], List(shopComments))
+      }
+    })
+
+    const shopCommentsTotalCountsMap = Map(incoming.shopCommentsTotalCounts)
+    shopCommentsTotalCountsMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['shopCommentsTotalCounts', key], value)
+      }
+    })
+
+    const userUpShopsInfoMap = Map(incoming.userUpShopsInfo)
+    userUpShopsInfoMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['userUpShopsInfo', key], value)
+      }
+    })
+
+    const userOwnedShopInfoMap = Map(incoming.userOwnedShopInfo)
+    userOwnedShopInfoMap.map((value, key)=> {
+      if (value && key) {
+        let shopInfoist = []
+        for (let shopInfo of value) {
+          if (shopInfo) {
+            const record = new ShopInfo({...shopInfo})
+            shopInfoist.push(record)
+          }
+        }
+        state = state.setIn(['userOwnedShopInfo', key], List(shopInfoist))
+      }
+    })
+
+    const shopFollowersMap = Map(incoming.shopFollowers)
+    shopFollowersMap.map((value, key)=> {
+      if (value && key) {
+        let shopFollowers = []
+        for (let shopFollower of value) {
+          if (shopFollower) {
+            const record = new UserInfo({...shopFollower})
+            shopFollowers.push(record)
+          }
+        }
+        state = state.setIn(['shopFollowers', key], List(shopFollowers))
+      }
+    })
+
+    const shopFollowersTotalCountMap = Map(incoming.shopFollowersTotalCount)
+    shopFollowersTotalCountMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['shopFollowersTotalCount', key], value)
+      }
+    })
+
+    const similarShopsMap = Map(incoming.similarShops)
+    similarShopsMap.map((value, key)=> {
+      if (value && key) {
+        let similarShops = []
+        for (let similarShop of value) {
+          if (similarShop) {
+            const record = new ShopInfo({...similarShop})
+            similarShops.push(record)
+          }
+        }
+        state = state.setIn(['similarShops', key], List(similarShops))
+      }
+    })
+
+    const shopDetailsMap = Map(incoming.shopDetails)
+    shopDetailsMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['shopDetails', key], Map(value))
+      }
+    })
+
+    state = state.set('shopList', List(incoming.shopList))
+    state = state.set('shopTagList', List(incoming.shopTagList))
+    state = state.set('guessYouLikeShopList', List(incoming.guessYouLikeShopList))
+    state = state.set('fetchShopListArrivedLastPage', incoming.fetchShopListArrivedLastPage)
+  }
   return state
 }

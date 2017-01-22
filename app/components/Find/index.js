@@ -51,20 +51,21 @@ export class Find extends Component {
       }
       this.props.fetchTopics({
         type: "topics",
-        categoryId: this.props.topicCategories[this.state.selectedTab].objectId
+        categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+        isRefresh: true
       })
     })
-    // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
   getSelectedTab(index) {
+    this.setState({selectedTab: index})
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopics({
         type: "topics",
-        categoryId: this.props.topicCategories[index].objectId
+        categoryId: this.props.topicCategories[index].objectId,
+        isRefresh: true,
       })
     })
-    this.setState({selectedTab: index})
   }
 
   onLikeButton(payload) {
@@ -101,16 +102,37 @@ export class Find extends Component {
   }
 
   refreshTopic() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({
-        type: "topics",
-        categoryId: this.props.topicCategories[this.state.selectedTab].objectId
-      })
-    })
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
-
+  loadMoreData(isRefresh) {
+    let lastCreatedAt = undefined
+    if(this.props.topics){
+       let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
+      if(currentTopics && currentTopics.length) {
+        lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
+      }
+    }
+    let payload = {
+      type: "topics",
+      categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+      lastCreatedAt: lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchTopics(payload)
   }
 
   renderTopics() {
@@ -133,8 +155,9 @@ export class Find extends Component {
                 this.refreshTopic()
               }}
               loadMoreData={()=> {
-                this.loadMoreData()
+                this.loadMoreData(false)
               }}
+              ref={(listView) => this.listView = listView}
             />
           </View>
         )
@@ -176,6 +199,7 @@ const mapStateToProps = (state, ownProps) => {
   const topics = getTopics(state)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
+
   return {
     dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,
@@ -197,6 +221,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Find)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E5E5E5',
   },
   buttonImage: {
     position: 'absolute',

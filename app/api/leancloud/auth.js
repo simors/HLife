@@ -441,6 +441,55 @@ export function getUsers(payload) {
 }
 
 /**
+ * 查询指定用户的粉丝列表
+ * @param payload
+ * @returns {*|AV.Promise|IPromise<U>}
+ */
+export function fetchOtherUserFollowers(payload) {
+  let userId = payload.userId
+  let user = AV.Object.createWithoutData('_User', userId)
+  let query = new AV.Query('_Follower')
+  query.equalTo('user', user)
+  query.include('follower')
+  return query.find().then((results)=>{
+    // console.log('fetchOtherUserFollowers==results=', results)
+    let followers = []
+    results.forEach((result)=>{
+      followers.push(UserInfo.fromLeancloudObject(result, 'follower'))
+    })
+    return {
+      userId: userId,
+      followers: new List(followers)
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+ * 查询指定用户的粉丝总数
+ * @param payload
+ * @returns {*|AV.Promise|IPromise<U>}
+ */
+export function fetchOtherUserFollowersTotalCount(payload) {
+  let userId = payload.userId
+  let user = AV.Object.createWithoutData('_User', userId)
+  let query = new AV.Query('_Follower')
+  query.equalTo('user', user)
+  return query.count().then((totalCount)=>{
+    // console.log('fetchOtherUserFollowersTotalCount==totalCount=', totalCount)
+    return {
+      userId: userId,
+      followersTotalCount: totalCount
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
  * 查询自己的粉丝总数
  * @returns {*}
  */
@@ -448,7 +497,10 @@ export function fetchUserFollowersTotalCount() {
   let query = AV.User.current().followerQuery()
   return query.count().then(function(totalCount) {
     // console.log('fetchUserFollowersTotalCount==totalCount=', totalCount)
-    return totalCount
+    return {
+      userId: AV.User.current().id,
+      followersTotalCount: totalCount
+    }
   }).catch((err) =>{
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -468,8 +520,8 @@ export function fetchUserFollowers() {
       followers.push(UserInfo.fromLeancloudObject(result))
     })
     return {
-      currentUserId: AV.User.current().id,
-      followers: List(followers)
+      userId: AV.User.current().id,
+      followers: new List(followers)
     }
   }).catch((err) =>{
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -491,7 +543,7 @@ export function fetchUserFollowees() {
     })
     return {
       currentUserId: AV.User.current().id,
-      followees: List(followees)
+      followees: new List(followees)
     }
   }).catch((err) =>{
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -581,10 +633,8 @@ export function inquirySubmit(payload) {
   question.set('status', 1) //会话打开
 
   return question.save().then((record) => {
-      console.log("inquirySubmit lean in:", record)
 
       let questionRecord = Question.fromLeancloudObject(record)
-    console.log("inquirySubmit lean return:", questionRecord)
     return {
       question: questionRecord
     }

@@ -79,6 +79,7 @@ class SelectDoctor extends Component {
       let payload = {
         name: selectedDoctor[0].phone,
         members: [this.props.currentUser, selectedDoctor[0].userId],
+        questionId: this.props.questionId,
         conversationType: INQUIRY_CONVERSATION,
         title: selectedDoctor[0].username,
       }

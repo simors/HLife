@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   Platform,
   InteractionManager,
-  TouchableHighlight,
   ListView,
 } from 'react-native'
 import Header from '../../common/Header'
@@ -21,9 +20,8 @@ import {fetchTopics} from '../../../action/topicActions'
 import CommonListView from '../../common/CommonListView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import * as Toast from '../../common/Toast'
 import MyTopicShow from './MyTopicShow'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -41,28 +39,50 @@ export class MyTopic extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({type:"myTopics"})
+      this.props.fetchTopics({isRefresh: true, type: "myTopics"})
     })
   }
 
   renderTopicItem(value, key) {
     return (
       <MyTopicShow key={key}
-                 containerStyle={{marginBottom: 10}}
-                 topic={value}
-                 onLikeButton={(payload)=>this.onLikeButton(payload)}
+                   containerStyle={{marginBottom: 10}}
+                   topic={value}
       />
     )
   }
 
   refreshTopic() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({type: "myTopics"})
-    })
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
-
+  loadMoreData(isRefresh) {
+    let lastCreatedAt = undefined
+    if(this.props.topics){
+      let currentTopics = this.props.topics
+      if(currentTopics && currentTopics.length) {
+        lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
+      }
+    }
+    let payload = {
+      type: "myTopics",
+      lastCreatedAt: lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchTopics(payload)
   }
 
   render() {
@@ -76,18 +96,19 @@ export class MyTopic extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-        <CommonListView
-          contentContainerStyle={styles.itemLayout}
-          dataSource={this.props.dataSrc}
-          renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
-          loadNewData={()=> {
-            this.refreshTopic()
-          }}
-          loadMoreData={()=> {
-            this.loadMoreData()
-          }}
-        />
-          </View>
+          <CommonListView
+            contentContainerStyle={styles.listViewStyle}
+            dataSource={this.props.dataSrc}
+            renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshTopic()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData(false)
+            }}
+            ref={(listView) => this.listView = listView}
+          />
+        </View>
       </View>
     )
   }
@@ -114,25 +135,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E5E5E5',
   },
-  buttonImage: {
-    position: 'absolute',
-    alignItems: 'flex-end',
-    right: 20,
-    bottom: 61,
-    height: 45,
-    width: 45
-  },
   body: {
     ...Platform.select({
       ios: {
-        marginTop: normalizeH(65),
+        marginTop: normalizeH(64),
       },
       android: {
-        marginTop: normalizeH(45)
+        marginTop: normalizeH(44)
       }
     }),
   },
-  itemLayout: {
+  listViewStyle: {
     width: PAGE_WIDTH,
     backgroundColor: '#E5E5E5',
   },

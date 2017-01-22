@@ -1,7 +1,7 @@
 /**
  * Created by yangyang on 2016/12/28.
  */
-import {DoctorInfo, DoctorList} from '../models/doctorModel'
+import {DoctorInfo, DoctorList, Question} from '../models/doctorModel'
 
 export function activeDoctorInfo(state) {
   // return state.DOCTOR.get('doctorInfo')? state.DOCTOR.get('doctorInfo'): new DoctorInfo()
@@ -59,4 +59,21 @@ export function getDoctorInfoByDoctorId(state, doctorId) {
     }
   }
   return (new DoctorList()).toJS()
+}
+
+export function getQuestionById(state, questionId) {
+  console.log("getQuestionById in")
+  let questionList = state.DOCTOR.get('questions')
+  if (questionList) {
+    let question = questionList.find((record) => {
+      if(record.question.get('id') === questionId) {
+        return true
+      }
+      return false
+    })
+    if (question) {
+      return question.question.toJS()
+    }
+  }
+  return (new Question()).toJS()
 }

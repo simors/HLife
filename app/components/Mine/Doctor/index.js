@@ -66,6 +66,7 @@ class Doctor extends Component {
           rightType="icon"
           rightIconName="ios-menu"
           rightStyle={styles.left}
+          rightPress={() => {}}
         />
         <View style={styles.body}>
           <ScrollView keyboardShouldPersistTaps= {true} keyboardDismissMode= {'on-drag'}>

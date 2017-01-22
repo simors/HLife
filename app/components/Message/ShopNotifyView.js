@@ -22,20 +22,72 @@ import Expander from '../common/Expander'
 import ShopInfoCell from './ShopInfoCell'
 import * as msgActionTypes from '../../constants/messageActionTypes'
 import {getNoticeListByType} from '../../selector/notifySelector'
-
+import * as authSelector from '../../selector/authSelector'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
+import * as Toast from '../common/Toast'
+import {reply} from '../../action/shopAction'
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
 class ShopNotifyView extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      shopId: '',
+      replyId : '',
+      replyUserId: '',
+      replyUserNickName : '',
+      replyShopCommentId: '',
+      replyShopCommentUserId: '',
+    }
+  }
+
+  sendReply(content) {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    this.props.reply({
+      shopId: this.state.shopId,
+      replyShopCommentId : this.state.replyShopCommentId,
+      replyId : this.state.replyId,
+      replyUserId : this.state.replyUserId,
+      replyShopCommentUserId : this.state.replyShopCommentUserId,
+      replyContent : content,
+      from: 'SHOP_NOTIFY',
+      success: (result) => {
+        dismissKeyboard()
+        Toast.show('回复成功', {duration: 1500})
+      },
+      error: (err) => {
+        Toast.show(err.message, {duration: 1500})
+      }
+    })
+  }
+
+  openReplyBox(notice) {
+    if(this.replyInput) {
+      this.replyInput.focus()
+    }
+    // console.log('openReplyBox.notice===', notice)
+    this.setState({
+      shopId: notice.shopId,
+      replyShopCommentId: notice.commentId,
+      replyId: notice.replyId,
+      replyUserId: notice.userId,
+      replyUserNickName: notice.nickname,
+      replyShopCommentUserId: notice.userId
+    })
   }
 
   renderReplyBtn(notice) {
     if (notice.msgType === msgActionTypes.MSG_SHOP_COMMENT) {
       return (
         <View style={{paddingRight: 15}}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.openReplyBox(notice)}}>
             <View style={{borderWidth: 1, width: 54, height: 25, borderColor: '#E9E9E9', borderRadius: 3, justifyContent: 'center', alignItems: 'center'}}>
               <Text style={{fontSize: 14, color: '#50E3C2'}}>回 复</Text>
             </View>
@@ -50,7 +102,11 @@ class ShopNotifyView extends Component {
     if (notice.msgType === msgActionTypes.MSG_SHOP_COMMENT) {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: 17, color: '#4a4a4a', lineHeight: 24,}} content={notice.commentContent}/>
+          <Expander
+            showLines={3}
+            textStyle={{fontSize: 17, color: '#4a4a4a', lineHeight: 24,}}
+            content={notice.commentContent}
+          />
         </View>
       )
     } else {
@@ -106,6 +162,16 @@ class ShopNotifyView extends Component {
               renderRow={(notice) => this.renderNoticeItem(notice)}
             />
           </ScrollView>
+
+          <KeyboardAwareToolBar
+            initKeyboardHeight={-50}
+          >
+            <ToolBarContent
+              replyInputRefCallBack={(input)=>{this.replyInput = input}}
+              onSend={(content) => {this.sendReply(content)}}
+              placeholder={this.state.replyUserNickName ? '回复' + this.state.replyUserNickName + ':' : '回复:'}
+            />
+          </KeyboardAwareToolBar>
         </View>
       </View>
     )
@@ -117,9 +183,12 @@ const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let noticeList = getNoticeListByType(state, msgActionTypes.SHOP_TYPE)
   newProps.dataSource = ds.cloneWithRows(noticeList)
+  const isUserLogined = authSelector.isUserLogined(state)
+  newProps.isUserLogined = isUserLogined
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  reply: reply
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopNotifyView)

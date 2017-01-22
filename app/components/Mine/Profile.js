@@ -108,6 +108,7 @@ class Profile extends Component {
             <View style={styles.zonea}>
               <ImageInput {...avatarInput} initValue={this.props.userInfo.avatar? this.props.userInfo.avatar: undefined} containerStyle={styles.imageInputStyle}
                           addImage={require('../../assets/images/default_portrait.png')}
+                          choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(42), overflow: 'hidden', width: normalizeW(84), height: normalizeH(84), overlayColor: '#FFFFFF'}}
                           addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
               />
             </View>

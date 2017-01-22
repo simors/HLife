@@ -240,7 +240,7 @@ export function userUnUpShop(payload) {
 export function fetchShopCommentUpedUserList(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopCommentUpedUserListByCloudFunc(payload).then((shopCommentUpedUserList) => {
-      console.log('fetchShopCommentUpedUserList.action===', shopCommentUpedUserList)
+      // console.log('fetchShopCommentUpedUserList.action===', shopCommentUpedUserList)
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_UPED_USER_LIST_SUCCESS)
 
       let params = {}
@@ -298,16 +298,21 @@ export function reply(payload) {
       dispatch(updateAction(result))
 
       let replyTo = payload.replyShopCommentUserId
-      let commentId = payload.replyShopCommentId
       if(payload.replyId) {
         replyTo = payload.replyUserId
-        commentId = payload.replyId
+      }
+
+      let replyId = payload.replyId
+      if('SHOP_NOTIFY' == payload.from) {
+        replyId = result.id
       }
       let params = {
         shopId: payload.shopId,
         replyTo: replyTo,
-        commentId: commentId,
+        commentId: payload.replyShopCommentId,
         content: payload.replyContent,
+        replyId: replyId,
+        replyContent: payload.replyContent
       }
       // console.log('shop.reply===params=', params)
       dispatch(msgAction.notifyShopComment(params))
@@ -362,11 +367,11 @@ export function fetchShopTags(payload) {
 
 export function fetchUserOwnedShopInfo(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchUserOwnedShopInfo(payload).then((shopInfo) => {
+    lcShop.fetchUserOwnedShopInfo(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS)
-      dispatch(updateAction({shopInfo:shopInfo}))
+      dispatch(updateAction(result))
       if(payload && payload.success){
-        payload.success(shopInfo)
+        payload.success(result)
       }
     }).catch((error)=> {
       if(payload && payload.error){

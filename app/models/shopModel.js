@@ -366,7 +366,7 @@ export const Shop = Record({
   shopCommentsTotalCounts: Map(),
   userUpShopsInfo: Map(),
   shopTagList: List(),
-  userOwnedShopInfo:List(),
+  userOwnedShopInfo:Map(),
   shopFollowers: Map(),
   shopFollowersTotalCount: Map(),
   similarShops: Map(),

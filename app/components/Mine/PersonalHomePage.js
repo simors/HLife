@@ -23,12 +23,18 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {getUserInfoById, fetchUserFollowers, fetchUserFollowersTotalCount} from '../../action/authActions'
-import {getTopics} from '../../selector/topicSelector'
-import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
+import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount} from '../../action/authActions'
+import {fetchUserOwnedShopInfo} from '../../action/shopAction'
+import {selectUserTopics} from '../../selector/topicSelector'
+import {fetchTopicsByUserid} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as authSelector from '../../selector/authSelector'
+import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import FollowUser from '../common/FollowUser'
+import {getDoctorInfoByUserId} from '../../selector/doctorSelector'
+import {fetchDoctorByUserId} from '../../action/doctorAction'
+import MyTopicShow from './MyTopic/MyTopicShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -47,11 +53,13 @@ class PersonalHomePage extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isLogin) {
-        this.props.fetchUserFollowers()
-        this.props.fetchUserFollowersTotalCount()
+        this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
+        this.props.fetchOtherUserFollowers({userId: this.props.userId})
+        this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
         this.props.getUserInfoById({userId: this.props.userId})
+        this.props.fetchDoctorByUserId({id: this.props.userId})
+        this.refreshData()
       }
-      this.refreshData()
     })
   }
 
@@ -70,6 +78,22 @@ class PersonalHomePage extends Component {
         title: this.props.userInfo.nickname,
       }
       Actions.CHATROOM(payload)
+    }
+  }
+
+  onUserDoctorClick() {
+    if(this.props.doctorInfo) {
+
+    }else {
+      Toast.show('该用户还不是医生')
+    }
+  }
+
+  onUserShopClick() {
+    if(this.props.userOwnedShopInfo.id) {
+      Actions.SHOP_DETAIL({id: this.props.userOwnedShopInfo.id})
+    }else {
+      Toast.show('该用户暂未注册店铺')
     }
   }
 
@@ -150,6 +174,12 @@ class PersonalHomePage extends Component {
     }
   }
 
+  renderNoFollow() {
+    return (
+      <Text style={styles.btnTxt}>关注</Text>
+    )
+  }
+
   renderPersonalInfoColumn() {
     let avatar = require('../../assets/images/default_portrait.png')
     if(this.props.userInfo.avatar) {
@@ -159,6 +189,7 @@ class PersonalHomePage extends Component {
     if(this.props.userInfo.gender == 'female') {
       genderIcon = require('../../assets/images/female.png')
     }
+    
     return (
       <View style={styles.personalInfoWrap}>
         <View style={[styles.row, styles.baseInfoWrap]}>
@@ -183,9 +214,14 @@ class PersonalHomePage extends Component {
             </View>
           </View>
           <View style={styles.btnWrap}>
-            <TouchableOpacity style={{flex:1}}>
+            <TouchableOpacity style={{flex:1}} onPress={() => this.toggleFollow()}>
               <View style={[styles.btnBox, styles.rightBorder]}>
-                <Text style={styles.btnTxt}>已关注</Text>
+                <FollowUser
+                  userId={this.props.userId}
+                  renderNoFollow={this.renderNoFollow.bind(this)}
+                  attentionedContainerStyle={{backgroundColor:'#fff'}}
+                  attentionedTxtStyle={{color: THEME.colors.green, fontSize:em(17)}}
+                />
               </View>
             </TouchableOpacity>
             <TouchableOpacity style={{flex:1}} onPress={() => this.sendPrivateMessage()}>
@@ -197,7 +233,7 @@ class PersonalHomePage extends Component {
         </View>
 
         <View style={[styles.row, styles.otherInfoWrap]}>
-          <TouchableOpacity style={{flex:1}}>
+          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserDoctorClick()}}>
             <View style={[styles.otherInfoBox, styles.borderBottom]}>
               <Image
                 source={require('../../assets/images/doctor_small.png')}
@@ -208,7 +244,7 @@ class PersonalHomePage extends Component {
                 style={[styles.arrowForward]}/>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{flex:1}}>
+          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserShopClick()}}>
             <View style={styles.otherInfoBox}>
               <Image
                 source={require('../../assets/images/shop_small.png')}
@@ -231,9 +267,23 @@ class PersonalHomePage extends Component {
   }
 
   renderTopicsColumn() {
+
+    let topicShowView = <View />
+    if(this.props.userTopics && this.props.userTopics.length) {
+      topicShowView = this.props.userTopics.map((item, index) =>{
+        return (
+          <MyTopicShow
+            key={index}
+            containerStyle={{marginBottom: 10}}
+            topic={item}
+          />
+        )
+      })
+    }
+
     return (
       <View style={styles.topicsWrap}>
-
+        {topicShowView}
       </View>
     )
   }
@@ -243,9 +293,36 @@ class PersonalHomePage extends Component {
   }
 
   loadMoreData(isRefresh) {
-    this.props.fetchTopics({
-      type: "topics",
-    })
+    let lastCreatedAt = undefined
+    if(!isRefresh) {
+      if(this.props.userTopics && this.props.userTopics.length){
+        lastCreatedAt = this.props.userTopics[this.props.userTopics.length-1].createdAt
+      }else {
+        this.listView.isLoadUp(false)
+        return
+      }
+    }
+
+    let payload = {
+      type: "userTopics",
+      userId: this.props.userId,
+      lastCreatedAt: lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchTopicsByUserid(payload)
   }
   
   render() {
@@ -278,59 +355,67 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'PERSONAL_INFO_COLUMN'})
   dataArray.push({type: 'TOPICS_COLUMN'})
 
-
-  const topics = getTopics(state)
+  const doctorInfo = getDoctorInfoByUserId(state, ownProps.userId)
+  // console.log('doctorInfo========', doctorInfo)
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
-  // const userFollowers = authSelector.selectUserFollowers(state)
-  // const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state)
-  const userFollowers = [
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-  ]
-  const userFollowersTotalCount = 200
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
+  const userFollowers = authSelector.selectUserFollowers(state, ownProps.userId)
+  const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
+  // console.log('mapStateToProps.userFollowers===', userFollowers)
+  // console.log('mapStateToProps.userFollowersTotalCount===', userFollowersTotalCount)
+  // const userFollowers = [
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  //   {},
+  // ]
+  // const userFollowersTotalCount = 200
+
+  const userTopics = selectUserTopics(state, ownProps.userId)
+
   return {
     ds: ds.cloneWithRows(dataArray),
-    topics: topics,
     isLogin: isLogin,
     currentUser: authSelector.activeUserId(state),
     userInfo: userInfo,
     userFollowers: userFollowers,
-    userFollowersTotalCount: userFollowersTotalCount
+    userFollowersTotalCount: userFollowersTotalCount,
+    userOwnedShopInfo: userOwnedShopInfo,
+    doctorInfo: doctorInfo,
+    userTopics: userTopics
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchTopics,
-  likeTopic,
-  unLikeTopic,
-  fetchUserFollowers,
-  fetchUserFollowersTotalCount,
-  getUserInfoById
+  fetchTopicsByUserid,
+  fetchOtherUserFollowers,
+  fetchOtherUserFollowersTotalCount,
+  getUserInfoById,
+  fetchUserOwnedShopInfo,
+  fetchDoctorByUserId
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
@@ -381,6 +466,8 @@ const styles = StyleSheet.create({
   },
   sexNameWrap: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20
   },
   sexImg: {

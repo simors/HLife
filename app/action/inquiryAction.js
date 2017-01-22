@@ -46,7 +46,6 @@ export function submitFormData(payload) {
 }
 
 export function handleInquirySubmit(payload, formData) {
-  console.log("handleInquirySubmit formData", formData)
   return (dispatch, getState) => {
     let inquiryPayload = {
       id: payload.id,

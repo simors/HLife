@@ -98,16 +98,24 @@ class FollowUser extends Component {
 
     if(userIsFollowedTheUser) {
       return (
-        <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(this.props.userId)}}>
-          <Text style={styles.userAttentionedTxt}>取消关注</Text>
+        <TouchableOpacity style={[styles.userAttentioned, this.props.attentionedContainerStyle]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
+          <Text style={[styles.userAttentionedTxt, this.props.attentionedTxtStyle]}>已关注</Text>
         </TouchableOpacity>
       )
     }else {
-      return (
-        <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
-          <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
-        </TouchableOpacity>
-      )
+      if(this.props.renderNoFollow) {
+        return (
+          <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
+            {this.props.renderNoFollow()}
+          </TouchableOpacity>
+        )
+      }else {
+        return (
+          <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
+            <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
+          </TouchableOpacity>
+        )
+      }
     }
   }
 }
@@ -139,6 +147,8 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
     paddingRight: 4,
     borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   userAttentionedTxt: {
     color: '#fff',
