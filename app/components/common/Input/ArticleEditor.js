@@ -14,6 +14,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Animated,
+  findNodeHandle
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -59,6 +60,7 @@ class ArticleEditor extends Component {
     }
     this.comp = [this.renderTextInput("", 0, true)]
     this.compHeight = 0
+    this.keyboardHeight = 0
   }
 
   componentDidMount() {
@@ -137,6 +139,8 @@ class ArticleEditor extends Component {
     this.setState({
       keyboardPadding: e.endCoordinates.height,
     })
+
+    this.keyboardHeight = e.endCoordinates.height
   }
 
   keyboardWillHide = (e) => {
@@ -306,6 +310,17 @@ class ArticleEditor extends Component {
     this.setState({start: start})
   }
 
+  inputFocused(refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        findNodeHandle(this.refs[refName]),
+        this.keyboardHeight, //additionalOffset
+        true
+      );
+    }, 50);
+  }
+
   renderTextInput(content, index, autoFocus = false) {
     return (
       <AutoGrowingTextInput
@@ -316,7 +331,12 @@ class ArticleEditor extends Component {
         autoFocus={autoFocus}
         value={content}
         onChangeText={(text) => this.updateTextInput(index, text)}
-        onFocus={() => this.setState({cursor: index})}
+        onFocus={() => {
+          this.setState({cursor: index})
+          if (Platform.OS != 'ios') {
+            this.inputFocused("content_" + index)
+          }
+        }}
         onSelectionChange={(event) => this.selectChange(event)}
       />
     )
@@ -343,7 +363,9 @@ class ArticleEditor extends Component {
       this.state.subComp.map((component, index) => {
         return (
           <View key={index}>
-            {component}
+            <View ref={"content_" + index}>
+              {component}
+            </View>
           </View>
         )
       })
@@ -393,6 +415,7 @@ class ArticleEditor extends Component {
         <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
           <Animated.View style={{height: this.state.editorHeight}}>
             <ScrollView
+              ref="scrollView"
               style={{flex: 1}}
               automaticallyAdjustContentInsets={false}
               keyboardShouldPersistTaps={true}
