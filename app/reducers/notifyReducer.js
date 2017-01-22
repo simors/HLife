@@ -21,6 +21,8 @@ export default function notifyReducer(state = initialState, action) {
   switch (action.type) {
     case msgActionTypes.ADD_NOTIFY_MSG:
       return handleAddNotifyMsg(state, action)
+    case msgActionTypes.ON_ENTER_TYPED_NOTIFY:
+      return handleEnterTypedNotify(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -70,6 +72,15 @@ function handleAddNotifyMsg(state, action) {
     state = state.setIn(['notifyMsgByType', type], msg)
   }
 
+  return state
+}
+
+function handleEnterTypedNotify(state, action) {
+  let type = action.payload.type
+  let unReadCnt = state.getIn(['notifyMsgByType', type, 'unReadCount'])
+  state = state.setIn(['notifyMsgByType', type, 'unReadCount'], 0)
+  let unReadAmount = state.get('unReadCount')
+  state = state.set('unReadCount', unReadAmount-unReadCnt)
   return state
 }
 

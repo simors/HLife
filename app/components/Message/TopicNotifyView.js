@@ -22,6 +22,7 @@ import Expander from '../common/Expander'
 import TopicInfoCell from './TopicInfoCell'
 import * as msgActionTypes from '../../constants/messageActionTypes'
 import {getNoticeListByType} from '../../selector/notifySelector'
+import {enterTypedNotify} from '../../action/messageAction'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -29,6 +30,10 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 class TopicNotifyView extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentDidMount() {
+    this.props.enterTypedNotify({type: msgActionTypes.TOPIC_TYPE})
   }
 
   renderReplyBtn(notice) {
@@ -122,6 +127,7 @@ const mapStateToProps = (state, ownProps) => {
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  enterTypedNotify,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicNotifyView)

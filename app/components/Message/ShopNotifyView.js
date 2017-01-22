@@ -28,6 +28,8 @@ import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import * as Toast from '../common/Toast'
 import {reply} from '../../action/shopAction'
+import {enterTypedNotify} from '../../action/messageAction'
+
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
@@ -43,6 +45,10 @@ class ShopNotifyView extends Component {
       replyShopCommentId: '',
       replyShopCommentUserId: '',
     }
+  }
+
+  componentDidMount() {
+    this.props.enterTypedNotify({type: msgActionTypes.SHOP_TYPE})
   }
 
   sendReply(content) {
@@ -190,7 +196,8 @@ const mapStateToProps = (state, ownProps) => {
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  reply: reply
+  reply,
+  enterTypedNotify,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopNotifyView)
