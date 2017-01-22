@@ -97,10 +97,10 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(64),
+        marginTop: normalizeH(64),
       },
       android: {
-        paddingTop: normalizeH(45)
+        marginTop: normalizeH(45)
       }
     }),
     flex: 1,
@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
   tabBarTextStyle: {
     fontSize: 16,
     paddingBottom: 11,
-    fontFamily:".PingFangSC-Regular"
   },
 
   tabBarTabStyle: {
