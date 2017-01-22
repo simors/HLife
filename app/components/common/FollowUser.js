@@ -147,6 +147,8 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
     paddingRight: 4,
     borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   userAttentionedTxt: {
     color: '#fff',
