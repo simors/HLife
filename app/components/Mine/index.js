@@ -21,6 +21,8 @@ import {fetchDoctorInfo} from '../../action/doctorAction'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import * as authSelector from '../../selector/authSelector'
+import {hasNewMessage} from '../../selector/messageSelector'
+import {hasNewNotice} from '../../selector/notifySelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -103,6 +105,23 @@ class Mine extends Component {
     }
   }
 
+  renderHeadMessage() {
+    if (this.props.hasNotice) {
+      return (
+        <View>
+          <Image source={require("../../assets/images/home_message.png")} />
+          <View style={styles.noticeTip}></View>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          <Image source={require("../../assets/images/home_message.png")} />
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -129,7 +148,7 @@ class Mine extends Component {
               <Image style={{width: 20, height: 20}}  source={require('../../assets/images/扫一扫.png')} />
             </TouchableOpacity>
             <TouchableOpacity style={{marginTop: normalizeH(14), marginRight: normalizeW(12), alignItems: 'flex-end'}} onPress={() =>Actions.MESSAGE_BOX()}>
-              <Image style={{width: 20, height: 23}}  source={require('../../assets/images/home_message.png')} />
+              {this.renderHeadMessage()}
             </TouchableOpacity>
           </View>
         </View>
@@ -228,11 +247,14 @@ const mapStateToProps = (state, ownProps) => {
   let doctorInfo = activeDoctorInfo(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  let newMsg = hasNewMessage(state)
+  let newNotice = hasNewNotice(state)
   return {
     userInfo: userInfo,
     doctorInfo: doctorInfo,
     userOwnedShopInfo: userOwnedShopInfo,
-    isUserLogined: isUserLogined
+    isUserLogined: isUserLogined,
+    hasNotice: newMsg || newNotice,
   }
 }
 
@@ -345,7 +367,15 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#686868',
     letterSpacing: 0.43,
-  }
-
+  },
+  noticeTip: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
+  },
 })
 
