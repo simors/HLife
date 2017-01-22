@@ -37,8 +37,9 @@ class ArticleComment extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
-      if(this.props.isLogn){
+      if(this.props.isLogin){
         this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
+        //console.log('here is th e  code by fetch is Up')
       }
     })
   }
