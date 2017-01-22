@@ -366,7 +366,6 @@ export default class Swiper extends React.Component {
 
       let pages = []
       let pageStyle = [{width: state.width, height: state.height}, styles.slide]
-
       // For make infinite at least total > 1
       if(total > 1) {
         // Re-design a loop model for avoid img flickering

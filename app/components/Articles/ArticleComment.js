@@ -37,8 +37,9 @@ class ArticleComment extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
-      if(this.props.isLogn){
+      if(this.props.isLogin){
         this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
+        //console.log('here is th e  code by fetch is Up')
       }
     })
   }
@@ -81,15 +82,15 @@ class ArticleComment extends Component {
       <View style={[styles.containerStyle, this.props.containerStyle]}>
 
         <View style={styles.avatarViewStyle}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})}}>
             <Image style={styles.avatarStyle}
-                   source={this.props.comment.avatar ? {uri: this.props.comment.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+                   source={this.props.comment.avatar ? {uri: this.props.comment.avatar} : require("../../assets/images/default_portrait.png")}/>
           </TouchableOpacity>
         </View>
 
         <View style={styles.commentContainerStyle}>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})}}>
             <Text style={styles.userNameStyle}>{this.props.comment.nickname}</Text>
           </TouchableOpacity>
           {this.renderParentComment()}
