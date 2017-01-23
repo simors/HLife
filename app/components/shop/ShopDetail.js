@@ -277,6 +277,14 @@ class ShopDetail extends Component {
     }
   }
 
+  openCommentScene() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    Actions.PUBLISH_SHOP_COMMENT({id: this.props.id, shopOwnerId: this.props.shopDetail.owner.id})
+  }
+
   renderComments() {
     if(this.props.shopComments && this.props.shopComments.length) {
       const that = this
@@ -475,7 +483,7 @@ class ShopDetail extends Component {
           </ScrollView>
 
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={styles.shopCommentInputBox} onPress={()=>{Actions.PUBLISH_SHOP_COMMENT({id: this.props.id, shopOwnerId: this.props.shopDetail.owner.id})}}>
+            <TouchableOpacity style={styles.shopCommentInputBox} onPress={()=>{this.openCommentScene()}}>
               <Text style={styles.shopCommentInput}>写评论...</Text>
             </TouchableOpacity>
 
