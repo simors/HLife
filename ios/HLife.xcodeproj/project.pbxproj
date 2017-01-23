@@ -1173,7 +1173,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.djsteel.client.app;
 				PRODUCT_NAME = HLife;
-				PROVISIONING_PROFILE = "1acf360a-9c35-462c-9f17-e3ccb0534471";
+				PROVISIONING_PROFILE = "5b9482c9-6574-4c38-b5c9-fe410acbcf82";
 				PROVISIONING_PROFILE_SPECIFIER = "zachary-dj-client-dev";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
