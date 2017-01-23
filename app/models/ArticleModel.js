@@ -48,7 +48,7 @@ export class ArticleItem extends ArticleItemConfig {
       record.set('nickname', nickname)
       record.set('avatar', avatar)
       record.set('articleId', lcObj.id)
-      record.set('createdAt', lcObj.createdAt)
+      record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('author', attrs.user.id)
       //record.set('likers',likerList)
       // record.set('comments',commentLIst)
@@ -98,7 +98,7 @@ export class ArticleComment extends ArticleCommentItem {
     let commentItem = new ArticleCommentItem()
     let attrs = lcObj.attributes
     let user = attrs.author.attributes
-    // console.log('lcO ====>,'lcObj)
+    // console.log('lcO ====>,',lcObj)
 
 
     let nickname = "吾爱用户"
@@ -145,7 +145,7 @@ export class ArticleComment extends ArticleCommentItem {
 
       record.set('replyAuthor', attrs.replyId?parentCommentUser:undefined)
 
-      record.set('createAt', lcObj.createAt)
+      record.set('createAt', lcObj.createdAt.valueOf())
          // console.log('articleItem====>',record)
     })
   }

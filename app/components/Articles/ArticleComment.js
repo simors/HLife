@@ -24,6 +24,7 @@ import {getArticleItem,getIsUp,getcommentCount,getUpCount} from '../../selector/
 import {fetchIsUP,upArticle,unUpArticle,fetchCommentsCount,fetchUpCount} from '../../action/articleAction'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -99,7 +100,7 @@ class ArticleComment extends Component {
           </Text>
 
           <View style={styles.timeLocationStyle}>
-            <Text style={styles.timeTextStyle}>刚刚</Text>
+            <Text style={styles.timeTextStyle}>{getConversationTime(this.props.comment.createAt)}</Text>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>长沙</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onUpCommentButton()}>
@@ -212,8 +213,8 @@ const styles = StyleSheet.create({
   },
   parentCommentTextStyle: {
     color: '#000000',
-    letterSpacing: 0.15,
-    lineHeight: 20
+    letterSpacing: normalizeW(0.15),
+    lineHeight: normalizeH(20)
   },
   contentStyle: {
     fontSize: em(17),
@@ -232,12 +233,12 @@ const styles = StyleSheet.create({
   },
   likeImageStyle: {
     height: normalizeW(16),
-    width: normalizeH(18),
+    width: normalizeH(16),
     marginRight: 3
   },
   commentImageStyle: {
-    height: normalizeW(19),
-    width: normalizeH(18),
+    height: normalizeW(16),
+    width: normalizeH(16),
     marginRight: normalizeW(3),
     resizeMode:'contain'
   },
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: normalizeW(259),
     backgroundColor: '#FFFFFF',
-    height: normalizeH(16),
+    height: normalizeH(17),
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -264,7 +265,8 @@ const styles = StyleSheet.create({
   timeLocationStyle: {
     marginTop: normalizeH(14),
     marginBottom: normalizeH(15),
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems:'center'
   },
   timeTextStyle: {
     marginRight: normalizeW(26),
