@@ -76,11 +76,16 @@ export class TopicDetail extends Component {
   }
 
   openModel(callback) {
-    if(this.replyInput) {
-      this.replyInput.focus()
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
     }
-    if (callback && typeof callback == 'function') {
-      callback()
+    else {
+      if (this.replyInput) {
+        this.replyInput.focus()
+      }
+      if (callback && typeof callback == 'function') {
+        callback()
+      }
     }
   }
 
@@ -90,7 +95,7 @@ export class TopicDetail extends Component {
     }
     else {
       this.props.publishTopicFormData({
-        content:content,
+        content: content,
         topicId: this.props.topic.objectId,
         userId: this.props.userInfo.id,
         replyTo: (this.state.comment) ? this.state.comment.userId : this.props.topic.userId,
@@ -290,8 +295,12 @@ export class TopicDetail extends Component {
             initKeyboardHeight={-50}
           >
             <ToolBarContent
-              replyInputRefCallBack={(input)=>{this.replyInput = input}}
-              onSend={(content) => {this.sendReply(content)}}
+              replyInputRefCallBack={(input)=> {
+                this.replyInput = input
+              }}
+              onSend={(content) => {
+                this.sendReply(content)
+              }}
               placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
             />
           </KeyboardAwareToolBar>
