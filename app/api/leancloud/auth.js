@@ -8,6 +8,7 @@ import {PromoterInfo} from '../../models/promoterModel'
 import {DoctorInfo} from '../../models/doctorModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
+import * as numberUtils from '../../util/numberUtils'
 
 export function become(payload) {
   return AV.User.become(payload.token).then(() => {
@@ -59,6 +60,7 @@ export function register(payload) {
         name: '_User',
         objectId: loginedUser.id,
         setArgs: {
+          nickname: numberUtils.hidePhoneNumberDetail(payload.phone),
           mobilePhoneVerified: true,
           detail: detail
         },

@@ -21,8 +21,10 @@ import Header from '../common/Header'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import TopicComment from './TopicComment'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 import TopicContent from './TopicContent'
-import Comment from '../common/Comment'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
@@ -44,10 +46,10 @@ export class TopicDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      modalVisible: false,
       commentY: 0,
       comment: undefined
     }
+    this.replyInput = null
   }
 
   componentDidMount() {
@@ -65,9 +67,8 @@ export class TopicDetail extends Component {
   }
 
   submitSuccessCallback() {
-    this.closeModal(()=> {
-      Toast.show('评论成功', {duration: 1000})
-    })
+    dismissKeyboard()
+    Toast.show('评论成功', {duration: 1000})
   }
 
   submitErrorCallback(error) {
@@ -75,31 +76,26 @@ export class TopicDetail extends Component {
   }
 
   openModel(callback) {
-    this.setState({
-      modalVisible: true
-    })
-    if (callback && typeof callback == 'function') {
-      callback()
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    }
+    else {
+      if (this.replyInput) {
+        this.replyInput.focus()
+      }
+      if (callback && typeof callback == 'function') {
+        callback()
+      }
     }
   }
 
-  closeModal(callback) {
-    this.setState({
-      modalVisible: false,
-      comment: undefined
-    })
-    if (callback && typeof callback == 'function') {
-      callback()
-    }
-  }
-
-  submitComment(commentData) {
+  sendReply(content) {
     if (!this.props.isLogin) {
       Actions.LOGIN()
     }
     else {
       this.props.publishTopicFormData({
-        ...commentData,
+        content: content,
         topicId: this.props.topic.objectId,
         userId: this.props.userInfo.id,
         replyTo: (this.state.comment) ? this.state.comment.userId : this.props.topic.userId,
@@ -295,14 +291,19 @@ export class TopicDetail extends Component {
                 require("../../assets/images/like_unselect.png")}/>
             </TouchableOpacity>
           </View>
-          <Comment
-            showModules={["content"]}
-            modalVisible={this.state.modalVisible}
-            modalTitle="写评论"
-            textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
-            closeModal={() => this.closeModal()}
-            submitComment={this.submitComment.bind(this)}
-          />
+          <KeyboardAwareToolBar
+            initKeyboardHeight={-50}
+          >
+            <ToolBarContent
+              replyInputRefCallBack={(input)=> {
+                this.replyInput = input
+              }}
+              onSend={(content) => {
+                this.sendReply(content)
+              }}
+              placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
+            />
+          </KeyboardAwareToolBar>
         </View>
       </View>
     )
