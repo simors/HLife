@@ -288,15 +288,19 @@ class ShopDetail extends Component {
   renderComments() {
     if(this.props.shopComments && this.props.shopComments.length) {
       const that = this
+      let avatar = require('../../assets/images/default_portrait.png')
       const commentsView = this.props.shopComments.map((item, index) => {
         if(index > 2) return
         const scoreWidth = (item.score || 0) / 5.0 * 62
         let userIsFollowedTheUser = that.userIsFollowedTheUser(item.user.id)
+        if(item.user.avatar) {
+          avatar = {uri: item.user.avatar}
+        }
         return (
           <View key={"shop_comment_" + index} style={styles.commentContainer}>
             <View style={styles.commentAvatarBox}>
               <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
-                <Image style={styles.commentAvatar} source={{uri: item.user.avatar}}/>
+                <Image style={styles.commentAvatar} source={avatar}/>
               </TouchableOpacity>
 
               {userIsFollowedTheUser
