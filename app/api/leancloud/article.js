@@ -2,36 +2,36 @@
  * Created by lilu on 2016/12/29.
  */
 
-import {ArticleItem, LikersItem,ArticleComment,Up,Favorite} from '../../models/ArticleModel'
+import {ArticleItem, LikersItem, ArticleComment, Up, Favorite} from '../../models/ArticleModel'
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 
 export function getArticle(payload) {
- // console.log('payload',payload)
+  // console.log('payload',payload)
   let query = new AV.Query('Articles')
   if (payload) {
     let categoryId = payload
     let articleCategory = AV.Object.createWithoutData('ArticleCategory', categoryId)
     //console.log('getLikers.category=====', articleCategory)
     query.equalTo('Category', articleCategory)
-    query.equalTo('enable',true)
+    query.equalTo('enable', true)
     query.include(['user'])
     query.descending('createdAt')
   }
   return query.find().then((results) => {
-   // console.log('result-====>',results)
+    // console.log('result-====>',results)
 
     let article = []
     results.forEach((result) => {
-   //   console.log('result-====>=======',result)
+      //   console.log('result-====>=======',result)
 
       article.push(ArticleItem.fromLeancloudObject(result))
     })
-   // console.log('article-====>',article)
+    // console.log('article-====>',article)
 
     return new List(article)
   }, (err) => {
-   // console.log(err)
+    // console.log(err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -48,14 +48,14 @@ export function getIsFavorite(payload) {
   //query.equalTo('status',true)
   query.include('user')
   //query.include('article')
-  return query.first().then((result) =>{
-   // console.log('result====>>>',result)
+  return query.first().then((result) => {
+    // console.log('result====>>>',result)
 
     let userUpShopInfo = undefined
-    if(result && result.attributes) {
-       //  console.log('result===>',result)
+    if (result && result.attributes) {
+      //  console.log('result===>',result)
       userUpShopInfo = Favorite.fromLeancloudObject(result)
-       // console.log('userUpShopInfo===>',userUpShopInfo)
+      // console.log('userUpShopInfo===>',userUpShopInfo)
     }
     return userUpShopInfo
   }, function (err) {
@@ -78,7 +78,7 @@ export function favoriteArticle(payload) {
       return favorite.save()
     }
     else if (userLikeTopicInfo.id && !userLikeTopicInfo.status) {
-      console.log('hereiscodeupArticle====》',userLikeTopicInfo)
+      console.log('hereiscodeupArticle====》', userLikeTopicInfo)
       let up = AV.Object.createWithoutData('ArticleFavorite', userLikeTopicInfo.id)
       up.set('status', true)
       return up.save()
@@ -147,7 +147,7 @@ export function getUps(payload) {
       ups.push(Up.fromLeancloudObject(result))
     })
     return new List(ups)
-  },(err) => {
+  }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -156,16 +156,16 @@ export function getUps(payload) {
 
 export function getCommentCount(payload) {
   let query = new AV.Query('ArticleComment')
-  let articleId=payload
+  let articleId = payload
 
   let article = AV.Object.createWithoutData('Articles', articleId)
 
-  query.equalTo('articleId',article)
- // console.log('payload=========>',articleId)
-  query.equalTo('enable',true)
-  return query.count().then((results) =>{
-   // console.log('count==>',results)
-   return results
+  query.equalTo('articleId', article)
+  // console.log('payload=========>',articleId)
+  query.equalTo('enable', true)
+  return query.count().then((results) => {
+    // console.log('count==>',results)
+    return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -199,13 +199,13 @@ export function getIsUps(payload) {
   query.equalTo('user', currentUser)
   //console.log('currentUser==>',currentUser)
   query.include('user')
-  return query.first().then((result) =>{
+  return query.first().then((result) => {
     //console.log('result====>',result)
     let userUpShopInfo = undefined
-    if(result && result.attributes) {
-   //   console.log('result===>',result)
+    if (result && result.attributes) {
+      //   console.log('result===>',result)
       userUpShopInfo = Up.fromLeancloudObject(result)
-    //  console.log('userUpShopInfo===>',userUpShopInfo)
+      //  console.log('userUpShopInfo===>',userUpShopInfo)
     }
     return userUpShopInfo
   }, function (err) {
@@ -216,7 +216,7 @@ export function getIsUps(payload) {
 
 
 export function upArticle(payload) {
- // console.log('hereiscodeupArticle====》',payload)
+  // console.log('hereiscodeupArticle====》',payload)
   let articleId = payload.articleId
   let upType = payload.upType
   let article = undefined
@@ -306,10 +306,10 @@ export function unUpArticle(payload) {
 //根据ARTICLE的RELATION进行查询
 export function getComment(payload) {
   //console.log('payload.......',payload)
-  let article = AV.Object.createWithoutData('Articles',payload)
+  let article = AV.Object.createWithoutData('Articles', payload)
   let relation = article.relation('comments')
   let query = relation.query()
-  query.equalTo('enable',true)
+  query.equalTo('enable', true)
   query.include(['author'])
   query.include(['replyId'])
   query.include(['replyId.author'])
@@ -321,7 +321,7 @@ export function getComment(payload) {
     results.forEach((result) => {
 
       comment.push(ArticleComment.fromLeancloudObject(result))
-    //  console.log('comment====>',comment)
+      //  console.log('comment====>',comment)
 
     })
 
@@ -333,13 +333,13 @@ export function getComment(payload) {
 }
 
 export function submitArticleComment(payload) {
-  console.log('payload----->',payload)
+  console.log('payload----->', payload)
   let articleId = payload.articleId
   let content = payload.content
   let replyId = payload.replyId
   let article = AV.Object.createWithoutData('Articles', articleId)
   let currentUser = AV.User.current()
- // console.log('user======>',currentUser)
+  // console.log('user======>',currentUser)
   let reply = AV.Object.createWithoutData('ArticleComment', replyId)
   let ArticleComment = AV.Object.extend('ArticleComment')
   let articleComment = new ArticleComment()
@@ -352,14 +352,14 @@ export function submitArticleComment(payload) {
   return articleComment.save().then(function (result) {
     if (result) {
       let relation = article.relation('comments')
-    //  console.log('result======>',relation)
+      //  console.log('result======>',relation)
       relation.add(articleComment)
-    //  console.log('relation======>', relation)
+      //  console.log('relation======>', relation)
       return article.save().then(function (data) {
-      //  console.log('result======>',data)
+        //  console.log('result======>',data)
 
       }, function (err) {
-      //  console.log(err)
+        //  console.log(err)
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })

@@ -20,8 +20,8 @@ import {bindActionCreators} from 'redux'
 import TopicImageViewer from '../../components/common/TopicImageViewer'
 import {getConversationTime} from '../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
-import {getArticleItem,getIsUp,getcommentCount,getUpCount} from '../../selector/articleSelector'
-import {fetchIsUP,upArticle,unUpArticle,fetchCommentsCount,fetchUpCount} from '../../action/articleAction'
+import {getArticleItem, getIsUp, getcommentCount, getUpCount} from '../../selector/articleSelector'
+import {fetchIsUP, upArticle, unUpArticle, fetchCommentsCount, fetchUpCount} from '../../action/articleAction'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 
 
@@ -30,16 +30,16 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 class ArticleComment extends Component {
   constructor(props) {
-  //  console.log('didmount======>')
+    //  console.log('didmount======>')
     super(props)
     this.state = {}
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
-      if(this.props.isLogin){
-        this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
+      this.props.fetchUpCount({articleId: this.props.comment.commentId, upType: 'articleComment'})
+      if (this.props.isLogin) {
+        this.props.fetchIsUP({articleId: this.props.comment.commentId, upType: 'articleComment'})
         //console.log('here is th e  code by fetch is Up')
       }
     })
@@ -47,8 +47,8 @@ class ArticleComment extends Component {
 
   successCallback() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchIsUP({articleId: this.props.comment.commentId, upType:'articleComment'})
-      this.props.fetchUpCount({articleId: this.props.comment.commentId, upType:'articleComment'})
+      this.props.fetchIsUP({articleId: this.props.comment.commentId, upType: 'articleComment'})
+      this.props.fetchUpCount({articleId: this.props.comment.commentId, upType: 'articleComment'})
     })
   }
 
@@ -61,7 +61,7 @@ class ArticleComment extends Component {
   }
 
   renderParentComment() {
-   // console.log('ceshiyixia===>',this.props.comment)
+    // console.log('ceshiyixia===>',this.props.comment)
     if (this.props.comment.replyAuthor) {
       return (
         <View style={styles.parentCommentStyle}>
@@ -83,7 +83,9 @@ class ArticleComment extends Component {
       <View style={[styles.containerStyle, this.props.containerStyle]}>
 
         <View style={styles.avatarViewStyle}>
-          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})}}>
+          <TouchableOpacity onPress={()=> {
+            Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})
+          }}>
             <Image style={styles.avatarStyle}
                    source={this.props.comment.avatar ? {uri: this.props.comment.avatar} : require("../../assets/images/default_portrait.png")}/>
           </TouchableOpacity>
@@ -91,7 +93,9 @@ class ArticleComment extends Component {
 
         <View style={styles.commentContainerStyle}>
 
-          <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})}}>
+          <TouchableOpacity onPress={()=> {
+            Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.author})
+          }}>
             <Text style={styles.userNameStyle}>{this.props.comment.nickname}</Text>
           </TouchableOpacity>
           {this.renderParentComment()}
@@ -104,7 +108,7 @@ class ArticleComment extends Component {
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>长沙</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onUpCommentButton()}>
-              <Image style={styles.likeImageStyle}  source={this.props.isUp ?
+              <Image style={styles.likeImageStyle} source={this.props.isUp ?
                 require("../../assets/images/like_select.png") :
                 require("../../assets/images/like_unselect.png")}/>
               <Text style={styles.commentTextStyle}>{this.props.upCount}</Text>
@@ -125,19 +129,19 @@ class ArticleComment extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
- // let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
- // console.log('ownProps=======>',ownProps.comment)
+  // let articleItem = getArticleItem(state,ownProps.articleId,ownProps.categoryId)
+  // console.log('ownProps=======>',ownProps.comment)
 
-  let upCount = getUpCount(state,ownProps.comment.commentId)
-  let isUp = getIsUp(state,ownProps.comment.commentId)
+  let upCount = getUpCount(state, ownProps.comment.commentId)
+  let isUp = getIsUp(state, ownProps.comment.commentId)
   const isLogin = isUserLogined(state)
 
   // console.log('isUp====>',isUp)
-  return{
+  return {
     upCount: upCount,
     isUp: isUp,
-    isLogin : isLogin
-  //  articleItem : articleItem
+    isLogin: isLogin
+    //  articleItem : articleItem
   }
 }
 
@@ -184,7 +188,7 @@ const styles = StyleSheet.create({
     width: normalizeW(35),
     borderRadius: 17.5,
     borderWidth: 1,
-   // borderStyle: 'solid',
+    // borderStyle: 'solid',
     borderColor: 'transparent',
     marginTop: normalizeH(10),
     marginLeft: normalizeW(12),
@@ -240,7 +244,7 @@ const styles = StyleSheet.create({
     height: normalizeW(16),
     width: normalizeH(16),
     marginRight: normalizeW(3),
-    resizeMode:'contain'
+    resizeMode: 'contain'
   },
   commentTextStyle: {
     fontSize: em(12),
@@ -266,7 +270,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(14),
     marginBottom: normalizeH(15),
     flexDirection: 'row',
-    alignItems:'center'
+    alignItems: 'center'
   },
   timeTextStyle: {
     marginRight: normalizeW(26),
