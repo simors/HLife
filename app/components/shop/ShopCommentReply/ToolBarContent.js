@@ -31,9 +31,9 @@ export default class ToolBarContent extends Component {
 
   onSend() {
     this.props.onSend(this.state.content)
-    this.setState({
-      content: ''
-    })
+    if(this.input) {
+      this.input.setNativeProps({text: ''})
+    }
   }
 
   onChangeText(text) {
@@ -42,18 +42,23 @@ export default class ToolBarContent extends Component {
     })
   }
 
+  refFunc(input) {
+    this.input = input
+    this.props.replyInputRefCallBack(input)
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <TextInput
-          ref={(input) =>{this.props.replyInputRefCallBack(input)}}
+          ref={(input) =>{this.refFunc(input)}}
           placeholder={this.props.placeholder}
           placeholderTextColor={this.props.placeholderTextColor}
           multiline={this.props.multiline}
           onChange={this.props.onChange}
           onChangeText={this.onChangeText.bind(this)}
           style={[styles.textInput, this.props.textInputStyle]}
-          value={this.props.text}
+          value={this.props.initValue}
           enablesReturnKeyAutomatically={true}
           underlineColorAndroid="transparent"
           {...this.props.textInputProps}
