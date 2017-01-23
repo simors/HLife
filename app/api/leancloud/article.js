@@ -291,6 +291,8 @@ export function getComment(payload) {
   query.include(['author'])
   query.include(['replyId'])
   query.include(['replyId.author'])
+  query.descending('createdAt')
+
   return query.find().then(function (results) {
 
     let comment = []
