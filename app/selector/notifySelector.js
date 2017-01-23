@@ -24,6 +24,12 @@ export function getNewestNoticeByType(state, type) {
   let notifyMsg = state.NOTICE.getIn(['notifyMsgByType', type])
   if (notifyMsg) {
     let messageList = notifyMsg.get('messageList')
+    if (!messageList) {
+      return {
+        lastMessageAt: "",
+        lastMessage: "还没有收到过通知消息，要多多参与互动哦^_^"
+      }
+    }
     let lastMsgId = messageList.first()
     if (lastMsgId) {
       let lastMessageObj = state.NOTICE.getIn(['messageMap', lastMsgId])
@@ -48,6 +54,9 @@ export function getNoticeListByType(state, type) {
   let notifyMsg = state.NOTICE.getIn(['notifyMsgByType', type])
   if (notifyMsg) {
     let messageList = notifyMsg.get('messageList')
+    if (!messageList) {
+      return notifyList
+    }
     messageList.map((msgId) => {
       let messageRecord = state.NOTICE.getIn(['messageMap', msgId])
       let message = messageRecord.toJS()
