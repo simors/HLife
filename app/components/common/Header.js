@@ -23,10 +23,7 @@ export default class Header extends Component {
     if (this.props.leftComponent) {
       return (
         <View style={styles.leftWrap}>
-          <TouchableOpacity style={[styles.leftContainer, this.props.leftContainerStyle]}
-                            onPress={() => this.props.leftPress()}>
-            {this.props.leftComponent()}
-          </TouchableOpacity>
+          {this.props.leftComponent()}
         </View>
       )
     }
@@ -77,10 +74,7 @@ export default class Header extends Component {
     if (this.props.rightComponent) {
       return (
         <View style={styles.rightWrap}>
-          <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]}
-                            onPress={() => this.props.rightPress()}>
-            {this.props.rightComponent()}
-          </TouchableOpacity>
+          {this.props.rightComponent()}
         </View>
       )
     }
@@ -174,7 +168,9 @@ const styles = StyleSheet.create({
   },
   leftWrap: {
     flex: 1,
-    // paddingLeft: 12
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   leftContainer: {
     flex: 1,
@@ -209,6 +205,9 @@ const styles = StyleSheet.create({
   },
   rightWrap: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   rightContainer: {
     flex: 1,
@@ -216,7 +215,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingRight: 12
-
   },
   right: {
     fontSize: em(17),
