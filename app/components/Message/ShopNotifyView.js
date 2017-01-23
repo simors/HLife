@@ -28,6 +28,8 @@ import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import * as Toast from '../common/Toast'
 import {reply} from '../../action/shopAction'
+import {enterTypedNotify} from '../../action/messageAction'
+
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
@@ -43,6 +45,10 @@ class ShopNotifyView extends Component {
       replyShopCommentId: '',
       replyShopCommentUserId: '',
     }
+  }
+
+  componentDidMount() {
+    this.props.enterTypedNotify({type: msgActionTypes.SHOP_TYPE})
   }
 
   sendReply(content) {
@@ -124,12 +130,14 @@ class ShopNotifyView extends Component {
         <View style={styles.personView}>
           <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: notice.userId})}>
             <View style={styles.avtarView}>
-              <Image style={styles.avtarStyle} source={{uri: notice.avatar}}></Image>
+              <Image style={styles.avtarStyle}
+                     source={notice.avatar ? {uri: notice.avatar} : require("../../assets/images/default_portrait.png")}>
+              </Image>
             </View>
           </TouchableOpacity>
           <View style={{marginLeft: 10, justifyContent: 'center'}}>
             <View>
-              <Text style={styles.userNameStyle}>{notice.nickname}</Text>
+              <Text style={styles.userNameStyle}>{notice.nickname ? notice.nickname : '未命名'}</Text>
             </View>
             <View style={{flexDirection: 'row', paddingTop: 2}}>
               <Text style={{fontSize: 12, color: '#B6B6B6', width: 76}}>{notice.timestamp}</Text>
@@ -188,7 +196,8 @@ const mapStateToProps = (state, ownProps) => {
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  reply: reply
+  reply,
+  enterTypedNotify,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopNotifyView)

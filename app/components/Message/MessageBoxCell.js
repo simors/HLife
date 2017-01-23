@@ -79,7 +79,9 @@ class MessageBoxCell extends Component {
         }
         return (
           <View>
-            <Image style={{width: size, height: size}} source={{uri: this.props.users[index].avatar}}></Image>
+            <Image style={{width: size, height: size}}
+                   source={this.props.users[index].avatar? {uri: this.props.users[index].avatar} : require("../../assets/images/default_portrait.png")}>
+            </Image>
           </View>
         )
       })
@@ -92,7 +94,9 @@ class MessageBoxCell extends Component {
       return (
         <View>
           <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.users[0].id})}>
-            <Image style={styles.noticeIcon} source={{uri: this.props.users[0].avatar}}></Image>
+            <Image style={styles.noticeIcon}
+                   source={this.props.users[0].avatar ? {uri: this.props.users[0].avatar} : require("../../assets/images/default_portrait.png")}>
+            </Image>
           </TouchableOpacity>
         </View>
       )

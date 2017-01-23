@@ -36,7 +36,11 @@ class PrivateMessageCell extends Component {
     let title = ""
     let usernames = []
     this.props.users.map((user) => {
-      usernames.push(user.nickname)
+      if (!user.nickname || user.nickname.length === 0) {
+        usernames.push(user.phone)
+      } else {
+        usernames.push(user.nickname)
+      }
     })
     title = usernames.join(',')
     return (

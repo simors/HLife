@@ -211,6 +211,13 @@ export function sendMessage(payload) {
   }
 }
 
+export function enterTypedNotify(payload) {
+  return (dispatch, getState) => {
+    let onEnterTypedNotify = createAction(msgTypes.ON_ENTER_TYPED_NOTIFY)
+    dispatch(onEnterTypedNotify({type: payload.type}))
+  }
+}
+
 export function enterConversation(payload) {
   return (dispatch, getState) => {
     dispatch(onEnterConversation({cid: payload.conversationId}))
