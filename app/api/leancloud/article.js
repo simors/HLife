@@ -219,6 +219,11 @@ export function upArticle(payload) {
  // console.log('hereiscodeupArticle====》',payload)
   let articleId = payload.articleId
   let upType = payload.upType
+  let article = undefined
+  if (payload.upType == "article")
+    article = AV.Object.createWithoutData('Articles', payload.articleId)
+  else if (payload.upType == "articleComment")
+    article = AV.Object.createWithoutData('ArticleComment', payload.articleId)
   let currentUser = AV.User.current()
   return getIsUps(payload).then((userLikeTopicInfo) => {
     if (!userLikeTopicInfo) {
@@ -242,11 +247,17 @@ export function upArticle(payload) {
     if (result && '10107' == result.code) {
       return result
     }
-    return {
-      articleId: articleId,
-      code: '10108',
-      message: '成功点赞'
-    }
+    article.increment("count", 1)
+    return article.save().then(function (result) {
+      return {
+        articleId: articleId,
+        code: '10108',
+        message: '成功点赞'
+      }
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
   }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -256,6 +267,11 @@ export function upArticle(payload) {
 export function unUpArticle(payload) {
 //  console.log('hereiscode')
   let articleId = payload.articleId
+  let article = undefined
+  if (payload.upType == "article")
+    article = AV.Object.createWithoutData('Articles', payload.articleId)
+  else if (payload.upType == "articleComment")
+    article = AV.Object.createWithoutData('ArticleComment', payload.articleId)
   return getIsUps(payload).then((userLikeTopicInfo) => {
     if (userLikeTopicInfo && userLikeTopicInfo.id) {
       let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
@@ -270,11 +286,17 @@ export function unUpArticle(payload) {
     if (result && '10009' == result.code) {
       return result
     }
-    return {
-      articleId: articleId,
-      code: '10010',
-      message: '取消点赞成功'
-    }
+    article.increment("count", -1)
+    return article.save().then(function (result) {
+      return {
+        articleId: articleId,
+        code: '10108',
+        message: '成功点赞'
+      }
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
   }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
