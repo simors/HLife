@@ -85,8 +85,12 @@ class Article extends Component {
   }
   onReplyClick() {
     // console.log('onReplyClick.this.replyInput==', this.replyInput)
-    if (this.replyInput) {
-      this.replyInput.focus()
+    if(!this.props.isLogin){
+      Actions.LOGIN()
+    }else {
+      if (this.replyInput) {
+        this.replyInput.focus()
+      }
     }
   }
   measureMyComponent(event) {
