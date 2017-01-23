@@ -31,6 +31,9 @@ export default class ToolBarContent extends Component {
 
   onSend() {
     this.props.onSend(this.state.content)
+    this.setState({
+      content: ''
+    })
   }
 
   onChangeText(text) {

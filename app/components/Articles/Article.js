@@ -84,16 +84,18 @@ class Article extends Component {
       }
     })
   }
+
   onReplyClick() {
     // console.log('onReplyClick.this.replyInput==', this.replyInput)
-    if(!this.props.isLogin){
+    if (!this.props.isLogin) {
       Actions.LOGIN()
-    }else {
+    } else {
       if (this.replyInput) {
         this.replyInput.focus()
       }
     }
   }
+
   measureMyComponent(event) {
     this.setState({commentY: (event.nativeEvent.layout.height + event.nativeEvent.layout.y)})
     //console.log('commentY',this.state.commentY)
@@ -217,6 +219,13 @@ class Article extends Component {
     }
   }
 
+  onCommentArticle() {
+    this.setState({
+      comment: undefined
+    })
+    this.onReplyClick()
+  }
+
   onCommentButton(comment) {
     this.setState({
       comment: comment
@@ -276,11 +285,11 @@ class Article extends Component {
   }
 
   submitErrorCallback(error) {
-   // Toast.show(error.message)
+    // Toast.show(error.message)
   }
 
   submitSuccessCallback() {
-    InteractionManager.runAfterInteractions(()=>{
+    InteractionManager.runAfterInteractions(()=> {
       this.props.fetchCommentsArticle({articleId: this.props.articleId})
     })
     this.closeModal(()=> {
@@ -290,7 +299,8 @@ class Article extends Component {
   }
 
   scrollToComment() {
-    this.refs.scrollView.scrollTo(this.state.commentY)  }
+    this.refs.scrollView.scrollTo(this.state.commentY)
+  }
 
   openModel(callback) {
     this.setState({
@@ -370,7 +380,7 @@ class Article extends Component {
             {this.renderNoComment()}
           </ScrollView>
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.onReplyClick.bind(this)}>
+            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.onCommentArticle.bind(this)}>
               <Text style={styles.shopCommentInput}>写回复...</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
@@ -395,21 +405,25 @@ class Article extends Component {
           <KeyboardAwareToolBar
             initKeyboardHeight={-normalizeH(100)}
           >
-          {/*<CommentV2*/}
+            {/*<CommentV2*/}
             {/*replyInputRefCallBack={(input)=>{this.replyInput = input}}*/}
             {/*showModules={["content"]}*/}
             {/*modalVisible={this.state.modalVisible}*/}
             {/*textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}*/}
             {/*closeModal={() => this.closeModal()}*/}
             {/*submitComment={this.submitComment.bind(this)}*/}
-          {/*/>*/}
+            {/*/>*/}
             <ToolBarContent
-              replyInputRefCallBack={(input)=>{this.replyInput = input}}
-              onSend={(content)=>{this.submitComment(content)}}
+              replyInputRefCallBack={(input)=> {
+                this.replyInput = input
+              }}
+              onSend={(content)=> {
+                this.submitComment(content)
+              }}
               placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
               label={'回复'}
             />
-            </KeyboardAwareToolBar>
+          </KeyboardAwareToolBar>
         </View>
       </View>
 
@@ -550,7 +564,7 @@ const styles = StyleSheet.create(
         },
         android: {
           marginTop: normalizeH(45),
-         // paddingBottom: normalizeH(100)
+          // paddingBottom: normalizeH(100)
         }
       }),
       flex: 1,
