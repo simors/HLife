@@ -309,7 +309,7 @@ export function getComment(payload) {
 }
 
 export function submitArticleComment(payload) {
-  //console.log('payload----->',payload)
+  console.log('payload----->',payload)
   let articleId = payload.articleId
   let content = payload.content
   let replyId = payload.replyId

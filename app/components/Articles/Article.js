@@ -54,6 +54,7 @@ import * as Toast from '../common/Toast'
 import WebHtmlView from 'react-native-webhtmlview'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
+import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -265,20 +266,26 @@ class Article extends Component {
     }
     else {
       this.props.submitArticleComment({
-        ...commentData,
+        content: commentData,
         articleId: this.props.articleId,
         replyId: (this.state.comment) ? this.state.comment.commentId : undefined,
         success: this.submitSuccessCallback.bind(this),
-        error: this.submitErrorCallback
+        error: this.submitErrorCallback(this)
       })
     }
   }
 
+  submitErrorCallback(error) {
+   // Toast.show(error.message)
+  }
+
   submitSuccessCallback() {
-    this.props.fetchCommentsArticle({articleId: this.props.articleId})
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchCommentsArticle({articleId: this.props.articleId})
+    })
     this.closeModal(()=> {
       dismissKeyboard()
-      Toast.show('发布成功', {duration: 1000})
+      Toast.show('回复成功', {duration: 1000})
     })
   }
 
@@ -364,7 +371,7 @@ class Article extends Component {
           </ScrollView>
           <View style={styles.shopCommentWrap}>
             <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.onReplyClick.bind(this)}>
-              <Text style={styles.shopCommentInput}>写评论...</Text>
+              <Text style={styles.shopCommentInput}>写回复...</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
               <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
@@ -386,16 +393,22 @@ class Article extends Component {
             </TouchableOpacity>
           </View>
           <KeyboardAwareToolBar
-            initKeyboardHeight={-normalizeH(160)}
+            initKeyboardHeight={-normalizeH(100)}
           >
-          <CommentV2
-            replyInputRefCallBack={(input)=>{this.replyInput = input}}
-            showModules={["content"]}
-            modalVisible={this.state.modalVisible}
-            textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
-            closeModal={() => this.closeModal()}
-            submitComment={this.submitComment.bind(this)}
-          />
+          {/*<CommentV2*/}
+            {/*replyInputRefCallBack={(input)=>{this.replyInput = input}}*/}
+            {/*showModules={["content"]}*/}
+            {/*modalVisible={this.state.modalVisible}*/}
+            {/*textAreaPlaceholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}*/}
+            {/*closeModal={() => this.closeModal()}*/}
+            {/*submitComment={this.submitComment.bind(this)}*/}
+          {/*/>*/}
+            <ToolBarContent
+              replyInputRefCallBack={(input)=>{this.replyInput = input}}
+              onSend={(content)=>{this.submitComment(content)}}
+              placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
+              label={'回复'}
+            />
             </KeyboardAwareToolBar>
         </View>
       </View>
