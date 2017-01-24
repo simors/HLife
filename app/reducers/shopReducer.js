@@ -50,11 +50,35 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchShopDetailSuccess(state, action)
     case ShopActionTypes.FETCH_GUESS_YOU_LIKE_SHOP_LIST_SUCCESS:
       return handleFetchGuessYouLikeShopListSuccess(state, action)
+    case ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_LIST_SUCCESS:
+      return handleFetchUserFollowedShopListSuccess(state, action)
+    case ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_PAGING_LIST_SUCCESS:
+      return handleFetchUserFollowedShopPagingListSuccess(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
       return state
   }
+}
+
+function handleFetchUserFollowedShopListSuccess(state, action) {
+  let payload = action.payload
+  let userId = payload.userId
+  let userFollowedShops = payload.userFollowedShops
+  state = state.setIn(['userFollowedShops', userId], userFollowedShops)
+  return state
+}
+
+function handleFetchUserFollowedShopPagingListSuccess(state, action) {
+  let payload = action.payload
+  let userId = payload.userId
+  let userFollowedShops = payload.userFollowedShops
+  let _userFollowedShops = state.getIn(['userFollowedShops', userId])
+  if(_userFollowedShops && userFollowedShops && userFollowedShops.size) {
+    _userFollowedShops = _userFollowedShops.concat(userFollowedShops)
+    state = state.setIn(['userFollowedShops', userId], _userFollowedShops)
+  }
+  return state
 }
 
 function handleUpdateShopList(state, action) {

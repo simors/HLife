@@ -20,10 +20,16 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {selectUserFollowees} from '../../../selector/authSelector'
+import {selectUserFollowees, activeUserId} from '../../../selector/authSelector'
+import {selectUserFollowedShopList} from '../../../selector/shopSelector'
 import {fetchUserFollowees} from '../../../action/authActions'
+import {fetchUserFollowShops} from '../../../action/shopAction'
 import CommonListView from '../../common/CommonListView'
+import ScoreShow from '../../common/ScoreShow'
 import FollowUser from '../../../components/common/FollowUser'
+import * as Toast from '../../common/Toast'
+import THEME from '../../../constants/themes/theme1'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -97,10 +103,84 @@ class MyAttention extends Component {
     )
   }
 
+  refreshShopList() {
+    this.loadMoreShopListData(true)
+  }
+
+  loadMoreShopListData(isRefresh) {
+    let payload = {
+      lastCreatedAt: this.props.lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.shopListView) {
+          return
+        }
+        if(isEmpty) {
+          this.shopListView.isLoadUp(false)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchUserFollowShops(payload)
+  }
+
+  renderShopItem(rowData) {
+    return (
+      <TouchableOpacity onPress={()=>{Actions.SHOP_DETAIL({id: rowData.id})}}>
+        <View style={[styles.shopInfoWrap]}>
+          <View style={styles.coverWrap}>
+            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
+          </View>
+          <View style={styles.shopIntroWrap}>
+            <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
+            <ScoreShow
+              containerStyle={{flex:1}}
+              score={rowData.score}
+            />
+            <View style={styles.subInfoWrap}>
+              <Text style={styles.subTxt}>{rowData.geoName}</Text>
+              {rowData.distance &&
+                <Text style={styles.subTxt}>{rowData.distance}km</Text>
+              }
+              <View style={styles.shopHeadRight}>
+                <View style={styles.shopAttentioned}>
+                  <Text style={styles.shopAttentionedTxt}>已关注</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
   renderShopList() {
     return (
-      <View />
+      <CommonListView
+        contentContainerStyle={styles.shopContentContainerStyle}
+        dataSource={this.props.userFollowedShopList}
+        renderRow={(rowData, rowId) => this.renderShopItem(rowData, rowId)}
+        loadNewData={()=> {
+          this.refreshShopList()
+        }}
+        loadMoreData={()=> {
+          this.loadMoreShopListData()
+        }}
+        ref={(listView) => this.shopListView = listView}
+      />
     )
+  }
+
+  toggleTab(type) {
+    this.setState({tabType: type}, ()=>{
+      if(0 == type) {
+        this.refreshTopic()
+      }else if(1 == type) {
+        this.refreshShopList()
+      }
+    })
   }
 
   render() {
@@ -116,7 +196,7 @@ class MyAttention extends Component {
           <View style={styles.tabBar}>
             <TouchableOpacity
               onPress={()=> {
-                this.setState({tabType: 0})
+                this.toggleTab(0)
               }}>
               <Text style={{
                 fontSize: em(15),
@@ -126,7 +206,7 @@ class MyAttention extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={()=> {
-                this.setState({tabType: 1})
+              this.toggleTab(1)
               }}>
               <Text style={{
                 fontSize: em(15),
@@ -144,13 +224,21 @@ class MyAttention extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userFollowees = selectUserFollowees(state)
+  const userFollowedShopList = selectUserFollowedShopList(state, activeUserId(state))
+  let lastCreatedAt = ''
+  if(userFollowedShopList && userFollowedShopList.length) {
+    lastCreatedAt = userFollowedShopList[userFollowedShopList.length-1].createdAt
+  }
   return {
     userFollowees: ds.cloneWithRows(userFollowees),
+    userFollowedShopList: ds.cloneWithRows(userFollowedShopList),
+    lastCreatedAt: lastCreatedAt
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserFollowees,
+  fetchUserFollowShops
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyAttention)
@@ -182,6 +270,9 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
     width: PAGE_WIDTH,
+    backgroundColor: 'rgba(0,0,0,0.05)'
+  },
+  shopContentContainerStyle: {
     backgroundColor: 'rgba(0,0,0,0.05)'
   },
   tabBar: {
@@ -234,5 +325,55 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(4),
     width: normalizeW(8),
     height: normalizeH(12)
+  },
+  shopInfoWrap: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 10,
+    marginBottom: normalizeH(10),
+    backgroundColor: '#fff',
+  },
+  coverWrap: {
+    width: 80,
+    height: 80
+  },
+  cover: {
+    flex: 1
+  },
+  shopIntroWrap: {
+    flex: 1,
+    paddingLeft: 10,
+  },
+  shopName: {
+    lineHeight: 20,
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  subInfoWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 5
+  },
+  subTxt: {
+    marginRight: normalizeW(10),
+    color: '#d8d8d8',
+    fontSize: em(12)
+  },
+  shopHeadRight: {
+    position: 'absolute',
+    right: 0,
+    top: 0
+  },
+  shopAttentioned: {
+    backgroundColor: THEME.colors.green,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 6,
+    paddingRight: 6,
+    borderRadius: 5,
+  },
+  shopAttentionedTxt: {
+    color: '#fff',
+    fontSize: em(14),
   },
 })
