@@ -24,6 +24,7 @@ import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import * as authSelector from '../../selector/authSelector'
+import * as Utils from '../../util/Utils'
 
 class FollowUser extends Component {
   constructor(props) {
@@ -93,20 +94,8 @@ class FollowUser extends Component {
     this.props.unFollowUser(payload)
   }
 
-  userIsFollowedTheUser(userId) {
-    let userFollowees = this.props.userFollowees
-    if(userFollowees && userFollowees.length) {
-      for(let i = 0; i < userFollowees.length; i++) {
-        if(userFollowees[i].id == userId) {
-          return true
-        }
-      }
-      return false
-    }
-  }
-
   render() {
-    let userIsFollowedTheUser = this.userIsFollowedTheUser(this.props.userId)
+    let userIsFollowedTheUser = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
 
     if(userIsFollowedTheUser) {
       return (

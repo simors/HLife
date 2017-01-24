@@ -35,6 +35,7 @@ import FollowUser from '../common/FollowUser'
 import {getDoctorInfoByUserId} from '../../selector/doctorSelector'
 import {fetchDoctorByUserId} from '../../action/doctorAction'
 import MyTopicShow from './MyTopic/MyTopicShow'
+import * as Utils from '../../util/Utils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -59,6 +60,8 @@ class PersonalHomePage extends Component {
         this.props.getUserInfoById({userId: this.props.userId})
         this.props.fetchDoctorByUserId({id: this.props.userId})
         this.refreshData()
+      }else {
+        Actions.LOGIN()
       }
     })
   }
@@ -71,6 +74,11 @@ class PersonalHomePage extends Component {
     if (!this.props.isLogin) {
       Actions.LOGIN()
     } else {
+      let isFollowed = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
+      if(!isFollowed) {
+        Toast.show('只有关注了才能发私信哦!!')
+        return
+      }
       let payload = {
         name: this.props.userInfo.phone,
         members: [this.props.currentUser, this.props.userInfo.id],
@@ -395,6 +403,7 @@ const mapStateToProps = (state, ownProps) => {
   // const userFollowersTotalCount = 200
 
   const userTopics = selectUserTopics(state, ownProps.userId)
+  const userFollowees = authSelector.selectUserFollowees(state)
 
   return {
     ds: ds.cloneWithRows(dataArray),
@@ -405,7 +414,8 @@ const mapStateToProps = (state, ownProps) => {
     userFollowersTotalCount: userFollowersTotalCount,
     userOwnedShopInfo: userOwnedShopInfo,
     doctorInfo: doctorInfo,
-    userTopics: userTopics
+    userTopics: userTopics,
+    userFollowees: userFollowees
   }
 }
 
