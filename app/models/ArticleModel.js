@@ -90,7 +90,8 @@ export const ArticleCommentItem = Record({
   nickname: undefined,
   createAt: undefined,
   replyAuthor:undefined,
-  replyContent:undefined
+  replyContent:undefined,
+  count : undefined
 })
 
 export class ArticleComment extends ArticleCommentItem {
@@ -133,6 +134,8 @@ export class ArticleComment extends ArticleCommentItem {
     //  console.log('author====>',record)
     //  console.log('author====>',record)
       record.set('content', attrs.content)
+      record.set('count', attrs.count)
+
       record.set('articleId', attrs.articleId.id)
       record.set('commentId', lcObj.id)
       record.set('nickname', nickname)

@@ -28,6 +28,7 @@ import * as authSelector from '../../selector/authSelector'
 class FollowUser extends Component {
   constructor(props) {
     super(props)
+    this.isProcessing = false
   }
 
   componentWillMount() {
@@ -44,6 +45,10 @@ class FollowUser extends Component {
   }
 
   followUser(userId) {
+    if(this.isProcessing) {
+      return
+    }
+    this.isProcessing = true
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
       return
@@ -52,17 +57,22 @@ class FollowUser extends Component {
     let payload = {
       userId: userId,
       success: function(result) {
+        that.isProcessing = false
         that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
+        that.isProcessing = false
         Toast.show(error.message, {duration: 1500})
       }
     }
     this.props.followUser(payload)
   }
 
-  unFollowUser(userId) {
+  unFollowUser(userId) {if(this.isProcessing) {
+    return
+  }
+    this.isProcessing = true
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
       return
@@ -71,10 +81,12 @@ class FollowUser extends Component {
     let payload = {
       userId: userId,
       success: function(result) {
+        that.isProcessing = false
         that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
+        that.isProcessing = false
         Toast.show(error.message, {duration: 1500})
       }
     }

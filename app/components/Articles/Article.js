@@ -321,13 +321,20 @@ class Article extends Component {
     }
   }
 
+  rightPress() {
+
+  }
+
   render() {
     return (
       <View style={styles.containerStyle}>
         <Header leftType='icon'
                 leftPress={() => Actions.pop()}
                 rightType='image'
-                rightImageSource={require("../../assets/images/artical_share.png")}>
+                rightImageSource={require("../../assets/images/artical_share.png")}
+                rightPress={()=> {
+                  this.rightPress()
+                }}>
 
         </Header>
         <View style={styles.body}>
