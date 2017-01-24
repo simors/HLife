@@ -92,9 +92,12 @@ class PublishShopComment extends Component {
 
   rightComponent() {
     return (
-      <View style={styles.commentBtnWrap}>
-        <Text style={styles.commentBtn}>发  表</Text>
-      </View>
+      <TouchableOpacity style={[styles.rightContainer]}
+                        onPress={() => this.submitShopComment()}>
+        <View style={styles.commentBtnWrap}>
+          <Text style={styles.commentBtn}>发  表</Text>
+        </View>
+      </TouchableOpacity>
     )
   }
 
@@ -107,7 +110,6 @@ class PublishShopComment extends Component {
           leftPress={() => Actions.pop()}
           title="发表评价"
           rightComponent={this.rightComponent.bind(this)}
-          rightPress={()=>{this.submitShopComment()}}
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
         />
         <View style={styles.body}>
@@ -178,6 +180,13 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
     backgroundColor: '#fff'
+  },
+  rightContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingRight: 12
   },
   commentBtnWrap: {
     paddingTop: normalizeH(8),
