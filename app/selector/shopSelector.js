@@ -11,6 +11,14 @@ export function selectShopList(state) {
   return selectShop(state).shopList
 }
 
+export function selectUserFollowedShopList(state, userId) {
+  let userFollowedShopList = state.SHOP.getIn(['userFollowedShops', userId])
+  if(userFollowedShopList && userFollowedShopList.size) {
+    return userFollowedShopList.toJS()
+  }
+  return []
+}
+
 export function selectFetchShopListIsArrivedLastPage(state) {
   return state.SHOP.get('fetchShopListArrivedLastPage')
 }

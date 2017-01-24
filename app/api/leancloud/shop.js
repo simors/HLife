@@ -160,6 +160,48 @@ export function deleteShopAnnouncement(payload) {
   })
 }
 
+export function fetchUserFollowShops(payload) {
+  let userId = payload.userId
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  let currentUser = AV.User.current()
+  if(!userId) {
+    userId = currentUser.id
+  }
+  let user = AV.Object.createWithoutData('_User', userId)
+  let query = new AV.Query('ShopFollowee')
+  query.equalTo('user', user)
+  if(!isRefresh) { //分页查询
+    if(lastCreatedAt) {
+      query.lessThan('createdAt', new Date(lastCreatedAt))
+    }else {
+      return new Promise((resolve, reject)=>{
+        resolve({
+          userId: userId,
+          userFollowedShops: new List([])
+        })
+      })
+    }
+  }
+  query.addDescending('createdAt')
+  query.limit(5)
+  query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
+  let userFollowedShops = []
+  return query.find().then(function(results) {
+    // console.log('fetchUserFollowShops.results=====', results)
+    results.forEach((result)=>{
+      userFollowedShops.push(ShopInfo.fromLeancloudObject(result, 'followee'))
+    })
+    return {
+      userId: userId,
+      userFollowedShops: new List(userFollowedShops)
+    }
+  }, function(err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function isFollowedShop(payload) {
   let shopId = payload.id
   let shop = AV.Object.createWithoutData('Shop', shopId)

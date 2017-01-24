@@ -29,10 +29,14 @@ export const ShopRecord = Record({
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
-  static fromLeancloudObject(lcObj) {
+  static fromLeancloudObject(lcObj, type) {
     try{
       let shopRecord = new ShopRecord()
       let attrs = lcObj.attributes
+      if(type) {
+        lcObj = attrs[type]
+        attrs = attrs[type].attributes
+      }
       return shopRecord.withMutations((record) => {
         record.set('id', lcObj.id)
         record.set('name', attrs.name)
@@ -372,4 +376,5 @@ export const Shop = Record({
   similarShops: Map(),
   shopDetails: Map(),
   guessYouLikeShopList: List(),
+  userFollowedShops: Map()
 }, 'Shop')
