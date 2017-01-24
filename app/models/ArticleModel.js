@@ -94,6 +94,7 @@ export const ArticleCommentItem = Record({
   count : undefined
 })
 
+
 export class ArticleComment extends ArticleCommentItem {
   static fromLeancloudObject(lcObj) {
     let commentItem = new ArticleCommentItem()
@@ -150,6 +151,60 @@ export class ArticleComment extends ArticleCommentItem {
 
       record.set('createAt', lcObj.createdAt.valueOf())
          // console.log('articleItem====>',record)
+    })
+  }
+  static fromCloudFuncObject(lcObj) {
+    let commentItem = new ArticleCommentItem()
+    let attrs = lcObj
+   // let user = attrs.author.attributes
+    // console.log('attrs ====>,',attrs)
+    //console.log('user ====>,',user)
+
+    let nickname = "吾爱用户"
+    let avatar = undefined
+    if (lcObj.nickname) {
+      avatar = lcObj.avatar
+      nickname = lcObj.nickname
+      if (!nickname) {
+        let phoneNumber = user.username
+        nickname = hidePhoneNumberDetail(phoneNumber)
+      }
+    }
+    let parentUserPoint = undefined
+    let parentCommentUser = "吾爱用户"
+
+    // 有父评论的情况下
+    if(lcObj.replycontent){
+    if (lcObj.replynickname) {
+      //  console.log('attrs====>',attrs)
+      parentCommentUser = lcObj.replynickname
+      //父用户昵称解析
+    }else{
+      let phoneNumber =lcObj.replyusername
+      parentCommentUser = hidePhoneNumberDetail(phoneNumber)
+    }}
+    return commentItem.withMutations((record)=> {
+      record.set('author', lcObj.author)
+      //  console.log('author====>',record)
+      //  console.log('author====>',record)
+      record.set('content', lcObj.content)
+      record.set('count', lcObj.count)
+
+      record.set('articleId', lcObj.articleId)
+      record.set('commentId', lcObj.id)
+      record.set('nickname', nickname)
+      record.set('avatar', avatar)
+      //  console.log('record====>',record)
+
+      record.set('replyContent', lcObj.replycontent?lcObj.replycontent:undefined)
+      // console.log('record====>',record)
+
+      record.set('replyAuthor', lcObj.replyId?parentCommentUser:undefined)
+      // console.log('record.createAt====>',lcObj.createdAt)
+      // console.log('record.createAt====>',lcObj.createdAt.valueOf())
+
+      record.set('createAt', lcObj.createdAt)
+       // console.log('record.createAt====>',record.createAt)
     })
   }
 }

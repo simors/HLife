@@ -375,27 +375,40 @@ export function getCommentByCloud(payload){
     let commentList=[]
     let isUpList = []
     let countList = []
+
     results.forEach((result)=>{
 
       if(result){
-        commentList.push(ArticleComment.fromLeancloudObject(result.comment))
+       // console.log('results===>',result)
+
+        commentList.push(ArticleComment.fromCloudFuncObject(result.comment))
+        //console.log('upCount===>',result.attributes.count)
+       // console.log('commentId===>',result.comment.id)
+
+       // console.log('commentList===>',commentList)
         let upCount={
           commentId:result.comment.id,
-          upCount:result.attributes.count
+          upCount:result.comment.count
         }
         countList.push(upCount)
         let isUp={
           commentId: result.comment.id,
           isUp:result.isUp
         }
+        //console.log('isUp===>',isUp)
         isUpList.push(isUp)
+
+
       }
     })
    // let comment=[]
+   // console.log('isUpList===>',isUpList)
+   // console.log('countList===>',countList)
+
     return {
       commentList: List(commentList),
-      countList:List(countList),
-      isUpList: List(isUpList)
+      countList:countList,
+      isUpList: isUpList
       }
 
   })

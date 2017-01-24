@@ -178,10 +178,14 @@ export function fetchCommentByCloud(payload){
       comments.countList.forEach((upCount)=>{
         dispatch(addUpCountAction({upCount:upCount.upCount,articleId:upCount.commentId}))
     })
+    //  console.log('here is word',comments.isUpList)
+
       if(comments.isUpList && comments.isUpList.length){
+    // console.log('here is word')
       comments.isUpList.forEach((isUp)=>{
         dispatch(addIsUpByCAction({articleId: isUp.commentId, isUp: isUp.isUp}))
       })
+     //    dispatch(addIsUpByCAction({isUpList:comments.isUpList}))
       }
     })
   }

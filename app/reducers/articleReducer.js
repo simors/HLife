@@ -100,6 +100,7 @@ function handleUpdateIsUpByC(state,action){
   let payload = action.payload
   let articleId = payload.articleId
   let isUp = payload.isUp
+
   let _map = state.get('isUp')
   if(isUp)
   {

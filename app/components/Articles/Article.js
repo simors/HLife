@@ -75,13 +75,17 @@ class Article extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchCommentsArticle({articleId: this.props.articleId})
+     // this.props.fetchCommentsArticle({articleId: this.props.articleId})
       this.props.fetchCommentsCount(this.props.articleId)
       this.props.fetchUps({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
       if (this.props.isLogin) {
         this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
         this.props.fetchIsFavorite({articleId: this.props.articleId})
+        this.props.fetchCommentByCloud({articleId:this.props.articleId,userId:this.props.userInfo.id})
+      }
+      else{
+        this.props.fetchCommentByCloud({articleId:this.props.articleId})
       }
     })
   }
@@ -136,7 +140,7 @@ class Article extends Component {
       // this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
       // this.props.fetchCommentsArticle(this.props.articleId,this.props.categoryId)
       //  this.props.fetchCommentsCount(this.props.articleId, this.props.categoryId)
-      this.props.fetchUps(this.props.articleId)
+     // this.props.fetchUps(this.props.articleId)
       this.props.fetchUpCount({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsUP({articleId: this.props.articleId, upType: 'article'})
       this.props.fetchIsFavorite({articleId: this.props.articleId})
@@ -450,7 +454,7 @@ const mapStateToProps = (state, ownProps) => {
   const commentsTotalCount = getcommentCount(state, ownProps.articleId)
   const isFavorite = getIsFavorite(state, ownProps.articleId)
   const upUser = getLikerList(state, ownProps.articleId)
- // console.log('userI + ===>', userInfo)
+  //console.log('userI + ===>', userInfo)
 
   return {
     articleComments: articleComments,
