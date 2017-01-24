@@ -12,7 +12,7 @@ const addCommentAction = createAction(articleTypes.ADD_COMMENT)
 const addCommentCountAction = createAction(articleTypes.ADD_COMMENT_COUNT)
 const addIsUpAction = createAction(articleTypes.UPDATE_ISUP)
 const addIsFavoriteAction = createAction(articleTypes.UPDATE_ISFAVORITE)
-
+const addIsUpByCAction = createAction(articleTypes.UPDATE_ISUP_BYC)
 export function fetchArticle(payload) {
   return (dispatch, getState) => {
     let columnId = payload
@@ -171,6 +171,22 @@ export function fetchCommentsArticle(payload) {
   }
 }
 
+export function fetchCommentByCloud(payload){
+  return (dispatch,getState)=>{
+    laArticle.getCommentByCloud(payload).then((comments)=>{
+      dispatch(addCommentAction({commentList:comments.commentList,articleId:payload.articleId}))
+      comments.countList.forEach((upCount)=>{
+        dispatch(addUpCountAction({upCount:upCount.upCount,articleId:upCount.commentId}))
+    })
+      if(comments.isUpList && comments.isUpList.length){
+      comments.isUpList.forEach((isUp)=>{
+        dispatch(addIsUpByCAction({articleId: isUp.commentId, isUp: isUp.isUp}))
+      })
+      }
+    })
+  }
+}
+
 export function fetchCommentsCount(articleId,columnId) {
   return (dispatch, getState) => {
     // let articleId = payload
@@ -202,3 +218,4 @@ export function submitArticleComment(payload) {
     })
   }
 }
+

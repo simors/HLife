@@ -38,6 +38,7 @@ import {
   fetchIsFavorite,
   unFavoriteArticle,
   favoriteArticle,
+  fetchCommentByCloud
 } from '../../action/articleAction'
 import {
   getIsUp,
@@ -449,7 +450,7 @@ const mapStateToProps = (state, ownProps) => {
   const commentsTotalCount = getcommentCount(state, ownProps.articleId)
   const isFavorite = getIsFavorite(state, ownProps.articleId)
   const upUser = getLikerList(state, ownProps.articleId)
-  //console.log('articleComment===>', upUser)
+ // console.log('userI + ===>', userInfo)
 
   return {
     articleComments: articleComments,
@@ -475,7 +476,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchIsFavorite,
   unFavoriteArticle,
   fetchUps,
-  fetch
+  fetchCommentByCloud
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Article)

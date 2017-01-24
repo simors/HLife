@@ -369,3 +369,34 @@ export function submitArticleComment(payload) {
     throw err
   })
 }
+
+export function getCommentByCloud(payload){
+  return AV.Cloud.run('getArticleCommentList',payload).then((results)=>{
+    let commentList=[]
+    let isUpList = []
+    let countList = []
+    results.forEach((result)=>{
+
+      if(result){
+        commentList.push(ArticleComment.fromLeancloudObject(result.comment))
+        let upCount={
+          commentId:result.comment.id,
+          upCount:result.attributes.count
+        }
+        countList.push(upCount)
+        let isUp={
+          commentId: result.comment.id,
+          isUp:result.isUp
+        }
+        isUpList.push(isUp)
+      }
+    })
+   // let comment=[]
+    return {
+      commentList: List(commentList),
+      countList:List(countList),
+      isUpList: List(isUpList)
+      }
+
+  })
+}

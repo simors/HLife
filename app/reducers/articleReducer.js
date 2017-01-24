@@ -18,6 +18,8 @@ export default function articleReducer(state = initialState, action) {
       return handleUpdateUpCount(state,action)
     case Types.UPDATE_ISUP:
       return handleUpdateIsUp(state,action)
+    case Types.UPDATE_ISUP_BYC:
+      return handleUpdateIsUpByC(state,action)
     case Types.UPDATE_ISFAVORITE:
       return handleUpdateIsFavorite(state,action)
     // case Types.UP_ARTICLE_SUCCESS:
@@ -87,6 +89,21 @@ function handleUpdateIsUp(state, action) {
   if(userUpInfo && userUpInfo.status)
   {
     _map = _map.set(articleId, true)
+  }else{
+    _map = _map.set(articleId, false)
+  }
+  state = state.set('isUp',  _map)
+  return state
+}
+
+function handleUpdateIsUpByC(state,action){
+  let payload = action.payload
+  let articleId = payload.articleId
+  let isUp = payload.isUp
+  let _map = state.get('isUp')
+  if(isUp)
+  {
+    _map = _map.set(articleId, isUp)
   }else{
     _map = _map.set(articleId, false)
   }
