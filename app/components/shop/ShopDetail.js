@@ -305,7 +305,7 @@ class ShopDetail extends Component {
 
               {userIsFollowedTheUser
                 ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>
-                    <Text style={styles.userAttentionedTxt}>取消关注</Text>
+                    <Text style={styles.userAttentionedTxt}>已关注</Text>
                   </TouchableOpacity>
                 : <TouchableOpacity onPress={()=>{this.followUser(item.user.id)}}>
                     <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
@@ -616,7 +616,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   shopHeadRight: {
-    width: 60,
     justifyContent: 'center',
     alignItems: 'flex-end'
   },
