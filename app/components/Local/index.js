@@ -59,7 +59,7 @@ class Local extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       this.props.fetchShopCategories()
-      this.props.fetchTopics({type:"allTopics"})
+      this.props.fetchTopics({type:"allTopics", isRefresh: true})
       if(this.props.isUserLogined) {
         this.props.fetchUserFollowees()
       }
@@ -207,14 +207,37 @@ class Local extends Component {
     )
   }
 
-  refreshData() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({})
-    })
+  refreshTopic() {
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
-
+  loadMoreData(isRefresh) {
+    let lastCreatedAt = undefined
+    if(this.props.topics){
+      let currentTopics = this.props.topics
+      if(currentTopics && currentTopics.length) {
+        lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
+      }
+    }
+    let payload = {
+      type: "allTopics",
+      lastCreatedAt: lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchTopics(payload)
   }
 
   render() {
@@ -233,11 +256,12 @@ class Local extends Component {
             dataSource={this.props.ds}
             renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
             loadNewData={()=> {
-              this.refreshData()
+              this.refreshTopic()
             }}
             loadMoreData={()=> {
               this.loadMoreData()
             }}
+            ref={(listView) => this.listView = listView}
           />
         </View>
 
