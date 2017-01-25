@@ -175,7 +175,7 @@ export class ArticleComment extends ArticleCommentItem {
     let parentCommentUser = "吾爱用户"
 
     // 有父评论的情况下
-    if(attrs.replycontent){
+    if(attrs.replyusername){
     if (attrs.replynickname) {
       //  console.log('attrs====>',attrs)
       parentCommentUser = attrs.replynickname
@@ -200,10 +200,10 @@ export class ArticleComment extends ArticleCommentItem {
       record.set('nickname', nickname)
       record.set('avatar', avatar)
 
-      record.set('replyContent', attrs.replycontent?attrs.replycontent:undefined)
+      record.set('replyContent', attrs.replyusername?attrs.replycontent:undefined)
      //  console.log('record====>',record)
 
-      record.set('replyAuthor', attrs.replyId?parentCommentUser:undefined)
+      record.set('replyAuthor', attrs.replyusername?parentCommentUser:undefined)
        //console.log('record.createAt====>',attrs.createdAt)
       // console.log('record.createAt====>',lcObj.createdAt.valueOf())
 

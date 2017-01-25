@@ -61,7 +61,7 @@ class ArticleComment extends Component {
   }
 
   renderParentComment() {
-    // console.log('ceshiyixia===>',this.props.comment)
+     // console.log('ceshiyixia===>',this.props.comment)
     if (this.props.comment.replyAuthor) {
       return (
         <View style={styles.parentCommentStyle}>
