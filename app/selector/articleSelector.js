@@ -69,7 +69,8 @@ export function getcommentCount(state,articleId,categoryId) {
 }
 
 export function getUpCount(state,articleId,categoryId) {
-  return getArticles(state).upCount[articleId] || []
+ // console.log('seseeeewh==>',getArticles(state).upCount[articleId])
+  return getArticles(state).upCount[articleId]
 }
 
 export function getIsUp(state,articleId) {

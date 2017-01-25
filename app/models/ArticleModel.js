@@ -91,7 +91,8 @@ export const ArticleCommentItem = Record({
   createAt: undefined,
   replyAuthor:undefined,
   replyContent:undefined,
-  count : undefined
+  count : undefined,
+  isUp:undefined
 })
 
 
@@ -155,18 +156,18 @@ export class ArticleComment extends ArticleCommentItem {
   }
   static fromCloudFuncObject(lcObj) {
     let commentItem = new ArticleCommentItem()
-    let attrs = lcObj
+    let attrs = lcObj.comment
    // let user = attrs.author.attributes
-    // console.log('attrs ====>,',attrs)
+   //  console.log('attrs ====>,',attrs)
     //console.log('user ====>,',user)
 
     let nickname = "吾爱用户"
     let avatar = undefined
-    if (lcObj.nickname) {
-      avatar = lcObj.avatar
-      nickname = lcObj.nickname
+    if (attrs.nickname) {
+      avatar = attrs.avatar
+      nickname = attrs.nickname
       if (!nickname) {
-        let phoneNumber = user.username
+        let phoneNumber = attrs.username
         nickname = hidePhoneNumberDetail(phoneNumber)
       }
     }
@@ -174,37 +175,40 @@ export class ArticleComment extends ArticleCommentItem {
     let parentCommentUser = "吾爱用户"
 
     // 有父评论的情况下
-    if(lcObj.replycontent){
-    if (lcObj.replynickname) {
+    if(attrs.replycontent){
+    if (attrs.replynickname) {
       //  console.log('attrs====>',attrs)
-      parentCommentUser = lcObj.replynickname
+      parentCommentUser = attrs.replynickname
       //父用户昵称解析
     }else{
-      let phoneNumber =lcObj.replyusername
+      let phoneNumber =attrs.replyusername
       parentCommentUser = hidePhoneNumberDetail(phoneNumber)
     }}
     return commentItem.withMutations((record)=> {
-      record.set('author', lcObj.author)
+      record.set('author', attrs.author)
       //  console.log('author====>',record)
       //  console.log('author====>',record)
-      record.set('content', lcObj.content)
-      record.set('count', lcObj.count)
+      record.set('content', attrs.content)
+      record.set('count', attrs.count)
+     // console.log('record====>',record)
 
-      record.set('articleId', lcObj.articleId)
-      record.set('commentId', lcObj.id)
+      record.set('isUp',lcObj.isUp)
+    //  console.log('record====>',record)
+
+      record.set('articleId', attrs.articleId)
+      record.set('commentId', attrs.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)
-      //  console.log('record====>',record)
 
-      record.set('replyContent', lcObj.replycontent?lcObj.replycontent:undefined)
-      // console.log('record====>',record)
+      record.set('replyContent', attrs.replycontent?attrs.replycontent:undefined)
+     //  console.log('record====>',record)
 
-      record.set('replyAuthor', lcObj.replyId?parentCommentUser:undefined)
-      // console.log('record.createAt====>',lcObj.createdAt)
+      record.set('replyAuthor', attrs.replyId?parentCommentUser:undefined)
+       //console.log('record.createAt====>',attrs.createdAt)
       // console.log('record.createAt====>',lcObj.createdAt.valueOf())
 
-      record.set('createAt', lcObj.createdAt)
-       // console.log('record.createAt====>',record.createAt)
+      record.set('createAt', attrs.createdAt)
+      //  console.log('record.createAt====>',record)
     })
   }
 }

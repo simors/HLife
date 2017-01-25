@@ -375,29 +375,28 @@ export function getCommentByCloud(payload){
     let commentList=[]
     let isUpList = []
     let countList = []
-
+    results.sort(arrdes)
     results.forEach((result)=>{
 
       if(result){
-       // console.log('results===>',result)
+       // console.log('results===>',result.comment.createdAt)
 
-        commentList.push(ArticleComment.fromCloudFuncObject(result.comment))
+        commentList.push(ArticleComment.fromCloudFuncObject(result))
         //console.log('upCount===>',result.attributes.count)
        // console.log('commentId===>',result.comment.id)
 
        // console.log('commentList===>',commentList)
-        let upCount={
-          commentId:result.comment.id,
-          upCount:result.comment.count
-        }
-        countList.push(upCount)
-        let isUp={
-          commentId: result.comment.id,
-          isUp:result.isUp
-        }
-        //console.log('isUp===>',isUp)
-        isUpList.push(isUp)
-
+       //  let upCount={
+       //    commentId:result.comment.id,
+       //    upCount:result.comment.count
+       //  }
+       //  countList.push(upCount)
+       //  let isUp={
+       //    commentId: result.comment.id,
+       //    isUp:result.isUp
+       //  }
+       //  //console.log('isUp===>',isUp)
+       //  isUpList.push(isUp)
 
       }
     })
@@ -405,11 +404,17 @@ export function getCommentByCloud(payload){
    // console.log('isUpList===>',isUpList)
    // console.log('countList===>',countList)
 
-    return {
-      commentList: List(commentList),
-      countList:countList,
-      isUpList: isUpList
-      }
+    return new List(commentList)
+      // countList:countList,
+      // isUpList: isUpList
+
 
   })
+}
+
+export function arrdes(m,n){
+  if(m.comment.createdAt<n.comment.createdAt)
+  {return m}else {
+    return n
+  }
 }

@@ -108,10 +108,10 @@ class ArticleComment extends Component {
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>长沙</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onUpCommentButton()}>
-              <Image style={styles.likeImageStyle} source={this.props.isUp ?
+              <Image style={styles.likeImageStyle} source={((this.props.isUp==true||this.props.isUp==false)?this.props.isUp:this.props.comment.isUp) ?
                 require("../../assets/images/like_select.png") :
                 require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>{this.props.upCount}</Text>
+              <Text style={styles.commentTextStyle}>{(this.props.upCount||(this.props.upCount==0))?this.props.upCount:this.props.comment.count}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentStyle} onPress={()=> {
               this.props.onCommentButton(this.props.comment)
@@ -135,11 +135,11 @@ const mapStateToProps = (state, ownProps) => {
   let upCount = getUpCount(state, ownProps.comment.commentId)
   let isUp = getIsUp(state, ownProps.comment.commentId)
   const isLogin = isUserLogined(state)
-
-  // console.log('isUp====>',isUp)
+  //console.log('isUp',(isUp==true||isUp==false)?isUp:ownProps.comment.isUp)
+  // console.log('Upconut====>',upCount)
   return {
     upCount: upCount,
-    isUp: isUp,
+    isUp: (isUp==true||isUp==false)?isUp:ownProps.comment.isUp,
     isLogin: isLogin
     //  articleItem : articleItem
   }

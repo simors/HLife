@@ -174,19 +174,19 @@ export function fetchCommentsArticle(payload) {
 export function fetchCommentByCloud(payload){
   return (dispatch,getState)=>{
     laArticle.getCommentByCloud(payload).then((comments)=>{
-      dispatch(addCommentAction({commentList:comments.commentList,articleId:payload.articleId}))
-      comments.countList.forEach((upCount)=>{
-        dispatch(addUpCountAction({upCount:upCount.upCount,articleId:upCount.commentId}))
-    })
+      dispatch(addCommentAction({commentList:comments,articleId:payload.articleId}))
+    //   comments.countList.forEach((upCount)=>{
+    //     dispatch(addUpCountAction({upCount:upCount.upCount,articleId:upCount.commentId}))
+    // })
     //  console.log('here is word',comments.isUpList)
 
-      if(comments.isUpList && comments.isUpList.length){
-    // console.log('here is word')
-      comments.isUpList.forEach((isUp)=>{
-        dispatch(addIsUpByCAction({articleId: isUp.commentId, isUp: isUp.isUp}))
-      })
-     //    dispatch(addIsUpByCAction({isUpList:comments.isUpList}))
-      }
+    //   if(comments.isUpList && comments.isUpList.length){
+    // // console.log('here is word')
+    //   comments.isUpList.forEach((isUp)=>{
+    //     dispatch(addIsUpByCAction({articleId: isUp.commentId, isUp: isUp.isUp}))
+    //   })
+    //  //    dispatch(addIsUpByCAction({isUpList:comments.isUpList}))
+    //   }
     })
   }
 }
