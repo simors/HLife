@@ -414,7 +414,7 @@ export function getCommentByCloud(payload){
 
 export function arrdes(m,n){
   if(m.comment.createdAt<n.comment.createdAt)
-  {return m}else {
-    return n
+  {return 1}else {
+    return -1
   }
 }
