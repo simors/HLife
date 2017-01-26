@@ -127,6 +127,7 @@ class Home extends Component {
         <View style={styles.advertisementModule}>
           <CommonBanner
             banners={this.props.banner}
+            useScrollView={true}
           />
         </View>
       )
