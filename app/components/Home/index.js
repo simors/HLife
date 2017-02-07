@@ -278,6 +278,7 @@ const styles = StyleSheet.create({
   },
   announcementModule: {
     height: normalizeH(40),
+    backgroundColor: 'white',
  //   marginTop: normalizeH(15),
   },
   advertisementModule: {
