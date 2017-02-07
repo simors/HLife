@@ -71,7 +71,9 @@ export default class Swiper extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    this.setState(this._initState(props))
+    this.setState(this._initState(props), function(){
+      this._autoplay()
+    })
   }
 
   componentDidMount() {
