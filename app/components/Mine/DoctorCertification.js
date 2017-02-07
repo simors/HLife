@@ -32,6 +32,8 @@ import RegionPicker from '../common/Input/RegionPicker'
 import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import ImageGroupInput from '../common/Input/ImageGroupInput'
 import {activeUserInfo} from '../../selector/authSelector'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -92,36 +94,41 @@ class DoctorCertification extends Component {
   constructor(props) {
     super(props)
   }
-   submitSuccessCallback(doctorInfo) {
-     Toast.show('认证提交成功')
-     Actions.pop()
-   }
 
-   submitErrorCallback(error) {
-     Toast.show(error.message)
-   }
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: commonForm})
+  }
 
-   onButtonPress = () => {
-     this.props.submitDoctorFormData({
-       formKey: commonForm,
-       submitType: DOCTOR_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
-       id: this.props.userInfo && this.props.userInfo.id,
-       success: this.submitSuccessCallback,
-       error: this.submitErrorCallback
-     })
-   }
+  submitSuccessCallback(doctorInfo) {
+   Toast.show('认证提交成功')
+   Actions.pop()
+  }
 
-   smsCode() {
-     this.props.submitInputData({
-       formKey: commonForm,
-       stateKey:phoneInput.stateKey,
-       submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
-       success:() => {},
-       error: (error) => {
-         Toast.show(error.message)
-       }
-     })
-   }
+  submitErrorCallback(error) {
+   Toast.show(error.message)
+  }
+
+  onButtonPress = () => {
+   this.props.submitDoctorFormData({
+     formKey: commonForm,
+     submitType: DOCTOR_FORM_SUBMIT_TYPE.DOCTOR_CERTIFICATION,
+     id: this.props.userInfo && this.props.userInfo.id,
+     success: this.submitSuccessCallback,
+     error: this.submitErrorCallback
+   })
+  }
+
+  smsCode() {
+   this.props.submitInputData({
+     formKey: commonForm,
+     stateKey:phoneInput.stateKey,
+     submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
+     success:() => {},
+     error: (error) => {
+       Toast.show(error.message)
+     }
+   })
+  }
 
   render() {
     return (
@@ -270,6 +277,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitDoctorFormData,
   submitInputData,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(DoctorCertification)
