@@ -106,10 +106,13 @@ class AddHealthProfile extends Component {
                   <Text style={styles.mainText}>昵称</Text>
                 </View>
                 <View style={{flex: 2, justifyContent: 'center'}}>
-                  <CommonTextInput {...nicknameInput}
-                                   containerStyle={{height: normalizeH(38), }}
-                                   clearBtnStyle={{top:6}}
-                                   inputStyle={{ backgroundColor: '#FFFFFF'}}/>
+                  <CommonTextInput
+                    {...nicknameInput}
+                    placeholder="输入昵称"
+                    containerStyle={styles.containerStyle}
+                    inputStyle={styles.inputStyle}
+                  />
+
                 </View>
 
               </View>
@@ -206,5 +209,15 @@ const styles = StyleSheet.create({
     fontSize: em(17),
     color: '#030303',
     letterSpacing: -0.41,
+  },
+  containerStyle: {
+    paddingRight:0,
+  },
+  inputStyle:{
+    height: normalizeH(44),
+    fontSize: em(17),
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    paddingLeft: 0,
   },
 })

@@ -152,29 +152,40 @@ class DoctorCertification extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>姓名</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...nameInput} placeholder="与身份证姓名保持一致" containerStyle={{height: normalizeH(38), }}
-                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...nameInput}
+                                   placeholder="与身份证姓名保持一致"
+                                   containerStyle={styles.containerStyle}
+                                   inputStyle={styles.inputStyle}
+                  />
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>身份证号</Text>
                 <View style={{flex: 1}}>
-                  <CommonTextInput {...IDInput}  containerStyle={{height: normalizeH(38) }} maxLength={18}
-                                   inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <CommonTextInput {...IDInput}
+                                   maxLength={18}
+                                   containerStyle={styles.containerStyle}
+                                   inputStyle={styles.inputStyle}
+                  />
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
-                  <PhoneInput {...phoneInput} initValue={this.props.userInfo.phone} placeholder="仅用于客服与你联系" editable={false}
-                              inputStyle={styles.phoneInputStyle}/>
+                  <PhoneInput {...phoneInput}
+                              initValue={this.props.userInfo.phone}
+                              placeholder="仅用于客服与你联系"
+                              editable={false}
+                              containerStyle={styles.containerStyle}
+                              inputStyle={styles.inputStyle}
+                  />
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>验证码</Text>
                 <View style={{flex: 1,}}>
-                  <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(38)}}
-                                    textInput={styles.smsAuthCodeTextInput}
+                  <SmsAuthCodeInput {...smsAuthCodeInput}
+                                    textInput={styles.inputStyle}
                                     inputContainer={{paddingLeft: 17, paddingRight: 17}}
                                     placeholder = "填写手机验证码"
                                     codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
@@ -182,6 +193,7 @@ class DoctorCertification extends Component {
                                     codeText={{fontSize: 12}}
                                     getSmsAuCode={() => this.smsCode()}
                                     reset={!this.props.phoneValid}
+                                    containerStyle={styles.containerStyle}
                   />
                 </View>
               </View>
@@ -191,16 +203,20 @@ class DoctorCertification extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>执业地点</Text>
                 <View style={{flex: 1}}>
-                  <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(38)}}
-                                inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <RegionPicker {...regionPicker}
+                                containerStyle={styles.containerStyle}
+                                inputStyle={styles.inputStyle}
+                  />
                 </View>
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>擅长科目</Text>
                 <View style={{flex: 1}}>
 
-                  <MedicalLabPicker {...medicalPicker} containerStyle={{height: normalizeH(38), }}
-                                    inputStyle={{ backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
+                  <MedicalLabPicker {...medicalPicker}
+                                    containerStyle={styles.containerStyle}
+                                    inputStyle={styles.inputStyle}
+                  />
                 </View>
               </View>
             </View>
@@ -315,8 +331,8 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     flex: 1,
-    height: normalizeH(40),
-    borderBottomWidth: 1,
+    // height: normalizeH(50),
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#C8C7CC',
     flexDirection: 'row',
     alignItems: 'center',
@@ -387,6 +403,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderWidth: 0,
     paddingLeft: 0,
-  }
+  },
+  containerStyle: {
+    paddingRight:0,
+  },
+  inputStyle:{
+    height: normalizeH(44),
+    fontSize: em(17),
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    paddingLeft: 0,
+  },
 
 })
