@@ -24,6 +24,7 @@ import GenderSelector from '../../common/Input/GenderSelector'
 import CommonButton from '../../common/CommonButton'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {activeUserId} from '../../../selector/authSelector'
+import {inputFormOnDestroy} from '../../../action/inputFormActions'
 
 
 import * as Toast from '../../common/Toast'
@@ -57,6 +58,7 @@ class AddHealthProfile extends Component {
   }
 
   componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: healthProfileForm})
   }
 
   submitSuccessCallback = () => {
@@ -70,7 +72,6 @@ class AddHealthProfile extends Component {
       }
       Actions.SELECT_HEALTH_PROFILE(payload)
     }
-
   }
 
   submitErrorCallback(error) {
@@ -150,6 +151,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddHealthProfile)

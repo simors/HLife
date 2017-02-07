@@ -31,6 +31,8 @@ import DateTimeInput from '../common/Input/DateTimeInput'
 import * as Toast from '../common/Toast'
 import GenderSelector from '../common/Input/GenderSelector'
 import {activeUserInfo} from '../../selector/authSelector'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -67,6 +69,10 @@ const dtPicker = {
 class Profile extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: profileForm})
   }
 
   submitSuccessCallback(doctorInfo) {
@@ -177,6 +183,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  inputFormOnDestroy,
   submitFormData,
 }, dispatch)
 
