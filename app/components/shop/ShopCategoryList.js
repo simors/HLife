@@ -13,7 +13,8 @@ import {
   TouchableWithoutFeedback,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  ActivityIndicator
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -60,6 +61,7 @@ class ShopCategoryList extends Component {
       selectGroupShow: [false, false, false],
       selectGroupHeight: 40,
       overlayHeight: 0,
+      animating: false
     }
 
     this.isRefreshRendering = true
@@ -414,22 +416,21 @@ class ShopCategoryList extends Component {
         />
         <View style={styles.body}>
           <View style={{paddingTop: 40}}>
-            {this.props.shopList.length
-              ? <CommonListView
-                  contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
-                  dataSource={this.props.ds}
-                  renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
-                  loadNewData={()=>{this.refreshData()}}
-                  loadMoreData={()=>{this.loadMoreData()}}
-                  ref={(listView) => this.listView = listView}
-                  renderSectionHeader={this.renderSectionHeader.bind(this)}
-                  onScroll={e => this.handleOnScroll(e)}
-                />
-              : <View>
-                  {this.renderTags(this.props.recommendShopTags)}
-                </View>
+            {!this.props.shopList.length &&
+              <View>
+                {this.renderTags(this.props.recommendShopTags)}
+              </View>
             }
-
+            <CommonListView
+              contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
+              dataSource={this.props.ds}
+              renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
+              loadNewData={()=>{this.refreshData()}}
+              loadMoreData={()=>{this.loadMoreData()}}
+              ref={(listView) => this.listView = listView}
+              renderSectionHeader={this.renderSectionHeader.bind(this)}
+              onScroll={e => this.handleOnScroll(e)}
+            />
           </View>
 
           <View style={[styles.selectGroup, {height: this.state.selectGroupHeight}]}>

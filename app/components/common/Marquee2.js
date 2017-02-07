@@ -1,5 +1,5 @@
 /**
- * Created by zachary on 2016/12/16.
+ * Created by zachary on 2017/2/7.
  */
 'use strict';
 
@@ -15,20 +15,38 @@ import {
   PropTypes
 } from 'react-native'
 
-import Swiper from './Swiper'
+import Carousel from './Carousel'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 
-export default class Marquee extends React.Component {
+const { width, height } = Dimensions.get('window')
+
+export default class Marquee2 extends React.Component {
   
   static propTypes:{
     data: PropTypes.array.isRequired,
-    intent: PropTypes.func,
-    onMomentumScrollEnd: PropTypes.func
-    }
+    intent: PropTypes.func
+  }
+
+  static defaultProps = {
+    delay: 3000,
+    autoplay: true,
+    pageInfo: false,
+    bullets: false,
+    horizontal: false
+  }
   
   constructor(props) {
     super(props)
+
+    this.state = {
+      size: { width, height: 0 },
+    }
+  }
+
+  _onLayoutDidChange = (e) => {
+    const layout = e.nativeEvent.layout
+    this.setState({ size: { width: layout.width, height: layout.height } })
   }
   
   render() {
@@ -37,7 +55,6 @@ export default class Marquee extends React.Component {
       titleViews = this.props.data.map((item, index) => {
         return (
           <TouchableOpacity
-            activeOpacity={1}
             style={styles.titleWrap}
             key={'b_title_'+index}
             onPress={() => {
@@ -45,26 +62,21 @@ export default class Marquee extends React.Component {
             }
           }
           >
-            <Text numberOfLines={1} style={[styles.title, this.props.titleStyle]}>{item.title}</Text>
+            <Text numberOfLines={1} style={styles.title}>{item.title}</Text>
           </TouchableOpacity>
         )
       })
     }
-    
+
     return (
-      <Swiper
-        {...this.props}
-        style={styles.container}
-        autoplay={true}
-        horizontal={false}
-        showPagination={false}
-        whRatio={1.9}
-        autoplayTimeout={3}
-        loop={true}
-        useScrollView={false}
-      >
-        {titleViews}
-      </Swiper>
+      <View style={{ flex: 1 }} onLayout={this._onLayoutDidChange}>
+        <Carousel
+          {...this.props}
+          style={this.state.size}
+        >
+          {titleViews}
+        </Carousel>
+      </View>
     )
   }
 }

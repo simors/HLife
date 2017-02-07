@@ -33,7 +33,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import CommonBanner from '../common/CommonBanner'
-import CommonMarquee from '../common/CommonMarquee'
+import CommonBanner2 from '../common/CommonBanner2'
+import CommonMarquee2 from '../common/CommonMarquee2'
 import Health from './Health'
 import Channels from './Channels'
 import DailyChosen from './DailyChosen'
@@ -111,7 +112,7 @@ class Home extends Component {
     if(this.props.announcement) {
       return (
         <View style={styles.announcementModule}>
-          <CommonMarquee data={this.props.announcement} height={normalizeH(40)} />
+          <CommonMarquee2 data={this.props.announcement}/>
         </View>
       )
     } else {
@@ -125,9 +126,8 @@ class Home extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.advertisementModule}>
-          <CommonBanner
+          <CommonBanner2
             banners={this.props.banner}
-            useScrollView={true}
           />
         </View>
       )
@@ -278,6 +278,7 @@ const styles = StyleSheet.create({
   },
   announcementModule: {
     height: normalizeH(40),
+    backgroundColor: 'white',
  //   marginTop: normalizeH(15),
   },
   advertisementModule: {

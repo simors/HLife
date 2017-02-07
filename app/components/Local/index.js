@@ -35,7 +35,7 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
-import CommonBanner from '../common/CommonBanner'
+import CommonBanner2 from '../common/CommonBanner2'
 import CommonModal from '../common/CommonModal'
 import LocalHealth from './LocalHealth'
 import ShopCategories from './ShopCategories'
@@ -158,9 +158,8 @@ class Local extends Component {
     if (this.props.banner) {
       return (
         <View style={styles.moduleC}>
-          <CommonBanner
+          <CommonBanner2
             banners={this.props.banner}
-            useScrollView={true}
           />
         </View>
       )
