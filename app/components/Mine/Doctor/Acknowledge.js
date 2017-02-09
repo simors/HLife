@@ -9,6 +9,8 @@ import {
   Platform,
   InteractionManager,
   ScrollView,
+  Image,
+  Text,
   ListView,
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -27,7 +29,20 @@ class Acknowledge extends Component {
 
   renderAcknowledge(rowData) {
     return (
-      <View style={{backgroundColor: '#FFFFFF', height: normalizeH(85), width: PAGE_WIDTH, marginBottom: normalizeH(14)}}>
+      <View style={{flex: 1, flexDirection: 'row', width: PAGE_WIDTH, backgroundColor: '#FFFFFF', marginTop: normalizeH(10)}}>
+        <View style={styles.itemHeader}>
+          <Image style={{width: normalizeW(44), height: normalizeH(44), borderRadius: normalizeW(20), overflow: 'hidden'}}
+                 source={require('../../../assets/images/defualt_portrait_archives.png')}/>
+        </View>
+        <View style={styles.itemBody}>
+          <Text style={styles.nickname}>{rowData.nickname}</Text>
+          <Text style={styles.comment}>{rowData.comment}</Text>
+          <Text style={styles.time}>{rowData.createAt}</Text>
+        </View>
+        <View style={styles.amount}>
+          <Text style={{color: '#FFFFFF'}}>5元</Text>
+        </View>
+
 
       </View>
     )
@@ -46,12 +61,10 @@ class Acknowledge extends Component {
           title="答谢墙"
         />
         <View style={styles.itemContainer}>
-          <ScrollView style={{height: PAGE_HEIGHT}}>
-            {/*<ListView*/}
-              {/*dataSource={this.props.dataSource}*/}
-              {/*renderRow={(rowData) => this.renderAcknowledge(rowData)}*/}
-            {/*/>*/}
-          </ScrollView>
+          <ListView
+            dataSource = {this.props.dataSource}
+            renderRow = {(rowData) => this.renderAcknowledge(rowData)}
+          />
         </View>
       </View>
     )
@@ -59,9 +72,12 @@ class Acknowledge extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let ds
+  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+  let dataSource =[]
+  dataSource.push({nickname: '李四', comment: '感谢白衣天使！！！！！！！！', createAt: '2016-11-15'})
+  dataSource.push({nickname: '老五', comment: '不能再爱你了', createAt: '2016-12-15'})
   return {
-    dataSource: ds,
+    dataSource: ds.cloneWithRows(dataSource)
   }
 }
 
@@ -87,11 +103,49 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(65),
+        marginTop: normalizeH(65),
       },
       android: {
-        paddingTop: normalizeH(45)
+        marginTop: normalizeH(45)
       }
     }),
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
+  itemHeader: {
+    marginTop: normalizeH(12),
+    marginLeft: normalizeW(12),
+    marginRight: normalizeW(10),
+    marginBottom: normalizeH(29)
+  },
+  itemBody: {
+    flex: 1,
+    marginTop: normalizeH(14),
+  },
+  amount: {
+    marginTop: normalizeH(10),
+    marginRight: normalizeW(12),
+    marginBottom: normalizeH(25),
+    backgroundColor: '#50E3C2',
+    width: normalizeW(50),
+    height: normalizeH(50),
+    borderRadius: normalizeW(25),
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  nickname: {
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: em(15),
+    color: '#A4AAB3',
+  },
+  comment: {
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: em(15),
+    color: '#4A4A4A',
+  },
+  time: {
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: em(12),
+    color: '#A4AAB3',
+  }
 })

@@ -38,6 +38,10 @@ export const DoctorListRecode = Record({
   avatar: undefined, //头像
 })
 
+export const DoctorCommentRecode = Record({
+  
+}, 'DoctorCommentRecode')
+
 export class DoctorInfo extends DoctorInfoRecord {
 
     static fromLeancloudObject(lcObj) {

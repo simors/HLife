@@ -70,6 +70,7 @@ import MyAttention from '../components/Mine/MyAttention'
 import LikeUserList from '../components/Find/LikeUserList'
 import ShopNotifyView from '../components/Message/ShopNotifyView'
 import TopicNotifyView from '../components/Message/TopicNotifyView'
+import CommentDoctor from '../components/Mine/Doctor/CommentDoctor'
 
 const styles = StyleSheet.create({
   container: {
@@ -150,6 +151,7 @@ export const scenes = Actions.create(
       <Scene key="MYATTENTION" component={MyAttention}/>
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
       <Scene key="TOPIC_NOTIFY" component={TopicNotifyView} />
+      <Scene key="COMMENT_DOCTOR" component={CommentDoctor}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
