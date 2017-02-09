@@ -54,7 +54,6 @@ class Doctor extends Component {
   }
 
   renderComment(rowData) {
-    console.log("rowData:", rowData)
     return(
       <View style={styles.itemView}>
         <View style={styles.itemHeader}>

@@ -36,6 +36,8 @@ export const DoctorListRecode = Record({
   phone: undefined, //手机号码
   organization: undefined,  //执业地点
   avatar: undefined, //头像
+  desc: undefined, //简介
+  spec: undefined, //专科
 })
 
 export const DoctorCommentRecode = Record({
