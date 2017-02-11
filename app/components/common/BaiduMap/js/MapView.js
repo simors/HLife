@@ -28,6 +28,7 @@ export default class MapView extends Component {
     onMapStatusChangeStart: PropTypes.func,
     onMapStatusChange: PropTypes.func,
     onMapStatusChangeFinish: PropTypes.func,
+    onRegionDidChangeAnimated: PropTypes.func,
     onMapLoaded: PropTypes.func,
     onMapClick: PropTypes.func,
     onMapDoubleClick: PropTypes.func,

@@ -97,20 +97,32 @@ class ShopAddressSelect extends Component {
 
   }
 
-  _onMapStatusChangeFinish(e) {
-    // console.log('_onMapStatusChangeFinish.e====', e)
-    this.setState({
-      center: {
-        latitude: e.target.latitude,
-        longitude: e.target.longitude
-      },
-    })
+  _onRegionDidChangeAnimated4Ios(e) {
+    console.log('_onRegionDidChangeAnimated4Ios.e====', e)
+    this._onMapStatusChangeFinish4Android(e)
+  }
+
+  _onMapStatusChangeFinish4Android(e) {
+    console.log('_onMapStatusChangeFinish4Android.e====', e)
+    // this.setState({
+    //   center: {
+    //     latitude: e.target.latitude,
+    //     longitude: e.target.longitude
+    //   },
+    // })
     Geolocation.reverseGeoCode(e.target.latitude, e.target.longitude)
       .then(data => {
-        // console.log('reverseGeoCode.data===', data)
-        this.setState({
-          shopAddress: data.address
-        })
+        console.log('reverseGeoCode.data===', data)
+        if(data.address) {
+          this.setState({
+            shopAddress: data.address
+          })
+        }else {
+          this.setState({
+            shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber
+          })
+        }
+
       })
       .catch(e =>{
         console.warn(e, 'error')
@@ -384,7 +396,8 @@ class ShopAddressSelect extends Component {
       <View style={styles.container}>
         <MapView
           style={styles.map}
-          onMapStatusChangeFinish={this._onMapStatusChangeFinish.bind(this)}
+          onMapStatusChangeFinish={this._onMapStatusChangeFinish4Android.bind(this)}
+          onRegionDidChangeAnimated={this._onRegionDidChangeAnimated4Ios.bind(this)}
           center={this.state.center}
           marker={this.state.marker}
           zoom={this.state.zoom}
