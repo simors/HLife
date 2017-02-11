@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  ActivityIndicator
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -61,6 +62,7 @@ class ShopAddressSelect extends Component {
       shopName: '',
       shopAddress: '',
       showShopInfoArea: true,
+      showLoading: false
     }
   }
 
@@ -69,9 +71,13 @@ class ShopAddressSelect extends Component {
 
     })
 
+    this.setState({
+      showLoading: true
+    })
     Geolocation.getCurrentPosition()
       .then(data => {
         this.setState({
+          showLoading: false,
           center: {
             currentCity: data.city,
             latitude: data.latitude,
@@ -80,6 +86,9 @@ class ShopAddressSelect extends Component {
         })
       })
       .catch(e =>{
+        this.setState({
+          showLoading: false
+        })
         console.warn(e, 'error')
       })
   }
@@ -219,7 +228,6 @@ class ShopAddressSelect extends Component {
               latitude: data.latitude,
               longitude: data.longitude
             },
-            zoom: 18,
           })
         }
       })
@@ -356,6 +364,21 @@ class ShopAddressSelect extends Component {
     )
   }
 
+  renderLoading() {
+    if(this.state.showLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={'#C8C8C8'}
+          />
+          <Text style={styles.loadingText}>{'定位中...'}</Text>
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -404,6 +427,7 @@ class ShopAddressSelect extends Component {
 
         {this.renderShopInfoArea()}
 
+        {this.renderLoading()}
 
       </View>
     )
@@ -552,6 +576,19 @@ const styles = StyleSheet.create({
   },
   shopBtnStyle: {
     backgroundColor: THEME.colors.green
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: MAP_HEIGHT / 2 - normalizeH(80),
+    left: PAGE_WIDTH / 2 - normalizeW(50),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 3
+  },
+  loadingText: {
+    color: 'white'
   }
 
 })
