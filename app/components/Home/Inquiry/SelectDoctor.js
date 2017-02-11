@@ -113,7 +113,7 @@ class SelectDoctor extends Component {
                     <Text style={{marginLeft: normalizeW(5)}}>主治医生</Text>
                   </View>
                   <Text style={styles.tripText}>{value.department} </Text>
-                  <Text style={styles.tripText}>擅长：肿瘤及防止科常见病，肚子疼， 胃癌，肾上腺转移，怀孕等</Text>
+                  <Text style={styles.tripText}>擅长：{value.spec}</Text>
                 </View>
               </View>
               <View style={{flex: 2, flexDirection: 'row', paddingLeft: normalizeW(53), alignItems: 'center'}}>
@@ -148,9 +148,11 @@ class SelectDoctor extends Component {
           <View style={styles.trip}>
             <Text style={{fontSize: 12}}>您可选择多位医生问诊</Text>
           </View>
-          <ScrollView>
-            {this.renderDocs()}
-          </ScrollView>
+          <View style={{height: normalizeH(480)}}>
+            <ScrollView >
+              {this.renderDocs()}
+            </ScrollView>
+          </View>
 
           <View style={styles.submit}>
             <CommonButton title="提问"

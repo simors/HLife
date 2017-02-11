@@ -26,10 +26,16 @@ class Earnings extends Component {
     super(props)
   }
 
-  renderAcknowledge(rowData) {
+  renderEarning(rowData) {
     return (
-      <View style={{backgroundColor: '#FFFFFF', height: normalizeH(85), width: PAGE_WIDTH, marginBottom: normalizeH(14)}}>
-
+      <View style={styles.itemView}>
+        <View style={{flex: 1, marginTop: normalizeH(10)}}>
+          <Text style={styles.itemText}>{rowData.createAt}</Text>
+          <Text style={styles.itemText}>简单提问</Text>
+        </View>
+        <View style={{marginRight: normalizeW(12), marginTop: normalizeH(10)}}>
+          <Text style={styles.numText}>+{rowData.amount} 元</Text>
+        </View>
       </View>
     )
 
@@ -61,10 +67,10 @@ class Earnings extends Component {
             <View style={{height: normalizeH(43), paddingLeft: normalizeW(20), paddingTop: normalizeH(14), borderBottomWidth: 1, borderBottomColor: '#EFEFF4'}}>
               <Text style={styles.itemText}>收益记录</Text>
             </View>
-            {/*<ListView*/}
-            {/*dataSource={this.props.dataSource}*/}
-            {/*renderRow={(rowData) => this.renderAcknowledge(rowData)}*/}
-            {/*/>*/}
+            <ListView
+            dataSource={this.props.dataSource}
+            renderRow={(rowData) => this.renderEarning(rowData)}
+            />
           </ScrollView>
         </View>
       </View>
@@ -73,9 +79,13 @@ class Earnings extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let ds
+  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+  let dataSource =[]
+  dataSource.push({amount: 50, createAt: '2017-01-12'})
+  dataSource.push({amount: 100, createAt: '2017-02-12'})
+
   return {
-    dataSource: ds,
+    dataSource: ds.cloneWithRows(dataSource)
   }
 }
 
@@ -102,12 +112,23 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(65),
+        marginTop: normalizeH(65),
       },
       android: {
-        paddingTop: normalizeH(45)
+        marginTop: normalizeH(45)
       }
     }),
+  },
+  itemView: {
+    flex: 1,
+    flexDirection: 'row',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: '#EFEFF4',
+    backgroundColor: '#FFFFFF',
+    height: normalizeH(63),
+    marginLeft: normalizeW(20),
+    marginRight: normalizeW(12),
+    marginBottom: normalizeH(14)
   },
   itemText: {
     fontFamily:'PingFangSC-Regular',

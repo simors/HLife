@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  ListView,
   Platform,
   Image,
 } from 'react-native'
@@ -52,6 +53,38 @@ class Doctor extends Component {
     }
   }
 
+  renderComment(rowData) {
+    return(
+      <View style={styles.itemView}>
+        <View style={styles.itemHeader}>
+          <Image style={{width: normalizeW(35), height: normalizeH(35), borderRadius: normalizeW(17), overflow: 'hidden'}}
+                 source={require('../../../assets/images/defualt_portrait_archives.png')}/>
+        </View>
+        <View style={styles.itemBody}>
+          <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#50E3C2', marginBottom: normalizeH(10)}}>{rowData.nickname}</Text>
+          <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(17), color: '#4A4A4A', marginBottom: normalizeH(14)}}>{rowData.comment}</Text>
+          <View style={styles.tipWrap}>
+            <View>
+              <Text style={styles.triptext}>刚刚</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Image source={require("../../../assets/images/writer_loaction.png")}/>
+              <Text style={styles.triptext}>长沙</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Image  source={require("../../../assets/images/artical_like_unselect.png")}/>
+              <Text style={styles.triptext}>28</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Image  source={require("../../../assets/images/comments_unselect.png")}/>
+              <Text style={styles.triptext}>回复</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -93,26 +126,28 @@ class Doctor extends Component {
               </View>
               <View style={styles.attr}>
                 <View style={{height: normalizeH(37), flexDirection: 'row', borderBottomColor: '#E6E6E6', borderBottomWidth: 1}}>
-                  <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', borderRightWidth: 1, borderRightColor: '#E6E6E6'}}>
-                    <Text style={styles.title}>服务次数</Text>
+                  <View style={{flex: 1, flexDirection: 'row',justifyContent: 'center', alignItems: 'center', borderRightWidth: 1, borderRightColor: '#E6E6E6'}}>
+                    <Text style={styles.title}>服务次数 </Text>
+                    <Text style={[styles.title, {color: '#F6A623'}]}>111</Text>
                   </View>
-                  <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={styles.title}>好评率</Text>
+                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={styles.title}>好评率 </Text>
+                    <Text style={[styles.title, {color: '#F6A623'}]}>98%</Text>
                   </View>
                 </View>
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <TouchableOpacity style={styles.action} onPress={() => Actions.INQUIRY_MESSAGE_BOX()}>
-                    <Image style={{width: normalizeW(35), height: normalizeH(35), marginBottom: normalizeH(9)}}
+                    <Image style={{width: 35, height: 35, marginBottom: normalizeH(9)}}
                            source={require('../../../assets/images/home_question.png')}/>
                     <Text style={styles.title}>问诊咨询</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.action} onPress={() => Actions.ACKNOWLEDGE()}>
-                    <Image style={{width: normalizeW(35), height: normalizeH(35), marginBottom: normalizeH(9)}}
+                    <Image style={{width: 35, height: 35, marginBottom: normalizeH(9)}}
                            source={require('../../../assets/images/in_return.png')}/>
                     <Text style={styles.title}>病友问答</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.action} onPress={() => Actions.EARNINGS()}>
-                    <Image style={{width: normalizeW(35), height: normalizeH(35), marginBottom: normalizeH(9)}}
+                    <Image style={{width: 35, height: 35, marginBottom: normalizeH(9)}}
                            source={require('../../../assets/images/in_return.png')}/>
                     <Text style={styles.title}>收益记录</Text>
                   </TouchableOpacity>
@@ -131,10 +166,15 @@ class Doctor extends Component {
 
             </View>
             <View style={styles.comments}>
-              <View style={{height: normalizeH(38), borderBottomWidth: 1, borderBottomColor: '#E6E6E6', marginTop: normalizeH(12)}}>
+              <View style={{height: normalizeH(38), borderBottomWidth: 1, borderBottomColor: '#E6E6E6', marginTop: normalizeH(12), paddingLeft: normalizeW(12), backgroundColor: '#FFFFFF',}}>
                 <Text style={{fontFamily: 'PingFangSC-Regular', fontSize: em(15), color: '#9B9B9B'}}>用户评价</Text>
               </View>
-
+              <View >
+                <ListView
+                  dataSource = {this.props.dataSource}
+                  renderRow = {(rowData) => this.renderComment(rowData)}
+                />
+              </View>
             </View>
 
           </ScrollView>
@@ -147,12 +187,15 @@ class Doctor extends Component {
 const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
   let doctorInfo = activeDoctorInfo(state)
-  console.log("Doctor: ", doctorInfo)
+  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+  let dataSource = []
+  dataSource.push({avatar: undefined, nickname: '阿彪', comment: '这个医生是华佗在世'})
+  dataSource.push({avatar: undefined, nickname: '李四', comment: '就是一坨屎'})
 
   return{
     userInfo: userInfo,
     doctorInfo: doctorInfo,
-
+    dataSource: ds.cloneWithRows(dataSource)
   }
 }
 
@@ -212,9 +255,6 @@ const styles = StyleSheet.create({
   },
   comments: {
     marginTop: normalizeH(10),
-    paddingLeft: normalizeW(12),
-    backgroundColor: '#FFFFFF',
-
   },
   title: {
     fontFamily: 'PingFangSC-Regular',
@@ -235,7 +275,38 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
     fontSize: em(12),
     color: '#FFFFFF'
-  }
+  },
+  itemView: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    backgroundColor: '#FFFFFF'
+  },
+  itemHeader: {
+    marginTop: normalizeH(10),
+    marginLeft: normalizeW(12),
+    marginRight: normalizeW(10),
+  },
+  itemBody: {
+    marginTop: normalizeH(10),
+
+  },
+  tipWrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: normalizeH(10),
+    width: normalizeW(300),
+  },
+  triptext: {
+    fontFamily: 'PingFangSC-Regular',
+    fontSize: em(12),
+    color: '#B6B6B6',
+  },
+  positionStyle: {
+    marginRight: normalizeW(4),
+    width: normalizeW(8),
+    height: normalizeH(12)
+  },
+
 
 
 })

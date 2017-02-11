@@ -106,6 +106,8 @@ export function fetchDocterList(payload) {
         record.set('phone', result.phone)
         record.set('organization', result.organization)
         record.set('avatar', result.avatar)
+        record.set('desc', result.desc)
+        record.set('spec', result.spec)
       })
       doctorList.push(doctors)
     })

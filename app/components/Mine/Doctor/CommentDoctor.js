@@ -68,6 +68,17 @@ class CommentDoctor extends Component {
                 <Text>老王</Text>
                 <Text>名医</Text>
               </TouchableOpacity>
+              <View>
+                <Text>您对医生对服务满意吗？</Text>
+                <View>
+                  <View style={{flex: 1}}>
+                    <Image source={require("../../../assets/images/writer_loaction.png")}/>
+                    <Text>很满意</Text>
+                  </View>
+                </View>
+                <Text>给医生一些评价吧～</Text>
+
+              </View>
             </View>
 
           </View>
