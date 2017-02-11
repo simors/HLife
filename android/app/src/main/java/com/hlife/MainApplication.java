@@ -1,21 +1,19 @@
 package com.hlife;
 
 import android.app.Application;
-import android.util.Log;
 
-import com.facebook.react.ReactApplication;
-import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.beefe.picker.PickerViewPackage;
-import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
-import com.rnfs.RNFSPackage;
-import com.facebook.react.ReactInstanceManager;
+import com.burnweb.rnsendintent.RNSendIntentPackage;
+import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
+import com.hlife.baidumap.BaiduMapPackage;
 import com.imagepicker.ImagePickerPackage;
-import com.burnweb.rnsendintent.RNSendIntentPackage;
+import com.rnfs.RNFSPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerViewPackage(),
             new WebViewBridgePackage(),
             new RNFSPackage(),
-            new ImagePickerPackage()
+            new ImagePickerPackage(),
+            new BaiduMapPackage(getApplicationContext())
       );
     }
   };

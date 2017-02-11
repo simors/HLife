@@ -70,6 +70,8 @@ import MyAttention from '../components/Mine/MyAttention'
 import LikeUserList from '../components/Find/LikeUserList'
 import ShopNotifyView from '../components/Message/ShopNotifyView'
 import TopicNotifyView from '../components/Message/TopicNotifyView'
+import BaiduMapView from '../components/common/BaiduMapView'
+import ShopAddressSelect from '../components/Mine/myShop/ShopAddressSelect'
 
 const styles = StyleSheet.create({
   container: {
@@ -150,6 +152,8 @@ export const scenes = Actions.create(
       <Scene key="MYATTENTION" component={MyAttention}/>
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
       <Scene key="TOPIC_NOTIFY" component={TopicNotifyView} />
+      <Scene key="BAI_DU_MAP_VIEW" component={BaiduMapView} />
+      <Scene key="SHOP_ADDRESS_SELECT" component={ShopAddressSelect} />
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

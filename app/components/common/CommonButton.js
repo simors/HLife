@@ -28,7 +28,7 @@ export default class CommonButton extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity style={[styles.defaultBtnStyle, this.props.buttonStyle]}
                           onPress={() => this.pressAction()}
                           disabled={this.props.disabled}>
