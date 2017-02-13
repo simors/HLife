@@ -79,11 +79,21 @@ class ShopAddressSelect extends Component {
         this.setState({
           showLoading: false,
           center: {
-            currentCity: data.city,
             latitude: data.latitude,
             longitude: data.longitude,
           },
         })
+        
+        this.updateInfoByLatLng('shopAddress', data.latitude, data.longitude)
+
+        if (Platform.OS == 'ios') {
+          this.updateInfoByLatLng('currentCity', data.latitude, data.longitude)
+        }else {
+          this.setState({
+            currentCity: data.city
+          })
+        }
+
       })
       .catch(e =>{
         this.setState({
@@ -97,29 +107,23 @@ class ShopAddressSelect extends Component {
 
   }
 
-  _onRegionDidChangeAnimated4Ios(e) {
-    console.log('_onRegionDidChangeAnimated4Ios.e====', e)
-    this._onMapStatusChangeFinish4Android(e)
-  }
-
-  _onMapStatusChangeFinish4Android(e) {
-    console.log('_onMapStatusChangeFinish4Android.e====', e)
-    // this.setState({
-    //   center: {
-    //     latitude: e.target.latitude,
-    //     longitude: e.target.longitude
-    //   },
-    // })
-    Geolocation.reverseGeoCode(e.target.latitude, e.target.longitude)
+  updateInfoByLatLng(infoType, latitude, longitude) {
+    Geolocation.reverseGeoCode(latitude, longitude)
       .then(data => {
-        console.log('reverseGeoCode.data===', data)
-        if(data.address) {
+        // console.log('reverseGeoCode.data===', data)
+        if('shopAddress' == infoType) {
+          if(data.address) {
+            this.setState({
+              shopAddress: data.address
+            })
+          }else {
+            this.setState({
+              shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber
+            })
+          }
+        }else if('currentCity' == infoType) {
           this.setState({
-            shopAddress: data.address
-          })
-        }else {
-          this.setState({
-            shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber
+            currentCity: data.city
           })
         }
 
@@ -127,6 +131,22 @@ class ShopAddressSelect extends Component {
       .catch(e =>{
         console.warn(e, 'error')
       })
+  }
+
+  _onRegionDidChangeAnimated4Ios(e) {
+    // console.log('_onRegionDidChangeAnimated4Ios.e====', e)
+    this._onMapStatusChangeFinish4Android(e)
+  }
+
+  _onMapStatusChangeFinish4Android(e) {
+    // console.log('_onMapStatusChangeFinish4Android.e====', e)
+    // this.setState({
+    //   center: {
+    //     latitude: e.target.latitude,
+    //     longitude: e.target.longitude
+    //   },
+    // })
+    this.updateInfoByLatLng('shopAddress', e.target.latitude, e.target.longitude)
   }
 
   onMapMarkerImageLayout(event) {
@@ -149,11 +169,10 @@ class ShopAddressSelect extends Component {
       this.clearSearchInput()
       return
     }
-
-    PoiSearch.searchNearbyProcess(text, this.state.center.latitude,
-      this.state.center.longitude, 1000, 1)
+    // console.log('searchInCityProcess.params===', this.state.currentCity + ",keyword=" + text)
+    PoiSearch.searchInCityProcess(this.state.currentCity, text, 1)
       .then(data => {
-        // console.log('searchNearbyProcess.data===', data)
+        // console.log('searchInCityProcess.data===', data)
         this.setState({
           showSearchResult: true,
           searchResult: {
@@ -174,6 +193,32 @@ class ShopAddressSelect extends Component {
           }
         })
       })
+
+    // console.log('searchNearbyProcess.params===', this.state.center + ",keyword=" + text)
+    // PoiSearch.searchNearbyProcess(text, this.state.center.latitude,
+    //   this.state.center.longitude, 1000, 0)
+    //   .then(data => {
+    //     console.log('searchNearbyProcess.data===', data)
+    //     this.setState({
+    //       showSearchResult: true,
+    //       searchResult: {
+    //         error: data.errcode && data.errcode,
+    //         message: data.message && data.message,
+    //         data: data.poiResult && data.poiResult.poiInfos
+    //       }
+    //     })
+    //   })
+    //   .catch(e =>{
+    //     console.warn(e, 'error')
+    //     this.setState({
+    //       showSearchResult: true,
+    //       searchResult: {
+    //         error: -9,
+    //         message: '查询异常,请稍候再试!',
+    //         data: []
+    //       }
+    //     })
+    //   })
   }
 
   clearSearchInput() {
@@ -298,9 +343,14 @@ class ShopAddressSelect extends Component {
       )
     }
 
+    if(!this.state.searchResult.data) {
+      return null
+    }
+
     let searchResultsCustomStyle = {
       height: 210
     }
+
 
     if(this.state.searchResult.data.length < 3) {
       searchResultsCustomStyle = {

@@ -55,6 +55,7 @@
 		B6FB9ACC1E4EF33700E316C8 /* GeolocationModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B6FB9AC51E4EF33700E316C8 /* GeolocationModule.m */; };
 		B6FB9ACD1E4EF33700E316C8 /* RCTBaiduMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6FB9AC71E4EF33700E316C8 /* RCTBaiduMapView.m */; };
 		B6FB9ACE1E4EF33700E316C8 /* RCTBaiduMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6FB9AC91E4EF33700E316C8 /* RCTBaiduMapViewManager.m */; };
+		B6FB9AD11E4F10F600E316C8 /* PoiSearchModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B6FB9AD01E4F10F600E316C8 /* PoiSearchModule.m */; };
 		C4A744F243674367B347AC23 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74505C66777344C4AD590E84 /* libRNVectorIcons.a */; };
 		DD0B3AC21DF9C2A200AE8D91 /* bootstrap.min.css in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3ABA1DF9C2A200AE8D91 /* bootstrap.min.css */; };
 		DD0B3AC31DF9C2A200AE8D91 /* font-awesome.min.css in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3ABB1DF9C2A200AE8D91 /* font-awesome.min.css */; };
@@ -321,6 +322,8 @@
 		B6FB9AC71E4EF33700E316C8 /* RCTBaiduMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBaiduMapView.m; sourceTree = "<group>"; };
 		B6FB9AC81E4EF33700E316C8 /* RCTBaiduMapViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTBaiduMapViewManager.h; sourceTree = "<group>"; };
 		B6FB9AC91E4EF33700E316C8 /* RCTBaiduMapViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBaiduMapViewManager.m; sourceTree = "<group>"; };
+		B6FB9ACF1E4F102A00E316C8 /* PoiSearchModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PoiSearchModule.h; sourceTree = "<group>"; };
+		B6FB9AD01E4F10F600E316C8 /* PoiSearchModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PoiSearchModule.m; sourceTree = "<group>"; };
 		C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		C6481AB4090240EDA663BB5C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		C6BCDC1829644C4BAFACD010 /* libRCTRestart.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTRestart.a; sourceTree = "<group>"; };
@@ -593,6 +596,8 @@
 				B6FB9AC71E4EF33700E316C8 /* RCTBaiduMapView.m */,
 				B6FB9AC81E4EF33700E316C8 /* RCTBaiduMapViewManager.h */,
 				B6FB9AC91E4EF33700E316C8 /* RCTBaiduMapViewManager.m */,
+				B6FB9ACF1E4F102A00E316C8 /* PoiSearchModule.h */,
+				B6FB9AD01E4F10F600E316C8 /* PoiSearchModule.m */,
 			);
 			name = RCTBaiduMap;
 			path = HLife/RCTBaiduMap;
@@ -1108,6 +1113,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6FB9AD11E4F10F600E316C8 /* PoiSearchModule.m in Sources */,
 				B6FB9ACC1E4EF33700E316C8 /* GeolocationModule.m in Sources */,
 				B6FB9ACA1E4EF33700E316C8 /* BaiduMapModule.m in Sources */,
 				B6FB9ACB1E4EF33700E316C8 /* BaseModule.m in Sources */,

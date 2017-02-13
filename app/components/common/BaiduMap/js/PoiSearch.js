@@ -29,4 +29,19 @@ export default {
     });
   },
 
+  searchInCityProcess(city, keyword, pageNum) {
+    return new Promise((resolve, reject) => {
+      try {
+        _module.searchInCityProcess(city, keyword, pageNum);
+      }
+      catch (e) {
+        reject(e);
+        return;
+      }
+      DeviceEventEmitter.once('onGetPoiResult', resp => {
+        resolve(resp);
+      });
+    });
+  },
+
 };

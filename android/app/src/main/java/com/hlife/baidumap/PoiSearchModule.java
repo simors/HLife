@@ -63,6 +63,8 @@ public class PoiSearchModule extends BaseModule
      */
     @ReactMethod
     public void searchInCityProcess(String city, String keyword, int pageNum) {
+//        Log.i("searchInCityProcess=", city);
+//        Log.i("searchInCityProcess=", keyword);
         searchType = 1;
         mPoiSearch.searchInCity((new PoiCitySearchOption())
                 .city(city).keyword(keyword).pageNum(pageNum));
@@ -118,65 +120,67 @@ public class PoiSearchModule extends BaseModule
             params.putInt("errcode", 0);
             params.putString("message", "成功");
             WritableMap wMap = Arguments.createMap();
-            if(1 == searchType) {//城市搜索
+//            if(1 == searchType) {//城市搜索
+//
+//            }else if(2 == searchType) {//周边搜索
+//
+//            }else if(3 == searchType) {//区域搜索
+//
+//            }
 
-            }else if(2 == searchType) {//周边搜索
-                if(result != null) {
-                    wMap.putInt("currentPageCapacity", result.getCurrentPageCapacity()); //获取单页容量,单页容量可以通过检索参数指定
-                    wMap.putInt("currentPageNum", result.getCurrentPageNum()); //获取当前分页编号
-                    wMap.putInt("totalPageNum", result.getTotalPageNum()); //获取总分页数
-                    wMap.putInt("totalPoiNum", result.getTotalPoiNum()); //获取POI总数
-                    wMap.putInt("searchType", searchType);
+            if(result != null) {
+                wMap.putInt("currentPageCapacity", result.getCurrentPageCapacity()); //获取单页容量,单页容量可以通过检索参数指定
+                wMap.putInt("currentPageNum", result.getCurrentPageNum()); //获取当前分页编号
+                wMap.putInt("totalPageNum", result.getTotalPageNum()); //获取总分页数
+                wMap.putInt("totalPoiNum", result.getTotalPoiNum()); //获取POI总数
+                wMap.putInt("searchType", searchType);
 
-                    WritableArray poiAddrInfoArr = Arguments.createArray();
-                    if(result.isHasAddrInfo()) { //获取门址结果
-                        for(int i = 0; i < result.getAllAddr().size(); i++) {
-                            WritableMap poiAddrInfo = Arguments.createMap();
-                            poiAddrInfo.putString("address", result.getAllAddr().get(i).address);
-                            poiAddrInfo.putString("name", result.getAllAddr().get(i).name);
-                            poiAddrInfo.putDouble("latitude", result.getAllAddr().get(i).location.latitude);
-                            poiAddrInfo.putDouble("longitude", result.getAllAddr().get(i).location.longitude);
-                            poiAddrInfoArr.pushMap(poiAddrInfo);
-                        }
+                WritableArray poiAddrInfoArr = Arguments.createArray();
+                if(result.isHasAddrInfo()) { //获取门址结果
+                    for(int i = 0; i < result.getAllAddr().size(); i++) {
+                        WritableMap poiAddrInfo = Arguments.createMap();
+                        poiAddrInfo.putString("address", result.getAllAddr().get(i).address);
+                        poiAddrInfo.putString("name", result.getAllAddr().get(i).name);
+                        poiAddrInfo.putDouble("latitude", result.getAllAddr().get(i).location.latitude);
+                        poiAddrInfo.putDouble("longitude", result.getAllAddr().get(i).location.longitude);
+                        poiAddrInfoArr.pushMap(poiAddrInfo);
                     }
-                    wMap.putArray("poiAddrInfos", poiAddrInfoArr);
-
-                    WritableArray allPoiInfoArr = Arguments.createArray();
-                    if(result.getAllPoi() != null) {
-                        for(int i = 0; i < result.getAllPoi().size(); i++) { //获取Poi检索结果
-                            WritableMap poiInfo = Arguments.createMap();
-                            poiInfo.putString("name", result.getAllPoi().get(i).name);
-                            poiInfo.putString("address", result.getAllPoi().get(i).address);
-                            poiInfo.putString("phoneNum", result.getAllPoi().get(i).phoneNum);
-                            poiInfo.putString("postCode", result.getAllPoi().get(i).postCode);
-                            if(result.getAllPoi().get(i).type != null) {
-                                poiInfo.putInt("type", result.getAllPoi().get(i).type.getInt());
-                            }
-                            poiInfo.putDouble("latitude", result.getAllPoi().get(i).location.latitude);
-                            poiInfo.putDouble("longitude", result.getAllPoi().get(i).location.longitude);
-                            poiInfo.putString("city", result.getAllPoi().get(i).city);
-                            poiInfo.putBoolean("hasCaterDetails", result.getAllPoi().get(i).hasCaterDetails); //poi点是否有美食类详情页面
-                            poiInfo.putBoolean("isPano", result.getAllPoi().get(i).isPano); //poi点附近是否有街景，可使用uid检索全景组件的全景数据
-                            allPoiInfoArr.pushMap(poiInfo);
-                        }
-                    }
-                    wMap.putArray("poiInfos", allPoiInfoArr);
-
-                    WritableArray cityInfoArr = Arguments.createArray();
-                    if(result.getSuggestCityList() != null) {
-                        for(int i = 0; i < result.getSuggestCityList().size(); i++) { //返回城市列表页的结果数
-                            WritableMap cityInfo = Arguments.createMap();
-                            cityInfo.putString("city", result.getSuggestCityList().get(i).city);
-                            cityInfo.putInt("num", result.getSuggestCityList().get(i).num); //搜索结果数量
-                            cityInfoArr.pushMap(cityInfo);
-                        }
-                    }
-                    wMap.putArray("cityInfos", cityInfoArr);
-
-                    params.putMap("poiResult", wMap);
                 }
-            }else if(3 == searchType) {//区域搜索
+                wMap.putArray("poiAddrInfos", poiAddrInfoArr);
 
+                WritableArray allPoiInfoArr = Arguments.createArray();
+                if(result.getAllPoi() != null) {
+                    for(int i = 0; i < result.getAllPoi().size(); i++) { //获取Poi检索结果
+                        WritableMap poiInfo = Arguments.createMap();
+                        poiInfo.putString("name", result.getAllPoi().get(i).name);
+                        poiInfo.putString("address", result.getAllPoi().get(i).address);
+                        poiInfo.putString("phoneNum", result.getAllPoi().get(i).phoneNum);
+                        poiInfo.putString("postCode", result.getAllPoi().get(i).postCode);
+                        if(result.getAllPoi().get(i).type != null) {
+                            poiInfo.putInt("type", result.getAllPoi().get(i).type.getInt());
+                        }
+                        poiInfo.putDouble("latitude", result.getAllPoi().get(i).location.latitude);
+                        poiInfo.putDouble("longitude", result.getAllPoi().get(i).location.longitude);
+                        poiInfo.putString("city", result.getAllPoi().get(i).city);
+                        poiInfo.putBoolean("hasCaterDetails", result.getAllPoi().get(i).hasCaterDetails); //poi点是否有美食类详情页面
+                        poiInfo.putBoolean("isPano", result.getAllPoi().get(i).isPano); //poi点附近是否有街景，可使用uid检索全景组件的全景数据
+                        allPoiInfoArr.pushMap(poiInfo);
+                    }
+                }
+                wMap.putArray("poiInfos", allPoiInfoArr);
+
+                WritableArray cityInfoArr = Arguments.createArray();
+                if(result.getSuggestCityList() != null) {
+                    for(int i = 0; i < result.getSuggestCityList().size(); i++) { //返回城市列表页的结果数
+                        WritableMap cityInfo = Arguments.createMap();
+                        cityInfo.putString("city", result.getSuggestCityList().get(i).city);
+                        cityInfo.putInt("num", result.getSuggestCityList().get(i).num); //搜索结果数量
+                        cityInfoArr.pushMap(cityInfo);
+                    }
+                }
+                wMap.putArray("cityInfos", cityInfoArr);
+
+                params.putMap("poiResult", wMap);
             }
         }
         else if(result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {

@@ -172,11 +172,11 @@ public class BaiduMapViewManager extends ViewGroupManager<MapView> {
     private void setListeners(final MapView mapView) {
         BaiduMap map = mapView.getMap();
 
-//        if(mMarkerText == null) {
-//            mMarkerText = new TextView(mapView.getContext());
-//            mMarkerText.setBackgroundResource(R.drawable.popup);
-//            mMarkerText.setPadding(32, 32, 32, 32);
-//        }
+        if(mMarkerText == null) {
+            mMarkerText = new TextView(mapView.getContext());
+//            mMarkerText.setBackgroundResource(R.drawable.app_assets_images_);
+            mMarkerText.setPadding(32, 32, 32, 32);
+        }
         map.setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
 
             private WritableMap getEventParams(MapStatus mapStatus) {
