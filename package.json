@@ -27,7 +27,7 @@
     "react-native-dismiss-keyboard": "^1.0.0",
     "react-native-elements": "^0.7.2",
     "react-native-fence-html": "^1.0.6",
-    "react-native-fs": "^2.0.1-rc.2",
+    "react-native-fs": "2.0.1-rc.2",
     "react-native-gallery": "0.0.17",
     "react-native-image-crop-picker": "^0.11.2",
     "react-native-image-picker": "^0.24.1",
