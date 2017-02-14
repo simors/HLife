@@ -76,6 +76,7 @@ class ShopRegister extends Component {
     this.state = {
       shopName: '点击选择店铺名称',
       shopAddress: '点击选择店铺地址',
+      qRCode: ''
     }
 
   }
@@ -106,6 +107,11 @@ class ShopRegister extends Component {
         formKey: shopNameInput.formKey,
         stateKey: shopNameInput.stateKey,
         data: nextProps.shopAddress
+      })
+    }
+    if(nextProps.qRCode) {
+      this.setState({
+        qRCode: nextProps.qRCode
       })
     }
 
@@ -258,12 +264,16 @@ class ShopRegister extends Component {
                     placeholder="输入邀请码"
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
+                    initValue={this.state.qRCode}
                   />
                 </View>
+                <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(25), alignItems: 'flex-end'}} onPress= {()=> {Actions.QRCODEREADER()}}>
+                  <Image style={{width: 20, height: 20}}  source={require('../../../assets/images/扫一扫.png')} />
+                </TouchableOpacity>
               </View>
             </View>
 
-            <TouchableOpacity style={styles.getInvitationWrap} onPress={()=>Actions.GET_INVITATION_CODE()}>
+            <TouchableOpacity style={styles.getInvitationWrap} onPress= {()=> {Actions.QRCODEREADER()}}>
               <Text style={{color:THEME.colors.green,fontSize: em(16)}}>如何获取邀请码？</Text>
             </TouchableOpacity>
 
@@ -273,7 +283,7 @@ class ShopRegister extends Component {
                 onPress={this.onButtonPress}
               />
 
-              <TouchableOpacity style={styles.shopRegistProtocalWrap} onPress={()=>{}}>
+              <TouchableOpacity style={styles.shopRegistProtocalWrap}>
                 <Text style={{color:THEME.colors.light,fontSize: em(12)}}>我已阅读</Text>
                 <Text style={{color:THEME.colors.green,fontSize: em(12)}}>《{appConfig.APP_NAME}店铺推广协议》</Text>
               </TouchableOpacity>
