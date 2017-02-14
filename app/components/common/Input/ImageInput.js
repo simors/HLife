@@ -15,12 +15,14 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
+import * as ImageUtil from '../../../util/ImageUtil'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import Gallery from 'react-native-gallery'
 import CommonButton from '../CommonButton'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -45,12 +47,13 @@ class ImageInput extends Component {
   }
 
   selectImg() {
-    selectPhotoTapped({
-      start: this.pickImageStart,
-      failed: this.pickImageFailed,
-      cancelled: this.pickImageCancel,
-      succeed: this.pickImageSucceed
-    })
+    this.ActionSheet.show()
+    // selectPhotoTapped({
+    //   start: this.pickImageStart,
+    //   failed: this.pickImageFailed,
+    //   cancelled: this.pickImageCancel,
+    //   succeed: this.pickImageSucceed
+    // })
   }
 
   validInput(data) {
@@ -198,12 +201,51 @@ class ImageInput extends Component {
     }
   }
 
+  _handleActionSheetPress(index) {
+    if(0 == index) { //拍照
+      ImageUtil.openPicker({
+        openType: 'camera',
+        success: (response) => {
+          this.uploadImg({
+            uri: response.path
+          })
+          // console.log('openPicker==response==', response.path)
+          // console.log('openPicker==response==', response.size)
+        }
+      })
+    }else if(1 == index) { //从相册选择
+      ImageUtil.openPicker({
+        openType: 'gallery',
+        success: (response) => {
+          this.uploadImg({
+            uri: response.path
+          })
+          // console.log('openPicker==response==', response.path)
+          // console.log('openPicker==response==', response.size)
+        }
+      })
+    }
+  }
+
+  renderActionSheet() {
+    return (
+      <ActionSheet
+        ref={(o) => this.ActionSheet = o}
+        title=""
+        options={['拍照', '从相册选择', '取消']}
+        cancelButtonIndex={2}
+        onPress={this._handleActionSheetPress.bind(this)}
+      />
+    )
+  }
+
   render() {
     if (this.props.data) {
       return (
         <View>
           {this.renderImageModal(this.props.data)}
           {this.renderImageShow(this.props.data)}
+          {this.renderActionSheet()}
         </View>
       )
     } else {
@@ -211,6 +253,7 @@ class ImageInput extends Component {
         <View style={styles.container}>
           <View style={[styles.defaultContainerStyle, this.props.containerStyle]}>
             {this.renderAddImage()}
+            {this.renderActionSheet()}
           </View>
         </View>
       )

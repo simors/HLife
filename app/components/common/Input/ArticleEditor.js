@@ -21,10 +21,12 @@ import {connect} from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
+import * as ImageUtil from '../../../util/ImageUtil'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -208,12 +210,13 @@ class ArticleEditor extends Component {
   }
 
   insertImage() {
-    selectPhotoTapped({
-      start: this.pickImageStart,
-      failed: this.pickImageFailed,
-      cancelled: this.pickImageCancelled,
-      succeed: this.pickImageSucceed
-    })
+    this.ActionSheet.show()
+    // selectPhotoTapped({
+    //   start: this.pickImageStart,
+    //   failed: this.pickImageFailed,
+    //   cancelled: this.pickImageCancelled,
+    //   succeed: this.pickImageSucceed
+    // })
   }
 
   pickImageStart = () => {
@@ -252,8 +255,9 @@ class ArticleEditor extends Component {
       }
       this.setState({imgWidth, imgHeight})
     })
-
+    // console.log('uploadFile.uploadPayload===', uploadPayload)
     uploadFile(uploadPayload).then((saved) => {
+      // console.log('uploadFile.saved===', saved.savedPos)
       let leanImgUrl = saved.savedPos
       this.insertImageComponent(leanImgUrl)
     }).catch((error) => {
@@ -394,6 +398,44 @@ class ArticleEditor extends Component {
     )
   }
 
+  _handleActionSheetPress(index) {
+    if(0 == index) { //拍照
+      ImageUtil.openPicker({
+        openType: 'camera',
+        success: (response) => {
+          this.uploadImg({
+            uri: response.path
+          })
+          // console.log('openPicker==response==', response.path)
+          // console.log('openPicker==response==', response.size)
+        }
+      })
+    }else if(1 == index) { //从相册选择
+      ImageUtil.openPicker({
+        openType: 'gallery',
+        success: (response) => {
+          this.uploadImg({
+            uri: response.path
+          })
+          // console.log('openPicker==response==', response.path)
+          // console.log('openPicker==response==', response.size)
+        }
+      })
+    }
+  }
+
+  renderActionSheet() {
+    return (
+      <ActionSheet
+        ref={(o) => this.ActionSheet = o}
+        title=""
+        options={['拍照', '从相册选择', '取消']}
+        cancelButtonIndex={2}
+        onPress={this._handleActionSheetPress.bind(this)}
+      />
+    )
+  }
+
   render() {
     if (Platform.OS === 'ios') {
       return (
@@ -408,6 +450,7 @@ class ArticleEditor extends Component {
             {this.renderComponents()}
           </KeyboardAwareScrollView>
           {this.renderEditToolView()}
+          {this.renderActionSheet()}
         </View>
       )
     } else {
@@ -424,6 +467,7 @@ class ArticleEditor extends Component {
             </ScrollView>
           </Animated.View>
           {this.renderEditToolView()}
+          {this.renderActionSheet()}
         </View>
       )
     }

@@ -18,10 +18,12 @@ import Gallery from 'react-native-gallery'
 import ImagePicker from 'react-native-image-picker'
 import CommonButton from '../CommonButton'
 import {selectPhotoTapped} from '../../../util/ImageSelector'
+import * as ImageUtil from '../../../util/ImageUtil'
 import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -56,52 +58,57 @@ class ImageGroupInput extends Component {
   }
 
   selectImg() {
-    selectPhotoTapped({
-      start: this.pickImageStart,
-      failed: this.pickImageFailed,
-      cancelled: this.pickImageCancel,
-      succeed: this.pickImageSucceed
-    })
+    this.ActionSheet.show()
+
+    // selectPhotoTapped({
+    //   start: this.pickImageStart,
+    //   failed: this.pickImageFailed,
+    //   cancelled: this.pickImageCancel,
+    //   succeed: this.pickImageSucceed
+    // })
   }
 
   reSelectImg(index) {
-    const options = {
-      title: '',
-      takePhotoButtonTitle: '拍照',
-      chooseFromLibraryButtonTitle: '从相册选择',
-      cancelButtonTitle: '取消',
-      quality: 1.0,
-      maxWidth: 500,
-      maxHeight: 500,
-      storageOptions: {
-        skipBackup: true
-      }
-    }
+    this.ActionSheet.show()
 
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-      } else if (response.error) {
-      } else if (response.customButton) {
-      } else {
-        this.imgList.splice(index, 1)
-        let source
-        if (Platform.OS === 'android') {
-          source = {
-            uri: response.uri,
-            isStatic: true,
-          }
-        } else {
-          source = {
-            uri: response.uri.replace('file://', ''),
-            isStatic: true,
-            origURL: response.origURL,
-          }
-        }
-        this.pickImageSucceed(source)
-
-        this.toggleModal(!this.state.imgModalShow)
-      }
-    })
+    // const options = {
+    //   title: '',
+    //   takePhotoButtonTitle: '拍照',
+    //   chooseFromLibraryButtonTitle: '从相册选择',
+    //   cancelButtonTitle: '取消',
+    //   quality: 1.0,
+    //   maxWidth: 500,
+    //   maxHeight: 500,
+    //   storageOptions: {
+    //     skipBackup: true
+    //   }
+    // }
+    //
+    // ImagePicker.showImagePicker(options, (response) => {
+    //   if (response.didCancel) {
+    //   } else if (response.error) {
+    //   } else if (response.customButton) {
+    //   } else {
+    //     console.log('fileSize====', response.fileSize)
+    //     this.imgList.splice(index, 1)
+    //     let source
+    //     if (Platform.OS === 'android') {
+    //       source = {
+    //         uri: response.uri,
+    //         isStatic: true,
+    //       }
+    //     } else {
+    //       source = {
+    //         uri: response.uri.replace('file://', ''),
+    //         isStatic: true,
+    //         origURL: response.origURL,
+    //       }
+    //     }
+    //     this.pickImageSucceed(source)
+    //
+    //     this.toggleModal(!this.state.imgModalShow)
+    //   }
+    // })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -281,11 +288,52 @@ class ImageGroupInput extends Component {
     )
   }
 
+  _handleActionSheetPress(index) {
+    if(0 == index) { //拍照
+      ImageUtil.openPicker({
+        openType: 'camera',
+        success: (response) => {
+          this.imgList.splice(index, 1)
+          this.uploadImg({
+            uri: response.path
+          })
+          // console.log('openPicker==response==', response.path)
+          // console.log('openPicker==response==', response.size)
+        }
+      })
+    }else if(1 == index) { //从相册选择
+      ImageUtil.openPicker({
+        openType: 'gallery',
+        success: (response) => {
+          this.imgList.splice(index, 1)
+          this.uploadImg({
+            uri: response.path
+          })
+          // console.log('openPicker==response==', response.path)
+          // console.log('openPicker==response==', response.size)
+        }
+      })
+    }
+  }
+
+  renderActionSheet() {
+    return (
+      <ActionSheet
+        ref={(o) => this.ActionSheet = o}
+        title=""
+        options={['拍照', '从相册选择', '取消']}
+        cancelButtonIndex={2}
+        onPress={this._handleActionSheetPress.bind(this)}
+      />
+    )
+  }
+
   render() {
     return (
       <View>
         {this.renderImageModal()}
         {this.renderImageShow()}
+        {this.renderActionSheet()}
       </View>
     )
   }

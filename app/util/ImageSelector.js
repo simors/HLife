@@ -1,16 +1,16 @@
 import React from 'react'
-import {Platform} from 'react-native'
+import {Platform, Dimensions} from 'react-native'
 import ImagePicker from 'react-native-image-picker'
-
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 export function selectPhotoTapped(callbacks) {
   const options = {
     title: '',
     takePhotoButtonTitle: '拍照',
     chooseFromLibraryButtonTitle: '从相册选择',
     cancelButtonTitle: '取消',
-    quality: 1.0,
-    maxWidth: 500,
-    maxHeight: 500,
+    maxWidth: Math.floor(PAGE_WIDTH),
+    maxHeight: Math.floor(PAGE_HEIGHT),
     storageOptions: {
       skipBackup: true
     }
@@ -28,6 +28,7 @@ export function selectPhotoTapped(callbacks) {
     } else if (response.customButton) {
       console.log('User tapped custom button:', response.customButton)
     } else {
+      console.log('fileSize====', response.fileSize)
       let source
       if (Platform.OS === 'android') {
         source = {
