@@ -273,7 +273,9 @@ class ShopRegister extends Component {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.getInvitationWrap} onPress= {()=> {Actions.QRCODEREADER()}}>
+            <TouchableOpacity style={styles.getInvitationWrap} onPress= {()=> {
+              {/*Actions.QRCODEREADER()*/}
+            }}>
               <Text style={{color:THEME.colors.green,fontSize: em(16)}}>如何获取邀请码？</Text>
             </TouchableOpacity>
 
