@@ -13,7 +13,7 @@ export function openPicker(options) {
   const defaultOptions = {
     width: 300,
     height: 400,
-    cropping: true,
+    cropping: false,
     multiple: false,//拍照必须传false,否则没有返回(ResultCollector类notifySuccess方法waitCounter为null)
     compressImageQuality: 1,
     openType: 'camera', //enum('gallery', 'camera')

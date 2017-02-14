@@ -38,6 +38,7 @@ class ImageGroupInput extends Component {
       imgCnt: 0,
       imgModalShow: false,
       showImg: '',
+      reSltImageIndex: -1
     }
   }
 
@@ -69,8 +70,10 @@ class ImageGroupInput extends Component {
   }
 
   reSelectImg(index) {
+    this.setState({
+      reSltImageIndex: index
+    })
     this.ActionSheet.show()
-
     // const options = {
     //   title: '',
     //   takePhotoButtonTitle: '拍照',
@@ -293,7 +296,12 @@ class ImageGroupInput extends Component {
       ImageUtil.openPicker({
         openType: 'camera',
         success: (response) => {
-          this.imgList.splice(index, 1)
+          if(this.state.reSltImageIndex != -1) {
+            this.imgList.splice(this.state.reSltImageIndex, 1)
+            this.setState({
+              reSltImageIndex: -1
+            })
+          }
           this.uploadImg({
             uri: response.path
           })
@@ -305,13 +313,22 @@ class ImageGroupInput extends Component {
       ImageUtil.openPicker({
         openType: 'gallery',
         success: (response) => {
-          this.imgList.splice(index, 1)
+          if(this.state.reSltImageIndex != -1) {
+            this.imgList.splice(this.state.reSltImageIndex, 1)
+            this.setState({
+              reSltImageIndex: -1
+            })
+          }
           this.uploadImg({
             uri: response.path
           })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
         }
+      })
+    }else if(2 == index) {
+      this.setState({
+        reSltImageIndex: -1
       })
     }
   }
