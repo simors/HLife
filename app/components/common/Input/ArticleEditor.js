@@ -57,6 +57,8 @@ class ArticleEditor extends Component {
       cursor: 0,        // 光标所在组件的索引
       start: 0,         // 光标所在文字的起始位置
       editorHeight: new Animated.Value(0),
+      scrollViewHeight: 0,
+      contentHeight: 0,
     }
     this.comp = [this.renderTextInput("", 0, true)]
     this.compHeight = 0
@@ -303,6 +305,10 @@ class ArticleEditor extends Component {
     let data = this.props.data
     data[index].text = content
     this.inputChange(data)
+    let len = data.length
+    if (Platform.OS === 'android' && len - 1 == index) {
+      this.refs.scrollView.scrollTo({y: this.state.contentHeight - this.state.scrollViewHeight})
+    }
   }
 
   selectChange(event) {
@@ -399,6 +405,7 @@ class ArticleEditor extends Component {
       return (
         <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
           <KeyboardAwareScrollView
+            ref="scrollView"
             style={{flex: 1}}
             keyboardDismissMode="on-drag"
             automaticallyAdjustContentInsets={false}
@@ -419,6 +426,13 @@ class ArticleEditor extends Component {
               style={{flex: 1}}
               automaticallyAdjustContentInsets={false}
               keyboardShouldPersistTaps={true}
+              onContentSizeChange={ (contentWidth, contentHeight) => {
+                this.setState({contentHeight: contentHeight })
+              }}
+              onLayout={ (e) => {
+                const height = e.nativeEvent.layout.height
+                this.setState({scrollViewHeight: height })
+              }}
             >
               {this.renderComponents()}
             </ScrollView>
