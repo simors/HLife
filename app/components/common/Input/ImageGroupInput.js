@@ -177,6 +177,9 @@ class ImageGroupInput extends Component {
     uploadFile(uploadPayload).then((saved) => {
       let leanImgUrl = saved.savedPos
       this.imageSelectedChange(leanImgUrl)
+      if(typeof source.success == 'function') {
+        source.success(source)
+      }
     }).catch((error) => {
       console.log('upload failed:', error)
     })
@@ -190,6 +193,10 @@ class ImageGroupInput extends Component {
     )
   }
 
+  androidHardwareBackPress() {
+    this.toggleModal(false)
+  }
+
   renderImageModal() {
     let index = this.imgList.findIndex((val) => {
       return (val == this.state.showImg)
@@ -199,7 +206,12 @@ class ImageGroupInput extends Component {
     }
     return (
       <View>
-        <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
+        <Modal
+          visible={this.state.imgModalShow}
+          transparent={false}
+          animationType='fade'
+          onRequestClose={()=>{this.androidHardwareBackPress()}}
+        >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
               style={{flex: 1, backgroundColor: 'black'}}
@@ -310,22 +322,43 @@ class ImageGroupInput extends Component {
         }
       })
     }else if(1 == index) { //从相册选择
-      ImageUtil.openPicker({
+      let option = {
         openType: 'gallery',
+        multiple: true,
         success: (response) => {
           if(this.state.reSltImageIndex != -1) {
             this.imgList.splice(this.state.reSltImageIndex, 1)
             this.setState({
               reSltImageIndex: -1
             })
+            this.uploadImg({
+              uri: response.path
+            })
+          }else {
+            if(response && response.length) {
+              let source = {
+                uri: response[0].path,
+                uploadImgIndex: 0,
+                success: (respSource)=>{
+                  if(respSource.uploadImgIndex < response.length - 1) {
+                    respSource.uploadImgIndex += 1
+                    respSource.uri = response[respSource.uploadImgIndex].path
+                    this.uploadImg(respSource)
+                  }
+                }
+              }
+
+              this.uploadImg(source)
+            }
           }
-          this.uploadImg({
-            uri: response.path
-          })
-          // console.log('openPicker==response==', response.path)
-          // console.log('openPicker==response==', response.size)
         }
-      })
+      }
+
+      if(this.state.reSltImageIndex != -1) { //重新选择
+        option.multiple = false
+      }
+
+      ImageUtil.openPicker(option)
     }else if(2 == index) {
       this.setState({
         reSltImageIndex: -1
