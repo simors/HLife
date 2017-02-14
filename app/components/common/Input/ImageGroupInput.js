@@ -193,6 +193,10 @@ class ImageGroupInput extends Component {
     )
   }
 
+  androidHardwareBackPress() {
+    this.toggleModal(false)
+  }
+
   renderImageModal() {
     let index = this.imgList.findIndex((val) => {
       return (val == this.state.showImg)
@@ -202,7 +206,12 @@ class ImageGroupInput extends Component {
     }
     return (
       <View>
-        <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
+        <Modal
+          visible={this.state.imgModalShow}
+          transparent={false}
+          animationType='fade'
+          onRequestClose={()=>{this.androidHardwareBackPress()}}
+        >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
               style={{flex: 1, backgroundColor: 'black'}}

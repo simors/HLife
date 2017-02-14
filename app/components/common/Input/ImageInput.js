@@ -131,6 +131,10 @@ class ImageInput extends Component {
     }
   }
 
+  androidHardwareBackPress() {
+    this.toggleModal(false)
+  }
+
   renderImageModal(src) {
     return (
       <View>
@@ -138,7 +142,7 @@ class ImageInput extends Component {
           visible={this.state.imgModalShow}
           transparent={false}
           animationType='fade'
-          onRequestClose={()=>{}}
+          onRequestClose={()=>{this.androidHardwareBackPress()}}
         >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
