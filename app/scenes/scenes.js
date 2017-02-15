@@ -73,7 +73,7 @@ import TopicNotifyView from '../components/Message/TopicNotifyView'
 import BaiduMapView from '../components/common/BaiduMapView'
 import ShopAddressSelect from '../components/Mine/myShop/ShopAddressSelect'
 import CommentDoctor from '../components/Mine/Doctor/CommentDoctor'
-// import QRCodeReader from '../components/Mine/QRCodeReader'
+import QRCodeReader from '../components/Mine/QRCodeReader'
 
 const styles = StyleSheet.create({
   container: {
@@ -157,7 +157,7 @@ export const scenes = Actions.create(
       <Scene key="BAI_DU_MAP_VIEW" component={BaiduMapView} />
       <Scene key="SHOP_ADDRESS_SELECT" component={ShopAddressSelect} />
       <Scene key="COMMENT_DOCTOR" component={CommentDoctor}/>
-      {/*<Scene key="QRCODEREADER" component={QRCodeReader}/>*/}
+      <Scene key="QRCODEREADER" component={QRCodeReader}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

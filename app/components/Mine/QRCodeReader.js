@@ -1,11 +1,13 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import {
   AppRegistry,
   StyleSheet,
   Text,
+  View,
+  Platform,
   NavigatorIOS,
   TouchableOpacity,
   TouchableHighlight,
@@ -13,32 +15,38 @@ import {
 } from 'react-native';
 
 import {Actions} from 'react-native-router-flux'
-import QRCodeScanner from './QRCodeScanner';
+import BarcodeScanner from 'react-native-barcode-scanner-universal'
 
 class QRCodeReader extends Component {
-  onSuccess(e) {
-    console.log(e)
-    Actions.pop({
-      refresh:{
-        qRCode:e.data
-      }
-    })
+
+  _onBarCodeRead(result){
+    if (this.barCodeFlag) {
+      this.barCodeFlag = false;
+      Actions.pop({
+        refresh:{
+          qRCode:result.data
+        }
+      })
+    }
   }
 
   render() {
+    this.barCodeFlag = true
+    let scanArea = null
+    if (Platform.OS === 'ios') {
+      scanArea = (
+        <View style={styles.rectangleContainer}>
+          <View style={styles.rectangle}/>
+        </View>
+      )
+    }
+
     return (
-      <NavigatorIOS
-        initialRoute={{
-          component: QRCodeScanner,
-          title: 'Scan Code',
-          passProps: {
-            onRead: this.onSuccess.bind(this),
-            topContent: <Text style={styles.centerText}>扫描二维码</Text>,
-            bottomContent: <TouchableOpacity style={styles.buttonTouchable} onPress= {()=> {Actions.pop()}}><Text style={styles.buttonText}>取消</Text></TouchableOpacity>
-          }
-        }}
-        style={{flex: 1}}
-      />
+      <BarcodeScanner
+        onBarCodeRead={(code)=>this._onBarCodeRead(code)}
+        style={styles.camera}>
+        {scanArea}
+      </BarcodeScanner>
     )
   }
 }
@@ -76,6 +84,22 @@ const styles = StyleSheet.create({
   buttonTouchable: {
     padding: 16,
   },
+  camera: {
+    flex: 1
+  },
+  rectangleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
+  },
+  rectangle: {
+    height: 250,
+    width: 250,
+    borderWidth: 2,
+    borderColor: '#00FF00',
+    backgroundColor: 'transparent'
+  }
 });
 
 
