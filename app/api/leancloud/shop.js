@@ -52,14 +52,14 @@ export function getShopList(payload) {
       query.lessThanOrEqualTo('geo', lastGeo)
     }
     query.addDescending('geo')
-    query.addDescending('score')
+    // query.addDescending('score')
   }else{
     if(!isRefresh) { //分页查询
       query.skip(skipNum)
       query.lessThanOrEqualTo('score', lastScore)
     }
     query.addDescending('score')
-    query.addDescending('geo')
+    // query.addDescending('geo')
   }
   query.limit(5) // 最多返回 5 条结果
   if(distance) {

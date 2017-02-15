@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
   Modal,
+  BackAndroid
 } from 'react-native'
 import Gallery from 'react-native-gallery'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -46,6 +47,10 @@ export default class ImageGroupViewer extends Component {
     })
   }
 
+  androidHardwareBackPress() {
+    this.toggleModal(false)
+  }
+
   renderImageModal() {
     let index = this.props.images.findIndex((val) => {
       return (val == this.state.showImg)
@@ -59,7 +64,7 @@ export default class ImageGroupViewer extends Component {
           visible={this.state.imgModalShow}
           transparent={false}
           animationType='fade'
-          onRequestClose={()=>{}}
+          onRequestClose={()=>{this.androidHardwareBackPress()}}
         >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery

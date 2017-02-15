@@ -2,6 +2,7 @@
  * Created by zachary on 2016/12/14.
  */
 import {Map, List, Record} from 'immutable'
+import * as numberUtils from '../util/numberUtils'
 
 export const BannerItemConfig = Record({
   type: undefined, //banner类型:0-home主页,1-local本地,...
@@ -64,8 +65,6 @@ export class ColumnItem extends ColumnItemConfig {
   }
 }
 
-
-
 export const TopicCategoryItemConfig = Record({
   isPicked: undefined,//是否精选
   title: undefined, //话题名称
@@ -93,7 +92,8 @@ export const ShopCategoryConfig = Record({
   status: 0, // 0-关闭, 1-启用
   shopCategoryId: undefined,
   imageSource: undefined,
-  text: undefined
+  text: undefined,
+  containedTag: undefined
 })
 
 export class ShopCategory extends ShopCategoryConfig {
@@ -106,6 +106,23 @@ export class ShopCategory extends ShopCategoryConfig {
       record.set('shopCategoryId', attrs.shopCategoryId)
       record.set('imageSource', attrs.imageSource)
       record.set('text', attrs.text)
+
+      let containedTag = []
+      if(attrs.containedTag && attrs.containedTag.length) {
+        attrs.containedTag.forEach((item)=>{
+          let containedTagAttrs = item.attributes
+          // console.log('attrs.containedTag.item=====', item)
+          let tag = {
+            id: item.id,
+            name: containedTagAttrs.name,
+            createdDate: numberUtils.formatLeancloudTime(item.createdAt, 'YYYY-MM-DD HH:mm:SS'),
+            createdAt: item.createdAt.valueOf(),
+            updatedAt: item.updatedAt.valueOf(),
+          }
+          containedTag.push(tag)
+        })
+      }
+      record.set('containedTag', containedTag)
     })
   }
 }

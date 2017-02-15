@@ -89,8 +89,10 @@ export function getTopicCategories() {
 export function getShopCategories(payload) {
   let query = new AV.Query('ShopCategory')
   query.equalTo('status', 1)
+  query.include(['containedTag'])
   //query.limit(payload.limit ? payload.limit : 5)
   return query.find().then(function (results) {
+    // console.log('getShopCategories===', results)
     let shopCategories = []
     results.forEach((result)=> {
       shopCategories.push(ShopCategory.fromLeancloudObject(result))
