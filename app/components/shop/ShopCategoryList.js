@@ -107,15 +107,15 @@ class ShopCategoryList extends Component {
       })
     }
 
-    this.isLastPage = nextProps.isLastPage
-    // console.log('========componentWillReceiveProps=========',nextProps.isLastPage)
-    if(this.isLastPage) {
-      this.setTimeout(()=>{
-        if(this.listView) {
-          this.listView.isLoadUp(false)
-        }
-      }, 1000)
-    }
+    // this.isLastPage = nextProps.isLastPage
+    // console.log('========componentWillReceiveProps====this.isLastPage=====',this.isLastPage)
+    // if(this.isLastPage) {
+    //   this.setTimeout(()=>{
+    //     if(this.listView) {
+    //       this.listView.isLoadUp(false)
+    //     }
+    //   }, 1000)
+    // }
   }
 
   _getOptionList(OptionListRef) {
@@ -124,57 +124,75 @@ class ShopCategoryList extends Component {
 
 
   _onSelectShopCategory(shopCategoryId) {
-    // console.log('_onSelectShopCategory.shopCategoryId=' , shopCategoryId)
-    this.state.searchForm.shopCategoryId = shopCategoryId
-    this.state.selectGroupShow = [false, false, false]
-    this.setState({
-      ...this.state,
-      searchForm: {
-        ...this.state.searchForm,
-        shopCategoryId: this.state.searchForm.shopCategoryId,
-        shopTagId: ''
-      },
-      selectGroupShow: this.state.selectGroupShow
-    }, ()=>{
-      this.refreshData()
+    this.scrollToTop(()=>{
+      // console.log('_onSelectShopCategory.shopCategoryId=' , shopCategoryId)
+      this.state.searchForm.shopCategoryId = shopCategoryId
+      this.state.selectGroupShow = [false, false, false]
+      this.setState({
+        ...this.state,
+        searchForm: {
+          ...this.state.searchForm,
+          shopCategoryId: this.state.searchForm.shopCategoryId,
+          shopTagId: ''
+        },
+        selectGroupShow: this.state.selectGroupShow
+      }, ()=>{
+        this.refreshData()
+      })
+      // console.log('_onSelectShopCategory.this.state=' , this.state)
+      this.toggleSelectGroupHeight()
     })
-    // console.log('_onSelectShopCategory.this.state=' , this.state)
-    this.toggleSelectGroupHeight()
+
   }
 
   _onSelectSort(sortId) {
-    this.state.selectGroupShow = [false, false, false]
-    this.state.searchForm.sortId = sortId
-    this.setState({
-      ...this.state,
-      searchFrom: {
-        ...this.state.searchForm,
-        sortId: this.state.searchForm.sortId
-      },
-      selectGroupShow: this.state.selectGroupShow
-    }, ()=>{
-      this.refreshData()
+    this.scrollToTop(() => {
+      this.state.selectGroupShow = [false, false, false]
+      this.state.searchForm.sortId = sortId
+      this.setState({
+        ...this.state,
+        searchFrom: {
+          ...this.state.searchForm,
+          sortId: this.state.searchForm.sortId
+        },
+        selectGroupShow: this.state.selectGroupShow
+      }, ()=>{
+        this.refreshData()
+      })
+      this.toggleSelectGroupHeight()
     })
-    this.toggleSelectGroupHeight()
+  }
+
+  scrollToTop(callback) {
+    if(this.listView) {
+      // console.log('this.listView===', this.listView)
+      this.listView.refs.listView.scrollTo({y:0})
+    }
+    if(typeof callback == 'function') {
+      callback()
+    }
   }
 
   _onSelectDistance(distance) {
-    if('全城' == distance) {
-      distance = ''
-    }
-    this.state.selectGroupShow = [false, false, false]
-    this.state.searchForm.distance = distance
-    this.setState({
-      ...this.state,
-      searchFrom: {
-        ...this.state.searchForm,
-        distance: this.state.searchForm.distance
-      },
-      selectGroupShow: this.state.selectGroupShow
-    }, ()=>{
-      this.refreshData()
+    this.scrollToTop(()=>{
+      if('全城' == distance) {
+        distance = ''
+      }
+      this.state.selectGroupShow = [false, false, false]
+      this.state.searchForm.distance = distance
+      this.setState({
+        ...this.state,
+        searchFrom: {
+          ...this.state.searchForm,
+          distance: this.state.searchForm.distance
+        },
+        selectGroupShow: this.state.selectGroupShow
+      }, ()=>{
+        this.refreshData()
+      })
+      this.toggleSelectGroupHeight()
     })
-    this.toggleSelectGroupHeight()
+
   }
 
   toggleSelectGroupHeight() {
@@ -250,9 +268,39 @@ class ShopCategoryList extends Component {
       this.refreshData()
     })
   }
+  
+  getRecommendShopTags() {
+    let shopCategoryContainedTag = []
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      for(let i = 0; i < this.props.allShopCategories.length; i++) {
+        let shopCategory = this.props.allShopCategories[i]
+        if(shopCategory.shopCategoryId == this.state.searchForm.shopCategoryId) {
+          shopCategoryContainedTag = shopCategory.containedTag
+          break
+        }
+      }
+    }
 
-  renderTags(shopTags) {
+    let recommendShopTags = []
+    if(shopCategoryContainedTag && shopCategoryContainedTag.length) {
+      let randomShowIndex = -1
+      if(shopCategoryContainedTag.length > 6) {
+        randomShowIndex = Math.floor(Math.random() * (shopCategoryContainedTag.length - 6))
+      }
+
+      shopCategoryContainedTag.map((item, index)=>{
+        if(index > randomShowIndex && index <= (randomShowIndex + 6)) {
+          recommendShopTags.push(item)
+        }
+      })
+    }
+
+    return recommendShopTags
+  }
+
+  renderTags() {
     // console.log('renderTags')
+    let shopTags = this.getRecommendShopTags()
     if(shopTags && shopTags.length) {
       let allShopTagsView = shopTags.map((item, index)=> {
         let sltedTagBoxStyle = {}
@@ -313,7 +361,7 @@ class ShopCategoryList extends Component {
     let customStyle = null
     // console.log('renderRow')
     if(4 == rowID || !this.props.shopList.length || (this.props.shopList.length < 5 && this.props.shopList.length == (+rowID+1))) {
-      tagsView = this.renderTags(this.props.recommendShopTags)
+      tagsView = this.renderTags()
       customStyle = {marginBottom: 0}
     }
 
@@ -353,7 +401,7 @@ class ShopCategoryList extends Component {
       this.isRefreshRendering = true
       // this.listView.hideFooter(true)
     }
-
+    // console.log('loadMoreData.isLastPage=====', this.isLastPage)
     if(this.isLastPage) {
       this.listView.isLoadUp(false)
       return
@@ -366,6 +414,7 @@ class ShopCategoryList extends Component {
         if(!this.listView) {
           return
         }
+        // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
           this.listView.isLoadUp(false)
         }else {
@@ -418,7 +467,7 @@ class ShopCategoryList extends Component {
           <View style={{paddingTop: 40}}>
             {!this.props.shopList.length &&
               <View>
-                {this.renderTags(this.props.recommendShopTags)}
+                {this.renderTags()}
               </View>
             }
             <CommonListView
@@ -528,26 +577,13 @@ const mapStateToProps = (state, ownProps) => {
     lastCreatedAt = shopList[shopList.length-1].createdAt
     lastScore = shopList[shopList.length-1].score
     lastGeo = shopList[shopList.length-1].geo
+    // console.log('mapStateToProps.shopList.length=', shopList.length)
     if(shopList.length < 5) {
       isLastPage = true
     }
   }
 
   const allShopTags = selectShopTags(state)
-
-  let recommendShopTags = []
-  if(allShopTags && allShopTags.length) {
-    let randomShowIndex = -1
-    if(allShopTags.length > 6) {
-      randomShowIndex = Math.floor(Math.random() * (allShopTags.length - 6))
-    }
-
-    allShopTags.map((item, index)=>{
-      if(index > randomShowIndex && index <= (randomShowIndex + 6)) {
-        recommendShopTags.push(item)
-      }
-    })
-  }
 
   return {
     ds: ds.cloneWithRows(shopList),
@@ -557,7 +593,6 @@ const mapStateToProps = (state, ownProps) => {
     lastScore: lastScore,
     lastGeo: lastGeo,
     allShopTags: allShopTags,
-    recommendShopTags: recommendShopTags,
     isLastPage: isLastPage
   }
 }
