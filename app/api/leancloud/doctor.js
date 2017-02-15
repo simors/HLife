@@ -214,8 +214,9 @@ export function submitDoctorSpec(payload) {
         doctorInfo: doctorInfo
       }
     })
-
   })
+}
 
+export function submitDoctorComment(payload) {
 
 }

@@ -23,6 +23,7 @@ export const ConversationRecord = Record({
   updatedAt: undefined,
   createdAt: undefined,
   messages: List(),           // 消息列表
+  status: 1,          //会话状态 0--会话关闭 1--会话打开
 }, 'ConversationRecord')
 
 export const MessageRecord = Record({
@@ -84,6 +85,7 @@ export class Conversation extends ConversationRecord {
       record.set('createdAt', lcConv.createdAt)
       record.set('updatedAt', lcConv.updatedAt)
       record.set('unreadCount', lcConv.unreadMessagesCount)
+      record.set('status', lcConv.get('status'))
     })
   }
 }

@@ -13,6 +13,7 @@ import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION, WUAI_SYSTEM_DOCTOR} from '.
 import {fetchDoctorGroup} from '../../action/doctorAction'
 import {activeUserId} from '../../selector/authSelector'
 import {getDoctorByGroupUserId} from '../../selector/doctorSelector'
+import {updateConversationStatus} from '../../action/messageAction'
 import MessageBoxCell from './MessageBoxCell'
 
 class InquiryMessageCell extends Component {
@@ -34,6 +35,7 @@ class InquiryMessageCell extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchDoctorGroup({id: otherMem})
     })
+    this.props.updateConversationStatus({conversationId: this.props.conversation})
   }
 
   render() {
@@ -72,6 +74,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchDoctorGroup,
+  updateConversationStatus,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(InquiryMessageCell)

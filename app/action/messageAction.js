@@ -102,6 +102,7 @@ const onLeaveConversation = createAction(msgTypes.ON_LEAVE_CONVERSATION)
 const onCreateMessage = createAction(msgTypes.ON_MESSAGE_CREATED)
 const onSendMessage = createAction(msgTypes.ON_MESSAGE_SENTED)
 const onRecvMessage = createAction(msgTypes.ON_MESSAGE_RECEIVED)
+const onUpdateConversation = createAction(msgTypes.ON_UPDATE_CONVERSATION)
 
 export function initMessageClient(payload) {
   return (dispatch, getState) => {
@@ -326,8 +327,39 @@ function createLcConversation(payload) {
       name: payload.name,
       unique: true,
       type: payload.type,   // 会话的类型，可以是问诊（INQUIRY_CONVERSATION），或私信（PERSONAL_CONVERSATION）
+      status: 1,
     }).then((conversation) => {
       return Conversation.fromLeancloudConversation(conversation)
+    })
+  }
+}
+
+function setLcConversation(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+      console.log('leancloud Messenger init failed, can\'t get client')
+      return undefined
+    }
+
+    return client.getConversation(payload.conversationId).then((conversation)=> {
+      let today = new Date()
+      let interval = today.getTime() - conversation.createdAt.getTime()
+      if (interval > 1 * 3600 * 1000){ //快速问诊24小时候后失效
+        conversation.set('status', 0)
+        return conversation.save()
+      }
+      return undefined
+    }).then((conversation) => {
+      if (conversation)
+        console.log('setLcConversation', conversation)
+        return Conversation.fromLeancloudConversation(conversation)
+      return undefined
+    }).catch((err) => {
+      console.log(err)
     })
   }
 }
@@ -352,6 +384,7 @@ function createOriginalConversation(payload) {
       members: payload.members,
       name: payload.name,
       unique: true,
+      status: 1,
     })
   }
 }
@@ -711,6 +744,17 @@ export function notifyShopFollow(payload) {
       conversation.send(message)
     }, (err) => {
       console.log(err)
+    })
+  }
+}
+
+export function updateConversationStatus(payload) {
+  return (dispatch, getState) => {
+    dispatch(setLcConversation(payload)).then((conversation) => {
+      if (conversation)
+        dispatch(onUpdateConversation(conversation))
+    }).catch((error) => {
+      console.log('failed to create conversation: ', error)
     })
   }
 }
