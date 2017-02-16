@@ -104,8 +104,8 @@ class ShopRegister extends Component {
         shopAddress: nextProps.shopAddress
       })
       nextProps.inputFormUpdate({
-        formKey: shopNameInput.formKey,
-        stateKey: shopNameInput.stateKey,
+        formKey: shopAddrInput.formKey,
+        stateKey: shopAddrInput.stateKey,
         data: nextProps.shopAddress
       })
     }
