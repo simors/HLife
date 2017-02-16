@@ -23,6 +23,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import MultilineText from '../../common/Input/MultilineText'
 import ScoreInput from '../../common/Input/ScoreInput'
 import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../../action/doctorAction'
+import Symbol from 'es6-symbol'
+
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
