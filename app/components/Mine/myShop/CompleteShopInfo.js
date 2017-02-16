@@ -250,13 +250,13 @@ class CompleteShopInfo extends Component {
     const inputWrapHeight = 40
     if(Platform.OS == 'ios') {
       this.setState({
-        optionListPos: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
-        shopTagsSelectTop: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
+        optionListPos: this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
+        shopTagsSelectTop: this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
       })
     }else{
       this.setState({
-        optionListPos: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
-        shopTagsSelectTop: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
+        optionListPos: this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
+        shopTagsSelectTop: this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
       })
     }
   }
