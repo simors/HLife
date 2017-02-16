@@ -8,14 +8,13 @@ import {
   Text,
   View,
   Platform,
-  NavigatorIOS,
   TouchableOpacity,
   TouchableHighlight,
   Linking,
 } from 'react-native';
-
+import Viewfinder from './Viewfinder';
 import {Actions} from 'react-native-router-flux'
-import BarcodeScanner from 'react-native-barcode-scanner-universal'
+import Camera from 'react-native-camera'
 
 class QRCodeReader extends Component {
 
@@ -32,21 +31,12 @@ class QRCodeReader extends Component {
 
   render() {
     this.barCodeFlag = true
-    let scanArea = null
-    if (Platform.OS === 'ios') {
-      scanArea = (
-        <View style={styles.rectangleContainer}>
-          <View style={styles.rectangle}/>
-        </View>
-      )
-    }
-
     return (
-      <BarcodeScanner
+      <Camera
         onBarCodeRead={(code)=>this._onBarCodeRead(code)}
         style={styles.camera}>
-        {scanArea}
-      </BarcodeScanner>
+        <Viewfinder/>
+      </Camera>
     )
   }
 }

@@ -15,9 +15,9 @@ import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.hlife.baidumap.BaiduMapPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.rnfs.RNFSPackage;
-
 import java.util.Arrays;
 import java.util.List;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -31,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RCTCameraPackage(),
             new PickerPackage(),
             new RNSendIntentPackage(),
             new ReactNativeRestartPackage(),

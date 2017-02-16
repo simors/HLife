@@ -24,6 +24,7 @@
     "react-native-barcode-scanner-universal": "^1.0.5",
     "react-native-button": "^1.7.1",
     "react-native-camera": "0.4.1",
+    "react-native-camera-android": "^1.0.7",
     "react-native-communications": "^2.1.4",
     "react-native-datepicker": "^1.4.2",
     "react-native-dismiss-keyboard": "^1.0.0",
