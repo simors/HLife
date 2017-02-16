@@ -24,6 +24,7 @@ import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
+import * as Toast from '../Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -351,6 +352,9 @@ class ImageGroupInput extends Component {
               this.uploadImg(source)
             }
           }
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       }
 

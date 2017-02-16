@@ -23,6 +23,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import Gallery from 'react-native-gallery'
 import CommonButton from '../CommonButton'
 import ActionSheet from 'react-native-actionsheet'
+import * as Toast from '../Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -215,6 +216,9 @@ class ImageInput extends Component {
           })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }else if(1 == index) { //从相册选择
@@ -226,6 +230,9 @@ class ImageInput extends Component {
           })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }

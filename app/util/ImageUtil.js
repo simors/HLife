@@ -25,20 +25,30 @@ export function openPicker(options) {
 
   if('camera' == defaultOptions.openType) {
     ImagePicker.openCamera(defaultOptions).then(response => {
+      // console.log('openCamera.response====')
       // console.log(response)
       defaultOptions.success(response)
+    }, (error)=> {
+      defaultOptions.fail({
+        message: '获取照片信息失败,请稍候再试'
+      })
     }).catch((err) => {
       defaultOptions.fail({
-        message: 'error'
+        message: '获取信息失败,请稍候再试'
       })
     })
   }else {
     ImagePicker.openPicker(defaultOptions).then(response => {
+      // console.log('openPicker.response====')
       // console.log(response)
       defaultOptions.success(response)
+    }, (error)=> {
+      defaultOptions.fail({
+        message: '照片类型不支持,请重新选择'
+      })
     }).catch((err) => {
       defaultOptions.fail({
-        message: 'error'
+        message: '获取信息失败,请稍候再试'
       })
     })
   }
