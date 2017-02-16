@@ -23,11 +23,19 @@ export function openPicker(options) {
   }
   Object.assign(defaultOptions, options)
 
+  //文件过大,会导致Modal加载图片报错(E_GET_SIZE_FAILURE)
+  //限制图片文件1M以内
   if('camera' == defaultOptions.openType) {
     ImagePicker.openCamera(defaultOptions).then(response => {
       // console.log('openCamera.response====')
       // console.log(response)
-      defaultOptions.success(response)
+      if(parseInt(response.fileSize) >= 1024 * 1024) {
+        defaultOptions.fail({
+          message: '文件尺寸必须小于1M'
+        })
+      }else {
+        defaultOptions.success(response)
+      }
     }, (error)=> {
       defaultOptions.fail({
         message: '获取照片信息失败,请稍候再试'
@@ -41,7 +49,13 @@ export function openPicker(options) {
     ImagePicker.openPicker(defaultOptions).then(response => {
       // console.log('openPicker.response====')
       // console.log(response)
-      defaultOptions.success(response)
+      if(parseInt(response.fileSize) >= 1024 * 1024) {
+        defaultOptions.fail({
+          message: '文件尺寸必须小于1M'
+        })
+      }else {
+        defaultOptions.success(response)
+      }
     }, (error)=> {
       defaultOptions.fail({
         message: '照片类型不支持,请重新选择'
