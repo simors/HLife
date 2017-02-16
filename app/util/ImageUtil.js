@@ -37,9 +37,14 @@ export function openPicker(options) {
         defaultOptions.success(response)
       }
     }, (error)=> {
-      defaultOptions.fail({
-        message: '获取照片信息失败,请稍候再试'
-      })
+      // console.log(error)
+      // console.log(error.code)
+      // console.log(error.message)
+      if('E_PICKER_CANCELLED' != error.code) { //用户取消
+        defaultOptions.fail({
+          message: '获取照片信息失败,请稍候再试'
+        })
+      }
     }).catch((err) => {
       defaultOptions.fail({
         message: '获取信息失败,请稍候再试'
@@ -57,9 +62,14 @@ export function openPicker(options) {
         defaultOptions.success(response)
       }
     }, (error)=> {
-      defaultOptions.fail({
-        message: '照片类型不支持,请重新选择'
-      })
+      // console.log(error)
+      // console.log(error.code)
+      // console.log(error.message)
+      if('E_PICKER_CANCELLED' != error.code) { //用户取消
+        defaultOptions.fail({
+          message: '照片类型不支持,请重新选择'
+        })
+      }
     }).catch((err) => {
       defaultOptions.fail({
         message: '获取信息失败,请稍候再试'
