@@ -30,6 +30,7 @@ import PhoneInput from '../../common/Input/PhoneInput'
 import CommonTextInput from '../../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 
@@ -68,12 +69,42 @@ class ShopReCertification extends Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      shopName: '点击选择店铺名称',
+      shopAddress: '点击选择店铺地址',
+    }
+
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
 
     })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps.nextProps===', nextProps)
+    if(nextProps.shopName) {
+      this.setState({
+        shopName: nextProps.shopName
+      })
+      nextProps.inputFormUpdate({
+        formKey: shopNameInput.formKey,
+        stateKey: shopNameInput.stateKey,
+        data: nextProps.shopName
+      })
+    }
+    if(nextProps.shopAddress) {
+      this.setState({
+        shopAddress: nextProps.shopAddress
+      })
+      nextProps.inputFormUpdate({
+        formKey: shopAddrInput.formKey,
+        stateKey: shopAddrInput.stateKey,
+        data: nextProps.shopAddress
+      })
+    }
+
   }
 
   submitSuccessCallback() {
@@ -183,14 +214,17 @@ class ShopReCertification extends Component {
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺名称</Text>
                 </View>
-                <View style={styles.inputBox}>
-                  <CommonTextInput
-                    {...shopNameInput}
-                    placeholder="点击输入店铺名称"
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                    initValue={this.props.userOwnedShopInfo.shopName}
-                  />
+                <View style={[styles.inputBox, styles.shopAddress]}>
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                    <TouchableOpacity
+                      style={styles.shopAddressContainer}
+                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
+                      <Text style={styles.shopAddressTxt}>{this.state.shopName}</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
                 </View>
               </View>
 
@@ -198,14 +232,17 @@ class ShopReCertification extends Component {
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺地址</Text>
                 </View>
-                <View style={styles.inputBox}>
-                  <CommonTextInput
-                    {...shopAddrInput}
-                    placeholder="点击输入店铺地址"
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                    initValue={this.props.userOwnedShopInfo.shopAddress}
-                  />
+                <View style={[styles.inputBox, styles.shopAddress]}>
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                    <TouchableOpacity
+                      style={styles.shopAddressContainer}
+                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
+                      <Text style={styles.shopAddressTxt}>{this.state.shopAddress}</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
                 </View>
               </View>
             </View>
@@ -236,7 +273,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
-  submitInputData
+  submitInputData,
+  inputFormUpdate
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopReCertification)
@@ -249,6 +287,19 @@ const styles = StyleSheet.create({
   headerContainerStyle: {
     borderBottomWidth: 0,
     backgroundColor: THEME.colors.green
+  },
+  shopAddress: {
+    height: normalizeH(50),
+    justifyContent: 'center'
+  },
+  shopAddressContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: normalizeW(17)
+  },
+  shopAddressTxt: {
+    fontSize: em(16),
+    color: '#B2B2B2'
   },
   headerLeftStyle: {
     color: '#fff',

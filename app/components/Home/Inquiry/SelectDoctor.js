@@ -239,5 +239,5 @@ const styles = StyleSheet.create({
     fontFamily: 'PingFangSC-Regular',
     fontSize: em(12),
     color: '#8F8E94',
-  }
+  },
 })

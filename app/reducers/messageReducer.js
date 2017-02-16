@@ -28,6 +28,8 @@ export default function messageReducer(state = initialState, action) {
       return onMessageReceived(state, action)
     case Types.ON_INIT_MESSAGES:
       return onInitMessages(state, action)
+    case Types.ON_UPDATE_CONVERSATION:
+      return onUpdateConversation(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -100,6 +102,18 @@ function onConversationEntered(state, action) {
 
 function onConversationLeft(state, action) {
   state = state.set('activeConversation', undefined)
+  return state
+}
+
+function onUpdateConversation(state, action) {
+  let conversation = action.payload
+  let cid = conversation.id
+
+  if (state.getIn(['conversationMap', cid]) == undefined) {
+    return state
+  }
+  state =state.setIn(['conversationMap', cid, 'status'], conversation.status)
+
   return state
 }
 

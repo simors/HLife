@@ -20,15 +20,35 @@ import {Actions} from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Header from '../../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import MultilineText from '../../common/Input/MultilineText'
+import ScoreInput from '../../common/Input/ScoreInput'
+import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../../action/doctorAction'
+import Symbol from 'es6-symbol'
+
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+let commentDoctorForm = Symbol('commentDoctorForm')
+
+const scoreInput = {
+  formKey: commentDoctorForm,
+  stateKey: Symbol('scoreInput'),
+  type: 'score'
+}
+
+const commentInput = {
+  formKey: commentDoctorForm,
+  stateKey: Symbol('commentInput'),
+  type: 'content'
+}
+
 
 class CommentDoctor extends Component {
   constructor(props) {
     super(props)
   }
-
 
   renderOriginalInquiry() {
     return (
@@ -45,6 +65,24 @@ class CommentDoctor extends Component {
     )
   }
 
+  submitSuccessCallback() {
+    Toast.show('评论提交成功')
+    Actions.pop()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  onButtonPress = () => {
+    this.props.submitDoctorFormData({
+      formKey: commentDoctorForm,
+      submitType: DOCTOR_FORM_SUBMIT_TYPE.DOCTOR_COMMENT,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -58,25 +96,37 @@ class CommentDoctor extends Component {
           rightType="text"
           rightText="提交"
           rightStyle={styles.left}
+          rightPress={this.onButtonPress}
         />
         <View style={styles.itemContainer}>
           <View>
             {this.renderOriginalInquiry()}
             <View>
-              <TouchableOpacity style={{}} onPress={() => {}}>
-                <Image source={{}} />
-                <Text>老王</Text>
-                <Text>名医</Text>
-              </TouchableOpacity>
-              <View>
-                <Text>您对医生对服务满意吗？</Text>
-                <View>
-                  <View style={{flex: 1}}>
-                    <Image source={require("../../../assets/images/writer_loaction.png")}/>
-                    <Text>很满意</Text>
+              <TouchableOpacity style={{flexDirection: 'row', backgroundColor: '#FFFFFF', marginBottom: normalizeH(10)}} onPress={() => {}}>
+                <Image style={styles.avatar}
+                       source={require('../../../assets/images/defualt_portrait_archives.png')}/>
+                <View style={styles.desc}>
+                  <View style={{flexDirection: 'row', marginTop: normalizeH(12), alignItems: 'flex-end'}}>
+                    <Text style={styles.name}>老王</Text>
+                    <Text style={styles.level}>主治医师</Text>
                   </View>
+                  <Text style={styles.spec}>呼吸系统疾病的诊断。。。。。。。。。</Text>
                 </View>
-                <Text>给医生一些评价吧～</Text>
+              </TouchableOpacity>
+              <View style={styles.body}>
+                <Text style={styles.title}>您对医生的服务满意吗？</Text>
+                <View style={{marginTop: normalizeH(10)}}>
+                  <ScoreInput
+                    {...scoreInput}
+                  />
+                </View>
+                <Text style={styles.title}>给医生一些评价吧～</Text>
+                <View style={{marginTop: normalizeH(10)}}>
+                  <MultilineText containerStyle={{height: normalizeH(100), borderWidth: normalizeBorder(), borderRadius:2, borderColor: '#8F8E94', marginRight: normalizeW(10)}}
+                                 placeholder="欢迎提出更多建议或意见"
+                                 inputStyle={{height: normalizeH(100), fontSize: 12}}
+                                 {...commentInput}/>
+                </View>
 
               </View>
             </View>
@@ -94,6 +144,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitDoctorFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentDoctor)
@@ -116,21 +167,21 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
     ...Platform.select({
       ios: {
-        paddingTop: normalizeH(65),
+        marginTop: normalizeH(65),
       },
       android: {
-        paddingTop: normalizeH(45)
+        marginTop: normalizeH(45)
       }
     }),
   },
   itemText: {
     fontFamily:'PingFangSC-Regular',
-    fontSize: em(15),
+    fontSize: 15,
     color: '#9B9B9B'
   },
   numText: {
     fontFamily:'PingFangSC-Semibold',
-    fontSize: em(17),
+    fontSize: 17,
     color: '#F6A623'
   },
   itemView: {
@@ -146,4 +197,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
+  avatar: {
+    margin: normalizeH(10),
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  desc: {
+    flex: 1,
+  },
+  name: {
+    fontFamily:'PingFangSC-Regular',
+    fontSize: 15,
+    color: '#030303',
+    marginRight:normalizeH(5),
+  },
+  level: {
+    fontFamily:'PingFangSC-Regular',
+    fontSize: 12,
+    color: '#8F8E94'
+  },
+  spec: {
+    fontFamily:'PingFangSC-Regular',
+    fontSize: 12,
+    color: '#8F8E94'
+  },
+  body: {
+    backgroundColor: '#FFFFFF',
+    paddingLeft: normalizeW(10),
+  },
+  title: {
+    marginTop: normalizeH(12),
+  },
+  face: {
+    width: 40,
+    height: 40,
+  },
+  faceStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 })

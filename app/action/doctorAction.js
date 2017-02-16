@@ -14,6 +14,7 @@ export const DOCTOR_FORM_SUBMIT_TYPE = {
   DOCTOR_CERTIFICATION_MODIFY: 'DOCTOR_CERTIFICATION_MODIFY',
   SUBMIT_DOCTOR_DESC: 'SUBMIT_DOCTOR_DESC',
   SUBMIT_DOCTOR_SPEC: 'SUBMIT_DOCTOR_SPEC',
+  DOCTOR_COMMENT: 'DOCTOR_COMMENT',
 }
 
 export function submitDoctorFormData(payload) {
@@ -40,6 +41,9 @@ export function submitDoctorFormData(payload) {
         break
       case DOCTOR_FORM_SUBMIT_TYPE.SUBMIT_DOCTOR_SPEC:
         dispatch(handleDoctorSpecSubmit(payload, formData))
+        break
+      case DOCTOR_FORM_SUBMIT_TYPE.DOCTOR_COMMENT:
+        dispatch(handleCommentDoctor(payload, formData))
         break
     }
   }
@@ -193,6 +197,21 @@ export function handleDoctorSpecSubmit(payload, formData) {
       if (payload.success) {
         payload.success(doctor)
       }
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function handleCommentDoctor(payload, formData) {
+  return (dispatch, getState) => {
+    let commentPayload = {
+
+    }
+    lcDoctor.submitDoctorComment(commentPayload).then((comment) => {
+
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

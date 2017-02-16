@@ -19,7 +19,7 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {getUserInfoById} from '../../action/authActions'
 import {fetchChatMessages} from '../../action/messageAction'
 import {userInfoById, activeUserId, isUserLogined} from '../../selector/authSelector'
-import {hasNewMessageById, getNewestMessageById} from '../../selector/messageSelector'
+import {hasNewMessageById, getNewestMessageById, getConversationById} from '../../selector/messageSelector'
 import {WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
 
 const ICON_SIZE = 50
@@ -48,7 +48,9 @@ class MessageBoxCell extends Component {
   enterChatroom() {
     if (!this.props.isLogin) {
       Actions.LOGIN()
-    } else {
+    } else if (!this.props.status) {
+      Actions.COMMENT_DOCTOR()
+    } else  {
       let payload = {
         name: this.props.title,
         members: this.props.members,
@@ -157,11 +159,13 @@ const mapStateToProps = (state, ownProps) => {
 
   let newMessage = hasNewMessageById(state, ownProps.conversation)
   let lastMessage = getNewestMessageById(state, ownProps.conversation)
+  let conversation = getConversationById(state, ownProps.conversation)
   newProps.newMessage = newMessage
   newProps.lastMessage = lastMessage
   newProps.currentUser = activeUserId(state)
   newProps.isLogin = isUserLogined(state)
   newProps.users = users
+  newProps.status =conversation.status
   return newProps
 }
 

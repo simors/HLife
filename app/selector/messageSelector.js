@@ -144,6 +144,12 @@ export function getNewestMessageById(state, id) {
   }
   let conversation = conversationRecord.toJS()
   let msgTime = new Date(conversation.lastMessageAt)
+  let createTime = new Date(conversation.createdAt)
+  let today = new Date()
+  if ((today.getTime() - createTime.getTime()) > 1 * 3600 * 1000) {
+    lastMessage = '请评价医生'
+    return {lastMessageAt: "", lastMessage}
+  }
   let lastMessageAt = getConversationTime(msgTime.getTime())
   let lastMessageId = conversation.messages[0]
   let messageRecord = getMessageById(state, lastMessageId)

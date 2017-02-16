@@ -26,6 +26,7 @@ export const QuestionRecord = Record({
   gender: undefined,          //咨询档案性别
   birthday: undefined,        //咨询档案出生年月
   status: undefined,          //问题状态: 1--打开 0--关闭
+  comment: undefined,         //评论
 }, 'QuestionRecord')
 
 export const DoctorListRecode = Record({
@@ -41,7 +42,14 @@ export const DoctorListRecode = Record({
 })
 
 export const DoctorCommentRecode = Record({
-  
+  id: undefined, //医生评论id
+  doctorId: undefined, //医生id
+  questionId: undefined, //问题id
+  content: '', //评论内容
+  score: 4, // 用户打分
+  userId: undefined, //用户id
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
 }, 'DoctorCommentRecode')
 
 export class DoctorInfo extends DoctorInfoRecord {
@@ -99,6 +107,24 @@ export class Question extends QuestionRecord {
       record.set('status', attrs.status)
     })
     return question
+  }
+}
+
+export class DoctorComment extends DoctorCommentRecode {
+  static fromLeancloudObject(lcObj) {
+    let attrs = lcObj.attributes
+    let comment = new DoctorCommentRecode()
+    comment = comment.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('doctorId', attrs.doctorId)
+      record.set('questionId', attrs.questionId)
+      record.set('content', attrs.content)
+      record.set('score', attrs.score)
+      record.set('userId', attrs.userId)
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+    return comment
   }
 }
 

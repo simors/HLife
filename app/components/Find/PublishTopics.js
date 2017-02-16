@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     color: '#4a4a4a',
-    fontFamily: '.PingFangSC-Semibold'
+    fontFamily: 'PingFangSC-Semibold'
   },
   //modal 所有子组件的样式
   modalStyle: {

@@ -256,7 +256,7 @@ class DoctorCertification extends Component {
                 <Text style={styles.triptext}>
                   请上传医生有效证明，包含工作证、执业证和职称证
                 </Text>
-              <View style={{flexDirection: 'row', marginLeft: normalizeW(20), marginBottom: normalizeH(12), marginRight: normalizeW(20), marginTop: normalizeH(8)}}>
+              <View style={{flexDirection: 'row', marginLeft: normalizeW(10), marginBottom: normalizeH(12), marginRight: normalizeW(20), marginTop: normalizeH(8)}}>
                 <ImageGroupInput {...imageGroupInput} number={3} imageLineCnt={4}/>
               </View>
             </View>
@@ -348,10 +348,10 @@ const styles = StyleSheet.create({
 
   },
   maintext: {
-    width: normalizeW(66),
+    width: normalizeW(80),
     marginLeft: normalizeW(20),
     fontFamily: 'PingFangSC-Regular',
-    fontSize: em(16),
+    fontSize: 16,
     color: '#656565',
   },
   triptext: {
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
   },
   inputStyle:{
     height: normalizeH(44),
-    fontSize: em(17),
+    fontSize: 16,
     backgroundColor: '#fff',
     borderWidth: 0,
     paddingLeft: 0,
