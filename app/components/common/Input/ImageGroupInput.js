@@ -320,6 +320,9 @@ class ImageGroupInput extends Component {
           })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }else if(1 == index) { //从相册选择
