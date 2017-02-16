@@ -100,7 +100,8 @@ class CompleteShopInfo extends Component {
         shopTagsSelectShow: false,
         optionListPos: 179,
         shopTagsSelectTop: 219,
-        selectedShopTags: []
+        selectedShopTags: [],
+        shopCategoryContainedTag: []
       }
     }else{
       this.state = {
@@ -108,7 +109,8 @@ class CompleteShopInfo extends Component {
         shopTagsSelectShow: false,
         optionListPos: 159,
         shopTagsSelectTop: 199,
-        selectedShopTags: []
+        selectedShopTags: [],
+        shopCategoryContainedTag: []
       }
     }
 
@@ -135,11 +137,35 @@ class CompleteShopInfo extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.userOwnedShopInfo.containedTag && nextProps.userOwnedShopInfo.containedTag.length) {
+  componentDidMount() {
+    if(this.props.userOwnedShopInfo.containedTag && this.props.userOwnedShopInfo.containedTag.length) {
       this.setState({
-        selectedShopTags: nextProps.userOwnedShopInfo.containedTag
+        selectedShopTags: this.props.userOwnedShopInfo.containedTag
       })
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+
+  }
+
+  updateShopCategoryContainedTags(shopCategoryId) {
+    let shopCategoryContainedTag = []
+    // console.log('updateShopCategoryContainedTags.allShopCategories=')
+    // console.log(this.props.allShopCategories)
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      for(let i = 0; i < this.props.allShopCategories.length; i++) {
+        let shopCategory = this.props.allShopCategories[i]
+        if(shopCategory.id == shopCategoryId) {
+          shopCategoryContainedTag = shopCategory.containedTag
+          // console.log('updateShopCategoryContainedTags.=')
+          this.setState({
+            shopCategoryContainedTag: shopCategoryContainedTag,
+            selectedShopTags: []
+          })
+          break
+        }
+      }
     }
   }
 
@@ -193,6 +219,8 @@ class CompleteShopInfo extends Component {
   }
 
   _onSelectShopCategory(shopCategoryId) {
+    // console.log('_onSelectShopCategory.shopCategoryId=', shopCategoryId)
+    this.updateShopCategoryContainedTags(shopCategoryId)
     this.setState({
       selectShow: !this.state.selectShow
     })
@@ -437,7 +465,7 @@ class CompleteShopInfo extends Component {
               containerStyle={{top: this.state.shopTagsSelectTop}}
               scrollViewStyle={{height:200}}
               onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
-              tags={this.props.allShopTags}
+              tags={this.state.shopCategoryContainedTag}
               selectedTags={this.state.selectedShopTags}
               onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
             />
