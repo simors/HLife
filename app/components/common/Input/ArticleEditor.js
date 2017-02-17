@@ -231,42 +231,42 @@ class ArticleEditor extends Component {
   pickImageCancelled = () => {
   }
 
-  pickImageSucceed = (source) => {
-    this.uploadImg(source)
-  }
+  // pickImageSucceed = (source) => {
+  //   this.uploadImg(source)
+  // }
 
-  uploadImg = (source) => {
-    let fileUri = ''
-    if (Platform.OS === 'ios') {
-      fileUri = fileUri.concat('file://')
-    }
-    fileUri = fileUri.concat(source.uri)
-
-    let fileName = source.uri.split('/').pop()
-    let uploadPayload = {
-      fileUri: fileUri,
-      fileName: fileName
-    }
-
-    Image.getSize(uploadPayload.fileUri, (width, height) => {
-      let imgWidth = width
-      let imgHeight = height
-      let maxWidth = PAGE_WIDTH - 15
-      if (width > maxWidth) {
-        imgWidth = maxWidth
-        imgHeight = Math.floor((imgWidth / width) * height)
-      }
-      this.setState({imgWidth, imgHeight})
-    })
-    // console.log('uploadFile.uploadPayload===', uploadPayload)
-    uploadFile(uploadPayload).then((saved) => {
-      // console.log('uploadFile.saved===', saved.savedPos)
-      let leanImgUrl = saved.savedPos
-      this.insertImageComponent(leanImgUrl)
-    }).catch((error) => {
-      console.log('upload failed:', error)
-    })
-  }
+  // uploadImg = (source) => {
+  //   let fileUri = ''
+  //   if (Platform.OS === 'ios') {
+  //     fileUri = fileUri.concat('file://')
+  //   }
+  //   fileUri = fileUri.concat(source.uri)
+  //
+  //   let fileName = source.uri.split('/').pop()
+  //   let uploadPayload = {
+  //     fileUri: fileUri,
+  //     fileName: fileName
+  //   }
+  //
+  //   Image.getSize(uploadPayload.fileUri, (width, height) => {
+  //     let imgWidth = width
+  //     let imgHeight = height
+  //     let maxWidth = PAGE_WIDTH - 15
+  //     if (width > maxWidth) {
+  //       imgWidth = maxWidth
+  //       imgHeight = Math.floor((imgWidth / width) * height)
+  //     }
+  //     this.setState({imgWidth, imgHeight})
+  //   })
+  //   // console.log('uploadFile.uploadPayload===', uploadPayload)
+  //   uploadFile(uploadPayload).then((saved) => {
+  //     // console.log('uploadFile.saved===', saved.savedPos)
+  //     let leanImgUrl = saved.savedPos
+  //     this.insertImageComponent(leanImgUrl)
+  //   }).catch((error) => {
+  //     console.log('upload failed:', error)
+  //   })
+  // }
 
   deleteImageComponent(index) {
     let data = this.props.data
@@ -286,24 +286,31 @@ class ArticleEditor extends Component {
   }
 
   insertImageComponent(src) {
-    let data = this.props.data
-    let imgData = {
-      type: COMP_IMG,
-      url: src,
-      width: this.state.imgWidth,
-      height: this.state.imgHeight,
-    }
-    let textData = {
-      type: COMP_TEXT,
-      text: ""
-    }
-    let content = data[this.state.cursor].text
-    let begin = content.substring(0, this.state.start)
-    let end = content.substring(this.state.start)
-    data[this.state.cursor].text = begin
-    textData.text = end
-    data.splice(this.state.cursor + 1, 0, imgData, textData)
-    this.inputChange(data)
+    ImageUtil.getImageSize({
+      uri: src,
+      success: (imgWidth, imgHeight) => {
+        this.setState({imgWidth, imgHeight}, ()=> {
+          let data = this.props.data
+          let imgData = {
+            type: COMP_IMG,
+            url: src,
+            width: this.state.imgWidth,
+            height: this.state.imgHeight,
+          }
+          let textData = {
+            type: COMP_TEXT,
+            text: ""
+          }
+          let content = data[this.state.cursor].text
+          let begin = content.substring(0, this.state.start)
+          let end = content.substring(this.state.start)
+          data[this.state.cursor].text = begin
+          textData.text = end
+          data.splice(this.state.cursor + 1, 0, imgData, textData)
+          this.inputChange(data)
+        })
+      }
+    })
   }
 
   updateTextInput(index, content) {
@@ -410,9 +417,10 @@ class ArticleEditor extends Component {
       ImageUtil.openPicker({
         openType: 'camera',
         success: (response) => {
-          this.uploadImg({
-            uri: response.path
-          })
+          this.insertImageComponent(response.path)
+          // this.uploadImg({
+          //   uri: response.path
+          // })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
         },
@@ -424,9 +432,10 @@ class ArticleEditor extends Component {
       ImageUtil.openPicker({
         openType: 'gallery',
         success: (response) => {
-          this.uploadImg({
-            uri: response.path
-          })
+          this.insertImageComponent(response.path)
+          // this.uploadImg({
+          //   uri: response.path
+          // })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
         },

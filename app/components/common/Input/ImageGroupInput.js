@@ -144,18 +144,18 @@ class ImageGroupInput extends Component {
     return {isVal: true, errMsg: '验证通过'}
   }
 
-  pickImageStart = () => {
-  }
-
-  pickImageFailed = () => {
-  }
-
-  pickImageCancel = () => {
-  }
-
-  pickImageSucceed = (source) => {
-    this.uploadImg(source)
-  }
+  // pickImageStart = () => {
+  // }
+  //
+  // pickImageFailed = () => {
+  // }
+  //
+  // pickImageCancel = () => {
+  // }
+  //
+  // pickImageSucceed = (source) => {
+  //   this.uploadImg(source)
+  // }
 
   imageSelectedChange(url) {
     this.imgList.push(url)

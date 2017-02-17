@@ -4,10 +4,12 @@
 import React, {Component} from 'react'
 import {
   Platform,
-  Dimensions
+  Dimensions,
+  Image
 } from 'react-native'
 
 import ImagePicker from 'react-native-image-crop-picker';
+import {uploadFile} from '../api/leancloud/fileUploader'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -97,4 +99,66 @@ export function openPicker(options) {
       })
     })
   }
+}
+
+export function getImageSize(options) {
+  Image.getSize(options.uri, (width, height) => {
+    let imgWidth = width
+    let imgHeight = height
+    let maxWidth = PAGE_WIDTH - 15
+    if (width > maxWidth) {
+      imgWidth = maxWidth
+      imgHeight = Math.floor((imgWidth / width) * height)
+    }
+    if(typeof options.success == 'function') {
+      options.success(imgWidth, imgHeight)
+    }
+  })
+}
+
+export function uploadImgs(options) {
+  let leanImgUrls = []
+  if(options && options.uris && options.uris.length) {
+    uploadImg({
+      uri: options.uris[0],
+      index: 0,
+      success: (response) => {
+        leanImgUrls.push(response.leanImgUrl)
+        if(response.index < options.uris.length-1) {
+          response.index += 1
+          response.uri = options.uris[response.index]
+          uploadImg(response)
+        }else {
+          if(options.success) {
+            options.success(leanImgUrls)
+          }
+        }
+      }
+    })
+  }
+}
+
+export function uploadImg(source) {
+  let fileUri = ''
+  if (Platform.OS === 'ios') {
+    fileUri = fileUri.concat('file://')
+  }
+  fileUri = fileUri.concat(source.uri)
+
+  let fileName = source.uri.split('/').pop()
+  let uploadPayload = {
+    fileUri: fileUri,
+    fileName: fileName
+  }
+  // console.log('uploadFile.uploadPayload===', uploadPayload)
+  uploadFile(uploadPayload).then((saved) => {
+    // console.log('uploadFile.saved===', saved.savedPos)
+    let leanImgUrl = saved.savedPos
+    if(typeof source.success == 'function') {
+      source.leanImgUrl = leanImgUrl
+      source.success(source)
+    }
+  }).catch((error) => {
+    console.log('upload failed:', error)
+  })
 }

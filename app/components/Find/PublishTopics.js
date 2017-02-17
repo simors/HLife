@@ -27,6 +27,8 @@ import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
+import * as ImageUtil from '../../util/ImageUtil'
+import TimerMixin from 'react-timer-mixin'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -62,13 +64,23 @@ class PublishTopics extends Component {
       isDisabled: false,
       selectedTopic: undefined,
       rteFocused: false,    // 富文本获取到焦点
+      showLoading: false,
+      loadingText: '发布中...'
     };
     this.insertImages = []
+    this.leanImgUrls = []
+
   }
 
-  submitSuccessCallback() {
-    Toast.show('发布成功')
-    Actions.pop()
+  submitSuccessCallback(context) {
+    context.setState({
+      showLoading: false
+    })
+    Toast.show('恭喜您,发布成功!', {
+      onHidden: ()=> {
+        Actions.pop()
+      }
+    })
   }
 
   submitErrorCallback(error) {
@@ -77,15 +89,29 @@ class PublishTopics extends Component {
 
   onButtonPress = () => {
     if (this.props.isLogin) {
-      this.props.publishTopicFormData({
-        formKey: topicForm,
-        images: this.insertImages,
-        categoryId: this.state.selectedTopic.objectId,
-        userId: this.props.userInfo.id,
-        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-        success: this.submitSuccessCallback,
-        error: this.submitErrorCallback
-      })
+      if(this.insertImages && this.insertImages.length) {
+        if(this.state.showLoading) {
+          return
+        }
+        this.setState({
+          showLoading: true
+        })
+        ImageUtil.uploadImgs({
+          uris: this.insertImages,
+          success: (leanImgUrls) => {
+            this.leanImgUrls = leanImgUrls
+            this.props.publishTopicFormData({
+              formKey: topicForm,
+              images: this.leanImgUrls,
+              categoryId: this.state.selectedTopic.objectId,
+              userId: this.props.userInfo.id,
+              submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+              success: ()=>{this.submitSuccessCallback(this)},
+              error: this.submitErrorCallback
+            })
+          }
+        })
+      }
     }
     else {
       Actions.LOGIN()
@@ -105,6 +131,21 @@ class PublishTopics extends Component {
   closeModal(value) {
     this.setState({selectedTopic: value})
     this.refs.modal3.close();
+  }
+
+  renderLoading() {
+    if(this.state.showLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={'#C8C8C8'}
+          />
+          <Text style={styles.loadingText}>{this.state.loadingText}</Text>
+        </View>
+      )
+    }
   }
 
   renderTopicsSelected() {
@@ -140,7 +181,7 @@ class PublishTopics extends Component {
 
   getRichTextImages(images) {
     this.insertImages = images
-    console.log('images list', this.insertImages)
+    // console.log('images list', this.insertImages)
   }
 
   renderRichText() {
@@ -194,6 +235,8 @@ class PublishTopics extends Component {
             </KeyboardAwareScrollView>
           </ModalBox>
 
+          {this.renderLoading()}
+
         </View>
       </View>
     );
@@ -216,6 +259,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)
+
+Object.assign(PublishTopics.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {
@@ -337,5 +382,18 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(7),
     alignSelf: 'center',
   },
+  loadingContainer: {
+    position: 'absolute',
+    top: PAGE_HEIGHT / 2 - normalizeH(80),
+    left: PAGE_WIDTH / 2 - normalizeW(50),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 3
+  },
+  loadingText: {
+    color: 'white'
+  }
 
 })
