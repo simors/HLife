@@ -68,6 +68,8 @@ export const TopicCommentsConfig = Record({
   avatar: undefined,    //评论用户头像
   userId:undefined, //评论用户id
   likeCount:undefined,
+  geoPoint: undefined,
+  position: undefined,
   parentCommentContent: undefined,  //父评论正文
   parentCommentUser: undefined,     //父评论的作者昵称
 }, 'TopicCommentsConfig')
@@ -113,7 +115,8 @@ export class TopicCommentsItem extends TopicCommentsConfig {
       record.set('avatar', avatar)
       record.set('objectId', lcObj.id)
       record.set('userId', user.id)
-
+      record.set('geoPoint', attrs.geoPoint)
+      record.set('position', attrs.position)
       //有父评论的情况下设置
       if (attrs.parentComment) {
         record.set('parentCommentContent', attrs.parentComment.attributes.content)
