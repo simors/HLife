@@ -17,6 +17,8 @@ export const TopicsConfig = Record({
   avatar: undefined,  //所属用户头像
   commentNum: undefined, //评论数
   likeCount: undefined, //点赞数
+  geoPoint: undefined,
+  position: undefined,
   likedUsers: undefined  //点赞用户列表
 }, 'TopicsConfig')
 
@@ -40,6 +42,8 @@ export class TopicsItem extends TopicsConfig {
       }
     }
     return topicsConfig.withMutations((record)=> {
+      record.set('geoPoint', attrs.geoPoint)
+      record.set('position', attrs.position)
       record.set('content', attrs.content)
       record.set('abstract', attrs.abstract)
       record.set('title', attrs.title)

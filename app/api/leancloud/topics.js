@@ -3,6 +3,7 @@ import {List} from 'immutable'
 import ERROR from '../../constants/errorCode'
 import {TopicsItem, TopicCommentsItem, TopicLikeUser} from '../../models/TopicModel'
 import {Up} from '../../models/shopModel'
+import {Geolocation} from '../../components/common/BaiduMap'
 
 export function publishTopics(payload) {
   let Topics = AV.Object.extend('Topics')
@@ -11,20 +12,55 @@ export function publishTopics(payload) {
   var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId)
   var user = AV.Object.createWithoutData('_User', payload.userId)
 
+  return AV.GeoPoint.current().then(function (geoPoint) {
+    if (geoPoint) {
+      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+        topic.set('geoPoint', geoPoint)
+        topic.set('position', position)
+        topic.set('category', topicCategory)
+        topic.set('user', user)
+        topic.set('imgGroup', payload.imgGroup)
+        topic.set('content', payload.content)
+        topic.set('title', payload.title)
+        topic.set('abstract', payload.abstract)
+        topic.set('abstract', payload.abstract)
+        topic.set('commentNum', 0)
+        topic.set('likeCount', 0)
 
-  topic.set('category', topicCategory)
-  topic.set('user', user)
-  topic.set('imgGroup', payload.imgGroup)
-  topic.set('content', payload.content)
-  topic.set('title', payload.title)
-  topic.set('abstract', payload.abstract)
-  topic.set('commentNum', 0)
-  topic.set('likeCount', 0)
+        return topic.save().then(function (result) {
+          let newTopic = result
+          newTopic.attributes.user = AV.User.current()
+          return TopicsItem.fromLeancloudObject(newTopic)
+        }, function (err) {
+          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+          throw err
+        })
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+    }
+    else {
+      topic.set('geoPoint', geoPoint)
+      topic.set('category', topicCategory)
+      topic.set('user', user)
+      topic.set('imgGroup', payload.imgGroup)
+      topic.set('content', payload.content)
+      topic.set('title', payload.title)
+      topic.set('abstract', payload.abstract)
+      topic.set('abstract', payload.abstract)
+      topic.set('commentNum', 0)
+      topic.set('likeCount', 0)
 
-  return topic.save().then(function (result) {
-    let newTopic = result
-    newTopic.attributes.user = AV.User.current()
-    return TopicsItem.fromLeancloudObject(newTopic)
+      return topic.save().then(function (result) {
+        let newTopic = result
+        newTopic.attributes.user = AV.User.current()
+        return TopicsItem.fromLeancloudObject(newTopic)
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -200,7 +236,7 @@ export function publishTopicComments(payload) {
       let newTopicComment = result
       newTopicComment.attributes.user = AV.User.current()
       return topic.save().then(function (result) {
-        if(payload.commentId) {
+        if (payload.commentId) {
           var query = new AV.Query('TopicComments');
           query.include(['user'])
           return query.get(payload.commentId).then(function (result) {
@@ -211,7 +247,7 @@ export function publishTopicComments(payload) {
             throw err
           })
         }
-        else{
+        else {
           return TopicCommentsItem.fromLeancloudObject(newTopicComment)
         }
       }, function (err) {
@@ -238,14 +274,14 @@ export function getTopics(payload) {
     query.equalTo('user', currentUser)
   }
 
-  if(payload.userId && payload.type == 'userTopics') {
+  if (payload.userId && payload.type == 'userTopics') {
     var user = AV.Object.createWithoutData('_User', payload.userId)
     query.equalTo('user', user)
   }
 
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
-  if(!isRefresh && lastCreatedAt) { //分页查询
+  if (!isRefresh && lastCreatedAt) { //分页查询
     query.lessThan('createdAt', new Date(lastCreatedAt))
   }
 
@@ -258,6 +294,7 @@ export function getTopics(payload) {
     results.forEach((result) => {
       topics.push(TopicsItem.fromLeancloudObject(result))
     })
+    console.log("--->>>>", topics)
     return new List(topics)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
