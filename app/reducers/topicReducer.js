@@ -98,6 +98,11 @@ function handleUpdateTopics(state, action) {
         _newList = _list.concat(payload.topics)
         state = state.set('allTopics', _newList)
         break
+      case "localTopics":
+        _list = state.get('localTopics') || new List()
+        _newList = _list.concat(payload.topics)
+        state = state.set('localTopics', _newList)
+        break
     }
   }
   else {
@@ -117,6 +122,9 @@ function handleUpdateTopics(state, action) {
         break
       case "allTopics":
         state = state.set('allTopics', payload.topics)
+        break
+      case "localTopics":
+        state = state.set('localTopics', payload.topics)
         break
     }
   }

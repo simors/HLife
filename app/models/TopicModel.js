@@ -166,6 +166,7 @@ export const Topic = Record({
   myTopics:List(),
   userTopics: Map(),
   allTopics:List(),
+  localTopics:List(),
   topicComments:Map(),
   TopicLikesNum: Map(),
   TopicLikeUsers: Map(),

@@ -6,6 +6,7 @@ import {Up} from '../../models/shopModel'
 import {Geolocation} from '../../components/common/BaiduMap'
 
 export function publishTopics(payload) {
+
   let Topics = AV.Object.extend('Topics')
   let topic = new Topics()
 
@@ -15,8 +16,12 @@ export function publishTopics(payload) {
   return AV.GeoPoint.current().then(function (geoPoint) {
     if (geoPoint) {
       return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+
         topic.set('geoPoint', geoPoint)
         topic.set('position', position)
+        topic.set('city', position.city)
+        topic.set('district', position.district)
+        topic.set('province', position.province)
         topic.set('category', topicCategory)
         topic.set('user', user)
         topic.set('imgGroup', payload.imgGroup)
@@ -316,46 +321,92 @@ export function publishTopicComments(payload) {
   })
 }
 
-export function getTopics(payload) {
-  let categoryId = payload.categoryId
+export function getLocalTopics(payload) {
   let query = new AV.Query('Topics')
-  if (payload.type == "topics" && categoryId) {
-    var category = AV.Object.createWithoutData('TopicCategory', categoryId);
-    query.equalTo('category', category)
-  }
+  return AV.GeoPoint.current().then(function (geoPoint) {
+    if (geoPoint) {
+      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
 
-  if (payload.type == "myTopics") {
-    let currentUser = AV.User.current()
-    query.equalTo('user', currentUser)
-  }
+        let isRefresh = payload.isRefresh
+        let lastCreatedAt = payload.lastCreatedAt
+        if (!isRefresh && lastCreatedAt) { //分页查询
+          query.lessThan('createdAt', new Date(lastCreatedAt))
+        }
 
-  if (payload.userId && payload.type == 'userTopics') {
-    var user = AV.Object.createWithoutData('_User', payload.userId)
-    query.equalTo('user', user)
-  }
+        query.equalTo('city', position.city)
+        query.equalTo('district', position.district)
+        query.equalTo('province', position.province)
 
-  let isRefresh = payload.isRefresh
-  let lastCreatedAt = payload.lastCreatedAt
-  if (!isRefresh && lastCreatedAt) { //分页查询
-    query.lessThan('createdAt', new Date(lastCreatedAt))
-  }
+        query.limit(5) // 最多返回 5 条结果
+        query.include(['user'])
+        query.descending('createdAt')
 
-  query.limit(5) // 最多返回 5 条结果
-  query.include(['user'])
-  query.descending('createdAt')
-
-  return query.find().then(function (results) {
-    let topics = []
-    results.forEach((result) => {
-      topics.push(TopicsItem.fromLeancloudObject(result))
-    })
-    console.log("--->>>>", topics)
-    return new List(topics)
+        return query.find().then(function (results) {
+          let topics = []
+          results.forEach((result) => {
+            topics.push(TopicsItem.fromLeancloudObject(result))
+          })
+          return new List(topics)
+        }, function (err) {
+          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+          throw err
+        })
+      }, function (err) {
+        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+        throw err
+      })
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
+
+export function getTopics(payload) {
+  if (payload.type == "localTopics") {
+    return getLocalTopics(payload)
+  }
+  else {
+    let categoryId = payload.categoryId
+    let query = new AV.Query('Topics')
+    if (payload.type == "topics" && categoryId) {
+      var category = AV.Object.createWithoutData('TopicCategory', categoryId);
+      query.equalTo('category', category)
+    }
+
+    if (payload.type == "myTopics") {
+      let currentUser = AV.User.current()
+      query.equalTo('user', currentUser)
+    }
+
+    if (payload.userId && payload.type == 'userTopics') {
+      var user = AV.Object.createWithoutData('_User', payload.userId)
+      query.equalTo('user', user)
+    }
+
+    let isRefresh = payload.isRefresh
+    let lastCreatedAt = payload.lastCreatedAt
+    if (!isRefresh && lastCreatedAt) { //分页查询
+      query.lessThan('createdAt', new Date(lastCreatedAt))
+    }
+
+    query.limit(5) // 最多返回 5 条结果
+    query.include(['user'])
+    query.descending('createdAt')
+
+    return query.find().then(function (results) {
+      let topics = []
+      results.forEach((result) => {
+        topics.push(TopicsItem.fromLeancloudObject(result))
+      })
+      return new List(topics)
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+  }
+}
+
 
 export function getTopicById(payload) {
   let query = new AV.Query('Topics')
