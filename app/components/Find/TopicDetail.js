@@ -292,7 +292,7 @@ export class TopicDetail extends Component {
             </TouchableOpacity>
           </View>
           <KeyboardAwareToolBar
-            initKeyboardHeight={-50}
+            initKeyboardHeight={-normalizeH(50)}
           >
             <ToolBarContent
               replyInputRefCallBack={(input)=> {

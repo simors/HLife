@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   likeStyle: {
     position: 'absolute',
-    left: 189,
+    left: normalizeW(189),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',
@@ -228,12 +228,14 @@ const styles = StyleSheet.create({
   likeImageStyle: {
     height: normalizeW(16),
     width: normalizeH(18),
-    marginRight: 3
+    marginRight: 3,
+    resizeMode:'stretch'
   },
   commentImageStyle: {
     height: normalizeW(19),
     width: normalizeH(18),
-    marginRight: 3
+    marginRight: 3,
+    resizeMode:'stretch'
   },
   commentTextStyle: {
     fontSize: em(12),
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
   },
   commentStyle: {
     position: 'absolute',
-    left: 259,
+    left: normalizeW(259),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',

@@ -162,16 +162,18 @@ class PublishTopics extends Component {
     if (this.props.topics) {
       return (
         this.props.topics.map((value, key)=> {
-          return (
-            <View key={key} style={styles.modalTopicButtonStyle}>
-              <TouchableOpacity style={styles.modalTopicStyle}
-                                onPress={()=>this.closeModal(value)}>
-                <Text style={styles.ModalTopicTextStyle}>
-                  {value.title}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )
+          if(value && value.objectId ) {
+            return (
+              <View key={key} style={styles.modalTopicButtonStyle}>
+                <TouchableOpacity style={styles.modalTopicStyle}
+                                  onPress={()=>this.closeModal(value)}>
+                  <Text style={styles.ModalTopicTextStyle}>
+                    {value.title}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )
+          }
         })
       )
     }
@@ -227,6 +229,7 @@ class PublishTopics extends Component {
             </TouchableOpacity>
             <View>
               <CommonTextInput maxLength={36}
+                               autoFocus={true}
                                containerStyle={styles.titleContainerStyle}
                                inputStyle={styles.titleInputStyle}
                                {...topicName}
@@ -344,14 +347,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     height: normalizeH(250),
     alignItems: 'flex-start',
-    ...Platform.select({
-      ios: {
-        top: normalizeH(65),
-      },
-      android: {
-        top: normalizeH(45)
-      }
-    }),
+    // ...Platform.select({
+    //   ios: {
+    //     paddingTop: normalizeH(65),
+    //   },
+    //   android: {
+    //     paddingTop: normalizeH(45)
+    //   }
+    // }),
   },
   modalTextStyle: {
     marginTop: normalizeH(17),
