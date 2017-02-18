@@ -10,6 +10,7 @@ import {
 
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadFile} from '../api/leancloud/fileUploader'
+import Loading from '../components/common/Loading'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -116,10 +117,16 @@ export function getImageSize(options) {
   })
 }
 
+let isUploading = false
 export function uploadImgs(options) {
   let leanImgUrls = []
   if(options && options.uris && options.uris.length) {
+    if(isUploading) {
+      return
+    }
+    let loading = Loading.show()
     uploadImg({
+      hideLoading: true,
       uri: options.uris[0],
       index: 0,
       success: (response) => {
@@ -129,6 +136,8 @@ export function uploadImgs(options) {
           response.uri = options.uris[response.index]
           uploadImg(response)
         }else {
+          isUploading = false
+          Loading.hide(loading)
           if(options.success) {
             options.success(leanImgUrls)
           }
@@ -151,7 +160,18 @@ export function uploadImg(source) {
     fileName: fileName
   }
   // console.log('uploadFile.uploadPayload===', uploadPayload)
+  let loading = null
+  if(!source.hideLoading) {
+    if(isUploading) {
+      return
+    }
+    loading = Loading.show()
+  }
   uploadFile(uploadPayload).then((saved) => {
+    if(!source.hideLoading) {
+      isUploading = false
+      Loading.hide(loading)
+    }
     // console.log('uploadFile.saved===', saved.savedPos)
     let leanImgUrl = saved.savedPos
     if(typeof source.success == 'function') {
@@ -160,5 +180,9 @@ export function uploadImg(source) {
     }
   }).catch((error) => {
     console.log('upload failed:', error)
+    if(!source.hideLoading) {
+      isUploading = false
+      Loading.hide(loading)
+    }
   })
 }

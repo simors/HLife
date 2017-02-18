@@ -30,6 +30,7 @@ import ArticleEditor from '../common/Input/ArticleEditor'
 import * as ImageUtil from '../../util/ImageUtil'
 import TimerMixin from 'react-timer-mixin'
 
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -64,20 +65,16 @@ class PublishTopics extends Component {
       isDisabled: false,
       selectedTopic: undefined,
       rteFocused: false,    // 富文本获取到焦点
-      showLoading: false,
-      loadingText: '发布中...'
     };
     this.insertImages = []
     this.leanImgUrls = []
-
+    this.isPublishing = false
   }
 
   submitSuccessCallback(context) {
-    context.setState({
-      showLoading: false
-    })
     Toast.show('恭喜您,发布成功!', {
       onHidden: ()=> {
+        this.isPublishing = false
         Actions.pop()
       }
     })
@@ -90,24 +87,27 @@ class PublishTopics extends Component {
   onButtonPress = () => {
     if (this.props.isLogin) {
       if(this.insertImages && this.insertImages.length) {
-        if(this.state.showLoading) {
+        if(this.isPublishing) {
           return
         }
-        this.setState({
-          showLoading: true
-        })
-        ImageUtil.uploadImgs({
-          uris: this.insertImages,
-          success: (leanImgUrls) => {
-            this.leanImgUrls = leanImgUrls
-            this.props.publishTopicFormData({
-              formKey: topicForm,
-              images: this.leanImgUrls,
-              categoryId: this.state.selectedTopic.objectId,
-              userId: this.props.userInfo.id,
-              submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-              success: ()=>{this.submitSuccessCallback(this)},
-              error: this.submitErrorCallback
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            ImageUtil.uploadImgs({
+              uris: this.insertImages,
+              success: (leanImgUrls) => {
+                this.leanImgUrls = leanImgUrls
+                this.props.publishTopicFormData({
+                  formKey: topicForm,
+                  images: this.leanImgUrls,
+                  categoryId: this.state.selectedTopic.objectId,
+                  userId: this.props.userInfo.id,
+                  submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+                  success: ()=>{this.submitSuccessCallback(this)},
+                  error: this.submitErrorCallback
+                })
+              }
             })
           }
         })
@@ -131,21 +131,6 @@ class PublishTopics extends Component {
   closeModal(value) {
     this.setState({selectedTopic: value})
     this.refs.modal3.close();
-  }
-
-  renderLoading() {
-    if(this.state.showLoading) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator
-            animating={true}
-            size="small"
-            color={'#C8C8C8'}
-          />
-          <Text style={styles.loadingText}>{this.state.loadingText}</Text>
-        </View>
-      )
-    }
   }
 
   renderTopicsSelected() {
@@ -234,8 +219,6 @@ class PublishTopics extends Component {
               </View>
             </KeyboardAwareScrollView>
           </ModalBox>
-
-          {this.renderLoading()}
 
         </View>
       </View>
@@ -382,18 +365,5 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(7),
     alignSelf: 'center',
   },
-  loadingContainer: {
-    position: 'absolute',
-    top: PAGE_HEIGHT / 2 - normalizeH(80),
-    left: PAGE_WIDTH / 2 - normalizeW(50),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 3
-  },
-  loadingText: {
-    color: 'white'
-  }
 
 })
