@@ -65,6 +65,7 @@ class PublishTopics extends Component {
       isDisabled: false,
       selectedTopic: undefined,
       rteFocused: false,    // 富文本获取到焦点
+      shouldUploadImgComponent: false,
     };
     this.insertImages = []
     this.leanImgUrls = []
@@ -81,6 +82,11 @@ class PublishTopics extends Component {
     Toast.show(error.message)
   }
 
+  uploadImgComponentCallback(leanImgUrls) {
+    this.leanImgUrls = leanImgUrls
+    this.publishTopic()
+  }
+
   onButtonPress = () => {
     if (this.props.isLogin) {
       if(this.state.selectedTopic) {
@@ -92,22 +98,8 @@ class PublishTopics extends Component {
           Toast.show('开始发布...', {
             duration: 1000,
             onHidden: ()=> {
-              ImageUtil.uploadImgs({
-                uris: this.insertImages,
-                success: (leanImgUrls) => {
-                  this.leanImgUrls = leanImgUrls
-                  this.props.publishTopicFormData({
-                    formKey: topicForm,
-                    images: this.leanImgUrls,
-                    categoryId: this.state.selectedTopic.objectId,
-                    userId: this.props.userInfo.id,
-                    submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-                    success: ()=> {
-                      this.submitSuccessCallback(this)
-                    },
-                    error: this.submitErrorCallback
-                  })
-                }
+              this.setState({
+                shouldUploadImgComponent: true
               })
             }
           })
@@ -119,17 +111,7 @@ class PublishTopics extends Component {
           Toast.show('开始发布...', {
             duration: 1000,
             onHidden: ()=> {
-              this.props.publishTopicFormData({
-                formKey: topicForm,
-                images: [],
-                categoryId: this.state.selectedTopic.objectId,
-                userId: this.props.userInfo.id,
-                submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-                success: ()=> {
-                  this.submitSuccessCallback(this)
-                },
-                error: this.submitErrorCallback
-              })
+              this.publishTopic()
             }
           })
         }
@@ -141,6 +123,20 @@ class PublishTopics extends Component {
     else {
       Actions.LOGIN()
     }
+  }
+
+  publishTopic() {
+    this.props.publishTopicFormData({
+      formKey: topicForm,
+      images: this.leanImgUrls,
+      categoryId: this.state.selectedTopic.objectId,
+      userId: this.props.userInfo.id,
+      submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+      success: ()=> {
+        this.submitSuccessCallback(this)
+      },
+      error: this.submitErrorCallback
+    })
   }
 
   componentDidMount() {
@@ -202,6 +198,8 @@ class PublishTopics extends Component {
         {...topicContent}
         wrapHeight={rteHeight.height}
         getImages={(images) => this.getRichTextImages(images)}
+        shouldUploadImgComponent={this.state.shouldUploadImgComponent}
+        uploadImgComponentCallback={(leanImgUrls)=>{this.uploadImgComponentCallback(leanImgUrls)}}
       />
     )
   }

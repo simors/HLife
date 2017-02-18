@@ -122,6 +122,11 @@ class ArticleEditor extends Component {
         this.props.getImages(this.getImageCollection(newProps.data))
       }
     }
+    // console.log('componentWillReceiveProps=======', newProps.shouldUploadImgComponent)
+    // console.log('componentWillReceiveProps=======', this.isUploadedImgComponent)
+    if(newProps.shouldUploadImgComponent && !this.isUploadedImgComponent) {
+      this.uploadImgComponent(newProps.data)
+    }
   }
 
   componentWillUnmount() {
@@ -169,6 +174,16 @@ class ArticleEditor extends Component {
     return images
   }
 
+  updateImageCollection(data, leanImgUrls) {
+    let index = 0
+    data.forEach((item) => {
+      if (item.type === COMP_IMG) {
+        item.url = leanImgUrls[index++]
+      }
+    })
+    this.inputChange(data)
+  }
+
   validInput(data) {
     return {isVal: true, errMsg: '验证通过'}
   }
@@ -214,59 +229,21 @@ class ArticleEditor extends Component {
 
   insertImage() {
     this.ActionSheet.show()
-    // selectPhotoTapped({
-    //   start: this.pickImageStart,
-    //   failed: this.pickImageFailed,
-    //   cancelled: this.pickImageCancelled,
-    //   succeed: this.pickImageSucceed
-    // })
   }
 
-  pickImageStart = () => {
+  uploadImgComponent(data) {
+    let localImgs = this.getImageCollection(data)
+    ImageUtil.uploadImgs({
+      uris: localImgs,
+      success: (leanImgUrls) => {
+        this.isUploadedImgComponent = true
+        this.updateImageCollection(data, leanImgUrls)
+        if(this.props.uploadImgComponentCallback) {
+          this.props.uploadImgComponentCallback(leanImgUrls)
+        }
+      }
+    })
   }
-
-  pickImageFailed = () => {
-  }
-
-  pickImageCancelled = () => {
-  }
-
-  // pickImageSucceed = (source) => {
-  //   this.uploadImg(source)
-  // }
-
-  // uploadImg = (source) => {
-  //   let fileUri = ''
-  //   if (Platform.OS === 'ios') {
-  //     fileUri = fileUri.concat('file://')
-  //   }
-  //   fileUri = fileUri.concat(source.uri)
-  //
-  //   let fileName = source.uri.split('/').pop()
-  //   let uploadPayload = {
-  //     fileUri: fileUri,
-  //     fileName: fileName
-  //   }
-  //
-  //   Image.getSize(uploadPayload.fileUri, (width, height) => {
-  //     let imgWidth = width
-  //     let imgHeight = height
-  //     let maxWidth = PAGE_WIDTH - 15
-  //     if (width > maxWidth) {
-  //       imgWidth = maxWidth
-  //       imgHeight = Math.floor((imgWidth / width) * height)
-  //     }
-  //     this.setState({imgWidth, imgHeight})
-  //   })
-  //   // console.log('uploadFile.uploadPayload===', uploadPayload)
-  //   uploadFile(uploadPayload).then((saved) => {
-  //     // console.log('uploadFile.saved===', saved.savedPos)
-  //     let leanImgUrl = saved.savedPos
-  //     this.insertImageComponent(leanImgUrl)
-  //   }).catch((error) => {
-  //     console.log('upload failed:', error)
-  //   })
-  // }
 
   deleteImageComponent(index) {
     let data = this.props.data
