@@ -108,7 +108,7 @@ class PublishShopAnnouncement extends Component {
 
   submitSuccessCallback(context, message) {
     dismissKeyboard()
-    this.props.fetchShopAnnouncements({
+    context.props.fetchShopAnnouncements({
       id: context.props.id,
       isRefresh: true
     })
