@@ -14,6 +14,10 @@ export function getMyTopics(state) {
   return state.TOPIC.toJS().myTopics
 }
 
+export function getLocalTopics(state) {
+  return state.TOPIC.toJS().localTopics
+}
+
 export function getTopicComments(state) {
   return state.TOPIC.toJS().topicComments
 }

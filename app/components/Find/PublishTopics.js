@@ -72,12 +72,9 @@ class PublishTopics extends Component {
   }
 
   submitSuccessCallback(context) {
-    Toast.show('恭喜您,发布成功!', {
-      onHidden: ()=> {
-        this.isPublishing = false
-        Actions.pop()
-      }
-    })
+    this.isPublishing = false
+    Toast.show('恭喜您,发布成功!')
+    Actions.pop()
   }
 
   submitErrorCallback(error) {
@@ -86,31 +83,59 @@ class PublishTopics extends Component {
 
   onButtonPress = () => {
     if (this.props.isLogin) {
-      if(this.insertImages && this.insertImages.length) {
-        if(this.isPublishing) {
-          return
-        }
-        this.isPublishing = true
-        Toast.show('开始发布...', {
-          duration: 1000,
-          onHidden: ()=> {
-            ImageUtil.uploadImgs({
-              uris: this.insertImages,
-              success: (leanImgUrls) => {
-                this.leanImgUrls = leanImgUrls
-                this.props.publishTopicFormData({
-                  formKey: topicForm,
-                  images: this.leanImgUrls,
-                  categoryId: this.state.selectedTopic.objectId,
-                  userId: this.props.userInfo.id,
-                  submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-                  success: ()=>{this.submitSuccessCallback(this)},
-                  error: this.submitErrorCallback
-                })
-              }
-            })
+      if(this.state.selectedTopic) {
+        if (this.insertImages && this.insertImages.length) {
+          if (this.isPublishing) {
+            return
           }
-        })
+          this.isPublishing = true
+          Toast.show('开始发布...', {
+            duration: 1000,
+            onHidden: ()=> {
+              ImageUtil.uploadImgs({
+                uris: this.insertImages,
+                success: (leanImgUrls) => {
+                  this.leanImgUrls = leanImgUrls
+                  this.props.publishTopicFormData({
+                    formKey: topicForm,
+                    images: this.leanImgUrls,
+                    categoryId: this.state.selectedTopic.objectId,
+                    userId: this.props.userInfo.id,
+                    submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+                    success: ()=> {
+                      this.submitSuccessCallback(this)
+                    },
+                    error: this.submitErrorCallback
+                  })
+                }
+              })
+            }
+          })
+        } else {
+          if (this.isPublishing) {
+            return
+          }
+          this.isPublishing = true
+          Toast.show('开始发布...', {
+            duration: 1000,
+            onHidden: ()=> {
+              this.props.publishTopicFormData({
+                formKey: topicForm,
+                images: [],
+                categoryId: this.state.selectedTopic.objectId,
+                userId: this.props.userInfo.id,
+                submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+                success: ()=> {
+                  this.submitSuccessCallback(this)
+                },
+                error: this.submitErrorCallback
+              })
+            }
+          })
+        }
+      }
+      else{
+        Toast.show("请选择一个话题")
       }
     }
     else {
@@ -119,7 +144,7 @@ class PublishTopics extends Component {
   }
 
   componentDidMount() {
-    if (this.props.topicId) {
+    if (this.props.topicId && this.props.topicId.objectId) {
       this.setState({selectedTopic: this.props.topicId});
     }
   }
