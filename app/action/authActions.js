@@ -473,10 +473,13 @@ function handleCompleteShopInfo(payload, formData) {
 
 function handlePublishAnnouncement(payload, formData) {
   return (dispatch, getState) => {
+    if(!formData.announcementContentInput || !formData.announcementContentInput.text) {
+      throw new Error('请填写公告内容')
+    }
     let newPayload = {
       id: payload.id,
       announcementContent: formData.announcementContentInput.text,
-      announcementCover: formData.announcementCoverInput.text,
+      announcementCover: formData.announcementCoverInput && formData.announcementCoverInput.text,
     }
     lcAuth.publishAnnouncement(newPayload).then((shop) => {
       let _action = createAction(AuthTypes.PUBLISH_ANNOUNCEMENT_SUCCESS)
@@ -531,10 +534,13 @@ function handlePublishShopComment(payload, formData) {
 
 function handleUpdateAnnouncement(payload, formData) {
   return (dispatch, getState) => {
+    if(!formData.announcementContentInput || !formData.announcementContentInput.text) {
+      throw new Error('请填写公告内容')
+    }
     let newPayload = {
       shopAnnouncementId: payload.shopAnnouncementId,
       announcementContent: formData.announcementContentInput.text,
-      announcementCover: formData.announcementCoverInput.text,
+      announcementCover: formData.announcementCoverInput && formData.announcementCoverInput.text,
     }
     lcAuth.updateAnnouncement(newPayload).then((shop) => {
       let _action = createAction(AuthTypes.UPDATE_ANNOUNCEMENT_SUCCESS)

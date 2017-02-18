@@ -54,8 +54,10 @@ class PublishShopComment extends Component {
     super(props)
 
     this.state = {
-
+      shouldUploadImages: false
     }
+
+    this.isPublishing = false
   }
 
   componentWillMount() {
@@ -65,7 +67,6 @@ class PublishShopComment extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-
   }
 
   submitShopComment() {
@@ -74,6 +75,16 @@ class PublishShopComment extends Component {
       return
     }
 
+    if(this.imgList && this.imgList.length) {
+      this.setState({
+        shouldUploadImages: true
+      })
+    }else {
+      this.publishShopComment()
+    }
+  }
+
+  publishShopComment() {
     this.props.submitFormData({
       formKey: commonForm,
       id: this.props.id,
@@ -82,12 +93,21 @@ class PublishShopComment extends Component {
       success: ()=>{
         this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
         this.props.fetchShopCommentTotalCount({id: this.props.id})
-        Actions.pop()
+        Toast.show('恭喜您,发表评论成功', {
+          duration: 3000,
+          onHidden: ()=> {
+            Actions.pop()
+          }
+        })
       },
       error: (err)=>{
         Toast.show(err.message || '发表评论失败')
       }
     })
+  }
+  
+  uploadImagesCallback(leanImgUrls) {
+    this.publishShopComment()
   }
 
   rightComponent() {
@@ -135,6 +155,9 @@ class PublishShopComment extends Component {
                   {...imageGroupInput}
                   number={9}
                   imageLineCnt={3}
+                  getImageList={(imgList)=>{this.imgList = imgList}}
+                  shouldUploadImages={this.state.shouldUploadImages}
+                  uploadImagesCallback={(leanImgUrls)=>{this.uploadImagesCallback(leanImgUrls)}}
                 />
               </View>
 

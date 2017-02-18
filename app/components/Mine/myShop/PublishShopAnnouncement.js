@@ -52,6 +52,10 @@ const announcementCoverInput = {
 class PublishShopAnnouncement extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      shouldUploadImage: false
+    }
   }
 
   componentWillMount() {
@@ -68,6 +72,20 @@ class PublishShopAnnouncement extends Component {
 
   }
 
+  onButtonPress() {
+    if(this.localCoverImgUri) { //用户拍照或从相册选择了照片
+      this.setState({
+        shouldUploadImage: true
+      })
+    }else {
+      this.publishAnnouncement()
+    }
+  }
+
+  uploadImageCallback() {
+    this.publishAnnouncement()
+  }
+
   publishAnnouncement() {
     if(this.props.shopAnnouncementId) {
       this.props.submitFormData({
@@ -75,7 +93,7 @@ class PublishShopAnnouncement extends Component {
         shopAnnouncementId: this.props.shopAnnouncementId,
         submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT,
         success: ()=>{this.submitSuccessCallback(this, '更新成功')},
-        error: ()=>{this.submitErrorCallback(this, '更新失败')}
+        error: (error)=>{this.submitErrorCallback(this, error.message || '更新失败')}
       })
     }else {
       this.props.submitFormData({
@@ -83,7 +101,7 @@ class PublishShopAnnouncement extends Component {
         id: this.props.id,
         submitType: INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT,
         success: ()=>{this.submitSuccessCallback(this, '发布成功')},
-        error: ()=>{this.submitErrorCallback(this, '发布失败')}
+        error: (error)=>{this.submitErrorCallback(this, error.message || '发布失败')}
       })
     }
   }
@@ -120,7 +138,7 @@ class PublishShopAnnouncement extends Component {
           titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText='完成'
-          rightPress={()=>{this.publishAnnouncement()}}
+          rightPress={()=>{this.onButtonPress()}}
           rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
@@ -142,6 +160,9 @@ class PublishShopAnnouncement extends Component {
                   {...announcementCoverInput}
                   addImage={require('../../../assets/images/upload_picture.png')}
                   initValue={this.props.shopAnnouncementCover}
+                  imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
+                  shouldUploadImage={this.state.shouldUploadImage}
+                  uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
                 />
               </View>
               <Text style={styles.noticeTip}>选择一张图片做为公告封面</Text>

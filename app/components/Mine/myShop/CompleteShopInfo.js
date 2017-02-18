@@ -101,7 +101,9 @@ class CompleteShopInfo extends Component {
         optionListPos: 179,
         shopTagsSelectTop: 219,
         selectedShopTags: [],
-        shopCategoryContainedTag: []
+        shopCategoryContainedTag: [],
+        shouldUploadImage: false,
+        shouldUploadImages: false,
       }
     }else{
       this.state = {
@@ -110,7 +112,9 @@ class CompleteShopInfo extends Component {
         optionListPos: 159,
         shopTagsSelectTop: 199,
         selectedShopTags: [],
-        shopCategoryContainedTag: []
+        shopCategoryContainedTag: [],
+        shouldUploadImage: false,
+        shouldUploadImages: false,
       }
     }
 
@@ -171,13 +175,18 @@ class CompleteShopInfo extends Component {
 
   submitSuccessCallback(context) {
     context.props.fetchUserOwnedShopInfo()
-    if(context.props.popNum && context.props.popNum > 1) {
-      Actions.pop({
-        popNum: context.props.popNum
-      })
-    }else {
-      Actions.pop()
-    }
+    Toast.show('更新成功', {
+      duration: 1500,
+      onHidden: () =>{
+        if(context.props.popNum && context.props.popNum > 1) {
+          Actions.pop({
+            popNum: context.props.popNum
+          })
+        }else {
+          Actions.pop()
+        }
+      }
+    })
   }
 
   submitErrorCallback(error) {
@@ -185,11 +194,49 @@ class CompleteShopInfo extends Component {
   }
 
   onButtonPress = () => {
+    console.log('fadsf')
+    //先上传封面
+    if(this.localCoverImgUri) { //用户拍照或从相册选择了照片
+      this.setState({
+        shouldUploadImage: true
+      })
+    }
+    //上传相册
+    else if(this.localAlbumList && this.localAlbumList.length) {
+      this.setState({
+        shouldUploadImages: true
+      })
+    }
+    //直接更新
+    else {
+      this.submitShopInfo()
+    }
+  }
+
+  uploadImageCallback() {
+    //上传封面成功,开始上传相册
+    if(this.localAlbumList && this.localAlbumList.length) {
+      this.setState({
+        shouldUploadImages: true
+      })
+    }
+    //直接更新
+    else {
+      this.submitShopInfo()
+    }
+  }
+
+  uploadImagesCallback() {
+    //上传相册成功
+    this.submitShopInfo()
+  }
+  
+  submitShopInfo() {
     let targetShopCategory = {}
     if(this.props.userOwnedShopInfo.targetShopCategory) {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
     }
-    
+  
     this.props.submitFormData({
       formKey: commonForm,
       shopId: this.props.userOwnedShopInfo.id,
@@ -202,9 +249,11 @@ class CompleteShopInfo extends Component {
 
   rightComponent() {
     return (
+    <TouchableOpacity onPress={()=>{this.onButtonPress()}}>
       <View style={styles.completeBtnBox}>
         <Text style={styles.completeBtn}>完成</Text>
       </View>
+    </TouchableOpacity>
     )
   }
   
@@ -320,7 +369,6 @@ class CompleteShopInfo extends Component {
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightComponent={()=>this.rightComponent()}
-          rightPress={()=>{this.onButtonPress()}}
         />
         <View style={styles.body}>
 
@@ -442,6 +490,9 @@ class CompleteShopInfo extends Component {
                   choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
                   addImage={require('../../../assets/images/default_upload.png')}
                   closeModalAfterSelectedImg={true}
+                  imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
+                  shouldUploadImage={this.state.shouldUploadImage}
+                  uploadImageCallback={(leanImgUrl)=>{this.uploadImageCallback(leanImgUrl)}}
                 />
               </View>
             </View>
@@ -454,6 +505,9 @@ class CompleteShopInfo extends Component {
                   number={9}
                   imageLineCnt={3}
                   initValue={this.props.userOwnedShopInfo.album}
+                  getImageList={(imgList)=>{this.localAlbumList = imgList}}
+                  shouldUploadImages={this.state.shouldUploadImages}
+                  uploadImagesCallback={(leanImgUrls)=>{this.uploadImagesCallback(leanImgUrls)}}
                 />
               </View>
             </View>
@@ -533,6 +587,7 @@ const styles = StyleSheet.create({
     borderWidth: normalizeBorder(),
     borderColor: '#fff',
     padding: 5,
+    marginRight: 12
   },
   completeBtn: {
     fontSize: em(17),

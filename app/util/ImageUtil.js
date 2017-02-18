@@ -20,7 +20,7 @@ export function openPicker(options) {
     width: 750,
     height: 750,
     maxFiles: 9, //ios only
-    cropping: true,
+    cropping: true,//控制图片大小在1M以内, 裁剪和多选必须互斥
     compressImageQuality: 1,
     multiple: false,//拍照必须传false,否则没有返回(ResultCollector类notifySuccess方法waitCounter为null)
     openType: 'camera', //enum('gallery', 'camera')
@@ -32,8 +32,6 @@ export function openPicker(options) {
   //文件过大,会导致Modal加载图片报错(E_GET_SIZE_FAILURE)
   //限制图片文件1M以内
   if('camera' == defaultOptions.openType) {
-    defaultOptions.cropping = true //控制图片大小在1M以内
-    defaultOptions.multiple = false //裁剪和多选必须互斥
     ImagePicker.openCamera(defaultOptions).then(response => {
       // console.log('openCamera.response====')
       // console.log(response)
@@ -59,8 +57,6 @@ export function openPicker(options) {
       })
     })
   }else {
-    defaultOptions.cropping = true
-    defaultOptions.multiple = false
     ImagePicker.openPicker(defaultOptions).then(response => {
       // console.log('openPicker.response====')
       // console.log(response)
@@ -124,6 +120,7 @@ export function uploadImgs(options) {
     if(isUploading) {
       return
     }
+    isUploading = true
     let loading = Loading.show()
     uploadImg({
       hideLoading: true,
@@ -165,6 +162,7 @@ export function uploadImg(source) {
     if(isUploading) {
       return
     }
+    isUploading = true
     loading = Loading.show()
   }
   uploadFile(uploadPayload).then((saved) => {
