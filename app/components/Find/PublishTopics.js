@@ -89,7 +89,7 @@ class PublishTopics extends Component {
 
   onButtonPress = () => {
     if (this.props.isLogin) {
-      if(this.state.selectedTopic) {
+      if (this.state.selectedTopic) {
         if (this.insertImages && this.insertImages.length) {
           if (this.isPublishing) {
             return
@@ -116,7 +116,7 @@ class PublishTopics extends Component {
           })
         }
       }
-      else{
+      else {
         Toast.show("请选择一个话题")
       }
     }
@@ -158,7 +158,7 @@ class PublishTopics extends Component {
     if (this.props.topics) {
       return (
         this.props.topics.map((value, key)=> {
-          if(value && value.objectId ) {
+          if (value && value.objectId) {
             return (
               <View key={key} style={styles.modalTopicButtonStyle}>
                 <TouchableOpacity style={styles.modalTopicStyle}
@@ -185,6 +185,15 @@ class PublishTopics extends Component {
         </View>
       )
     }
+    else {
+      return (
+        <View>
+          <Text style={styles.topicNoSelectStyle}>
+            点击选择一个主题
+          </Text>
+        </View>
+      )
+    }
   }
 
   getRichTextImages(images) {
@@ -199,7 +208,9 @@ class PublishTopics extends Component {
         wrapHeight={rteHeight.height}
         getImages={(images) => this.getRichTextImages(images)}
         shouldUploadImgComponent={this.state.shouldUploadImgComponent}
-        uploadImgComponentCallback={(leanImgUrls)=>{this.uploadImgComponentCallback(leanImgUrls)}}
+        uploadImgComponentCallback={(leanImgUrls)=> {
+          this.uploadImgComponentCallback(leanImgUrls)
+        }}
       />
     )
   }
@@ -315,6 +326,12 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(16),
     marginTop: normalizeH(7),
     alignSelf: 'center',
+  },
+  topicNoSelectStyle: {
+    fontSize: em(15),
+    color: "#B2B2B2",
+    marginLeft: normalizeW(10),
+    marginTop: normalizeH(12),
   },
   imageStyle: {
     position: 'absolute',
