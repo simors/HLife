@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -25,6 +26,7 @@
 		23E5FEFF4CB340D8B69315EA /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8811D46429B74527A9368923 /* libimageCropPicker.a */; };
 		27CD059BF80E455D9A8ED127 /* libAutoGrowTextInput.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DEA029E5DD4B2C9F5F22FB /* libAutoGrowTextInput.a */; };
 		3281026B7F0A46FEAAEEC070 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6481AB4090240EDA663BB5C /* libRNImagePicker.a */; };
+		373634DB2FA5B55BCDD62509 /* libPods-HLife.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4508DF7717BD0270E31CF83 /* libPods-HLife.a */; };
 		3E8A097182AC4E3AB6FA68ED /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5616E2920612420B90CDC160 /* libRCTCamera.a */; };
 		40C3F6E5D4274A2D862E9C6A /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B01BCA03472F4A6180024FAC /* libRNFS.a */; };
 		5A313ABB12AF49588B369AFC /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9B50AAF3C82549A7A9B12DC9 /* Octicons.ttf */; };
@@ -57,10 +59,6 @@
 		B6FB9ACE1E4EF33700E316C8 /* RCTBaiduMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6FB9AC91E4EF33700E316C8 /* RCTBaiduMapViewManager.m */; };
 		B6FB9AD11E4F10F600E316C8 /* PoiSearchModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B6FB9AD01E4F10F600E316C8 /* PoiSearchModule.m */; };
 		B6FB9B0E1E52F75700E316C8 /* BaiduMapAPI_Search.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B687CDA21E4EEB3600F47585 /* BaiduMapAPI_Search.framework */; };
-		B6FB9B601E52FEB500E316C8 /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6FB9B581E52FE7B00E316C8 /* QBImagePicker.framework */; };
-		B6FB9B611E52FEB500E316C8 /* QBImagePicker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B6FB9B581E52FE7B00E316C8 /* QBImagePicker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B6FB9B621E52FEB500E316C8 /* RSKImageCropper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6FB9B591E52FE7B00E316C8 /* RSKImageCropper.framework */; };
-		B6FB9B631E52FEB500E316C8 /* RSKImageCropper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B6FB9B591E52FE7B00E316C8 /* RSKImageCropper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C4A744F243674367B347AC23 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74505C66777344C4AD590E84 /* libRNVectorIcons.a */; };
 		DD0B3AC21DF9C2A200AE8D91 /* bootstrap.min.css in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3ABA1DF9C2A200AE8D91 /* bootstrap.min.css */; };
 		DD0B3AC31DF9C2A200AE8D91 /* font-awesome.min.css in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3ABB1DF9C2A200AE8D91 /* font-awesome.min.css */; };
@@ -295,8 +293,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B6FB9B611E52FEB500E316C8 /* QBImagePicker.framework in Embed Frameworks */,
-				B6FB9B631E52FEB500E316C8 /* RSKImageCropper.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,6 +327,7 @@
 		50343225606A4D92A8CCFC4A /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		5411B72DE67B4E9281A6AA8E /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		5616E2920612420B90CDC160 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
+		6D030136445CC0004790CC87 /* Pods-HLife.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLife.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HLife/Pods-HLife.debug.xcconfig"; sourceTree = "<group>"; };
 		74505C66777344C4AD590E84 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7AB072ABED6D40D3AB87C366 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
@@ -344,6 +341,7 @@
 		9AEB9DCA635C4E12BEFA3CBD /* RCTRestart.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTRestart.xcodeproj; path = "../node_modules/react-native-restart/ios/RCTRestart.xcodeproj"; sourceTree = "<group>"; };
 		9B50AAF3C82549A7A9B12DC9 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		B01BCA03472F4A6180024FAC /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
+		B453DC967858B3F46587C183 /* Pods-HLife.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLife.release.xcconfig"; path = "Pods/Target Support Files/Pods-HLife/Pods-HLife.release.xcconfig"; sourceTree = "<group>"; };
 		B687CD9C1E4EEB2000F47585 /* BaiduMapAPI_Base.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BaiduMapAPI_Base.framework; path = lib/BaiduMapAPI/BaiduMapAPI_Base.framework; sourceTree = "<group>"; };
 		B687CD9E1E4EEB3600F47585 /* BaiduMapAPI_Cloud.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BaiduMapAPI_Cloud.framework; path = lib/BaiduMapAPI/BaiduMapAPI_Cloud.framework; sourceTree = "<group>"; };
 		B687CD9F1E4EEB3600F47585 /* BaiduMapAPI_Location.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BaiduMapAPI_Location.framework; path = lib/BaiduMapAPI/BaiduMapAPI_Location.framework; sourceTree = "<group>"; };
@@ -369,8 +367,6 @@
 		B6FB9AC91E4EF33700E316C8 /* RCTBaiduMapViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTBaiduMapViewManager.m; sourceTree = "<group>"; };
 		B6FB9ACF1E4F102A00E316C8 /* PoiSearchModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PoiSearchModule.h; sourceTree = "<group>"; };
 		B6FB9AD01E4F10F600E316C8 /* PoiSearchModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PoiSearchModule.m; sourceTree = "<group>"; };
-		B6FB9B581E52FE7B00E316C8 /* QBImagePicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = QBImagePicker.framework; sourceTree = "<group>"; };
-		B6FB9B591E52FE7B00E316C8 /* RSKImageCropper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RSKImageCropper.framework; sourceTree = "<group>"; };
 		C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		C6481AB4090240EDA663BB5C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		C6BCDC1829644C4BAFACD010 /* libRCTRestart.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTRestart.a; sourceTree = "<group>"; };
@@ -387,6 +383,7 @@
 		DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBEEPickerManager.a; sourceTree = "<group>"; };
+		F4508DF7717BD0270E31CF83 /* libPods-HLife.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HLife.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F60287271231445584B260E0 /* ImageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ImageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/ImageCropPicker.xcodeproj"; sourceTree = "<group>"; };
 		F66B9CB97E874077B48688EE /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBEEPickerManager.xcodeproj; path = "../node_modules/react-native-picker/ios/RCTBEEPickerManager.xcodeproj"; sourceTree = "<group>"; };
@@ -413,10 +410,8 @@
 				B6FB9AB11E4EEF0500E316C8 /* CoreTelephony.framework in Frameworks */,
 				B6FB9A951E4EEEF900E316C8 /* libsqlite3.0.tbd in Frameworks */,
 				B687CDA41E4EEB3600F47585 /* BaiduMapAPI_Cloud.framework in Frameworks */,
-				B6FB9B601E52FEB500E316C8 /* QBImagePicker.framework in Frameworks */,
 				B687CDA51E4EEB3600F47585 /* BaiduMapAPI_Location.framework in Frameworks */,
 				B687CDA61E4EEB3600F47585 /* BaiduMapAPI_Map.framework in Frameworks */,
-				B6FB9B621E52FEB500E316C8 /* RSKImageCropper.framework in Frameworks */,
 				B687CDA71E4EEB3600F47585 /* BaiduMapAPI_Radar.framework in Frameworks */,
 				B687CDA91E4EEB3600F47585 /* BaiduMapAPI_Utils.framework in Frameworks */,
 				B687CD9D1E4EEB2000F47585 /* BaiduMapAPI_Base.framework in Frameworks */,
@@ -440,6 +435,7 @@
 				5A6A280C24E740B89E8644AE /* libRCTRestart.a in Frameworks */,
 				23E5FEFF4CB340D8B69315EA /* libimageCropPicker.a in Frameworks */,
 				3E8A097182AC4E3AB6FA68ED /* libRCTCamera.a in Frameworks */,
+				373634DB2FA5B55BCDD62509 /* libPods-HLife.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,7 +593,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				B6FB9B571E52FE7B00E316C8 /* ImageCropPickerSDK */,
 				B6FB9ABF1E4EF33700E316C8 /* RCTBaiduMap */,
 				B6FB9ABA1E4EF00B00E316C8 /* mapapi.bundle */,
 				13B07FAE1A68108700A75B9A /* HLife */,
@@ -606,6 +601,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				E8FD9E3014EE4F3A966FC343 /* Resources */,
 				B687CD811E4EEB2000F47585 /* Frameworks */,
+				A7F9993C7E97110578060722 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -618,6 +614,15 @@
 				00E356EE1AD99517003FC87E /* HLifeTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A7F9993C7E97110578060722 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6D030136445CC0004790CC87 /* Pods-HLife.debug.xcconfig */,
+				B453DC967858B3F46587C183 /* Pods-HLife.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		B61B5F591E5470F600D71E1B /* Products */ = {
@@ -651,6 +656,7 @@
 				B687CDA21E4EEB3600F47585 /* BaiduMapAPI_Search.framework */,
 				B687CDA31E4EEB3600F47585 /* BaiduMapAPI_Utils.framework */,
 				B687CD9C1E4EEB2000F47585 /* BaiduMapAPI_Base.framework */,
+				F4508DF7717BD0270E31CF83 /* libPods-HLife.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -681,15 +687,6 @@
 				B6FB9AEB1E51AFE500E316C8 /* libimageCropPicker.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B6FB9B571E52FE7B00E316C8 /* ImageCropPickerSDK */ = {
-			isa = PBXGroup;
-			children = (
-				B6FB9B581E52FE7B00E316C8 /* QBImagePicker.framework */,
-				B6FB9B591E52FE7B00E316C8 /* RSKImageCropper.framework */,
-			);
-			path = ImageCropPickerSDK;
 			sourceTree = "<group>";
 		};
 		DD0B3A671DF9B72200AE8D91 /* Products */ = {
@@ -822,11 +819,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "HLife" */;
 			buildPhases = (
+				AE80A77CDC60C17A210A7321 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				B6FB9B641E52FEB500E316C8 /* Embed Frameworks */,
+				66F9100F48AB727144A0BD1E /* [CP] Embed Pods Frameworks */,
+				D728A0CCAE5E5026AD8A3F31 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1221,6 +1221,51 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
 		};
+		66F9100F48AB727144A0BD1E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HLife/Pods-HLife-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AE80A77CDC60C17A210A7321 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D728A0CCAE5E5026AD8A3F31 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HLife/Pods-HLife-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1320,6 +1365,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6D030136445CC0004790CC87 /* Pods-HLife.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1373,6 +1419,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B453DC967858B3F46587C183 /* Pods-HLife.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
