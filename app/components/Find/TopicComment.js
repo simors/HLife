@@ -232,8 +232,8 @@ const styles = StyleSheet.create({
     resizeMode:'stretch'
   },
   commentImageStyle: {
-    height: normalizeW(19),
-    width: normalizeH(18),
+    height: normalizeH(16),
+    width: normalizeW(16),
     marginRight: 3,
     resizeMode:'stretch'
   },
