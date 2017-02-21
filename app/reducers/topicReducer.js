@@ -72,6 +72,9 @@ function handleUpdateTopics(state, action) {
   let _newMap = undefined
   let newTopics = undefined
   let _newList = undefined
+  if(payload.city) {
+    state = state.set('city', payload.city)
+  }
   if (payload.isPaging){
     switch (payload.type) {
       case "topics":

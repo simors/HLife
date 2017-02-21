@@ -346,7 +346,10 @@ export function getLocalTopics(payload) {
           results.forEach((result) => {
             topics.push(TopicsItem.fromLeancloudObject(result))
           })
-          return new List(topics)
+          return {
+            topics:new List(topics),
+            city: position.city
+          }
         }, function (err) {
           err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
           throw err
@@ -399,7 +402,9 @@ export function getTopics(payload) {
       results.forEach((result) => {
         topics.push(TopicsItem.fromLeancloudObject(result))
       })
-      return new List(topics)
+      return {
+        topics:new List(topics)
+      }
     }, function (err) {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err

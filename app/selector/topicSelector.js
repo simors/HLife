@@ -18,6 +18,10 @@ export function getLocalTopics(state) {
   return state.TOPIC.toJS().localTopics
 }
 
+export function getLocalCity(state) {
+  return state.TOPIC.toJS().city
+}
+
 export function getTopicComments(state) {
   return state.TOPIC.toJS().topicComments
 }
