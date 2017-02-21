@@ -27,6 +27,7 @@ import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
+import * as Toast from '../Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -121,6 +122,11 @@ class ArticleEditor extends Component {
         this.props.getImages(this.getImageCollection(newProps.data))
       }
     }
+    // console.log('componentWillReceiveProps=======', newProps.shouldUploadImgComponent)
+    // console.log('componentWillReceiveProps=======', this.isUploadedImgComponent)
+    if(newProps.shouldUploadImgComponent && !this.isUploadedImgComponent) {
+      this.uploadImgComponent(newProps.data)
+    }
   }
 
   componentWillUnmount() {
@@ -168,6 +174,16 @@ class ArticleEditor extends Component {
     return images
   }
 
+  updateImageCollection(data, leanImgUrls) {
+    let index = 0
+    data.forEach((item) => {
+      if (item.type === COMP_IMG) {
+        item.url = leanImgUrls[index++]
+      }
+    })
+    this.inputChange(data)
+  }
+
   validInput(data) {
     return {isVal: true, errMsg: '验证通过'}
   }
@@ -213,57 +229,19 @@ class ArticleEditor extends Component {
 
   insertImage() {
     this.ActionSheet.show()
-    // selectPhotoTapped({
-    //   start: this.pickImageStart,
-    //   failed: this.pickImageFailed,
-    //   cancelled: this.pickImageCancelled,
-    //   succeed: this.pickImageSucceed
-    // })
   }
 
-  pickImageStart = () => {
-  }
-
-  pickImageFailed = () => {
-  }
-
-  pickImageCancelled = () => {
-  }
-
-  pickImageSucceed = (source) => {
-    this.uploadImg(source)
-  }
-
-  uploadImg = (source) => {
-    let fileUri = ''
-    if (Platform.OS === 'ios') {
-      fileUri = fileUri.concat('file://')
-    }
-    fileUri = fileUri.concat(source.uri)
-
-    let fileName = source.uri.split('/').pop()
-    let uploadPayload = {
-      fileUri: fileUri,
-      fileName: fileName
-    }
-
-    Image.getSize(uploadPayload.fileUri, (width, height) => {
-      let imgWidth = width
-      let imgHeight = height
-      let maxWidth = PAGE_WIDTH - 15
-      if (width > maxWidth) {
-        imgWidth = maxWidth
-        imgHeight = Math.floor((imgWidth / width) * height)
+  uploadImgComponent(data) {
+    let localImgs = this.getImageCollection(data)
+    ImageUtil.uploadImgs({
+      uris: localImgs,
+      success: (leanImgUrls) => {
+        this.isUploadedImgComponent = true
+        this.updateImageCollection(data, leanImgUrls)
+        if(this.props.uploadImgComponentCallback) {
+          this.props.uploadImgComponentCallback(leanImgUrls)
+        }
       }
-      this.setState({imgWidth, imgHeight})
-    })
-    // console.log('uploadFile.uploadPayload===', uploadPayload)
-    uploadFile(uploadPayload).then((saved) => {
-      // console.log('uploadFile.saved===', saved.savedPos)
-      let leanImgUrl = saved.savedPos
-      this.insertImageComponent(leanImgUrl)
-    }).catch((error) => {
-      console.log('upload failed:', error)
     })
   }
 
@@ -285,24 +263,31 @@ class ArticleEditor extends Component {
   }
 
   insertImageComponent(src) {
-    let data = this.props.data
-    let imgData = {
-      type: COMP_IMG,
-      url: src,
-      width: this.state.imgWidth,
-      height: this.state.imgHeight,
-    }
-    let textData = {
-      type: COMP_TEXT,
-      text: ""
-    }
-    let content = data[this.state.cursor].text
-    let begin = content.substring(0, this.state.start)
-    let end = content.substring(this.state.start)
-    data[this.state.cursor].text = begin
-    textData.text = end
-    data.splice(this.state.cursor + 1, 0, imgData, textData)
-    this.inputChange(data)
+    ImageUtil.getImageSize({
+      uri: src,
+      success: (imgWidth, imgHeight) => {
+        this.setState({imgWidth, imgHeight}, ()=> {
+          let data = this.props.data
+          let imgData = {
+            type: COMP_IMG,
+            url: src,
+            width: this.state.imgWidth,
+            height: this.state.imgHeight,
+          }
+          let textData = {
+            type: COMP_TEXT,
+            text: ""
+          }
+          let content = data[this.state.cursor].text
+          let begin = content.substring(0, this.state.start)
+          let end = content.substring(this.state.start)
+          data[this.state.cursor].text = begin
+          textData.text = end
+          data.splice(this.state.cursor + 1, 0, imgData, textData)
+          this.inputChange(data)
+        })
+      }
+    })
   }
 
   updateTextInput(index, content) {
@@ -409,22 +394,30 @@ class ArticleEditor extends Component {
       ImageUtil.openPicker({
         openType: 'camera',
         success: (response) => {
-          this.uploadImg({
-            uri: response.path
-          })
+          this.insertImageComponent(response.path)
+          // this.uploadImg({
+          //   uri: response.path
+          // })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }else if(1 == index) { //从相册选择
       ImageUtil.openPicker({
         openType: 'gallery',
         success: (response) => {
-          this.uploadImg({
-            uri: response.path
-          })
+          this.insertImageComponent(response.path)
+          // this.uploadImg({
+          //   uri: response.path
+          // })
           // console.log('openPicker==response==', response.path)
           // console.log('openPicker==response==', response.size)
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }

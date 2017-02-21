@@ -94,17 +94,18 @@ class ShopManageIndex extends Component {
     }
   }
 
-  coverImageSelectedChangeCallback(url) {
+  uploadImageCallback(url) {
     this.props.submitFormData({
       formKey: commonForm,
       id: this.props.userOwnedShopInfo.id,
       submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER,
-      success: this.submitSuccessCallback,
+      success: ()=>{this.submitSuccessCallback(this)},
       error: this.submitErrorCallback
     })
   }
 
-  submitSuccessCallback() {
+  submitSuccessCallback(context) {
+    context.props.fetchUserOwnedShopInfo()
     Toast.show('更新成功', {duration: 1000})
   }
 
@@ -305,7 +306,7 @@ class ShopManageIndex extends Component {
           title="店铺管理"
           titleStyle={styles.headerTitleStyle}
           rightType="text"
-          rightText="● ● ●"
+          rightText=""
           rightPress={()=>{}}
           rightStyle={styles.headerRightStyle}
         />
@@ -315,6 +316,8 @@ class ShopManageIndex extends Component {
           >
             <View style={{}}>
               <ImageInput
+                pickerAndUploadImage={true}
+                uploadImageCallback={(leanImgUrl)=>{this.uploadImageCallback(leanImgUrl)}}
                 {...shopCoverInput}
                 containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
                 addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
@@ -322,7 +325,6 @@ class ShopManageIndex extends Component {
                 addImage={require('../../../assets/images/default_upload.png')}
                 initValue={this.props.userOwnedShopInfo.coverUrl}
                 closeModalAfterSelectedImg={true}
-                imageSelectedChangeCallback={(url)=>{this.coverImageSelectedChangeCallback(url)}}
               />
             </View>
 

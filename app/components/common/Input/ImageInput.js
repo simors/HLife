@@ -23,6 +23,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import Gallery from 'react-native-gallery'
 import CommonButton from '../CommonButton'
 import ActionSheet from 'react-native-actionsheet'
+import * as Toast from '../Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -33,6 +34,9 @@ class ImageInput extends Component {
     this.state = {
       imgModalShow: false,
     }
+
+    this.isUploadedImage = false
+    this.pickerAndUploadImage = !!props.pickerAndUploadImage
   }
 
   componentDidMount() {
@@ -46,41 +50,27 @@ class ImageInput extends Component {
     this.props.initInputForm(formInfo)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.initValue != nextProps.initValue) {
+      this.inputChange(nextProps.initValue)
+    }
+
+    if(nextProps.shouldUploadImage && !this.isUploadedImage) {
+      this.uploadImg(nextProps.data)
+    }
+  }
+
   selectImg() {
     this.ActionSheet.show()
-    // selectPhotoTapped({
-    //   start: this.pickImageStart,
-    //   failed: this.pickImageFailed,
-    //   cancelled: this.pickImageCancel,
-    //   succeed: this.pickImageSucceed
-    // })
   }
 
   validInput(data) {
     return {isVal: true, errMsg: '验证通过'}
   }
 
-  pickImageStart = () => {
-  }
-
-  pickImageFailed = () => {
-  }
-
-  pickImageCancel = () => {
-  }
-
-  pickImageSucceed = (source) => {
-    this.uploadImg(source)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if(this.props.initValue != nextProps.initValue) {
-      this.inputChange(nextProps.initValue)
-    }
-  }
-
   imageSelectedChange(url) {
     this.inputChange(url)
+    //用户拍照或从相册选择了照片
     if(this.props.imageSelectedChangeCallback) {
       this.props.imageSelectedChangeCallback(url)
     }
@@ -94,28 +84,23 @@ class ImageInput extends Component {
     }
     this.props.inputFormUpdate(inputForm)
   }
-
-  uploadImg = (source) => {
-    let fileUri = ''
-    if (Platform.OS === 'ios') {
-      fileUri = fileUri.concat('file://')
-    }
-    fileUri = fileUri.concat(source.uri)
-
-    let fileName = source.uri.split('/').pop()
-    let uploadPayload = {
-      fileUri: fileUri,
-      fileName: fileName
-    }
-
-    uploadFile(uploadPayload).then((saved) => {
-      let leanImgUrl = saved.savedPos
-      this.imageSelectedChange(leanImgUrl)
-    }).catch((error) => {
-      console.log('upload failed:', error)
-    })
-    if(this.props.closeModalAfterSelectedImg) {
-      this.toggleModal(false)
+  
+  uploadImg(uri) {
+    if(uri) {
+      ImageUtil.uploadImg({
+        uri: uri,
+        success: (response) => {
+          this.isUploadedImage = true
+          this.imageSelectedChange(response.leanImgUrl)
+          if( typeof this.props.uploadImageCallback == 'function') {
+            this.props.uploadImageCallback(response.leanImgUrl)
+          }
+        }
+      })
+    }else {
+      if( typeof this.props.uploadImageCallback == 'function') {
+        this.props.uploadImageCallback(response.leanImgUrl)
+      }
     }
   }
 
@@ -210,22 +195,32 @@ class ImageInput extends Component {
       ImageUtil.openPicker({
         openType: 'camera',
         success: (response) => {
-          this.uploadImg({
-            uri: response.path
-          })
-          // console.log('openPicker==response==', response.path)
-          // console.log('openPicker==response==', response.size)
+          this.toggleModal(false)
+          if(this.pickerAndUploadImage) {
+            this.uploadImg(response.path)
+          }else {
+            this.imageSelectedChange(response.path)
+          }
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }else if(1 == index) { //从相册选择
       ImageUtil.openPicker({
         openType: 'gallery',
         success: (response) => {
-          this.uploadImg({
-            uri: response.path
-          })
-          // console.log('openPicker==response==', response.path)
-          // console.log('openPicker==response==', response.size)
+          // console.log('gallery===')
+          // console.log(response)
+          this.toggleModal(false)
+          if(this.pickerAndUploadImage) {
+            this.uploadImg(response.path)
+          }else {
+            this.imageSelectedChange(response.path)
+          }
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }

@@ -17,6 +17,8 @@ export const TopicsConfig = Record({
   avatar: undefined,  //所属用户头像
   commentNum: undefined, //评论数
   likeCount: undefined, //点赞数
+  geoPoint: undefined,
+  position: undefined,
   likedUsers: undefined  //点赞用户列表
 }, 'TopicsConfig')
 
@@ -40,6 +42,8 @@ export class TopicsItem extends TopicsConfig {
       }
     }
     return topicsConfig.withMutations((record)=> {
+      record.set('geoPoint', attrs.geoPoint)
+      record.set('position', attrs.position)
       record.set('content', attrs.content)
       record.set('abstract', attrs.abstract)
       record.set('title', attrs.title)
@@ -64,6 +68,8 @@ export const TopicCommentsConfig = Record({
   avatar: undefined,    //评论用户头像
   userId:undefined, //评论用户id
   likeCount:undefined,
+  geoPoint: undefined,
+  position: undefined,
   parentCommentContent: undefined,  //父评论正文
   parentCommentUser: undefined,     //父评论的作者昵称
 }, 'TopicCommentsConfig')
@@ -109,7 +115,8 @@ export class TopicCommentsItem extends TopicCommentsConfig {
       record.set('avatar', avatar)
       record.set('objectId', lcObj.id)
       record.set('userId', user.id)
-
+      record.set('geoPoint', attrs.geoPoint)
+      record.set('position', attrs.position)
       //有父评论的情况下设置
       if (attrs.parentComment) {
         record.set('parentCommentContent', attrs.parentComment.attributes.content)
@@ -159,6 +166,7 @@ export const Topic = Record({
   myTopics:List(),
   userTopics: Map(),
   allTopics:List(),
+  localTopics:List(),
   topicComments:Map(),
   TopicLikesNum: Map(),
   TopicLikeUsers: Map(),

@@ -100,7 +100,10 @@ class CompleteShopInfo extends Component {
         shopTagsSelectShow: false,
         optionListPos: 179,
         shopTagsSelectTop: 219,
-        selectedShopTags: []
+        selectedShopTags: [],
+        shopCategoryContainedTag: [],
+        shouldUploadImage: false,
+        shouldUploadImages: false,
       }
     }else{
       this.state = {
@@ -108,7 +111,10 @@ class CompleteShopInfo extends Component {
         shopTagsSelectShow: false,
         optionListPos: 159,
         shopTagsSelectTop: 199,
-        selectedShopTags: []
+        selectedShopTags: [],
+        shopCategoryContainedTag: [],
+        shouldUploadImage: false,
+        shouldUploadImages: false,
       }
     }
 
@@ -135,23 +141,52 @@ class CompleteShopInfo extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.userOwnedShopInfo.containedTag && nextProps.userOwnedShopInfo.containedTag.length) {
+  componentDidMount() {
+    if(this.props.userOwnedShopInfo.containedTag && this.props.userOwnedShopInfo.containedTag.length) {
       this.setState({
-        selectedShopTags: nextProps.userOwnedShopInfo.containedTag
+        selectedShopTags: this.props.userOwnedShopInfo.containedTag
       })
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+
+  }
+
+  updateShopCategoryContainedTags(shopCategoryId) {
+    let shopCategoryContainedTag = []
+    // console.log('updateShopCategoryContainedTags.allShopCategories=')
+    // console.log(this.props.allShopCategories)
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      for(let i = 0; i < this.props.allShopCategories.length; i++) {
+        let shopCategory = this.props.allShopCategories[i]
+        if(shopCategory.id == shopCategoryId) {
+          shopCategoryContainedTag = shopCategory.containedTag
+          // console.log('updateShopCategoryContainedTags.=')
+          this.setState({
+            shopCategoryContainedTag: shopCategoryContainedTag,
+            selectedShopTags: []
+          })
+          break
+        }
+      }
     }
   }
 
   submitSuccessCallback(context) {
     context.props.fetchUserOwnedShopInfo()
-    if(context.props.popNum && context.props.popNum > 1) {
-      Actions.pop({
-        popNum: context.props.popNum
-      })
-    }else {
-      Actions.pop()
-    }
+    Toast.show('更新成功', {
+      duration: 1500,
+      onHidden: () =>{
+        if(context.props.popNum && context.props.popNum > 1) {
+          Actions.pop({
+            popNum: context.props.popNum
+          })
+        }else {
+          Actions.pop()
+        }
+      }
+    })
   }
 
   submitErrorCallback(error) {
@@ -159,11 +194,49 @@ class CompleteShopInfo extends Component {
   }
 
   onButtonPress = () => {
+    // console.log('fadsf')
+    //先上传封面
+    if(this.localCoverImgUri) { //用户拍照或从相册选择了照片
+      this.setState({
+        shouldUploadImage: true
+      })
+    }
+    //上传相册
+    else if(this.localAlbumList && this.localAlbumList.length) {
+      this.setState({
+        shouldUploadImages: true
+      })
+    }
+    //直接更新
+    else {
+      this.submitShopInfo()
+    }
+  }
+
+  uploadImageCallback() {
+    //上传封面成功,开始上传相册
+    if(this.localAlbumList && this.localAlbumList.length) {
+      this.setState({
+        shouldUploadImages: true
+      })
+    }
+    //直接更新
+    else {
+      this.submitShopInfo()
+    }
+  }
+
+  uploadImagesCallback() {
+    //上传相册成功
+    this.submitShopInfo()
+  }
+  
+  submitShopInfo() {
     let targetShopCategory = {}
     if(this.props.userOwnedShopInfo.targetShopCategory) {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
     }
-    
+  
     this.props.submitFormData({
       formKey: commonForm,
       shopId: this.props.userOwnedShopInfo.id,
@@ -176,9 +249,11 @@ class CompleteShopInfo extends Component {
 
   rightComponent() {
     return (
+    <TouchableOpacity onPress={()=>{this.onButtonPress()}}>
       <View style={styles.completeBtnBox}>
         <Text style={styles.completeBtn}>完成</Text>
       </View>
+    </TouchableOpacity>
     )
   }
   
@@ -193,6 +268,8 @@ class CompleteShopInfo extends Component {
   }
 
   _onSelectShopCategory(shopCategoryId) {
+    // console.log('_onSelectShopCategory.shopCategoryId=', shopCategoryId)
+    this.updateShopCategoryContainedTags(shopCategoryId)
     this.setState({
       selectShow: !this.state.selectShow
     })
@@ -222,13 +299,13 @@ class CompleteShopInfo extends Component {
     const inputWrapHeight = 40
     if(Platform.OS == 'ios') {
       this.setState({
-        optionListPos: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
-        shopTagsSelectTop: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
+        optionListPos: this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
+        shopTagsSelectTop: this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
       })
     }else{
       this.setState({
-        optionListPos: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
-        shopTagsSelectTop: this.headerHeight + this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
+        optionListPos: this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
+        shopTagsSelectTop: this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
       })
     }
   }
@@ -280,7 +357,7 @@ class CompleteShopInfo extends Component {
     if(this.props.userOwnedShopInfo.targetShopCategory) {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
     }
-
+    // console.log('targetShopCategory===', targetShopCategory)
     return (
       <View style={styles.container}>
         <Header
@@ -292,7 +369,6 @@ class CompleteShopInfo extends Component {
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightComponent={()=>this.rightComponent()}
-          rightPress={()=>{this.onButtonPress()}}
         />
         <View style={styles.body}>
 
@@ -320,7 +396,7 @@ class CompleteShopInfo extends Component {
                   <Text style={styles.inputLabel}>店铺类型</Text>
                 </View>
                 <View style={[styles.inputBox, styles.selectBox]}>
-                  {!targetShopCategory.id
+                  {targetShopCategory.id
                     ? <View style={styles.inputInnerBox}>
                         <Text style={styles.inputInnerStyle}>{targetShopCategory.text}</Text>
                       </View>
@@ -414,6 +490,9 @@ class CompleteShopInfo extends Component {
                   choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
                   addImage={require('../../../assets/images/default_upload.png')}
                   closeModalAfterSelectedImg={true}
+                  imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
+                  shouldUploadImage={this.state.shouldUploadImage}
+                  uploadImageCallback={(leanImgUrl)=>{this.uploadImageCallback(leanImgUrl)}}
                 />
               </View>
             </View>
@@ -426,6 +505,9 @@ class CompleteShopInfo extends Component {
                   number={9}
                   imageLineCnt={3}
                   initValue={this.props.userOwnedShopInfo.album}
+                  getImageList={(imgList)=>{this.localAlbumList = imgList}}
+                  shouldUploadImages={this.state.shouldUploadImages}
+                  uploadImagesCallback={(leanImgUrls)=>{this.uploadImagesCallback(leanImgUrls)}}
                 />
               </View>
             </View>
@@ -437,7 +519,7 @@ class CompleteShopInfo extends Component {
               containerStyle={{top: this.state.shopTagsSelectTop}}
               scrollViewStyle={{height:200}}
               onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
-              tags={this.props.allShopTags}
+              tags={this.state.shopCategoryContainedTag}
               selectedTags={this.state.selectedShopTags}
               onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
             />
@@ -505,6 +587,7 @@ const styles = StyleSheet.create({
     borderWidth: normalizeBorder(),
     borderColor: '#fff',
     padding: 5,
+    marginRight: 12
   },
   completeBtn: {
     fontSize: em(17),

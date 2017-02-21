@@ -27,6 +27,9 @@ import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
+import * as ImageUtil from '../../util/ImageUtil'
+import TimerMixin from 'react-timer-mixin'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -62,12 +65,16 @@ class PublishTopics extends Component {
       isDisabled: false,
       selectedTopic: undefined,
       rteFocused: false,    // 富文本获取到焦点
+      shouldUploadImgComponent: false,
     };
     this.insertImages = []
+    this.leanImgUrls = []
+    this.isPublishing = false
   }
 
-  submitSuccessCallback() {
-    Toast.show('发布成功')
+  submitSuccessCallback(context) {
+    this.isPublishing = false
+    Toast.show('恭喜您,发布成功!')
     Actions.pop()
   }
 
@@ -75,25 +82,65 @@ class PublishTopics extends Component {
     Toast.show(error.message)
   }
 
+  uploadImgComponentCallback(leanImgUrls) {
+    this.leanImgUrls = leanImgUrls
+    this.publishTopic()
+  }
+
   onButtonPress = () => {
     if (this.props.isLogin) {
-      this.props.publishTopicFormData({
-        formKey: topicForm,
-        images: this.insertImages,
-        categoryId: this.state.selectedTopic.objectId,
-        userId: this.props.userInfo.id,
-        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-        success: this.submitSuccessCallback,
-        error: this.submitErrorCallback
-      })
+      if (this.state.selectedTopic) {
+        if (this.insertImages && this.insertImages.length) {
+          if (this.isPublishing) {
+            return
+          }
+          this.isPublishing = true
+          Toast.show('开始发布...', {
+            duration: 1000,
+            onHidden: ()=> {
+              this.setState({
+                shouldUploadImgComponent: true
+              })
+            }
+          })
+        } else {
+          if (this.isPublishing) {
+            return
+          }
+          this.isPublishing = true
+          Toast.show('开始发布...', {
+            duration: 1000,
+            onHidden: ()=> {
+              this.publishTopic()
+            }
+          })
+        }
+      }
+      else {
+        Toast.show("请选择一个话题")
+      }
     }
     else {
       Actions.LOGIN()
     }
   }
 
+  publishTopic() {
+    this.props.publishTopicFormData({
+      formKey: topicForm,
+      images: this.leanImgUrls,
+      categoryId: this.state.selectedTopic.objectId,
+      userId: this.props.userInfo.id,
+      submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+      success: ()=> {
+        this.submitSuccessCallback(this)
+      },
+      error: this.submitErrorCallback
+    })
+  }
+
   componentDidMount() {
-    if (this.props.topicId) {
+    if (this.props.topicId && this.props.topicId.objectId) {
       this.setState({selectedTopic: this.props.topicId});
     }
   }
@@ -111,16 +158,18 @@ class PublishTopics extends Component {
     if (this.props.topics) {
       return (
         this.props.topics.map((value, key)=> {
-          return (
-            <View key={key} style={styles.modalTopicButtonStyle}>
-              <TouchableOpacity style={styles.modalTopicStyle}
-                                onPress={()=>this.closeModal(value)}>
-                <Text style={styles.ModalTopicTextStyle}>
-                  {value.title}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )
+          if (value && value.objectId) {
+            return (
+              <View key={key} style={styles.modalTopicButtonStyle}>
+                <TouchableOpacity style={styles.modalTopicStyle}
+                                  onPress={()=>this.closeModal(value)}>
+                  <Text style={styles.ModalTopicTextStyle}>
+                    {value.title}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )
+          }
         })
       )
     }
@@ -136,11 +185,20 @@ class PublishTopics extends Component {
         </View>
       )
     }
+    else {
+      return (
+        <View>
+          <Text style={styles.topicNoSelectStyle}>
+            点击选择一个主题
+          </Text>
+        </View>
+      )
+    }
   }
 
   getRichTextImages(images) {
     this.insertImages = images
-    console.log('images list', this.insertImages)
+    // console.log('images list', this.insertImages)
   }
 
   renderRichText() {
@@ -149,6 +207,10 @@ class PublishTopics extends Component {
         {...topicContent}
         wrapHeight={rteHeight.height}
         getImages={(images) => this.getRichTextImages(images)}
+        shouldUploadImgComponent={this.state.shouldUploadImgComponent}
+        uploadImgComponentCallback={(leanImgUrls)=> {
+          this.uploadImgComponentCallback(leanImgUrls)
+        }}
       />
     )
   }
@@ -176,6 +238,7 @@ class PublishTopics extends Component {
             </TouchableOpacity>
             <View>
               <CommonTextInput maxLength={36}
+                               autoFocus={true}
                                containerStyle={styles.titleContainerStyle}
                                inputStyle={styles.titleInputStyle}
                                {...topicName}
@@ -216,6 +279,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)
+
+Object.assign(PublishTopics.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {
@@ -262,6 +327,12 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(7),
     alignSelf: 'center',
   },
+  topicNoSelectStyle: {
+    fontSize: em(15),
+    color: "#B2B2B2",
+    marginLeft: normalizeW(10),
+    marginTop: normalizeH(12),
+  },
   imageStyle: {
     position: 'absolute',
     right: normalizeW(12),
@@ -291,14 +362,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     height: normalizeH(250),
     alignItems: 'flex-start',
-    ...Platform.select({
-      ios: {
-        top: normalizeH(65),
-      },
-      android: {
-        top: normalizeH(45)
-      }
-    }),
+    // ...Platform.select({
+    //   ios: {
+    //     paddingTop: normalizeH(65),
+    //   },
+    //   android: {
+    //     paddingTop: normalizeH(45)
+    //   }
+    // }),
   },
   modalTextStyle: {
     marginTop: normalizeH(17),

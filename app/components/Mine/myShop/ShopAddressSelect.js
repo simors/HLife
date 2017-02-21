@@ -44,6 +44,7 @@ class ShopAddressSelect extends Component {
 
     this.state = {
       currentCity: '',
+      currentDistrict: '',
       center: null,
       marker: null,
       zoom: 15,
@@ -84,15 +85,16 @@ class ShopAddressSelect extends Component {
           },
         })
         
-        this.updateInfoByLatLng('shopAddress', data.latitude, data.longitude)
-
         if (Platform.OS == 'ios') {
-          this.updateInfoByLatLng('currentCity', data.latitude, data.longitude)
+          this.updateInfoByLatLng(data.latitude, data.longitude)
         }else {
           this.setState({
-            currentCity: data.city
+            shopAddress: data.address,
+            currentCity: data.city,
+            currentDistrict: data.district
           })
         }
+        // console.log('getCurrentPosition.this.state===', this.state)
 
       })
       .catch(e =>{
@@ -107,26 +109,32 @@ class ShopAddressSelect extends Component {
 
   }
 
-  updateInfoByLatLng(infoType, latitude, longitude) {
+  updateInfoByLatLng(latitude, longitude) {
     Geolocation.reverseGeoCode(latitude, longitude)
       .then(data => {
         // console.log('reverseGeoCode.data===', data)
-        if('shopAddress' == infoType) {
-          if(data.address) {
-            this.setState({
-              shopAddress: data.address
-            })
-          }else {
-            this.setState({
-              shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber
-            })
-          }
-        }else if('currentCity' == infoType) {
+        if(data.address) {
           this.setState({
-            currentCity: data.city
+            shopAddress: data.address,
+            currentCity: data.city,
+            currentDistrict: data.district,
+            center: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+          })
+        }else {
+          this.setState({
+            shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber,
+            currentCity: data.city,
+            currentDistrict: data.district,
+            center: {
+              latitude: latitude,
+              longitude: longitude,
+            },
           })
         }
-
+        // console.log('reverseGeoCode.this.state===', this.state)
       })
       .catch(e =>{
         console.warn(e, 'error')
@@ -140,13 +148,7 @@ class ShopAddressSelect extends Component {
 
   _onMapStatusChangeFinish4Android(e) {
     // console.log('_onMapStatusChangeFinish4Android.e====', e)
-    // this.setState({
-    //   center: {
-    //     latitude: e.target.latitude,
-    //     longitude: e.target.longitude
-    //   },
-    // })
-    this.updateInfoByLatLng('shopAddress', e.target.latitude, e.target.longitude)
+    this.updateInfoByLatLng(e.target.latitude, e.target.longitude)
   }
 
   onMapMarkerImageLayout(event) {
@@ -193,32 +195,6 @@ class ShopAddressSelect extends Component {
           }
         })
       })
-
-    // console.log('searchNearbyProcess.params===', this.state.center + ",keyword=" + text)
-    // PoiSearch.searchNearbyProcess(text, this.state.center.latitude,
-    //   this.state.center.longitude, 1000, 0)
-    //   .then(data => {
-    //     console.log('searchNearbyProcess.data===', data)
-    //     this.setState({
-    //       showSearchResult: true,
-    //       searchResult: {
-    //         error: data.errcode && data.errcode,
-    //         message: data.message && data.message,
-    //         data: data.poiResult && data.poiResult.poiInfos
-    //       }
-    //     })
-    //   })
-    //   .catch(e =>{
-    //     console.warn(e, 'error')
-    //     this.setState({
-    //       showSearchResult: true,
-    //       searchResult: {
-    //         error: -9,
-    //         message: '查询异常,请稍候再试!',
-    //         data: []
-    //       }
-    //     })
-    //   })
   }
 
   clearSearchInput() {
@@ -259,6 +235,7 @@ class ShopAddressSelect extends Component {
             // console.log('_onSearchResultPress.reverseGeoCode.data===', data)
             this.setState({
               currentCity: data.city,
+              currentDistrict: data.district,
             }, ()=>{
               this.getGeoCode()
             })
@@ -320,10 +297,16 @@ class ShopAddressSelect extends Component {
       return
     }
 
+    // console.log('onShopBtnPress.this.state===', this.state)
     Actions.pop({
       refresh: {
         shopName: this.state.shopName,
-        shopAddress: this.state.shopAddress
+        shopAddress: this.state.shopAddress,
+        currentCity: this.state.currentCity,
+        currentDistrict: this.state.currentDistrict,
+        latitude: this.state.center.latitude,
+        longitude: this.state.center.longitude,
+
       }
     })
   }

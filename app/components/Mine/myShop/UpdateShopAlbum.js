@@ -43,6 +43,12 @@ const shopAlbumInput = {
 class UpdateShopAlbum extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      shouldUploadImages: false
+    }
+
+    this.isPublishing = false
   }
 
   componentWillMount() {
@@ -61,7 +67,24 @@ class UpdateShopAlbum extends Component {
 
   }
 
+  onButtonPress() {
+    if(this.imgList && this.imgList.length) {
+      this.setState({
+        shouldUploadImages: true
+      })
+    }else {
+      this.updateShopAlbum()
+    }
+  }
+
+  uploadImagesCallback() {
+    this.updateShopAlbum()
+  }
+
   updateShopAlbum() {
+    if(this.isPublishing) {
+      return
+    }
     this.props.submitFormData({
       formKey: commonForm,
       id: this.props.id,
@@ -72,6 +95,7 @@ class UpdateShopAlbum extends Component {
   }
 
   submitSuccessCallback(context) {
+    this.isPublishing = false
     context.props.fetchUserOwnedShopInfo()
     Toast.show('更新成功', {
       duration: 1500,
@@ -82,6 +106,7 @@ class UpdateShopAlbum extends Component {
   }
 
   submitErrorCallback(error) {
+    this.isPublishing = false
     Toast.show(error.message || '更新失败')
   }
 
@@ -108,6 +133,9 @@ class UpdateShopAlbum extends Component {
               number={9}
               imageLineCnt={3}
               initValue={this.props.userOwnedShopInfo.album}
+              getImageList={(imgList)=>{this.imgList = imgList}}
+              shouldUploadImages={this.state.shouldUploadImages}
+              uploadImagesCallback={(leanImgUrls)=>{this.uploadImagesCallback(leanImgUrls)}}
             />
           </View>
         </View>

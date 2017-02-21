@@ -24,6 +24,7 @@ import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
+import * as Toast from '../Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -40,6 +41,10 @@ class ImageGroupInput extends Component {
       showImg: '',
       reSltImageIndex: -1
     }
+
+    this.isUploadedImages = false
+
+    this.pickerAndUploadImage = !!props.pickerAndUploadImage
   }
 
   componentDidMount() {
@@ -60,13 +65,6 @@ class ImageGroupInput extends Component {
 
   selectImg() {
     this.ActionSheet.show()
-
-    // selectPhotoTapped({
-    //   start: this.pickImageStart,
-    //   failed: this.pickImageFailed,
-    //   cancelled: this.pickImageCancel,
-    //   succeed: this.pickImageSucceed
-    // })
   }
 
   reSelectImg(index) {
@@ -74,44 +72,6 @@ class ImageGroupInput extends Component {
       reSltImageIndex: index
     })
     this.ActionSheet.show()
-    // const options = {
-    //   title: '',
-    //   takePhotoButtonTitle: '拍照',
-    //   chooseFromLibraryButtonTitle: '从相册选择',
-    //   cancelButtonTitle: '取消',
-    //   quality: 1.0,
-    //   maxWidth: 500,
-    //   maxHeight: 500,
-    //   storageOptions: {
-    //     skipBackup: true
-    //   }
-    // }
-    //
-    // ImagePicker.showImagePicker(options, (response) => {
-    //   if (response.didCancel) {
-    //   } else if (response.error) {
-    //   } else if (response.customButton) {
-    //   } else {
-    //     console.log('fileSize====', response.fileSize)
-    //     this.imgList.splice(index, 1)
-    //     let source
-    //     if (Platform.OS === 'android') {
-    //       source = {
-    //         uri: response.uri,
-    //         isStatic: true,
-    //       }
-    //     } else {
-    //       source = {
-    //         uri: response.uri.replace('file://', ''),
-    //         isStatic: true,
-    //         origURL: response.origURL,
-    //       }
-    //     }
-    //     this.pickImageSucceed(source)
-    //
-    //     this.toggleModal(!this.state.imgModalShow)
-    //   }
-    // })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -125,6 +85,10 @@ class ImageGroupInput extends Component {
         this.imgList = nextProps.initValue
         this.inputChange(this.imgList)
       }
+    }
+
+    if(nextProps.shouldUploadImages && !this.isUploadedImages) {
+      this.uploadImgs(this.imgList)
     }
   }
 
@@ -143,45 +107,29 @@ class ImageGroupInput extends Component {
     return {isVal: true, errMsg: '验证通过'}
   }
 
-  pickImageStart = () => {
-  }
-
-  pickImageFailed = () => {
-  }
-
-  pickImageCancel = () => {
-  }
-
-  pickImageSucceed = (source) => {
-    this.uploadImg(source)
-  }
-
-  imageSelectedChange(url) {
-    this.imgList.push(url)
+  updateImageGroup(options) {
+    this.imgList = this.imgList.concat(options.uris)
     this.inputChange(this.imgList)
+    //用户拍照或从相册选择了照片
+    if(typeof this.props.getImageList == 'function') {
+      this.props.getImageList(this.imgList)
+    }
+    if(typeof options.success == 'function') {
+      options.success(options)
+    }
   }
 
-  uploadImg = (source) => {
-    let fileUri = ''
-    if (Platform.OS === 'ios') {
-      fileUri = fileUri.concat('file://')
-    }
-    fileUri = fileUri.concat(source.uri)
-
-    let fileName = source.uri.split('/').pop()
-    let uploadPayload = {
-      fileUri: fileUri,
-      fileName: fileName
-    }
-
-    uploadFile(uploadPayload).then((saved) => {
-      let leanImgUrl = saved.savedPos
-      this.imageSelectedChange(leanImgUrl)
-      if(typeof source.success == 'function') {
-        source.success(source)
+  uploadImgs(uris) {
+    ImageUtil.uploadImgs({
+      uris: uris,
+      success: (leanImgUrls) => {
+        this.isUploadedImages = true
+        this.imgList = leanImgUrls
+        this.inputChange(this.imgList)
+        if( typeof this.props.uploadImagesCallback == 'function') {
+          this.props.uploadImagesCallback({leanImgUrls})
+        }
       }
-    }).catch((error) => {
-      console.log('upload failed:', error)
     })
   }
 
@@ -309,48 +257,53 @@ class ImageGroupInput extends Component {
         openType: 'camera',
         success: (response) => {
           if(this.state.reSltImageIndex != -1) {
+            this.toggleModal(false)
             this.imgList.splice(this.state.reSltImageIndex, 1)
             this.setState({
               reSltImageIndex: -1
             })
           }
-          this.uploadImg({
-            uri: response.path
-          })
-          // console.log('openPicker==response==', response.path)
-          // console.log('openPicker==response==', response.size)
+          let uris = [response.path]
+          if(this.pickerAndUploadImage) {
+            this.uploadImgs({uris})
+          }else {
+            this.updateImageGroup({uris})
+          }
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       })
     }else if(1 == index) { //从相册选择
       let option = {
         openType: 'gallery',
-        multiple: true,
+        multiple: false, //为了使用裁剪控制图片大小,必须关闭多选
         success: (response) => {
+          let uris = []
           if(this.state.reSltImageIndex != -1) {
+            this.toggleModal(false)
             this.imgList.splice(this.state.reSltImageIndex, 1)
             this.setState({
               reSltImageIndex: -1
             })
-            this.uploadImg({
-              uri: response.path
-            })
+            uris.push(response.path)
           }else {
-            if(response && response.length) {
-              let source = {
-                uri: response[0].path,
-                uploadImgIndex: 0,
-                success: (respSource)=>{
-                  if(respSource.uploadImgIndex < response.length - 1) {
-                    respSource.uploadImgIndex += 1
-                    respSource.uri = response[respSource.uploadImgIndex].path
-                    this.uploadImg(respSource)
-                  }
-                }
-              }
-
-              this.uploadImg(source)
+            if(option.multiple) {
+              response.forEach((item) => {
+                uris.push(item.path)
+              })
+            }else {
+              uris.push(response.path)
             }
           }
+          if(this.pickerAndUploadImage) {
+            this.uploadImgs({uris})
+          }else {
+            this.updateImageGroup({uris})
+          }
+        },
+        fail: (response) => {
+          Toast.show(response.message)
         }
       }
 

@@ -104,7 +104,7 @@ export class TopicComment extends Component {
           <View style={styles.timeLocationStyle}>
             <Text style={styles.timeTextStyle}>{getConversationTime(this.props.topic.createdAt)}</Text>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.timeTextStyle}>长沙</Text>
+            <Text style={styles.timeTextStyle}>{this.props.topic.position? this.props.topic.position.city+this.props.topic.position.district:"未知"}</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
               <Image style={styles.likeImageStyle}
                      source={this.props.isLiked ?
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   likeStyle: {
     position: 'absolute',
-    left: 189,
+    left: normalizeW(189),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',
@@ -228,12 +228,14 @@ const styles = StyleSheet.create({
   likeImageStyle: {
     height: normalizeW(16),
     width: normalizeH(18),
-    marginRight: 3
+    marginRight: 3,
+    resizeMode:'stretch'
   },
   commentImageStyle: {
-    height: normalizeW(19),
-    width: normalizeH(18),
-    marginRight: 3
+    height: normalizeH(16),
+    width: normalizeW(16),
+    marginRight: 3,
+    resizeMode:'stretch'
   },
   commentTextStyle: {
     fontSize: em(12),
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
   },
   commentStyle: {
     position: 'absolute',
-    left: 259,
+    left: normalizeW(259),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',

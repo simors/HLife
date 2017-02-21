@@ -129,7 +129,7 @@ export class TopicShow extends Component {
         {/*{this.renderCommentAndLikeButton()}*/}
         <View style={styles.locationCommentStyle}>
           <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
-          <Text style={styles.timeTextStyle}>长沙</Text>
+          <Text style={styles.timeTextStyle}>{this.props.topic.position? this.props.topic.position.city+this.props.topic.position.district:"未知"}</Text>
           <Text style={styles.likeTextStyle}>{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}</Text>
           <Text style={styles.commentTextStyle}>{"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}</Text>
         </View>

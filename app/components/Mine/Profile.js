@@ -69,24 +69,28 @@ const dtPicker = {
 class Profile extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      shouldUploadImage: false
+    }
+
   }
 
   componentWillUnmount() {
     this.props.inputFormOnDestroy({formKey: profileForm})
   }
 
-  submitSuccessCallback(doctorInfo) {
-    Toast.show('保存信息成功')
-    Actions.pop()
-  }
-
-  submitErrorCallback(error) {
-
-    Toast.show(error.message)
-  }
-
   onButtonPress = () => {
+    this.setState({
+      shouldUploadImage: true
+    })
+  }
 
+  uploadImageCallback() {
+    this.updateProfile()
+  }
+
+  updateProfile() {
     this.props.submitFormData({
       formKey: profileForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT,
@@ -96,8 +100,16 @@ class Profile extends Component {
     })
   }
 
-  render() {
+  submitSuccessCallback(doctorInfo) {
+    Toast.show('保存信息成功')
+    Actions.pop()
+  }
 
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  render() {
     return(
       <View style={styles.container}>
         <Header
@@ -112,10 +124,15 @@ class Profile extends Component {
         <View style={styles.body}>
           <ScrollView keyboardShouldPersistTaps= {true} keyboardDismissMode= {'on-drag'}>
             <View style={styles.zonea}>
-              <ImageInput {...avatarInput} initValue={this.props.userInfo.avatar? this.props.userInfo.avatar: undefined} containerStyle={styles.imageInputStyle}
-                          addImage={require('../../assets/images/default_portrait.png')}
-                          choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(42), overflow: 'hidden', width: normalizeW(84), height: normalizeH(84), overlayColor: '#FFFFFF'}}
-                          addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
+              <ImageInput
+                {...avatarInput}
+                initValue={this.props.userInfo.avatar? this.props.userInfo.avatar: undefined}
+                containerStyle={styles.imageInputStyle}
+                addImage={require('../../assets/images/default_portrait.png')}
+                choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(42), overflow: 'hidden', width: normalizeW(84), height: normalizeH(84), overlayColor: '#FFFFFF'}}
+                addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
+                shouldUploadImage={this.state.shouldUploadImage}
+                uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
               />
             </View>
             <View style={styles.zoneb}>

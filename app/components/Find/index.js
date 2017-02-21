@@ -19,7 +19,7 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
-import {getTopics} from '../../selector/topicSelector'
+import {getTopics, getLocalTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import CommonListView from '../common/CommonListView'
@@ -46,25 +46,39 @@ export class Find extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      if(this.props.isLogin) {
+      if (this.props.isLogin) {
         this.props.fetchUserFollowees()
       }
-      this.props.fetchTopics({
-        type: "topics",
-        categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
-        isRefresh: true
-      })
+      if (this.state.selectedTab == 0) {
+        this.props.fetchTopics({
+          type: "localTopics",
+          isRefresh: true
+        })
+      } else {
+        this.props.fetchTopics({
+          type: "topics",
+          categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+          isRefresh: true
+        })
+      }
     })
   }
 
   getSelectedTab(index) {
     this.setState({selectedTab: index})
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({
-        type: "topics",
-        categoryId: this.props.topicCategories[index].objectId,
-        isRefresh: true,
-      })
+      if (this.state.selectedTab == 0) {
+        this.props.fetchTopics({
+          type: "localTopics",
+          isRefresh: true
+        })
+      } else {
+        this.props.fetchTopics({
+          type: "topics",
+          categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+          isRefresh: true
+        })
+      }
     })
   }
 
@@ -107,29 +121,58 @@ export class Find extends Component {
 
   loadMoreData(isRefresh) {
     let lastCreatedAt = undefined
-    if(this.props.topics){
-       let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
-      if(currentTopics && currentTopics.length) {
-        lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
+    let payload = undefined
+    if (this.props.topics) {
+      if (this.state.selectedTab == 0) {
+        let currentTopics = this.props.topics[0]
+        if (currentTopics && currentTopics.length) {
+          lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
+        }
+      } else {
+        let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
+        if (currentTopics && currentTopics.length) {
+          lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
+        }
       }
     }
-    let payload = {
-      type: "topics",
-      categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
-      lastCreatedAt: lastCreatedAt,
-      isRefresh: !!isRefresh,
-      success: (isEmpty) => {
-        if(!this.listView) {
-          return
+    if (this.state.selectedTab == 0) {
+      payload = {
+        type: "localTopics",
+        lastCreatedAt: lastCreatedAt,
+        isRefresh: !!isRefresh,
+        success: (isEmpty) => {
+          if (!this.listView) {
+            return
+          }
+          if (isEmpty) {
+            this.listView.isLoadUp(false)
+          } else {
+            this.listView.isLoadUp(true)
+          }
+        },
+        error: (err)=> {
+          Toast.show(err.message, {duration: 1000})
         }
-        if(isEmpty) {
-          this.listView.isLoadUp(false)
-        }else {
-          this.listView.isLoadUp(true)
+      }
+    } else {
+      payload = {
+        type: "topics",
+        categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+        lastCreatedAt: lastCreatedAt,
+        isRefresh: !!isRefresh,
+        success: (isEmpty) => {
+          if (!this.listView) {
+            return
+          }
+          if (isEmpty) {
+            this.listView.isLoadUp(false)
+          } else {
+            this.listView.isLoadUp(true)
+          }
+        },
+        error: (err)=> {
+          Toast.show(err.message, {duration: 1000})
         }
-      },
-      error: (err)=>{
-        Toast.show(err.message, {duration: 1000})
       }
     }
     this.props.fetchTopics(payload)
@@ -137,8 +180,10 @@ export class Find extends Component {
 
   renderTopics() {
     let dataSrc = ds.cloneWithRows([])
-    if (this.props.topics){
-      if (this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]) {
+    if (this.props.topics) {
+      if (this.state.selectedTab == 0) {
+        dataSrc = ds.cloneWithRows(this.props.topics[0])
+      } else if (this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]) {
         dataSrc = ds.cloneWithRows(this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId])
       }
     }
@@ -167,39 +212,41 @@ export class Find extends Component {
 
   render() {
     let topicId = this.props.topicCategories[this.state.selectedTab]
-    return (
-      <View style={styles.container}>
-        <Header
-          leftType="none"
-          title="发现"
-          rightType="none"
-        />
-        <TabScrollView topics={this.props.topicCategories}
-                       topicId={this.props.topicId}
-                       renderTopics={() => this.renderTopics()}
-                       onSelected={(index) => this.getSelectedTab(index)}/>
-        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
-                            onPress={()=> {
-                              if (this.props.isLogin) {
-                                Actions.PUBLISH({topicId})
-                              } else {
-                                Actions.LOGIN()
-                              }
-                            }}
-        >
-          <Image source={require("../../assets/images/local_write@2x.png")}/>
-        </TouchableHighlight>
-      </View>
-    )
-  }
+      return (
+        <View style={styles.container}>
+          <Header
+            leftType="none"
+            title="发现"
+            rightType="none"
+          />
+          <TabScrollView topics={this.props.topicCategories}
+                         topicId={this.props.topicId}
+                         renderTopics={() => this.renderTopics()}
+                         onSelected={(index) => this.getSelectedTab(index)}/>
+          <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
+                              onPress={()=> {
+                                if (this.props.isLogin) {
+                                  Actions.PUBLISH({topicId})
+                                } else {
+                                  Actions.LOGIN()
+                                }
+                              }}
+          >
+            <Image source={require("../../assets/images/local_write@2x.png")}/>
+          </TouchableHighlight>
+        </View>
+      )
+    }
 }
 
 const mapStateToProps = (state, ownProps) => {
   const topicCategories = getTopicCategories(state)
   const topics = getTopics(state)
+  const localTopics = getLocalTopics(state)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
-
+  topicCategories.unshift({title: "本地"})
+  topics[0] = localTopics
   return {
     dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,

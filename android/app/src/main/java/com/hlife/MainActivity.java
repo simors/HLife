@@ -1,6 +1,9 @@
 package com.hlife;
 
 import com.facebook.react.ReactActivity;
+import com.ReactCamera.RNCameraViewPackage;
+import com.eguma.barcodescanner.BarcodeScanner;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;

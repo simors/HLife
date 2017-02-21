@@ -36,6 +36,7 @@ export function submitFormData(payload) {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
     let isFormValid = isInputFormValid(getState(), payload.formKey)
+    // console.log('submitFormData=isFormValid===', isFormValid)
     if (!isFormValid.isValid) {
       if (payload.error) {
         payload.error({message: isFormValid.errMsg})
@@ -324,6 +325,10 @@ function handleShopCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
+    // if(true){
+    //   dispatch(shopCertification(payload, formData))
+    //   return
+    // }
     if(__DEV__) {
       dispatch(verifyInvitationCode(payload, formData))
     }
@@ -376,11 +381,15 @@ function verifyInvitationCode(payload, formData) {
 
 function shopCertification(payload, formData) {
   return (dispatch, getState) => {
+    // console.log('shopCertification=formData==', formData)
     let certPayload = {
       name: formData.nameInput.text,
       phone: formData.phoneInput.text,
       shopName: formData.shopNameInput.text,
       shopAddress: formData.shopAddrInput.text,
+      geo: formData.shopGeoInput.text,
+      geoCity: formData.shopGeoCityInput.text,
+      geoDistrict: formData.shopGeoDistrictInput.text,
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
       let actionType = AuthTypes.SHOP_CERTIFICATION_SUCCESS
@@ -473,10 +482,13 @@ function handleCompleteShopInfo(payload, formData) {
 
 function handlePublishAnnouncement(payload, formData) {
   return (dispatch, getState) => {
+    if(!formData.announcementContentInput || !formData.announcementContentInput.text) {
+      throw new Error('请填写公告内容')
+    }
     let newPayload = {
       id: payload.id,
       announcementContent: formData.announcementContentInput.text,
-      announcementCover: formData.announcementCoverInput.text,
+      announcementCover: formData.announcementCoverInput && formData.announcementCoverInput.text,
     }
     lcAuth.publishAnnouncement(newPayload).then((shop) => {
       let _action = createAction(AuthTypes.PUBLISH_ANNOUNCEMENT_SUCCESS)
@@ -531,10 +543,13 @@ function handlePublishShopComment(payload, formData) {
 
 function handleUpdateAnnouncement(payload, formData) {
   return (dispatch, getState) => {
+    if(!formData.announcementContentInput || !formData.announcementContentInput.text) {
+      throw new Error('请填写公告内容')
+    }
     let newPayload = {
       shopAnnouncementId: payload.shopAnnouncementId,
       announcementContent: formData.announcementContentInput.text,
-      announcementCover: formData.announcementCoverInput.text,
+      announcementCover: formData.announcementCoverInput && formData.announcementCoverInput.text,
     }
     lcAuth.updateAnnouncement(newPayload).then((shop) => {
       let _action = createAction(AuthTypes.UPDATE_ANNOUNCEMENT_SUCCESS)

@@ -43,11 +43,15 @@ const shopCoverInput = {
 class UpdateShopCover extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      shouldUploadImage: false
+    }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-
+      // this.props.fetchUserOwnedShopInfo()
     })
   }
 
@@ -62,6 +66,16 @@ class UpdateShopCover extends Component {
   }
 
   updateShopCover() {
+    if(this.localCoverImgUri) { //用户拍照或从相册选择了照片
+      this.setState({
+        shouldUploadImage: true
+      })
+    }else {
+      Toast.show('请选择或拍照后,再进行更新操作')
+    }
+  }
+
+  uploadImageCallback() {
     this.props.submitFormData({
       formKey: commonForm,
       id: this.props.id,
@@ -111,6 +125,9 @@ class UpdateShopCover extends Component {
               addImage={require('../../../assets/images/default_upload.png')}
               closeModalAfterSelectedImg={true}
               initValue={this.props.userOwnedShopInfo.coverUrl}
+              imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
+              shouldUploadImage={this.state.shouldUploadImage}
+              uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
             />
           </View>
         </View>
