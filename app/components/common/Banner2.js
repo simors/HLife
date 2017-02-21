@@ -16,7 +16,6 @@ import {
 } from 'react-native'
 
 import Carousel from './Carousel'
-import THEME from '../../constants/themes/theme1'
 
 const { width, height } = Dimensions.get('window')
 
