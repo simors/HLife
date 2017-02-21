@@ -388,7 +388,6 @@ export function getLocalTopics(payload) {
         }
 
         query.equalTo('city', position.city)
-        query.equalTo('district', position.district)
         query.equalTo('province', position.province)
 
         query.limit(5) // 最多返回 5 条结果
