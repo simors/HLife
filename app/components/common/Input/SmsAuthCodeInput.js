@@ -195,7 +195,7 @@ const smsStyles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => {
   let obj = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  console.log("obj", obj)
+  // console.log("obj", obj)
   return {obj}
 }
 

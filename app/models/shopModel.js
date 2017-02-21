@@ -15,6 +15,8 @@ export const ShopRecord = Record({
   contactNumber: undefined, //店铺联系电话（客服电话）
   targetShopCategory: {}, //店铺所属分类信息
   geo:[], //店铺地理坐标
+  geoCity:undefined, //店铺地理坐标对应城市名
+  geoDistrict:[], //店铺地理坐标对应区名
   distance: undefined, //用户与店铺的距离
   geoName: undefined, //店铺地理坐标对应城市区域名称
   pv: 1000, //店铺点击量
@@ -83,13 +85,15 @@ export class ShopInfo extends ShopRecord {
           })
         }
         record.set('containedTag', containedTag)
-        if(lcObj.userCurGeo) {
-          record.set('geo', attrs.geo)
+        record.set('geo', attrs.geo)
+        if(lcObj.userCurGeo && attrs.geo) {
           let geo = new AV.GeoPoint(attrs.geo)
           let distance = geo.kilometersTo(lcObj.userCurGeo)
           record.set('distance', Number(distance).toFixed(0))
         }
         record.set('geoName', attrs.geoName)
+        record.set('geoCity', attrs.geoCity)
+        record.set('geoDistrict', attrs.geoDistrict)
         record.set('pv', numberUtils.formatNum(attrs.pv))
         record.set('score', attrs.score)
         record.set('ourSpecial', attrs.ourSpecial)

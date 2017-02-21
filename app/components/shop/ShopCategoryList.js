@@ -20,6 +20,8 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
+import {Geolocation} from '../common/BaiduMap'
+
 import Header from '../common/Header'
 import {
   Option,
@@ -49,8 +51,8 @@ class ShopCategoryList extends Component {
         shopCategoryId: '',
         sortId: '0',
         distance: '',
-        geo: [39.9, 116.4],
-        geoName: '长沙',
+        geo: undefined,
+        geoCity: '',
         lastCreatedAt: '',
         lastScore: '',
         lastGeo: '',
@@ -84,6 +86,39 @@ class ShopCategoryList extends Component {
       this.props.fetchShopCategories()
       this.props.fetchShopTags()
       this.refreshData()
+    })
+
+    Geolocation.getCurrentPosition()
+    .then(data => {
+      this.state.searchForm.geo = [data.latitude, data.longitude]
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          geo: this.state.searchForm.geo,
+        }
+      })
+
+      if (Platform.OS == 'ios') {
+        Geolocation.reverseGeoCode(data.latitude, data.longitude)
+          .then(response => {
+            this.state.searchForm.geoCity = response.city,
+            this.setState({
+              searchForm: {
+                ...this.state.searchForm,
+                geoCity: this.state.searchForm.geoCity
+              }
+            })
+          })
+      }else {
+        this.state.searchForm.geoCity = data.city,
+          this.setState({
+            searchForm: {
+              ...this.state.searchForm,
+              geoCity: this.state.searchForm.geoCity
+            }
+          })
+      }
+
     })
   }
 
@@ -346,9 +381,13 @@ class ShopCategoryList extends Component {
               score={rowData.score}
             />
             <View style={styles.subInfoWrap}>
-              <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
-              <Text style={styles.subTxt}>{rowData.geoName}</Text>
-              <Text style={styles.subTxt}>{rowData.distance}km</Text>
+              {rowData.pv &&
+                <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
+              }
+              <Text style={styles.subTxt}>{rowData.geoCity && rowData.geoCity}{rowData.geoDistrict && rowData.geoDistrict}</Text>
+              {rowData.distance &&
+                <Text style={styles.subTxt}>{rowData.distance}km</Text>
+              }
             </View>
           </View>
         </View>

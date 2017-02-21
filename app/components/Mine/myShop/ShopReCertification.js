@@ -58,11 +58,41 @@ const shopNameInput = {
   formKey: commonForm,
   stateKey: Symbol('shopNameInput'),
   type: "shopNameInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '输入有误'}
+  }
 }
 const shopAddrInput = {
   formKey: commonForm,
   stateKey: Symbol('shopAddrInput'),
   type: "shopAddrInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '输入有误'}
+  }
+}
+const shopGeoInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopGeoInput'),
+  type: "shopGeoInput",
+  checkValid: ()=>{return {isVal: true}}
+}
+const shopGeoCityInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopGeoCityInput'),
+  type: "shopGeoCityInput",
+  checkValid: ()=>{return {isVal: true}}
+}
+const shopGeoDistrictInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopGeoDistrictInput'),
+  type: "shopGeoDistrictInput",
+  checkValid: ()=>{return {isVal: true}}
 }
 
 class ShopReCertification extends Component {
@@ -80,6 +110,12 @@ class ShopReCertification extends Component {
     InteractionManager.runAfterInteractions(() => {
 
     })
+
+    this.props.initInputForm(shopNameInput)
+    this.props.initInputForm(shopAddrInput)
+    this.props.initInputForm(shopGeoInput)
+    this.props.initInputForm(shopGeoCityInput)
+    this.props.initInputForm(shopGeoDistrictInput)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -91,7 +127,7 @@ class ShopReCertification extends Component {
       nextProps.inputFormUpdate({
         formKey: shopNameInput.formKey,
         stateKey: shopNameInput.stateKey,
-        data: nextProps.shopName
+        data: {text:nextProps.shopName},
       })
     }
     if(nextProps.shopAddress) {
@@ -101,7 +137,28 @@ class ShopReCertification extends Component {
       nextProps.inputFormUpdate({
         formKey: shopAddrInput.formKey,
         stateKey: shopAddrInput.stateKey,
-        data: nextProps.shopAddress
+        data: {text:nextProps.shopAddress},
+      })
+    }
+    if(nextProps.latitude && nextProps.longitude) {
+      nextProps.inputFormUpdate({
+        formKey: shopGeoInput.formKey,
+        stateKey: shopGeoInput.stateKey,
+        data: {text:[nextProps.latitude, nextProps.longitude]},
+      })
+    }
+    if(nextProps.currentCity) {
+      nextProps.inputFormUpdate({
+        formKey: shopGeoCityInput.formKey,
+        stateKey: shopGeoCityInput.stateKey,
+        data: {text:nextProps.currentCity},
+      })
+    }
+    if(nextProps.currentDistrict) {
+      nextProps.inputFormUpdate({
+        formKey: shopGeoDistrictInput.formKey,
+        stateKey: shopGeoDistrictInput.stateKey,
+        data: {text:nextProps.currentDistrict},
       })
     }
 
@@ -274,7 +331,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
-  inputFormUpdate
+  inputFormUpdate,
+  initInputForm
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopReCertification)

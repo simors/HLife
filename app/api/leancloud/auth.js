@@ -225,6 +225,7 @@ export function profileSubmit(payload) {
 }
 
 export function shopCertification(payload) {
+  // console.log('shopCertification==payload=', payload)
   let Shop = AV.Object.extend('Shop')
   let shop = new Shop()
   let currentUser = AV.User.current()
@@ -232,6 +233,12 @@ export function shopCertification(payload) {
   shop.set('phone', payload.phone)
   shop.set('shopName', payload.shopName)
   shop.set('shopAddress', payload.shopAddress)
+  if(payload.geo) {
+    let point = new AV.GeoPoint(payload.geo)
+    shop.set('geo', point)
+  }
+  shop.set('geoCity', payload.geoCity)
+  shop.set('geoDistrict', payload.geoDistrict)
   shop.set('invitationCode', payload.invitationCode)
   shop.set('owner', currentUser)
 

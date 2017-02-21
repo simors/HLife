@@ -194,7 +194,7 @@ class CompleteShopInfo extends Component {
   }
 
   onButtonPress = () => {
-    console.log('fadsf')
+    // console.log('fadsf')
     //先上传封面
     if(this.localCoverImgUri) { //用户拍照或从相册选择了照片
       this.setState({
@@ -357,7 +357,7 @@ class CompleteShopInfo extends Component {
     if(this.props.userOwnedShopInfo.targetShopCategory) {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
     }
-
+    // console.log('targetShopCategory===', targetShopCategory)
     return (
       <View style={styles.container}>
         <Header
@@ -396,7 +396,7 @@ class CompleteShopInfo extends Component {
                   <Text style={styles.inputLabel}>店铺类型</Text>
                 </View>
                 <View style={[styles.inputBox, styles.selectBox]}>
-                  {!targetShopCategory.id
+                  {targetShopCategory.id
                     ? <View style={styles.inputInnerBox}>
                         <Text style={styles.inputInnerStyle}>{targetShopCategory.text}</Text>
                       </View>

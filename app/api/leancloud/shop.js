@@ -15,13 +15,14 @@ import {
   ShopTag
 } from '../../models/shopModel'
 import {UserInfo} from '../../models/userModels'
+import {Geolocation} from '../../components/common/BaiduMap'
 
 export function getShopList(payload) {
   let shopCategoryId = payload.shopCategoryId
   let sortId = payload.sortId // 0-智能,1-按好评,2-按距离
   let distance = payload.distance
   let geo = payload.geo
-  let geoName = payload.geoName
+  let geoCity = payload.geoCity
   let isRefresh = payload.isRefresh
   // let lastCreatedAt = payload.lastCreatedAt
   let lastScore = payload.lastScore
@@ -63,19 +64,27 @@ export function getShopList(payload) {
   }
   query.limit(5) // 最多返回 5 条结果
   if(distance) {
+    // console.log('getShopList.geo===', geo)
+    // console.log('getShopList.Array.isArray(geo)===', Array.isArray(geo))
     if (Array.isArray(geo)) {
       let point = new AV.GeoPoint(geo)
       query.withinKilometers('geo', point, distance)
     }
   }else {
-    query.contains('geoName', geoName)
+    // console.log('getShopList.geoCity===', geoCity)
+    // console.log('getShopList.typeof geoCity===', typeof geoCity)
+    if(geoCity) {
+      query.contains('geoCity', geoCity)
+    }
   }
   if(shopTagId) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
     query.equalTo('containedTag', shopTag)
   }
+  // console.log('getShopList.query===', query)
   return query.find().then(function (results) {
     // console.log('getShopList.results=', results)
+    // console.log('getShopList.__DEV__=', __DEV__)
     if(__DEV__) {
       let shopList = []
       results.forEach((result) => {
@@ -83,10 +92,25 @@ export function getShopList(payload) {
       })
       return new List(shopList)
     }else {
-      return AV.GeoPoint.current().then(function(geoPoint){
+      return Geolocation.getCurrentPosition().then(function(geoPoint){
+        // console.log('getCurrentPosition.resolve===', geoPoint)
         let shopList = []
         results.forEach((result) => {
           result.userCurGeo = geoPoint
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      }, ()=>{
+        // console.log('getCurrentPosition.reject===')
+        let shopList = []
+        results.forEach((result) => {
+          shopList.push(ShopInfo.fromLeancloudObject(result))
+        })
+        return new List(shopList)
+      }).catch(()=>{
+        // console.log('getCurrentPosition.catch===')
+        let shopList = []
+        results.forEach((result) => {
           shopList.push(ShopInfo.fromLeancloudObject(result))
         })
         return new List(shopList)
