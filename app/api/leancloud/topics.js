@@ -66,8 +66,24 @@ export function publishTopics(payload) {
       })
     }
   }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
+    topic.set('category', topicCategory)
+    topic.set('user', user)
+    topic.set('imgGroup', payload.imgGroup)
+    topic.set('content', payload.content)
+    topic.set('title', payload.title)
+    topic.set('abstract', payload.abstract)
+    topic.set('abstract', payload.abstract)
+    topic.set('commentNum', 0)
+    topic.set('likeCount', 0)
+
+    return topic.save().then(function (result) {
+      let newTopic = result
+      newTopic.attributes.user = AV.User.current()
+      return TopicsItem.fromLeancloudObject(newTopic)
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
   })
 }
 
@@ -316,8 +332,46 @@ export function publishTopicComments(payload) {
 
     }
   }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
+    topicComment.set('topic', topic)
+    topicComment.set('user', user)
+    topicComment.set('content', payload.content)
+
+    if (payload.commentId) {
+      topicComment.set('parentComment', parentComment)
+    }
+
+    return topicComment.save().then(function (result) {
+      if (result) {
+        let relation = topic.relation('comments')
+        relation.add(topicComment);
+        topic.increment("commentNum", 1)
+        let newTopicComment = result
+        newTopicComment.attributes.user = AV.User.current()
+        return topic.save().then(function (result) {
+          if (payload.commentId) {
+            var query = new AV.Query('TopicComments');
+            query.include(['user'])
+            return query.get(payload.commentId).then(function (result) {
+              newTopicComment.attributes.parentComment = result
+              return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+            }, function (err) {
+              err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+              throw err
+            })
+          }
+          else {
+            return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+          }
+        }, function (err) {
+          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+          throw err
+        })
+      }
+    }, function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+
   })
 }
 
@@ -360,8 +414,9 @@ export function getLocalTopics(payload) {
       })
     }
   }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
+    return {
+      topics:new List()
+    }
   })
 }
 

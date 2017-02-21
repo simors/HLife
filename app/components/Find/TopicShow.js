@@ -96,46 +96,51 @@ export class TopicShow extends Component {
   }
 
   render() {
-    return (
-      <View style={[styles.containerStyle, this.props.containerStyle]}>
+    if(this.props.topic) {
+      return (
+        <View style={[styles.containerStyle, this.props.containerStyle]}>
 
-        <View style={styles.introWrapStyle}>
-          <View style={{flexDirection: 'row'}} onPress={()=> {
-          }}>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-              <Image style={styles.avatarStyle}
-                     source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
-            </TouchableOpacity>
-            <View>
+          <View style={styles.introWrapStyle}>
+            <View style={{flexDirection: 'row'}} onPress={()=> {
+            }}>
               <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-                <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
+                <Image style={styles.avatarStyle}
+                       source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
               </TouchableOpacity>
-              <View style={styles.timeLocationStyle}>
-                <Text style={styles.timeTextStyle}>
-                  {getConversationTime(this.props.topic.createdAt)}
-                </Text>
+              <View>
+                <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
+                  <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
+                </TouchableOpacity>
+                <View style={styles.timeLocationStyle}>
+                  <Text style={styles.timeTextStyle}>
+                    {getConversationTime(this.props.topic.createdAt)}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.attentionStyle}>
+                <FollowUser
+                  userId={this.props.topic.userId}
+                />
               </View>
             </View>
+          </View>
 
-            <View style={styles.attentionStyle}>
-              <FollowUser
-                userId={this.props.topic.userId}
-              />
-            </View>
+          {this.renderContentImage()}
+          {/*{this.renderCommentAndLikeButton()}*/}
+          <View style={styles.locationCommentStyle}>
+            <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
+            <Text
+              style={styles.timeTextStyle}>{this.props.topic.position ? this.props.topic.position.city + this.props.topic.position.district : "未知"}</Text>
+            <Text
+              style={styles.likeTextStyle}>{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}</Text>
+            <Text
+              style={styles.commentTextStyle}>{"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}</Text>
           </View>
         </View>
 
-        {this.renderContentImage()}
-        {/*{this.renderCommentAndLikeButton()}*/}
-        <View style={styles.locationCommentStyle}>
-          <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
-          <Text style={styles.timeTextStyle}>{this.props.topic.position? this.props.topic.position.city+this.props.topic.position.district:"未知"}</Text>
-          <Text style={styles.likeTextStyle}>{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}</Text>
-          <Text style={styles.commentTextStyle}>{"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}</Text>
-        </View>
-      </View>
-
-    )
+      )
+    }
   }
 }
 
