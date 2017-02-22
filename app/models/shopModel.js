@@ -28,6 +28,7 @@ export const ShopRecord = Record({
   updatedAt: undefined,  //更新时间戳
   owner: {}, //店铺拥有者信息
   containedTag: [], //店铺拥有的标签
+  nextSkipNum: 0, //分页查询,跳过条数
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
@@ -86,11 +87,14 @@ export class ShopInfo extends ShopRecord {
         }
         record.set('containedTag', containedTag)
         record.set('geo', attrs.geo)
+        // console.log('lcObj.userCurGeo===', lcObj.userCurGeo)
+        // console.log('attrs.geo===', attrs.geo)
         if(lcObj.userCurGeo && attrs.geo) {
           let geo = new AV.GeoPoint(attrs.geo)
           let distance = geo.kilometersTo(lcObj.userCurGeo)
           record.set('distance', Number(distance).toFixed(0))
         }
+        record.set('nextSkipNum', lcObj.nextSkipNum || 0)
         record.set('geoName', attrs.geoName)
         record.set('geoCity', attrs.geoCity)
         record.set('geoDistrict', attrs.geoDistrict)

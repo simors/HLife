@@ -25,9 +25,9 @@ export function getShopList(payload) {
   let geoCity = payload.geoCity
   let isRefresh = payload.isRefresh
   // let lastCreatedAt = payload.lastCreatedAt
-  let lastScore = payload.lastScore
-  let lastGeo = payload.lastGeo
-  let skipNum = payload.skipNum || 1
+  // let lastScore = payload.lastScore
+  // let lastGeo = payload.lastGeo
+  let skipNum = payload.isRefresh ? 0 : (payload.skipNum || 0)
   let shopTagId = payload.shopTagId
   let query = new AV.Query('Shop')
   if(shopCategoryId){
@@ -44,20 +44,18 @@ export function getShopList(payload) {
   if(sortId == 1) {
     if(!isRefresh) { //分页查询
       query.skip(skipNum)
-      query.lessThanOrEqualTo('score', lastScore)
+      // query.lessThanOrEqualTo('score', lastScore)
     }
     query.addDescending('score')
   }else if(sortId == 2) {
     if(!isRefresh) { //分页查询
       query.skip(skipNum)
-      query.lessThanOrEqualTo('geo', lastGeo)
+      // query.lessThanOrEqualTo('geo', lastGeo)
     }
-    query.addDescending('geo')
-    // query.addDescending('score')
   }else{
     if(!isRefresh) { //分页查询
       query.skip(skipNum)
-      query.lessThanOrEqualTo('score', lastScore)
+      // query.lessThanOrEqualTo('score', lastScore)
     }
     query.addDescending('score')
     // query.addDescending('geo')
@@ -76,46 +74,45 @@ export function getShopList(payload) {
     if(geoCity) {
       query.contains('geoCity', geoCity)
     }
+    if (Array.isArray(geo)) {
+      let point = new AV.GeoPoint(geo)
+      query.withinKilometers('geo', point, 100)
+    }
   }
   if(shopTagId) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
     query.equalTo('containedTag', shopTag)
   }
-  // console.log('getShopList.query===', query)
+  console.log('getShopList.query===', query)
   return query.find().then(function (results) {
-    // console.log('getShopList.results=', results)
-    // console.log('getShopList.__DEV__=', __DEV__)
-    if(__DEV__) {
+    console.log('getShopList.results=', results)
+    return Geolocation.getCurrentPosition().then(function(geoPoint){
+      // console.log('getCurrentPosition.resolve===', geoPoint)
+      let point = new AV.GeoPoint([geoPoint.latitude, geoPoint.longitude])
       let shopList = []
       results.forEach((result) => {
+        result.userCurGeo = point
+        result.nextSkipNum = parseInt(skipNum) + results.length
         shopList.push(ShopInfo.fromLeancloudObject(result))
       })
       return new List(shopList)
-    }else {
-      return Geolocation.getCurrentPosition().then(function(geoPoint){
-        // console.log('getCurrentPosition.resolve===', geoPoint)
-        let shopList = []
-        results.forEach((result) => {
-          result.userCurGeo = geoPoint
-          shopList.push(ShopInfo.fromLeancloudObject(result))
-        })
-        return new List(shopList)
-      }, ()=>{
-        // console.log('getCurrentPosition.reject===')
-        let shopList = []
-        results.forEach((result) => {
-          shopList.push(ShopInfo.fromLeancloudObject(result))
-        })
-        return new List(shopList)
-      }).catch(()=>{
-        // console.log('getCurrentPosition.catch===')
-        let shopList = []
-        results.forEach((result) => {
-          shopList.push(ShopInfo.fromLeancloudObject(result))
-        })
-        return new List(shopList)
+    }, ()=>{
+      // console.log('getCurrentPosition.reject===')
+      let shopList = []
+      results.forEach((result) => {
+        result.nextSkipNum = parseInt(skipNum) + results.length
+        shopList.push(ShopInfo.fromLeancloudObject(result))
       })
-    }
+      return new List(shopList)
+    }).catch(()=>{
+      // console.log('getCurrentPosition.catch===')
+      let shopList = []
+      results.forEach((result) => {
+        result.nextSkipNum = parseInt(skipNum) + results.length
+        shopList.push(ShopInfo.fromLeancloudObject(result))
+      })
+      return new List(shopList)
+    })
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

@@ -57,7 +57,7 @@ class ShopCategoryList extends Component {
         lastScore: '',
         lastGeo: '',
         shopTagId: '',
-        skipNum: 1
+        skipNum: 0
       },
       shopCategoryName: '',
       selectGroupShow: [false, false, false],
@@ -128,11 +128,7 @@ class ShopCategoryList extends Component {
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.lastScore || nextProps.lastGeo || nextProps.lastCreatedAt || nextProps.total) {
-      if(this.state.searchForm.lastScore == nextProps.lastScore) {
-        this.state.searchForm.skipNum = 6
-      }else {
-        this.state.searchForm.skipNum = 1
-      }
+      this.state.searchForm.skipNum = nextProps.nextSkipNum
       this.state.searchForm.lastScore = nextProps.lastScore
       this.state.searchForm.lastGeo = nextProps.lastGeo
       this.state.searchForm.lastCreatedAt = nextProps.lastCreatedAt
@@ -612,10 +608,12 @@ const mapStateToProps = (state, ownProps) => {
   let lastScore = ''
   let lastCreatedAt = ''
   let lastGeo = []
+  let nextSkipNum = 0
   if(shopList && shopList.length) {
     lastCreatedAt = shopList[shopList.length-1].createdAt
     lastScore = shopList[shopList.length-1].score
     lastGeo = shopList[shopList.length-1].geo
+    nextSkipNum = shopList[shopList.length-1].nextSkipNum
     // console.log('mapStateToProps.shopList.length=', shopList.length)
     if(shopList.length < 5) {
       isLastPage = true
@@ -632,7 +630,8 @@ const mapStateToProps = (state, ownProps) => {
     lastScore: lastScore,
     lastGeo: lastGeo,
     allShopTags: allShopTags,
-    isLastPage: isLastPage
+    isLastPage: isLastPage,
+    nextSkipNum: nextSkipNum,
   }
 }
 
