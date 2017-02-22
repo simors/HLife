@@ -162,6 +162,7 @@ export class TopicLikeUser extends TopicLikeUserConfig {
 }
 
 export const Topic = Record({
+  city:undefined,
   topics:Map(),
   myTopics:List(),
   userTopics: Map(),

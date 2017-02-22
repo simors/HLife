@@ -4,7 +4,7 @@
 
 import * as TopicTypes from '../constants/topicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Topic,TopicsItem, TopicCommentsItem} from '../models/TopicModel'
+import {Topic, TopicsItem, TopicCommentsItem} from '../models/TopicModel'
 import Immutable, {Map, List} from 'immutable'
 
 const initialState = Topic()
@@ -49,8 +49,19 @@ function handleAddTopic(state, action) {
   if (!topicList) {
     topicList = new List()
   }
+
   topicList = topicList.insert(0, new TopicsItem(topic))
   state = state.setIn(['topics', topic.categoryId], topicList)
+
+  let city = state.get('city')
+  if (city) {
+    let localTopicList = state.get('localTopics')
+    if (!localTopicList) {
+      localTopicList = new List()
+    }
+    localTopicList = localTopicList.insert(0, new TopicsItem(topic))
+    state = state.set('localTopics', localTopicList)
+  }
   return state
 }
 
@@ -72,7 +83,10 @@ function handleUpdateTopics(state, action) {
   let _newMap = undefined
   let newTopics = undefined
   let _newList = undefined
-  if (payload.isPaging){
+  if (payload.city) {
+    state = state.set('city', payload.city)
+  }
+  if (payload.isPaging) {
     switch (payload.type) {
       case "topics":
         _map = state.get('topics')
@@ -145,7 +159,7 @@ function handleUpdateTopicLikesTotalCount(state, action) {
   let topicLikesTotalCount = payload.likesTotalCount
   let _map = state.get('TopicLikesNum')
   _map = _map.set(topicId, topicLikesTotalCount)
-  state = state.set('TopicLikesNum',  _map)
+  state = state.set('TopicLikesNum', _map)
   return state
 }
 
@@ -155,7 +169,7 @@ function handleUpdateTopicLikeUsers(state, action) {
   let topicLikeUsers = payload.topicLikeUsers
   let _map = state.get('TopicLikeUsers')
   _map = _map.set(topicId, topicLikeUsers)
-  state = state.set('TopicLikeUsers',  _map)
+  state = state.set('TopicLikeUsers', _map)
   return state
 }
 
@@ -164,13 +178,12 @@ function handleUpdateTopicIsLiked(state, action) {
   let topicId = payload.topicId
   let userLikeInfo = payload.userLikeInfo
   let _map = state.get('IsLikedByCurrentUser')
-  if(userLikeInfo && userLikeInfo.status)
-  {
+  if (userLikeInfo && userLikeInfo.status) {
     _map = _map.set(topicId, true)
-  }else{
+  } else {
     _map = _map.set(topicId, false)
   }
-  state = state.set('IsLikedByCurrentUser',  _map)
+  state = state.set('IsLikedByCurrentUser', _map)
   return state
 }
 
@@ -178,7 +191,7 @@ function handleUpdateTopicIsLiked(state, action) {
 function onRehydrate(state, action) {
   var incoming = action.payload.TOPIC
   if (incoming) {
-
+    state = state.set('city', incoming.city)
     const topicMap = Map(incoming.topics)
     topicMap.map((value, key)=> {
       if (value && key) {
@@ -216,6 +229,7 @@ function onRehydrate(state, action) {
 
     state = state.set('myTopics', List(incoming.myTopics))
     state = state.set('allTopics', List(incoming.allTopics))
+    state = state.set('localTopics', List(incoming.localTopics))
     state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))
     state = state.set('IsLikedByCurrentUser', Map(incoming.IsLikedByCurrentUser))
   }

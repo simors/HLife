@@ -24,39 +24,6 @@ export default function configReducer(state = initialState, action) {
   }
 }
 
-function initConfig(payload) {
-  let record = Config()
-  if(payload) {
-    record = record.withMutations((config) => {
-      if(payload.banners) {
-        config.set('banners', initBanners(payload.banners))
-      }
-      if(payload.columns) {
-        config.set('columns', initColumns(payload.columns))
-      }
-    })
-  }
-  return record
-}
-
-function initBanners(banners) {
-  let bannerMap = new Map()
-  if(banners) {
-    for(let type in banners) {
-      bannerMap = bannerMap.set(type, initBanner(banners[type]))
-    }
-  }
-  return bannerMap
-}
-
-function initBanner(banner) {
-  let bannerItems = []
-  banner.map((bannerItem) => {
-    bannerItems.push(new BannerItemConfig(bannerItem))
-  })
-  return new List(bannerItems)
-}
-
 function handleUpdateConfigBanners(state, action) {
   let payload = action.payload
   let type = payload.type
@@ -85,24 +52,6 @@ function handleUpdateConfigColumns(state, action) {
   let payload = action.payload
   state = state.set('column', payload)
   return state
-}
-
-function initColumns(columns) {
-  let columnMap = new Map()
-  if(columns) {
-    for(let type in columns) {
-      columnMap = columnMap.set(type, initColumn(columns[type]))
-    }
-  }
-  return columnMap
-}
-
-function initColumn(column) {
-  let columnItems = []
-  column.map((columnItem) => {
-    columnItems.push(new ColumnItemConfig(columnItem))
-  })
-  return new List(columnItems)
 }
 
 function handleUpdateConfigShopCategories(state, action) {

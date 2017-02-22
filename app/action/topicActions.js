@@ -94,15 +94,17 @@ function handlePublishTopicComment(payload, formData) {
 
 export function fetchTopics(payload) {
   return (dispatch, getState) => {
-    lcTopics.getTopics(payload).then((topics) => {
+    lcTopics.getTopics(payload).then((result) => {
       let updateTopicsAction = createAction(topicActionTypes.UPDATE_TOPICS)
       dispatch(updateTopicsAction({
         isPaging: !payload.isRefresh,
         categoryId:payload.categoryId,
-        type:payload.type, topics: topics
+        type:payload.type,
+        topics: result.topics,
+        city: result.city
       }))
       if(payload.success) {
-        payload.success(topics.size==0)
+        payload.success(result.topics.size==0)
       }
     }).catch((error) => {
       if (payload.error) {

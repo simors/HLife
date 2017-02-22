@@ -19,7 +19,7 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
-import {getTopics, getLocalTopics} from '../../selector/topicSelector'
+import {getTopics, getLocalTopics, getLocalCity} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import CommonListView from '../common/CommonListView'
@@ -189,6 +189,14 @@ export class Find extends Component {
     }
     return (
       this.props.topicCategories.map((value, key)=> {
+        if(key == 0 && !this.props.localCity){
+          return (
+            <View key={key} tabLabel={value.title}
+                  style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
+              <Text style={{alignSelf: 'center', paddingTop: 20}}>请开启定位服务</Text>
+            </View>
+          )
+        }
         return (
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
@@ -212,31 +220,31 @@ export class Find extends Component {
 
   render() {
     let topicId = this.props.topicCategories[this.state.selectedTab]
-      return (
-        <View style={styles.container}>
-          <Header
-            leftType="none"
-            title="发现"
-            rightType="none"
-          />
-          <TabScrollView topics={this.props.topicCategories}
-                         topicId={this.props.topicId}
-                         renderTopics={() => this.renderTopics()}
-                         onSelected={(index) => this.getSelectedTab(index)}/>
-          <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
-                              onPress={()=> {
-                                if (this.props.isLogin) {
-                                  Actions.PUBLISH({topicId})
-                                } else {
-                                  Actions.LOGIN()
-                                }
-                              }}
-          >
-            <Image source={require("../../assets/images/local_write@2x.png")}/>
-          </TouchableHighlight>
-        </View>
-      )
-    }
+    return (
+      <View style={styles.container}>
+        <Header
+          leftType="none"
+          title="发现"
+          rightType="none"
+        />
+        <TabScrollView topics={this.props.topicCategories}
+                       topicId={this.props.topicId}
+                       renderTopics={() => this.renderTopics()}
+                       onSelected={(index) => this.getSelectedTab(index)}/>
+        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
+                            onPress={()=> {
+                              if (this.props.isLogin) {
+                                Actions.PUBLISH({topicId})
+                              } else {
+                                Actions.LOGIN()
+                              }
+                            }}
+        >
+          <Image source={require("../../assets/images/local_write@2x.png")}/>
+        </TouchableHighlight>
+      </View>
+    )
+  }
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -245,7 +253,12 @@ const mapStateToProps = (state, ownProps) => {
   const localTopics = getLocalTopics(state)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
-  topicCategories.unshift({title: "本地"})
+  const localCity = getLocalCity(state)
+  if (!localCity)
+    topicCategories.unshift({title: "本地"})
+  else {
+    topicCategories.unshift({title: localCity})
+  }
   topics[0] = localTopics
   return {
     dataSrc: ds.cloneWithRows([]),
@@ -253,6 +266,7 @@ const mapStateToProps = (state, ownProps) => {
     topics: topics,
     isLogin: isLogin,
     userInfo: userInfo,
+    localCity: localCity
   }
 }
 
