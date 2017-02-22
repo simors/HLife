@@ -21,6 +21,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 
 import {Geolocation} from '../common/BaiduMap'
+import * as DeviceInfo from 'react-native-device-info'
 
 import Header from '../common/Header'
 import {
@@ -71,14 +72,17 @@ class ShopCategoryList extends Component {
   }
 
   componentWillMount() {
+    // console.log('componentWillMount.this.props.shopCategoryId==', this.props.shopCategoryId)
     if(this.props.shopCategoryId) {
+      this.state.searchForm.shopCategoryId = this.props.shopCategoryId
+      this.state.searchForm.shopCategoryName = this.props.shopCategoryName
       this.setState({
         ...this.state,
         searchForm: {
           ...this.state.searchForm,
-          shopCategoryId: this.props.shopCategoryId
+          shopCategoryId: this.state.searchForm.shopCategoryId
         },
-        shopCategoryName: this.props.shopCategoryName
+        shopCategoryName: this.state.searchForm.shopCategoryName
       })
     }
 
@@ -87,6 +91,25 @@ class ShopCategoryList extends Component {
       this.props.fetchShopTags()
       this.refreshData()
     })
+
+    this.updateCurrentPosition()
+  }
+
+  updateCurrentPosition(callback) {
+    // console.log("DeviceInfo.isEmulator===", DeviceInfo.isEmulator())
+    if(DeviceInfo.isEmulator()) {
+      this.state.searchForm.geo = [28.213866,112.8186868]
+      this.state.searchForm.geoCity = '长沙'
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          geo: this.state.searchForm.geo,
+          geoCity: this.state.searchForm.geoCity
+        }
+      })
+      callback && callback()
+      return
+    }
 
     Geolocation.getCurrentPosition()
     .then(data => {
@@ -102,12 +125,14 @@ class ShopCategoryList extends Component {
         Geolocation.reverseGeoCode(data.latitude, data.longitude)
           .then(response => {
             this.state.searchForm.geoCity = response.city,
-            this.setState({
-              searchForm: {
-                ...this.state.searchForm,
-                geoCity: this.state.searchForm.geoCity
-              }
-            })
+              this.setState({
+                searchForm: {
+                  ...this.state.searchForm,
+                  geoCity: this.state.searchForm.geoCity
+                }
+              }, ()=>{
+                callback && callback()
+              })
           })
       }else {
         this.state.searchForm.geoCity = data.city,
@@ -116,9 +141,13 @@ class ShopCategoryList extends Component {
               ...this.state.searchForm,
               geoCity: this.state.searchForm.geoCity
             }
+          }, ()=>{
+            callback && callback()
           })
       }
 
+    }, (reason)=>{
+      callback && callback()
     })
   }
 
@@ -427,6 +456,18 @@ class ShopCategoryList extends Component {
     // console.log('========loadMoreData===this.isLastPage======', this.isLastPage)
     // console.log('========loadMoreData===isRefresh======', isRefresh)
     // console.log('========loadMoreData=======this.isRefreshRendering==', this.isRefreshRendering)
+    if (!this.state.searchForm.geo
+      || this.state.searchForm.geo.length != 2
+      || !this.state.searchForm.geoCity) {
+      this.updateCurrentPosition(()=> {
+        this.fetchMoreData(isRefresh)
+      })
+    }else {
+      this.fetchMoreData(isRefresh)
+    }
+  }
+
+  fetchMoreData(isRefresh) {
     if(!isRefresh) {
       if(this.isRefreshRendering) {
         return
@@ -638,7 +679,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
   fetchShopList,
-  fetchShopTags
+  fetchShopTags,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCategoryList)

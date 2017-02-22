@@ -83,36 +83,20 @@ export function getShopList(payload) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
     query.equalTo('containedTag', shopTag)
   }
-  console.log('getShopList.query===', query)
+  // console.log('getShopList.query===', query)
   return query.find().then(function (results) {
-    console.log('getShopList.results=', results)
-    return Geolocation.getCurrentPosition().then(function(geoPoint){
-      // console.log('getCurrentPosition.resolve===', geoPoint)
-      let point = new AV.GeoPoint([geoPoint.latitude, geoPoint.longitude])
-      let shopList = []
-      results.forEach((result) => {
-        result.userCurGeo = point
-        result.nextSkipNum = parseInt(skipNum) + results.length
-        shopList.push(ShopInfo.fromLeancloudObject(result))
-      })
-      return new List(shopList)
-    }, ()=>{
-      // console.log('getCurrentPosition.reject===')
-      let shopList = []
-      results.forEach((result) => {
-        result.nextSkipNum = parseInt(skipNum) + results.length
-        shopList.push(ShopInfo.fromLeancloudObject(result))
-      })
-      return new List(shopList)
-    }).catch(()=>{
-      // console.log('getCurrentPosition.catch===')
-      let shopList = []
-      results.forEach((result) => {
-        result.nextSkipNum = parseInt(skipNum) + results.length
-        shopList.push(ShopInfo.fromLeancloudObject(result))
-      })
-      return new List(shopList)
+    // console.log('getShopList.results=', results)
+    let point = null
+    if (Array.isArray(geo)) {
+      point = new AV.GeoPoint(geo)
+    }
+    let shopList = []
+    results.forEach((result) => {
+      result.userCurGeo = point
+      result.nextSkipNum = parseInt(skipNum) + results.length
+      shopList.push(ShopInfo.fromLeancloudObject(result))
     })
+    return new List(shopList)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -126,16 +110,17 @@ export function fetchShopDetail(payload) {
   query.include(['targetShopCategory', 'owner', 'containedTag'])
   return query.first().then(function (result) {
     // console.log('fetchShopDetail.result=', result)
-    if(__DEV__) {
+    Geolocation.getCurrentPosition()
+    .then(data => {
+      let point = new AV.GeoPoint([data.latitude, data.longitude])
+      result.userCurGeo = point
       let shopInfo = ShopInfo.fromLeancloudObject(result)
       return new Map(shopInfo)
-    }else {
-      return AV.GeoPoint.current().then(function(geoPoint){
-        result.userCurGeo = geoPoint
-        let shopInfo = ShopInfo.fromLeancloudObject(result)
-        return new Map(shopInfo)
-      })
-    }
+    }, (reason)=>{
+      let shopInfo = ShopInfo.fromLeancloudObject(result)
+      return new Map(shopInfo)
+    })
+
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

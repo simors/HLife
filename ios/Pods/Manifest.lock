@@ -1,15 +1,30 @@
 PODS:
   - QBImagePickerController (3.4.0)
+  - React (0.38.0):
+    - React/Core (= 0.38.0)
+  - React/Core (0.38.0)
+  - RNDeviceInfo (0.9.3):
+    - React
   - RSKImageCropper (1.6.0)
 
 DEPENDENCIES:
   - QBImagePickerController
+  - React (from `../node_modules/react-native`)
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RSKImageCropper
+
+EXTERNAL SOURCES:
+  React:
+    :path: "../node_modules/react-native"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
 
 SPEC CHECKSUMS:
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
+  React: 3cdd13d7c8f6ad5c20216aa83e032f0ce4087944
+  RNDeviceInfo: dc3cbee96cd2392cf03d6ff6191dc15f1606a166
   RSKImageCropper: 6903235c7a8a79acb1e1f3490e2c911b858f8208
 
-PODFILE CHECKSUM: be3bf82ad671aab93eac1095a7955171b0b09701
+PODFILE CHECKSUM: 4b92b340aa9bc2222c524e2037538a1e98d4440d
 
 COCOAPODS: 1.2.0

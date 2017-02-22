@@ -27,6 +27,7 @@
     "react-native-camera-android": "^1.0.7",
     "react-native-communications": "^2.1.4",
     "react-native-datepicker": "^1.4.2",
+    "react-native-device-info": "^0.9.9",
     "react-native-dismiss-keyboard": "^1.0.0",
     "react-native-elements": "^0.7.2",
     "react-native-fence-html": "^1.0.6",
