@@ -120,17 +120,39 @@ class ImageGroupInput extends Component {
   }
 
   uploadImgs(uris) {
-    ImageUtil.uploadImgs({
-      uris: uris,
-      success: (leanImgUrls) => {
-        this.isUploadedImages = true
-        this.imgList = leanImgUrls
-        this.inputChange(this.imgList)
+    if(uris && uris.length) {
+      let localUris = []
+      let leanUris = []
+      uris.forEach((item)=>{
+        if(/^https?:\/\//i.test(item)){
+          leanUris.push(item)
+        }else {
+          localUris.push(item)
+        }
+      })
+      if(localUris.length) {
+        ImageUtil.uploadImgs({
+          uris: localUris,
+          success: (leanImgUrls) => {
+            this.isUploadedImages = true
+            this.imgList = leanUris.concat(leanImgUrls)
+            this.inputChange(this.imgList)
+            if( typeof this.props.uploadImagesCallback == 'function') {
+              this.props.uploadImagesCallback({leanImgUrls: this.imgList})
+            }
+          }
+        })
+      }else {
         if( typeof this.props.uploadImagesCallback == 'function') {
-          this.props.uploadImagesCallback({leanImgUrls})
+          this.imgList = uris
+          this.props.uploadImagesCallback({leanImgUrls: uris})
         }
       }
-    })
+    }else {
+      if( typeof this.props.uploadImagesCallback == 'function') {
+        this.props.uploadImagesCallback({leanImgUrls: []})
+      }
+    }
   }
 
   renderReuploadBtn(index) {

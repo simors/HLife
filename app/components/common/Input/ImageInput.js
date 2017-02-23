@@ -87,6 +87,12 @@ class ImageInput extends Component {
   
   uploadImg(uri) {
     if(uri) {
+      if(/^https?:\/\//i.test(uri)){
+        if( typeof this.props.uploadImageCallback == 'function') {
+          this.props.uploadImageCallback(uri)
+        }
+        return
+      }
       ImageUtil.uploadImg({
         uri: uri,
         success: (response) => {
@@ -99,7 +105,7 @@ class ImageInput extends Component {
       })
     }else {
       if( typeof this.props.uploadImageCallback == 'function') {
-        this.props.uploadImageCallback(response.leanImgUrl)
+        this.props.uploadImageCallback(uri)
       }
     }
   }

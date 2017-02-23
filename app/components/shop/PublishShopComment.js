@@ -94,7 +94,7 @@ class PublishShopComment extends Component {
         this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
         this.props.fetchShopCommentTotalCount({id: this.props.id})
         Toast.show('恭喜您,发表评论成功', {
-          duration: 3000,
+          duration: 1000,
           onHidden: ()=> {
             Actions.pop()
           }

@@ -233,16 +233,38 @@ class ArticleEditor extends Component {
 
   uploadImgComponent(data) {
     let localImgs = this.getImageCollection(data)
-    ImageUtil.uploadImgs({
-      uris: localImgs,
-      success: (leanImgUrls) => {
-        this.isUploadedImgComponent = true
-        this.updateImageCollection(data, leanImgUrls)
+    if(localImgs && localImgs.length) {
+      let localUris = []
+      let leanUris = []
+      localImgs.forEach((item)=>{
+        if(/^https?:\/\//i.test(item)){
+          leanUris.push(item)
+        }else {
+          localUris.push(item)
+        }
+      })
+      if(localUris.length) {
+        ImageUtil.uploadImgs({
+          uris: localUris,
+          success: (leanImgUrls) => {
+            this.isUploadedImgComponent = true
+            leanUris = leanUris.concat(leanImgUrls)
+            this.updateImageCollection(data, leanUris)
+            if(this.props.uploadImgComponentCallback) {
+              this.props.uploadImgComponentCallback(leanUris)
+            }
+          }
+        })
+      }else {
         if(this.props.uploadImgComponentCallback) {
-          this.props.uploadImgComponentCallback(leanImgUrls)
+          this.props.uploadImgComponentCallback(leanUris)
         }
       }
-    })
+    }else {
+      if(this.props.uploadImgComponentCallback) {
+        this.props.uploadImgComponentCallback([])
+      }
+    }
   }
 
   deleteImageComponent(index) {
