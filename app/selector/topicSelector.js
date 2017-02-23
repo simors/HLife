@@ -49,6 +49,13 @@ export function getTopicById(state, topicId) {
       return topic.toJS()
     }
   }
+  let localTopicList = state.TOPIC.get('localTopics')
+  for (let key of localTopicList) {
+    if(key.objectId == topicId) {
+      return key.toJS()
+    }
+  }
+
   return undefined
 }
 
