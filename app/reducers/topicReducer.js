@@ -107,6 +107,11 @@ function handleUpdateTopics(state, action) {
         _newList = _list.concat(payload.topics)
         state = state.set('myTopics', _newList)
         break
+      case "pickedTopics":
+        _list = state.get('pickedTopics') || new List()
+        _newList = _list.concat(payload.topics)
+        state = state.set('pickedTopics', _newList)
+        break
       case "allTopics":
         _list = state.get('allTopics') || new List()
         _newList = _list.concat(payload.topics)
@@ -130,6 +135,9 @@ function handleUpdateTopics(state, action) {
         _map = state.get('userTopics')
         _map = _map.set(payload.userId, payload.topics)
         state = state.set('userTopics', _map)
+        break
+      case "pickedTopics":
+        state = state.set('pickedTopics', payload.topics)
         break
       case "myTopics":
         state = state.set('myTopics', payload.topics)
@@ -228,6 +236,7 @@ function onRehydrate(state, action) {
     })
 
     state = state.set('myTopics', List(incoming.myTopics))
+    state = state.set('pickedTopics', List(incoming.myTopics))
     state = state.set('allTopics', List(incoming.allTopics))
     state = state.set('localTopics', List(incoming.localTopics))
     state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))

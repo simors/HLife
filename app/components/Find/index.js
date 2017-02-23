@@ -19,7 +19,7 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
-import {getTopics, getLocalTopics, getLocalCity} from '../../selector/topicSelector'
+import {getTopics, getLocalTopics, getLocalCity, getPickedTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import CommonListView from '../common/CommonListView'
@@ -51,6 +51,12 @@ export class Find extends Component {
       }
       if (this.state.selectedTab == 0) {
         this.props.fetchTopics({
+          type: "pickedTopics",
+          isRefresh: true
+        })
+      }
+      else if (this.state.selectedTab == 1) {
+        this.props.fetchTopics({
           type: "localTopics",
           isRefresh: true
         })
@@ -67,15 +73,22 @@ export class Find extends Component {
   getSelectedTab(index) {
     this.setState({selectedTab: index})
     InteractionManager.runAfterInteractions(() => {
-      if (this.state.selectedTab == 0) {
+      if (index == 0) {
+        this.props.fetchTopics({
+          type: "pickedTopics",
+          isRefresh: true
+        })
+      }
+      else if (index == 1) {
         this.props.fetchTopics({
           type: "localTopics",
           isRefresh: true
         })
-      } else {
+      }
+      else {
         this.props.fetchTopics({
           type: "topics",
-          categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+          categoryId: this.props.topicCategories[index].objectId,
           isRefresh: true
         })
       }
@@ -123,8 +136,8 @@ export class Find extends Component {
     let lastCreatedAt = undefined
     let payload = undefined
     if (this.props.topics) {
-      if (this.state.selectedTab == 0) {
-        let currentTopics = this.props.topics[0]
+      if (this.state.selectedTab == 0 || this.state.selectedTab == 1) {
+        let currentTopics = this.props.topics[this.state.selectedTab]
         if (currentTopics && currentTopics.length) {
           lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
         }
@@ -136,6 +149,25 @@ export class Find extends Component {
       }
     }
     if (this.state.selectedTab == 0) {
+      payload = {
+        type: "pickedTopics",
+        lastCreatedAt: lastCreatedAt,
+        isRefresh: !!isRefresh,
+        success: (isEmpty) => {
+          if (!this.listView) {
+            return
+          }
+          if (isEmpty) {
+            this.listView.isLoadUp(false)
+          } else {
+            this.listView.isLoadUp(true)
+          }
+        },
+        error: (err)=> {
+          Toast.show(err.message, {duration: 1000})
+        }
+      }
+    } else if (this.state.selectedTab == 1) {
       payload = {
         type: "localTopics",
         lastCreatedAt: lastCreatedAt,
@@ -183,13 +215,17 @@ export class Find extends Component {
     if (this.props.topics) {
       if (this.state.selectedTab == 0) {
         dataSrc = ds.cloneWithRows(this.props.topics[0])
-      } else if (this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]) {
+      }
+      else if (this.state.selectedTab == 1) {
+        dataSrc = ds.cloneWithRows(this.props.topics[1])
+      }
+      else if (this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]) {
         dataSrc = ds.cloneWithRows(this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId])
       }
     }
     return (
       this.props.topicCategories.map((value, key)=> {
-        if(key == 0 && !this.props.localCity){
+        if (key == 1 && !this.props.localCity) {
           return (
             <View key={key} tabLabel={value.title}
                   style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
@@ -218,6 +254,23 @@ export class Find extends Component {
     )
   }
 
+  renderPublish() {
+    if(this.state.selectedTab != 0) {
+      return (
+        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
+                            onPress={()=> {
+                              if (this.props.isLogin) {
+                                Actions.PUBLISH({topicId})
+                              } else {
+                                Actions.LOGIN()
+                              }
+                            }}>
+          <Image source={require("../../assets/images/local_write@2x.png")}/>
+        </TouchableHighlight>
+      )
+    }
+  }
+
   render() {
     let topicId = this.props.topicCategories[this.state.selectedTab]
     return (
@@ -231,17 +284,7 @@ export class Find extends Component {
                        topicId={this.props.topicId}
                        renderTopics={() => this.renderTopics()}
                        onSelected={(index) => this.getSelectedTab(index)}/>
-        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
-                            onPress={()=> {
-                              if (this.props.isLogin) {
-                                Actions.PUBLISH({topicId})
-                              } else {
-                                Actions.LOGIN()
-                              }
-                            }}
-        >
-          <Image source={require("../../assets/images/local_write@2x.png")}/>
-        </TouchableHighlight>
+        {this.renderPublish()}
       </View>
     )
   }
@@ -252,6 +295,7 @@ const mapStateToProps = (state, ownProps) => {
   const topics = getTopics(state)
   const localTopics = getLocalTopics(state)
   const isLogin = isUserLogined(state)
+  const pickedTopic = getPickedTopics(state)
   const userInfo = activeUserInfo(state)
   const localCity = getLocalCity(state)
   if (!localCity)
@@ -259,7 +303,9 @@ const mapStateToProps = (state, ownProps) => {
   else {
     topicCategories.unshift({title: localCity})
   }
-  topics[0] = localTopics
+  topicCategories.unshift({title: "精选"})
+  topics[0] = pickedTopic
+  topics[1] = localTopics
   return {
     dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,
