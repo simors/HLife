@@ -14,6 +14,10 @@ export function getMyTopics(state) {
   return state.TOPIC.toJS().myTopics
 }
 
+export function getPickedTopics(state) {
+  return state.TOPIC.toJS().pickedTopics
+}
+
 export function getLocalTopics(state) {
   return state.TOPIC.toJS().localTopics
 }
@@ -51,6 +55,13 @@ export function getTopicById(state, topicId) {
   }
   let localTopicList = state.TOPIC.get('localTopics')
   for (let key of localTopicList) {
+    if(key.objectId == topicId) {
+      return key.toJS()
+    }
+  }
+
+  let pickedTopicList = state.TOPIC.get('pickedTopics')
+  for (let key of pickedTopicList) {
     if(key.objectId == topicId) {
       return key.toJS()
     }

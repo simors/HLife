@@ -436,6 +436,10 @@ export function getTopics(payload) {
       query.equalTo('user', currentUser)
     }
 
+    if (payload.type == "pickedTopics") {
+      query.equalTo('picked', true)
+    }
+
     if (payload.userId && payload.type == 'userTopics') {
       var user = AV.Object.createWithoutData('_User', payload.userId)
       query.equalTo('user', user)

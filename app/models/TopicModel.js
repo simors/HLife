@@ -165,6 +165,7 @@ export const Topic = Record({
   city:undefined,
   topics:Map(),
   myTopics:List(),
+  pickedTopics:List(),
   userTopics: Map(),
   allTopics:List(),
   localTopics:List(),

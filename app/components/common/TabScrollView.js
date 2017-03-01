@@ -33,7 +33,7 @@ export class TabScrollView extends Component {
 
   componentDidMount() {
     this.props.topics.map((value, key)=> {
-      if (value.objectId == this.props.topicId) {
+      if ( this.props.topicId && value.objectId == this.props.topicId) {
         this.setState({topicItem: key})
       }
     })
