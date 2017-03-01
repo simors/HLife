@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>zh_CN</string>
     <key>CFBundleDisplayName</key>
-    <string>吾爱</string>
+    <string>邻家优店</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -45,9 +45,9 @@
     <string>$(PRODUCT_NAME)</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string/>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>$(PRODUCT_NAME)</string>
     <key>NSMicrophoneUsageDescription</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>NSPhotoLibraryUsageDescription</key>
     <string>$(PRODUCT_NAME)</string>
     <key>UIAppFonts</key>
     <array>
