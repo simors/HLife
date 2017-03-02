@@ -130,6 +130,7 @@ android {
 }
 
 dependencies {
+    compile project(':@zzzkk2009/react-native-leancloud-sdk')
     compile project(':react-native-device-info')
     compile project(':react-native-camera-android')
     compile project(':react-native-barcodescanner')
