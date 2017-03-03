@@ -19,7 +19,6 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1A4791078863403F97272F63 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F66B9CB97E874077B48688EE /* Entypo.ttf */; };
 		23E5FEFF4CB340D8B69315EA /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8811D46429B74527A9368923 /* libimageCropPicker.a */; };
 		27CD059BF80E455D9A8ED127 /* libAutoGrowTextInput.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DEA029E5DD4B2C9F5F22FB /* libAutoGrowTextInput.a */; };
@@ -38,6 +37,7 @@
 		80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		A329ADAC0A274094BE8DE0B6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 833EA273CD1B4F39BA400B7B /* Zocial.ttf */; };
+		B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B652CD8A1E696FEF00EE1246 /* libReact.a */; };
 		B66C85C31E68582500C157EA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B66C85C21E68582500C157EA /* libRCTPushNotification.a */; };
 		B687CD9D1E4EEB2000F47585 /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B687CD9C1E4EEB2000F47585 /* BaiduMapAPI_Base.framework */; };
 		B687CDA41E4EEB3600F47585 /* BaiduMapAPI_Cloud.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B687CD9E1E4EEB3600F47585 /* BaiduMapAPI_Cloud.framework */; };
@@ -343,6 +343,7 @@
 		9B50AAF3C82549A7A9B12DC9 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		B01BCA03472F4A6180024FAC /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		B453DC967858B3F46587C183 /* Pods-HLife.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLife.release.xcconfig"; path = "Pods/Target Support Files/Pods-HLife/Pods-HLife.release.xcconfig"; sourceTree = "<group>"; };
+		B652CD8A1E696FEF00EE1246 /* libReact.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libReact.a; path = "../../../Library/Developer/Xcode/DerivedData/HLife-dhjcwxrmuknsmqblfklezeggfgmv/Build/Products/Debug-iphonesimulator/React/libReact.a"; sourceTree = "<group>"; };
 		B66C85C21E68582500C157EA /* libRCTPushNotification.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRCTPushNotification.a; path = "../node_modules/react-native/Libraries/PushNotificationIOS/build/Debug-iphoneos/libRCTPushNotification.a"; sourceTree = "<group>"; };
 		B66C85C41E68619400C157EA /* HLife.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = HLife.entitlements; path = HLife/HLife.entitlements; sourceTree = "<group>"; };
 		B687CD9C1E4EEB2000F47585 /* BaiduMapAPI_Base.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BaiduMapAPI_Base.framework; path = lib/BaiduMapAPI/BaiduMapAPI_Base.framework; sourceTree = "<group>"; };
@@ -398,6 +399,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */,
 				B66C85C31E68582500C157EA /* libRCTPushNotification.a in Frameworks */,
 				B6FB9B0E1E52F75700E316C8 /* BaiduMapAPI_Search.framework in Frameworks */,
 				B6FB9AB61E4EEF3800E316C8 /* libcrypto.a in Frameworks */,
@@ -412,7 +414,6 @@
 				B687CDA91E4EEB3600F47585 /* BaiduMapAPI_Utils.framework in Frameworks */,
 				B687CD9D1E4EEB2000F47585 /* BaiduMapAPI_Base.framework in Frameworks */,
 				DDC829ED1E02305700F15C42 /* libRCTAnimation.a in Frameworks */,
-				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
@@ -650,6 +651,7 @@
 		B687CD811E4EEB2000F47585 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B652CD8A1E696FEF00EE1246 /* libReact.a */,
 				B66C85C21E68582500C157EA /* libRCTPushNotification.a */,
 				B6FB9AB41E4EEF3800E316C8 /* libcrypto.a */,
 				B6FB9AB51E4EEF3800E316C8 /* libssl.a */,
@@ -839,6 +841,9 @@
 						DevelopmentTeam = XE253W47VG;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};

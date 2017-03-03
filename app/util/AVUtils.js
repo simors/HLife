@@ -1,3 +1,7 @@
+import {
+  Platform,
+} from 'react-native';
+
 import AV from 'leancloud-storage'
 
 export function push(data, query) {
@@ -6,9 +10,14 @@ export function push(data, query) {
     title: '邻家优店',
     prod: 'dev'
   }
-  const actionData = {
-    action: 'com.zachary.leancloud.push.action', //自定义推送,不需要设置频道
+
+  let actionData = {}
+  if ( Platform.OS === 'android' ) {
+    actionData = {
+      action: 'com.zachary.leancloud.push.action', //自定义推送,不需要设置频道
+    }
   }
+
   Object.assign(defaultData, data, actionData)
 
   let sendData = {
@@ -16,5 +25,22 @@ export function push(data, query) {
     data: defaultData
   }
   query && (sendData.where = query)
+
+  //推送时间
+  if(Object.prototype.toString.call(data.push_time) === '[object Date]') {
+    sendData.push_time = data.push_time
+  }
+
+  //推送过期时间
+  if(Object.prototype.toString.call(data.expiration_time) === '[object Date]') {
+    sendData.expiration_time = data.expiration_time
+  }
+
+  //从当前时间开始,多少秒之后过期
+  if(Object.prototype.toString.call(data.expiration_interval) === '[object Number]') {
+    sendData.expiration_interval = data.expiration_interval
+  }
+
+  console.log('push sendData=====', sendData)
   AV.Push.send(sendData);
 }

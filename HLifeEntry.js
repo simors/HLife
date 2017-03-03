@@ -35,6 +35,8 @@ AV.init(
   __DEV__ ? KM_Dev : KM_PRO
 )
 
+var Installation = require('leancloud-installation')(AV);
+
 export default class HLifeEntry extends Component {
   constructor(props) {
     super(props)
@@ -54,13 +56,36 @@ export default class HLifeEntry extends Component {
         //   deviceToken: data.token
         // })
 
+        if ( Platform.OS === 'ios' ) {
+          Installation.getCurrent()
+            .then(installation => {
+              console.log('Current installaton got: ' + JSON.stringify(installation.toJSON()));
+              console.log('Set new deviceToken and save.');
+              return installation.save({
+                deviceToken: data.token
+              });
+            })
+        }
+
+        // PushNotification.localNotificationSchedule({
+        //   date: new Date(Date.now() + (10 * 1000)), // in 10 secs,
+        //   message: 'your deviceToken is: ' + data.token,
+        //   userInfo: {
+        //     userId: "1",
+        //     userName: 'abc'
+        //   }
+        // })
+
         //TODO test push: tested, please comment it.
         // var query = new AV.Query('_Installation');
-        // query.equalTo('installationId', data.token);
+        // // query.equalTo('installationId', data.token);
+        // query.equalTo('deviceToken', data.token);
         // let pushData = {
         //   alert: '您有新的订单,请及时处理',
-        //   title: '邻家优店发来的通知',
+        //   title: '邻家优店发来的通知',//android only
+        //   push_time: new Date(Date.now() + (10 * 1000)),
         //   sceneName: 'MESSAGE_BOX',
+        //   badge: 30,
         //   sceneParams: {
         //     userId: 1,
         //     userName: 'zachary'
