@@ -5,6 +5,7 @@
 import {ArticleItem, LikersItem, ArticleComment, Up, Favorite} from '../../models/ArticleModel'
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
+import ERROR from '../../constants/errorCode'
 
 export function getArticle(payload) {
   // console.log('payload',payload)
