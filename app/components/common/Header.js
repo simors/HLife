@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   left: {
     fontSize: em(24),
-    color: THEME.colors.green,
+    color: THEME.base.mainColor,
   },
   leftIconLabel: {
     marginLeft: normalizeW(5),
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   right: {
     fontSize: em(17),
-    color: '#50E3C2',
+    color: THEME.base.deepColor,
   },
   rightImage: {
     marginLeft: 3

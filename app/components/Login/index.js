@@ -8,17 +8,14 @@ import {
   Image,
   Alert,
   Dimensions,
-  Platform
+  Platform,
+  ScrollView,
 } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {
-  Button
-} from 'react-native-elements'
 import PhoneInput from '../common/Input/PhoneInput'
 import Header from '../common/Header'
 import PasswordInput from '../common/Input/PasswordInput'
@@ -26,7 +23,7 @@ import Symbol from 'es6-symbol'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import CommonButton from '../common/CommonButton'
-
+import THEME from '../../constants/themes/theme1'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -59,8 +56,6 @@ class Login extends Component {
   }
 
   submitSuccessCallback(userInfos) {
-    //console.log('userInfos=' + JSON.stringify(userInfos))
-    // console.log("submitSuccessCallback:", userInfos)
     Toast.show('登录成功!')
     Actions.pop()
   }
@@ -80,22 +75,25 @@ class Login extends Component {
           leftType="icon" 
           leftIconName="ios-arrow-back" 
           leftPress={() => Actions.pop()}
-          title="登录" 
+          title="登   陆"
           rightType="text" 
           rightText="快速注册"
           rightPress={() => Actions.REGIST()}
         />
         <View style={styles.body}>
-          <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.logo} />
-          <View style={styles.inputBox}>
-            <PhoneInput {...phoneInput}/>
-          </View>
-          <View style={styles.inputBox}>
-            <PasswordInput {...pwdInput}/>
-          </View>
-          <CommonButton title="登录" onPress={() => this.onButtonPress()}/>
-          <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
-          <SnsLogin />
+          <ScrollView keyboardDismissMode="on-drag">
+            <View style={{marginTop: 30}}>
+              <View style={styles.inputBox}>
+                <PhoneInput {...phoneInput}/>
+              </View>
+              <View style={styles.inputBox}>
+                <PasswordInput {...pwdInput} placeholder="请输入密码"/>
+              </View>
+            </View>
+            <CommonButton title="登   陆" onPress={() => this.onButtonPress()}/>
+            <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
+            <SnsLogin />
+          </ScrollView>
         </View>
       </View>
     )
@@ -131,23 +129,15 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
   },
-  logo: {
-    alignSelf: 'center',
-    marginTop: normalizeH(65),
-    marginBottom: normalizeH(44),
-    alignSelf: 'center',
-    width: normalizeW(108),
-    height: normalizeH(47),
-  },
   btn: {
     height: normalizeH(50),
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
-    backgroundColor: '#50E3C2'
+    backgroundColor: THEME.base.mainColor,
   },
   forgetPwd: {
     fontSize: em(14),
-    color: '#50E3C2',
+    color: THEME.base.deepColor,
     textAlign: 'center',
     height: normalizeH(17),
     marginTop: normalizeH(18),

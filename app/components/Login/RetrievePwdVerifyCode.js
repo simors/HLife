@@ -12,7 +12,8 @@ import {
   Image,
   Alert,
   Dimensions,
-  Platform
+  Platform,
+  ScrollView
 } from 'react-native'
 
 import {bindActionCreators} from 'redux'
@@ -28,6 +29,7 @@ import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import * as Toast from '../common/Toast'
 import Symbol from 'es6-symbol'
+import THEME from '../../constants/themes/theme1'
 
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import {isInputValid} from '../../selector/inputFormSelector'
@@ -91,21 +93,26 @@ class RetrievePassword extends Component {
           title="找回密码"
           rightType=""
         />
-        <View style={styles.body}>
-          <PhoneInput {...phoneInput} containerStyle={styles.inputBox}
-                      placeholder='请输入注册的手机号'/>
-          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
-                            getSmsAuCode={() => {return this.smsCode()}}  reset={!this.props.phoneValid}
-          />
-          <PasswordInput {...passwordInput} containerStyle={styles.inputBox}
-                         placeholder='设置新密码(6-16位数字或字母)'/>
-        </View>
-        <Button
-          buttonStyle={styles.btn}
-          onPress={this.onButtonPress}
-          title="重设密码"
-        />
 
+        <View style={styles.body}>
+          <ScrollView keyboardDismissMode="on-drag">
+            <View style={{marginTop: 30}}>
+              <PhoneInput {...phoneInput} containerStyle={styles.inputBox}
+                          placeholder='请输入注册的手机号'/>
+              <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
+                                getSmsAuCode={() => {return this.smsCode()}}  reset={!this.props.phoneValid}
+              />
+              <PasswordInput {...passwordInput} containerStyle={styles.inputBox}
+                             placeholder='设置新密码(6-16位数字或字母)'/>
+
+              <Button
+                buttonStyle={styles.btn}
+                onPress={this.onButtonPress}
+                title="重设密码"
+              />
+            </View>
+          </ScrollView>
+        </View>
       </View>
     )
   }
@@ -137,10 +144,10 @@ const styles = StyleSheet.create({
   body: {
     ...Platform.select({
       ios: {
-        marginTop: normalizeH(108),
+        marginTop: normalizeH(65),
       },
       android: {
-        marginTop: normalizeH(88)
+        marginTop: normalizeH(45)
       }
     }),
     flex: 1,
@@ -152,15 +159,7 @@ const styles = StyleSheet.create({
     height: normalizeH(50),
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
-    backgroundColor: '#50E3C2',
+    backgroundColor: THEME.base.mainColor,
     marginBottom: normalizeH(24)
   },
-  titleInfo: {
-    color: '#50E3C2',
-    fontSize: em(18),
-    alignSelf: 'flex-start',
-    paddingLeft: normalizeW(17),
-    marginBottom: normalizeH(35)
-  }
-
 })

@@ -86,12 +86,13 @@ class PasswordInput extends Component {
 	                  ? THEME.base.inputContainer.paddingRight + this.props.inputStyle.marginRight + 15
 	                  : THEME.base.inputContainer.paddingRight + 15}]}>
 		      <TouchableWithoutFeedback onPress={this.onShowPwdClicked}>
-			      <Image source={this.state.showPwd ?
+			      <Image width={35} height={35} source={this.state.showPwd ?
 								require('../../../assets/images/code_open_eye.png') : require('../../../assets/images/code_close_eye.png')}
 			      />
 		      </TouchableWithoutFeedback>
 	      </View>
-	    </View>)
+	    </View>
+		)
 	}
 }
 
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   eyeCloseIcon: {
   	position: 'absolute',
   	right: 15,
-  	top: 18
+  	top: 12
   }
 })
 

@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import THEME from '../../constants/themes/theme1'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
   defaultBtnStyle: {
     width: PAGE_WIDTH - normalizeW(34),
     height: normalizeH(50),
-    backgroundColor: '#50E3C2',
+    backgroundColor: THEME.base.mainColor,
   },
   defaultTitleStyle: {
     fontSize: em(18),

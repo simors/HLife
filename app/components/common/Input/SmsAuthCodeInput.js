@@ -177,7 +177,7 @@ const smsStyles = StyleSheet.create({
     height:normalizeH(50),
     justifyContent: 'center',
     alignItems:'center',
-    backgroundColor: THEME.colors.green
+    backgroundColor: THEME.base.mainColor
   },
   smsCodeTextContainerDisable: {
     width:normalizeW(120),

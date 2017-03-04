@@ -13,7 +13,8 @@ import {
   Image,
   Alert,
   Dimensions,
-  Platform
+  Platform,
+  ScrollView
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -31,7 +32,7 @@ import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import THEME from '../../constants/themes/theme1'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -71,7 +72,7 @@ class Regist extends Component {
 
   submitSuccessCallback(userInfos) {
     Toast.show('注册成功, 请登录')
-    Actions.LOGIN()
+    Actions.NICKNAME_VIEW()
   }
 
   submitErrorCallback(error) {
@@ -97,29 +98,31 @@ class Regist extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="注册"
+          title="注   册"
           rightType="text"
-          rightText="登录"
-          rightPress={() => Actions.LOGIN()}
+          rightText="昵称"
+          rightPress={() => Actions.NICKNAME_VIEW()}
         />
         <View style={styles.body}>
-          <Image source={require('../../assets/images/login_weixin@1x.png')} style={styles.logo} />
+          <ScrollView keyboardDismissMode="on-drag">
+            <View style={{marginTop: 30}}>
+              <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
+              <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
+                                getSmsAuCode={() => {return this.smsCode()}} reset={!this.props.phoneValid} />
+              <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
 
-          <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
-          <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
-                            getSmsAuCode={() => {return this.smsCode()}} reset={!this.props.phoneValid} />
-          <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
-
-          <Button
-            buttonStyle={styles.btn}
-            onPress={this.onButtonPress}
-            title="开始使用"
-          />
-          <View style={styles.agreementView}>
-            <Image source={require('../../assets/images/code_close_eye.png')} style={styles.check} />
-            <Text style={styles.agreementText} onPress={this.retrievePassword}>服务条款及协议</Text>
-          </View>
-          <SnsLogin />
+              <Button
+                buttonStyle={styles.btn}
+                onPress={this.onButtonPress}
+                title="确   定"
+              />
+              <View style={styles.agreementView}>
+                <TouchableOpacity onPress={() => Actions.AGREEMENT_VIEW()}>
+                  <Text style={styles.agreementText} onPress={this.retrievePassword}>服务条款及协议</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
         </View>
       </View>
 
@@ -164,19 +167,11 @@ const styles = StyleSheet.create({
   inputBox: {
     marginBottom: normalizeW(25)
   },
-  logo: {
-    alignSelf: 'center',
-    marginTop: normalizeH(25),
-    marginBottom: normalizeH(25),
-    alignSelf: 'center',
-    width: normalizeW(108),
-    height: normalizeH(47),
-  },
   btn: {
     height: normalizeH(50),
     marginLeft: normalizeW(17),
     marginRight: normalizeW(17),
-    backgroundColor: '#50E3C2',
+    backgroundColor: THEME.base.mainColor,
     marginBottom: normalizeH(24)
   },
   agreementView:{
@@ -191,6 +186,6 @@ const styles = StyleSheet.create({
   },
   agreementText:{
     fontSize:em(14),
-    color:'#50E3C2',
+    color:'#5A5A5A',
   },
 })

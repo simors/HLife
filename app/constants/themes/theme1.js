@@ -2,6 +2,9 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 
 export default THEME = {
 	base: {
+		mainColor: '#FF7819',
+    deepColor: '#CF5500',
+    lightColor: '#F6A623',
 		color: '#030303',
 		linkColor: '#50E3C2',
 		backgroundColor: '#fff',
