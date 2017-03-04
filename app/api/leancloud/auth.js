@@ -705,3 +705,16 @@ export function getFavoriteArticles(payload) {
     throw err
   })
 }
+
+export function setUserNickname(payload) {
+  let params = {
+    userId: payload.userId,
+    nickname: payload.nickname,
+  }
+  return AV.Cloud.run('hLifeSetUserNickname', params).then((result) => {
+    return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}

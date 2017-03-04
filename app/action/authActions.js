@@ -8,6 +8,7 @@ import * as lcShop from '../api/leancloud/shop'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
+import {activeUserId} from '../selector/authSelector'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -54,6 +55,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
         dispatch(handleResetPwdSmsCode(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.SET_NICKNAME:
+        dispatch(handleSetNickname(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
         dispatch(handleProfileSubmit(payload, formData))
@@ -134,6 +138,26 @@ function handleLoginWithPwd(payload, formData) {
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
+      }
+    })
+  }
+}
+
+function handleSetNickname(payload, formData) {
+  return (dispatch, getState) => {
+    let form = {
+      userId: activeUserId(getState()),
+      nickname: formData.nicknameInput.text,
+    }
+    lcAuth.setUserNickname(form).then((result) => {
+      if (result.errcode == 0 ) {
+        if (payload.success) {
+          payload.success()
+        }
+      } else {
+        if (payload.error) {
+          payload.error({message: '设置昵称失败，请重试'})
+        }
       }
     })
   }

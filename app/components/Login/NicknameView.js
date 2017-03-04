@@ -17,6 +17,7 @@ import Header from '../common/Header'
 import THEME from '../../constants/themes/theme1'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import * as Toast from '../common/Toast'
 
 let setNicknameForm = Symbol('setNicknameForm')
 const nicknameInput = {
@@ -34,9 +35,18 @@ class NicknameView extends Component {
     this.props.submitFormData({
       formKey: setNicknameForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.SET_NICKNAME,
-      // success:this.submitSuccessCallback,
-      // error: this.submitErrorCallback
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
     })
+  }
+
+  submitSuccessCallback() {
+    Toast.show('设置昵称成功')
+    Actions.HOME({type:'reset'})
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
   }
 
   render() {
@@ -53,7 +63,7 @@ class NicknameView extends Component {
               <CommonTextInput {...nicknameInput}  containerStyle={styles.inputBox} placeholder="取个响亮的名字吧"/>
               <Button
                 buttonStyle={styles.btn}
-                onPress={this.onButtonPress}
+                onPress={() => this.onButtonPress()}
                 title="开始使用"
               />
             </View>
