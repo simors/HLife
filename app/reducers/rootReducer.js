@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
 
+import pushReducer from './pushReducer'
 import configReducer from './configReducer'
 import uiReducer from './uiReducer'
 import authReducer  from './authReducer'
@@ -11,6 +12,7 @@ import doctorReducer from './doctorReducer'
 import notifyReducer from './notifyReducer'
 
 const rootReducers = combineReducers({
+  PUSH: pushReducer,
   CONFIG: configReducer,
   UI: uiReducer,
   AUTH: authReducer,
