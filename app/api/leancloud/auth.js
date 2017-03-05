@@ -11,8 +11,12 @@ import * as oPrs from './databaseOprs'
 import * as numberUtils from '../../util/numberUtils'
 
 export function become(payload) {
-  return AV.User.become(payload.token).then(() => {
-    // do nothing
+  return AV.User.become(payload.token).then((user) => {
+    let userInfo = UserInfo.fromLeancloudObject(user)
+    userInfo = userInfo.set('token', user.getSessionToken())
+    return {
+      userInfo: userInfo,
+    }
   }, (err) => {
     throw err
   })
@@ -69,10 +73,12 @@ export function register(payload) {
       oPrs.updateObj(updatePayload)
     })
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    let token = user.getSessionToken()
+    userInfo = userInfo.set('token', token)
     modifyMobilePhoneVerified({id: loginedUser.id})
     return {
       userInfo: userInfo,
-      token: user.getSessionToken()
+      token: token,
     }
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

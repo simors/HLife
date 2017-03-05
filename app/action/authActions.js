@@ -8,7 +8,7 @@ import * as lcShop from '../api/leancloud/shop'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
-import {activeUserId} from '../selector/authSelector'
+import {activeUserId, activeUserInfo} from '../selector/authSelector'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -159,6 +159,12 @@ function handleSetNickname(payload, formData) {
           payload.error({message: '设置昵称失败，请重试'})
         }
       }
+    }).then(() => {
+      let user = activeUserInfo(getState())
+      lcAuth.become({token: user.token}).then((userInfo) => {
+        let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+        dispatch(loginAction({...userInfo}))
+      })
     })
   }
 }
@@ -191,9 +197,11 @@ function handleRegister(payload, formData) {
     }
     if (__DEV__) {// in android and ios simulator ,__DEV__ is true
       dispatch(registerWithPhoneNum(payload, formData))
+      dispatch(initMessageClient(payload))
     } else {
       lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
         dispatch(registerWithPhoneNum(payload, formData))
+        dispatch(initMessageClient(payload))
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
@@ -211,9 +219,9 @@ function registerWithPhoneNum(payload, formData) {
       password: formData.passwordInput.text
     }
     lcAuth.register(regPayload).then((user) => {
+      let regAction = createAction(AuthTypes.REGISTER_SUCCESS)
+      dispatch(regAction(user))
       if (payload.success) {
-        let regAction = createAction(AuthTypes.REGISTER_SUCCESS)
-        dispatch(regAction(user))
         payload.success(user)
       }
     }).catch((error) => {

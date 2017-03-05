@@ -42,7 +42,7 @@ export default function authReducer(state = initialState, action) {
 function handleRegisterSuccess(state, action) {
   let userInfo = action.payload.userInfo
   state = state.set('activeUser', userInfo.id)
-  state = state.set('token', userInfo.token)
+  state = state.set('token', action.payload.token)
   state = state.setIn(['profiles', userInfo.id], userInfo)
   return state
 }
