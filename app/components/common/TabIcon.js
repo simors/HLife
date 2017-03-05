@@ -28,7 +28,22 @@ class TabIcon extends Component {
       </View>
     )
   }
+
   publish=(title, selected, index, onPressed, isLogin) =>{
+    if (index == 2) {
+      return (
+        <TouchableWithoutFeedback onPress={()=> {
+          if (onPressed) {
+            onPressed({isLogin: isLogin, index: index})
+          }
+        }}>
+          <View style={[styles.container, {backgroundColor: THEME.base.mainColor}]}>
+            {this.getImage(index, selected)}
+            <View style={styles.topLine}/>
+          </View>
+        </TouchableWithoutFeedback>
+      )
+    }
     return (
       <TouchableWithoutFeedback onPress={()=> {
         if (onPressed) {
@@ -47,7 +62,7 @@ class TabIcon extends Component {
   getTitle=(title, selected) =>{
     return (
       <Text
-        style={{color: selected ? THEME.colors.green : THEME.colors.gray, fontSize: 10, marginTop: 4}}
+        style={{color: selected ? THEME.base.mainColor : '#929292', fontSize: 10, marginTop: 4}}
       >
         {title}
       </Text>
@@ -62,20 +77,24 @@ class TabIcon extends Component {
         break
 
       case 1:
-        imageSource = selected ? require("../../assets/images/local_select.png"): require("../../assets/images/local_unselect.png")
+        imageSource = selected ? require("../../assets/images/shop_select.png"): require("../../assets/images/shop_un.png")
         break
 
       case 2:
-        imageSource = selected ? require("../../assets/images/find_select.png"): require("../../assets/images/find_unselect.png")
+        imageSource = require("../../assets/images/shop_un.png")
         break
 
       case 3:
-        imageSource = selected ? require("../../assets/images/mine_select.png"): require("../../assets/images/mine_unselect.png")
+        imageSource = selected ? require("../../assets/images/topic_select.png"): require("../../assets/images/topic_un.png")
+        break
+
+      case 4:
+        imageSource = selected ? require("../../assets/images/mine_select.png"): require("../../assets/images/mine_un.png")
         break
       default:
     }
 
-    return(
+    return (
       <View>
         <Image source={imageSource} />
         {this.renderRedDot(index)}
@@ -110,7 +129,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FAFAFA',
     height: 50,
-    width: PAGE_WIDTH / 4,
+    width: PAGE_WIDTH / 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -118,7 +137,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: PAGE_WIDTH / 4,
+    width: PAGE_WIDTH / 5,
     height: 0.5,
     backgroundColor: '#ededed',
   },

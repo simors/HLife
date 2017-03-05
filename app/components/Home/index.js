@@ -185,10 +185,10 @@ class Home extends Component {
         <StatusBar hidden={false} />
         <Header
           leftType="image"
-          leftImageSource={require("../../assets/images/local_unselect.png")}
+          leftImageSource={require("../../assets/images/location.png")}
           leftImageLabel="长沙"
           leftPress={() => {}}
-          title="吾爱"
+          title="邻家优店"
           rightComponent={() => {return <MessageBell />}}
         />
 

@@ -166,15 +166,18 @@ export const scenes = Actions.create(
           <Scene key="WUAI" component={Home}/>
         </Scene>
 
-        <Scene key="LOCAL" title="本地" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="LOCAL" title="优店" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="LOCAL_INDEX" component={Local} />
         </Scene>
 
-        <Scene key="FIND" title="发现" number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="PUBLISH" title="发布"  number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        </Scene>
+
+        <Scene key="FIND" title="话题" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="FIND_INDEX" component={Find} />
         </Scene>
 
-        <Scene key="MINE" title="我的" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="MINE" title="我的" number={4} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>
@@ -185,7 +188,7 @@ export const scenes = Actions.create(
 )
 
 function tapActions(props) {
-  if (props.index == 3) {
+  if (props.index == 4) {
     AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
       let jsonData = JSON.parse(data)
       console.log('User Auth:', jsonData)
@@ -208,7 +211,7 @@ function tapActions(props) {
         Actions.LOCAL()
         break
       }
-      case 2: {
+      case 3: {
         Actions.FIND()
         break
       }
