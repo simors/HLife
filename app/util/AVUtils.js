@@ -12,6 +12,7 @@ import {store} from '../store/persistStore'
 import * as Toast from '../components/common/Toast'
 import {updateLocalDeviceToken} from '../action/pushAction'
 import * as lcPush from '../api/leancloud/push'
+import Popup from '@zzzkk2009/react-native-popup'
 
 // const EE = new EventEmitter()
 
@@ -83,27 +84,27 @@ export function configurePush(options) {
       // push(pushData, query)
 
       //TODO: test
-      // let userList = []
-      // userList = ['58ab9bbb8d6d810058bc81a8', '584be311ac502e006c679375']
-      // // userList = ['58ab9bbb8d6d810058bc81a8']
-      // // userList = ['584be311ac502e006c679375']
-      // let pushData = {
-      //   alert: '您有新的订单,请及时处理123',
-      //   title: '邻家优店发来的通知',//android only
-      //   //ios系统收到消息通知后,如果该应用正在前台,则系统不会显示通知
-      //   //可以通过定时消息,延后发送,然后退出app,即可收到消息
-      //   //Android在RNLeanCloudPushReceiver类handleRemotePushNotification方法进行控制
-      //   // push_time: new Date(Date.now() + (10 * 1000)),
-      //   sceneName: 'MESSAGE_BOX',
-      //   sceneParams: {
-      //     userId: 1,
-      //     userName: 'zachary'
-      //   }
-      // }
-      // let deviceTokens = []
-      // deviceTokens = ['4f8596625def721d7ffab5a7368c92a7']
-      // pushByUserList(userList, pushData)
-      // // pushByDeviceTokens(deviceTokens, pushData)
+      let userList = []
+      userList = ['58ab9bbb8d6d810058bc81a8', '584be311ac502e006c679375']
+      // userList = ['58ab9bbb8d6d810058bc81a8']
+      // userList = ['584be311ac502e006c679375']
+      let pushData = {
+        alert: '您有新的订单,请及时处理123',
+        title: '邻家优店发来的通知',//android only
+        //ios系统收到消息通知后,如果该应用正在前台,则系统不会显示通知
+        //可以通过定时消息,延后发送,然后退出app,即可收到消息
+        //Android在RNLeanCloudPushReceiver类handleRemotePushNotification方法进行控制
+        // push_time: new Date(Date.now() + (10 * 1000)),
+        sceneName: 'MESSAGE_BOX',
+        sceneParams: {
+          userId: 1,
+          userName: 'zachary'
+        }
+      }
+      let deviceTokens = []
+      deviceTokens = ['4f8596625def721d7ffab5a7368c92a7']
+      pushByUserList(userList, pushData)
+      // pushByDeviceTokens(deviceTokens, pushData)
 
       
     },
@@ -112,17 +113,36 @@ export function configurePush(options) {
     onNotification: function(notification) {
       console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
+      let data = notification.data
       if(notification.userInteraction) {
         //用户点击通知栏消息
         // Toast.show(notification.data.userInfo.userName)
-        let data = notification.data
         console.log('DATA:', notification.data)
         if(data.sceneName) {
           Actions[data.sceneName](data.sceneParams)
         }
       }else {
         //程序接收到远程或本地通知
-        
+        Popup.confirm({
+          title: data.title || '邻家优店通知',
+          content: data.alert || '',
+          ok: {
+            text: '查看',
+            style: {color: '#50E3C2'},
+            callback: ()=>{
+              console.log('ok')
+              if(data.sceneName) {
+                Actions[data.sceneName](data.sceneParams)
+              }
+            }
+          },
+          cancel: {
+            text: '取消',
+            callback: ()=>{
+              console.log('cancel')
+            }
+          }
+        })
       }
     },
     
