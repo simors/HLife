@@ -38,7 +38,9 @@ class TabIcon extends Component {
           }
         }}>
           <View style={[styles.container, {backgroundColor: THEME.base.mainColor}]}>
-            {this.getImage(index, selected)}
+            <View>
+              <Text style={{color: 'white', fontSize: 35}}>+</Text>
+            </View>
             <View style={styles.topLine}/>
           </View>
         </TouchableWithoutFeedback>
