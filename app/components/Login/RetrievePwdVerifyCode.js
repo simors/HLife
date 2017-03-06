@@ -19,9 +19,7 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {
-  Button,
-} from 'react-native-elements'
+import CommonButton from '../common/CommonButton'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
@@ -105,8 +103,7 @@ class RetrievePassword extends Component {
               <PasswordInput {...passwordInput} containerStyle={styles.inputBox}
                              placeholder='设置新密码(6-16位数字或字母)'/>
 
-              <Button
-                buttonStyle={styles.btn}
+              <CommonButton
                 onPress={this.onButtonPress}
                 title="重设密码"
               />
@@ -154,12 +151,5 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     marginBottom: normalizeW(25)
-  },
-  btn: {
-    height: normalizeH(50),
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
-    backgroundColor: THEME.base.mainColor,
-    marginBottom: normalizeH(24)
   },
 })

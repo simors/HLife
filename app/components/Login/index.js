@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     fontSize: em(14),
     color: THEME.base.deepColor,
     textAlign: 'center',
-    height: normalizeH(17),
+    height: normalizeH(20),
     marginTop: normalizeH(18),
     marginBottom: normalizeH(80)
   }

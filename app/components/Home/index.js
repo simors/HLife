@@ -46,13 +46,10 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 class Home extends Component {
-     constructor(props) {
+  constructor(props) {
     super(props)
 
-    this.iosMarginTop = Platform.OS == 'ios' ? {marginTop: 20} : {};
-
     this.state = {
-      clickTitle: 'You can try clicking beauty',
       defaultIndex: 0,
     }
     this.defaultIndex = 0
@@ -61,18 +58,11 @@ class Home extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
-      this.props.fetchAnnouncement({type: 0})
-      this.props.getAllTopicCategories({})
+      // this.props.fetchAnnouncement({type: 0})
+      // this.props.getAllTopicCategories({})
     })
 
     // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
-  }
-
-  clickListener(index, banners) {
-    console.log(`--->clickListener page index:${index}:  banners=${banners.length}`)
-    this.setState({
-      clickTitle: this.banners[index].title ? `you click ${this.banners[index].title}` : 'this banner has no title',
-    })
   }
 
   onMomentumScrollEnd(event, state) {
@@ -109,7 +99,7 @@ class Home extends Component {
   }
 
   renderAnnouncementColumn() {
-    if(this.props.announcement) {
+    if (this.props.announcement) {
       return (
         <View style={styles.announcementModule}>
           <CommonMarquee2 data={this.props.announcement}/>
@@ -147,17 +137,17 @@ class Home extends Component {
   }
 
   renderChannelsColumn() {
-    if(this.props.topics.length > 0) {
+    if (this.props.topics.length > 0) {
       return (
         <View style={styles.channelsModule}>
           <Channels topics={this.props.topics}/>
         </View>
       )
     }
-    else{
+    else {
       return (
-      <View style={styles.channelsModule}>
-      </View>
+        <View style={styles.channelsModule}>
+        </View>
       )
     }
   }
@@ -182,14 +172,17 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar hidden={false} />
+        <StatusBar hidden={false}/>
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/location.png")}
           leftImageLabel="长沙"
-          leftPress={() => {}}
+          leftPress={() => {
+          }}
           title="邻家优店"
-          rightComponent={() => {return <MessageBell />}}
+          rightComponent={() => {
+            return <MessageBell />
+          }}
         />
 
         <View style={styles.body}>
@@ -197,8 +190,12 @@ class Home extends Component {
             contentContainerStyle={{backgroundColor: '#E5E5E5'}}
             dataSource={this.props.ds}
             renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
-            loadNewData={()=>{this.refreshData()}}
-            loadMoreData={()=>{this.loadMoreData()}}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
           />
         </View>
 
@@ -209,7 +206,7 @@ class Home extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let ds = undefined
-  if(ownProps.ds) {
+  if (ownProps.ds) {
     ds = ownProps.ds
   } else {
     ds = new ListView.DataSource({
@@ -219,29 +216,29 @@ const mapStateToProps = (state, ownProps) => {
 
   let dataArray = []
   dataArray.push({type: 'BANNER_COLUMN'})
-  dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
-  dataArray.push({type: 'HEALTH_COLUMN'})
-  dataArray.push({type: 'COLUMNS_COLUMN'})
-  dataArray.push({type: 'CHANNELS_COLUMN'})
-  dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
+  // dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
+  // dataArray.push({type: 'HEALTH_COLUMN'})
+  // dataArray.push({type: 'COLUMNS_COLUMN'})
+  // dataArray.push({type: 'CHANNELS_COLUMN'})
+  // dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
 
   const announcement = getAnnouncement(state, 0)
   const banner = getBanner(state, 0)
-  const topics = getTopicCategories(state)
+  // const topics = getTopicCategories(state)
 
-  let pickedTopics = []
-  if(topics) {
-    topics.forEach((value) => {
-      if (value.isPicked) {
-        pickedTopics.push(value)
-      }
-    })
-  }
+  // let pickedTopics = []
+  // if (topics) {
+  //   topics.forEach((value) => {
+  //     if (value.isPicked) {
+  //       pickedTopics.push(value)
+  //     }
+  //   })
+  // }
 
   return {
-    announcement: announcement,
+    // announcement: announcement,
     banner: banner,
-    topics:pickedTopics,
+    // topics: pickedTopics,
     ds: ds.cloneWithRows(dataArray),
   }
 }
@@ -279,10 +276,10 @@ const styles = StyleSheet.create({
   announcementModule: {
     height: normalizeH(40),
     backgroundColor: 'white',
- //   marginTop: normalizeH(15),
+    //   marginTop: normalizeH(15),
   },
   advertisementModule: {
-    height: normalizeH(136),
+    height: normalizeH(159),
     backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
   },
   columnsModule: {

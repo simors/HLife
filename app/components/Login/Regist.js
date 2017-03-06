@@ -21,9 +21,7 @@ import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {
-  Button
-} from 'react-native-elements'
+import CommonButton from '../common/CommonButton'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import {isInputValid} from '../../selector/inputFormSelector'
 import * as Toast from '../common/Toast'
@@ -99,9 +97,6 @@ class Regist extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="注   册"
-          rightType="text"
-          rightText="昵称"
-          rightPress={() => Actions.NICKNAME_VIEW()}
         />
         <View style={styles.body}>
           <ScrollView keyboardDismissMode="on-drag">
@@ -111,8 +106,7 @@ class Regist extends Component {
                                 getSmsAuCode={() => {return this.smsCode()}} reset={!this.props.phoneValid} />
               <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
 
-              <Button
-                buttonStyle={styles.btn}
+              <CommonButton
                 onPress={this.onButtonPress}
                 title="确   定"
               />
@@ -167,15 +161,9 @@ const styles = StyleSheet.create({
   inputBox: {
     marginBottom: normalizeW(25)
   },
-  btn: {
-    height: normalizeH(50),
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
-    backgroundColor: THEME.base.mainColor,
-    marginBottom: normalizeH(24)
-  },
   agreementView:{
-    height:normalizeH(17),
+    marginTop: normalizeH(18),
+    height:normalizeH(20),
     flexDirection:'row',
     justifyContent:'center',
     marginBottom:normalizeH(59),
