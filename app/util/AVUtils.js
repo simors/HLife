@@ -84,27 +84,27 @@ export function configurePush(options) {
       // push(pushData, query)
 
       //TODO: test
-      let userList = []
-      userList = ['58ab9bbb8d6d810058bc81a8', '584be311ac502e006c679375']
-      // userList = ['58ab9bbb8d6d810058bc81a8']
-      // userList = ['584be311ac502e006c679375']
-      let pushData = {
-        alert: '您有新的订单,请及时处理123',
-        title: '邻家优店发来的通知',//android only
-        //ios系统收到消息通知后,如果该应用正在前台,则系统不会显示通知
-        //可以通过定时消息,延后发送,然后退出app,即可收到消息
-        //Android在RNLeanCloudPushReceiver类handleRemotePushNotification方法进行控制
-        // push_time: new Date(Date.now() + (10 * 1000)),
-        sceneName: 'MESSAGE_BOX',
-        sceneParams: {
-          userId: 1,
-          userName: 'zachary'
-        }
-      }
-      let deviceTokens = []
-      deviceTokens = ['4f8596625def721d7ffab5a7368c92a7']
-      pushByUserList(userList, pushData)
-      // pushByDeviceTokens(deviceTokens, pushData)
+      // let userList = []
+      // userList = ['58ab9bbb8d6d810058bc81a8', '584be311ac502e006c679375']
+      // // userList = ['58ab9bbb8d6d810058bc81a8']
+      // // userList = ['584be311ac502e006c679375']
+      // let pushData = {
+      //   alert: '您有新的订单,请及时处理123',
+      //   title: '邻家优店发来的通知',//android only
+      //   //ios系统收到消息通知后,如果该应用正在前台,则系统不会显示通知
+      //   //可以通过定时消息,延后发送,然后退出app,即可收到消息
+      //   //Android在RNLeanCloudPushReceiver类handleRemotePushNotification方法进行控制
+      //   // push_time: new Date(Date.now() + (10 * 1000)),
+      //   sceneName: 'MESSAGE_BOX',
+      //   sceneParams: {
+      //     userId: 1,
+      //     userName: 'zachary'
+      //   }
+      // }
+      // let deviceTokens = []
+      // deviceTokens = ['4f8596625def721d7ffab5a7368c92a7']
+      // pushByUserList(userList, pushData)
+      // // pushByDeviceTokens(deviceTokens, pushData)
 
       
     },
@@ -128,7 +128,7 @@ export function configurePush(options) {
           content: data.alert || '',
           ok: {
             text: '查看',
-            style: {color: '#50E3C2'},
+            style: {color: '#FF7819'},
             callback: ()=>{
               console.log('ok')
               if(data.sceneName) {
