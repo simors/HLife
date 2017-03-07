@@ -41,6 +41,8 @@ import DailyChosen from './DailyChosen'
 import Columns from './Columns'
 import {getTopicCategories} from '../../selector/configSelector'
 import MessageBell from '../common/MessageBell'
+import NearbyTopicView from './NearbyTopicView'
+import NearbyShop from './NearbyShopView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -59,10 +61,8 @@ class Home extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       // this.props.fetchAnnouncement({type: 0})
-      // this.props.getAllTopicCategories({})
+      this.props.getAllTopicCategories({})
     })
-
-    // this.props.fetchBanner({type: 0, geo: { latitude: 39.9, longitude: 116.4 }})
   }
 
   onMomentumScrollEnd(event, state) {
@@ -72,6 +72,8 @@ class Home extends Component {
 
   renderRow(rowData, rowId) {
     switch (rowData.type) {
+      case 'NEARBY_TOPIC':
+        return this.renderNearbyTopic()
       case 'HEALTH_COLUMN':
         return this.renderHealthColumn()
       case 'ANNOUNCEMENT_COLUMN':
@@ -88,6 +90,22 @@ class Home extends Component {
         return <View />
     }
 
+  }
+
+  renderNearbyTopic() {
+    return (
+      <View style={styles.moduleSpace}>
+        <NearbyTopicView />
+      </View>
+    )
+  }
+
+  renderNearbyShop() {
+    return (
+      <View style={styles.moduleSpace}>
+        <NearbyShop />
+      </View>
+    )
   }
 
   renderHealthColumn() {
@@ -186,19 +204,12 @@ class Home extends Component {
         />
 
         <View style={styles.body}>
-          <CommonListView
-            contentContainerStyle={{backgroundColor: '#E5E5E5'}}
-            dataSource={this.props.ds}
-            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
-            loadNewData={()=> {
-              this.refreshData()
-            }}
-            loadMoreData={()=> {
-              this.loadMoreData()
-            }}
-          />
+          <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
+            {this.renderBannerColumn()}
+            {this.renderNearbyTopic()}
+            {this.renderNearbyShop()}
+          </ScrollView>
         </View>
-
       </View>
     )
   }
@@ -216,6 +227,7 @@ const mapStateToProps = (state, ownProps) => {
 
   let dataArray = []
   dataArray.push({type: 'BANNER_COLUMN'})
+  dataArray.push({type: 'NEARBY_TOPIC'})
   // dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
   // dataArray.push({type: 'HEALTH_COLUMN'})
   // dataArray.push({type: 'COLUMNS_COLUMN'})
@@ -254,6 +266,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Home)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
   },
   contentContainerStyle: {
     paddingBottom: 49
@@ -295,5 +308,8 @@ const styles = StyleSheet.create({
   dailyChosenModule: {
     marginTop: normalizeH(15),
   },
+  moduleSpace: {
+    paddingBottom: normalizeH(8),
+  }
 
 })
