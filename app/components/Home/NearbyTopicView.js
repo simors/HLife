@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     height: normalizeH(78),
-    backgroundColor: 'white',
+    backgroundColor: THEME.base.backgroundColor,
   },
   moduleTitleView: {
     marginLeft: normalizeW(20),
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
   },
   moduleTitle: {
     fontSize: 24,
+    fontWeight: 'bold',
     color: THEME.base.mainColor,
     lineHeight: 24,
   },

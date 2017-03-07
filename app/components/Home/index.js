@@ -42,6 +42,7 @@ import Columns from './Columns'
 import {getTopicCategories} from '../../selector/configSelector'
 import MessageBell from '../common/MessageBell'
 import NearbyTopicView from './NearbyTopicView'
+import NearbyShop from './NearbyShopView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -60,7 +61,7 @@ class Home extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       // this.props.fetchAnnouncement({type: 0})
-      // this.props.getAllTopicCategories({})
+      this.props.getAllTopicCategories({})
     })
   }
 
@@ -93,8 +94,16 @@ class Home extends Component {
 
   renderNearbyTopic() {
     return (
-      <View>
+      <View style={styles.moduleSpace}>
         <NearbyTopicView />
+      </View>
+    )
+  }
+
+  renderNearbyShop() {
+    return (
+      <View style={styles.moduleSpace}>
+        <NearbyShop />
       </View>
     )
   }
@@ -195,8 +204,11 @@ class Home extends Component {
         />
 
         <View style={styles.body}>
-          {this.renderBannerColumn()}
-          {this.renderNearbyTopic()}
+          <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
+            {this.renderBannerColumn()}
+            {this.renderNearbyTopic()}
+            {this.renderNearbyShop()}
+          </ScrollView>
         </View>
       </View>
     )
@@ -296,5 +308,8 @@ const styles = StyleSheet.create({
   dailyChosenModule: {
     marginTop: normalizeH(15),
   },
+  moduleSpace: {
+    paddingBottom: normalizeH(8),
+  }
 
 })
