@@ -42,7 +42,8 @@ import Columns from './Columns'
 import {getTopicCategories} from '../../selector/configSelector'
 import MessageBell from '../common/MessageBell'
 import NearbyTopicView from './NearbyTopicView'
-import NearbyShop from './NearbyShopView'
+import NearbyShopView from './NearbyShopView'
+import NearbySalesView from './NearbySalesView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -103,7 +104,15 @@ class Home extends Component {
   renderNearbyShop() {
     return (
       <View style={styles.moduleSpace}>
-        <NearbyShop />
+        <NearbyShopView />
+      </View>
+    )
+  }
+
+  renderNearbySalesView() {
+    return (
+      <View style={styles.moduleSpace}>
+        <NearbySalesView />
       </View>
     )
   }
@@ -204,10 +213,11 @@ class Home extends Component {
         />
 
         <View style={styles.body}>
-          <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
+          <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
             {this.renderBannerColumn()}
             {this.renderNearbyTopic()}
             {this.renderNearbyShop()}
+            {this.renderNearbySalesView()}
           </ScrollView>
         </View>
       </View>

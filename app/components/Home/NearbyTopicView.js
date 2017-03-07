@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     marginTop: normalizeH(18),
-    marginBottom: normalizeH(15),
+    marginBottom: normalizeH(12),
     borderLeftWidth: 1,
     borderColor: '#F5F5F5',
     ...Platform.select({
