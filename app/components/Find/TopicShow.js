@@ -101,19 +101,21 @@ export class TopicShow extends Component {
         <View style={[styles.containerStyle, this.props.containerStyle]}>
 
           <View style={styles.introWrapStyle}>
-            <View style={{flexDirection: 'row'}} onPress={()=> {}}>
-              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-                <Image style={styles.avatarStyle}
-                       source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
-              </TouchableOpacity>
-              <View>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-                  <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
+                  <Image style={styles.avatarStyle}
+                         source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
                 </TouchableOpacity>
-                <View style={styles.timeLocationStyle}>
-                  <Text style={styles.timeTextStyle}>
-                    {getConversationTime(this.props.topic.createdAt)}
-                  </Text>
+                <View>
+                  <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
+                    <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
+                  </TouchableOpacity>
+                  <View style={styles.timeLocationStyle}>
+                    <Text style={styles.timeTextStyle}>
+                      {getConversationTime(this.props.topic.createdAt)}
+                    </Text>
+                  </View>
                 </View>
               </View>
 
@@ -183,11 +185,7 @@ const styles = StyleSheet.create({
     color: "#4a4a4a"
   },
   attentionStyle: {
-    position: "absolute",
-    right: normalizeW(10),
-    top: normalizeH(6),
-    width: normalizeW(56),
-    height: normalizeH(25)
+    paddingRight: normalizeW(15),
   },
   timeLocationStyle: {
     marginLeft: normalizeW(11),
@@ -220,10 +218,11 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(12)
   },
   contentTitleStyle: {
-    fontSize: em(17),
+    fontSize: 17,
+    fontWeight: 'bold',
     lineHeight: 20,
     marginBottom: normalizeH(5),
-    color: "#4a4a4a"
+    color: "#5A5A5A"
   },
   contentStyle: {
     marginBottom: normalizeH(13),
@@ -236,7 +235,8 @@ const styles = StyleSheet.create({
   locationCommentStyle: {
     marginLeft: normalizeW(35),
     marginBottom: normalizeH(10),
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   likeTextStyle: {
     position: "absolute",
