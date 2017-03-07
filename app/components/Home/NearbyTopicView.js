@@ -123,15 +123,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(NearbyTopicView)
 const styles = StyleSheet.create({
   container: {
     width: PAGE_WIDTH,
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'row',
     height: normalizeH(78),
     backgroundColor: 'white',
   },
   moduleTitleView: {
     marginLeft: normalizeW(20),
-    marginRight: normalizeW(15),
-    marginTop: normalizeH(15),
-    marginBottom: normalizeH(15),
+    marginRight: normalizeW(10),
   },
   moduleTitle: {
     fontSize: 24,
@@ -141,10 +141,18 @@ const styles = StyleSheet.create({
   moduleContentView: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: normalizeH(15),
+    marginTop: normalizeH(18),
     marginBottom: normalizeH(15),
     borderLeftWidth: 1,
     borderColor: '#F5F5F5',
+    ...Platform.select({
+      ios: {
+        paddingLeft: 0,
+      },
+      android: {
+        paddingLeft: 8,
+      }
+    }),
   },
   swiperView: {
     ...Platform.select({
@@ -172,6 +180,5 @@ const styles = StyleSheet.create({
     color: '#AAAAAA',
     marginLeft: 10,
     lineHeight: 15,
-    flexWrap: 'wrap',
   },
 })
