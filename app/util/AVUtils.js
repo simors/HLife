@@ -12,6 +12,7 @@ import {store} from '../store/persistStore'
 import * as Toast from '../components/common/Toast'
 import {updateLocalDeviceToken} from '../action/pushAction'
 import * as lcPush from '../api/leancloud/push'
+import Popup from '@zzzkk2009/react-native-popup'
 
 // const EE = new EventEmitter()
 
@@ -112,17 +113,36 @@ export function configurePush(options) {
     onNotification: function(notification) {
       console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
+      let data = notification.data
       if(notification.userInteraction) {
         //用户点击通知栏消息
         // Toast.show(notification.data.userInfo.userName)
-        let data = notification.data
         console.log('DATA:', notification.data)
         if(data.sceneName) {
           Actions[data.sceneName](data.sceneParams)
         }
       }else {
         //程序接收到远程或本地通知
-        
+        Popup.confirm({
+          title: data.title || '邻家优店通知',
+          content: data.alert || '',
+          ok: {
+            text: '查看',
+            style: {color: '#FF7819'},
+            callback: ()=>{
+              console.log('ok')
+              if(data.sceneName) {
+                Actions[data.sceneName](data.sceneParams)
+              }
+            }
+          },
+          cancel: {
+            text: '取消',
+            callback: ()=>{
+              console.log('cancel')
+            }
+          }
+        })
       }
     },
     

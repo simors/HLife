@@ -1,8 +1,10 @@
 rootProject.name = 'HLife'
 
 include ':app'
-include ':@zzzkk2009/react-native-leancloud-sdk'
-project(':@zzzkk2009/react-native-leancloud-sdk').projectDir = new File(rootProject.projectDir, '../node_modules/@zzzkk2009/react-native-leancloud-sdk/android')
+include ':zzzkk2009-react-native-leancloud-sdk'
+project(':zzzkk2009-react-native-leancloud-sdk').projectDir = new File(rootProject.projectDir, '../node_modules/@zzzkk2009/react-native-leancloud-sdk/android')
+include ':react-native-image-crop-picker'
+project(':react-native-image-crop-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-crop-picker/android')
 include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-camera-android'
@@ -11,8 +13,6 @@ include ':react-native-barcodescanner'
 project(':react-native-barcodescanner').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-barcodescanner/android')
 include ':react-native-camera'
 project(':react-native-camera').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-camera/android')
-include ':react-native-image-crop-picker'
-project(':react-native-image-crop-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-crop-picker/android')
 include ':react-native-camera'
 project(':react-native-camera').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-camera/android')
 //include ':react-native-send-intent'
