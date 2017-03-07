@@ -100,7 +100,7 @@ class FollowUser extends Component {
     if(userIsFollowedTheUser) {
       return (
         <TouchableOpacity style={[styles.userAttentioned, this.props.attentionedContainerStyle]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
-          <Text style={[styles.userAttentionedTxt, this.props.attentionedTxtStyle]}>已关注</Text>
+          <Image style={styles.commentAttention} source={require('../../assets/images/followed.png')}/>
         </TouchableOpacity>
       )
     }else {
@@ -112,8 +112,8 @@ class FollowUser extends Component {
         )
       }else {
         return (
-          <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>
-            <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
+          <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center'}} onPress={()=>{this.followUser(this.props.userId)}}>
+            <Image style={styles.commentAttention} source={require('../../assets/images/add_follow.png')}/>
           </TouchableOpacity>
         )
       }
@@ -142,7 +142,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(FollowUser)
 
 const styles = StyleSheet.create({
   userAttentioned: {
-    backgroundColor: THEME.colors.green,
     paddingTop: 4,
     paddingBottom: 4,
     paddingLeft: 4,
@@ -154,6 +153,10 @@ const styles = StyleSheet.create({
   userAttentionedTxt: {
     color: '#fff',
     fontSize: 10,
+  },
+  commentAttention: {
+    width: normalizeW(45),
+    height: normalizeH(50),
   },
 
 })

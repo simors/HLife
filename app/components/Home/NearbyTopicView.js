@@ -10,6 +10,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Platform,
+  Image,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -47,8 +48,7 @@ class NearbyTopicView extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.moduleTitleView}>
-          <Text style={styles.moduleTitle}>邻家</Text>
-          <Text style={styles.moduleTitle}>话题</Text>
+          <Image source={require('../../assets/images/title_lingjiahuati.png')}/>
         </View>
         <View style={styles.moduleContentView} onLayout={(event) => this.getSwiperSize(event)}>
           <Swiper
@@ -132,12 +132,6 @@ const styles = StyleSheet.create({
   moduleTitleView: {
     marginLeft: normalizeW(20),
     marginRight: normalizeW(10),
-  },
-  moduleTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: THEME.base.mainColor,
-    lineHeight: 24,
   },
   moduleContentView: {
     flex: 1,

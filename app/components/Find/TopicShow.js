@@ -101,11 +101,10 @@ export class TopicShow extends Component {
         <View style={[styles.containerStyle, this.props.containerStyle]}>
 
           <View style={styles.introWrapStyle}>
-            <View style={{flexDirection: 'row'}} onPress={()=> {
-            }}>
+            <View style={{flexDirection: 'row'}} onPress={()=> {}}>
               <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
                 <Image style={styles.avatarStyle}
-                       source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+                       source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
               </TouchableOpacity>
               <View>
                 <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
