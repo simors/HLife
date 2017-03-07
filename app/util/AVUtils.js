@@ -13,6 +13,7 @@ import * as Toast from '../components/common/Toast'
 import {updateLocalDeviceToken} from '../action/pushAction'
 import * as lcPush from '../api/leancloud/push'
 import Popup from '@zzzkk2009/react-native-popup'
+import * as pushSelect from '../selector/pushSelector'
 
 // const EE = new EventEmitter()
 
@@ -282,21 +283,44 @@ function queryDeviceTokens(userList = []) {
 
 /**
  * 更新用户设备关联信息
- * installationId:android设备id
- * deviceToken:ios设备id
+ * (deprecated): installationId:android设备id
+ * (deprecated): deviceToken:ios设备id
  * userId:用户id
  * removeUser: 是否删除设备对应的用户
  * @param payload
  */
 export function updateDeviceUserInfo(payload = {}) {
-  if ( Platform.OS === 'android' ) {
-    payload.installationId = payload.deviceToken
-    payload.deviceToken = ''
-    payload.deviceType = 'android'
-  }else {
-    payload.deviceType = 'ios'
-  }
-  return lcPush.updateDeviceUserInfo(payload)
+  return new Promise((resolve, reject)=>{
+    // console.log('updateDeviceUserInfo.payload===', payload)
+    // console.log('updateDeviceUserInfo.store.state===', store.getState())
+    let deviceToken = pushSelect.selectDeviceToken(store.getState())
+    // console.log('updateDeviceUserInfo.deviceToken===', deviceToken)
+    if(deviceToken) {
+      if ( Platform.OS === 'android' ) {
+        payload.installationId = deviceToken
+        payload.deviceType = 'android'
+      }else {
+        payload.deviceToken = deviceToken
+        payload.deviceType = 'ios'
+      }
+      lcPush.updateDeviceUserInfo(payload).then(()=>{
+        resolve({
+          code: 1,
+          message: 'success'
+        })
+      },()=>{
+        resolve({
+          code:-1,
+          message: 'fail'
+        })
+      })
+    }else {
+      resolve({
+        code:-2,
+        message: 'error'
+      })
+    }
+  })
 }
 
 /**

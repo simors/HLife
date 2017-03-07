@@ -20,6 +20,7 @@ import {persistor} from '../../store/persistStore'
 import * as reactInvokeMethod from '../../util/reactMethodUtils'
 import RNRestart from 'react-native-restart'
 import * as Toast from '../../components/common/Toast'
+import * as AVUtils from '../../util/AVUtils'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -61,6 +62,9 @@ class Setting extends Component {
 
   clearUserInfo() {
     persistor.purge(['AUTH'])
+    AVUtils.updateDeviceUserInfo({
+      removeUser: true
+    })
     Toast.show('清除成功')
     setTimeout(() => {
       Actions.HOME_INDEX()

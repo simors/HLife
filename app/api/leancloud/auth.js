@@ -9,6 +9,7 @@ import {DoctorInfo} from '../../models/doctorModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
 import * as numberUtils from '../../util/numberUtils'
+import * as AVUtils from '../../util/AVUtils'
 
 export function become(payload) {
   return AV.User.become(payload.token).then((user) => {
@@ -31,7 +32,17 @@ export function loginWithPwd(payload) {
   let phone = payload.phone
   let password = payload.password
   return AV.User.logInWithMobilePhone(phone, password).then((loginedUser) => {
+    if(loginedUser && loginedUser.id) {
+      // console.log('loginWithPwd.updateDeviceUserInfo=', loginedUser.id)
+      AVUtils.updateDeviceUserInfo({
+        userId: loginedUser.id
+      }).then((result)=>{
+        // console.log('loginWithPwd.updateDeviceUserInfo.result=', result)
+      })
+    }
+    // console.log('loginWithPwd==loginedUser=', loginedUser)
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    // console.log('loginWithPwd==userInfo=', userInfo)
     userInfo = userInfo.set('token', loginedUser.getSessionToken())
     console.log("loginWithPwd", userInfo)
     return {
