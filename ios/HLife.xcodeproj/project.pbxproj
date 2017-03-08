@@ -35,6 +35,7 @@
 		80598CC119704C77968765E7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AB072ABED6D40D3AB87C366 /* FontAwesome.ttf */; };
 		80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		9177708741A94F1DB692C8AD /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B583B289C0C4B9BA40FB764 /* libBVLinearGradient.a */; };
 		A329ADAC0A274094BE8DE0B6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 833EA273CD1B4F39BA400B7B /* Zocial.ttf */; };
 		ADD8FAE5242B47F887D10EA2 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED0C6526B00469597D114E8 /* libimageCropPicker.a */; };
 		B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B652CD8A1E696FEF00EE1246 /* libReact.a */; };
@@ -242,6 +243,13 @@
 			remoteGlobalIDString = 4114DC4C1C187C3A003CD988;
 			remoteInfo = "React-Native-Webview-Bridge";
 		};
+		DDA5656D1E6F99CA002EDCE1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 74A5F585ED1A4331B76B7A8C /* BVLinearGradient.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = BVLinearGradient;
+		};
 		DDC7CA3F1DFE98490020E889 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */;
@@ -327,8 +335,10 @@
 		50343225606A4D92A8CCFC4A /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		5411B72DE67B4E9281A6AA8E /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		5616E2920612420B90CDC160 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
+		6B583B289C0C4B9BA40FB764 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		6D030136445CC0004790CC87 /* Pods-HLife.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLife.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HLife/Pods-HLife.debug.xcconfig"; sourceTree = "<group>"; };
 		74505C66777344C4AD590E84 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
+		74A5F585ED1A4331B76B7A8C /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7AB072ABED6D40D3AB87C366 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libReact-Native-Webview-Bridge.a"; sourceTree = "<group>"; };
@@ -434,6 +444,7 @@
 				373634DB2FA5B55BCDD62509 /* libPods-HLife.a in Frameworks */,
 				E79505E6728449E7AEC393EA /* libRNDeviceInfo.a in Frameworks */,
 				ADD8FAE5242B47F887D10EA2 /* libimageCropPicker.a in Frameworks */,
+				9177708741A94F1DB692C8AD /* libBVLinearGradient.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,6 +588,7 @@
 				1E339AC295A5428D930C3AF0 /* RCTCamera.xcodeproj */,
 				1E10C6F4B35C4E1982F7B53C /* RNDeviceInfo.xcodeproj */,
 				DD60CB735C6841798DDA8C44 /* ImageCropPicker.xcodeproj */,
+				74A5F585ED1A4331B76B7A8C /* BVLinearGradient.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -746,6 +758,14 @@
 			name = rn;
 			sourceTree = "<group>";
 		};
+		DDA565691E6F99CA002EDCE1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDA5656E1E6F99CA002EDCE1 /* libBVLinearGradient.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DDC7CA281DFE98490020E889 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -834,7 +854,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 820;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
@@ -866,6 +886,10 @@
 				{
 					ProductGroup = DDDC40311E28D7A700291C1B /* Products */;
 					ProjectRef = 3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */;
+				},
+				{
+					ProductGroup = DDA565691E6F99CA002EDCE1 /* Products */;
+					ProjectRef = 74A5F585ED1A4331B76B7A8C /* BVLinearGradient.xcodeproj */;
 				},
 				{
 					ProductGroup = B652CDC71E6D402500EE1246 /* Products */;
@@ -1128,6 +1152,13 @@
 			remoteRef = DD0B3AB71DF9C1EE00AE8D91 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		DDA5656E1E6F99CA002EDCE1 /* libBVLinearGradient.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBVLinearGradient.a;
+			remoteRef = DDA5656D1E6F99CA002EDCE1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DDC7CA401DFE98490020E889 /* libRNImagePicker.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1331,12 +1362,14 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib/thirdlibs",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1386,12 +1419,14 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib/thirdlibs",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1457,6 +1492,7 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1509,6 +1545,7 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
