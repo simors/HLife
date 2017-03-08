@@ -112,18 +112,11 @@ export function configurePush(options) {
     
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
-      console.log( 'NOTIFICATION:', notification );
+      // console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
       let data = notification.data
-      if(notification.userInteraction) {
-        //用户点击通知栏消息
-        // Toast.show(notification.data.userInfo.userName)
-        console.log('DATA:', notification.data)
-        if(data.sceneName) {
-          Actions[data.sceneName](data.sceneParams)
-        }
-      }else {
-        //程序接收到远程或本地通知
+
+      if(notification.foreground) {//程序在前台
         Popup.confirm({
           title: data.title || '邻家优店通知',
           content: data.alert || '',
@@ -131,7 +124,7 @@ export function configurePush(options) {
             text: '查看',
             style: {color: '#FF7819'},
             callback: ()=>{
-              console.log('ok')
+              // console.log('ok')
               if(data.sceneName) {
                 Actions[data.sceneName](data.sceneParams)
               }
@@ -140,11 +133,24 @@ export function configurePush(options) {
           cancel: {
             text: '取消',
             callback: ()=>{
-              console.log('cancel')
+              // console.log('cancel')
             }
           }
         })
+      }else {//程序在后台
+        if(notification.userInteraction) {//用户点击通知栏消息
+          // Toast.show(notification.data.userInfo.userName)
+          // console.log('DATA:', notification.data)
+          if(data.sceneName) {
+            Actions[data.sceneName](data.sceneParams)
+          }
+        }else {
+          //程序接收到远程或本地通知
+
+        }
       }
+
+
     },
     
     // IOS ONLY (optional): default: all - Permissions to register.
@@ -182,6 +188,7 @@ export function configurePush(options) {
  *  要推送的用户
  */
 export function pushByUserList(userList = [], pushData = {}) {
+  // pushData.push_time = new Date(Date.now() + (10 * 1000))
   if(userList.length) {
     buildPushQueryByUserList(userList).then((pushQuery)=>{
       if(pushQuery) {
