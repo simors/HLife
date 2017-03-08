@@ -305,10 +305,11 @@ class ShopDetail extends Component {
 
               {userIsFollowedTheUser
                 ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>
-                    <Text style={styles.userAttentionedTxt}>已关注</Text>
+                    {/*<Text style={styles.userAttentionedTxt}>已关注</Text>*/}
+                    <Image source={require('../../assets/images/followed.png')} />
                   </TouchableOpacity>
                 : <TouchableOpacity onPress={()=>{this.followUser(item.user.id)}}>
-                    <Image style={styles.commentAttention} source={require('../../assets/images/give_attention_head.png')}/>
+                    <Image style={styles.commentAttention} source={require('../../assets/images/add_follow.png')}/>
                   </TouchableOpacity>
               }
 
@@ -395,10 +396,11 @@ class ShopDetail extends Component {
               <View style={styles.shopHeadRight}>
                   {this.props.isFollowedShop
                     ? <View style={styles.shopAttentioned}>
-                        <Text style={styles.shopAttentionedTxt}>已关注</Text>
+                        {/*<Text style={styles.shopAttentionedTxt}>已关注</Text>*/}
+                        <Image source={require('../../assets/images/followed.png')} />
                       </View>
                     : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                        <Image style={styles.shopAttention} source={require('../../assets/images/give_attention_head.png')}/>
+                        <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
                       </TouchableOpacity>
                   }
               </View>

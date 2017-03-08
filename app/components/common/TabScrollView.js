@@ -89,20 +89,12 @@ TabScrollView.defaultProps = {
   topicsData: undefined,
 
   inactiveTextColor: '#686868',
-  activeTextColor: THEME.colors.green,
+  activeTextColor: THEME.base.mainColor,
   backgroundColor: '#f2f2f2',
 }
 
 const styles = StyleSheet.create({
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
     flex: 1,
   },
 
@@ -120,11 +112,20 @@ const styles = StyleSheet.create({
 
   tarBarUnderlineStyle: {
     height: 2,
-    backgroundColor:THEME.colors.green,
+    backgroundColor:THEME.base.mainColor,
   },
 
   tabBarStyle: {
-    height: 38,
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(25),
+        height: 64,
+      },
+      android: {
+        paddingTop: normalizeH(5),
+        height: 44,
+      }
+    }),
   },
   scrollViewStyle: {
     flex: 1,

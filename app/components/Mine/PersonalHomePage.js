@@ -184,7 +184,8 @@ class PersonalHomePage extends Component {
 
   renderNoFollow() {
     return (
-      <Text style={styles.btnTxt}>关注</Text>
+      // <Text style={styles.btnTxt}>关注</Text>
+      <Image source={require('../../assets/images/add_follow.png')}/>
     )
   }
 

@@ -121,7 +121,7 @@ export class Find extends Component {
   renderTopicItem(value, key) {
     return (
       <TopicShow key={key}
-                 containerStyle={{marginBottom: 10}}
+                 containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
                  topic={value}
                  onLikeButton={(payload)=>this.onLikeButton(payload)}
       />
@@ -275,16 +275,11 @@ export class Find extends Component {
     let topicId = this.props.topicCategories[this.state.selectedTab]
     return (
       <View style={styles.container}>
-        <Header
-          leftType="none"
-          title="发现"
-          rightType="none"
-        />
         <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.topicId}
                        renderTopics={() => this.renderTopics()}
                        onSelected={(index) => this.getSelectedTab(index)}/>
-        {this.renderPublish()}
+        {/*{this.renderPublish()}*/}
       </View>
     )
   }
