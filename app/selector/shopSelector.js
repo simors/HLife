@@ -73,6 +73,33 @@ export function selectShopComments(state, shopId) {
   return selectShop(state).shopComments[shopId] || []
 }
 
+export function selectShopCommentInfo(state, shopId, shopCommentId) {
+  let shopComments = selectShopComments(state, shopId)
+  if(shopComments && shopComments.length) {
+    for(let i = 0; i < shopComments.length; i++) {
+      let shopComment = shopComments[i]
+      if(shopComment.id == shopCommentId) {
+        return shopComment
+      }
+    }
+  }
+  return {}
+}
+
+export function selectShopCommentReplyInfo(state, shopId, shopCommentId, replyId) {
+  let shopComment = selectShopCommentInfo(state, shopId, shopCommentId)
+  let shopCommentReplys = shopComment.containedReply
+  if(shopCommentReplys && shopCommentReplys.length) {
+    for(let i = 0; i < shopCommentReplys.length; i++) {
+      let shopCommentReply = shopCommentReplys[i]
+      if(shopCommentReply.id == replyId) {
+        return shopCommentReply
+      }
+    }
+  }
+  return {}
+}
+
 export function selectShopCommentsTotalCount(state, shopId) {
   return selectShop(state).shopCommentsTotalCounts[shopId]
 }

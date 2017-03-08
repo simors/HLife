@@ -4,6 +4,10 @@ import ERROR from '../../constants/errorCode'
 import {TopicsItem, TopicCommentsItem, TopicLikeUser} from '../../models/TopicModel'
 import {Up} from '../../models/shopModel'
 import {Geolocation} from '../../components/common/BaiduMap'
+import * as AVUtils from '../../util/AVUtils'
+import * as topicSelector from '../../selector/topicSelector'
+import * as authSelector from '../../selector/authSelector'
+import {store} from '../../store/persistStore'
 
 export function publishTopics(payload) {
 
@@ -178,6 +182,21 @@ export function likeTopic(payload) {
     }
     topic.increment("likeCount", 1)
     return topic.save().then(function (result) {
+
+      let topicInfo = topicSelector.getTopicById(store.getState(), topicId)
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      let pushUserid = topicInfo && topicInfo.userId
+      // console.log('likeTopic.topicInfo==', topicInfo)
+      if(pushUserid) {
+        AVUtils.pushByUserList([pushUserid], {
+          alert: `${activeUser.nickname}点赞了您的评论,立即查看`,
+          sceneName: 'TOPIC_DETAIL',
+          sceneParams: {
+            topic: topicInfo
+          }
+        })
+      }
+
       return {
         topicId: topicId,
         code: '10108',
@@ -255,6 +274,21 @@ export function publishTopicComments(payload) {
 
         return topicComment.save().then(function (result) {
           if (result) {
+
+            let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+            let activeUser = authSelector.activeUserInfo(store.getState())
+            let pushUserid = topicInfo && topicInfo.userId
+            // console.log('likeTopic.topicInfo==', topicInfo)
+            if(pushUserid) {
+              AVUtils.pushByUserList([pushUserid], {
+                alert: `${activeUser.nickname}评论了您,立即查看`,
+                sceneName: 'TOPIC_DETAIL',
+                sceneParams: {
+                  topic: topicInfo
+                }
+              })
+            }
+
             let relation = topic.relation('comments')
             relation.add(topicComment);
             topic.increment("commentNum", 1)
@@ -300,6 +334,21 @@ export function publishTopicComments(payload) {
 
       return topicComment.save().then(function (result) {
         if (result) {
+
+          let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+          let activeUser = authSelector.activeUserInfo(store.getState())
+          let pushUserid = topicInfo && topicInfo.userId
+          // console.log('likeTopic.topicInfo==', topicInfo)
+          if(pushUserid) {
+            AVUtils.pushByUserList([pushUserid], {
+              alert: `${activeUser.nickname}评论了您,立即查看`,
+              sceneName: 'TOPIC_DETAIL',
+              sceneParams: {
+                topic: topicInfo
+              }
+            })
+          }
+
           let relation = topic.relation('comments')
           relation.add(topicComment);
           topic.increment("commentNum", 1)
@@ -342,6 +391,21 @@ export function publishTopicComments(payload) {
 
     return topicComment.save().then(function (result) {
       if (result) {
+
+        let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+        let activeUser = authSelector.activeUserInfo(store.getState())
+        let pushUserid = topicInfo && topicInfo.userId
+        // console.log('likeTopic.topicInfo==', topicInfo)
+        if(pushUserid) {
+          AVUtils.pushByUserList([pushUserid], {
+            alert: `${activeUser.nickname}评论了您,立即查看`,
+            sceneName: 'TOPIC_DETAIL',
+            sceneParams: {
+              topic: topicInfo
+            }
+          })
+        }
+
         let relation = topic.relation('comments')
         relation.add(topicComment);
         topic.increment("commentNum", 1)

@@ -16,6 +16,10 @@ import {
 } from '../../models/shopModel'
 import {UserInfo} from '../../models/userModels'
 import {Geolocation} from '../../components/common/BaiduMap'
+import * as AVUtils from '../../util/AVUtils'
+import * as shopSelector from '../../selector/shopSelector'
+import * as authSelector from '../../selector/authSelector'
+import {store} from '../../store/persistStore'
 
 export function getShopList(payload) {
   let shopCategoryId = payload.shopCategoryId
@@ -260,6 +264,11 @@ export function followShop(payload) {
     return shopFollower.save().then(function(shopFollowerResult){
       return shopFollowee.save()
     }).then(()=>{
+      let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
+      // console.log('followShop.shopDetail==', shopDetail)
+      AVUtils.pushByUserList([shopDetail.owner.id], {
+        alert: '有新的用户关注了您的店铺,立即查看',
+      })
       return {
         shopId: shopId,
         code: '10002',
@@ -296,7 +305,17 @@ export function submitShopComment(payload) {
   shopComment.set('content', content)
 
   return shopComment.save().then((results) => {
-    console.log('submitShopComment.results=', results)
+    // console.log('submitShopComment.results=', results)
+    let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
+    let activeUser = authSelector.activeUserInfo(store.getState())
+    // console.log('followShop.shopDetail==', shopDetail)
+    AVUtils.pushByUserList([shopDetail.owner.id], {
+      alert: `${activeUser.nickname}评论了您的店铺,立即查看`,
+      sceneName: 'SHOP_COMMENT_LIST',
+      sceneParams: {
+        shopId: shopId
+      }
+    })
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -415,6 +434,16 @@ export function userUpShop(payload) {
     if(result && '10007' == result.code) {
       return result
     }
+    let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
+    let activeUser = authSelector.activeUserInfo(store.getState())
+    // console.log('followShop.shopDetail==', shopDetail)
+    AVUtils.pushByUserList([shopDetail.owner.id], {
+      alert: `${activeUser.nickname}点赞了您的店铺,立即查看`,
+      sceneName: 'SHOP_COMMENT_LIST',
+      sceneParams: {
+        shopId: shopId
+      }
+    })
     return {
       shopId: shopId,
       code: '10008',
@@ -496,6 +525,7 @@ export function fetchShopCommentUpedUserListByCloudFunc(payload) {
 export function userUpShopComment(payload) {
   let shopCommentUpId = payload.shopCommentUpId
   let shopCommentId = payload.shopCommentId
+  let shopId = payload.shopId
   let currentUser = AV.User.current()
   let targetShopComment = AV.Object.createWithoutData('ShopComment', shopCommentId)
 
@@ -510,6 +540,21 @@ export function userUpShopComment(payload) {
     shopCommentUp.set('user', currentUser)
   }
   return shopCommentUp.save().then((result)=>{
+    let shopComment = shopSelector.selectShopCommentInfo(store.getState(), shopId, shopCommentId)
+    // console.log('userUpShopComment.shopComment==', shopComment)
+    let pushUserId = shopComment && shopComment.user && shopComment.user.id
+    if(pushUserId) {
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
+      AVUtils.pushByUserList([pushUserId], {
+        alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中点赞了您的评论,立即查看`,
+        sceneName: 'SHOP_COMMENT_LIST',
+        sceneParams: {
+          shopId: shopId
+        }
+      })
+    }
+
     return result
   }, (err)=>{
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -547,6 +592,7 @@ export function reply(payload) {
   let replyId = payload.replyId
   let currentUser = AV.User.current()
   let replyContent = payload.replyContent
+  let shopId = payload.shopId
 
   let replyShopComment = AV.Object.createWithoutData('ShopComment', replyShopCommentId)
   let ShopCommentReply = AV.Object.extend('ShopCommentReply')
@@ -561,6 +607,28 @@ export function reply(payload) {
   shopCommentReply.set('user', currentUser)
 
   return shopCommentReply.save().then((results) => {
+    let pushUserId = ''
+    if(replyId) {
+      let shopCommentReply = shopSelector.selectShopCommentReplyInfo(store.getState(), shopId, replyShopCommentId, replyId)
+      pushUserId = shopCommentReply && shopCommentReply.user && shopCommentReply.user.id
+    }else {
+      let shopComment = shopSelector.selectShopCommentInfo(store.getState(), shopId, replyShopCommentId)
+      pushUserId = shopComment && shopComment.user && shopComment.user.id
+    }
+    if(pushUserId) {
+      let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
+      console.log('reply.pushUserId==', pushUserId)
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      console.log('reply.activeUser==', activeUser)
+      AVUtils.pushByUserList([pushUserId], {
+        alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中回复了您的评论,立即查看`,
+        sceneName: 'SHOP_COMMENT_LIST',
+        sceneParams: {
+          shopId: shopId
+        }
+      })
+    }
+
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

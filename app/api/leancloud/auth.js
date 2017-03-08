@@ -10,6 +10,8 @@ import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
 import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
+import * as authSelector from '../../selector/authSelector'
+import {store} from '../../store/persistStore'
 
 export function become(payload) {
   return AV.User.become(payload.token).then((user) => {
@@ -607,6 +609,14 @@ export function followUser(payload) {
     }
 
     return AV.User.current().follow(userId).then(()=>{
+
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      // console.log('followShop.shopDetail==', shopDetail)
+      AVUtils.pushByUserList([userId], {
+        alert: `${activeUser.nickname}关注了您,立即查看`,
+        sceneName: 'MYATTENTION',
+      })
+
       return {
         code: '10003',
         message: '关注成功'
