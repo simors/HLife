@@ -1,6 +1,8 @@
 package com.hlife;
 
 import com.facebook.react.ReactActivity;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;
 import com.ReactCamera.RNCameraViewPackage;
 import com.eguma.barcodescanner.BarcodeScanner;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;

@@ -1,3 +1,6 @@
+/**
+ * Created by yangyang on 2017/3/8.
+ */
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -13,15 +16,14 @@ import {
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {activeDoctorInfo} from '../../selector/doctorSelector'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import THEME from '../../constants/themes/theme1'
+import LinearGradient from 'react-native-linear-gradient'
 import {fetchUserFollowees} from '../../action/authActions'
-import {fetchDoctorInfo} from '../../action/doctorAction'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import * as authSelector from '../../selector/authSelector'
-import MessageBell from '../common/MessageBell'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -35,62 +37,12 @@ class Mine extends Component {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
         this.props.fetchUserOwnedShopInfo()
-        this.props.fetchDoctorInfo({id: this.props.userInfo.id})
         this.props.fetchUserFollowees()
       }
     })
   }
 
-  componentDidMount() {
-
-  }
-
-  _onRefresh() {
-    this.props.fetchDoctorInfo({id: this.props.userInfo.id})
-    this.props.fetchUserOwnedShopInfo()
-  }
-
-  doctorCertificationImage(status) {
-    if (status === undefined)
-      return require('../../assets/images/main_doctor.png')
-    switch (status)
-    {
-      case 0: //审核失败
-        return require('../../assets/images/doctor_not_pass.png')
-      case 1: //审核成功
-        return require('../../assets/images/doctor_approved.png')
-      case 2: //审核中
-        return require('../../assets/images/doctor_in_review.png')
-    }
-  }
-  doctorCertificationAction= (status)=> {
-    // console.log("doctorCertificationAction start status:", status)
-    if (status === undefined)
-      Actions.DCTOR_CERTIFICATION()
-    switch (status)
-    {
-      case 0:
-        Actions.DCTOR_REVISE()
-        break
-      case 1:
-        if (this.props.doctorInfo.desc && this.props.doctorInfo.spec) {
-          Actions.DOCTOR()
-        } else if (!this.props.doctorInfo.desc) {
-          Actions.DOCTOR_INTRO({interKey: 'mine'})
-        } else if (this.props.doctorInfo.desc && !this.props.doctorInfo.spec) {
-          Actions.DOCTOR_SPEC({interKey: 'mine'})
-        }
-        break
-      case 2:
-        Actions.DCTOR_CHECKING()
-        break
-      default:
-        break
-    }
-  }
-
   shopManage() {
-    // console.log('mine.index...this.props.userOwnedShopInfo===', this.props.userOwnedShopInfo)
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
@@ -103,126 +55,158 @@ class Mine extends Component {
     }
   }
 
-  render() {
+  renderToolView() {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.left}>
-            <TouchableOpacity style={{marginTop: normalizeH(14), marginLeft: normalizeW(12)}} onPress={() => Actions.SETTING()}>
-              <Text style={styles.texts}>设置</Text>
+      <View style={styles.toolView}>
+        <View style={{marginRight: normalizeW(25)}}>
+          <TouchableOpacity onPress={() => {Actions.QRCODEREADER()}}>
+            <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/scan.png')}/>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity onPress={() => Actions.SETTING()}>
+            <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/set.png')}/>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
+  renderAvatarView() {
+    return (
+      <View style={styles.avatarView}>
+        <View style={{flexDirection: 'row', alignItems: 'center',}}>
+          <View style={{marginLeft: normalizeW(57)}}>
+            <TouchableOpacity onPress={() => Actions.PROFILE()}>
+              <Image style={styles.avatarStyle}
+                     source={this.props.userInfo.avatar ?
+                     {uri: (this.props.userInfo.avatar)} : require('../../assets/images/default_portrait.png')} />
             </TouchableOpacity>
           </View>
-          <View style={styles.middle}>
-            <TouchableOpacity style={{alignItems: 'center', marginTop: normalizeH(26)}} onPress={() => Actions.PROFILE()}>
-              <Image style={{width: normalizeW(46), height: normalizeH(46), borderRadius: normalizeW(23), overflow: 'hidden'}}
-                     source={this.props.userInfo.avatar? {uri: (this.props.userInfo.avatar)}: require('../../assets/images/login_qq@1x.png')}/>
-              <Text style={styles.texts}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '我爱我家'}</Text>
-            </TouchableOpacity>
-            <View style={styles.credits}>
-              {/*<Image source={require('../../assets/images/mine_wallet.png')}></Image>*/}
-              <Text>积分</Text>
-              <Text>335</Text>
+          <View style={{marginLeft: normalizeW(17)}}>
+            <View style={{marginBottom: normalizeH(10)}}>
+              <Text style={styles.nicknameStyle}>{this.props.userInfo.nickname}</Text>
             </View>
-          </View>
-          <View style={styles.right}>
-            <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(25), alignItems: 'flex-end'}}>
-              <Image style={{width: 20, height: 20}}  source={require('../../assets/images/扫一扫.png')} />
-            </TouchableOpacity>
-            <View style={{marginTop: normalizeH(14), marginRight: normalizeW(12), alignItems: 'flex-end'}}>
-              <MessageBell bellStyle={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start',
-                paddingRight: 12
-              }} />
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{fontSize: 12, color: '#FFF'}}>积分  335</Text>
             </View>
           </View>
         </View>
-        <ScrollView refreshControl={
-                      <RefreshControl
-                        refreshing={false}
-                        onRefresh={() => {this._onRefresh()}}
-                        colors={['#ff0000', '#00ff00','#0000ff','#3ad564']}
-                        progressBackgroundColor="#ffffff"
-                      /> }>
-          <View style={styles.azone}>
-            <View style={{flex: 1}} >
-              <TouchableOpacity style={styles.aindex} onPress= {() => this.doctorCertificationAction(this.props.doctorInfo.status)}>
-                <Image source={this.doctorCertificationImage(this.props.doctorInfo.status)}/>
-                <Text style={styles.textStyle}>医生认证</Text>
-              </TouchableOpacity>
+        <View style={{paddingRight: normalizeW(36)}}>
+          <TouchableOpacity onPress={() => {}}>
+            <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/code.png')}/>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
 
-            </View>
-            <View style={{flex: 1}}>
-              <TouchableOpacity style={styles.aindex} onPress= {()=> {Actions.PROMOTER_AUTH()}}>
-                <Image source={require('../../assets/images/mine_promote.png')}/>
-                <Text style={styles.textStyle}>推广招聘</Text>
-              </TouchableOpacity>
+  renderFunctionView() {
+    return (
+      <View style={styles.functionView}>
+        <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
+          <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.MYTOPIC()}}>
+            <Text style={styles.funBtnText}>发布</Text>
+            <Text style={styles.countText}>999+</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
+          <TouchableOpacity style={styles.funBtn} onPress={() => {}}>
+            <Text style={styles.funBtnText}>粉丝</Text>
+            <Text style={styles.countText}>999+</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
+          <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.MYATTENTION()}}>
+            <Text style={styles.funBtnText}>关注</Text>
+            <Text style={styles.countText}>999+</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
+          <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.FAVORITE_ARTICLES()}}>
+            <Text style={styles.funBtnText}>收藏</Text>
+            <Text style={styles.countText}>999+</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
 
-            </View>
-            <View style={{flex: 1}}>
-              <TouchableOpacity style={styles.aindex} onPress= {()=> {this.shopManage()}}>
-                <Image source={require('../../assets/images/mine_store.png')}/>
-                <Text style={styles.textStyle}>我的店铺</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{flex: 1}}>
-              <TouchableOpacity style={styles.aindex} onPress= {()=> {}}>
-                <Image source={require('../../assets/images/mine_prize.png')}/>
-                <Text style={styles.textStyle}>推荐有奖</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.bzone}>
-            <View style={styles.bheader}>
-              <View style={{marginTop: normalizeH(8), marginLeft: normalizeW(19), marginBottom: normalizeH(3)}}>
-                <Text style={[styles.textStyle, {fontSize: 12, letterSpacing: 0.34}]}>我的互动</Text>
-              </View>
+  renderHeaderView() {
+    return (
+      <LinearGradient colors={['#F77418', '#F5A623', '#F77418']} style={styles.header}>
+        <View style={{flex: 1, backgroundColor: 'transparent'}}>
+          {this.renderToolView()}
+          {this.renderAvatarView()}
+          {this.renderFunctionView()}
+        </View>
+      </LinearGradient>
+    )
+  }
 
+  renderBodyView() {
+    return (
+      <View style={{marginTop: normalizeH(15)}}>
+        <View style={styles.memuItemView}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {this.shopManage()}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_shop.png')} />
             </View>
-            <View style={styles.bbody}>
-              <View style={styles.bindex}>
-                <Image source={require('../../assets/images/mine_ask.png')}/>
-                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>提问</Text>
-              </View>
-              <TouchableOpacity style={styles.bindex} onPress= {()=> {Actions.MYATTENTION()}}>
-                <Image source={require('../../assets/images/mine_focuson.png')}/>
-                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>关注</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.bindex} onPress= {()=> {Actions.MYTOPIC()}}>
-                <Image source={require('../../assets/images/mine_artical.png')}/>
-                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>帖子</Text>
-              </TouchableOpacity>
-              <View style={styles.bindex}>
+            <View>
+              <Text style={styles.menuName}>店铺注册</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.PROMOTER_AUTH()}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_push.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>推广联盟</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_wallet.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>钱包</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/check_in_everyday.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>每日签到</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/contact.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>联系客服</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/sugguestion.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>意见反馈</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
 
-                <TouchableOpacity onPress={()=>{Actions.FAVORITE_ARTICLES()}}>
-                <Image source={require('../../assets/images/favorite.png')}/>
-                <Text style={[styles.textStyle, {color: '#636363', letterSpacing: 0.18}]}>收藏</Text>
-                  </TouchableOpacity>
-              </View>
-
-            </View>
-          </View>
-          <View style={styles.czone}>
-            <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_wallet.png')}/>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>钱包</Text>
-            </View>
-            <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_signin.png')}/>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>每日签到</Text>
-            </View>
-            <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_service.png')}/>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>联系客服</Text>
-            </View>
-            <View style={styles.cindex}>
-              <Image source={require('../../assets/images/mine_feedback.png')}/>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>意见反馈</Text>
-            </View>
-          </View>
-
+  render() {
+    return (
+      <View style={styles.container}>
+        <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
+          {this.renderHeaderView()}
+          {this.renderBodyView()}
         </ScrollView>
       </View>
     )
@@ -231,21 +215,18 @@ class Mine extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userInfo = authSelector.activeUserInfo(state)
-  let doctorInfo = activeDoctorInfo(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
   return {
     userInfo: userInfo,
-    doctorInfo: doctorInfo,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchDoctorInfo,
   fetchUserOwnedShopInfo,
-  fetchUserFollowees
+  fetchUserFollowees,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)
@@ -253,104 +234,103 @@ export default connect(mapStateToProps, mapDispatchToProps)(Mine)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'flex-start',
-    // backgroundColor: '#F5FCFF',
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: THEME.base.backgroundColor,
     width: PAGE_WIDTH,
     height: PAGE_HEIGHT,
   },
   header: {
+    width: PAGE_WIDTH,
+    ...Platform.select({
+      ios: {
+        height: normalizeH(217)
+      },
+      android: {
+        height: normalizeH(197)
+      },
+    }),
+  },
+  toolView: {
     ...Platform.select({
       ios: {
         marginTop: normalizeH(20)
-      }
+      },
+      android: {
+        marginTop: normalizeH(0)
+      },
     }),
-    width: PAGE_WIDTH,
-    height: normalizeH(125),
-    backgroundColor: 'rgba(80, 227, 194, 0.19)',
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingTop: normalizeH(10),
+    paddingBottom: normalizeH(10),
+    paddingRight: normalizeW(35),
+  },
+  avatarView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-
   },
-  left: {
-    flex: 1,
-
-  },
-  middle: {
-    flex:3,
-    alignItems: 'center',
-  },
-  right: {
-    flex: 1,
+  functionView: {
     flexDirection: 'row',
-  },
-  credits: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: normalizeW(91),
-    height: normalizeH(19),
-    borderRadius: 5,
-    backgroundColor: 'rgba(80, 227, 194, 1)',
-  },
-  texts: {
-    fontFamily: 'PingFangSC-Regular',
-    fontSize: 14,
-    color: '#686868',
-    letterSpacing: 0.4,
-
-  },
-  azone: {
-    flexDirection: 'row',
-    width: PAGE_WIDTH,
-    height: normalizeH(80),
-    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF'
+    height: normalizeH(69),
+    borderTopWidth: 1,
+    borderColor: 'rgba(255,255,255,0.50)',
   },
-  aindex: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  avatarStyle: {
+    width: normalizeW(60),
+    height: normalizeH(60),
+    borderRadius: normalizeW(30),
+    overflow: 'hidden',
   },
-  bzone: {
-    marginTop: normalizeH(15),
-    width: PAGE_WIDTH,
-    height: normalizeH(119),
-    backgroundColor: '#FFFFFF',
-  },
-  bheader: {
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: '#F4F4F4',
-  },
-  bbody: {
-    flexDirection: 'row',
-  },
-  bindex: {
-    flex: 1,
-    alignItems: 'center',
-    marginTop: normalizeH(11),
-    borderRightWidth: 1,
-    borderRightColor: '#F4F4F4',
-  },
-  czone: {
-    width: PAGE_WIDTH,
-    marginTop: normalizeH(15),
-    height: normalizeH(175),
-  },
-  cindex: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingLeft: normalizeW(25),
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    marginBottom: normalizeH(2),
-
-  },
-  textStyle: {
-    fontFamily: 'PingFangSC-Regular',
+  nicknameStyle: {
     fontSize: 17,
-    color: '#686868',
-    letterSpacing: 0.43,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  funcView: {
+    flex: 1,
+  },
+  funBtn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  funBtnText: {
+    fontSize: 17,
+    color: 'white',
+    marginBottom: normalizeH(5),
+  },
+  countText: {
+    fontSize: 12,
+    color: 'white'
+  },
+  memuItemView: {
+
+  },
+  menuItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#F7F7F7',
+    height: normalizeH(53),
+  },
+  menuIcon: {
+    paddingLeft: normalizeW(27),
+    paddingRight: normalizeW(41),
+  },
+  menuName: {
+    fontSize: 17,
+    color: '#5A5A5A',
+  },
+  menuImg: {
+    width: normalizeW(24),
+    height: normalizeH(24),
+  },
+  toolBtnImg: {
+    width: normalizeW(22),
+    height: normalizeH(22),
   },
 })
-

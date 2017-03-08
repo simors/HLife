@@ -20,6 +20,7 @@ import com.rnfs.RNFSPackage;
 import java.util.Arrays;
 import java.util.List;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -43,7 +44,8 @@ public class MainApplication extends Application implements ReactApplication {
             new WebViewBridgePackage(),
             new RNFSPackage(),
             new ImagePickerPackage(),
-            new BaiduMapPackage(getApplicationContext())
+            new BaiduMapPackage(getApplicationContext()),
+            new LinearGradientPackage()
       );
     }
   };
