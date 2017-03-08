@@ -260,7 +260,11 @@ function buildPushQuery(pushTokens = []) {
 function queryDeviceTokens(userList = []) {
   let userListObj = []
   userList.forEach((item)=>{
-    userListObj.push(AV.Object.createWithoutData('_User', item))
+    if(Object.prototype.toString.call(item) === '[object String]') {
+      userListObj.push(AV.Object.createWithoutData('_User', item))
+    }else if(Object.prototype.toString.call(item) === '[object Object]'){
+      userListObj.push(item)
+    }
   })
   var query = new AV.Query('DeviceUserInfo')
   query.containedIn('owner', userListObj)
@@ -380,7 +384,9 @@ export function push(data, query) {
   let defaultData = {
     alert: '通知',
     title: '邻家优店',
-    prod: 'dev'
+    prod: 'dev',
+    sceneName: 'MESSAGE_BOX',
+    sceneParams: {}
   }
 
   let actionData = {}

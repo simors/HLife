@@ -6,7 +6,7 @@ import {Map, List, Record} from 'immutable'
 import ERROR from '../../constants/errorCode'
 
 export function updateDeviceUserInfo(payload) {
-  console.log('updateDeviceUserInfo.payload===', payload)
+  // console.log('updateDeviceUserInfo.payload===', payload)
   let installationId = payload.installationId
   let deviceToken = payload.deviceToken
   let deviceType = payload.deviceType

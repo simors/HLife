@@ -49,6 +49,7 @@ class UpShopComment extends Component {
     }
     const that = this
     this.props.userUpShopComment({
+      shopId: this.props.shopId,
       shopCommentUpId : this.props.shopCommentUpId,
       shopCommentId : this.props.shopCommentId,
       success: (result) => {
@@ -71,6 +72,7 @@ class UpShopComment extends Component {
     }
     const that = this
     this.props.userUnUpShopComment({
+      shopId: this.props.shopId,
       shopCommentUpId : this.props.shopCommentUpId,
       shopCommentId : this.props.shopCommentId,
       success: (result) => {
