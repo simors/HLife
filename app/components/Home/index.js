@@ -28,6 +28,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {getBanner, getAnnouncement} from '../../selector/configSelector'
 import {fetchBanner, fetchAnnouncement, getAllTopicCategories} from '../../action/configAction'
+import {getCurrentLocation} from '../../action/locAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -60,6 +61,7 @@ class Home extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
+      this.props.getCurrentLocation()
       this.props.fetchBanner({type: 0})
       // this.props.fetchAnnouncement({type: 0})
       this.props.getAllTopicCategories({})
@@ -268,7 +270,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
   fetchAnnouncement,
-  getAllTopicCategories
+  getAllTopicCategories,
+  getCurrentLocation,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

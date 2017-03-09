@@ -33,8 +33,9 @@ class Publish extends Component {
           <View style={styles.logo}>
             <Image
               resizeMode="contain"
-              style={{width: normalizeW(181), height: normalizeH(181)}}
+              style={{width: normalizeW(181), height: normalizeH(181), paddingBottom: normalizeH(20)}}
               source={require('../../assets/images/icon_add.png')}/>
+            <Image source={require('../../assets/images/font_faxian.png')}/>
           </View>
           <View>
             <View style={styles.services}>
@@ -44,7 +45,7 @@ class Publish extends Component {
                   style={{width: normalizeW(60), height: normalizeH(60)}}
                   source={require('../../assets/images/publish_topic.png')}
                 />
-                <Text style={styles.serviceText}>发起话题</Text>
+                <Text style={styles.serviceText}>发布话题</Text>
               </TouchableOpacity >
               <TouchableOpacity style={styles.item} onPress={() => {}}>
                 <Image
@@ -52,11 +53,10 @@ class Publish extends Component {
                   style={{width: normalizeW(60), height: normalizeH(60)}}
                   source={require('../../assets/images/publish_activity.png')}
                 />
-                <Text style={styles.serviceText}>发布店铺活动</Text>
+                <Text style={styles.serviceText}>店铺活动</Text>
               </TouchableOpacity>
-
             </View>
-            <View style={{height: normalizeH(60)}}>
+            <View style={styles.closeView}>
               <TouchableOpacity style={styles.close} onPress={() => Actions.pop()}>
                 <Image
                   source={require('../../assets/images/add_close.png')}
@@ -112,11 +112,10 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(170,170,170,0.2)',
     borderBottomColor: 'rgba(250,250,250,1)',
     width: PAGE_WIDTH,
-    height: normalizeH(192),
   },
   serviceText: {
-    marginTop: normalizeH(15),
-    marginBottom: normalizeH(66),
+    paddingTop: normalizeH(15),
+    paddingBottom: normalizeH(66),
     fontSize: 17,
     color: '#5A5A5A'
   },
@@ -129,5 +128,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
     padding: normalizeH(12),
-  }
+  },
+  closeView: {
+    ...Platform.select({
+      ios: {
+        height: normalizeH(60),
+      },
+      android: {
+        height: normalizeH(80),
+      }
+    }),
+  },
 })
