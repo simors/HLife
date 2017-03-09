@@ -51,6 +51,7 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 class Home extends Component {
+
   constructor(props) {
     super(props)
 
@@ -58,15 +59,26 @@ class Home extends Component {
       defaultIndex: 0,
     }
     this.defaultIndex = 0
+    this.timer = setInterval(() => {
+      this.props.getCurrentLocation()
+    }, 60 * 1000)
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
       this.props.fetchBanner({type: 0})
       // this.props.fetchAnnouncement({type: 0})
       this.props.getAllTopicCategories({})
     })
+  }
+
+  componentDidMount() {
+
+  }
+
+  componentWillUnmount() {
+    this.timer && clearInterval(this.timer);
   }
 
   onMomentumScrollEnd(event, state) {
