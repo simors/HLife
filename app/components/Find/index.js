@@ -260,12 +260,12 @@ export class Find extends Component {
         <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
                             onPress={()=> {
                               if (this.props.isLogin) {
-                                Actions.PUBLISH({topicId})
+                                Actions.PUBLISH_TOPIC({topicId})
                               } else {
                                 Actions.LOGIN()
                               }
                             }}>
-          <Image source={require("../../assets/images/local_write@2x.png")}/>
+          <Image source={require("../../assets/images/local_write.png")}/>
         </TouchableHighlight>
       )
     }
