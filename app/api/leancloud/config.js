@@ -72,6 +72,7 @@ export function getColumn() {
 
 export function getTopicCategories() {
   let query = new AV.Query('TopicCategory')
+  query.equalTo('enabled', true)
   return query.find().then(function (results) {
     let topicCategories = []
     results.forEach((result) => {
