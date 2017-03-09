@@ -130,7 +130,7 @@ export class TopicShow extends Component {
           {this.renderContentImage()}
           {/*{this.renderCommentAndLikeButton()}*/}
           <View style={styles.locationCommentStyle}>
-            <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
+            <Image style={styles.positionStyle} resizeMode="contain" source={require("../../assets/images/writer_loaction.png")}/>
             <Text
               style={styles.timeTextStyle}>{this.props.topic.position ? this.props.topic.position.city + this.props.topic.position.district : "未知"}</Text>
             <Text
