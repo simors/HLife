@@ -45,6 +45,7 @@ import MessageBell from '../common/MessageBell'
 import NearbyTopicView from './NearbyTopicView'
 import NearbyShopView from './NearbyShopView'
 import NearbySalesView from './NearbySalesView'
+import {getCity} from '../../selector/locSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -205,7 +206,7 @@ class Home extends Component {
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/location.png")}
-          leftImageLabel="长沙"
+          leftImageLabel={this.props.city}
           leftPress={() => {
           }}
           title="邻家优店"
@@ -264,6 +265,7 @@ const mapStateToProps = (state, ownProps) => {
     banner: banner,
     // topics: pickedTopics,
     ds: ds.cloneWithRows(dataArray),
+    city: getCity(state),
   }
 }
 
