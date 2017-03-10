@@ -42,6 +42,8 @@ import * as authSelector from '../../selector/authSelector'
 import MessageBell from '../common/MessageBell'
 import {selectShopList, selectFetchShopListIsArrivedLastPage} from '../../selector/shopSelector'
 import {fetchShopList} from '../../action/shopAction'
+// import ViewPager from 'react-native-viewpager'
+import ViewPager from '../common/ViewPager'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -121,7 +123,7 @@ class Local extends Component {
       })
     }
     return (
-      <View style={{}}>
+      <View style={{flex:1}}>
         {shopListView}
       </View>
     )
@@ -133,6 +135,11 @@ class Local extends Component {
 
   renderShop(shopInfo, index) {
     // console.log('shopInfo====', shopInfo)
+
+    let shopTag = null
+    if(shopInfo.containedTag && shopInfo.containedTag.length) {
+      shopTag = shopInfo.containedTag[0].name
+    }
 
     return (
       <TouchableOpacity key={'shop_' + index} onPress={()=>{this.gotoShopDetailScene(shopInfo.id)}}>
@@ -148,11 +155,14 @@ class Local extends Component {
                 score={shopInfo.score}
               />
               <View style={styles.subInfoWrap}>
+                {shopTag &&
+                 <Text style={[styles.subTxt]}>{shopTag}</Text>
+                }
                 <View style={{flex:1,flexDirection:'row'}}>
                   <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
                 </View>
                 {shopInfo.distance &&
-                <Text style={[styles.subTxt]}>{shopInfo.distance}km</Text>
+                  <Text style={[styles.subTxt]}>{shopInfo.distance}km</Text>
                 }
               </View>
             </View>
@@ -249,23 +259,37 @@ class Local extends Component {
           shopCategoriesView = []
         }
       })
-      // console.log('pages====', pages)
+
+      let dataSource = new ViewPager.DataSource({
+        pageHasChanged: (p1, p2) => p1 !== p2,
+      })
+
       return (
-        <View style={{flex:1}}>
-          <Swiper
-            style={styles.swiperStyle}
-            autoplay={false}
-            activeDotColor="#FF7819"
-            height={normalizeH(200)}
-            width={PAGE_WIDTH}
-            paginationStyle={{bottom:10}}
-          >
-            {pages}
-          </Swiper>
-        </View>
+        <ViewPager
+          style={{flex:1}}
+          dataSource={dataSource.cloneWithPages(pages)}
+          renderPage={this._renderPage}
+          isLoop={false}
+          autoPlay={false}
+        />
       )
     }
     return null
+  }
+
+  _renderPage(data: Object, pageID) {
+    return (
+      <View
+        style={{
+          width:PAGE_WIDTH,
+          height:normalizeH(200),
+            borderBottomWidth:normalizeBorder(),
+            borderBottomColor: '#f5f5f5'
+        }}
+      >
+        {data}
+      </View>
+    )
   }
 
   refreshData() {
@@ -378,6 +402,7 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+    marginBottom: 50
   },
   shopInfoWrap: {
     flex: 1,
@@ -471,6 +496,15 @@ const styles = StyleSheet.create({
   },
   shopCategoryText: {
 
-  }
+  },
+  indicators: {
+    flex: 1,
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+    backgroundColor: 'transparent',
+  },
 
 })
