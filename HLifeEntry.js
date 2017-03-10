@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Platform,
+  AppState,
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router, Actions} from 'react-native-router-flux'
@@ -15,6 +16,7 @@ import {scenes} from './app/scenes/scenes'
 import AV from 'leancloud-storage'
 import * as LC_CONFIG from './app/constants/appConfig'
 import * as AVUtils from './app/util/AVUtils'
+import {handleAppStateChange} from './app/util/AppStateUtils'
 
 const RouterWithRedux = connect()(Router)
 
@@ -38,17 +40,19 @@ export default class HLifeEntry extends Component {
   constructor(props) {
     super(props)
   }
-  
-  componentWillMount() {
+
+  componentDidMount() {
+    console.disableYellowBox = true
+
+    AppState.addEventListener('change', handleAppStateChange);
     // 通知初始化
     AVUtils.configurePush(
       __DEV__ ? KM_Dev : KM_PRO
     )
-
   }
 
-  componentDidMount() {
-    console.disableYellowBox = true
+  componentWillUnmount() {
+    AppState.removeEventListener('change', handleAppStateChange);
   }
 
   render() {

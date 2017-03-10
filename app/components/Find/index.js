@@ -19,7 +19,8 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
-import {getTopics, getLocalTopics, getLocalCity, getPickedTopics} from '../../selector/topicSelector'
+import {getCity} from '../../selector/locSelector'
+import {getTopics, getLocalTopics, getPickedTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import CommonListView from '../common/CommonListView'
@@ -292,9 +293,9 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const pickedTopic = getPickedTopics(state)
   const userInfo = activeUserInfo(state)
-  const localCity = getLocalCity(state)
+  const localCity = getCity(state)
   if (!localCity)
-    topicCategories.unshift({title: "本地"})
+    topicCategories.unshift({title: "全国"})
   else {
     topicCategories.unshift({title: localCity})
   }
