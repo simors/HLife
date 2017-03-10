@@ -44,7 +44,7 @@ export default THEME = {
 		lighterA: '#E6E6E6',
 		lighterB: '#d8d8d8',
 		lightest: '#E9E9E9',
-		green: '#50E3C2',
+		green: '#FF7819',//#50E3C2
     gray: '#929292',
     subDark: '#232323',
 		inputLabel: '#656565',

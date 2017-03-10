@@ -393,31 +393,65 @@ class ShopCategoryList extends Component {
   }
 
   renderShop(rowData, customStyle) {
+    let shopTag = null
+    if(rowData.containedTag && rowData.containedTag.length) {
+      shopTag = rowData.containedTag[0].name
+    }
+
     return (
-      <TouchableWithoutFeedback onPress={()=>{this.gotoShopDetailScene(rowData.id)}}>
+      <TouchableOpacity onPress={()=>{this.gotoShopDetailScene(rowData.id)}}>
         <View style={[styles.shopInfoWrap, customStyle]}>
           <View style={styles.coverWrap}>
             <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
           </View>
           <View style={styles.shopIntroWrap}>
-            <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
-            <ScoreShow
-              containerStyle={{flex:1}}
-              score={rowData.score}
-            />
-            <View style={styles.subInfoWrap}>
-              {rowData.pv &&
-                <Text style={styles.subTxt}>{rowData.pv}人看过</Text>
-              }
-              <Text style={styles.subTxt}>{rowData.geoCity && rowData.geoCity}{rowData.geoDistrict && rowData.geoDistrict}</Text>
-              {rowData.distance &&
-                <Text style={styles.subTxt}>{rowData.distance}km</Text>
-              }
+            <View style={styles.shopInnerIntroWrap}>
+              <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
+              <ScoreShow
+                containerStyle={{flex:1}}
+                score={rowData.score}
+              />
+              <View style={styles.subInfoWrap}>
+                {shopTag &&
+                <Text style={[styles.subTxt]}>{shopTag}</Text>
+                }
+                <View style={{flex:1,flexDirection:'row'}}>
+                  <Text style={styles.subTxt}>{rowData.geoDistrict && rowData.geoDistrict}</Text>
+                </View>
+                {rowData.distance &&
+                <Text style={[styles.subTxt]}>{rowData.distance}km</Text>
+                }
+              </View>
             </View>
+            {this.renderShopPromotion(rowData)}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     )
+  }
+
+  renderShopPromotion(shopInfo) {
+    let containedPromotions = shopInfo.containedPromotions
+    if(containedPromotions && containedPromotions.length) {
+      let shopPromotionView = containedPromotions.map((promotion, index)=>{
+        return (
+          <View key={'promotion_' + index} style={styles.shopPromotionBox}>
+            <View style={styles.shopPromotionBadge}>
+              <Text style={styles.shopPromotionBadgeTxt}>{promotion.badge}</Text>
+            </View>
+            <View style={styles.shopPromotionContent}>
+              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.content}</Text>
+            </View>
+          </View>
+        )
+      })
+      return (
+        <View style={styles.shopPromotionWrap}>
+          {shopPromotionView}
+        </View>
+      )
+    }
+    return null
   }
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -724,9 +758,44 @@ const styles = StyleSheet.create({
   shopInfoWrap: {
     flex: 1,
     flexDirection: 'row',
-    padding: 10,
-    marginBottom: normalizeH(10),
-    backgroundColor: '#fff'
+    padding: 20,
+    paddingBottom:15,
+    backgroundColor: '#fff',
+    borderBottomWidth:normalizeBorder(),
+    borderBottomColor: '#f5f5f5'
+  },
+  shopInnerIntroWrap: {
+    height: 80,
+  },
+  shopPromotionWrap: {
+    flex: 1,
+    marginTop: 10,
+    borderTopWidth:normalizeBorder(),
+    borderTopColor: '#f5f5f5'
+  },
+  shopPromotionBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  shopPromotionBadge: {
+    backgroundColor: '#F6A623',
+    borderRadius: 2,
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  shopPromotionBadgeTxt: {
+    color:'white',
+    fontSize: em(12)
+  },
+  shopPromotionContent: {
+    flex: 1,
+    marginLeft: 10
+  },
+  shopPromotionContentTxt: {
+    color: '#aaaaaa',
+    fontSize: em(12)
   },
   coverWrap: {
     width: 80,

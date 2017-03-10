@@ -122,11 +122,20 @@ export default class Select extends Component {
       }
     }
     // console.log(`this.state.value1=${this.state.value},this.state.text1=${this.state.text}`)
+    //<Triangle style={[styles.triangle, selectingTriangleStatus]} direction="right-down"/>
     return (
       <TouchableWithoutFeedback style={{flex: 1}} onPress={this._onPress.bind(this)}>
         <View ref={this.props.selectRef || SELECT} style={[styles.container, style ]}>
-          <Option hideSelectedIcon={true} value={this.state.value} style={ [styles.styleOption, styleOption] } styleText={ [styleText, selectingTxtStatus] }>{this.state.text}</Option>
-          <Triangle style={[styles.triangle, selectingTriangleStatus]} direction="right-down"/>
+          <Option
+            showTriangle={true}
+            isSelected={this.state.show}
+            hideSelectedIcon={true}
+            value={this.state.value}
+            style={ [styles.styleOption, styleOption] }
+            styleText={ [styleText, selectingTxtStatus] }
+          >
+            {this.state.text}
+          </Option>
         </View>
       </TouchableWithoutFeedback>
     )
