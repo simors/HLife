@@ -7,7 +7,12 @@ import {
   Platform,
   StyleSheet,
   View,
+  TouchableOpacity,
+  Image,
+  Text,
 } from 'react-native';
+import {Actions} from 'react-native-router-flux'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class Viewfinder extends Component {
   constructor(props) {
@@ -62,6 +67,12 @@ export default class Viewfinder extends Component {
   render() {
     return (
       <View style={[styles.container, this.getBackgroundColor()]}>
+        <View style={styles.backBtn}>
+          <TouchableOpacity onPress={() => Actions.pop()}>
+            {/*<Image source={require('../../assets/images/location.png')} />*/}
+            <Text style={{fontSize: 15, color: '#FFF'}}>取消</Text>
+          </TouchableOpacity>
+        </View>
         <View style={[styles.viewfinder, this.getBackgroundColor(), this.getSizeStyles()]}>
           <View style={[
             this.getEdgeColor(),
@@ -159,5 +170,17 @@ var styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
+  },
+  backBtn: {
+    position: 'absolute',
+    left: normalizeW(35),
+    ...Platform.select({
+      ios: {
+        top: normalizeH(44)
+      },
+      android: {
+        top: normalizeH(24)
+      },
+    }),
   },
 });
