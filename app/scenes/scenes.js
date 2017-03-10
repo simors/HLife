@@ -75,6 +75,7 @@ import BaiduMapView from '../components/common/BaiduMapView'
 import ShopAddressSelect from '../components/Mine/myShop/ShopAddressSelect'
 import CommentDoctor from '../components/Mine/Doctor/CommentDoctor'
 import QRCodeReader from '../components/Mine/QRCodeReader'
+import Publish from '../components/Publish'
 
 const styles = StyleSheet.create({
   container: {
@@ -126,7 +127,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_DETAIL" component={ShopDetail} />
       <Scene key="PUBLISH_SHOP_COMMENT" component={PublishShopComment} />
       <Scene key="SHOP_COMMENT_LIST" component={ShopCommentList} />
-      <Scene key="PUBLISH" component={PublishTopics} />
+      <Scene key="PUBLISH_TOPIC" component={PublishTopics} />
       <Scene key="TOPIC_DETAIL" component={TopicDetail} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
       <Scene key="INQUIRY_MESSAGE_BOX" component={InquiryMessageBox} />
@@ -160,6 +161,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_ADDRESS_SELECT" component={ShopAddressSelect} />
       <Scene key="COMMENT_DOCTOR" component={CommentDoctor}/>
       <Scene key="QRCODEREADER" component={QRCodeReader}/>
+      <Scene key="PUBLISH" component={Publish}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -170,7 +172,7 @@ export const scenes = Actions.create(
           <Scene key="LOCAL_INDEX" component={Local} />
         </Scene>
 
-        <Scene key="PUBLISH" title="发布"  number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="PUBLISH_VIEW" title="发布"  number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
         </Scene>
 
         <Scene key="FIND" title="话题" number={3} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -209,6 +211,10 @@ function tapActions(props) {
       }
       case 1: {
         Actions.LOCAL()
+        break
+      }
+      case 2: {
+        Actions.PUBLISH()
         break
       }
       case 3: {

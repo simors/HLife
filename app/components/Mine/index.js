@@ -88,6 +88,9 @@ class Mine extends Component {
               <Text style={styles.nicknameStyle}>{this.props.userInfo.nickname}</Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image style={{marginRight: normalizeW(8), width: normalizeW(9), height: normalizeH(12)}}
+                     resizeMode="contain"
+                     source={require('../../assets/images/score.png')} />
               <Text style={{fontSize: 12, color: '#FFF'}}>积分  335</Text>
             </View>
           </View>
@@ -283,6 +286,8 @@ const styles = StyleSheet.create({
     height: normalizeH(60),
     borderRadius: normalizeW(30),
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#FFF',
   },
   nicknameStyle: {
     fontSize: 17,

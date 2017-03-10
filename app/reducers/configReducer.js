@@ -1,7 +1,7 @@
 import {Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as ConfigActionTypes from '../constants/configActionTypes'
-import {Config, BannerItemConfig,ColumnItemConfig,ArticleItemConfig} from '../models/ConfigModels'
+import {Config, BannerItemConfig,ColumnItemConfig,ArticleItemConfig, LocationRecord} from '../models/ConfigModels'
 
 const initialState = Config()
 
@@ -17,6 +17,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigTopicCategories(state, action)
     case ConfigActionTypes.UPDATE_CONFIG_SHOP_CATEGORIES:
       return handleUpdateConfigShopCategories(state, action)
+    case ConfigActionTypes.UPDATE_GEO_LOCATION:
+      return handleUpdateGeolocation(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -60,6 +62,23 @@ function handleUpdateConfigShopCategories(state, action) {
   let shopCategories = payload.shopCategories
   //console.log('handleUpdateConfigShopCategories.12=', shopCategories)
   state = state.set('shopCategories', shopCategories)
+  return state
+}
+
+function handleUpdateGeolocation(state, action) {
+  let position = action.payload.position
+  let location = new LocationRecord({
+    latitude: position.latitude,
+    longitude: position.longitude,
+    address: position.address,
+    country: position.country,
+    province: position.province,
+    city: position.city,
+    district: position.district,
+    street: position.street,
+    streetNumber: position.streetNumber,
+  })
+  state = state.set('location', location)
   return state
 }
 

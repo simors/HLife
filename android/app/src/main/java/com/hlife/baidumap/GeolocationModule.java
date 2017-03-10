@@ -161,6 +161,7 @@ public class GeolocationModule extends BaseModule
         else {
             ReverseGeoCodeResult.AddressComponent addressComponent = result.getAddressDetail();
             params.putString("address", result.getAddress());
+            params.putString("country", addressComponent.countryName);
             params.putString("province", addressComponent.province);
             params.putString("city", addressComponent.city);
             params.putString("district", addressComponent.district);

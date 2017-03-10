@@ -28,6 +28,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {getBanner, getAnnouncement} from '../../selector/configSelector'
 import {fetchBanner, fetchAnnouncement, getAllTopicCategories} from '../../action/configAction'
+import {getCurrentLocation} from '../../action/locAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -44,11 +45,13 @@ import MessageBell from '../common/MessageBell'
 import NearbyTopicView from './NearbyTopicView'
 import NearbyShopView from './NearbyShopView'
 import NearbySalesView from './NearbySalesView'
+import {getCity} from '../../selector/locSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 class Home extends Component {
+
   constructor(props) {
     super(props)
 
@@ -56,14 +59,26 @@ class Home extends Component {
       defaultIndex: 0,
     }
     this.defaultIndex = 0
+    this.timer = setInterval(() => {
+      this.props.getCurrentLocation()
+    }, 60 * 1000)
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
+      this.props.getCurrentLocation()
       this.props.fetchBanner({type: 0})
       // this.props.fetchAnnouncement({type: 0})
       this.props.getAllTopicCategories({})
     })
+  }
+
+  componentDidMount() {
+
+  }
+
+  componentWillUnmount() {
+    this.timer && clearInterval(this.timer);
   }
 
   onMomentumScrollEnd(event, state) {
@@ -203,7 +218,7 @@ class Home extends Component {
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/location.png")}
-          leftImageLabel="长沙"
+          leftImageLabel={this.props.city}
           leftPress={() => {
           }}
           title="邻家优店"
@@ -262,13 +277,15 @@ const mapStateToProps = (state, ownProps) => {
     banner: banner,
     // topics: pickedTopics,
     ds: ds.cloneWithRows(dataArray),
+    city: getCity(state),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
   fetchAnnouncement,
-  getAllTopicCategories
+  getAllTopicCategories,
+  getCurrentLocation,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

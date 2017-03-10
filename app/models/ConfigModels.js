@@ -12,6 +12,18 @@ export const BannerItemConfig = Record({
   action: undefined //点击banner图片动作
 }, 'BannerItemConfig')
 
+export const LocationRecord = Record({
+  latitude: undefined,
+  longitude: undefined,
+  address: undefined,
+  country: undefined,
+  province: undefined,
+  city: undefined,
+  district: undefined,
+  street: undefined,
+  streetNumber: undefined,
+}, 'LocationRecord')
+
 export class BannerItem extends BannerItemConfig {
   static fromLeancloudObject(lcObj) {
     let bannerItemConfig = new BannerItemConfig()
@@ -133,7 +145,8 @@ export const Config = Record({
   column: List(),
   topicCategories: List(),
   article: List(),
-  shopCategories: List()
+  shopCategories: List(),
+  location: undefined,
 }, 'Config')
 
 
