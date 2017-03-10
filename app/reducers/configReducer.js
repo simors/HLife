@@ -86,5 +86,19 @@ function onRehydrate(state, action) {
   var incoming = action.payload.CONFIG
   if (!incoming) return state
 
+  let position = incoming.location
+  let location = new LocationRecord({
+    latitude: position.latitude,
+    longitude: position.longitude,
+    address: position.address,
+    country: position.country,
+    province: position.province,
+    city: position.city,
+    district: position.district,
+    street: position.street,
+    streetNumber: position.streetNumber,
+  })
+  state = state.set('location', location)
+
   return state
 }

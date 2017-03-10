@@ -35,9 +35,6 @@ export function configurePush(options) {
       //触发action更新本地状态树
       store.dispatch(updateLocalDeviceToken({deviceToken: data.token}))
 
-      //监听应用状态变化
-      AppState.addEventListener('change', _handleAppStateChange);
-
       _saveDeviceTokenToLeancloudAfterNotificationRegistration({deviceToken: data.token})
 
       //监听应用程序用户信息变化
@@ -352,25 +349,6 @@ function _saveDeviceTokenToLeancloudAfterNotificationRegistration(payload = {}) 
       return installation.save(payload);
     })
 }
-
-/**
- * 清空应用图标消息数目
- * android没有统一的api设置badge number,因此暂不支持android应用的badge显示和清空功能
- * @param nextAppState
- * @private
- */
-function _handleAppStateChange(nextAppState) {
-  // console.log('_handleAppStateChange.nextAppState=', nextAppState)
-  // console.log('_handleAppStateChange.AppState.currentState=', AppState.currentState)
-  if(AppState.currentState) {
-    if (AppState.currentState.match(/inactive|background/)
-      && nextAppState === 'active') {
-      // console.log('App has come to the foreground!')
-      PushNotification.setApplicationIconBadgeNumber(0)
-    }
-  }
-}
-
 
 /**
  * 推送

@@ -59,9 +59,6 @@ class Home extends Component {
       defaultIndex: 0,
     }
     this.defaultIndex = 0
-    this.timer = setInterval(() => {
-      this.props.getCurrentLocation()
-    }, 60 * 1000)
   }
 
   componentWillMount() {
@@ -75,10 +72,6 @@ class Home extends Component {
 
   componentDidMount() {
 
-  }
-
-  componentWillUnmount() {
-    this.timer && clearInterval(this.timer);
   }
 
   onMomentumScrollEnd(event, state) {

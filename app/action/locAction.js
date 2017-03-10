@@ -4,7 +4,6 @@
 import {createAction} from 'redux-actions'
 import {Platform} from 'react-native'
 import {Geolocation} from '../components/common/BaiduMap'
-import AV from 'leancloud-storage'
 import * as DeviceInfo from 'react-native-device-info'
 import * as configTypes from '../constants/configActionTypes'
 
@@ -43,10 +42,13 @@ export function getCurrentLocation() {
               street: position.streetName,
               streetNumber: position.streetNumber,
             }
+            if (!pos.address) {
+              console.log("Cann't get current geolocation!")
+              return
+            }
             dispatch(updateGeolocation({position: pos}))
           })
         } else {
-          console.log("geoPoint", geoPoint)
           let pos = {
             latitude: geoPoint.latitude,
             longitude: geoPoint.longitude,
@@ -57,6 +59,10 @@ export function getCurrentLocation() {
             district: geoPoint.district,
             street: geoPoint.street,
             streetNumber: geoPoint.streetNumber,
+          }
+          if (!pos.address) {
+            console.log("Cann't get current geolocation!")
+            return
           }
           dispatch(updateGeolocation({position: pos}))
         }
