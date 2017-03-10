@@ -39,9 +39,10 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import Swiper from 'react-native-swiper'
 import * as authSelector from '../../selector/authSelector'
+import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
 import {selectShopList, selectFetchShopListIsArrivedLastPage} from '../../selector/shopSelector'
-import {fetchShopList} from '../../action/shopAction'
+import {fetchShopList, clearShopList} from '../../action/shopAction'
 // import ViewPager from 'react-native-viewpager'
 import ViewPager from '../common/ViewPager'
 
@@ -54,8 +55,8 @@ class Local extends Component {
     this.state = {
       searchForm: {
         shopCategoryId: '',
-        sortId: 2,
-        distance: '',
+        sortId: 3,//按等级排序
+        distance: 1,
         geo: undefined,
         geoCity: '',
         lastCreatedAt: '',
@@ -78,13 +79,16 @@ class Local extends Component {
         }
       })
     })
+
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchShopCategories()
+      this.props.clearShopList()
+      this.refreshData()
+    })
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchShopCategories()
-      this.refreshData()
-    })
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -293,7 +297,7 @@ class Local extends Component {
   }
 
   refreshData() {
-    // console.log('this.state===', this.state)
+    console.log('this.state===', this.state)
     this.loadMoreData(true)
   }
 
@@ -383,7 +387,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
-  fetchShopList
+  fetchShopList,
+  clearShopList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)
@@ -402,7 +407,7 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    marginBottom: 50
+    marginBottom: 42
   },
   shopInfoWrap: {
     flex: 1,

@@ -10,6 +10,14 @@ import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
 
+export function clearShopList(payload) {
+  return (dispatch, getState) => {
+    let actionType = ShopActionTypes.UPDATE_SHOP_LIST
+    let updateShopListAction = createAction(actionType)
+    dispatch(updateShopListAction({shopList: []}))
+  }
+}
+
 export function fetchShopList(payload) {
   return (dispatch ,getState) => {
     lcShop.getShopList(payload).then((shopList) => {
