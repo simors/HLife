@@ -98,12 +98,20 @@ class FollowUser extends Component {
     let userIsFollowedTheUser = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
 
     if(userIsFollowedTheUser) {
-      return (
-        <TouchableOpacity style={[styles.userAttentioned, this.props.attentionedContainerStyle]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
-          <Image style={styles.commentAttention} source={require('../../assets/images/followed.png')}/>
-        </TouchableOpacity>
-      )
-    }else {
+      if (this.props.renderFollow) {
+        return (
+          <TouchableOpacity style={[styles.userAttentioned, this.props.attentionedContainerStyle]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
+            {this.props.renderFollow()}
+          </TouchableOpacity>
+        )
+      } else {
+        return (
+          <TouchableOpacity style={[styles.userAttentioned, this.props.attentionedContainerStyle]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
+            <Image style={styles.commentAttention} source={require('../../assets/images/followed.png')}/>
+          </TouchableOpacity>
+        )
+      }
+    } else {
       if(this.props.renderNoFollow) {
         return (
           <TouchableOpacity onPress={()=>{this.followUser(this.props.userId)}}>

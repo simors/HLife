@@ -322,6 +322,7 @@ function verifyInviteCode(payload, formData) {
       dispatch(promoterCertification(payload, formData))
     }).catch((error) => {
       if (payload.error) {
+        error.message = "邀请码验证失败！"
         payload.error(error)
       }
     })
@@ -406,6 +407,7 @@ function verifyInvitationCode(payload, formData) {
       dispatch(shopCertification(payload, formData))
     }).catch((error) => {
       if (payload.error) {
+        error.message = "邀请码验证失败！"
         payload.error(error)
       }
     })
