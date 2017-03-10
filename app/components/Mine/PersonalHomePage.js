@@ -184,8 +184,13 @@ class PersonalHomePage extends Component {
 
   renderNoFollow() {
     return (
-      // <Text style={styles.btnTxt}>关注</Text>
-      <Image source={require('../../assets/images/add_follow.png')}/>
+      <Text style={styles.btnTxt}>关注</Text>
+    )
+  }
+
+  renderFollow() {
+    return (
+      <Text style={styles.btnTxt}>已关注</Text>
     )
   }
 
@@ -227,6 +232,7 @@ class PersonalHomePage extends Component {
               <View style={[styles.btnBox, styles.rightBorder]}>
                 <FollowUser
                   userId={this.props.userId}
+                  renderFollow={this.renderFollow.bind(this)}
                   renderNoFollow={this.renderNoFollow.bind(this)}
                   attentionedContainerStyle={{backgroundColor:'#fff'}}
                   attentionedTxtStyle={{color: THEME.colors.green, fontSize:em(17)}}
@@ -496,7 +502,7 @@ const styles = StyleSheet.create({
   },
   btnTxt: {
     fontSize: em(17),
-    color: THEME.colors.green
+    color: THEME.base.mainColor,
   },
   rightBorder: {
     borderRightWidth: normalizeBorder(),

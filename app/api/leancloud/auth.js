@@ -219,8 +219,6 @@ export function promoteCertification(payload) {
 }
 
 export function profileSubmit(payload) {
-
-  console.log("profileSubmit:payload=", payload)
   var userInfo = AV.Object.createWithoutData('_User', payload.id);
   userInfo.set('nickname', payload.nickname)
   userInfo.set('avatar', payload.avatar)
