@@ -12,6 +12,7 @@ import {
   Text,
 } from 'react-native';
 import {Actions} from 'react-native-router-flux'
+import Icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class Viewfinder extends Component {
@@ -68,9 +69,10 @@ export default class Viewfinder extends Component {
     return (
       <View style={[styles.container, this.getBackgroundColor()]}>
         <View style={styles.backBtn}>
-          <TouchableOpacity onPress={() => Actions.pop()}>
-            {/*<Image source={require('../../assets/images/location.png')} />*/}
-            <Text style={{fontSize: 15, color: '#FFF'}}>取消</Text>
+          <TouchableOpacity style={{flex: 1}} onPress={() => Actions.pop()}>
+            <Icon
+              name='ios-arrow-back'
+              style={[styles.goBack]}/>
           </TouchableOpacity>
         </View>
         <View style={[styles.viewfinder, this.getBackgroundColor(), this.getSizeStyles()]}>
@@ -173,14 +175,20 @@ var styles = StyleSheet.create({
   },
   backBtn: {
     position: 'absolute',
-    left: normalizeW(35),
+    left: normalizeW(25),
     ...Platform.select({
       ios: {
-        top: normalizeH(44)
+        top: normalizeH(34)
       },
       android: {
-        top: normalizeH(24)
+        top: normalizeH(14)
       },
     }),
+    width: normalizeW(50),
+    height: normalizeH(50),
+  },
+  goBack: {
+    fontSize: em(28),
+    color: '#FFF'
   },
 });
