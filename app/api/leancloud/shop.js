@@ -22,6 +22,7 @@ import * as authSelector from '../../selector/authSelector'
 import {store} from '../../store/persistStore'
 
 export function getShopList(payload) {
+  // console.log('getShopList.payload==', payload)
   let shopCategoryId = payload.shopCategoryId
   let sortId = payload.sortId // 0-智能,1-按好评,2-按距离;3-按等级(grade)
   let distance = payload.distance
