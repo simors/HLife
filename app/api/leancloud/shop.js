@@ -43,7 +43,7 @@ export function getShopList(payload) {
   }
 
   //用 include 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
-  query.include(['targetShopCategory', 'owner', 'containedTag'])
+  query.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
 
   if(sortId == 1) {
     if(!isRefresh) { //分页查询
@@ -111,7 +111,7 @@ export function fetchShopDetail(payload) {
   let id = payload.id
   let query = new AV.Query('Shop')
   query.equalTo('objectId', id)
-  query.include(['targetShopCategory', 'owner', 'containedTag'])
+  query.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   return query.first().then(function (result) {
     // console.log('fetchShopDetail.result=', result)
     Geolocation.getCurrentPosition()

@@ -28,6 +28,7 @@ export const ShopRecord = Record({
   updatedAt: undefined,  //更新时间戳
   owner: {}, //店铺拥有者信息
   containedTag: [], //店铺拥有的标签
+  containedPromotions: [], //店铺促销活动
   nextSkipNum: 0, //分页查询,跳过条数
 }, 'ShopRecord')
 
@@ -86,6 +87,26 @@ export class ShopInfo extends ShopRecord {
           })
         }
         record.set('containedTag', containedTag)
+  
+        let containedPromotions = []
+        if(attrs.containedPromotions && attrs.containedPromotions.length) {
+          // console.log('attrs.containedPromotions=====', attrs.containedPromotions)
+          attrs.containedPromotions.forEach((promotion)=>{
+            // console.log('promotion=====', promotion)
+            let containedPromotionAttrs = promotion.attributes
+            let shopPromotion = {
+              id: promotion.id,
+              badge: containedPromotionAttrs.badge,
+              content: containedPromotionAttrs.content,
+              createdDate: numberUtils.formatLeancloudTime(promotion.createdAt, 'YYYY-MM-DD HH:mm:SS'),
+              createdAt: promotion.createdAt.valueOf(),
+              updatedAt: promotion.updatedAt.valueOf(),
+            }
+            containedPromotions.push(shopPromotion)
+          })
+        }
+        record.set('containedPromotions', containedPromotions)
+        
         record.set('geo', attrs.geo)
         // console.log('lcObj.userCurGeo===', lcObj.userCurGeo)
         // console.log('attrs.geo===', attrs.geo)
