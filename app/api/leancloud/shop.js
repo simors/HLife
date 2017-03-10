@@ -22,8 +22,9 @@ import * as authSelector from '../../selector/authSelector'
 import {store} from '../../store/persistStore'
 
 export function getShopList(payload) {
+  // console.log('getShopList.payload==', payload)
   let shopCategoryId = payload.shopCategoryId
-  let sortId = payload.sortId // 0-智能,1-按好评,2-按距离
+  let sortId = payload.sortId // 0-智能,1-按好评,2-按距离;3-按等级(grade)
   let distance = payload.distance
   let geo = payload.geo
   let geoCity = payload.geoCity
@@ -56,6 +57,11 @@ export function getShopList(payload) {
       query.skip(skipNum)
       // query.lessThanOrEqualTo('geo', lastGeo)
     }
+  }else if(sortId == 3) {
+    if(!isRefresh) { //分页查询
+      query.skip(skipNum)
+    }
+    query.addDescending('grade')
   }else{
     if(!isRefresh) { //分页查询
       query.skip(skipNum)

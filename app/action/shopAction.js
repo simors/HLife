@@ -10,21 +10,32 @@ import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
 
+export function clearShopList(payload) {
+  return (dispatch, getState) => {
+    let actionType = ShopActionTypes.UPDATE_SHOP_LIST
+    let updateShopListAction = createAction(actionType)
+    dispatch(updateShopListAction({shopList: []}))
+  }
+}
+
 export function fetchShopList(payload) {
   return (dispatch ,getState) => {
     lcShop.getShopList(payload).then((shopList) => {
       let actionType = ShopActionTypes.UPDATE_SHOP_LIST
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
+        let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
+        dispatch(updateAction({isLastPage: shopList.size < 5}))
       }
       // console.log('fetchShopList.payload.isRefresh===',payload.isRefresh)
       // console.log('fetchShopList.shopList.size===',shopList.size)
       // console.log('fetchShopList.shopList.size < 5===',(shopList.size < 5))
-      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
-      dispatch(updateAction({isLastPage: shopList.size < 5}))
 
-      let updateShopListAction = createAction(actionType)
-      dispatch(updateShopListAction({shopList: shopList}))
+      if(payload.isRefresh || shopList.size) {
+        let updateShopListAction = createAction(actionType)
+        dispatch(updateShopListAction({shopList: shopList}))
+      }
+
       if(payload.success){
         payload.success(shopList.isEmpty())
       }

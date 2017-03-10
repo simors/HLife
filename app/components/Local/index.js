@@ -39,9 +39,10 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import Swiper from 'react-native-swiper'
 import * as authSelector from '../../selector/authSelector'
+import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
 import {selectShopList, selectFetchShopListIsArrivedLastPage} from '../../selector/shopSelector'
-import {fetchShopList} from '../../action/shopAction'
+import {fetchShopList, clearShopList} from '../../action/shopAction'
 // import ViewPager from 'react-native-viewpager'
 import ViewPager from '../common/ViewPager'
 
@@ -50,14 +51,15 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 class Local extends Component {
   constructor(props) {
+    // console.log('constructor.props===', props)
     super(props)
     this.state = {
       searchForm: {
         shopCategoryId: '',
-        sortId: 2,
-        distance: '',
-        geo: undefined,
-        geoCity: '',
+        sortId: 3,
+        distance: 5,
+        geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
+        geoCity: props.getCity || '',
         lastCreatedAt: '',
         lastScore: '',
         lastGeo: '',
@@ -68,26 +70,22 @@ class Local extends Component {
   }
 
   componentWillMount() {
-    let that = this
-    Utils.getCurrentPositionInfo().then((result)=>{
-      that.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          geo: result.geo,
-          geoCity: result.geoCity,
-        }
-      })
-    })
-  }
-
-  componentDidMount() {
+    // console.log('componentWillMount.props===', this.props)
     InteractionManager.runAfterInteractions(() => {
+      // console.log('componentWillMount.runAfterInteractions===', this.props)
       this.props.fetchShopCategories()
+      this.props.clearShopList()
       this.refreshData()
     })
   }
 
+  componentDidMount() {
+    // console.log('componentDidMount.props===', this.props)
+  }
+
   componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps.props===', this.props)
+    // console.log('componentWillReceiveProps.nextProps===', nextProps)
     if(nextProps.nextSkipNum) {
       // this.state.searchForm.skipNum = nextProps.nextSkipNum
       this.setState({
@@ -293,26 +291,43 @@ class Local extends Component {
   }
 
   refreshData() {
-    // console.log('this.state===', this.state)
     this.loadMoreData(true)
   }
 
-  loadMoreData(isRefresh) {
+  loadMoreData(isRefresh, isEndReached) {
+    // console.log('this.state===', this.state)
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     let payload = {
       ...this.state.searchForm,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
+        this.isQuering = false
         if(!this.listView) {
           return
         }
         // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
+          if(isRefresh) {
+            this.setState({
+              searchForm: {
+                ...this.state.searchForm,
+                distance: ''
+              }
+            }, ()=>{
+              this.refreshData()
+            })
+          }
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
         }
       },
       error: (err)=>{
+        this.isQuering = false
         Toast.show(err.message, {duration: 1000})
       }
     }
@@ -338,7 +353,7 @@ class Local extends Component {
                 this.refreshData()
               }}
               loadMoreData={()=> {
-                this.loadMoreData()
+                this.loadMoreData(false, true)
               }}
               ref={(listView) => this.listView = listView}
             />
@@ -372,18 +387,24 @@ const mapStateToProps = (state, ownProps) => {
     nextSkipNum = shopList[shopList.length-1].nextSkipNum
   }
 
+  let geoPoint = locSelector.getGeopoint(state)
+  let getCity = locSelector.getCity(state)
+
   return {
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
     isUserLogined: isUserLogined,
     nextSkipNum: nextSkipNum,
     shopList: shopList,
+    geoPoint: geoPoint,
+    getCity: getCity
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
-  fetchShopList
+  fetchShopList,
+  clearShopList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)
@@ -402,7 +423,7 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    marginBottom: 50
+    marginBottom: 42
   },
   shopInfoWrap: {
     flex: 1,
