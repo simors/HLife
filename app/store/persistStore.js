@@ -3,11 +3,13 @@ import {persistStore} from 'redux-persist'
 import immutableTransform from 'redux-persist-transform-immutable'
 import createFilter from 'redux-persist-transform-filter'
 import {Actions} from 'react-native-router-flux'
+import {createAction} from 'redux-actions'
 import * as authSelectors from '../selector/authSelector'
 import {initMessageClient} from '../action/messageAction'
 import {become} from '../api/leancloud/auth'
 import {UserInfo, UserState, UserStateRecord, UserInfoRecord} from '../models/userModels'
 import configureStore from '../store/configureStore'
+import * as AuthTypes from '../constants/authActionTypes'
 
 const messageFilter = createFilter(
   'MESSAGE',
@@ -59,7 +61,9 @@ function verifyToken() {
       ...authSelectors.activeUserAndToken(getState())
     }
 
-    become(payload).then(() => {
+    become(payload).then((user) => {
+      let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+      dispatch(loginAction({...user}))
       return dispatch(initMessageClient())
     }).then(() => {
       // Actions.HOME()
