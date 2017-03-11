@@ -9,6 +9,7 @@ import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
+import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../constants/appConfig'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -32,6 +33,8 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   PUBLISH_SHOP_COMMENT: 'PUBLISH_SHOP_COMMENT',
   UPDATE_ANNOUNCEMENT: 'UPDATE_ANNOUNCEMENT',
 }
+
+const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
 
 export function submitFormData(payload) {
   return (dispatch, getState) => {
@@ -339,7 +342,7 @@ function promoterCertification(payload, formData) {
       //upUser: payload.upUser,
     }
     lcAuth.promoteCertification(certPayload).then((promoter) => {
-     //console.log('promoter',promoter)
+      dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
       let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
       dispatch(certificationAction({promoter}))
       if (payload.success) {
@@ -428,6 +431,7 @@ function shopCertification(payload, formData) {
       // geoDistrict: formData.shopGeoDistrictInput.text,
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
+      dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
       let actionType = AuthTypes.SHOP_CERTIFICATION_SUCCESS
       if(payload.isReCertification) {
         actionType = AuthTypes.SHOP_RE_CERTIFICATION_SUCCESS
