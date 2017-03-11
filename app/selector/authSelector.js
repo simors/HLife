@@ -37,6 +37,12 @@ export function activeUserInfo(state) {
   return activeUser ? state.AUTH.getUserInfoById(activeUser) : new UserInfo()
 }
 
+export function getUserIdentity(state, userId) {
+  let userInfo = userInfoById(state, userId).toJS()
+  let identity = userInfo.identity
+  return identity
+}
+
 export function selectUserFollowees(state, userId) {
   let activeUser = activeUserAndToken(state).activeUser
   let userFollowees = state.AUTH.followees.get(activeUser)

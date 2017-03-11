@@ -16,6 +16,7 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
+import {isUserLogined, getUserIdentity, activeUserId} from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -24,17 +25,17 @@ class TabIcon extends Component {
   render() {
     return (
       <View>
-        {this.publish(this.props.title, this.props.selected, this.props.number, this.props.onPress, this.props.isLogin)}
+        {this.publish(this.props.title, this.props.selected, this.props.number, this.props.onPress, this.props.isLogin, this.props.identity)}
       </View>
     )
   }
 
-  publish=(title, selected, index, onPressed, isLogin) =>{
+  publish=(title, selected, index, onPressed, isLogin, identity) =>{
     if (index == 2) {
       return (
         <TouchableWithoutFeedback onPress={()=> {
           if (onPressed) {
-            onPressed({isLogin: isLogin, index: index})
+            onPressed({isLogin: isLogin, index: index, identity: identity})
           }
         }}>
           <View style={[styles.container, {backgroundColor: THEME.base.mainColor}]}>
@@ -119,8 +120,13 @@ class TabIcon extends Component {
   }
 }
 
-const mapStateToProps = (state)=> {
-  return {}
+const mapStateToProps = (state) => {
+  let newProps = {}
+  const isLogin = isUserLogined(state)
+  const identity = getUserIdentity(state, activeUserId(state))
+  newProps.isLogin = isLogin
+  newProps.identity = identity
+  return newProps
 }
 
 export default connect(mapStateToProps, null)(TabIcon)

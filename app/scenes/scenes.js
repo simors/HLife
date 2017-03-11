@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {StyleSheet, AsyncStorage} from 'react-native'
 import {Actions, Scene, Switch, ActionConst, Modal} from 'react-native-router-flux'
 
+import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import Launch from '../components/Launch'
 import Home from '../components/Home'
 import Local from '../components/Local'
@@ -203,6 +204,17 @@ function tapActions(props) {
         Actions.MINE()
       }
     })
+  } if (props.index == 2) {
+    if (!props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      let identity = props.identity
+      if (identity.includes(IDENTITY_SHOPKEEPER)) {
+        Actions.PUBLISH()
+      } else {
+        Actions.PUBLISH_TOPIC()
+      }
+    }
   } else {
     switch (props.index) {
       case 0: {
@@ -211,10 +223,6 @@ function tapActions(props) {
       }
       case 1: {
         Actions.LOCAL()
-        break
-      }
-      case 2: {
-        Actions.PUBLISH()
         break
       }
       case 3: {
