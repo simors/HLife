@@ -46,7 +46,7 @@ export class UserInfo extends UserInfoRecord {
       record.set('nickname', attrs.nickname)
       record.set('gender', attrs.gender)
       record.set('birthday', attrs.birthday)
-      record.set('identity', attrs.identity)
+      record.set('identity', new List(attrs.identity))
     })
     return info
   }
@@ -76,7 +76,7 @@ export class UserInfo extends UserInfoRecord {
       record.set('nickname', fAttrs.nickname)
       record.set('gender', fAttrs.gender)
       record.set('birthday', fAttrs.birthday)
-      record.set('identity', fAttrs.identity)
+      record.set('identity', new List(fAttrs.identity))
     })
     return info
   }

@@ -6,6 +6,7 @@ import * as AuthTypes from '../constants/authActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
 import {Map, List} from 'immutable'
 import {UserState, UserInfo, HealthProfile} from '../models/userModels'
+import {activeUserId} from '../selector/authSelector'
 
 
 const initialState = new UserState()
@@ -32,6 +33,8 @@ export default function authReducer(state = initialState, action) {
       return handleFetchUserFavoriteArticleSuccess(state,action)
     case AuthTypes.ADD_HEALTH_PROFILE:
       return handleAddHealthProfile(state, action)
+    case AuthTypes.ADD_PERSONAL_IDENTITY:
+      return handleAddPersonalIdentity(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -108,7 +111,17 @@ function handleAddHealthProfile(state, action) {
   // console.log("handleAddHealthProgfile healthProfile", healthProfile)
   state = state.setIn(['healthProfiles', healthProfile.get('id')], healthProfile)
   return state
+}
 
+function handleAddPersonalIdentity(state, action) {
+  let newIdentity = action.payload.identity
+  let activeUser = state.get('activeUser')
+  let identity = state.getIn(['profiles', activeUser, 'identity'])
+  if (-1 == identity.indexOf(newIdentity)) {
+    identity = identity.push(newIdentity)
+    state = state.setIn(['profiles', activeUser, 'identity'], identity)
+  }
+  return state
 }
 
 function onRehydrate(state, action) {

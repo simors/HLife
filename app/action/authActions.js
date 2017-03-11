@@ -9,6 +9,7 @@ import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
+import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../constants/appConfig'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -32,6 +33,8 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   PUBLISH_SHOP_COMMENT: 'PUBLISH_SHOP_COMMENT',
   UPDATE_ANNOUNCEMENT: 'UPDATE_ANNOUNCEMENT',
 }
+
+const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
 
 export function submitFormData(payload) {
   return (dispatch, getState) => {
@@ -339,7 +342,7 @@ function promoterCertification(payload, formData) {
       //upUser: payload.upUser,
     }
     lcAuth.promoteCertification(certPayload).then((promoter) => {
-     //console.log('promoter',promoter)
+      dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
       let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
       dispatch(certificationAction({promoter}))
       if (payload.success) {
@@ -359,10 +362,11 @@ function handleShopCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    // if(true){
-    //   dispatch(shopCertification(payload, formData))
-    //   return
-    // }
+    // TODO: 正式版要删除
+    if(true){
+      dispatch(shopCertification(payload, formData))
+      return
+    }
     if(__DEV__) {
       dispatch(verifyInvitationCode(payload, formData))
     }
@@ -416,7 +420,7 @@ function verifyInvitationCode(payload, formData) {
 
 function shopCertification(payload, formData) {
   return (dispatch, getState) => {
-    // console.log('shopCertification=formData==', formData)
+    console.log('shopCertification=formData==', formData)
     let certPayload = {
       name: formData.nameInput.text,
       phone: formData.phoneInput.text,
@@ -424,9 +428,10 @@ function shopCertification(payload, formData) {
       shopAddress: formData.shopAddrInput.text,
       geo: formData.shopGeoInput.text,
       geoCity: formData.shopGeoCityInput.text,
-      geoDistrict: formData.shopGeoDistrictInput.text,
+      // geoDistrict: formData.shopGeoDistrictInput.text,
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
+      dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
       let actionType = AuthTypes.SHOP_CERTIFICATION_SUCCESS
       if(payload.isReCertification) {
         actionType = AuthTypes.SHOP_RE_CERTIFICATION_SUCCESS

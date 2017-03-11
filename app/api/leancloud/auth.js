@@ -12,6 +12,7 @@ import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
 import * as authSelector from '../../selector/authSelector'
 import {store} from '../../store/persistStore'
+import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
 
 export function become(payload) {
   return AV.User.become(payload.token).then((user) => {
@@ -203,7 +204,7 @@ export function promoteCertification(payload) {
   promoter.set('user', currentUser)
   promoter.set('address', payload.address)
  // console.log('currentUser=====>',currentUser)
-  currentUser.addUnique('identity', 'promoter')
+  currentUser.addUnique('identity', IDENTITY_PROMOTER)
   currentUser.save()
 
   return promoter.save().then(function (result) {
@@ -225,7 +226,7 @@ export function profileSubmit(payload) {
   userInfo.set('mobilePhoneNumber', payload.phone)
   userInfo.set('gender', payload.gender)
   userInfo.set('birthday', payload.birthday)
-  userInfo.set('identity', [])
+  // userInfo.set('identity', [])
 
   return userInfo.save().then((loginedUser)=>{
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
@@ -259,10 +260,17 @@ export function shopCertification(payload) {
   shop.set('invitationCode', payload.invitationCode)
   shop.set('owner', currentUser)
 
-  return shop.save().then(function (result) {
+  currentUser.addUnique('identity', IDENTITY_SHOPKEEPER)
+
+  return currentUser.save().then(() => {
+    return shop.save()
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  }). then((result) => {
     let shopInfo = ShopInfo.fromLeancloudObject(result)
     return new List([shopInfo])
-  }, function (err) {
+  }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
