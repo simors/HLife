@@ -17,10 +17,11 @@ export default class Popup extends Component {
   }
 
   renderContent = () => {
-    let {content} = this.props
+    let content = this.props.content
     if (content instanceof Array) {
-      return content.map((item)=> {
-        return (<Text style={styles.info}>
+      return content.map((item, key)=> {
+        return (
+          <Text key={key} style={styles.info}>
             {item}
           </Text>
         )
