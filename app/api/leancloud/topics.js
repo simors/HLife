@@ -569,3 +569,15 @@ export function getTopicComments(payload) {
       throw err
     })
 }
+
+export function getMainPageTopics(payload) {
+  let params = {}
+  let limited = payload.limited
+  params.limit = limited
+  return AV.Cloud.run('getPickedTopicList', params).then((topics) => {
+    return new List(topics)
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}

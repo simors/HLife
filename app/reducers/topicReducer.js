@@ -25,6 +25,8 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopicLikeUsers(state, action)
     case TopicTypes.ADD_TOPIC:
       return handleAddTopic(state, action)
+    case TopicTypes.UPDATE_MAINPAGE_TOPICS:
+      return handleUpdateMainPageTopics(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -195,6 +197,11 @@ function handleUpdateTopicIsLiked(state, action) {
   return state
 }
 
+function handleUpdateMainPageTopics(state, action) {
+  let topics = action.payload.topics
+  state = state.set('mainPageTopics', topics)
+  return state
+}
 
 function onRehydrate(state, action) {
   var incoming = action.payload.TOPIC

@@ -241,3 +241,12 @@ export function fetchTopicLikeUsers(payload) {
     })
   }
 }
+
+export function fetchMainPageTopics(payload) {
+  return (dispatch, getState) => {
+    lcTopics.getMainPageTopics(payload).then((topics) => {
+      let updateMainPageTopics = createAction(topicActionTypes.UPDATE_MAINPAGE_TOPICS)
+      dispatch(updateMainPageTopics({topics}))
+    })
+  }
+}

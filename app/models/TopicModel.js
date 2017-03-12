@@ -173,4 +173,5 @@ export const Topic = Record({
   TopicLikesNum: Map(),
   TopicLikeUsers: Map(),
   IsLikedByCurrentUser: Map(),
+  mainPageTopics: List(),
 }, 'Topic')

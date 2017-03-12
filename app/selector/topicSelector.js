@@ -77,3 +77,11 @@ export function selectUserTopics(state, userId) {
   }
   return []
 }
+
+export function getMainPageTopics(state) {
+  let topics = state.TOPIC.get('mainPageTopics')
+  if (topics) {
+    return topics.toJS()
+  }
+  return []
+}

@@ -18,6 +18,8 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import Swiper from 'react-native-swiper'
+import {fetchMainPageTopics} from '../../action/topicActions'
+import {getMainPageTopics} from '../../selector/topicSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -34,6 +36,7 @@ class NearbyTopicView extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       // TODO: 获取附近精选话题
+      this.props.fetchMainPageTopics({limited: 6})
     })
   }
 
@@ -42,6 +45,45 @@ class NearbyTopicView extends Component {
       swiperHeight: event.nativeEvent.layout.height,
       swiperWidth: event.nativeEvent.layout.width,
     })
+  }
+
+  renderSwiperView() {
+    if (!this.props.mainPageTopics) {
+      return <View/>
+    }
+    let topicGroup = []
+    let len = this.props.mainPageTopics.length
+    for (let i = 0; i < len; i += 2) {
+      topicGroup.push(this.props.mainPageTopics.slice(i, i + 2))
+    }
+    return (
+      topicGroup.map((topic, index) => {
+        return (
+          <View key={index} style={{flex: 1}}>
+            <View style={{flexDirection: 'row', marginBottom: 8}}>
+              <View style={[styles.topicLabel, {backgroundColor: '#F6A623'}]}>
+                <Text style={styles.labelText}>{topic[0].categoryName}</Text>
+              </View>
+              <View style={{flex: 1, justifyContent: 'center'}}>
+                <TouchableOpacity style={{flex: 1, justifyContent: 'center'}} onPress={() => {Actions.TOPIC_DETAIL({topic: topic[0]})}}>
+                  <Text style={styles.titleText} numberOfLines={1}>{topic[0].title}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{flexDirection: 'row', marginBottom: 8}}>
+              <View style={[styles.topicLabel, {backgroundColor: '#7ED321'}]}>
+                <Text style={styles.labelText}>{topic[1].categoryName}</Text>
+              </View>
+              <View style={{flex: 1, justifyContent: 'center'}}>
+                <TouchableOpacity style={{flex: 1, justifyContent: 'center'}} onPress={() => {Actions.TOPIC_DETAIL({topic: topic[1]})}}>
+                  <Text style={styles.titleText} numberOfLines={1}>{topic[1].title}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )
+      })
+    )
   }
 
   render() {
@@ -59,50 +101,7 @@ class NearbyTopicView extends Component {
             height={this.state.swiperHeight}
             width={this.state.swiperWidth}
           >
-            <View style={{flex: 1}}>
-              <View style={{flexDirection: 'row', marginBottom: 8}}>
-                <View style={[styles.topicLabel, {backgroundColor: '#F6A623'}]}>
-                  <Text style={styles.labelText}>情感</Text>
-                </View>
-                <View style={{flex: 1, justifyContent: 'center'}}>
-                  <TouchableOpacity style={{flex: 1, justifyContent: 'center'}} onPress={() => {}}>
-                    <Text style={styles.titleText} numberOfLines={1}>找个女朋友真的那么难吗？</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row', marginBottom: 8}}>
-                <View style={[styles.topicLabel, {backgroundColor: '#7ED321'}]}>
-                  <Text style={styles.labelText}>美食</Text>
-                </View>
-                <View style={{flex: 1, justifyContent: 'center'}}>
-                  <TouchableOpacity style={{flex: 1, justifyContent: 'center'}} onPress={() => {}}>
-                    <Text style={styles.titleText} numberOfLines={1}>冬笋的神奇功效你都了解吗？</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-            <View style={{flex: 1}}>
-              <View style={{flexDirection: 'row', marginBottom: 8}}>
-                <View style={[styles.topicLabel, {backgroundColor: '#7ED321'}]}>
-                  <Text style={styles.labelText}>美容</Text>
-                </View>
-                <View style={{flex: 1, justifyContent: 'center'}}>
-                  <TouchableOpacity style={{flex: 1, justifyContent: 'center'}} onPress={() => {}}>
-                    <Text style={styles.titleText} numberOfLines={1}>这个SPA做的值！瞬间回到18岁，哈哈哈。。。</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row', marginBottom: 8}}>
-                <View style={[styles.topicLabel, {backgroundColor: '#F6A623'}]}>
-                  <Text style={styles.labelText}>亲子</Text>
-                </View>
-                <View style={{flex: 1, justifyContent: 'center'}}>
-                  <TouchableOpacity style={{flex: 1, justifyContent: 'center'}} onPress={() => {}}>
-                    <Text style={styles.titleText} numberOfLines={1}>小朋友的这些行为要不得，但是家长往往束手无策！</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
+            {this.renderSwiperView()}
           </Swiper>
         </View>
       </View>
@@ -112,10 +111,13 @@ class NearbyTopicView extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
+  let mainPageTopics = getMainPageTopics(state)
+  newProps.mainPageTopics = mainPageTopics
   return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchMainPageTopics,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(NearbyTopicView)
