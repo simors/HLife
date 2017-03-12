@@ -50,7 +50,7 @@
     "react-native-restart": "0.0.1",
     "react-native-root-siblings": "^1.1.2",
     "react-native-root-toast": "^1.0.3",
-    "react-native-router-flux": "^3.37.0",
+    "react-native-router-flux": "^3.38.0",
     "react-native-scrollable-tab-view": "^0.7.0",
     "react-native-send-intent": "^1.0.14",
     "react-native-swiper": "^1.5.4",
