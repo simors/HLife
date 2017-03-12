@@ -36,7 +36,7 @@ class NearbyTopicView extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       // TODO: 获取附近精选话题
-      this.props.fetchMainPageTopics({limited: 6})
+      this.props.fetchMainPageTopics({limited: 10})
     })
   }
 
@@ -58,6 +58,22 @@ class NearbyTopicView extends Component {
     }
     return (
       topicGroup.map((topic, index) => {
+        if (!topic[1]) {
+          return (
+            <View key={index} style={{flex: 1}}>
+              <View style={{flexDirection: 'row', marginBottom: 8}}>
+                <View style={[styles.topicLabel, {backgroundColor: '#F6A623'}]}>
+                  <Text style={styles.labelText}>{topic[0].categoryName}</Text>
+                </View>
+                <View style={{flex: 1, justifyContent: 'center'}}>
+                  <TouchableOpacity style={{flex: 1, justifyContent: 'center'}} onPress={() => {Actions.TOPIC_DETAIL({topic: topic[0]})}}>
+                    <Text style={styles.titleText} numberOfLines={1}>{topic[0].title}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )
+        }
         return (
           <View key={index} style={{flex: 1}}>
             <View style={{flexDirection: 'row', marginBottom: 8}}>
