@@ -715,12 +715,7 @@ const styles = StyleSheet.create({
     fontSize: em(14),
   },
   userAttentioned: {
-    backgroundColor: THEME.colors.green,
-    paddingTop: 4,
-    paddingBottom: 4,
-    paddingLeft: 4,
-    paddingRight: 4,
-    borderRadius: 5,
+    
   },
   userAttentionedTxt: {
     color: '#fff',
