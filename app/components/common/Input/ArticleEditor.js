@@ -62,6 +62,7 @@ class ArticleEditor extends Component {
       editorHeight: new Animated.Value(0),
       scrollViewHeight: 0,
       contentHeight: 0,
+      showToolbar: false,
     }
     this.comp = [this.renderTextInput("", 0, true)]
     this.compHeight = 0
@@ -148,6 +149,7 @@ class ArticleEditor extends Component {
 
     this.setState({
       keyboardPadding: e.endCoordinates.height,
+      showToolbar: true,
     })
 
     this.keyboardHeight = e.endCoordinates.height
@@ -161,6 +163,7 @@ class ArticleEditor extends Component {
 
     this.setState({
       keyboardPadding: 0,
+      showToolbar: false,
     })
   }
 
@@ -394,18 +397,24 @@ class ArticleEditor extends Component {
       <View style={[styles.editToolView,
         {
           position: 'absolute',
-          right: 50,
-          bottom: this.state.keyboardPadding + 50,
+          left: 0,
+          bottom: this.state.keyboardPadding,
+          width: PAGE_WIDTH,
+          height: normalizeH(40),
         }]}
       >
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <TouchableOpacity onPress={() => {this.insertImage()}}
-                            style={styles.toolBtn}>
-            <Image
-              style={{width: 25, height: 25}}
-              source={require('../../../assets/images/insert_picture.png')}>
-            </Image>
-          </TouchableOpacity>
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          <View style={{flex: 1, backgroundColor: '#F5F5F5'}}>
+            <TouchableOpacity onPress={() => {this.insertImage()}}
+                              style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+              <Image
+                style={{width: 20, height: 20}}
+                source={require('../../../assets/images/insert_picture.png')}>
+              </Image>
+              <Text style={{fontSize: 15, color: '#AAAAAA', lineHeight: 15, marginLeft: normalizeW(10)}}>添加图片</Text>
+            </TouchableOpacity>
+          </View>
+          {this.props.renderCustomToolbar ? this.props.renderCustomToolbar() : <View/>}
         </View>
       </View>
     )
@@ -471,7 +480,7 @@ class ArticleEditor extends Component {
           >
             {this.renderComponents()}
           </KeyboardAwareScrollView>
-          {this.renderEditToolView()}
+          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )
@@ -495,7 +504,7 @@ class ArticleEditor extends Component {
               {this.renderComponents()}
             </ScrollView>
           </Animated.View>
-          {this.renderEditToolView()}
+          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )
@@ -542,8 +551,8 @@ const styles = StyleSheet.create({
   editToolView: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    borderRadius: 25,
-    overflow: 'hidden'
+    // borderRadius: 25,
+    // overflow: 'hidden'
   },
   imgInputStyle: {
     maxWidth: PAGE_WIDTH,

@@ -29,6 +29,7 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
 import * as ImageUtil from '../../util/ImageUtil'
 import TimerMixin from 'react-timer-mixin'
+import THEME from '../../constants/themes/theme1'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -201,11 +202,23 @@ class PublishTopics extends Component {
     // console.log('images list', this.insertImages)
   }
 
+  renderArticleEditorToolbar() {
+    return (
+      <View style={{width: normalizeW(64), backgroundColor: THEME.base.mainColor}}>
+        <TouchableOpacity onPress={() => {}}
+                          style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{fontSize: 15, color: 'white', lineHeight: 15}}>发布</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   renderRichText() {
     return (
       <ArticleEditor
         {...topicContent}
         wrapHeight={rteHeight.height}
+        renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
         getImages={(images) => this.getRichTextImages(images)}
         shouldUploadImgComponent={this.state.shouldUploadImgComponent}
         uploadImgComponentCallback={(leanImgUrls)=> {
