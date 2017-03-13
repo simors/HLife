@@ -34,6 +34,7 @@ import {selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLates
 import * as authSelector from '../../selector/authSelector'
 import Comment from '../common/Comment'
 import ImageGallery from '../common/ImageGallery'
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 import * as numberUtils from '../../util/numberUtils'
 import * as ShopDetailTestData from './ShopDetailTestData'
@@ -235,7 +236,7 @@ class ShopDetail extends Component {
           shopTag = item.containedTag[0].name
         }
         return (
-          <TouchableOpacity onPress={()=>{this.gotoShopDetailScene(item.id)}}>
+          <TouchableOpacity key={'gyl_'+ index} onPress={()=>{this.gotoShopDetailScene(item.id)}}>
             <View style={[styles.shopInfoWrap]}>
               <View style={styles.coverWrap}>
                 <Image style={styles.cover} source={{uri: item.coverUrl}}/>
@@ -408,10 +409,23 @@ class ShopDetail extends Component {
     })
   }
 
+  sendPrivateMessage() {
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+    } else {
+      let payload = {
+        name: this.props.shopDetail.owner.nickname,
+        members: [this.props.currentUser, this.props.shopDetail.owner.id],
+        conversationType: PERSONAL_CONVERSATION,
+        title: this.props.shopDetail.owner.nickname,
+      }
+      Actions.CHATROOM(payload)
+    }
+  }
+
   render() {
-    const album = this.props.shopDetail.album
     let announcementCover = {uri: this.props.latestShopAnnouncement.coverUrl}
-    
+    console.log('this.props.shopDetail===', this.props.shopDetail)
     return (
       <View style={styles.container}>
         <Header
@@ -468,7 +482,6 @@ class ShopDetail extends Component {
               <View style={styles.shopXYZRight}>
                 {this.props.isFollowedShop
                   ? <View style={styles.shopAttentioned}>
-                  {/*<Text style={styles.shopAttentionedTxt}>已关注</Text>*/}
                   <Image source={require('../../assets/images/followed.png')} />
                 </View>
                   : <TouchableOpacity onPress={this.followShop.bind(this)}>
@@ -519,31 +532,46 @@ class ShopDetail extends Component {
           </ScrollView>
 
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={styles.shopCommentInputBox} onPress={()=>{this.openCommentScene()}}>
-              <Text style={styles.shopCommentInput}>写评论...</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.commentBtnWrap} onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
-              <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-              {this.props.shopCommentsTotalCount > 0
-                ? <View style={styles.commentBtnBadge}>
-                    <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
-                  </View>
-                : null
-              }
-
+            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.openCommentScene()}}>
+              <View style={[styles.vItem]}>
+                <Image style={{}} source={require('../../assets/images/message.png')}/>
+                <Text style={[styles.vItemTxt, styles.shopCommentInput]}>点评</Text>
+              </View>
             </TouchableOpacity>
 
             {
               this.props.userIsUpedShop
-                ? <TouchableOpacity style={styles.shopUpWrap} onPress={this.userUnUpShop.bind(this)}>
-                    <Image style={{}} source={require('../../assets/images/like_select.png')}/>
+                ? <TouchableOpacity style={[styles.shopUpWrap]} onPress={this.userUnUpShop.bind(this)}>
+                    <View style={[styles.vItem]}>
+                      <Image style={{}} source={require('../../assets/images/like_selected.png')}/>
+                      <Text style={[styles.vItemTxt]}>取消点赞</Text>
+                    </View>
                   </TouchableOpacity>
-                : <TouchableOpacity style={styles.shopUpWrap} onPress={this.userUpShop.bind(this)}>
-                    <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+                : <TouchableOpacity style={[styles.shopUpWrap]} onPress={this.userUpShop.bind(this)}>
+                    <View style={[styles.vItem]}>
+                      <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
+                      <Text style={[styles.vItemTxt]}>点赞</Text>
+                    </View>
                   </TouchableOpacity>
             }
 
+            <TouchableOpacity style={[styles.commentBtnWrap]} onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
+              <View style={[styles.vItem]}>
+                <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
+                <Text style={[styles.vItemTxt]}>查看</Text>
+                {this.props.shopCommentsTotalCount > 0
+                  ? <View style={styles.commentBtnBadge}>
+                      <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
+                    </View>
+                  : null
+                }
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
+              <Image style={{}} source={require('../../assets/images/contacted.png')}/>
+              <Text style={[styles.contactedTxt]}>私信</Text>
+            </TouchableOpacity>
           </View>
 
           <Comment
@@ -594,7 +622,8 @@ const mapStateToProps = (state, ownProps) => {
     shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
     userFollowees: userFollowees,
-    userIsUpedShop: userIsUpedShop
+    userIsUpedShop: userIsUpedShop,
+    currentUser: authSelector.activeUserId(state),
   }
 }
 
@@ -655,7 +684,8 @@ const styles = StyleSheet.create({
   },
   shopXYZWrap: {
     flexDirection: 'row',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    marginBottom: 10
   },
   shopXYZLeft: {
     flex: 1,
@@ -678,7 +708,7 @@ const styles = StyleSheet.create({
     fontSize: em(15)
   },
   shopAttentioned: {
-    
+
   },
   shopAttentionedTxt: {
     color: '#fff',
@@ -1012,51 +1042,65 @@ const styles = StyleSheet.create({
     flex: 1
   },
   shopCommentWrap: {
-    height:50,
-    paddingLeft:10,
+    position:'absolute',
+    left:0,
+    bottom:0,
     borderTopWidth:normalizeBorder(),
     borderTopColor: THEME.colors.lighterA,
-    backgroundColor:'rgba(0,0,0,0.005)',
+    backgroundColor:'#fafafa',
     flexDirection:'row',
-    alignItems:'center'
+  },
+  vItem: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    paddingBottom: 3
+  },
+  vItemTxt: {
+    marginTop: 6,
+    fontSize: em(10),
+    color: '#aaa'
   },
   shopCommentInputBox: {
     flex: 1,
-    marginRight:10,
-    padding:6,
-    borderWidth:normalizeBorder(),
-    borderColor: THEME.colors.lighterA,
-    borderRadius:10,
-    backgroundColor:'#fff'
+  },
+  contactedWrap: {
+    width: normalizeW(135),
+    backgroundColor: '#FF9D4E',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  contactedTxt: {
+    color: 'white',
+    fontSize: em(15),
+    marginLeft: normalizeW(9)
   },
   shopCommentInput:{
-    fontSize: em(17),
-    color: '#8f8e94'
+
   },
   commentBtnWrap: {
-    width:60,
-    height:38,
-    justifyContent:'center',
-    alignItems: 'center'
+    flex: 1
   },
   commentBtnBadge:{
     alignItems: 'center',
     width: 30,
-    backgroundColor:'#f5a623',
+    backgroundColor:'#FF9D4E',
     position:'absolute',
-    right:0,
-    top:0,
+    right:10,
+    top:6,
     borderRadius:10,
     borderWidth:normalizeBorder(),
-    borderColor: '#f5a623'
+    borderColor: '#FF9D4E'
   },
   commentBtnBadgeTxt:{
     fontSize: 9,
     color: '#fff'
   },
   shopUpWrap:{
-    width:60,
-    alignItems: 'center'
+    flex: 1,
+
   },
   shopPromotionWrap: {
     flex: 1,
