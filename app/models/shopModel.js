@@ -93,16 +93,18 @@ export class ShopInfo extends ShopRecord {
           // console.log('attrs.containedPromotions=====', attrs.containedPromotions)
           attrs.containedPromotions.forEach((promotion)=>{
             // console.log('promotion=====', promotion)
-            let containedPromotionAttrs = promotion.attributes
-            let shopPromotion = {
-              id: promotion.id,
-              badge: containedPromotionAttrs.badge,
-              content: containedPromotionAttrs.content,
-              createdDate: numberUtils.formatLeancloudTime(promotion.createdAt, 'YYYY-MM-DD HH:mm:SS'),
-              createdAt: promotion.createdAt.valueOf(),
-              updatedAt: promotion.updatedAt.valueOf(),
+            if(promotion.hasData) {
+              let containedPromotionAttrs = promotion.attributes
+              let shopPromotion = {
+                id: promotion.id,
+                badge: containedPromotionAttrs.badge,
+                content: containedPromotionAttrs.content,
+                createdDate: numberUtils.formatLeancloudTime(promotion.createdAt, 'YYYY-MM-DD HH:mm:SS'),
+                createdAt: promotion.createdAt.valueOf(),
+                updatedAt: promotion.updatedAt.valueOf(),
+              }
+              containedPromotions.push(shopPromotion)
             }
-            containedPromotions.push(shopPromotion)
           })
         }
         record.set('containedPromotions', containedPromotions)

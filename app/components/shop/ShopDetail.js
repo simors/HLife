@@ -26,12 +26,14 @@ import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
+import ScoreShow from '../common/ScoreShow'
 
 import {fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import Comment from '../common/Comment'
+import ImageGallery from '../common/ImageGallery'
 
 import * as numberUtils from '../../util/numberUtils'
 import * as ShopDetailTestData from './ShopDetailTestData'
@@ -220,36 +222,75 @@ class ShopDetail extends Component {
     }
   }
 
+  gotoShopDetailScene(id) {
+    Actions.SHOP_DETAIL({id: id})
+  }
+
   renderGuessYouLikeList() {
     let guessYouLikeView = <View/>
     if(this.props.guessYouLikeList.length) {
       guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
-        const scoreWidth = item.score / 5.0 * 62
+        let shopTag = null
+        if(item.containedTag && item.containedTag.length) {
+          shopTag = item.containedTag[0].name
+        }
         return (
-          <TouchableWithoutFeedback key={"guessYouLike_" + index} onPress={()=>{Actions.SHOP_DETAIL({id: item.id})}}>
-            <View style={styles.shopInfoWrap}>
+          <TouchableOpacity onPress={()=>{this.gotoShopDetailScene(item.id)}}>
+            <View style={[styles.shopInfoWrap]}>
               <View style={styles.coverWrap}>
                 <Image style={styles.cover} source={{uri: item.coverUrl}}/>
               </View>
-              <View style={[styles.shopIntroWrap, styles.guessYouLikeIntroWrap]}>
-                <Text style={styles.gylShopName} numberOfLines={1}>{item.shopName}</Text>
-                <View style={[styles.scoresWrap, styles.guessYouLikeScoresWrap]}>
-                  <View style={styles.scoreIconGroup}>
-                    <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                    <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
+              <View style={styles.shopIntroWrap}>
+                <View style={styles.shopInnerIntroWrap}>
+                  <Text style={styles.shopName} numberOfLines={1}>{item.shopName}</Text>
+                  <ScoreShow
+                    containerStyle={{flex:1}}
+                    score={item.score}
+                  />
+                  <View style={styles.subInfoWrap}>
+                    {item &&
+                    <Text style={[styles.subTxt]}>{shopTag}</Text>
+                    }
+                    <View style={{flex:1,flexDirection:'row'}}>
+                      <Text style={styles.subTxt}>{item.geoDistrict && item.geoDistrict}</Text>
+                    </View>
+                    {item.distance &&
+                    <Text style={[styles.subTxt]}>{item.distance}km</Text>
+                    }
                   </View>
-                  <Text style={styles.score}>{item.score}分</Text>
                 </View>
-                <View style={styles.subInfoWrap}>
-                  <Text style={styles.subTxt}>{item.pv}人看过</Text>
-                </View>
+                {this.renderShopPromotion(item)}
               </View>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         )
       })
     }
     return guessYouLikeView
+  }
+
+  renderShopPromotion(shopInfo) {
+    let containedPromotions = shopInfo.containedPromotions
+    if(containedPromotions && containedPromotions.length) {
+      let shopPromotionView = containedPromotions.map((promotion, index)=>{
+        return (
+          <View key={'promotion_' + index} style={styles.shopPromotionBox}>
+            <View style={styles.shopPromotionBadge}>
+              <Text style={styles.shopPromotionBadgeTxt}>{promotion.badge}</Text>
+            </View>
+            <View style={styles.shopPromotionContent}>
+              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.content}</Text>
+            </View>
+          </View>
+        )
+      })
+      return (
+        <View style={styles.shopPromotionWrap}>
+          {shopPromotionView}
+        </View>
+      )
+    }
+    return null
   }
 
   renderGuessYouLike() {
@@ -257,6 +298,7 @@ class ShopDetail extends Component {
       return (
         <View style={styles.guessYouLikeWrap}>
           <View style={styles.guessYouLikeTitleWrap}>
+            <View style={styles.titleLine}/>
             <Text style={styles.guessYouLikeTitle}>猜你喜欢</Text>
           </View>
           {this.renderGuessYouLikeList()}
@@ -358,8 +400,15 @@ class ShopDetail extends Component {
     }
   }
 
+  showShopAlbum() {
+    this.props.shopDetail.album.unshift(this.props.shopDetail.coverUrl)
+    // console.log('this.props.shopDetail.album==', this.props.shopDetail.album)
+    ImageGallery.show({
+      images: this.props.shopDetail.album
+    })
+  }
+
   render() {
-    const scoreWidth = this.props.shopDetail.score / 5.0 * 62
     const album = this.props.shopDetail.album
     let announcementCover = {uri: this.props.latestShopAnnouncement.coverUrl}
     
@@ -376,69 +425,78 @@ class ShopDetail extends Component {
           <ScrollView
             contentContainerStyle={[styles.contentContainerStyle]}
           >
+            <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
+              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+            </TouchableOpacity>
             <View style={styles.shopHead}>
               <View style={styles.shopHeadLeft}>
                 <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
                 <View style={styles.shopOtherInfo}>
-                  <View style={styles.scoresWrap}>
-                    <View style={styles.scoreIconGroup}>
-                      <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                      <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                    </View>
-                    <Text style={styles.score}>{this.props.shopDetail.score}</Text>
-                  </View>
-                  <Text style={styles.distance}>{this.props.shopDetail.geoName}</Text>
-                  {this.props.shopDetail.distance &&
-                    <Text style={styles.distance}>{this.props.shopDetail.distance}km</Text>
-                  }
-                </View>
-              </View>
-              <View style={styles.shopHeadRight}>
-                  {this.props.isFollowedShop
-                    ? <View style={styles.shopAttentioned}>
-                        {/*<Text style={styles.shopAttentionedTxt}>已关注</Text>*/}
-                        <Image source={require('../../assets/images/followed.png')} />
-                      </View>
-                    : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                        <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
-                      </TouchableOpacity>
-                  }
-              </View>
-            </View>
-
-            <View style={styles.albumWrap}>
-              {album && album.length
-                ? <ImageGroupViewer
-                    showMode="oneLine"
-                    images={album}
-                    containerStyle={{marginLeft:0,marginRight:0}}
-                    imageStyle={{margin:0,marginRight:2}}
+                  <ScoreShow
+                    containerStyle={{flex:1}}
+                    score={this.props.shopDetail.score}
                   />
-                : null
-
-              }
-
+                  {this.props.shopDetail.distance &&
+                    <Text style={styles.distance}>距你{this.props.shopDetail.distance}km</Text>
+                  }
+                  {this.props.shopDetail.pv &&
+                  <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
+                  }
+                </View>
+              </View>
             </View>
 
-            <View style={styles.locationWrap}>
-              <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
-                <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
-                <View style={styles.locationTxtWrap}>
-                  <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
+            <View style={styles.shopXYZWrap}>
+              <View style={styles.shopXYZLeft}>
+                <View style={styles.locationWrap}>
+                  <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
+                    <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
+                    <View style={styles.locationTxtWrap}>
+                      <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.contactNumberWrap}>
-              <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
-                <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
-                <View style={styles.contactNumberTxtWrap}>
-                  <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
+                <View style={styles.contactNumberWrap}>
+                  <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
+                    <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
+                    <View style={styles.contactNumberTxtWrap}>
+                      <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
+              </View>
+              <View style={styles.shopXYZRight}>
+                {this.props.isFollowedShop
+                  ? <View style={styles.shopAttentioned}>
+                  {/*<Text style={styles.shopAttentionedTxt}>已关注</Text>*/}
+                  <Image source={require('../../assets/images/followed.png')} />
+                </View>
+                  : <TouchableOpacity onPress={this.followShop.bind(this)}>
+                  <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
+                </TouchableOpacity>
+                }
+              </View>
             </View>
 
             {this.props.latestShopAnnouncement.content &&
               <View style={styles.shopAnnouncementWrap}>
+                <View style={styles.titleWrap}>
+                  <View style={styles.titleLine}/>
+                  <Text style={styles.titleTxt}>店铺公告</Text>
+                </View>
+                <View style={styles.serviceInfoContainer}>
+                  <View style={styles.openTime}>
+                    <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
+                    <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
+                  </View>
+                  <View style={styles.shopSpecial}>
+                    <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
+                    <View style={{flex:1, paddingRight:10}}>
+                      <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
+                    </View>
+                  </View>
+                </View>
+
                 <View style={styles.shopAnnouncementContainer}>
                   <View style={styles.shopAnnouncementCoverWrap}>
                     <Image style={styles.shopAnnouncementCover} source={announcementCover}/>
@@ -449,40 +507,12 @@ class ShopDetail extends Component {
                         {this.props.latestShopAnnouncement.content}
                       </Text>
                     </View>
-                    <View style={styles.shopAnnouncementSubTitleWrap}>
-                      <Image style={styles.shopAnnouncementIcon} source={{uri: this.props.shopDetail.owner.avatar}}/>
-                      <Text style={styles.shopAnnouncementSubTxt}>{this.props.shopDetail.owner.nickname}</Text>
-                      <Text style={styles.shopAnnouncementSubTxt}>{this.props.latestShopAnnouncement.createdDate}</Text>
-                    </View>
                   </View>
-                </View>
-                <View style={styles.shopAnnouncementBadge}>
-                  <Image style={styles.shopAnnouncementBadgeIcon} source={require('../../assets/images/background_everyday.png')}>
-                    <Text style={styles.shopAnnouncementBadgeTxt}>店铺公告</Text>
-                  </Image>
                 </View>
               </View>
             }
 
             {this.renderComments()}
-
-            <View style={styles.serviceInfoWrap}>
-              <View style={styles.serviceInfoTitleWrap}>
-                <Text style={styles.serviceInfoTitle}>服务信息</Text>
-              </View>
-              <View style={styles.serviceInfoContainer}>
-                <View style={styles.openTime}>
-                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
-                  <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
-                </View>
-                <View style={styles.shopSpecial}>
-                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
-                  <View style={{flex:1, paddingRight:10}}>
-                    <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
 
             {this.renderGuessYouLike()}
 
@@ -611,7 +641,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 12,
     height: 70,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
   shopHeadLeft: {
     flex: 1,
@@ -621,13 +653,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end'
   },
+  shopXYZWrap: {
+    flexDirection: 'row',
+    backgroundColor: '#fff'
+  },
+  shopXYZLeft: {
+    flex: 1,
+  },
+  shopXYZRight: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(14)
+  },
+  titleWrap: {
+    flexDirection: 'row',
+  },
+  titleLine: {
+    width: 3,
+    backgroundColor: '#ff7819',
+    marginRight: 5,
+  },
+  titleTxt: {
+    color: '#FF7819',
+    fontSize: em(15)
+  },
   shopAttentioned: {
-    backgroundColor: THEME.colors.green,
-    paddingTop: 3,
-    paddingBottom: 3,
-    paddingLeft: 6,
-    paddingRight: 6,
-    borderRadius: 5,
+    
   },
   shopAttentionedTxt: {
     color: '#fff',
@@ -677,9 +728,12 @@ const styles = StyleSheet.create({
     top: 0
   },
   distance: {
-    color: '#d8d8d8',
+    color: '#8F8E94',
     fontSize: em(12),
     marginRight: normalizeW(10)
+  },
+  pv: {
+    marginLeft: normalizeW(14)
   },
   albumWrap: {
     backgroundColor: '#fff'
@@ -725,8 +779,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 10,
-    borderTopWidth: normalizeBorder(),
-    borderTopColor: THEME.colors.lighterA
   },
   contactNumberTxt: {
     lineHeight: normalizeH(20),
@@ -734,13 +786,13 @@ const styles = StyleSheet.create({
     color: '#8f8e94',
   },
   shopAnnouncementWrap: {
-    backgroundColor: 'transparent',
-    marginTop: 10,
+    backgroundColor: 'white',
+    padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20
   },
   shopAnnouncementContainer: {
     flexDirection: 'row',
-    marginTop: normalizeH(10),
-    padding: 10,
     backgroundColor: '#fff'
   },
   shopAnnouncementCoverWrap: {
@@ -761,7 +813,8 @@ const styles = StyleSheet.create({
   },
   shopAnnouncementTitle: {
     fontSize: em(17),
-    color: '#8f8e94'
+    color: '#8f8e94',
+    lineHeight: 26
   },
   shopAnnouncementSubTitleWrap: {
     flexDirection: 'row',
@@ -903,6 +956,8 @@ const styles = StyleSheet.create({
     marginBottom: normalizeW(10),
   },
   guessYouLikeTitleWrap: {
+    flexDirection: 'row',
+    marginTop: normalizeH(10),
     paddingLeft: normalizeW(10),
     paddingTop: normalizeH(15),
     paddingBottom: normalizeH(15),
@@ -911,15 +966,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   guessYouLikeTitle: {
-    fontSize: em(17),
-    color: "#8f8e94"
+    fontSize: em(15),
+    color: "#FF7819"
   },
   shopInfoWrap: {
     flex: 1,
     flexDirection: 'row',
-    padding: 10,
+    padding: 20,
+    paddingBottom:15,
     backgroundColor: '#fff',
-    marginBottom: 10
+    borderBottomWidth:normalizeBorder(),
+    borderBottomColor: '#f5f5f5'
+  },
+  shopInnerIntroWrap: {
+    height: 80,
   },
   guessYouLikeIntroWrap: {
 
@@ -997,5 +1057,35 @@ const styles = StyleSheet.create({
   shopUpWrap:{
     width:60,
     alignItems: 'center'
+  },
+  shopPromotionWrap: {
+    flex: 1,
+    marginTop: 10,
+    borderTopWidth:normalizeBorder(),
+    borderTopColor: '#f5f5f5'
+  },
+  shopPromotionBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  shopPromotionBadge: {
+    backgroundColor: '#F6A623',
+    borderRadius: 2,
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  shopPromotionBadgeTxt: {
+    color:'white',
+    fontSize: em(12)
+  },
+  shopPromotionContent: {
+    flex: 1,
+    marginLeft: 10
+  },
+  shopPromotionContentTxt: {
+    color: '#aaaaaa',
+    fontSize: em(12)
   },
 })
