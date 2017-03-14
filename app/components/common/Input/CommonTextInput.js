@@ -120,6 +120,8 @@ class CommonTextInput extends Component {
           value={this.props.data}
           containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
           inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
+          onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
         />
         {this.renderClearBtn()}
       </View>
