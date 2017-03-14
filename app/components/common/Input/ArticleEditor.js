@@ -54,7 +54,7 @@ class ArticleEditor extends Component {
     super(props)
     this.state = {
       keyboardPadding: 0,
-      subComp: [this.renderTextInput("", 0, true)],
+      subComp: [this.renderTextInput("", 0, false)],
       imgWidth: 200,
       imgHeight: 200,
       cursor: 0,        // 光标所在组件的索引
@@ -63,8 +63,9 @@ class ArticleEditor extends Component {
       scrollViewHeight: 0,
       contentHeight: 0,
       showToolbar: false,
+      toolbarController: true,
     }
-    this.comp = [this.renderTextInput("", 0, true)]
+    this.comp = [this.renderTextInput("", 0, false)]
     this.compHeight = 0
     this.keyboardHeight = 0
   }
@@ -104,10 +105,19 @@ class ArticleEditor extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    if (this.props.wrapHeight != newProps.wrapHeight) {
+      this.compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : 20)
+      this.setState({editorHeight: new Animated.Value(this.compHeight)})
+    }
+
+    if (this.props.toolbarController != newProps.toolbarController) {
+      this.setState({toolbarController: newProps.toolbarController})
+    }
+
     if (this.props.data != newProps.data) {
       this.comp = []
       if (!newProps.data) {
-        this.comp.push(this.renderTextInput("", 0, true))
+        this.comp.push(this.renderTextInput("", 0, false))
       } else {
         newProps.data.map((comp, index) => {
           if (comp.type === COMP_TEXT) {
@@ -123,8 +133,7 @@ class ArticleEditor extends Component {
         this.props.getImages(this.getImageCollection(newProps.data))
       }
     }
-    // console.log('componentWillReceiveProps=======', newProps.shouldUploadImgComponent)
-    // console.log('componentWillReceiveProps=======', this.isUploadedImgComponent)
+
     if(newProps.shouldUploadImgComponent && !this.isUploadedImgComponent) {
       this.uploadImgComponent(newProps.data)
     }
@@ -480,7 +489,7 @@ class ArticleEditor extends Component {
           >
             {this.renderComponents()}
           </KeyboardAwareScrollView>
-          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
+          {(this.state.toolbarController && this.state.showToolbar) ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )
@@ -504,7 +513,7 @@ class ArticleEditor extends Component {
               {this.renderComponents()}
             </ScrollView>
           </Animated.View>
-          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
+          {(this.state.toolbarController && this.state.showToolbar) ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )

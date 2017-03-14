@@ -11,6 +11,8 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  Keyboard,
+  ScrollView,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -18,16 +20,13 @@ import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {getTopicCategories} from '../../selector/configSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
-import RichTextInput from '../common/Input/RichTextInput'
 import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
-import * as ImageUtil from '../../util/ImageUtil'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
 
@@ -51,10 +50,10 @@ const topicContent = {
 const rteHeight = {
   ...Platform.select({
     ios: {
-      height: normalizeH(65 + 88),
+      height: normalizeH(64),
     },
     android: {
-      height: normalizeH(45 + 88)
+      height: normalizeH(44)
     }
   })
 }
@@ -67,6 +66,8 @@ class PublishTopics extends Component {
       selectedTopic: undefined,
       rteFocused: false,    // 富文本获取到焦点
       shouldUploadImgComponent: false,
+      extraHeight: rteHeight.height,
+      showEditorToolbar: true,
     };
     this.insertImages = []
     this.leanImgUrls = []
@@ -147,6 +148,7 @@ class PublishTopics extends Component {
   }
 
   openModal() {
+    Keyboard.dismiss()
     this.refs.modal3.open();
   }
 
@@ -188,11 +190,7 @@ class PublishTopics extends Component {
     }
     else {
       return (
-        <View>
-          <Text style={styles.topicNoSelectStyle}>
-            点击选择一个主题
-          </Text>
-        </View>
+        <View/>
       )
     }
   }
@@ -217,13 +215,15 @@ class PublishTopics extends Component {
     return (
       <ArticleEditor
         {...topicContent}
-        wrapHeight={rteHeight.height}
+        wrapHeight={this.state.extraHeight}
+        toolbarController={this.state.showEditorToolbar}
         renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
         getImages={(images) => this.getRichTextImages(images)}
         shouldUploadImgComponent={this.state.shouldUploadImgComponent}
         uploadImgComponentCallback={(leanImgUrls)=> {
           this.uploadImgComponentCallback(leanImgUrls)
         }}
+        placeholder="和周边邻友分享吃喝玩乐、互帮互助、共享周边生活信息"
       />
     )
   }
@@ -236,7 +236,7 @@ class PublishTopics extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="发起话题"
+          title="发布话题"
           rightType="text"
           rightText="发布"
           rightPress={() => this.onButtonPress()}
@@ -244,30 +244,38 @@ class PublishTopics extends Component {
 
         <View style={styles.body}>
 
-          <View style={styles.scrollViewStyle}>
-            <TouchableOpacity style={styles.toSelectContainer} onPress={this.openModal.bind(this)}>
-              {this.renderSelectedTopic()}
-              <Image style={styles.imageStyle} source={require("../../assets/images/unfold_topic@2x.png")}/>
-            </TouchableOpacity>
-            <View>
-              <CommonTextInput maxLength={36}
-                               autoFocus={true}
-                               containerStyle={styles.titleContainerStyle}
-                               inputStyle={styles.titleInputStyle}
-                               {...topicName}
-                               placeholder="输入文章标题"/>
+          <View>
+            <View onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
+              <View style={styles.toSelectContainer}>
+                <Text style={{fontSize: 15, color: '#5a5a5a', paddingLeft: normalizeW(10), paddingRight: normalizeW(18), alignSelf: 'center'}}>主题板块</Text>
+                <TouchableOpacity style={styles.selectBtnView} onPress={this.openModal.bind(this)}>
+                  {this.renderSelectedTopic()}
+                  <Image style={styles.imageStyle} source={require("../../assets/images/PinLeft_gray.png")}/>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <CommonTextInput maxLength={36}
+                                 autoFocus={true}
+                                 containerStyle={styles.titleContainerStyle}
+                                 inputStyle={styles.titleInputStyle}
+                                 clearBtnStyle={styles.titleCleanBtnStyle}
+                                 {...topicName}
+                                 onFocus={() => {this.setState({showEditorToolbar: false})}}
+                                 onBlur={() => {this.setState({showEditorToolbar: true})}}
+                                 placeholder="标题"/>
+              </View>
             </View>
 
             {this.renderRichText()}
           </View>
 
           <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
-            <KeyboardAwareScrollView style={styles.scrollViewStyle}>
+            <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
               <Text style={styles.modalShowTopicsStyle}>选择一个主题</Text>
               <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
                 {this.renderTopicsSelected()}
               </View>
-            </KeyboardAwareScrollView>
+            </ScrollView>
           </ModalBox>
 
         </View>
@@ -315,80 +323,70 @@ const styles = StyleSheet.create({
 
   //选择话题的对话框的样式
   toSelectContainer: {
-    height: normalizeH(44),
+    height: normalizeH(59),
     flexDirection: 'row',
-    alignItems: 'flex-start',
     borderBottomWidth: 1,
-    borderBottomColor: "#E6E6E6"
+    borderBottomColor: "#F5F5F5",
+  },
+  selectBtnView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   selectedTopicStyle: {
-    marginTop: normalizeH(5),
-    marginLeft: normalizeW(12),
     borderWidth: 1,
     borderStyle: 'solid',
-    backgroundColor: '#50e3c2',
-    height: normalizeH(34),
+    backgroundColor: 'white',
+    height: normalizeH(29),
     alignItems: 'flex-start',
-    borderRadius: 100,
-    borderColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 5,
+    borderColor: THEME.base.mainColor,
   },
   selectedTopicTextStyle: {
     fontSize: em(15),
-    color: "#ffffff",
+    color: THEME.base.mainColor,
     marginLeft: normalizeW(16),
     marginRight: normalizeW(16),
-    marginTop: normalizeH(7),
     alignSelf: 'center',
   },
-  topicNoSelectStyle: {
-    fontSize: em(15),
-    color: "#B2B2B2",
-    marginLeft: normalizeW(10),
-    marginTop: normalizeH(12),
-  },
   imageStyle: {
-    position: 'absolute',
-    right: normalizeW(12),
-    marginTop: normalizeH(10),
-    width: normalizeW(24),
-    height: normalizeH(24),
-    alignSelf: 'flex-end',
+    marginRight: normalizeH(20),
+    width: normalizeW(13),
+    height: normalizeH(22),
   },
   titleContainerStyle: {
     flex: 1,
-    height: normalizeH(44),
+    height: normalizeH(59),
     paddingLeft: 0,
     paddingRight: 0,
     borderBottomWidth: 1,
     borderStyle: 'solid',
-    borderBottomColor: '#E9E9E9',
+    borderBottomColor: '#F5F5F5',
   },
   titleInputStyle: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    color: '#4a4a4a',
-    fontFamily: 'PingFangSC-Semibold'
+    color: '#5a5a5a',
+  },
+  titleCleanBtnStyle: {
+    position: 'absolute',
+    right: normalizeW(25),
+    top: normalizeH(17),
   },
   //modal 所有子组件的样式
   modalStyle: {
     width: PAGE_WIDTH,
-    backgroundColor: '#f2f2f2',
-    height: normalizeH(250),
+    backgroundColor: '#f5f5f5',
+    height: PAGE_HEIGHT,
     alignItems: 'flex-start',
-    // ...Platform.select({
-    //   ios: {
-    //     paddingTop: normalizeH(65),
-    //   },
-    //   android: {
-    //     paddingTop: normalizeH(45)
-    //   }
-    // }),
   },
   modalTextStyle: {
     marginTop: normalizeH(17),
     marginBottom: normalizeH(18),
     alignSelf: 'center',
-    color: "#4a4a4a",
+    color: "#5a5a5a",
     fontSize: em(12)
   },
   modalShowTopicsStyle: {
@@ -400,8 +398,7 @@ const styles = StyleSheet.create({
   },
   modalTopicButtonStyle: {
     alignItems: 'flex-start',
-    marginLeft: normalizeW(5),
-    marginRight: normalizeW(5),
+    marginLeft: normalizeW(15),
     marginBottom: normalizeH(20)
   },
   modalTopicStyle: {
@@ -409,17 +406,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#E9E9E9',
-    height: normalizeH(34),
+    height: normalizeH(41),
     alignItems: 'flex-start',
-    borderRadius: 100
+    justifyContent: 'center',
+    borderRadius: 5
   },
   ModalTopicTextStyle: {
-    fontSize: em(15),
-    color: "#4a4a4a",
-    marginLeft: normalizeW(16),
-    marginRight: normalizeW(16),
-    marginTop: normalizeH(7),
-    alignSelf: 'center',
+    fontSize: em(17),
+    color: "#5a5a5a",
+    paddingLeft: normalizeW(16),
+    paddingRight: normalizeW(16),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
 })
