@@ -362,13 +362,10 @@ function handleShopCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    // TODO: 正式版要删除
-    if(true){
+    if(__DEV__) {
+      // dispatch(verifyInvitationCode(payload, formData))
       dispatch(shopCertification(payload, formData))
       return
-    }
-    if(__DEV__) {
-      dispatch(verifyInvitationCode(payload, formData))
     }
     else {
       lcAuth.verifySmsCode(smsPayload).then(() => {
@@ -420,7 +417,7 @@ function verifyInvitationCode(payload, formData) {
 
 function shopCertification(payload, formData) {
   return (dispatch, getState) => {
-    console.log('shopCertification=formData==', formData)
+    // console.log('shopCertification=formData==', formData)
     let certPayload = {
       name: formData.nameInput.text,
       phone: formData.phoneInput.text,
@@ -428,7 +425,7 @@ function shopCertification(payload, formData) {
       shopAddress: formData.shopAddrInput.text,
       geo: formData.shopGeoInput.text,
       geoCity: formData.shopGeoCityInput.text,
-      // geoDistrict: formData.shopGeoDistrictInput.text,
+      geoDistrict: formData.shopGeoDistrictInput.text,
     }
     lcAuth.shopCertification(certPayload).then((shop) => {
       dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))

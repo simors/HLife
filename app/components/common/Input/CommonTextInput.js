@@ -109,6 +109,7 @@ class CommonTextInput extends Component {
     return (
       <View style={styles.container}>
         <FormInput
+          textInputRef={this.props.textInputRef}
           editable={this.props.editable}
           onChangeText={(text) => this.inputChange(text)}
           autoFocus={this.props.autoFocus}

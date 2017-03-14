@@ -58,45 +58,52 @@ const shopNameInput = {
   stateKey: Symbol('shopNameInput'),
   type: "shopNameInput",
   checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
+    if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '输入有误'}
-  }
+  },
+  initValue: {text: '未知'}
 }
 const shopAddrInput = {
   formKey: commonForm,
   stateKey: Symbol('shopAddrInput'),
   type: "shopAddrInput",
   checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
+    if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '输入有误'}
-  }
+  },
+  initValue: {text: '未知'}
 }
 const shopGeoInput = {
   formKey: commonForm,
   stateKey: Symbol('shopGeoInput'),
   type: "shopGeoInput",
-  checkValid: ()=>{return {isVal: true}}
+  checkValid: ()=>{return {isVal: true}},
+  initValue: {text: []}
 }
 const shopGeoCityInput = {
   formKey: commonForm,
   stateKey: Symbol('shopGeoCityInput'),
   type: "shopGeoCityInput",
-  checkValid: ()=>{return {isVal: true}}
+  checkValid: ()=>{return {isVal: true}},
+  initValue: {text: '未知'}
 }
 const shopGeoDistrictInput = {
   formKey: commonForm,
   stateKey: Symbol('shopGeoDistrictInput'),
   type: "shopGeoDistrictInput",
-  checkValid: ()=>{return {isVal: true}}
+  checkValid: ()=>{return {isVal: true}},
+  initValue: {text: '未知'}
 }
 const invitationCodeInput = {
   formKey: commonForm,
   stateKey: Symbol('invitationCodeInput'),
   type: "invitationCodeInput",
+  checkValid: ()=>{return {isVal: true}},
+  initValue: {text: '-1'}
 }
 
 class ShopRegister extends Component {

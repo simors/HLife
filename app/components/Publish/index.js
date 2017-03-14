@@ -47,7 +47,7 @@ class Publish extends Component {
                 />
                 <Text style={styles.serviceText}>发布话题</Text>
               </TouchableOpacity >
-              <TouchableOpacity style={styles.item} onPress={() => {}}>
+              <TouchableOpacity style={styles.item} onPress={() => {this.props.isUserLogined? Actions.PUBLISH_SHOP_PROMOTION() : Actions.LOGIN()}}>
                 <Image
                   resizeMode="contain"
                   style={{width: normalizeW(60), height: normalizeH(60)}}
