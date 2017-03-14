@@ -223,7 +223,9 @@ class PublishTopics extends Component {
         uploadImgComponentCallback={(leanImgUrls)=> {
           this.uploadImgComponentCallback(leanImgUrls)
         }}
-        placeholder="和周边邻友分享吃喝玩乐、互帮互助、共享周边生活信息"
+        onFocusEditor={() => {}}
+        onBlurEditor={() => {}}
+        placeholder="分享吃喝玩乐、共享周边生活信息"
       />
     )
   }

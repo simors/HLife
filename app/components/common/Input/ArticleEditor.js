@@ -35,6 +35,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 const COMP_TEXT = 'COMP_TEXT'
 const COMP_IMG = 'COMP_IMG'
 
+const toolbarHeight = normalizeH(40)
+const androidStatusbarHeight = normalizeH(20)
 
 /****************************************************************
  *
@@ -79,7 +81,7 @@ class ArticleEditor extends Component {
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
 
-    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : 20)
+    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
     this.setState({editorHeight: new Animated.Value(this.compHeight)})
 
     let initText = []
@@ -106,7 +108,7 @@ class ArticleEditor extends Component {
 
   componentWillReceiveProps(newProps) {
     if (this.props.wrapHeight != newProps.wrapHeight) {
-      this.compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : 20)
+      this.compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
       this.setState({editorHeight: new Animated.Value(this.compHeight)})
     }
 
@@ -150,7 +152,10 @@ class ArticleEditor extends Component {
   }
 
   keyboardWillShow = (e) => {
-    let newEditorHeight = this.compHeight - e.endCoordinates.height
+    if (this.props.onFocusEditor) {
+      this.props.onFocusEditor()
+    }
+    let newEditorHeight = this.compHeight - e.endCoordinates.height - toolbarHeight
     Animated.timing(this.state.editorHeight, {
       toValue: newEditorHeight,
       duration: 210,
@@ -165,6 +170,9 @@ class ArticleEditor extends Component {
   }
 
   keyboardWillHide = (e) => {
+    if (this.props.onBlurEditor) {
+      this.props.onBlurEditor()
+    }
     Animated.timing(this.state.editorHeight, {
       toValue: this.compHeight,
       duration: 210,
@@ -409,7 +417,7 @@ class ArticleEditor extends Component {
           left: 0,
           bottom: this.state.keyboardPadding,
           width: PAGE_WIDTH,
-          height: normalizeH(40),
+          height: toolbarHeight,
         }]}
       >
         <View style={{flex: 1, flexDirection: 'row'}}>
