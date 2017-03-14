@@ -81,7 +81,7 @@ class Login extends Component {
           rightPress={() => Actions.REGIST()}
         />
         <View style={styles.body}>
-          <ScrollView keyboardDismissMode="on-drag">
+          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
             <View style={{marginTop: 30}}>
               <View style={styles.inputBox}>
                 <PhoneInput {...phoneInput}/>

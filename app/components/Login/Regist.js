@@ -99,7 +99,7 @@ class Regist extends Component {
           title="注   册"
         />
         <View style={styles.body}>
-          <ScrollView keyboardDismissMode="on-drag">
+          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
             <View style={{marginTop: 30}}>
               <PhoneInput {...phoneInput}  containerStyle={styles.inputBox}/>
               <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}

@@ -93,7 +93,7 @@ class RetrievePassword extends Component {
         />
 
         <View style={styles.body}>
-          <ScrollView keyboardDismissMode="on-drag">
+          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
             <View style={{marginTop: 30}}>
               <PhoneInput {...phoneInput} containerStyle={styles.inputBox}
                           placeholder='请输入注册的手机号'/>
