@@ -63,7 +63,6 @@ class ArticleEditor extends Component {
       scrollViewHeight: 0,
       contentHeight: 0,
       showToolbar: false,
-      toolbarController: true,
     }
     this.comp = [this.renderTextInput("", 0, false)]
     this.compHeight = 0
@@ -111,10 +110,6 @@ class ArticleEditor extends Component {
       this.setState({editorHeight: new Animated.Value(this.compHeight)})
     }
 
-    if (this.props.toolbarController != newProps.toolbarController) {
-      this.setState({toolbarController: newProps.toolbarController})
-    }
-
     if (this.props.data != newProps.data) {
       this.comp = []
       if (!newProps.data) {
@@ -151,6 +146,16 @@ class ArticleEditor extends Component {
   }
 
   keyboardWillShow = (e) => {
+    let isFocus = this.inputRef.find((input) => {
+      if (input.isFocused()) {
+        return true
+      }
+      return false
+    })
+    if (isFocus) {
+      this.setState({showToolbar: true})
+    }
+
     let newEditorHeight = this.compHeight - e.endCoordinates.height - toolbarHeight
     Animated.timing(this.state.editorHeight, {
       toValue: newEditorHeight,
@@ -159,7 +164,6 @@ class ArticleEditor extends Component {
 
     this.setState({
       keyboardPadding: e.endCoordinates.height,
-      showToolbar: true,
     })
 
     this.keyboardHeight = e.endCoordinates.height
@@ -376,7 +380,7 @@ class ArticleEditor extends Component {
           if (this.props.onFocusEditor) {
             this.props.onFocusEditor()
           }
-          this.setState({cursor: index})
+          this.setState({cursor: index, showToolbar: true})
           if (Platform.OS != 'ios') {
             this.inputFocused("content_" + index)
           }
@@ -493,7 +497,7 @@ class ArticleEditor extends Component {
   render() {
     if (Platform.OS === 'ios') {
       return (
-        <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
+        <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
           <KeyboardAwareScrollView
             ref="scrollView"
             style={{flex: 1}}
@@ -504,13 +508,13 @@ class ArticleEditor extends Component {
           >
             {this.renderComponents()}
           </KeyboardAwareScrollView>
-          {(this.state.toolbarController && this.state.showToolbar) ? this.renderEditToolView() : <View/>}
+          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )
     } else {
       return (
-        <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
+        <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
           <Animated.View style={{height: this.state.editorHeight}}>
             <ScrollView
               ref="scrollView"
@@ -528,7 +532,7 @@ class ArticleEditor extends Component {
               {this.renderComponents()}
             </ScrollView>
           </Animated.View>
-          {(this.state.toolbarController && this.state.showToolbar) ? this.renderEditToolView() : <View/>}
+          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )

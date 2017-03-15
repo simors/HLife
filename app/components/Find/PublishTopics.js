@@ -69,7 +69,6 @@ class PublishTopics extends Component {
       rteFocused: false,    // 富文本获取到焦点
       shouldUploadImgComponent: false,
       extraHeight: rteHeight.height,
-      showEditorToolbar: true,
       headerHeight: wrapHeight,
     };
     this.insertImages = []
@@ -219,7 +218,6 @@ class PublishTopics extends Component {
       <ArticleEditor
         {...topicContent}
         wrapHeight={this.state.extraHeight}
-        toolbarController={this.state.showEditorToolbar}
         renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
         getImages={(images) => this.getRichTextImages(images)}
         shouldUploadImgComponent={this.state.shouldUploadImgComponent}
@@ -266,8 +264,6 @@ class PublishTopics extends Component {
                                  inputStyle={styles.titleInputStyle}
                                  clearBtnStyle={styles.titleCleanBtnStyle}
                                  {...topicName}
-                                 onFocus={() => {this.setState({showEditorToolbar: false})}}
-                                 onBlur={() => {this.setState({showEditorToolbar: true})}}
                                  placeholder="标题"/>
               </View>
             </View>
