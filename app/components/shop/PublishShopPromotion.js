@@ -24,15 +24,38 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
+import {getInputFormData} from '../../selector/inputFormSelector'
 import Symbol from 'es6-symbol'
-import {} from '../../action/shopAction'
+import {fetchUserOwnedShopInfo, submitShopPromotion} from '../../action/shopAction'
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ImageInput from '../common/Input/ImageInput'
+import ArticleEditor from '../common/Input/ArticleEditor'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+let shopPromotionForm = Symbol('shopPromotionForm')
+const shopPromotion = {
+  formKey: shopPromotionForm,
+  stateKey: Symbol('shopPromotion'),
+  type: 'shopPromotion',
+}
+
+const rteHeight = {
+  ...Platform.select({
+    ios: {
+      height: normalizeH(64),
+    },
+    android: {
+      height: normalizeH(44)
+    }
+  })
+}
+
+const wrapHeight = 214
 
 class PublishShopPromotion extends Component {
   constructor(props) {
@@ -43,15 +66,28 @@ class PublishShopPromotion extends Component {
       CUSTOM: 'CUSTOM_TYPE_INPUT',
     }
 
+    this.localRichTextImagesUrls = []
+    this.leanRichTextImagesUrls = []
+    this.isPublishing = false
+
     this.state = {
+
+      rteFocused: false,    // 富文本获取到焦点
+      shouldUploadRichTextImg: false,
+      extraHeight: rteHeight.height,
+      headerHeight: wrapHeight,
+
       form: {
+        shopId: '',
+        typeId: 0,
         type: '折扣',
         typeDesc: '',
         coverUrl: '',
         title: '',
         promotingPrice: 0.00,
         originalPrice: 0.00,
-
+        abstract: '',
+        promotionDetailInfo: []
       },
       typeDescPlaceholder: '例:店庆活动,全场七折起(15字内)',
       toolBarContentType: this.toolBarContentTypes.DEFAULT,
@@ -93,7 +129,7 @@ class PublishShopPromotion extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-
+      this.props.fetchUserOwnedShopInfo()
     })
   }
 
@@ -102,49 +138,41 @@ class PublishShopPromotion extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps=nextProps=', nextProps)
+    let abstract = nextProps.abstract || ''
+    let promotionDetailInfo = null
+    if(nextProps.promotionDetailInfo && nextProps.promotionDetailInfo.length) {
+      promotionDetailInfo = nextProps.promotionDetailInfo
+    }
+    // console.log('componentWillReceiveProps=this.state=', this.state)
 
+    let shopId = ''
+    if(nextProps.userOwnedShopInfo && nextProps.userOwnedShopInfo.id) {
+      shopId = nextProps.userOwnedShopInfo.id
+    }
+
+    this.setState({
+      form: {
+        ...this.state.form,
+        abstract: abstract ? abstract : this.state.form.abstract,
+        promotionDetailInfo: promotionDetailInfo ? promotionDetailInfo : this.state.form.promotionDetailInfo,
+        shopId: shopId ? shopId : this.state.form.shopId
+      }
+    }, ()=>{
+      // console.log('componentWillReceiveProps=this.state=', this.state)
+    })
   }
 
   showToolBarInput(type) {
-    if(this.state.toolBarInputFocusNum) {
+    this.setState({
+      toolBarInputFocusNum: 1
+    }, ()=>{
       if(type == this.toolBarContentTypes.CUSTOM) {
-        this.showCustomTypeInputToolbar(()=>{
-          setTimeout(()=>{
-            if(this.state.toolBarInputFocusNum > 1) {
-              this.subtractToolBarInputFocusNum()
-            }
-          }, 100)
-        })
+        this.showCustomTypeInputToolbar()
       }else {
-        this.showDefaultTypeInputToolbar(()=>{
-          setTimeout(()=>{
-            if(this.state.toolBarInputFocusNum > 1) {
-              this.subtractToolBarInputFocusNum()
-            }
-          }, 100)
-        })
+        this.showDefaultTypeInputToolbar()
       }
-    }else {
-      this.addToolBarInputFocusNum(()=>{
-        if(type == this.toolBarContentTypes.CUSTOM) {
-          this.showCustomTypeInputToolbar(()=>{
-            setTimeout(()=>{
-              if(this.state.toolBarInputFocusNum > 1) {
-                this.subtractToolBarInputFocusNum()
-              }
-            }, 100)
-          })
-        }else {
-          this.showDefaultTypeInputToolbar(()=>{
-            setTimeout(()=>{
-              if(this.state.toolBarInputFocusNum > 1) {
-                this.subtractToolBarInputFocusNum()
-              }
-            }, 100)
-          })
-        }
-      })
-    }
+    })
   }
 
   showDefaultTypeInputToolbar(callback) {
@@ -171,6 +199,7 @@ class PublishShopPromotion extends Component {
           this.setState({
             form: {
               ...this.state.form,
+              typeId: item.id,
               type: item.type,
               typeDesc: ''
             },
@@ -184,6 +213,7 @@ class PublishShopPromotion extends Component {
           this.setState({
             form: {
               ...this.state.form,
+              typeId: item.id,
               type: item.type,
               typeDesc: ''
             },
@@ -248,6 +278,40 @@ class PublishShopPromotion extends Component {
     dismissKeyboard()
   }
 
+  checkForm() {
+
+    if(!this.state.form.shopId) {
+      Toast.show('暂未获取到您的店铺信息，请刷新页面重试!')
+      return false
+    }
+
+    if(!this.checkType()) {
+      return false
+    }
+
+    if(!this.localCoverImgUri) {
+      Toast.show('请添加封面图片')
+      return false
+    }
+
+    if(!this.state.form.title) {
+      Toast.show('请填写活动标题')
+      return false
+    }
+
+    if(!this.state.form.promotingPrice) {
+      Toast.show('请填写活动价格')
+      return false
+    }
+
+    if(!this.state.form.promotionDetailInfo || !this.state.form.promotionDetailInfo.length) {
+      Toast.show('请完善活动详情')
+      return false
+    }
+
+    return true
+  }
+
   checkType() {
     if(this.checkTypeName() && this.checkTypeDesc()) {
       return true
@@ -270,8 +334,8 @@ class PublishShopPromotion extends Component {
     if(!this.state.form.typeDesc) {
       Toast.show('请输入类型描述')
       return false
-    }else if(this.state.form.typeDesc.length > 15) {
-      Toast.show('类型描述长度不能超过15个字')
+    }else if(this.state.form.typeDesc.length > 20) {
+      Toast.show('类型描述长度不能超过20个字')
       return false
     }
     return true
@@ -292,21 +356,24 @@ class PublishShopPromotion extends Component {
     return null
   }
 
-  addToolBarInputFocusNum(callback, num=1) {
+  checkShouldShowToolBarInput() {
+    if(this._typeDefaultDescInput) {
+      if(this._typeDefaultDescInput.isFocused()) {
+        return
+      }
+    }
+    if(this._typeNameInput) {
+      if(this._typeNameInput.isFocused()) {
+        return
+      }
+    }
+    if(this._typeDescInput) {
+      if(this._typeDescInput.isFocused()) {
+        return
+      }
+    }
     this.setState({
-      toolBarInputFocusNum: this.state.toolBarInputFocusNum + num
-    }, ()=>{
-      // console.log('addToolBarInputFocusNum.this.state=', this.state)
-      callback && callback()
-    })
-  }
-
-  subtractToolBarInputFocusNum(callback, num=1) {
-    this.setState({
-      toolBarInputFocusNum: this.state.toolBarInputFocusNum - num
-    },()=>{
-      // console.log('subtractToolBarInputFocusNum.this.state=', this.state)
-      callback && callback()
+      toolBarInputFocusNum: 0
     })
   }
 
@@ -316,13 +383,12 @@ class PublishShopPromotion extends Component {
         <TextInput
           ref={(input) =>{this._typeDefaultDescInput = input}}
           placeholder={this.state.typeDescPlaceholder}
-          maxLength={90}
+          maxLength={120}
           style={styles.toolbarInputStyle}
           enablesReturnKeyAutomatically={true}
           blurOnSubmit={true}
           underlineColorAndroid="transparent"
-          onBlur={()=>{this.subtractToolBarInputFocusNum()}}
-          onFocus={()=>{this.addToolBarInputFocusNum()}}
+          onBlur={()=>{this.checkShouldShowToolBarInput()}}
           onChangeText={(text) => {
             this.setState({
               form: {
@@ -358,8 +424,7 @@ class PublishShopPromotion extends Component {
               enablesReturnKeyAutomatically={true}
               blurOnSubmit={true}
               underlineColorAndroid="transparent"
-              onBlur={()=>{this.subtractToolBarInputFocusNum()}}
-              onFocus={()=>{this.addToolBarInputFocusNum()}}
+              onBlur={()=>{this.checkShouldShowToolBarInput()}}
               onChangeText={(text) => {
                 this.setState({
                   form: {
@@ -373,13 +438,12 @@ class PublishShopPromotion extends Component {
           <TextInput
             ref={(input) =>{this._typeDescInput = input}}
             placeholder={this.state.typeDescPlaceholder}
-            maxLength={90}
+            maxLength={120}
             style={[styles.toolbarInputStyle, styles.typeDescInputStyle]}
             enablesReturnKeyAutomatically={true}
             blurOnSubmit={true}
             underlineColorAndroid="transparent"
-            onBlur={()=>{this.subtractToolBarInputFocusNum()}}
-            onFocus={()=>{this.addToolBarInputFocusNum()}}
+            onBlur={()=>{this.checkShouldShowToolBarInput()}}
             onChangeText={(text) => {
               this.setState({
                 form: {
@@ -401,18 +465,115 @@ class PublishShopPromotion extends Component {
     )
   }
 
-  onShowTypeDescPress() {
-    this.state.types.map((item, index) => {
-      if(item.containerStyle == 'activeType' && item.id == 3) { //自定义
-        this.showToolBarInput(this.toolBarContentTypes.CUSTOM)
-      }else {
-        this.showToolBarInput()
+  publishPromotion() {
+    if(this.isPublishing){
+      return
+    }
+    this.isPublishing = true
+
+    if(!this.checkForm()) {
+      this.isPublishing = false
+      return
+    }
+
+    //先上传封面
+    this.setState({
+      shouldUploadCover: true
+    })
+  }
+
+  submitForm() {
+    // console.log('submitForm.this.state=====', this.state)
+    this.props.submitShopPromotion({
+      ...this.state.form,
+      success: ()=>{
+        Toast.show('活动发布成功')
+        Actions.SHOP_DETAIL({id: this.state.form.shopId})
+        this.isPublishing = false
+      },
+      error: ()=>{
+        Toast.show('活动发布失败')
+        this.isPublishing = false
       }
     })
   }
 
-  uploadCoverCallback(leanHeadImgUrl) {
+  uploadCoverCallback(leanImgUrl) {
+    // console.log('uploadCoverCallback.leanImgUrl===', leanImgUrl)
+    this.setState({
+      form: {
+        ...this.state.form,
+        coverUrl: leanImgUrl,
+      }
+    })
+    if(this.localRichTextImagesUrls && this.localRichTextImagesUrls.length) {
+      //封面上传成功,接着上传富文本组件内图片
+      this.setState({
+        shouldUploadRichTextImg: true
+      })
+    }else {
+      this.submitForm()
+    }
+  }
 
+  uploadRichTextImgComponentCallback(leanImgUrls) {
+    //富文本组件内图片上传成功
+    this.leanRichTextImagesUrls = leanImgUrls
+    let pos = 0
+    // console.log('uploadRichTextImgComponentCallback.leanRichTextImagesUrls==', this.leanRichTextImagesUrls)
+    this.state.form.promotionDetailInfo.forEach((item, index)=>{
+      if(item.type == 'COMP_IMG') {
+        item.url = leanImgUrls[pos++]
+      }
+    })
+    // console.log('uploadRichTextImgComponentCallback.this.state===', this.state)
+    this.submitForm()
+  }
+
+  getRichTextImages(images) {
+    this.localRichTextImagesUrls = images
+    // console.log('getRichTextImages.localRichTextImagesUrls==', this.localRichTextImagesUrls)
+  }
+
+  renderArticleEditorToolbar(customStyle) {
+
+    let defaultContainerStyle = {
+      justifyContent:'center',
+      alignItems: 'center',
+      backgroundColor: THEME.base.mainColor
+    }
+
+    return (
+      <TouchableOpacity onPress={() => {this.publishPromotion()}}>
+        <View style={[defaultContainerStyle, customStyle]}>
+          <Text style={{fontSize: 15, color: 'white'}}>发布</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  renderRichText() {
+    return (
+      <ArticleEditor
+        {...shopPromotion}
+        wrapHeight={this.state.extraHeight}
+        toolbarController={true}
+        renderCustomToolbar={() => {
+          return this.renderArticleEditorToolbar({
+             flex:1,
+             width:64,
+          })
+        }}
+        getImages={(images) => this.getRichTextImages(images)}
+        shouldUploadImgComponent={this.state.shouldUploadRichTextImg}
+        uploadImgComponentCallback={(leanImgUrls)=> {
+          this.uploadRichTextImgComponentCallback(leanImgUrls)
+        }}
+        onFocusEditor={() => {this.setState({headerHeight: 0})}}
+        onBlurEditor={() => {this.setState({headerHeight: 214})}}
+        placeholder="描述一下你的商品及活动详情"
+      />
+    )
   }
 
   render() {
@@ -424,9 +585,19 @@ class PublishShopPromotion extends Component {
           leftPress={() => Actions.pop()}
           title="发布活动"
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
+          rightComponent={()=>{
+            return this.renderArticleEditorToolbar({
+              marginRight:10,
+              padding: 10,
+              paddingLeft: 20,
+              paddingRight: 20
+            })
+          }}
         />
         <View style={styles.body}>
-          <View style={styles.contentContainer}>
+          <View style={[styles.contentContainer, {height: this.state.headerHeight, overflow:'hidden'}]}
+                onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}
+          >
             <View style={styles.typeWrap}>
               <View style={styles.typeRow}>
                 <View style={[styles.typeRowItem, styles.typeRowItemTitle]}>
@@ -519,6 +690,8 @@ class PublishShopPromotion extends Component {
               </View>
             </View>
           </View>
+
+          {this.renderRichText()}
         </View>
 
         <KeyboardAwareToolBar
@@ -532,15 +705,26 @@ class PublishShopPromotion extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  const formData = getInputFormData(state, shopPromotionForm)
+  let shopPromotion = formData && formData.shopPromotion
+  let abstract = shopPromotion && shopPromotion.abstract
+  let promotionDetailInfo = shopPromotion && shopPromotion.text
+  // console.log('formData=====', formData)
+  // console.log('promotionDetailInfo=====', promotionDetailInfo)
 
   return {
-    isUserLogined: isUserLogined
+    userOwnedShopInfo: userOwnedShopInfo,
+    isUserLogined: isUserLogined,
+    abstract: abstract,
+    promotionDetailInfo: promotionDetailInfo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData,
+  fetchUserOwnedShopInfo,
+  submitShopPromotion,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotion)
