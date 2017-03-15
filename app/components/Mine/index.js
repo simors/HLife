@@ -110,7 +110,7 @@ class Mine extends Component {
       <View style={styles.functionView}>
         <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
           <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.MYTOPIC()}}>
-            <Text style={styles.funBtnText}>发布</Text>
+            <Text style={styles.funBtnText}>话题</Text>
             <Text style={styles.countText}>999+</Text>
           </TouchableOpacity>
         </View>

@@ -21,6 +21,7 @@ import {Actions} from 'react-native-router-flux'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import FollowUser from '../../components/common/FollowUser'
+import {activeUserId} from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -95,6 +96,20 @@ export class TopicShow extends Component {
     }
   }
 
+  renderFollowUserView(userId) {
+    if (this.props.currentUserId == userId) {
+      return (
+        <View/>
+      )
+    } else {
+      return (
+        <FollowUser
+          userId={userId}
+        />
+      )
+    }
+  }
+
   render() {
     if(this.props.topic) {
       return (
@@ -120,9 +135,7 @@ export class TopicShow extends Component {
               </View>
 
               <View style={styles.attentionStyle}>
-                <FollowUser
-                  userId={this.props.topic.userId}
-                />
+                {this.renderFollowUserView(this.props.topic.userId)}
               </View>
             </View>
           </View>
@@ -158,7 +171,10 @@ TopicShow.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let currentUserId = activeUserId(state)
+  return {
+    currentUserId: currentUserId,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
