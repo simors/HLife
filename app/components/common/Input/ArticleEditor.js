@@ -19,10 +19,8 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {AutoGrowingTextInput} from 'react-native-autogrow-textinput'
-import {selectPhotoTapped} from '../../../util/ImageSelector'
+import AutoGrowingTextInput from '../../common/Input/AutoGrowingTextInput'
 import * as ImageUtil from '../../../util/ImageUtil'
-import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -70,6 +68,7 @@ class ArticleEditor extends Component {
     this.comp = [this.renderTextInput("", 0, false)]
     this.compHeight = 0
     this.keyboardHeight = 0
+    this.inputRef = []
   }
 
   componentDidMount() {
@@ -167,6 +166,9 @@ class ArticleEditor extends Component {
   }
 
   keyboardWillHide = (e) => {
+    this.inputRef.forEach((input) => {
+      input.blur()
+    })
     if (this.props.onBlurEditor) {
       this.props.onBlurEditor()
     }
@@ -358,6 +360,11 @@ class ArticleEditor extends Component {
   renderTextInput(content, index, autoFocus = false) {
     return (
       <AutoGrowingTextInput
+        ref={(o) => {
+          if (o && !this.inputRef.includes(o)) {
+            this.inputRef.push(o)
+          }
+        }}
         style={styles.InputStyle}
         placeholder={this.props.placeholder}
         editable={this.props.editable}
