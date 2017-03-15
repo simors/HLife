@@ -136,7 +136,6 @@ export function fetchTopics(payload) {
         categoryId:payload.categoryId,
         type:payload.type,
         topics: result.topics,
-        city: result.city
       }))
       if(payload.success) {
         payload.success(result.topics.size==0)

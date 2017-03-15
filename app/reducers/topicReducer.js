@@ -55,15 +55,12 @@ function handleAddTopic(state, action) {
   topicList = topicList.insert(0, new TopicsItem(topic))
   state = state.setIn(['topics', topic.categoryId], topicList)
 
-  let city = state.get('city')
-  if (city) {
-    let localTopicList = state.get('localTopics')
-    if (!localTopicList) {
-      localTopicList = new List()
-    }
-    localTopicList = localTopicList.insert(0, new TopicsItem(topic))
-    state = state.set('localTopics', localTopicList)
+  let localTopicList = state.get('localTopics')
+  if (!localTopicList) {
+    localTopicList = new List()
   }
+  localTopicList = localTopicList.insert(0, new TopicsItem(topic))
+  state = state.set('localTopics', localTopicList)
   return state
 }
 
@@ -85,9 +82,7 @@ function handleUpdateTopics(state, action) {
   let _newMap = undefined
   let newTopics = undefined
   let _newList = undefined
-  if (payload.city) {
-    state = state.set('city', payload.city)
-  }
+
   if (payload.isPaging) {
     switch (payload.type) {
       case "topics":
@@ -206,7 +201,6 @@ function handleUpdateMainPageTopics(state, action) {
 function onRehydrate(state, action) {
   var incoming = action.payload.TOPIC
   if (incoming) {
-    state = state.set('city', incoming.city)
     const topicMap = Map(incoming.topics)
     topicMap.map((value, key)=> {
       if (value && key) {

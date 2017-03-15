@@ -8,6 +8,7 @@ import * as AVUtils from '../../util/AVUtils'
 import * as topicSelector from '../../selector/topicSelector'
 import * as authSelector from '../../selector/authSelector'
 import {store} from '../../store/persistStore'
+import * as locSelector from '../../selector/locSelector'
 
 export function publishTopics(payload) {
 
@@ -267,45 +268,34 @@ export function publishTopicComments(payload) {
 
 export function getLocalTopics(payload) {
   let query = new AV.Query('Topics')
-  return AV.GeoPoint.current().then(function (geoPoint) {
-    if (geoPoint) {
-      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+  let state = store.getState()
+  let province = locSelector.getProvince(state)
+  let city = locSelector.getCity(state)
 
-        let isRefresh = payload.isRefresh
-        let lastCreatedAt = payload.lastCreatedAt
-        if (!isRefresh && lastCreatedAt) { //分页查询
-          query.lessThan('createdAt', new Date(lastCreatedAt))
-        }
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  if (!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
 
-        query.equalTo('city', position.city)
-        query.equalTo('province', position.province)
+  query.equalTo('city', city)
+  query.equalTo('province', province)
 
-        query.limit(5) // 最多返回 5 条结果
-        query.include(['user'])
-        query.descending('createdAt')
+  query.limit(10)
+  query.include(['user'])
+  query.descending('createdAt')
 
-        return query.find().then(function (results) {
-          let topics = []
-          results.forEach((result) => {
-            topics.push(TopicsItem.fromLeancloudObject(result))
-          })
-          return {
-            topics:new List(topics),
-            city: position.city
-          }
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
-        })
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
+  return query.find().then(function (results) {
+    let topics = []
+    results.forEach((result) => {
+      topics.push(TopicsItem.fromLeancloudObject(result))
+    })
+    return {
+      topics:new List(topics),
     }
   }, function (err) {
-    return {
-      topics:new List()
-    }
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 
@@ -341,7 +331,7 @@ export function getTopics(payload) {
       query.lessThan('createdAt', new Date(lastCreatedAt))
     }
 
-    query.limit(5) // 最多返回 5 条结果
+    query.limit(10) // 最多返回 10 条结果
     query.include(['user'])
     query.descending('createdAt')
 
