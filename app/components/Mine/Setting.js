@@ -21,6 +21,8 @@ import * as reactInvokeMethod from '../../util/reactMethodUtils'
 import RNRestart from 'react-native-restart'
 import * as Toast from '../../components/common/Toast'
 import * as AVUtils from '../../util/AVUtils'
+import Popup from '@zzzkk2009/react-native-popup'
+import THEME from '../../constants/themes/theme1'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -31,31 +33,26 @@ class Setting extends Component {
   }
 
   clearApplication() {
-    // persistor.purge()
-    // Toast.show('清除成功')
-    // setTimeout(() => {
-    //   Actions.HOME_INDEX()
-    //   if (Platform.OS == 'ios') {
-    //     reactInvokeMethod.reload()
-    //   } else {
-    //     RNRestart.Restart()
-    //   }
-    // }, 2000)
-
-    Actions.POPUP({
+    Popup.confirm({
       title: '提示',
-      content: ['确认清除缓存？'],
-      comfirmAction: () => {
-        Actions.pop()
-        persistor.purge()
-        Toast.show('清除成功')
-        setTimeout(() => {
-          if (Platform.OS == 'ios') {
-            reactInvokeMethod.reload()
-          } else {
+      content: '确认清除缓存？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=>{
+          Actions.pop()
+          persistor.purge()
+          Toast.show('清除成功，应用重启！')
+          setTimeout(() => {
             RNRestart.Restart()
-          }
-        }, 2000)
+          }, 1000)
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
       }
     })
   }
@@ -65,9 +62,9 @@ class Setting extends Component {
     AVUtils.updateDeviceUserInfo({
       removeUser: true
     })
-    Toast.show('清除成功')
+    Toast.show('用户注销成功')
     setTimeout(() => {
-      Actions.HOME_INDEX()
+      Actions.HOME_INDEX({type: 'reset'})
       // if (Platform.OS == 'ios') {
       //   reactInvokeMethod.reload()
       // } else {

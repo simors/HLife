@@ -8,6 +8,7 @@ import * as AVUtils from '../../util/AVUtils'
 import * as topicSelector from '../../selector/topicSelector'
 import * as authSelector from '../../selector/authSelector'
 import {store} from '../../store/persistStore'
+import * as locSelector from '../../selector/locSelector'
 
 export function publishTopics(payload) {
 
@@ -17,77 +18,27 @@ export function publishTopics(payload) {
   var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId)
   var user = AV.Object.createWithoutData('_User', payload.userId)
 
-  return AV.GeoPoint.current().then(function (geoPoint) {
-    if (geoPoint) {
-      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+  topic.set('geoPoint', payload.geoPoint)
+  topic.set('position', payload.position)
+  topic.set('city', payload.city)
+  topic.set('district', payload.district)
+  topic.set('province', payload.province)
+  topic.set('category', topicCategory)
+  topic.set('user', user)
+  topic.set('imgGroup', payload.imgGroup)
+  topic.set('content', payload.content)
+  topic.set('title', payload.title)
+  topic.set('abstract', payload.abstract)
+  topic.set('commentNum', 0)
+  topic.set('likeCount', 0)
 
-        topic.set('geoPoint', geoPoint)
-        topic.set('position', position)
-        topic.set('city', position.city)
-        topic.set('district', position.district)
-        topic.set('province', position.province)
-        topic.set('category', topicCategory)
-        topic.set('user', user)
-        topic.set('imgGroup', payload.imgGroup)
-        topic.set('content', payload.content)
-        topic.set('title', payload.title)
-        topic.set('abstract', payload.abstract)
-        topic.set('abstract', payload.abstract)
-        topic.set('commentNum', 0)
-        topic.set('likeCount', 0)
-
-        return topic.save().then(function (result) {
-          let newTopic = result
-          newTopic.attributes.user = AV.User.current()
-          return TopicsItem.fromLeancloudObject(newTopic)
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
-        })
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-    }
-    else {
-      topic.set('category', topicCategory)
-      topic.set('user', user)
-      topic.set('imgGroup', payload.imgGroup)
-      topic.set('content', payload.content)
-      topic.set('title', payload.title)
-      topic.set('abstract', payload.abstract)
-      topic.set('abstract', payload.abstract)
-      topic.set('commentNum', 0)
-      topic.set('likeCount', 0)
-
-      return topic.save().then(function (result) {
-        let newTopic = result
-        newTopic.attributes.user = AV.User.current()
-        return TopicsItem.fromLeancloudObject(newTopic)
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-    }
+  return topic.save().then(function (result) {
+    let newTopic = result
+    newTopic.attributes.user = AV.User.current()
+    return TopicsItem.fromLeancloudObject(newTopic)
   }, function (err) {
-    topic.set('category', topicCategory)
-    topic.set('user', user)
-    topic.set('imgGroup', payload.imgGroup)
-    topic.set('content', payload.content)
-    topic.set('title', payload.title)
-    topic.set('abstract', payload.abstract)
-    topic.set('abstract', payload.abstract)
-    topic.set('commentNum', 0)
-    topic.set('likeCount', 0)
-
-    return topic.save().then(function (result) {
-      let newTopic = result
-      newTopic.attributes.user = AV.User.current()
-      return TopicsItem.fromLeancloudObject(newTopic)
-    }, function (err) {
-      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-      throw err
-    })
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 
@@ -259,227 +210,92 @@ export function publishTopicComments(payload) {
   var user = AV.Object.createWithoutData('_User', payload.userId)
   var parentComment = AV.Object.createWithoutData('TopicComments', payload.commentId)
 
-  return AV.GeoPoint.current().then(function (geoPoint) {
-    if (geoPoint) {
-      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
-        topicComment.set('geoPoint', geoPoint)
-        topicComment.set('position', position)
-        topicComment.set('topic', topic)
-        topicComment.set('user', user)
-        topicComment.set('content', payload.content)
+  topicComment.set('geoPoint', payload.geoPoint)
+  topicComment.set('position', payload.position)
+  topicComment.set('topic', topic)
+  topicComment.set('user', user)
+  topicComment.set('content', payload.content)
 
-        if (payload.commentId) {
-          topicComment.set('parentComment', parentComment)
-        }
+  if (payload.commentId) {
+    topicComment.set('parentComment', parentComment)
+  }
 
-        return topicComment.save().then(function (result) {
-          if (result) {
-
-            let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
-            let activeUser = authSelector.activeUserInfo(store.getState())
-            let pushUserid = topicInfo && topicInfo.userId
-            // console.log('likeTopic.topicInfo==', topicInfo)
-            if(pushUserid) {
-              AVUtils.pushByUserList([pushUserid], {
-                alert: `${activeUser.nickname}评论了您,立即查看`,
-                sceneName: 'TOPIC_DETAIL',
-                sceneParams: {
-                  topic: topicInfo
-                }
-              })
-            }
-
-            let relation = topic.relation('comments')
-            relation.add(topicComment);
-            topic.increment("commentNum", 1)
-            let newTopicComment = result
-            newTopicComment.attributes.user = AV.User.current()
-            return topic.save().then(function (result) {
-              if (payload.commentId) {
-                var query = new AV.Query('TopicComments');
-                query.include(['user'])
-                return query.get(payload.commentId).then(function (result) {
-                  newTopicComment.attributes.parentComment = result
-                  return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-                }, function (err) {
-                  err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-                  throw err
-                })
-              }
-              else {
-                return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-              }
-            }, function (err) {
-              err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-              throw err
-            })
+  return topicComment.save().then(function (result) {
+    if (result) {
+      let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      let pushUserid = topicInfo && topicInfo.userId
+      if(pushUserid) {
+        AVUtils.pushByUserList([pushUserid], {
+          alert: `${activeUser.nickname}评论了您,立即查看`,
+          sceneName: 'TOPIC_DETAIL',
+          sceneParams: {
+            topic: topicInfo
           }
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
         })
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-    }
-    else {
-      topicComment.set('topic', topic)
-      topicComment.set('user', user)
-      topicComment.set('content', payload.content)
-
-      if (payload.commentId) {
-        topicComment.set('parentComment', parentComment)
       }
 
-      return topicComment.save().then(function (result) {
-        if (result) {
-
-          let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
-          let activeUser = authSelector.activeUserInfo(store.getState())
-          let pushUserid = topicInfo && topicInfo.userId
-          // console.log('likeTopic.topicInfo==', topicInfo)
-          if(pushUserid) {
-            AVUtils.pushByUserList([pushUserid], {
-              alert: `${activeUser.nickname}评论了您,立即查看`,
-              sceneName: 'TOPIC_DETAIL',
-              sceneParams: {
-                topic: topicInfo
-              }
-            })
-          }
-
-          let relation = topic.relation('comments')
-          relation.add(topicComment);
-          topic.increment("commentNum", 1)
-          let newTopicComment = result
-          newTopicComment.attributes.user = AV.User.current()
-          return topic.save().then(function (result) {
-            if (payload.commentId) {
-              var query = new AV.Query('TopicComments');
-              query.include(['user'])
-              return query.get(payload.commentId).then(function (result) {
-                newTopicComment.attributes.parentComment = result
-                return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-              }, function (err) {
-                err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-                throw err
-              })
-            }
-            else {
-              return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-            }
+      let relation = topic.relation('comments')
+      relation.add(topicComment);
+      topic.increment("commentNum", 1)
+      let newTopicComment = result
+      newTopicComment.attributes.user = AV.User.current()
+      return topic.save().then(function (result) {
+        if (payload.commentId) {
+          var query = new AV.Query('TopicComments');
+          query.include(['user'])
+          return query.get(payload.commentId).then(function (result) {
+            newTopicComment.attributes.parentComment = result
+            return TopicCommentsItem.fromLeancloudObject(newTopicComment)
           }, function (err) {
             err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
             throw err
           })
         }
+        else {
+          return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+        }
       }, function (err) {
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })
-
     }
   }, function (err) {
-    topicComment.set('topic', topic)
-    topicComment.set('user', user)
-    topicComment.set('content', payload.content)
-
-    if (payload.commentId) {
-      topicComment.set('parentComment', parentComment)
-    }
-
-    return topicComment.save().then(function (result) {
-      if (result) {
-
-        let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
-        let activeUser = authSelector.activeUserInfo(store.getState())
-        let pushUserid = topicInfo && topicInfo.userId
-        // console.log('likeTopic.topicInfo==', topicInfo)
-        if(pushUserid) {
-          AVUtils.pushByUserList([pushUserid], {
-            alert: `${activeUser.nickname}评论了您,立即查看`,
-            sceneName: 'TOPIC_DETAIL',
-            sceneParams: {
-              topic: topicInfo
-            }
-          })
-        }
-
-        let relation = topic.relation('comments')
-        relation.add(topicComment);
-        topic.increment("commentNum", 1)
-        let newTopicComment = result
-        newTopicComment.attributes.user = AV.User.current()
-        return topic.save().then(function (result) {
-          if (payload.commentId) {
-            var query = new AV.Query('TopicComments');
-            query.include(['user'])
-            return query.get(payload.commentId).then(function (result) {
-              newTopicComment.attributes.parentComment = result
-              return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-            }, function (err) {
-              err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-              throw err
-            })
-          }
-          else {
-            return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-          }
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
-        })
-      }
-    }, function (err) {
-      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-      throw err
-    })
-
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 
 export function getLocalTopics(payload) {
   let query = new AV.Query('Topics')
-  return AV.GeoPoint.current().then(function (geoPoint) {
-    if (geoPoint) {
-      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+  let state = store.getState()
+  let province = locSelector.getProvince(state)
+  let city = locSelector.getCity(state)
 
-        let isRefresh = payload.isRefresh
-        let lastCreatedAt = payload.lastCreatedAt
-        if (!isRefresh && lastCreatedAt) { //分页查询
-          query.lessThan('createdAt', new Date(lastCreatedAt))
-        }
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  if (!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
 
-        query.equalTo('city', position.city)
-        query.equalTo('province', position.province)
+  query.equalTo('city', city)
+  query.equalTo('province', province)
 
-        query.limit(5) // 最多返回 5 条结果
-        query.include(['user'])
-        query.descending('createdAt')
+  query.limit(10)
+  query.include(['user'])
+  query.descending('createdAt')
 
-        return query.find().then(function (results) {
-          let topics = []
-          results.forEach((result) => {
-            topics.push(TopicsItem.fromLeancloudObject(result))
-          })
-          return {
-            topics:new List(topics),
-            city: position.city
-          }
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
-        })
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
+  return query.find().then(function (results) {
+    let topics = []
+    results.forEach((result) => {
+      topics.push(TopicsItem.fromLeancloudObject(result))
+    })
+    return {
+      topics:new List(topics),
     }
   }, function (err) {
-    return {
-      topics:new List()
-    }
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 
@@ -515,7 +331,7 @@ export function getTopics(payload) {
       query.lessThan('createdAt', new Date(lastCreatedAt))
     }
 
-    query.limit(5) // 最多返回 5 条结果
+    query.limit(10) // 最多返回 10 条结果
     query.include(['user'])
     query.descending('createdAt')
 
