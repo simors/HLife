@@ -58,6 +58,8 @@ const rteHeight = {
   })
 }
 
+const wrapHeight = normalizeH(118)
+
 class PublishTopics extends Component {
   constructor(props) {
     super(props)
@@ -68,6 +70,7 @@ class PublishTopics extends Component {
       shouldUploadImgComponent: false,
       extraHeight: rteHeight.height,
       showEditorToolbar: true,
+      headerHeight: wrapHeight,
     };
     this.insertImages = []
     this.leanImgUrls = []
@@ -203,7 +206,7 @@ class PublishTopics extends Component {
   renderArticleEditorToolbar() {
     return (
       <View style={{width: normalizeW(64), backgroundColor: THEME.base.mainColor}}>
-        <TouchableOpacity onPress={() => {}}
+        <TouchableOpacity onPress={() => {() => this.onButtonPress()}}
                           style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           <Text style={{fontSize: 15, color: 'white', lineHeight: 15}}>发布</Text>
         </TouchableOpacity>
@@ -223,8 +226,8 @@ class PublishTopics extends Component {
         uploadImgComponentCallback={(leanImgUrls)=> {
           this.uploadImgComponentCallback(leanImgUrls)
         }}
-        onFocusEditor={() => {}}
-        onBlurEditor={() => {}}
+        onFocusEditor={() => {this.setState({headerHeight: 0})}}
+        onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
         placeholder="分享吃喝玩乐、共享周边生活信息"
       />
     )
@@ -247,9 +250,10 @@ class PublishTopics extends Component {
         <View style={styles.body}>
 
           <View>
-            <View onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
+            <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
+                  onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
               <View style={styles.toSelectContainer}>
-                <Text style={{fontSize: 15, color: '#5a5a5a', paddingLeft: normalizeW(10), paddingRight: normalizeW(18), alignSelf: 'center'}}>主题板块</Text>
+                <Text style={styles.topicTypeTitleStyle}>主题板块</Text>
                 <TouchableOpacity style={styles.selectBtnView} onPress={this.openModal.bind(this)}>
                   {this.renderSelectedTopic()}
                   <Image style={styles.imageStyle} source={require("../../assets/images/PinLeft_gray.png")}/>
@@ -376,6 +380,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: normalizeW(25),
     top: normalizeH(17),
+  },
+  topicTypeTitleStyle: {
+    fontSize: 15,
+    color: '#5a5a5a',
+    paddingLeft: normalizeW(10),
+    paddingRight: normalizeW(18),
+    alignSelf: 'center',
   },
   //modal 所有子组件的样式
   modalStyle: {

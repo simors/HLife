@@ -152,9 +152,6 @@ class ArticleEditor extends Component {
   }
 
   keyboardWillShow = (e) => {
-    if (this.props.onFocusEditor) {
-      this.props.onFocusEditor()
-    }
     let newEditorHeight = this.compHeight - e.endCoordinates.height - toolbarHeight
     Animated.timing(this.state.editorHeight, {
       toValue: newEditorHeight,
@@ -369,6 +366,9 @@ class ArticleEditor extends Component {
         value={content}
         onChangeText={(text) => this.updateTextInput(index, text)}
         onFocus={() => {
+          if (this.props.onFocusEditor) {
+            this.props.onFocusEditor()
+          }
           this.setState({cursor: index})
           if (Platform.OS != 'ios') {
             this.inputFocused("content_" + index)
