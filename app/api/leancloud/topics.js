@@ -209,183 +209,59 @@ export function publishTopicComments(payload) {
   var user = AV.Object.createWithoutData('_User', payload.userId)
   var parentComment = AV.Object.createWithoutData('TopicComments', payload.commentId)
 
-  return AV.GeoPoint.current().then(function (geoPoint) {
-    if (geoPoint) {
-      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
-        topicComment.set('geoPoint', geoPoint)
-        topicComment.set('position', position)
-        topicComment.set('topic', topic)
-        topicComment.set('user', user)
-        topicComment.set('content', payload.content)
+  topicComment.set('geoPoint', payload.geoPoint)
+  topicComment.set('position', payload.position)
+  topicComment.set('topic', topic)
+  topicComment.set('user', user)
+  topicComment.set('content', payload.content)
 
-        if (payload.commentId) {
-          topicComment.set('parentComment', parentComment)
-        }
+  if (payload.commentId) {
+    topicComment.set('parentComment', parentComment)
+  }
 
-        return topicComment.save().then(function (result) {
-          if (result) {
-
-            let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
-            let activeUser = authSelector.activeUserInfo(store.getState())
-            let pushUserid = topicInfo && topicInfo.userId
-            // console.log('likeTopic.topicInfo==', topicInfo)
-            if(pushUserid) {
-              AVUtils.pushByUserList([pushUserid], {
-                alert: `${activeUser.nickname}评论了您,立即查看`,
-                sceneName: 'TOPIC_DETAIL',
-                sceneParams: {
-                  topic: topicInfo
-                }
-              })
-            }
-
-            let relation = topic.relation('comments')
-            relation.add(topicComment);
-            topic.increment("commentNum", 1)
-            let newTopicComment = result
-            newTopicComment.attributes.user = AV.User.current()
-            return topic.save().then(function (result) {
-              if (payload.commentId) {
-                var query = new AV.Query('TopicComments');
-                query.include(['user'])
-                return query.get(payload.commentId).then(function (result) {
-                  newTopicComment.attributes.parentComment = result
-                  return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-                }, function (err) {
-                  err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-                  throw err
-                })
-              }
-              else {
-                return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-              }
-            }, function (err) {
-              err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-              throw err
-            })
+  return topicComment.save().then(function (result) {
+    if (result) {
+      let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      let pushUserid = topicInfo && topicInfo.userId
+      if(pushUserid) {
+        AVUtils.pushByUserList([pushUserid], {
+          alert: `${activeUser.nickname}评论了您,立即查看`,
+          sceneName: 'TOPIC_DETAIL',
+          sceneParams: {
+            topic: topicInfo
           }
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
         })
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-    }
-    else {
-      topicComment.set('topic', topic)
-      topicComment.set('user', user)
-      topicComment.set('content', payload.content)
-
-      if (payload.commentId) {
-        topicComment.set('parentComment', parentComment)
       }
 
-      return topicComment.save().then(function (result) {
-        if (result) {
-
-          let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
-          let activeUser = authSelector.activeUserInfo(store.getState())
-          let pushUserid = topicInfo && topicInfo.userId
-          // console.log('likeTopic.topicInfo==', topicInfo)
-          if(pushUserid) {
-            AVUtils.pushByUserList([pushUserid], {
-              alert: `${activeUser.nickname}评论了您,立即查看`,
-              sceneName: 'TOPIC_DETAIL',
-              sceneParams: {
-                topic: topicInfo
-              }
-            })
-          }
-
-          let relation = topic.relation('comments')
-          relation.add(topicComment);
-          topic.increment("commentNum", 1)
-          let newTopicComment = result
-          newTopicComment.attributes.user = AV.User.current()
-          return topic.save().then(function (result) {
-            if (payload.commentId) {
-              var query = new AV.Query('TopicComments');
-              query.include(['user'])
-              return query.get(payload.commentId).then(function (result) {
-                newTopicComment.attributes.parentComment = result
-                return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-              }, function (err) {
-                err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-                throw err
-              })
-            }
-            else {
-              return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-            }
+      let relation = topic.relation('comments')
+      relation.add(topicComment);
+      topic.increment("commentNum", 1)
+      let newTopicComment = result
+      newTopicComment.attributes.user = AV.User.current()
+      return topic.save().then(function (result) {
+        if (payload.commentId) {
+          var query = new AV.Query('TopicComments');
+          query.include(['user'])
+          return query.get(payload.commentId).then(function (result) {
+            newTopicComment.attributes.parentComment = result
+            return TopicCommentsItem.fromLeancloudObject(newTopicComment)
           }, function (err) {
             err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
             throw err
           })
         }
+        else {
+          return TopicCommentsItem.fromLeancloudObject(newTopicComment)
+        }
       }, function (err) {
         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
         throw err
       })
-
     }
   }, function (err) {
-    topicComment.set('topic', topic)
-    topicComment.set('user', user)
-    topicComment.set('content', payload.content)
-
-    if (payload.commentId) {
-      topicComment.set('parentComment', parentComment)
-    }
-
-    return topicComment.save().then(function (result) {
-      if (result) {
-
-        let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
-        let activeUser = authSelector.activeUserInfo(store.getState())
-        let pushUserid = topicInfo && topicInfo.userId
-        // console.log('likeTopic.topicInfo==', topicInfo)
-        if(pushUserid) {
-          AVUtils.pushByUserList([pushUserid], {
-            alert: `${activeUser.nickname}评论了您,立即查看`,
-            sceneName: 'TOPIC_DETAIL',
-            sceneParams: {
-              topic: topicInfo
-            }
-          })
-        }
-
-        let relation = topic.relation('comments')
-        relation.add(topicComment);
-        topic.increment("commentNum", 1)
-        let newTopicComment = result
-        newTopicComment.attributes.user = AV.User.current()
-        return topic.save().then(function (result) {
-          if (payload.commentId) {
-            var query = new AV.Query('TopicComments');
-            query.include(['user'])
-            return query.get(payload.commentId).then(function (result) {
-              newTopicComment.attributes.parentComment = result
-              return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-            }, function (err) {
-              err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-              throw err
-            })
-          }
-          else {
-            return TopicCommentsItem.fromLeancloudObject(newTopicComment)
-          }
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
-        })
-      }
-    }, function (err) {
-      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-      throw err
-    })
-
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 

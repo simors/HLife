@@ -47,7 +47,7 @@ function handlePublishTopic(payload, formData) {
     let geoPoint = locSelector.getGeopoint(getState())
     if (geoPoint.latitude == 0 && geoPoint.longitude == 0) {
       if (payload.error) {
-        payload.error({error: {message: '请为应用打开地理位置权限！'}})
+        payload.error({message: '请为应用打开地理位置权限！'})
       }
       return
     }
@@ -64,7 +64,6 @@ function handlePublishTopic(payload, formData) {
       categoryId: payload.categoryId,
       userId: payload.userId,
     }
-    console.log('topic form data: ', publishTopicPayload)
     lcTopics.publishTopics(publishTopicPayload).then((result) => {
       if (payload.success) {
         payload.success()
@@ -82,7 +81,23 @@ function handlePublishTopic(payload, formData) {
 
 function handlePublishTopicComment(payload, formData) {
   return (dispatch, getState) => {
+    let position = locSelector.getLocation(getState())
+    let province = locSelector.getProvince(getState())
+    let city = locSelector.getCity(getState())
+    let district = locSelector.getDistrict(getState())
+    let geoPoint = locSelector.getGeopoint(getState())
+    if (geoPoint.latitude == 0 && geoPoint.longitude == 0) {
+      if (payload.error) {
+        payload.error({message: '请为应用打开地理位置权限！'})
+      }
+      return
+    }
     let publishTopicCommentPayload = {
+      position: position,
+      geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
+      province: province,
+      city: city,
+      district: district,
       content: payload.content,
       topicId: payload.topicId,
       commentId: payload.commentId,
