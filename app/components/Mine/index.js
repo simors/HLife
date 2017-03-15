@@ -24,6 +24,7 @@ import {fetchUserFollowees} from '../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import * as authSelector from '../../selector/authSelector'
+import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -147,6 +148,30 @@ class Mine extends Component {
     )
   }
 
+  renderShopBtnText() {
+    if (this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
+      return (
+        <Text style={styles.menuName}>店铺管理</Text>
+      )
+    } else {
+      return (
+        <Text style={styles.menuName}>店铺注册</Text>
+      )
+    }
+  }
+
+  renderPromoterBtnText() {
+    if (this.props.identity.includes(IDENTITY_PROMOTER)) {
+      return (
+        <Text style={styles.menuName}>推广联盟</Text>
+      )
+    } else {
+      return (
+        <Text style={styles.menuName}>推广注册</Text>
+      )
+    }
+  }
+
   renderBodyView() {
     return (
       <View style={{marginTop: normalizeH(15)}}>
@@ -156,7 +181,7 @@ class Mine extends Component {
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_shop.png')} />
             </View>
             <View>
-              <Text style={styles.menuName}>店铺注册</Text>
+              {this.renderShopBtnText()}
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.PROMOTER_AUTH()}}>
@@ -164,7 +189,7 @@ class Mine extends Component {
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_push.png')} />
             </View>
             <View>
-              <Text style={styles.menuName}>推广联盟</Text>
+              {this.renderPromoterBtnText()}
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
@@ -220,10 +245,12 @@ const mapStateToProps = (state, ownProps) => {
   let userInfo = authSelector.activeUserInfo(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  let identity = authSelector.getUserIdentity(state, authSelector.activeUserId(state))
   return {
     userInfo: userInfo,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
+    identity: identity,
   }
 }
 
