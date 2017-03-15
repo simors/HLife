@@ -17,77 +17,27 @@ export function publishTopics(payload) {
   var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId)
   var user = AV.Object.createWithoutData('_User', payload.userId)
 
-  return AV.GeoPoint.current().then(function (geoPoint) {
-    if (geoPoint) {
-      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+  topic.set('geoPoint', payload.geoPoint)
+  topic.set('position', payload.position)
+  topic.set('city', payload.city)
+  topic.set('district', payload.district)
+  topic.set('province', payload.province)
+  topic.set('category', topicCategory)
+  topic.set('user', user)
+  topic.set('imgGroup', payload.imgGroup)
+  topic.set('content', payload.content)
+  topic.set('title', payload.title)
+  topic.set('abstract', payload.abstract)
+  topic.set('commentNum', 0)
+  topic.set('likeCount', 0)
 
-        topic.set('geoPoint', geoPoint)
-        topic.set('position', position)
-        topic.set('city', position.city)
-        topic.set('district', position.district)
-        topic.set('province', position.province)
-        topic.set('category', topicCategory)
-        topic.set('user', user)
-        topic.set('imgGroup', payload.imgGroup)
-        topic.set('content', payload.content)
-        topic.set('title', payload.title)
-        topic.set('abstract', payload.abstract)
-        topic.set('abstract', payload.abstract)
-        topic.set('commentNum', 0)
-        topic.set('likeCount', 0)
-
-        return topic.save().then(function (result) {
-          let newTopic = result
-          newTopic.attributes.user = AV.User.current()
-          return TopicsItem.fromLeancloudObject(newTopic)
-        }, function (err) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
-        })
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-    }
-    else {
-      topic.set('category', topicCategory)
-      topic.set('user', user)
-      topic.set('imgGroup', payload.imgGroup)
-      topic.set('content', payload.content)
-      topic.set('title', payload.title)
-      topic.set('abstract', payload.abstract)
-      topic.set('abstract', payload.abstract)
-      topic.set('commentNum', 0)
-      topic.set('likeCount', 0)
-
-      return topic.save().then(function (result) {
-        let newTopic = result
-        newTopic.attributes.user = AV.User.current()
-        return TopicsItem.fromLeancloudObject(newTopic)
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-    }
+  return topic.save().then(function (result) {
+    let newTopic = result
+    newTopic.attributes.user = AV.User.current()
+    return TopicsItem.fromLeancloudObject(newTopic)
   }, function (err) {
-    topic.set('category', topicCategory)
-    topic.set('user', user)
-    topic.set('imgGroup', payload.imgGroup)
-    topic.set('content', payload.content)
-    topic.set('title', payload.title)
-    topic.set('abstract', payload.abstract)
-    topic.set('abstract', payload.abstract)
-    topic.set('commentNum', 0)
-    topic.set('likeCount', 0)
-
-    return topic.save().then(function (result) {
-      let newTopic = result
-      newTopic.attributes.user = AV.User.current()
-      return TopicsItem.fromLeancloudObject(newTopic)
-    }, function (err) {
-      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-      throw err
-    })
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 

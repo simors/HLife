@@ -4,6 +4,8 @@ import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as lcTopics from '../api/leancloud/topics'
 import {notifyTopicComment, notifyTopicLike} from './messageAction'
+import * as locSelector from '../selector/locSelector'
+import AV from 'leancloud-storage'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -38,14 +40,31 @@ export function publishTopicFormData(payload) {
 
 function handlePublishTopic(payload, formData) {
   return (dispatch, getState) => {
+    let position = locSelector.getLocation(getState())
+    let province = locSelector.getProvince(getState())
+    let city = locSelector.getCity(getState())
+    let district = locSelector.getDistrict(getState())
+    let geoPoint = locSelector.getGeopoint(getState())
+    if (geoPoint.latitude == 0 && geoPoint.longitude == 0) {
+      if (payload.error) {
+        payload.error({error: {message: '请为应用打开地理位置权限！'}})
+      }
+      return
+    }
     let publishTopicPayload = {
+      position: position,
+      geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
+      province: province,
+      city: city,
+      district: district,
       title:formData.topicName.text,
       content: JSON.stringify(formData.topicContent.text),
       abstract: formData.topicContent.abstract,
       imgGroup: payload.images,
       categoryId: payload.categoryId,
-      userId: payload.userId
+      userId: payload.userId,
     }
+    console.log('topic form data: ', publishTopicPayload)
     lcTopics.publishTopics(publishTopicPayload).then((result) => {
       if (payload.success) {
         payload.success()
@@ -53,6 +72,7 @@ function handlePublishTopic(payload, formData) {
       let publishAction = createAction(topicActionTypes.ADD_TOPIC)
       dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
     }).catch((error) => {
+      console.log("error: ", error)
       if (payload.error) {
         payload.error(error)
       }
