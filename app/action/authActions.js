@@ -10,6 +10,8 @@ import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../constants/appConfig'
+import {closeMessageClient} from './messageAction'
+import * as AVUtils from '../util/AVUtils'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -102,6 +104,20 @@ export function submitFormData(payload) {
   }
 }
 
+export function userLogOut(payload) {
+  return (dispatch, getState) => {
+    lcAuth.logOut({})
+    dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
+    dispatch(closeMessageClient({}))
+    AVUtils.updateDeviceUserInfo({
+      removeUser: true
+    })
+    if (payload.success) {
+      payload.success()
+    }
+  }
+}
+
 export function submitInputData(payload) {
   return (dispatch, getState) => {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
@@ -138,6 +154,9 @@ function handleLoginWithPwd(payload, formData) {
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
       dispatch(initMessageClient(payload))
+      AVUtils.updateDeviceUserInfo({
+        userId: userInfo.userInfo.id
+      })
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -205,6 +224,9 @@ function handleRegister(payload, formData) {
       lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
         dispatch(registerWithPhoneNum(payload, formData))
         dispatch(initMessageClient(payload))
+        AVUtils.updateDeviceUserInfo({
+          userId: activeUserId(getState())
+        })
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)

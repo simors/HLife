@@ -153,6 +153,18 @@ export function initLcMessenger(payload) {
   }
 }
 
+export function closeMessageClient(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      return
+    }
+    client.close().then(() => {
+      dispatch(createAction(msgTypes.CLOSE_MESSENGER_CLIENT)({}))
+    })
+  }
+}
+
 export function createConversation(payload) {
   return (dispatch, getState) => {
     dispatch(createLcConversation(payload)).then((conversation) => {

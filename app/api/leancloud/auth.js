@@ -26,6 +26,14 @@ export function become(payload) {
   })
 }
 
+export function logOut(payload) {
+  return AV.User.logOut().then(() => {
+    // do nothing
+  }, (err) => {
+    throw err
+  })
+}
+
 /**
  * 用户名和密码登录
  * @param payload
@@ -35,14 +43,6 @@ export function loginWithPwd(payload) {
   let phone = payload.phone
   let password = payload.password
   return AV.User.logInWithMobilePhone(phone, password).then((loginedUser) => {
-    if(loginedUser && loginedUser.id) {
-      // console.log('loginWithPwd.updateDeviceUserInfo=', loginedUser.id)
-      AVUtils.updateDeviceUserInfo({
-        userId: loginedUser.id
-      }).then((result)=>{
-        // console.log('loginWithPwd.updateDeviceUserInfo.result=', result)
-      })
-    }
     // console.log('loginWithPwd==loginedUser=', loginedUser)
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
     // console.log('loginWithPwd==userInfo=', userInfo)

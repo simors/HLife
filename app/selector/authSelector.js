@@ -40,6 +40,9 @@ export function activeUserInfo(state) {
 export function getUserIdentity(state, userId) {
   let userInfo = userInfoById(state, userId).toJS()
   let identity = userInfo.identity
+  if (!identity) {
+    return []
+  }
   return identity
 }
 
