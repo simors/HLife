@@ -829,20 +829,20 @@ export function fetchGuessYouLikeShopList(payload) {
   let query = new AV.Query('Shop')
   query.notEqualTo('objectId', id)
   query.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
-  // let random = Math.random() * 10
-  // if(random <= 2) {
-  //   query.addDescending('createdAt')
-  // }else if(random <= 5) {
-  //   query.addAscending('createdAt')
-  // }else if(random <= 7) {
-  //   query.addDescending('pv')
-  // }else {
-  //   query.addDescending('score')
-  // }
-  query.addDescending('score')
+  let random = Math.random() * 10
+  if(random <= 2) {
+    query.addDescending('createdAt')
+  }else if(random <= 5) {
+    query.addAscending('createdAt')
+  }else if(random <= 7) {
+    query.addDescending('pv')
+  }else {
+    query.addDescending('score')
+  }
+  // query.addDescending('score')
   query.limit(3)
   return query.find().then(function (results) {
-    console.log('fetchGuessYouLikeShopList.results====*******>>>>>>=', results)
+    // console.log('fetchGuessYouLikeShopList.results====*******>>>>>>=', results)
     let shopList = []
     results.forEach((result) => {
       shopList.push(ShopInfo.fromLeancloudObject(result))
