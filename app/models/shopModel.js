@@ -107,9 +107,11 @@ export class ShopInfo extends ShopRecord {
         record.set('geo', attrs.geo)
         // console.log('lcObj.userCurGeo===', lcObj.userCurGeo)
         // console.log('attrs.geo===', attrs.geo)
-        if(lcObj.userCurGeo && attrs.geo) {
+        if(attrs.geo) {
+          let userCurGeo = locSelector.getGeopoint(store.getState())
+          let curGeoPoint = new AV.GeoPoint(userCurGeo)
           let geo = new AV.GeoPoint(attrs.geo)
-          let distance = geo.kilometersTo(lcObj.userCurGeo)
+          let distance = geo.kilometersTo(curGeoPoint)
           let distanceUnit = 'km'
           if(distance > 1) {
             distance = Number(distance).toFixed(1)

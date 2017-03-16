@@ -45,6 +45,7 @@ import {selectShopList, selectFetchShopListIsArrivedLastPage} from '../../select
 import {fetchShopList, clearShopList} from '../../action/shopAction'
 // import ViewPager from 'react-native-viewpager'
 import ViewPager from '../common/ViewPager'
+import * as DeviceInfo from 'react-native-device-info'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -81,6 +82,17 @@ class Local extends Component {
 
   componentDidMount() {
     // console.log('componentDidMount.props===', this.props)
+    if(DeviceInfo.isEmulator()) {
+      this.state.searchForm.geo = [28.213866,112.8186868]
+      this.state.searchForm.geoCity = '长沙'
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          geo: this.state.searchForm.geo,
+          geoCity: this.state.searchForm.geoCity
+        }
+      })
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -203,7 +215,7 @@ class Local extends Component {
   
   renderShopCategoryBox(shopCategory) {
     return (
-      <TouchableOpacity key={shopCategory.id} style={{flex:1}} onPress={()=>{this.gotoShopCategoryList(shopCategory)}}>
+      <TouchableOpacity key={shopCategory.id} style={styles.shopCategoryTouchBox} onPress={()=>{this.gotoShopCategoryList(shopCategory)}}>
         <View style={styles.shopCategoryBox}>
           <Image
             style={[styles.shopCategoryImage]}
@@ -242,21 +254,38 @@ class Local extends Component {
       let row  = []
       this.props.allShopCategories.forEach((shopCategory, index) => {
         // console.log('shopCategory===', shopCategory)
+
         let shopCategoryView = that.renderShopCategoryBox(shopCategory)
         row.push(shopCategoryView)
 
-        if(row.length == 4 || this.props.allShopCategories.length == (index+1)) {
+        let shopCategoryLength = this.props.allShopCategories.length
+        if(shopCategoryLength == (index+1)) {
+          // console.log('renderSectionHeader*****==row.length==', row.length)
+          if(row.length < 4) {
+            let lastRowLength = row.length
+            for(let i = 0; i < (4 - lastRowLength); i++) {
+              let placeholderRowView = <View key={'empty_'+ i} style={styles.shopCategoryTouchBox} />
+              row.push(placeholderRowView)
+            }
+            // console.log('renderSectionHeader*****>>>>>>>>>>>>>==row.length==', row.length)
+          }
+        }
+
+        if(row.length == 4) {
           rowView = that.renderShopCategoryRow(row)
           shopCategoriesView.push(rowView)
           row = []
         }
 
-        if(shopCategoriesView.length == 2 || this.props.allShopCategories.length == (index+1)) {
+        if(shopCategoriesView.length == 2 || shopCategoryLength == (index+1)) {
           pageView = that.renderShopCategoryPage(shopCategoriesView)
           pages.push(pageView)
           shopCategoriesView = []
         }
+
       })
+
+      // console.log('renderSectionHeader*****==pages==', pages)
 
       let dataSource = new ViewPager.DataSource({
         pageHasChanged: (p1, p2) => p1 !== p2,
@@ -311,7 +340,7 @@ class Local extends Component {
         }
         // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
-          if(isRefresh) {
+          if(isRefresh && this.state.searchForm.distance) {
             this.setState({
               searchForm: {
                 ...this.state.searchForm,
@@ -501,14 +530,17 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom:26,
     justifyContent: 'space-between',
-    alignItems: 'center'
   },
   shopCategoryRow: {
+    flex: 1,
     flexDirection: 'row',
+  },
+  shopCategoryTouchBox: {
+    flex: 1,
   },
   shopCategoryBox: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   shopCategoryImage: {
     height: 50,

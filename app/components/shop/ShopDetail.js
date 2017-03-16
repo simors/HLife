@@ -231,6 +231,7 @@ class ShopDetail extends Component {
     let guessYouLikeView = <View/>
     if(this.props.guessYouLikeList.length) {
       guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
+        console.log('renderGuessYouLikeList.item***====', item)
         let shopTag = null
         if(item.containedTag && item.containedTag.length) {
           shopTag = item.containedTag[0].name
@@ -256,7 +257,7 @@ class ShopDetail extends Component {
                       <Text style={styles.subTxt}>{item.geoDistrict && item.geoDistrict}</Text>
                     </View>
                     {item.distance &&
-                    <Text style={[styles.subTxt]}>{item.distance}km</Text>
+                    <Text style={[styles.subTxt]}>{item.distance + item.distanceUnit}</Text>
                     }
                   </View>
                 </View>
@@ -271,16 +272,17 @@ class ShopDetail extends Component {
   }
 
   renderShopPromotion(shopInfo) {
+    console.log('renderShopPromotion.shopInfo=**********==', shopInfo)
     let containedPromotions = shopInfo.containedPromotions
     if(containedPromotions && containedPromotions.length) {
       let shopPromotionView = containedPromotions.map((promotion, index)=>{
         return (
           <View key={'promotion_' + index} style={styles.shopPromotionBox}>
             <View style={styles.shopPromotionBadge}>
-              <Text style={styles.shopPromotionBadgeTxt}>{promotion.badge}</Text>
+              <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
             </View>
             <View style={styles.shopPromotionContent}>
-              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.content}</Text>
+              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
             </View>
           </View>
         )
@@ -425,7 +427,7 @@ class ShopDetail extends Component {
 
   render() {
     let announcementCover = {uri: this.props.latestShopAnnouncement.coverUrl}
-    console.log('this.props.shopDetail===', this.props.shopDetail)
+    // console.log('this.props.shopDetail===', this.props.shopDetail)
     return (
       <View style={styles.container}>
         <Header
@@ -436,62 +438,63 @@ class ShopDetail extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <ScrollView
-            contentContainerStyle={[styles.contentContainerStyle]}
-          >
-            <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
-              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
-            </TouchableOpacity>
-            <View style={styles.shopHead}>
-              <View style={styles.shopHeadLeft}>
-                <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
-                <View style={styles.shopOtherInfo}>
-                  <ScoreShow
-                    containerStyle={{flex:1}}
-                    score={this.props.shopDetail.score}
-                  />
-                  {this.props.shopDetail.distance &&
-                    <Text style={styles.distance}>距你{this.props.shopDetail.distance}km</Text>
-                  }
-                  {this.props.shopDetail.pv &&
-                  <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
-                  }
+          <View style={styles.detailWrap}>
+            <ScrollView
+              contentContainerStyle={[styles.contentContainerStyle]}
+            >
+              <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
+                <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+              </TouchableOpacity>
+              <View style={styles.shopHead}>
+                <View style={styles.shopHeadLeft}>
+                  <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
+                  <View style={styles.shopOtherInfo}>
+                    <ScoreShow
+                      containerStyle={{flex:1}}
+                      score={this.props.shopDetail.score}
+                    />
+                    {this.props.shopDetail.distance &&
+                    <Text style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
+                    }
+                    {this.props.shopDetail.pv &&
+                    <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
+                    }
+                  </View>
                 </View>
               </View>
-            </View>
 
-            <View style={styles.shopXYZWrap}>
-              <View style={styles.shopXYZLeft}>
-                <View style={styles.locationWrap}>
-                  <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
-                    <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
-                    <View style={styles.locationTxtWrap}>
-                      <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
-                    </View>
-                  </TouchableOpacity>
+              <View style={styles.shopXYZWrap}>
+                <View style={styles.shopXYZLeft}>
+                  <View style={styles.locationWrap}>
+                    <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
+                      <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
+                      <View style={styles.locationTxtWrap}>
+                        <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.contactNumberWrap}>
+                    <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
+                      <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
+                      <View style={styles.contactNumberTxtWrap}>
+                        <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={styles.contactNumberWrap}>
-                  <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
-                    <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
-                    <View style={styles.contactNumberTxtWrap}>
-                      <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
-                    </View>
+                <View style={styles.shopXYZRight}>
+                  {this.props.isFollowedShop
+                    ? <View style={styles.shopAttentioned}>
+                    <Image source={require('../../assets/images/followed.png')} />
+                  </View>
+                    : <TouchableOpacity onPress={this.followShop.bind(this)}>
+                    <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
                   </TouchableOpacity>
+                  }
                 </View>
               </View>
-              <View style={styles.shopXYZRight}>
-                {this.props.isFollowedShop
-                  ? <View style={styles.shopAttentioned}>
-                  <Image source={require('../../assets/images/followed.png')} />
-                </View>
-                  : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                  <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
-                </TouchableOpacity>
-                }
-              </View>
-            </View>
 
-            {this.props.latestShopAnnouncement.content &&
+              {this.props.latestShopAnnouncement.content &&
               <View style={styles.shopAnnouncementWrap}>
                 <View style={styles.titleWrap}>
                   <View style={styles.titleLine}/>
@@ -523,13 +526,14 @@ class ShopDetail extends Component {
                   </View>
                 </View>
               </View>
-            }
+              }
 
-            {this.renderComments()}
+              {this.renderComments()}
 
-            {this.renderGuessYouLike()}
+              {this.renderGuessYouLike()}
 
-          </ScrollView>
+            </ScrollView>
+          </View>
 
           <View style={styles.shopCommentWrap}>
             <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.openCommentScene()}}>
@@ -662,6 +666,9 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+  },
+  detailWrap: {
+    marginBottom: 54
   },
   contentContainerStyle: {
 

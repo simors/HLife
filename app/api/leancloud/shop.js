@@ -95,17 +95,12 @@ export function getShopList(payload) {
     query.equalTo('containedTag', shopTag)
   }
 
-  query.equalTo('isOpen', true)
-  // console.log('getShopList.query===', query)
+  // query.equalTo('isOpen', true)
+  // console.log('getShopList.query=****************==', query)
   return query.find().then(function (results) {
-    // console.log('getShopList.results=', results)
-    let point = null
-    if (Array.isArray(geo)) {
-      point = new AV.GeoPoint(geo)
-    }
+    // console.log('getShopList.results==>>>>>>>>>>>>>===', results)
     let shopList = []
     results.forEach((result) => {
-      result.userCurGeo = point
       result.nextSkipNum = parseInt(skipNum) + results.length
       shopList.push(ShopInfo.fromLeancloudObject(result))
     })
@@ -175,17 +170,8 @@ export function fetchShopDetail(payload) {
   query.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   return query.first().then(function (result) {
     // console.log('fetchShopDetail.result=', result)
-    Geolocation.getCurrentPosition()
-    .then(data => {
-      let point = new AV.GeoPoint([data.latitude, data.longitude])
-      result.userCurGeo = point
-      let shopInfo = ShopInfo.fromLeancloudObject(result)
-      return new Map(shopInfo)
-    }, (reason)=>{
-      let shopInfo = ShopInfo.fromLeancloudObject(result)
-      return new Map(shopInfo)
-    })
-
+    let shopInfo = ShopInfo.fromLeancloudObject(result)
+    return new Map(shopInfo)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -759,7 +745,7 @@ export function fetchUserOwnedShopInfo(payload) {
     user = AV.Object.createWithoutData('_User', payload.userId)
   }
   query.equalTo('owner', user)
-  query.include(['owner', 'targetShopCategory', 'containedTag'])
+  query.include(['owner', 'targetShopCategory', 'containedTag', 'containedPromotions'])
   return query.first().then((result)=>{
     // console.log('fetchUserOwnedShopInfo.result===', result)
     let shopInfo = {}
@@ -822,27 +808,16 @@ export function fetchSimilarShopList(payload) {
   similarQuery.equalTo('targetShopCategory', targetShopCategory)
   notQuery.notEqualTo('objectId', shopId)
   let andQuery = AV.Query.and(similarQuery, notQuery)
-  andQuery.include(['targetShopCategory', 'owner', 'containedTag'])
+  andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   andQuery.addDescending('createdAt')
   andQuery.limit(3)
   return andQuery.find().then(function (results) {
     // console.log('getShopList.results=', results)
-    if(__DEV__) {
-      let shopList = []
-      results.forEach((result) => {
-        shopList.push(ShopInfo.fromLeancloudObject(result))
-      })
-      return new List(shopList)
-    }else {
-      return AV.GeoPoint.current().then(function(geoPoint){
-        let shopList = []
-        results.forEach((result) => {
-          result.userCurGeo = geoPoint
-          shopList.push(ShopInfo.fromLeancloudObject(result))
-        })
-        return new List(shopList)
-      })
-    }
+    let shopList = []
+    results.forEach((result) => {
+      shopList.push(ShopInfo.fromLeancloudObject(result))
+    })
+    return new List(shopList)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -853,7 +828,7 @@ export function fetchGuessYouLikeShopList(payload) {
   let id = payload.id
   let query = new AV.Query('Shop')
   query.notEqualTo('objectId', id)
-  query.include(['targetShopCategory', 'owner', 'containedTag'])
+  query.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   let random = Math.random() * 10
   if(random <= 2) {
     query.addDescending('createdAt')
@@ -867,22 +842,11 @@ export function fetchGuessYouLikeShopList(payload) {
   query.limit(3)
   return query.find().then(function (results) {
     // console.log('fetchGuessYouLikeShopList.results=', results)
-    if(__DEV__) {
-      let shopList = []
-      results.forEach((result) => {
-        shopList.push(ShopInfo.fromLeancloudObject(result))
-      })
-      return new List(shopList)
-    }else {
-      return AV.GeoPoint.current().then(function(geoPoint){
-        let shopList = []
-        results.forEach((result) => {
-          result.userCurGeo = geoPoint
-          shopList.push(ShopInfo.fromLeancloudObject(result))
-        })
-        return new List(shopList)
-      })
-    }
+    let shopList = []
+    results.forEach((result) => {
+      shopList.push(ShopInfo.fromLeancloudObject(result))
+    })
+    return new List(shopList)
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

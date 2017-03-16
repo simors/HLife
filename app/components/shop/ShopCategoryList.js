@@ -419,7 +419,7 @@ class ShopCategoryList extends Component {
                   <Text style={styles.subTxt}>{rowData.geoDistrict && rowData.geoDistrict}</Text>
                 </View>
                 {rowData.distance &&
-                <Text style={[styles.subTxt]}>{rowData.distance}km</Text>
+                <Text style={[styles.subTxt]}>{rowData.distance + rowData.distanceUnit}</Text>
                 }
               </View>
             </View>
