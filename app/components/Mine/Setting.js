@@ -20,9 +20,9 @@ import {persistor} from '../../store/persistStore'
 import * as reactInvokeMethod from '../../util/reactMethodUtils'
 import RNRestart from 'react-native-restart'
 import * as Toast from '../../components/common/Toast'
-import * as AVUtils from '../../util/AVUtils'
 import Popup from '@zzzkk2009/react-native-popup'
 import THEME from '../../constants/themes/theme1'
+import {userLogOut} from '../../action/authActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -58,19 +58,28 @@ class Setting extends Component {
   }
 
   clearUserInfo() {
-    persistor.purge(['AUTH'])
-    AVUtils.updateDeviceUserInfo({
-      removeUser: true
+    Popup.confirm({
+      title: '提示',
+      content: '确认退出登录吗？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=>{
+          this.props.userLogOut({
+            success: () => {
+              Toast.show('登出成功')
+              Actions.HOME({type: 'reset'})
+            }
+          })
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
+      }
     })
-    Toast.show('用户注销成功')
-    setTimeout(() => {
-      Actions.HOME_INDEX({type: 'reset'})
-      // if (Platform.OS == 'ios') {
-      //   reactInvokeMethod.reload()
-      // } else {
-      //   RNRestart.Restart()
-      // }
-    }, 2000)
   }
 
   render() {
@@ -106,6 +115,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  userLogOut,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Setting)

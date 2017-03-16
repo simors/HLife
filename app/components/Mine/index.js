@@ -149,7 +149,7 @@ class Mine extends Component {
   }
 
   renderShopBtnText() {
-    if (this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
+    if (this.props.identity && this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
       return (
         <Text style={styles.menuName}>店铺管理</Text>
       )

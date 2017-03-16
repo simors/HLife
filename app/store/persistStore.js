@@ -10,6 +10,7 @@ import {become} from '../api/leancloud/auth'
 import {UserInfo, UserState, UserStateRecord, UserInfoRecord} from '../models/userModels'
 import configureStore from '../store/configureStore'
 import * as AuthTypes from '../constants/authActionTypes'
+import * as AVUtils from '../util/AVUtils'
 
 const messageFilter = createFilter(
   'MESSAGE',
@@ -64,7 +65,11 @@ function verifyToken() {
     become(payload).then((user) => {
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...user}))
-      return dispatch(initMessageClient())
+      dispatch(initMessageClient())
+      console.log('auto login: ', user)
+      AVUtils.updateDeviceUserInfo({
+        userId: user.userInfo.id
+      })
     }).then(() => {
       // Actions.HOME()
     }).catch((error) => {

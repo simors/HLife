@@ -17,6 +17,8 @@ export default function authReducer(state = initialState, action) {
       return handleRegisterSuccess(state, action)
     case AuthTypes.LOGIN_SUCCESS:
       return handleLoginSuccess(state, action)
+    case AuthTypes.LOGIN_OUT:
+      return handleUserLogout(state, action)
     case AuthTypes.SHOP_CERTIFICATION_SUCCESS:
       return handleShopCertificationSuccess(state, action)
     case AuthTypes.PROFILE_SUBMIT_SUCCESS:
@@ -55,6 +57,14 @@ function handleLoginSuccess(state, action) {
   state = state.set('activeUser', userInfo.get('id'))
   state = state.set('token', userInfo.get('token'))
   state = state.setIn(['profiles', userInfo.id], userInfo)
+  return state
+}
+
+function handleUserLogout(state, action) {
+  let activeUser = state.get('activeUser')
+  state = state.set('activeUser', undefined)
+  state = state.set('token', undefined)
+  state = state.deleteIn(['profiles', activeUser])
   return state
 }
 
