@@ -834,6 +834,47 @@ export function fetchGuessYouLikeShopList(payload) {
   })
 }
 
+export function submitShopPromotion(payload) {
+  let shopId = payload.shopId
+  let typeId = payload.typeId
+  let type = payload.type
+  let typeDesc = payload.typeDesc
+  let coverUrl = payload.coverUrl
+  let title = payload.title
+  let promotingPrice = payload.promotingPrice
+  let originalPrice = payload.originalPrice
+  let abstract = payload.abstract
+  let promotionDetailInfo = payload.promotionDetailInfo
+
+  if(Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
+    promotionDetailInfo = JSON.stringify(promotionDetailInfo)
+  }
+
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+
+  let ShopPromotion = AV.Object.extend('ShopPromotion')
+  let shopPromotion = new ShopPromotion()
+  shopPromotion.set('targetShop', shop)
+  shopPromotion.set('typeId', typeId)
+  shopPromotion.set('type', type)
+  shopPromotion.set('typeDesc', typeDesc)
+  shopPromotion.set('coverUrl', coverUrl)
+  shopPromotion.set('title', title)
+  shopPromotion.set('promotingPrice', promotingPrice)
+  shopPromotion.set('originalPrice', originalPrice)
+  shopPromotion.set('abstract', abstract)
+  shopPromotion.set('promotionDetailInfo', promotionDetailInfo)
+
+  return shopPromotion.save().then((results) => {
+    // console.log('submitShopPromotion===results=', results)
+    return results
+  }, function (err) {
+    // console.log('submitShopPromotion===err=', err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 
 
 

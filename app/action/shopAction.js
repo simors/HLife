@@ -492,3 +492,19 @@ export function fetchGuessYouLikeShopList(payload) {
   }
 }
 
+export function submitShopPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.submitShopPromotion(payload).then((result) => {
+      let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
+      dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
