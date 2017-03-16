@@ -95,13 +95,16 @@ export class ShopInfo extends ShopRecord {
         if(attrs.containedPromotions && attrs.containedPromotions.length) {
           // console.log('attrs.containedPromotions=====', attrs.containedPromotions)
           attrs.containedPromotions.forEach((promotion)=>{
-            // console.log('promotion=====', promotion)
-            if(promotion.hasData) {
+            // console.log('promotion==!!!!!!!!===', promotion)
+            // console.log('promotion._hasData==!!!!!!!!===', promotion._hasData)
+            if(promotion._hasData) {
               let promotionRecord = ShopPromotion.fromLeancloudObject(promotion)
+              console.log('promotionRecord==!!!!!!!!===', promotionRecord)
               containedPromotions.push(promotionRecord)
             }
           })
         }
+        // console.log('containedPromotions=>????????====', containedPromotions)
         record.set('containedPromotions', new List(containedPromotions))
         
         record.set('geo', attrs.geo)

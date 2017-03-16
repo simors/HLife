@@ -68,7 +68,7 @@ class NearbySalesView extends Component {
                     }
                   </View>
                   <View>
-                    <Text style={styles.itemText}>{item.pv}看过</Text>
+                    <Text style={styles.itemText}>{item.pv}人看过</Text>
                   </View>
                 </View>
               </View>

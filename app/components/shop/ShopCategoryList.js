@@ -437,10 +437,10 @@ class ShopCategoryList extends Component {
         return (
           <View key={'promotion_' + index} style={styles.shopPromotionBox}>
             <View style={styles.shopPromotionBadge}>
-              <Text style={styles.shopPromotionBadgeTxt}>{promotion.badge}</Text>
+              <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
             </View>
             <View style={styles.shopPromotionContent}>
-              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.content}</Text>
+              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
             </View>
           </View>
         )

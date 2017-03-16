@@ -231,7 +231,7 @@ class ShopDetail extends Component {
     let guessYouLikeView = <View/>
     if(this.props.guessYouLikeList.length) {
       guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
-        console.log('renderGuessYouLikeList.item***====', item)
+        // console.log('renderGuessYouLikeList.item***====', item)
         let shopTag = null
         if(item.containedTag && item.containedTag.length) {
           shopTag = item.containedTag[0].name
@@ -272,7 +272,7 @@ class ShopDetail extends Component {
   }
 
   renderShopPromotion(shopInfo) {
-    console.log('renderShopPromotion.shopInfo=**********==', shopInfo)
+    // console.log('renderShopPromotion.shopInfo=**********==', shopInfo)
     let containedPromotions = shopInfo.containedPromotions
     if(containedPromotions && containedPromotions.length) {
       let shopPromotionView = containedPromotions.map((promotion, index)=>{
