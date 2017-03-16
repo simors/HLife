@@ -110,26 +110,20 @@ class Mine extends Component {
       <View style={styles.functionView}>
         <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
           <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.MYTOPIC()}}>
+            <Image style={{width: normalizeW(16), height: normalizeH(16)}} source={require('../../assets/images/my_topic.png')}/>
             <Text style={styles.funBtnText}>话题</Text>
-            <Text style={styles.countText}>999+</Text>
           </TouchableOpacity>
         </View>
         <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
           <TouchableOpacity style={styles.funBtn} onPress={() => {}}>
+            <Image style={{width: normalizeW(16), height: normalizeH(16)}} source={require('../../assets/images/my_fans.png')}/>
             <Text style={styles.funBtnText}>粉丝</Text>
-            <Text style={styles.countText}>999+</Text>
           </TouchableOpacity>
         </View>
-        <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
+        <View style={styles.funcView}>
           <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.MYATTENTION()}}>
+            <Image style={{width: normalizeW(16), height: normalizeH(16)}} source={require('../../assets/images/my_follow.png')}/>
             <Text style={styles.funBtnText}>关注</Text>
-            <Text style={styles.countText}>999+</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
-          <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.FAVORITE_ARTICLES()}}>
-            <Text style={styles.funBtnText}>收藏</Text>
-            <Text style={styles.countText}>999+</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -198,14 +192,6 @@ class Mine extends Component {
             </View>
             <View>
               <Text style={styles.menuName}>钱包</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
-            <View style={styles.menuIcon}>
-              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/check_in_everyday.png')} />
-            </View>
-            <View>
-              <Text style={styles.menuName}>每日签到</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
@@ -332,7 +318,7 @@ const styles = StyleSheet.create({
   funBtnText: {
     fontSize: 17,
     color: 'white',
-    marginBottom: normalizeH(5),
+    marginTop: normalizeH(8),
   },
   countText: {
     fontSize: 12,
