@@ -23,9 +23,17 @@ export function fetchShopList(payload) {
     lcShop.getShopList(payload).then((shopList) => {
       let actionType = ShopActionTypes.UPDATE_SHOP_LIST
       if(!payload.isRefresh) {
-        actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
+        if(payload.isLocalQuering) {
+          actionType = ShopActionTypes.UPDATE_LOCAL_PAGING_SHOP_LIST
+        }else {
+          actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
+        }
         let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
         dispatch(updateAction({isLastPage: shopList.size < 5}))
+      }else {
+        if(payload.isLocalQuering) {
+          actionType = ShopActionTypes.UPDATE_LOCAL_SHOP_LIST
+        }
       }
       // console.log('fetchShopList.payload.isRefresh===',payload.isRefresh)
       // console.log('fetchShopList.shopList.size===',shopList.size)

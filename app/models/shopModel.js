@@ -472,6 +472,7 @@ export class ShopTag extends ShopTagRecord {
 
 export const Shop = Record({
   shopList: List(),
+  localShopList: List(),
   shopPromotionList: List(),
   fetchShopListArrivedLastPage: false,
   shopAnnouncements: Map(),

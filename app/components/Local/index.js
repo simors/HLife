@@ -41,7 +41,7 @@ import Swiper from 'react-native-swiper'
 import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
-import {selectShopList, selectFetchShopListIsArrivedLastPage} from '../../selector/shopSelector'
+import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
 import {fetchShopList, clearShopList} from '../../action/shopAction'
 // import ViewPager from 'react-native-viewpager'
 import ViewPager from '../common/ViewPager'
@@ -75,7 +75,6 @@ class Local extends Component {
     InteractionManager.runAfterInteractions(() => {
       // console.log('componentWillMount.runAfterInteractions===', this.props)
       this.props.fetchShopCategories()
-      this.props.clearShopList()
       this.refreshData()
     })
   }
@@ -190,10 +189,10 @@ class Local extends Component {
         return (
           <View key={'promotion_' + index} style={styles.shopPromotionBox}>
             <View style={styles.shopPromotionBadge}>
-              <Text style={styles.shopPromotionBadgeTxt}>{promotion.badge}</Text>
+              <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
             </View>
             <View style={styles.shopPromotionContent}>
-              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.content}</Text>
+              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
             </View>
           </View>
         )
@@ -333,6 +332,7 @@ class Local extends Component {
     let payload = {
       ...this.state.searchForm,
       isRefresh: !!isRefresh,
+      isLocalQuering: true,
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -410,7 +410,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const allShopCategories = selectShopCategories(state)
   const isUserLogined = authSelector.isUserLogined(state)
-  const shopList = selectShopList(state) || []
+  const shopList = selectLocalShopList(state) || []
   let nextSkipNum = 0
   if(shopList && shopList.length) {
     nextSkipNum = shopList[shopList.length-1].nextSkipNum

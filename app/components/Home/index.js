@@ -74,7 +74,6 @@ class Home extends Component {
       this.props.getCurrentLocation()
       this.props.fetchBanner({type: 0})
       this.props.getAllTopicCategories({})
-      this.props.clearShopPromotionList()
       this.refreshData()
     })
   }

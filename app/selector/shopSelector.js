@@ -11,6 +11,10 @@ export function selectShopList(state) {
   return selectShop(state).shopList
 }
 
+export function selectLocalShopList(state) {
+  return selectShop(state).localShopList
+}
+
 export function selectShopPromotionList(state) {
   return selectShop(state).shopPromotionList
 }

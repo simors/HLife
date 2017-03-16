@@ -12,6 +12,10 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdateShopList(state, action)
     case ShopActionTypes.UPDATE_PAGING_SHOP_LIST:
       return handleUpdatePagingShopList(state, action)
+    case ShopActionTypes.UPDATE_LOCAL_SHOP_LIST:
+      return handleUpdateLocalShopList(state, action)
+    case ShopActionTypes.UPDATE_LOCAL_PAGING_SHOP_LIST:
+      return handleUpdateLocalPagingShopList(state, action)
     case ShopActionTypes.UPDATE_SHOP_PROMOTION_LIST:
       return handleUpdateShopPromotionList(state, action)
     case ShopActionTypes.UPDATE_PAGING_SHOP_PROMOTION_LIST:
@@ -96,6 +100,20 @@ function handleUpdatePagingShopList(state, action) {
   let shopList = state.get('shopList')
   shopList = shopList.concat(payload.shopList)
   state = state.set('shopList',  shopList)
+  return state
+}
+
+function handleUpdateLocalShopList(state, action) {
+  let payload = action.payload
+  state = state.set('localShopList',  payload.shopList)
+  return state
+}
+
+function handleUpdateLocalPagingShopList(state, action) {
+  let payload = action.payload
+  let shopList = state.get('localShopList')
+  shopList = shopList.concat(payload.shopList)
+  state = state.set('localShopList',  shopList)
   return state
 }
 
