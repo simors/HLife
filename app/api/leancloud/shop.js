@@ -12,7 +12,8 @@ import {
   ShopCommentReply,
   ShopCommentUp,
   ShopCommentUp4Cloud,
-  ShopTag
+  ShopTag,
+  ShopPromotion
 } from '../../models/shopModel'
 import {UserInfo} from '../../models/userModels'
 import {Geolocation} from '../../components/common/BaiduMap'
@@ -93,6 +94,8 @@ export function getShopList(payload) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
     query.equalTo('containedTag', shopTag)
   }
+
+  query.equalTo('isOpen', true)
   // console.log('getShopList.query===', query)
   return query.find().then(function (results) {
     // console.log('getShopList.results=', results)
@@ -111,6 +114,58 @@ export function getShopList(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+}
+
+export function fetchShopPromotionList(payload) {
+  let distance = payload.distance
+  let geo = payload.geo
+  let geoCity = payload.geoCity
+  let isRefresh = payload.isRefresh
+  let skipNum = payload.isRefresh ? 0 : (payload.skipNum || 0)
+  let query = new AV.Query('ShopPromotion')
+
+  query.include(['targetShop'])
+  query.limit(5) // 最多返回 5 条结果
+
+  if(!isRefresh) { //分页查询
+    query.skip(skipNum)
+  }
+
+  //构建内嵌查询
+  let innerQuery = new AV.Query('Shop')
+  if(distance) {
+    if (Array.isArray(geo)) {
+      let point = new AV.GeoPoint(geo)
+      innerQuery.withinKilometers('geo', point, distance)
+    }
+  }else {
+    if(geoCity) {
+      innerQuery.contains('geoCity', geoCity)
+    }
+    if (Array.isArray(geo)) {
+      let point = new AV.GeoPoint(geo)
+      innerQuery.withinKilometers('geo', point, 100) //距离降序
+    }
+  }
+  //执行内嵌查询
+  query.matchesQuery('targetShop', innerQuery)
+
+  query.equalTo('status', "1")
+
+  // console.log('fetchShopPromotionList.query==*******===', query)
+  return query.find().then(function (results) {
+    // console.log('fetchShopPromotionList.results===*******===', results)
+    let shopPromotionList = []
+    results.forEach((result) => {
+      result.nextSkipNum = parseInt(skipNum) + results.length
+      shopPromotionList.push(ShopPromotion.fromLeancloudObject(result))
+    })
+    return new List(shopPromotionList)
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
 }
 
 export function fetchShopDetail(payload) {

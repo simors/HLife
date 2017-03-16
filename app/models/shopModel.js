@@ -4,6 +4,8 @@
 import {Map, List, Record} from 'immutable'
 import AV from 'leancloud-storage'
 import * as numberUtils from '../util/numberUtils'
+import * as locSelector from '../selector/locSelector'
+import {store} from '../store/persistStore'
 
 export const ShopRecord = Record({
   id: undefined,
@@ -18,6 +20,7 @@ export const ShopRecord = Record({
   geoCity:undefined, //店铺地理坐标对应城市名
   geoDistrict:[], //店铺地理坐标对应区名
   distance: undefined, //用户与店铺的距离
+  distanceUnit: 'km', //用户与店铺的距离单位
   geoName: undefined, //店铺地理坐标对应城市区域名称
   pv: 1000, //店铺点击量
   score: 4.5, //店铺评分
@@ -28,7 +31,7 @@ export const ShopRecord = Record({
   updatedAt: undefined,  //更新时间戳
   owner: {}, //店铺拥有者信息
   containedTag: [], //店铺拥有的标签
-  containedPromotions: [], //店铺促销活动
+  containedPromotions: List(), //店铺促销活动
   nextSkipNum: 0, //分页查询,跳过条数
 }, 'ShopRecord')
 
@@ -94,20 +97,12 @@ export class ShopInfo extends ShopRecord {
           attrs.containedPromotions.forEach((promotion)=>{
             // console.log('promotion=====', promotion)
             if(promotion.hasData) {
-              let containedPromotionAttrs = promotion.attributes
-              let shopPromotion = {
-                id: promotion.id,
-                badge: containedPromotionAttrs.badge,
-                content: containedPromotionAttrs.content,
-                createdDate: numberUtils.formatLeancloudTime(promotion.createdAt, 'YYYY-MM-DD HH:mm:SS'),
-                createdAt: promotion.createdAt.valueOf(),
-                updatedAt: promotion.updatedAt.valueOf(),
-              }
-              containedPromotions.push(shopPromotion)
+              let promotionRecord = ShopPromotion.fromLeancloudObject(promotion)
+              containedPromotions.push(promotionRecord)
             }
           })
         }
-        record.set('containedPromotions', containedPromotions)
+        record.set('containedPromotions', new List(containedPromotions))
         
         record.set('geo', attrs.geo)
         // console.log('lcObj.userCurGeo===', lcObj.userCurGeo)
@@ -115,7 +110,15 @@ export class ShopInfo extends ShopRecord {
         if(lcObj.userCurGeo && attrs.geo) {
           let geo = new AV.GeoPoint(attrs.geo)
           let distance = geo.kilometersTo(lcObj.userCurGeo)
-          record.set('distance', Number(distance).toFixed(0))
+          let distanceUnit = 'km'
+          if(distance > 1) {
+            distance = Number(distance).toFixed(1)
+          }else {
+            distance = Number(distance * 1000).toFixed(0)
+            distanceUnit = 'm'
+          }
+          record.set('distance', distance)
+          record.set('distanceUnit', distanceUnit)
         }
         record.set('nextSkipNum', lcObj.nextSkipNum || 0)
         record.set('geoName', attrs.geoName)
@@ -134,6 +137,76 @@ export class ShopInfo extends ShopRecord {
       throw err
     }
 
+  }
+}
+
+export const ShopPromotionRecord = Record({
+  id: undefined,
+  coverUrl: '',
+  typeId: '',
+  type: '',
+  typeDesc: '',
+  title: '',
+  promotingPrice: '',
+  originalPrice: '',
+  status: '',
+  pv: 0,
+  targetShop: {}, //所属店铺
+  promotionDetailInfo: '',
+  createdDate: undefined, //格式化后的创建时间
+  createdAt: undefined, //创建时间戳
+  updatedAt: undefined,  //更新时间戳
+  nextSkipNum: 0, //分页查询,跳过条数
+})
+
+export class ShopPromotion extends ShopPromotionRecord {
+  static fromLeancloudObject(lcObj) {
+    let shopPromotion = new ShopPromotionRecord()
+    let attrs = lcObj.attributes
+    return shopPromotion.withMutations((record)=>{
+      // console.log('shopPromotion.lcObj=', lcObj)
+      record.set('id', lcObj.id)
+      record.set('coverUrl', attrs.coverUrl)
+      record.set('typeId', attrs.typeId)
+      record.set('type', attrs.type)
+      record.set('typeDesc', attrs.typeDesc)
+      record.set('title', attrs.title)
+      record.set('promotingPrice', attrs.promotingPrice)
+      record.set('originalPrice', attrs.originalPrice)
+      record.set('status', attrs.status)
+      record.set('pv', numberUtils.formatNum(attrs.pv))
+      record.set('promotionDetailInfo', attrs.promotionDetailInfo)
+      record.set('nextSkipNum', lcObj.nextSkipNum || 0)
+
+      let targetShop = {}
+      let targetShopAttrs = attrs.targetShop.attributes
+      targetShop.id = attrs.targetShop.id
+      if(targetShopAttrs) {
+        targetShop.shopName = targetShopAttrs.shopName
+        targetShop.geoDistrict = targetShopAttrs.geoDistrict
+        targetShop.geo = targetShopAttrs.geo
+        if(targetShopAttrs.geo) {
+          let userCurGeo = locSelector.getGeopoint(store.getState())
+          let curGeoPoint = new AV.GeoPoint(userCurGeo)
+          let shopGeoPoint = new AV.GeoPoint(targetShopAttrs.geo)
+          let distance = shopGeoPoint.kilometersTo(curGeoPoint)
+          let distanceUnit = 'km'
+          if(distance > 1) {
+            distance = Number(distance).toFixed(1)
+          }else {
+            distance = Number(distance * 1000).toFixed(0)
+            distanceUnit = 'm'
+          }
+          targetShop.distance = distance
+          targetShop.distanceUnit = distanceUnit
+        }
+      }
+      record.set('targetShop', targetShop)
+
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
   }
 }
 
@@ -394,6 +467,7 @@ export class ShopTag extends ShopTagRecord {
 
 export const Shop = Record({
   shopList: List(),
+  shopPromotionList: List(),
   fetchShopListArrivedLastPage: false,
   shopAnnouncements: Map(),
   userFollowShopsInfo: Map(),

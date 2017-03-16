@@ -11,6 +11,10 @@ export function selectShopList(state) {
   return selectShop(state).shopList
 }
 
+export function selectShopPromotionList(state) {
+  return selectShop(state).shopPromotionList
+}
+
 export function selectUserFollowedShopList(state, userId) {
   let userFollowedShopList = state.SHOP.getIn(['userFollowedShops', userId])
   if(userFollowedShopList && userFollowedShopList.size) {

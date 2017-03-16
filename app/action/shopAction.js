@@ -47,6 +47,41 @@ export function fetchShopList(payload) {
   }
 }
 
+export function clearShopPromotionList(payload) {
+  return (dispatch, getState) => {
+    let actionType = ShopActionTypes.UPDATE_SHOP_PROMOTION_LIST
+    let updateAction = createAction(actionType)
+    dispatch(updateAction({shopPromotionList: []}))
+  }
+}
+
+export function fetchShopPromotionList(payload) {
+  return (dispatch ,getState) => {
+    lcShop.fetchShopPromotionList(payload).then((shopPromotionList) => {
+      let actionType = ShopActionTypes.UPDATE_SHOP_PROMOTION_LIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.UPDATE_PAGING_SHOP_PROMOTION_LIST
+      }
+      // console.log('fetchShopPromotion.payload.isRefresh===',payload.isRefresh)
+      // console.log('fetchShopPromotion.shopList.size===',shopList.size)
+      // console.log('fetchShopPromotion.shopList.size < 5===',(shopList.size < 5))
+      
+      if(payload.isRefresh || shopPromotionList.size) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({shopPromotionList: shopPromotionList}))
+      }
+      
+      if(payload.success){
+        payload.success(shopPromotionList.isEmpty())
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function fetchUserFollowShops(payload) {
   return (dispatch, getState) => {
     lcShop.fetchUserFollowShops(payload).then((results) =>{

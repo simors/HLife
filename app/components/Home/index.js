@@ -45,7 +45,11 @@ import MessageBell from '../common/MessageBell'
 import NearbyTopicView from './NearbyTopicView'
 import NearbyShopView from './NearbyShopView'
 import NearbySalesView from './NearbySalesView'
-import {getCity} from '../../selector/locSelector'
+import {getCity, getGeopoint} from '../../selector/locSelector'
+import * as Toast from '../common/Toast'
+import {selectShopPromotionList} from '../../selector/shopSelector'
+import {fetchShopPromotionList, clearShopPromotionList} from '../../action/shopAction'
+import * as DeviceInfo from 'react-native-device-info'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -56,94 +60,65 @@ class Home extends Component {
     super(props)
 
     this.state = {
-      defaultIndex: 0,
+      searchForm: {
+        distance: 5,
+        geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
+        geoCity: props.city || '',
+        skipNum: 0
+      },
     }
-    this.defaultIndex = 0
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
       this.props.fetchBanner({type: 0})
-      // this.props.fetchAnnouncement({type: 0})
       this.props.getAllTopicCategories({})
+      this.props.clearShopPromotionList()
+      this.refreshData()
     })
   }
 
   componentDidMount() {
-
+    if(DeviceInfo.isEmulator()) {
+      this.state.searchForm.geo = [28.213866,112.8186868]
+      this.state.searchForm.geoCity = '长沙'
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          geo: this.state.searchForm.geo,
+          geoCity: this.state.searchForm.geoCity
+        }
+      })
+    }
   }
-
-  onMomentumScrollEnd(event, state) {
-    console.log(`--->onMomentumScrollEnd page index:${state.index}, total:${state.total}`)
-    this.defaultIndex = state.index
+  
+  componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps.props===', this.props)
+    // console.log('componentWillReceiveProps.nextProps===', nextProps)
+    if(nextProps.nextSkipNum) {
+      // this.state.searchForm.skipNum = nextProps.nextSkipNum
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          skipNum: nextProps.nextSkipNum
+        }
+      })
+    }
   }
 
   renderRow(rowData, rowId) {
     switch (rowData.type) {
-      case 'NEARBY_TOPIC':
-        return this.renderNearbyTopic()
-      case 'HEALTH_COLUMN':
-        return this.renderHealthColumn()
-      case 'ANNOUNCEMENT_COLUMN':
-        return this.renderAnnouncementColumn()
       case 'BANNER_COLUMN':
         return this.renderBannerColumn()
-      case 'COLUMNS_COLUMN':
-        return this.renderColumnsColumn()
-      case 'CHANNELS_COLUMN':
-        return this.renderChannelsColumn()
-      case 'DAILY_CHOSEN_COLUMN':
-        return this.renderDailyChosenColumn()
+      case 'NEARBY_TOPIC':
+        return this.renderNearbyTopic()
+      case 'NEARBY_SHOP':
+        return this.renderNearbyShop()
+      case 'NEARBY_SHOP_PROMOTION':
+        return this.renderNearbySalesView()
       default:
         return <View />
-    }
-
-  }
-
-  renderNearbyTopic() {
-    return (
-      <View style={styles.moduleSpace}>
-        <NearbyTopicView />
-      </View>
-    )
-  }
-
-  renderNearbyShop() {
-    return (
-      <View style={styles.moduleSpace}>
-        <NearbyShopView />
-      </View>
-    )
-  }
-
-  renderNearbySalesView() {
-    return (
-      <View style={styles.moduleSpace}>
-        <NearbySalesView />
-      </View>
-    )
-  }
-
-  renderHealthColumn() {
-    return (
-      <View style={styles.healthModule}>
-        <Health />
-      </View>
-    )
-  }
-
-  renderAnnouncementColumn() {
-    if (this.props.announcement) {
-      return (
-        <View style={styles.announcementModule}>
-          <CommonMarquee2 data={this.props.announcement}/>
-        </View>
-      )
-    } else {
-      return (
-        <View style={styles.announcementModule}></View>
-      )
     }
   }
 
@@ -163,45 +138,79 @@ class Home extends Component {
     }
   }
 
-  renderColumnsColumn() {
+  renderNearbyTopic() {
     return (
-      <View style={styles.columnsModule}>
-        <Columns/>
+      <View style={styles.moduleSpace}>
+        <NearbyTopicView />
       </View>
     )
   }
 
-  renderChannelsColumn() {
-    if (this.props.topics.length > 0) {
-      return (
-        <View style={styles.channelsModule}>
-          <Channels topics={this.props.topics}/>
-        </View>
-      )
-    }
-    else {
-      return (
-        <View style={styles.channelsModule}>
-        </View>
-      )
-    }
-  }
-
-  renderDailyChosenColumn() {
+  renderNearbyShop() {
+    // console.log('renderNearbyShop.this.props.shopPromotionList====', this.props.shopPromotionList)
     return (
-      <View style={styles.dailyChosenModule}>
-        <DailyChosen showBadge={true} containerStyle={{marginBottom: 15}}/>
-        <DailyChosen />
+      <View style={styles.moduleSpace}>
+        <NearbyShopView
+          shopPromotionList={this.props.shopPromotionList}
+        />
       </View>
     )
   }
+
+  renderNearbySalesView() {
+    return (
+      <View style={{}}>
+        <NearbySalesView
+          shopPromotionList={this.props.shopPromotionList}
+        />
+      </View>
+    )
+  }
+
+
 
   refreshData() {
-
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
+  loadMoreData(isRefresh) {
+    // console.log('this.state===', this.state)
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
 
+    let payload = {
+      ...this.state.searchForm,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        this.isQuering = false
+        if(!this.listView) {
+          return
+        }
+        // console.log('loadMoreData.isEmpty=====', isEmpty)
+        if(isEmpty) {
+          if(isRefresh && this.state.searchForm.distance) {
+            this.setState({
+              searchForm: {
+                ...this.state.searchForm,
+                distance: ''
+              }
+            }, ()=>{
+              this.refreshData()
+            })
+          }
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchShopPromotionList(payload)
   }
 
   render() {
@@ -221,12 +230,20 @@ class Home extends Component {
         />
 
         <View style={styles.body}>
-          <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
-            {this.renderBannerColumn()}
-            {this.renderNearbyTopic()}
-            {this.renderNearbyShop()}
-            {this.renderNearbySalesView()}
-          </ScrollView>
+          <View>
+            <CommonListView
+              contentContainerStyle={{backgroundColor: '#fff'}}
+              dataSource={this.props.ds}
+              renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+              loadNewData={()=> {
+                this.refreshData()
+              }}
+              loadMoreData={()=> {
+                this.loadMoreData(false, true)
+              }}
+              ref={(listView) => this.listView = listView}
+            />
+          </View>
         </View>
       </View>
     )
@@ -246,24 +263,18 @@ const mapStateToProps = (state, ownProps) => {
   let dataArray = []
   dataArray.push({type: 'BANNER_COLUMN'})
   dataArray.push({type: 'NEARBY_TOPIC'})
-  // dataArray.push({type: 'ANNOUNCEMENT_COLUMN'})
-  // dataArray.push({type: 'HEALTH_COLUMN'})
-  // dataArray.push({type: 'COLUMNS_COLUMN'})
-  // dataArray.push({type: 'CHANNELS_COLUMN'})
-  // dataArray.push({type: 'DAILY_CHOSEN_COLUMN'})
+  dataArray.push({type: 'NEARBY_SHOP'})
+  dataArray.push({type: 'NEARBY_SHOP_PROMOTION'})
 
-  const announcement = getAnnouncement(state, 0)
   const banner = getBanner(state, 0)
-  // const topics = getTopicCategories(state)
 
-  // let pickedTopics = []
-  // if (topics) {
-  //   topics.forEach((value) => {
-  //     if (value.isPicked) {
-  //       pickedTopics.push(value)
-  //     }
-  //   })
-  // }
+  const shopPromotionList = selectShopPromotionList(state) || []
+  let nextSkipNum = 0
+  if(shopPromotionList && shopPromotionList.length) {
+    nextSkipNum = shopPromotionList[shopPromotionList.length-1].nextSkipNum
+  }
+
+  let geoPoint = getGeopoint(state)
 
   return {
     // announcement: announcement,
@@ -271,6 +282,10 @@ const mapStateToProps = (state, ownProps) => {
     // topics: pickedTopics,
     ds: ds.cloneWithRows(dataArray),
     city: getCity(state),
+    geoPoint: geoPoint,
+    nextSkipNum: nextSkipNum,
+    shopPromotionList: shopPromotionList,
+
   }
 }
 
@@ -279,6 +294,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchAnnouncement,
   getAllTopicCategories,
   getCurrentLocation,
+  fetchShopPromotionList,
+  clearShopPromotionList,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
@@ -301,6 +318,7 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+    marginBottom: 42
   },
   healthModule: {
     height: normalizeH(64),

@@ -27,174 +27,63 @@ class NearbySalesView extends Component {
   }
 
   renderSaleItems() {
+    let promotionsView = <View />
+    if(this.props.shopPromotionList && this.props.shopPromotionList.length) {
+      promotionsView = this.props.shopPromotionList.map((item, index)=>{
+        return (
+          <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {}}>
+            <View style={styles.saleItemView}>
+              <View style={styles.saleImg}>
+                <Image style={{flex: 1}}
+                       source={{uri: item.coverUrl}}/>
+              </View>
+              <View style={styles.saleContent}>
+                <View>
+                  <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
+                </View>
+                <View style={styles.addressTextView}>
+                  <View style={{flexDirection: 'row', width: 180}}>
+                    <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>{item.targetShop.shopName}</Text>
+                    <Text style={styles.itemText}> | </Text>
+                    <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>{item.targetShop.geoDistrict}</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.itemText}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
+                  </View>
+                </View>
+                <View style={styles.saleAbstract}>
+                  <View style={styles.saleLabel}>
+                    <Text style={styles.saleLabelText}>{item.type}</Text>
+                  </View>
+                  <View style={{marginLeft: normalizeW(10)}}>
+                    <Text style={styles.itemText} numberOfLines={1}>{item.typeDesc}</Text>
+                  </View>
+                </View>
+                <View style={styles.priceView}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={styles.priceText}>¥</Text>
+                    <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
+                    {item.originalPrice &&
+                      <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}>(原价 {item.originalPrice})</Text>
+                    }
+                  </View>
+                  <View>
+                    <Text style={styles.itemText}>{item.pv}看过</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )
+      })
+    }
+
     return (
       <View style={{flex: 1}}>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={styles.saleItemView}>
-            <View style={styles.saleImg}>
-              <Image style={{flex: 1}}
-                     source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1489481135&di=7bcc5e7b131b9079a769df2eabc23eca&imgtype=jpg&er=1&src=http%3A%2F%2Fm.360buyimg.com%2Fn6%2Fjfs%2Ft2731%2F260%2F2600069887%2F481379%2Fde020626%2F576df6c1Nce091bb5.jpg'}}/>
-            </View>
-            <View style={styles.saleContent}>
-              <View>
-                <Text style={styles.itemTitle} numberOfLines={1}>正宗永州冰糖橙</Text>
-              </View>
-              <View style={styles.addressTextView}>
-                <View style={{flexDirection: 'row', width: 180}}>
-                  <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>绿叶水果</Text>
-                  <Text style={styles.itemText}> | </Text>
-                  <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>润和紫郡</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>1.5km</Text>
-                </View>
-              </View>
-              <View style={styles.saleAbstract}>
-                <View style={styles.saleLabel}>
-                  <Text style={styles.saleLabelText}>预售</Text>
-                </View>
-                <View style={{marginLeft: normalizeW(10)}}>
-                  <Text style={styles.itemText} numberOfLines={1}>3月6号开售</Text>
-                </View>
-              </View>
-              <View style={styles.priceView}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={styles.priceText}>¥</Text>
-                  <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>6.0 / 千克</Text>
-                  <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}>(原价 8.0)</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>99+看过</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={styles.saleItemView}>
-            <View style={styles.saleImg}>
-              <Image style={{flex: 1}}
-                     source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488893634400&di=13fe39fbb85d7eb950d39407c2f44c78&imgtype=0&src=http%3A%2F%2Fi5.xiachufang.com%2Fimage%2F600%2F430993c8448111e59cbdb8ca3aeed2d7.jpg'}}/>
-            </View>
-            <View style={styles.saleContent}>
-              <View>
-                <Text style={styles.itemTitle} numberOfLines={1}>轰动手感延烧乳酪</Text>
-              </View>
-              <View style={styles.addressTextView}>
-                <View style={{flexDirection: 'row', width: 180}}>
-                  <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>罗莎蛋糕</Text>
-                  <Text style={styles.itemText}> | </Text>
-                  <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>润和紫郡</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>1.5km</Text>
-                </View>
-              </View>
-              <View style={styles.saleAbstract}>
-                <View style={styles.saleLabel}>
-                  <Text style={styles.saleLabelText}>限时购</Text>
-                </View>
-                <View style={{marginLeft: normalizeW(10)}}>
-                  <Text style={styles.itemText} numberOfLines={1}>每天18：00-24：00</Text>
-                </View>
-              </View>
-              <View style={styles.priceView}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={styles.priceText}>¥</Text>
-                  <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>16.0</Text>
-                  <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}>(原价 18)</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>99+看过</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={styles.saleItemView}>
-            <View style={styles.saleImg}>
-              <Image style={{flex: 1}}
-                     source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488893892667&di=3bda75c538fa405a5a6dc876c30f96c3&imgtype=0&src=http%3A%2F%2Fimg.daimg.com%2Fuploads%2Fallimg%2F130920%2F3-130920223914.jpg'}}/>
-            </View>
-            <View style={styles.saleContent}>
-              <View>
-                <Text style={styles.itemTitle} numberOfLines={1}>单人瑜伽季卡</Text>
-              </View>
-              <View style={styles.addressTextView}>
-                <View style={{flexDirection: 'row', width: 180}}>
-                  <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>安好瑜伽</Text>
-                  <Text style={styles.itemText}> | </Text>
-                  <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>润和紫郡</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>1.5km</Text>
-                </View>
-              </View>
-              <View style={styles.saleAbstract}>
-                <View style={styles.saleLabel}>
-                  <Text style={styles.saleLabelText}>折扣</Text>
-                </View>
-                <View style={{marginLeft: normalizeW(10)}}>
-                  <Text style={styles.itemText} numberOfLines={1}>店庆月，3月15号截止</Text>
-                </View>
-              </View>
-              <View style={styles.priceView}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={styles.priceText}>¥</Text>
-                  <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>198 / 人</Text>
-                  <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}>(原价 288)</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>99+看过</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={styles.saleItemView}>
-            <View style={styles.saleImg}>
-              <Image style={{flex: 1}}
-                     source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488893694795&di=7e5ba6de121c02e9a163feec9686e99b&imgtype=0&src=http%3A%2F%2Fnews.winshang.com%2Fmember%2FFCK%2F2015%2F3%2F16%2F2015316111757221400x.jpg'}}/>
-            </View>
-            <View style={styles.saleContent}>
-              <View>
-                <Text style={styles.itemTitle} numberOfLines={1}>绿色水果蔬菜</Text>
-              </View>
-              <View style={styles.addressTextView}>
-                <View style={{flexDirection: 'row', width: 180}}>
-                  <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>绿洲超市</Text>
-                  <Text style={styles.itemText}> | </Text>
-                  <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>润和紫郡</Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>1.5km</Text>
-                </View>
-              </View>
-              <View style={styles.saleAbstract}>
-                <View style={styles.saleLabel}>
-                  <Text style={styles.saleLabelText}>限时购</Text>
-                </View>
-                <View style={{marginLeft: normalizeW(10)}}>
-                  <Text style={styles.itemText}>每天18：00-24：00</Text>
-                </View>
-              </View>
-              <View style={styles.priceView}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={styles.priceText}>¥</Text>
-                  <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>全场8.5折</Text>
-                  <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}></Text>
-                </View>
-                <View>
-                  <Text style={styles.itemText}>99+看过</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
+        {promotionsView}
       </View>
     )
+
   }
 
   render() {
