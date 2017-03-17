@@ -26,100 +26,85 @@ class NearbyShopView extends Component {
     super(props)
   }
 
+  componentWillReceiveProps(nextProps) {
+    //console.log('NearbyShopView.allShopCategories=====>>>>>', nextProps.allShopCategories)
+  }
+
+  gotoShopCategoryList(shopCategory) {
+    Actions.SHOP_CATEGORY_LIST({
+      shopCategoryId: shopCategory.shopCategoryId,
+      shopCategoryName: shopCategory.text})
+  }
+
   renderMainShop() {
-    return (
-      <View style={styles.mainShops}>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={[styles.mainShopItem, {paddingRight: 2}]}>
-            <View style={{width: normalizeW(80)}}>
-              <View style={styles.mainShopTitleView}>
-                <Text style={[styles.shopTitle, {color: THEME.base.mainColor}]} numberOfLines={1}>美食诱惑</Text>
+    let mainItemView = <View />
+
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      mainItemView = this.props.allShopCategories.map((item, index)=>{
+        if(index >= 2) {
+          return null
+        }
+        return (
+          <TouchableOpacity key={'mainItem_' + index} style={{flex: 1}} onPress={() => {this.gotoShopCategoryList(item)}}>
+            <View style={[styles.mainShopItem, {paddingRight: 2}]}>
+              <View style={{width: normalizeW(80)}}>
+                <View style={styles.mainShopTitleView}>
+                  <Text style={[styles.shopTitle, {color: item.textColor || THEME.base.mainColor}]} numberOfLines={1}>{item.text}</Text>
+                </View>
+                <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
+                  <Text style={styles.itemAbstract} numberOfLines={6}>{item.describe}</Text>
+                </View>
               </View>
-              <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
-                <Text style={styles.itemAbstract} numberOfLines={6}>做生活的美食家</Text>
-              </View>
-            </View>
-            <View style={{flex: 1}}>
-              <Image style={{flex: 1}} source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488878883278&di=033c6d595fc763a7141b835d1a7eb3fe&imgtype=0&src=http%3A%2F%2Fimages4.c-ctrip.com%2Ftarget%2Ffd%2Ftuangou%2Fg1%2FM05%2F5F%2FE5%2FCghzflSTmliATO2qAADCgTeKOFQ983_720_480_s.jpg'}}></Image>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={styles.mainShopItem}>
-            <View style={{width: normalizeW(80)}}>
-              <View style={styles.mainShopTitleView}>
-                <Text style={[styles.shopTitle, {color: THEME.base.mainColor}]} numberOfLines={1}>日用超市</Text>
-              </View>
-              <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
-                <Text style={styles.itemAbstract} numberOfLines={6}>生活的智慧都在这里</Text>
+              <View style={{flex: 1}}>
+                <Image style={{flex: 1}} source={{uri: item.showPictureSource}}></Image>
               </View>
             </View>
-            <View style={{flex: 1}}>
-              <Image style={{flex: 1}} source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488879502515&di=430c959a4e486a3e21ba795d480636a2&imgtype=jpg&src=http%3A%2F%2Fimg3.imgtn.bdimg.com%2Fit%2Fu%3D1102908986%2C2844132103%26fm%3D214%26gp%3D0.jpg'}}></Image>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
+          </TouchableOpacity>
+        )
+      })
+
+      return (
+        <View style={styles.mainShops}>
+          {mainItemView}
+        </View>
+      )
+    }
+    return mainItemView
   }
 
   renderSecondShop() {
-    return (
-      <View style={styles.secondShops}>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={[styles.secondShopItem, {borderRightWidth: 1, borderColor: '#F5F5F5'}]}>
-            <View>
-              <Text style={[styles.shopTitle, {color: '#4990E2'}]} numberOfLines={1}>药店</Text>
+
+    let secondItemView = <View />
+
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      secondItemView = this.props.allShopCategories.map((item, index)=>{
+        if(index < 2 || index > 5) {
+          return null
+        }
+        return (
+          <TouchableOpacity key={'secondItem_' + index} style={{flex: 1}} onPress={() => {this.gotoShopCategoryList(item)}}>
+            <View style={[styles.secondShopItem, {borderRightWidth: 1, borderColor: '#F5F5F5'}]}>
+              <View>
+                <Text style={[styles.shopTitle, {color: item.textColor || '#4990E2'}]} numberOfLines={1}>{item.text}</Text>
+              </View>
+              <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
+                <Text style={styles.itemAbstract} numberOfLines={1}>{item.describe}</Text>
+              </View>
+              <View style={styles.secondShopImg}>
+                <Image style={{flex: 1}} source={{uri: item.showPictureSource}}></Image>
+              </View>
             </View>
-            <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
-              <Text style={styles.itemAbstract} numberOfLines={1}>医疗保健</Text>
-            </View>
-            <View style={styles.secondShopImg}>
-              <Image style={{flex: 1}} source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488881295873&di=453178b13edcf7b57c56a35d33b651b5&imgtype=0&src=http%3A%2F%2Fwww.qnr.cn%2Fmed%2Fcano%2F201501%2F20150127190953936.jpg'}}></Image>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={[styles.secondShopItem, {borderRightWidth: 1, borderColor: '#F5F5F5'}]}>
-            <View>
-              <Text style={[styles.shopTitle, {color: '#7ED321'}]} numberOfLines={1}>健康养生</Text>
-            </View>
-            <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
-              <Text style={styles.itemAbstract} numberOfLines={1}>优质生活</Text>
-            </View>
-            <View style={styles.secondShopImg}>
-              <Image style={{flex: 1}} source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488882365481&di=c72674a15be6dedcf52f08f5afbbcd5e&imgtype=0&src=http%3A%2F%2Fimg01.taopic.com%2F141109%2F240421-14110ZP22487.jpg'}}></Image>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={[styles.secondShopItem, {borderRightWidth: 1, borderColor: '#F5F5F5'}]}>
-            <View>
-              <Text style={[styles.shopTitle, {color: '#FF9D4E'}]} numberOfLines={1}>母婴</Text>
-            </View>
-            <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
-              <Text style={styles.itemAbstract} numberOfLines={1}>宝贝快长大</Text>
-            </View>
-            <View style={styles.secondShopImg}>
-              <Image style={{flex: 1}} source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488882403992&di=2e7ec3b802cf002324824c23fada34b2&imgtype=0&src=http%3A%2F%2Fimg.7808.cn%2F10%2F2012%2F1018%2F13505313549683.jpg'}}></Image>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => {}}>
-          <View style={styles.secondShopItem}>
-            <View>
-              <Text style={[styles.shopTitle, {color: '#00BE96'}]} numberOfLines={1}>美容美发</Text>
-            </View>
-            <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
-              <Text style={styles.itemAbstract} numberOfLines={1}>烫染99元起</Text>
-            </View>
-            <View style={styles.secondShopImg}>
-              <Image style={{flex: 1}} source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1488882470677&di=a4f43ce7f190b73e3f4de37099240a1f&imgtype=0&src=http%3A%2F%2Fimg.taopic.com%2Fuploads%2Fallimg%2F110726%2F2028-110H609312443.jpg'}}></Image>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
+          </TouchableOpacity>
+        )
+      })
+
+      return (
+        <View style={styles.secondShops}>
+          {secondItemView}
+        </View>
+      )
+    }
+    return secondItemView
   }
 
   render() {
@@ -141,8 +126,33 @@ class NearbyShopView extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let newProps = {}
-  return newProps
+  // console.log('NearbyShopView.mapStateToProps==ownProps===>>>>>', ownProps.allShopCategories)
+  let allShopCategories = ownProps.allShopCategories
+  if(allShopCategories && allShopCategories.length) {
+    allShopCategories.sort((item1, item2)=>{
+      let displaySort1 = item1.displaySort
+      let displaySort2 = item2.displaySort
+      if(!displaySort1) {
+        return 1
+      }
+      if(!displaySort2) {
+        return -1
+      }
+      let displaySortNum1 = parseInt(displaySort1)
+      let displaySortNum2 = parseInt(displaySort2)
+      if(!displaySortNum1) {
+        return 1
+      }
+      if(!displaySortNum2) {
+        return -1
+      }
+      return displaySortNum1 - displaySortNum2
+    })
+  }
+  // console.log('NearbyShopView.sorted==allShopCategories===>>>>>', ownProps.allShopCategories)
+  return {
+    allShopCategories: allShopCategories,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
