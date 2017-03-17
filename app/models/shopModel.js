@@ -205,7 +205,17 @@ export class ShopPromotion extends ShopPromotionRecord {
           targetShop.distance = distance
           targetShop.distanceUnit = distanceUnit
         }
+  
+        // console.log('targetShopAttrs----------->>>>>>', targetShopAttrs)
+        let targetShopOwner = targetShopAttrs.owner
+        if(targetShopOwner) {
+          targetShop.owner = {
+            id: targetShopOwner.id,
+            ...targetShopOwner.attributes
+          }
+        }
       }
+      // console.log('targetShop------******----->>>>>>', targetShop)
       record.set('targetShop', targetShop)
 
       record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))

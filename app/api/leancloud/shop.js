@@ -119,7 +119,7 @@ export function fetchShopPromotionList(payload) {
   let skipNum = payload.isRefresh ? 0 : (payload.skipNum || 0)
   let query = new AV.Query('ShopPromotion')
 
-  query.include(['targetShop'])
+  query.include(['targetShop', 'targetShop.owner'])
   query.limit(5) // 最多返回 5 条结果
 
   if(!isRefresh) { //分页查询

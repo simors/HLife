@@ -31,7 +31,7 @@ class NearbySalesView extends Component {
     if(this.props.shopPromotionList && this.props.shopPromotionList.length) {
       promotionsView = this.props.shopPromotionList.map((item, index)=>{
         return (
-          <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {}}>
+          <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {Actions.SHOP_PROMOTION_DETAIL({id:item.id})}}>
             <View style={styles.saleItemView}>
               <View style={styles.saleImg}>
                 <Image style={{flex: 1}}
