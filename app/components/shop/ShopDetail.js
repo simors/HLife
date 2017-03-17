@@ -27,6 +27,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
+import ShopPromotionModule from './ShopPromotionModule'
 
 import {fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
@@ -494,6 +495,10 @@ class ShopDetail extends Component {
                 </View>
               </View>
 
+              <ShopPromotionModule
+                shopPromotionList={this.props.shopDetail.containedPromotions}
+              />
+
               {this.props.latestShopAnnouncement.content &&
               <View style={styles.shopAnnouncementWrap}>
                 <View style={styles.titleWrap}>
@@ -592,6 +597,7 @@ class ShopDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
+  // console.log('shopDetail=====>>>>>>', shopDetail)
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
   // const shopList = selectShopList(state) || []
   const isUserLogined = authSelector.isUserLogined(state)
