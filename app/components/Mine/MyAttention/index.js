@@ -26,7 +26,6 @@ import {fetchUserFollowees} from '../../../action/authActions'
 import {fetchUserFollowShops} from '../../../action/shopAction'
 import CommonListView from '../../common/CommonListView'
 import ScoreShow from '../../common/ScoreShow'
-import FollowUser from '../../../components/common/FollowUser'
 import * as Toast from '../../common/Toast'
 import THEME from '../../../constants/themes/theme1'
 
@@ -46,7 +45,7 @@ class MyAttention extends Component {
     }
   }
 
-  refreshTopic() {
+  refreshFollowees() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchUserFollowees()
     })
@@ -55,15 +54,14 @@ class MyAttention extends Component {
   loadMoreData() {
   }
 
-  renderTopicItem(value, key) {
+  renderFollowees(value, key) {
     return (
-      <View key={key} style={{borderBottomWidth: 2, borderColor: '#e5e5e5',}}>
+      <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
         <View style={styles.introWrapStyle}>
-          <View style={{flexDirection: 'row'}} onPress={()=> {
-          }}>
+          <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
               <Image style={styles.avatarStyle}
-                     source={value.avatar ? {uri: value.avatar} : require("../../../assets/images/default_portrait@2x.png")}/>
+                     source={value.avatar ? {uri: value.avatar} : require("../../../assets/images/default_portrait.png")}/>
             </TouchableOpacity>
             <View>
               <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
@@ -74,12 +72,6 @@ class MyAttention extends Component {
                   粉丝: 3
                 </Text>
               </View>
-            </View>
-
-            <View style={styles.attentionStyle}>
-              <FollowUser
-                userId={value.id}
-              />
             </View>
           </View>
         </View>
@@ -92,9 +84,9 @@ class MyAttention extends Component {
       <CommonListView
         contentContainerStyle={styles.itemLayout}
         dataSource={this.props.userFollowees}
-        renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
+        renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
         loadNewData={()=> {
-          this.refreshTopic()
+          this.refreshFollowees()
         }}
         loadMoreData={()=> {
           this.loadMoreData()
@@ -144,11 +136,6 @@ class MyAttention extends Component {
               {rowData.distance &&
                 <Text style={styles.subTxt}>{rowData.distance}km</Text>
               }
-              <View style={styles.shopHeadRight}>
-                <View style={styles.shopAttentioned}>
-                  <Text style={styles.shopAttentionedTxt}>已关注</Text>
-                </View>
-              </View>
             </View>
           </View>
         </View>
@@ -176,8 +163,8 @@ class MyAttention extends Component {
   toggleTab(type) {
     this.setState({tabType: type}, ()=>{
       if(0 == type) {
-        this.refreshTopic()
-      }else if(1 == type) {
+        this.refreshFollowees()
+      } else if(1 == type) {
         this.refreshShopList()
       }
     })
@@ -195,24 +182,44 @@ class MyAttention extends Component {
         <View style={styles.body}>
           <View style={styles.tabBar}>
             <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
               onPress={()=> {
                 this.toggleTab(0)
               }}>
-              <Text style={{
-                fontSize: em(15),
-                color: this.state.tabType == 0 ? '#50E3C2' : '#4A4A4A',
-                marginLeft: normalizeW(86)
-              }}>吾友</Text>
+              <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+                this.state.tabType == 0 ?
+                {
+                  borderBottomWidth: 3,
+                  borderColor: THEME.base.mainColor
+                } : {}]}>
+                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                  this.state.tabType == 0 ?
+                  {
+                    color: THEME.base.mainColor,
+                    fontWeight: 'bold',
+                  } : {color: '#4A4A4A'}]}
+                >邻友</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
               onPress={()=> {
               this.toggleTab(1)
               }}>
-              <Text style={{
-                fontSize: em(15),
-                color: this.state.tabType == 1 ? '#50E3C2' : '#4A4A4A',
-                marginLeft: normalizeW(143)
-              }}>店铺</Text>
+              <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+                this.state.tabType == 1 ?
+                {
+                  borderBottomWidth: 3,
+                  borderColor: THEME.base.mainColor
+                } : {}]}>
+                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                  this.state.tabType == 1 ?
+                  {
+                    color: THEME.base.mainColor,
+                    fontWeight: 'bold',
+                  } : {color: '#4A4A4A'}]}
+                >店铺</Text>
+              </View>
             </TouchableOpacity>
           </View>
           {this.state.tabType == 0?this.renderAttentionList():this.renderShopList()}
@@ -280,9 +287,10 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
     alignItems: 'center',
     flexDirection: 'row',
-    // justifyContent:'center',
+    justifyContent: 'space-around',
     backgroundColor: '#FFFFFF',
-    marginBottom: normalizeH(15),
+    borderBottomWidth: 1,
+    borderColor: '#f5f5f5',
   },
   //用户、时间、地点信息
   introWrapStyle: {
@@ -295,13 +303,6 @@ const styles = StyleSheet.create({
     marginTop: 1,
     marginLeft: 10,
     color: "#4a4a4a"
-  },
-  attentionStyle: {
-    position: "absolute",
-    right: normalizeW(10),
-    top: normalizeH(6),
-    width: normalizeW(56),
-    height: normalizeH(25)
   },
   timeLocationStyle: {
     marginLeft: normalizeW(11),
@@ -330,8 +331,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     padding: 10,
-    marginBottom: normalizeH(10),
     backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderColor: '#F5F5F5',
   },
   coverWrap: {
     width: 80,
@@ -358,22 +360,5 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(10),
     color: '#d8d8d8',
     fontSize: em(12)
-  },
-  shopHeadRight: {
-    position: 'absolute',
-    right: 0,
-    top: 0
-  },
-  shopAttentioned: {
-    backgroundColor: THEME.colors.green,
-    paddingTop: 3,
-    paddingBottom: 3,
-    paddingLeft: 6,
-    paddingRight: 6,
-    borderRadius: 5,
-  },
-  shopAttentionedTxt: {
-    color: '#fff',
-    fontSize: em(14),
   },
 })
