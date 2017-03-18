@@ -25,10 +25,10 @@ import {selectUserFollowedShopList} from '../../../selector/shopSelector'
 import {fetchUserFollowees} from '../../../action/authActions'
 import {fetchUserFollowShops} from '../../../action/shopAction'
 import CommonListView from '../../common/CommonListView'
-import ScoreShow from '../../common/ScoreShow'
 import * as Toast from '../../common/Toast'
 import THEME from '../../../constants/themes/theme1'
-
+import UserFolloweesView from './UserFolloweesView'
+import ShopFolloweesView from './ShopFolloweesView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -57,24 +57,7 @@ class MyAttention extends Component {
   renderFollowees(value, key) {
     return (
       <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
-        <View style={styles.introWrapStyle}>
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
-              <Image style={styles.avatarStyle}
-                     source={value.avatar ? {uri: value.avatar} : require("../../../assets/images/default_portrait.png")}/>
-            </TouchableOpacity>
-            <View>
-              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
-                <Text style={styles.userNameStyle}>{value.nickname}</Text>
-              </TouchableOpacity>
-              <View style={styles.timeLocationStyle}>
-                <Text style={styles.timeTextStyle}>
-                  粉丝: 3
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        <UserFolloweesView userInfo={value} />
       </View>
     )
   }
@@ -120,26 +103,7 @@ class MyAttention extends Component {
 
   renderShopItem(rowData) {
     return (
-      <TouchableOpacity onPress={()=>{Actions.SHOP_DETAIL({id: rowData.id})}}>
-        <View style={[styles.shopInfoWrap]}>
-          <View style={styles.coverWrap}>
-            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
-          </View>
-          <View style={styles.shopIntroWrap}>
-            <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
-            <ScoreShow
-              containerStyle={{flex:1}}
-              score={rowData.score}
-            />
-            <View style={styles.subInfoWrap}>
-              <Text style={styles.subTxt}>{rowData.geoName}</Text>
-              {rowData.distance &&
-                <Text style={styles.subTxt}>{rowData.distance}km</Text>
-              }
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <ShopFolloweesView shopInfo={rowData} />
     )
   }
 
@@ -298,67 +262,10 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(12),
     backgroundColor: '#ffffff',
   },
-  userNameStyle: {
-    fontSize: em(15),
-    marginTop: 1,
-    marginLeft: 10,
-    color: "#4a4a4a"
-  },
-  timeLocationStyle: {
-    marginLeft: normalizeW(11),
-    marginTop: normalizeH(9),
-    flexDirection: 'row'
-  },
-  avatarStyle: {
-    height: normalizeH(44),
-    width: normalizeW(44),
-    marginLeft: normalizeW(12),
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
-  timeTextStyle: {
-    marginRight: normalizeW(26),
-    fontSize: em(12),
-    color: THEME.colors.lighter
-  },
+
   positionStyle: {
     marginRight: normalizeW(4),
     width: normalizeW(8),
     height: normalizeH(12)
-  },
-  shopInfoWrap: {
-    flex: 1,
-    flexDirection: 'row',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#F5F5F5',
-  },
-  coverWrap: {
-    width: 80,
-    height: 80
-  },
-  cover: {
-    flex: 1
-  },
-  shopIntroWrap: {
-    flex: 1,
-    paddingLeft: 10,
-  },
-  shopName: {
-    lineHeight: 20,
-    fontSize: em(17),
-    color: '#8f8e94'
-  },
-  subInfoWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 5
-  },
-  subTxt: {
-    marginRight: normalizeW(10),
-    color: '#d8d8d8',
-    fontSize: em(12)
   },
 })
