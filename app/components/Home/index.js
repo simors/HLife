@@ -232,7 +232,7 @@ class Home extends Component {
         <View style={styles.body}>
           <View>
             <CommonListView
-              contentContainerStyle={{backgroundColor: '#fff'}}
+              contentContainerStyle={{backgroundColor: '#F5F5F5'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
               loadNewData={()=> {

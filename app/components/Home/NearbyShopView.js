@@ -87,11 +87,11 @@ class NearbyShopView extends Component {
               <View>
                 <Text style={[styles.shopTitle, {color: item.textColor || '#4990E2'}]} numberOfLines={1}>{item.text}</Text>
               </View>
-              <View style={{paddingLeft: 8, paddingRight: 8, marginTop: 5}}>
+              <View style={{paddingLeft: 8, paddingRight: 8, paddingTop: 5}}>
                 <Text style={styles.itemAbstract} numberOfLines={1}>{item.describe}</Text>
               </View>
               <View style={styles.secondShopImg}>
-                <Image style={{flex: 1}} source={{uri: item.showPictureSource}}></Image>
+                <Image style={{width: normalizeW(82), height: normalizeH(44)}} source={{uri: item.showPictureSource}}></Image>
               </View>
             </View>
           </TouchableOpacity>
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   secondShopItem: {
     alignItems: 'center',
-    paddingTop: 13,
+    paddingTop: 10,
   },
   mainShopTitleView: {
     borderLeftWidth: 3,
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     lineHeight: 15,
   },
   secondShopImg: {
-    marginTop: 5,
+    paddingTop: 5,
     height: normalizeH(45),
     width: normalizeW(82),
     paddingBottom: normalizeH(10),
