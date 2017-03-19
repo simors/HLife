@@ -16,7 +16,7 @@ import {
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import ImageGroupViewer from '../../../components/common/Input/ImageGroupViewer'
-import {getLeancloudTimeToMonth} from '../../../util/numberUtils'
+import {getLeancloudTimeToMonth, getLeancloudTimeToDay} from '../../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -99,83 +99,84 @@ export default class MyTopicShow extends Component {
       let createDate = new Date(this.props.topic.createdAt)
       return (
         <View style={[styles.containerStyle, this.props.containerStyle]}>
-
           <View style={styles.timeWrapStyle}>
-            <Text style={styles.dayStyle}>{createDate.getDate()}</Text>
-            <Text style={styles.monthStyle}>{getLeancloudTimeToMonth(new Date(this.props.topic.createdAt))}</Text>
+            <View style={{backgroundColor: THEME.base.mainColor, borderRadius: 5, padding: 5}}>
+              <Text style={styles.dayStyle}>{getLeancloudTimeToDay(createDate)}</Text>
+              <Text style={styles.monthStyle}>{getLeancloudTimeToMonth(createDate)}</Text>
+            </View>
           </View>
-          {this.renderContentImage()}
-          <View style={styles.locationCommentStyle}>
-            <Image style={styles.positionPicStyle} source={require("../../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.positionTextStyle}>长沙</Text>
-            <Text style={styles.likeTextStyle}>
-              {"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}
-            </Text>
-            <Text style={styles.commentTextStyle}>
-              {"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}
-            </Text>
+          <View style={{flex: 1, paddingLeft: normalizeW(10)}}>
+            {this.renderContentImage()}
+            <View style={styles.locationCommentStyle}>
+              <Image style={styles.positionPicStyle} resizeMode="contain"
+                     source={require("../../../assets/images/writer_loaction.png")}/>
+              <Text style={styles.positionTextStyle}>长沙</Text>
+              <Text style={styles.likeTextStyle}>
+                {"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}
+              </Text>
+              <Text style={styles.commentTextStyle}>
+                {"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}
+              </Text>
+            </View>
           </View>
         </View>
-
       )
     }
   }
 }
 
 MyTopicShow.defaultProps = {
-  // style
   containerStyle: {},
 }
 
-//export
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
-    backgroundColor: '#fff'
+    alignItems: 'flex-start',
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    paddingTop: normalizeH(20),
   },
 
   //时间信息
   timeWrapStyle: {
-    marginTop: normalizeH(12),
-    marginLeft: normalizeW(12)
+    paddingLeft: normalizeW(12),
   },
   //时间日期信息
   dayStyle: {
     fontSize: em(22),
-    color: "#4a4a4a",
-    opacity: 0.5,
+    color: '#fff',
     textDecorationLine: 'underline',//下划线和删除线的样式：['none' /*default*/, 'underline', 'line-through', 'underline line-through'
   },
   //时间月份信息
   monthStyle: {
     fontSize: em(12),
-    color: "#9b9b9b"
+    color: '#fff',
   },
 
   //文章和图片
   contentWrapStyle: {
     flex: 1,
-    marginTop: normalizeH(13),
-    marginLeft: normalizeW(35),
-    marginRight: normalizeW(12)
+    paddingRight: normalizeW(12)
   },
   contentTitleStyle: {
     fontSize: em(17),
+    fontWeight: 'bold',
     lineHeight: 20,
-    marginBottom: normalizeH(5),
-    color: "#4a4a4a"
+    marginBottom: normalizeH(10),
+    color: "#5a5a5a"
   },
   contentStyle: {
     marginBottom: normalizeH(13),
     fontSize: em(15),
     lineHeight: 20,
-    color: "#9b9b9b"
+    color: "#aaaaaa"
   },
 
   //位置，点赞和评论
   locationCommentStyle: {
-    marginLeft: normalizeW(35),
     marginBottom: normalizeH(10),
+    alignItems: 'center',
     flexDirection: 'row'
   },
   positionTextStyle: {

@@ -19,7 +19,6 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import CommonButton from '../common/CommonButton'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'

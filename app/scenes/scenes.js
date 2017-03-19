@@ -40,6 +40,7 @@ import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
 import ShopDetail from '../components/shop/ShopDetail'
 import PublishShopComment from '../components/shop/PublishShopComment'
+import ShopPromotionDetail from '../components/shop/ShopPromotionDetail'
 import ShopCommentList from '../components/shop/ShopCommentList'
 import PublishTopics from '../components/Find/PublishTopics'
 import MessageBox from '../components/Message'
@@ -165,6 +166,7 @@ export const scenes = Actions.create(
       <Scene key="QRCODEREADER" component={QRCodeReader}/>
       <Scene key="PUBLISH" component={Publish}/>
       <Scene key="PUBLISH_SHOP_PROMOTION" component={PublishShopPromotion}/>
+      <Scene key="SHOP_PROMOTION_DETAIL" component={ShopPromotionDetail}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

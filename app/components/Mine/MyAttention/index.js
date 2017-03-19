@@ -25,11 +25,10 @@ import {selectUserFollowedShopList} from '../../../selector/shopSelector'
 import {fetchUserFollowees} from '../../../action/authActions'
 import {fetchUserFollowShops} from '../../../action/shopAction'
 import CommonListView from '../../common/CommonListView'
-import ScoreShow from '../../common/ScoreShow'
-import FollowUser from '../../../components/common/FollowUser'
 import * as Toast from '../../common/Toast'
 import THEME from '../../../constants/themes/theme1'
-
+import UserFolloweesView from './UserFolloweesView'
+import ShopFolloweesView from './ShopFolloweesView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -46,7 +45,7 @@ class MyAttention extends Component {
     }
   }
 
-  refreshTopic() {
+  refreshFollowees() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchUserFollowees()
     })
@@ -55,34 +54,10 @@ class MyAttention extends Component {
   loadMoreData() {
   }
 
-  renderTopicItem(value, key) {
+  renderFollowees(value, key) {
     return (
-      <View key={key} style={{borderBottomWidth: 2, borderColor: '#e5e5e5',}}>
-        <View style={styles.introWrapStyle}>
-          <View style={{flexDirection: 'row'}} onPress={()=> {
-          }}>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
-              <Image style={styles.avatarStyle}
-                     source={value.avatar ? {uri: value.avatar} : require("../../../assets/images/default_portrait@2x.png")}/>
-            </TouchableOpacity>
-            <View>
-              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.id})}>
-                <Text style={styles.userNameStyle}>{value.nickname}</Text>
-              </TouchableOpacity>
-              <View style={styles.timeLocationStyle}>
-                <Text style={styles.timeTextStyle}>
-                  粉丝: 3
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.attentionStyle}>
-              <FollowUser
-                userId={value.id}
-              />
-            </View>
-          </View>
-        </View>
+      <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
+        <UserFolloweesView userInfo={value} />
       </View>
     )
   }
@@ -92,9 +67,9 @@ class MyAttention extends Component {
       <CommonListView
         contentContainerStyle={styles.itemLayout}
         dataSource={this.props.userFollowees}
-        renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
+        renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
         loadNewData={()=> {
-          this.refreshTopic()
+          this.refreshFollowees()
         }}
         loadMoreData={()=> {
           this.loadMoreData()
@@ -128,31 +103,7 @@ class MyAttention extends Component {
 
   renderShopItem(rowData) {
     return (
-      <TouchableOpacity onPress={()=>{Actions.SHOP_DETAIL({id: rowData.id})}}>
-        <View style={[styles.shopInfoWrap]}>
-          <View style={styles.coverWrap}>
-            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
-          </View>
-          <View style={styles.shopIntroWrap}>
-            <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
-            <ScoreShow
-              containerStyle={{flex:1}}
-              score={rowData.score}
-            />
-            <View style={styles.subInfoWrap}>
-              <Text style={styles.subTxt}>{rowData.geoName}</Text>
-              {rowData.distance &&
-                <Text style={styles.subTxt}>{rowData.distance}km</Text>
-              }
-              <View style={styles.shopHeadRight}>
-                <View style={styles.shopAttentioned}>
-                  <Text style={styles.shopAttentionedTxt}>已关注</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <ShopFolloweesView shopInfo={rowData} />
     )
   }
 
@@ -176,8 +127,8 @@ class MyAttention extends Component {
   toggleTab(type) {
     this.setState({tabType: type}, ()=>{
       if(0 == type) {
-        this.refreshTopic()
-      }else if(1 == type) {
+        this.refreshFollowees()
+      } else if(1 == type) {
         this.refreshShopList()
       }
     })
@@ -195,24 +146,44 @@ class MyAttention extends Component {
         <View style={styles.body}>
           <View style={styles.tabBar}>
             <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
               onPress={()=> {
                 this.toggleTab(0)
               }}>
-              <Text style={{
-                fontSize: em(15),
-                color: this.state.tabType == 0 ? '#50E3C2' : '#4A4A4A',
-                marginLeft: normalizeW(86)
-              }}>吾友</Text>
+              <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+                this.state.tabType == 0 ?
+                {
+                  borderBottomWidth: 3,
+                  borderColor: THEME.base.mainColor
+                } : {}]}>
+                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                  this.state.tabType == 0 ?
+                  {
+                    color: THEME.base.mainColor,
+                    fontWeight: 'bold',
+                  } : {color: '#4A4A4A'}]}
+                >邻友</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
               onPress={()=> {
               this.toggleTab(1)
               }}>
-              <Text style={{
-                fontSize: em(15),
-                color: this.state.tabType == 1 ? '#50E3C2' : '#4A4A4A',
-                marginLeft: normalizeW(143)
-              }}>店铺</Text>
+              <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+                this.state.tabType == 1 ?
+                {
+                  borderBottomWidth: 3,
+                  borderColor: THEME.base.mainColor
+                } : {}]}>
+                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                  this.state.tabType == 1 ?
+                  {
+                    color: THEME.base.mainColor,
+                    fontWeight: 'bold',
+                  } : {color: '#4A4A4A'}]}
+                >店铺</Text>
+              </View>
             </TouchableOpacity>
           </View>
           {this.state.tabType == 0?this.renderAttentionList():this.renderShopList()}
@@ -280,9 +251,10 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH,
     alignItems: 'center',
     flexDirection: 'row',
-    // justifyContent:'center',
+    justifyContent: 'space-around',
     backgroundColor: '#FFFFFF',
-    marginBottom: normalizeH(15),
+    borderBottomWidth: 1,
+    borderColor: '#f5f5f5',
   },
   //用户、时间、地点信息
   introWrapStyle: {
@@ -290,90 +262,10 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(12),
     backgroundColor: '#ffffff',
   },
-  userNameStyle: {
-    fontSize: em(15),
-    marginTop: 1,
-    marginLeft: 10,
-    color: "#4a4a4a"
-  },
-  attentionStyle: {
-    position: "absolute",
-    right: normalizeW(10),
-    top: normalizeH(6),
-    width: normalizeW(56),
-    height: normalizeH(25)
-  },
-  timeLocationStyle: {
-    marginLeft: normalizeW(11),
-    marginTop: normalizeH(9),
-    flexDirection: 'row'
-  },
-  avatarStyle: {
-    height: normalizeH(44),
-    width: normalizeW(44),
-    marginLeft: normalizeW(12),
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
-  timeTextStyle: {
-    marginRight: normalizeW(26),
-    fontSize: em(12),
-    color: THEME.colors.lighter
-  },
+
   positionStyle: {
     marginRight: normalizeW(4),
     width: normalizeW(8),
     height: normalizeH(12)
-  },
-  shopInfoWrap: {
-    flex: 1,
-    flexDirection: 'row',
-    padding: 10,
-    marginBottom: normalizeH(10),
-    backgroundColor: '#fff',
-  },
-  coverWrap: {
-    width: 80,
-    height: 80
-  },
-  cover: {
-    flex: 1
-  },
-  shopIntroWrap: {
-    flex: 1,
-    paddingLeft: 10,
-  },
-  shopName: {
-    lineHeight: 20,
-    fontSize: em(17),
-    color: '#8f8e94'
-  },
-  subInfoWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 5
-  },
-  subTxt: {
-    marginRight: normalizeW(10),
-    color: '#d8d8d8',
-    fontSize: em(12)
-  },
-  shopHeadRight: {
-    position: 'absolute',
-    right: 0,
-    top: 0
-  },
-  shopAttentioned: {
-    backgroundColor: THEME.colors.green,
-    paddingTop: 3,
-    paddingBottom: 3,
-    paddingLeft: 6,
-    paddingRight: 6,
-    borderRadius: 5,
-  },
-  shopAttentionedTxt: {
-    color: '#fff',
-    fontSize: em(14),
   },
 })

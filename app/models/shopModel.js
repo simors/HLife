@@ -98,8 +98,9 @@ export class ShopInfo extends ShopRecord {
             // console.log('promotion==!!!!!!!!===', promotion)
             // console.log('promotion._hasData==!!!!!!!!===', promotion._hasData)
             if(promotion._hasData) {
-              let promotionRecord = ShopPromotion.fromLeancloudObject(promotion)
-              console.log('promotionRecord==!!!!!!!!===', promotionRecord)
+              let _targetShopLcObj = lcObj
+              let promotionRecord = ShopPromotion.fromLeancloudObject(promotion, _targetShopLcObj)
+              // console.log('promotionRecord==!!!!!!!!===', promotionRecord)
               containedPromotions.push(promotionRecord)
             }
           })
@@ -152,6 +153,7 @@ export const ShopPromotionRecord = Record({
   type: '',
   typeDesc: '',
   title: '',
+  abstract: '',
   promotingPrice: '',
   originalPrice: '',
   status: '',
@@ -165,7 +167,7 @@ export const ShopPromotionRecord = Record({
 })
 
 export class ShopPromotion extends ShopPromotionRecord {
-  static fromLeancloudObject(lcObj) {
+  static fromLeancloudObject(lcObj, targetShopLcObj) {
     let shopPromotion = new ShopPromotionRecord()
     let attrs = lcObj.attributes
     return shopPromotion.withMutations((record)=>{
@@ -176,6 +178,7 @@ export class ShopPromotion extends ShopPromotionRecord {
       record.set('type', attrs.type)
       record.set('typeDesc', attrs.typeDesc)
       record.set('title', attrs.title)
+      record.set('abstract', attrs.abstract)
       record.set('promotingPrice', attrs.promotingPrice)
       record.set('originalPrice', attrs.originalPrice)
       record.set('status', attrs.status)
@@ -186,6 +189,11 @@ export class ShopPromotion extends ShopPromotionRecord {
       let targetShop = {}
       let targetShopAttrs = attrs.targetShop.attributes
       targetShop.id = attrs.targetShop.id
+      if(targetShopLcObj) {
+        targetShopAttrs = targetShopLcObj.attributes
+        targetShop.id = targetShopLcObj.id
+      }
+
       if(targetShopAttrs) {
         targetShop.shopName = targetShopAttrs.shopName
         targetShop.geoDistrict = targetShopAttrs.geoDistrict
@@ -205,7 +213,17 @@ export class ShopPromotion extends ShopPromotionRecord {
           targetShop.distance = distance
           targetShop.distanceUnit = distanceUnit
         }
+  
+        // console.log('targetShopAttrs----------->>>>>>', targetShopAttrs)
+        let targetShopOwner = targetShopAttrs.owner
+        if(targetShopOwner) {
+          targetShop.owner = {
+            id: targetShopOwner.id,
+            ...targetShopOwner.attributes
+          }
+        }
       }
+      // console.log('targetShop------******----->>>>>>', targetShop)
       record.set('targetShop', targetShop)
 
       record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))

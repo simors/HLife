@@ -175,3 +175,15 @@ export function getLeancloudTimeToMonth(lcTime) {
     }
   }
 }
+
+export function getLeancloudTimeToDay(lcTime) {
+  let day = ""
+  if (lcTime) {
+    day = lcTime.getDate()
+    if (day < 10) {
+      return "0" + day
+    } else {
+      return day
+    }
+  }
+}

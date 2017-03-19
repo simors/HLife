@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/3/7.
+ * Created by zachary on 2017/3/17.
  */
 import React, {Component} from 'react'
 import {
@@ -21,7 +21,7 @@ import THEME from '../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class NearbySalesView extends Component {
+class ShopPromotionModule extends Component {
   constructor(props) {
     super(props)
   }
@@ -42,13 +42,11 @@ class NearbySalesView extends Component {
                   <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
                 </View>
                 <View style={styles.addressTextView}>
-                  <View style={{flexDirection: 'row', width: 180}}>
-                    <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>{item.targetShop.shopName}</Text>
-                    <Text style={styles.itemText}> | </Text>
-                    <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>{item.targetShop.geoDistrict}</Text>
+                  <View style={{flex:1}}>
+                    <Text style={[styles.itemText, styles.abstractTxt]} numberOfLines={2}>{item.abstract}</Text>
                   </View>
-                  <View>
-                    <Text style={styles.itemText}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
+                  <View style={styles.distanceBox}>
+                    <Text style={[styles.itemText, styles.distanceTxt]}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
                   </View>
                 </View>
                 <View style={styles.saleAbstract}>
@@ -111,11 +109,10 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(NearbySalesView)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopPromotionModule)
 
 const styles = StyleSheet.create({
   container: {
-    width: PAGE_WIDTH,
     justifyContent: 'center',
     backgroundColor: THEME.base.backgroundColor,
   },
@@ -150,7 +147,6 @@ const styles = StyleSheet.create({
   saleItemView: {
     flex: 1,
     flexDirection: 'row',
-    height: normalizeH(130),
     paddingTop: normalizeH(19),
     paddingBottom: normalizeH(15),
     borderBottomWidth: 1,
@@ -176,6 +172,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#AAAAAA',
     lineHeight: 12,
+  },
+  abstractTxt: {
+    lineHeight: 18,
+  },
+  distanceBox: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginLeft:8,
+  },
+  distanceTxt: {
+
   },
   addressTextView: {
     flexDirection: 'row',

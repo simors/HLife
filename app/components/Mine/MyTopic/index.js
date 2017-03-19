@@ -46,7 +46,7 @@ export class MyTopic extends Component {
   renderTopicItem(value, key) {
     return (
       <MyTopicShow key={key}
-                   containerStyle={{marginBottom: 10}}
+                   containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
                    topic={value}
       />
     )

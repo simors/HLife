@@ -26,8 +26,8 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {getBanner, getAnnouncement} from '../../selector/configSelector'
-import {fetchBanner, fetchAnnouncement, getAllTopicCategories} from '../../action/configAction'
+import {getBanner, selectShopCategories} from '../../selector/configSelector'
+import {fetchBanner, fetchShopCategories, getAllTopicCategories} from '../../action/configAction'
 import {getCurrentLocation} from '../../action/locAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -74,6 +74,7 @@ class Home extends Component {
       this.props.getCurrentLocation()
       this.props.fetchBanner({type: 0})
       this.props.getAllTopicCategories({})
+      this.props.fetchShopCategories()
       this.refreshData()
     })
   }
@@ -150,7 +151,7 @@ class Home extends Component {
     return (
       <View style={styles.moduleSpace}>
         <NearbyShopView
-          shopPromotionList={this.props.shopPromotionList}
+          allShopCategories={this.props.allShopCategories}
         />
       </View>
     )
@@ -231,7 +232,7 @@ class Home extends Component {
         <View style={styles.body}>
           <View>
             <CommonListView
-              contentContainerStyle={{backgroundColor: '#fff'}}
+              contentContainerStyle={{backgroundColor: '#F5F5F5'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
               loadNewData={()=> {
@@ -275,6 +276,9 @@ const mapStateToProps = (state, ownProps) => {
 
   let geoPoint = getGeopoint(state)
 
+  const allShopCategories = selectShopCategories(state)
+  // console.log('Home.allShopCategories*********>>>>>>>>>>>', allShopCategories)
+
   return {
     // announcement: announcement,
     banner: banner,
@@ -284,17 +288,18 @@ const mapStateToProps = (state, ownProps) => {
     geoPoint: geoPoint,
     nextSkipNum: nextSkipNum,
     shopPromotionList: shopPromotionList,
+    allShopCategories: allShopCategories,
 
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
-  fetchAnnouncement,
   getAllTopicCategories,
   getCurrentLocation,
   fetchShopPromotionList,
   clearShopPromotionList,
+  fetchShopCategories,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

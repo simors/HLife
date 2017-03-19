@@ -53,6 +53,22 @@ export function selectShopDetail(state, id) {
   return shopDetail
 }
 
+export function selectShopPromotionDetail(state, id) {
+  let shopPromotionDetail = {targetShop: {}}
+  let shopPromotionList = selectShopPromotionList(state)
+  if(shopPromotionList && shopPromotionList.length) {
+    shopPromotionList.forEach((item)=>{
+      if(item.id == id) {
+        shopPromotionDetail = item
+        return
+      }
+    })
+  }
+
+  // console.log('shopPromotionDetail=', shopPromotionDetail)
+  return shopPromotionDetail
+}
+
 export function selectShopAnnouncements(state, shopId) {
   return selectShop(state).shopAnnouncements[shopId] || []
 }

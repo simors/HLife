@@ -92,7 +92,7 @@ class Login extends Component {
             </View>
             <CommonButton title="登   陆" onPress={() => this.onButtonPress()}/>
             <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
-            <SnsLogin />
+            {/*<SnsLogin />*/}
           </ScrollView>
         </View>
       </View>

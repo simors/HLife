@@ -105,7 +105,11 @@ export const ShopCategoryConfig = Record({
   shopCategoryId: undefined,
   imageSource: undefined,
   text: undefined,
-  containedTag: undefined
+  containedTag: undefined,
+  displaySort: undefined,
+  textColor: '',
+  describe: '',
+  showPictureSource: ''
 })
 
 export class ShopCategory extends ShopCategoryConfig {
@@ -118,6 +122,10 @@ export class ShopCategory extends ShopCategoryConfig {
       record.set('shopCategoryId', attrs.shopCategoryId)
       record.set('imageSource', attrs.imageSource)
       record.set('text', attrs.text)
+      record.set('displaySort', attrs.displaySort)
+      record.set('textColor', attrs.textColor)
+      record.set('describe', attrs.describe)
+      record.set('showPictureSource', attrs.showPictureSource)
 
       let containedTag = []
       if(attrs.containedTag && attrs.containedTag.length) {
