@@ -15,6 +15,7 @@ import {ButtonGroup} from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import THEME from '../../../constants/themes/theme1'
 
 const male = () => <View style={{flex:1, justifyContent: 'center'}}><Text style={{alignSelf: 'center', fontSize:em(18)}}>男</Text></View>
 const female = () => <View style={{flex:1, justifyContent: 'center'}}><Text style={{alignSelf: 'center',fontSize:em(18)}}>女</Text></View>
@@ -77,7 +78,7 @@ class GenderSelector extends Component {
           selectedIndex={this.state.selectedIndex}
           buttons={buttons}
           containerStyle={{flex: 1, marginLeft: normalizeW(17), marginRight: normalizeW(17), justifyContent: 'center', alignItems: 'center'}}
-          selectedBackgroundColor="#50E3C2"
+          selectedBackgroundColor={THEME.base.mainColor}
         />
       </View>
 
