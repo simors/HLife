@@ -16,7 +16,6 @@ import {
   ListView,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import Header from '../common/Header'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
 import {getCity} from '../../selector/locSelector'
@@ -238,7 +237,7 @@ export class Find extends Component {
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
             <CommonListView
-              contentContainerStyle={{backgroundColor: '#E5E5E5'}}
+              contentContainerStyle={{backgroundColor: '#FFF'}}
               dataSource={dataSrc}
               renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
               loadNewData={()=> {
@@ -255,32 +254,13 @@ export class Find extends Component {
     )
   }
 
-  renderPublish() {
-    if(this.state.selectedTab != 0) {
-      return (
-        <TouchableHighlight underlayColor="transparent" style={styles.buttonImage}
-                            onPress={()=> {
-                              if (this.props.isLogin) {
-                                Actions.PUBLISH_TOPIC({topicId})
-                              } else {
-                                Actions.LOGIN()
-                              }
-                            }}>
-          <Image source={require("../../assets/images/local_write.png")}/>
-        </TouchableHighlight>
-      )
-    }
-  }
-
   render() {
-    let topicId = this.props.topicCategories[this.state.selectedTab]
     return (
       <View style={styles.container}>
         <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.topicId}
                        renderTopics={() => this.renderTopics()}
                        onSelected={(index) => this.getSelectedTab(index)}/>
-        {/*{this.renderPublish()}*/}
       </View>
     )
   }
@@ -324,7 +304,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Find)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E5E5E5',
+    backgroundColor: '#FFF',
   },
   buttonImage: {
     position: 'absolute',
@@ -337,7 +317,5 @@ const styles = StyleSheet.create({
   itemLayout: {
     flex: 1,
     marginBottom: 50,
-    //  alignItems: 'center',
-//    justifyContent: 'center'
   },
 })
