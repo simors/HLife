@@ -32,7 +32,7 @@ import * as Toast from '../common/Toast'
 import GenderSelector from '../common/Input/GenderSelector'
 import {activeUserInfo} from '../../selector/authSelector'
 import {inputFormOnDestroy} from '../../action/inputFormActions'
-
+import THEME from '../../constants/themes/theme1'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -113,13 +113,13 @@ class Profile extends Component {
     return(
       <View style={styles.container}>
         <Header
-          headerContainerStyle={{backgroundColor: '#50E3C2'}}
+          headerContainerStyle={{backgroundColor: THEME.base.mainColor}}
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           leftStyle={{color: '#FFFFFF'}}
           title="个人信息"
-          rightType=""
+          titleStyle={{color: '#FFF'}}
         />
         <View style={styles.body}>
           <ScrollView keyboardShouldPersistTaps= {true} keyboardDismissMode= {'on-drag'}>
@@ -159,7 +159,7 @@ class Profile extends Component {
                 </View>
               </View>
             </View>
-            <View style={[styles.zoneb, {marginTop: normalizeH(20)}]}>
+            <View style={[styles.zoneb, {marginTop: normalizeH(8)}]}>
               <View style={styles.tab}>
                 <View style={{flex: 1, justifyContent: 'center'}}>
                   <Text style={styles.mainText}>性别</Text>
@@ -176,7 +176,7 @@ class Profile extends Component {
                 <View style={{flex: 2, justifyContent: 'center', }}>
                   <DateTimeInput {...dtPicker}
                                  initValue={this.props.userInfo.birthday? this.props.userInfo.birthday: undefined}
-                                 value="2016-05-18" PickerStyle={{backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
+                                 PickerStyle={{backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
                 </View>
               </View>
             </View>
@@ -232,11 +232,10 @@ const  styles = StyleSheet.create({
     height: normalizeH(112),
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#F4F4F4'
+    borderColor: '#F5F5F5'
   },
   mainText: {
     marginLeft: normalizeW(25),
-    fontFamily: 'PingFangSC-Regular',
     fontSize: em(17),
     color: '#030303',
     letterSpacing: -0.41,
@@ -245,7 +244,7 @@ const  styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     borderBottomWidth: 1,
-    borderBottomColor: '#F4F4F4'
+    borderBottomColor: '#F5F5F5'
   },
   phoneInputStyle: {
     height: normalizeH(38),

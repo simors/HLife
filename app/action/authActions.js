@@ -43,7 +43,6 @@ export function submitFormData(payload) {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
     let isFormValid = isInputFormValid(getState(), payload.formKey)
-    // console.log('submitFormData=isFormValid===', isFormValid)
     if (!isFormValid.isValid) {
       if (payload.error) {
         payload.error({message: isFormValid.errMsg})
@@ -295,7 +294,6 @@ function handleResetPwdSmsCode(payload, formData) {
 
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
-    console.log('handleProfileSubmit=', formData)
     let profilePayload = {
       id: payload.id,
       nickname: formData.nicknameInput.text,
@@ -308,7 +306,6 @@ function handleProfileSubmit(payload, formData) {
       if (payload.success) {
         payload.success()
       }
-      console.log("profileSubmit return profile", profile)
       let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
       dispatch(profileAction({...profile}))
     }).catch((error) => {
