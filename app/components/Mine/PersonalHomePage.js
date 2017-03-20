@@ -371,43 +371,11 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'TOPICS_COLUMN'})
 
   const doctorInfo = getDoctorInfoByUserId(state, ownProps.userId)
-  // console.log('doctorInfo========', doctorInfo)
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
   const userFollowers = authSelector.selectUserFollowers(state, ownProps.userId)
   const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
-  // console.log('mapStateToProps.userFollowers===', userFollowers)
-  // console.log('mapStateToProps.userFollowersTotalCount===', userFollowersTotalCount)
-  // const userFollowers = [
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  //   {},
-  // ]
-  // const userFollowersTotalCount = 200
 
   const userTopics = selectUserTopics(state, ownProps.userId)
   const userFollowees = authSelector.selectUserFollowees(state)
