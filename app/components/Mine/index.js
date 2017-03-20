@@ -115,7 +115,7 @@ class Mine extends Component {
           </TouchableOpacity>
         </View>
         <View style={[styles.funcView, {borderRightWidth: 1, borderColor: 'rgba(255,255,255,0.50)'}]}>
-          <TouchableOpacity style={styles.funBtn} onPress={() => {}}>
+          <TouchableOpacity style={styles.funBtn} onPress={() => {Actions.MYFANS()}}>
             <Image style={{width: normalizeW(16), height: normalizeH(16)}} source={require('../../assets/images/my_fans.png')}/>
             <Text style={styles.funBtnText}>粉丝</Text>
           </TouchableOpacity>
