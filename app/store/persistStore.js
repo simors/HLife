@@ -65,13 +65,13 @@ function verifyToken() {
     become(payload).then((user) => {
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...user}))
-      dispatch(initMessageClient())
       console.log('auto login: ', user)
+      return user
+    }).then((user) => {
+      dispatch(initMessageClient())
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
       })
-    }).then(() => {
-      // Actions.HOME()
     }).catch((error) => {
       console.log('verify token error:', error)
     })
