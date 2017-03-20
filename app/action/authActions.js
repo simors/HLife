@@ -151,11 +151,12 @@ function handleLoginWithPwd(payload, formData) {
         payload.success(userInfo)
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
-      dispatch(loginAction({...userInfo})).then(() => {
-        dispatch(initMessageClient(payload))
-        AVUtils.updateDeviceUserInfo({
-          userId: userInfo.userInfo.id
-        })
+      dispatch(loginAction({...userInfo}))
+      return userInfo
+    }).then((user) => {
+      dispatch(initMessageClient(payload))
+      AVUtils.updateDeviceUserInfo({
+        userId: user.userInfo.id
       })
     }).catch((error) => {
       if (payload.error) {
@@ -186,7 +187,8 @@ function handleSetNickname(payload, formData) {
       lcAuth.become({token: user.token}).then((userInfo) => {
         let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
         dispatch(loginAction({...userInfo}))
-      }).then(() => {
+        return userInfo
+      }).then((user) => {
         dispatch(initMessageClient(payload))
         AVUtils.updateDeviceUserInfo({
           userId: activeUserId(getState())
