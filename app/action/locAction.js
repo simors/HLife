@@ -12,21 +12,19 @@ let updateGeolocation = createAction(configTypes.UPDATE_GEO_LOCATION)
 export function getCurrentLocation() {
   return (dispatch, getState) => {
     if (DeviceInfo.isEmulator()) {
-      let geoPoint = {latitude: 28.213866, longitude: 112.8186868}
-      Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(position => {
-        let pos = {
-          latitude: geoPoint.latitude,
-          longitude: geoPoint.longitude,
-          address: position.address,
-          country: position.country,
-          province: position.province,
-          city: position.city,
-          district: position.district,
-          street: Platform.OS == 'ios' ? position.streetName : position.street,
-          streetNumber: position.streetNumber,
-        }
-        dispatch(updateGeolocation({position: pos}))
-      })
+      let geoPoint = {latitude: 28.2239, longitude: 112.87857}
+      let pos = {
+        latitude: geoPoint.latitude,
+        longitude: geoPoint.longitude,
+        address: "湖南省长沙市岳麓区麓松路539号",
+        country: "中国",
+        province: "湖南省",
+        city: "长沙市",
+        district: "岳麓区",
+        street: "麓松路",
+        streetNumber: "539号",
+      }
+      dispatch(updateGeolocation({position: pos}))
     } else {
       Geolocation.getCurrentPosition().then(geoPoint => {
         if (Platform.OS == 'ios') {
