@@ -22,6 +22,7 @@ import {bindActionCreators} from 'redux'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import FollowUser from '../../components/common/FollowUser'
 import {Actions} from 'react-native-router-flux'
+import {activeUserId} from '../../selector/authSelector'
 
 const BASE_PADDING_SIZE = normalizeW(12)
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -32,6 +33,20 @@ export class TopicContent extends Component {
   constructor(props) {
     super(props)
     this.state = {}
+  }
+
+  renderFollowUserView(userId) {
+    if (this.props.currentUserId == userId) {
+      return (
+        <View/>
+      )
+    } else {
+      return (
+        <FollowUser
+          userId={userId}
+        />
+      )
+    }
   }
 
   render() {
@@ -62,9 +77,7 @@ export class TopicContent extends Component {
               </View>
             </View>
             <View style={styles.attentionStyle}>
-              <FollowUser
-                userId={this.props.topic.userId}
-              />
+              {this.renderFollowUserView(this.props.topic.userId)}
             </View>
           </View>
         </View>
@@ -88,7 +101,10 @@ TopicContent.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let currentUserId = activeUserId(state)
+  return {
+    currentUserId: currentUserId,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
