@@ -46,9 +46,6 @@ export class Find extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      if (this.props.isLogin) {
-        this.props.fetchUserFollowees()
-      }
       if (this.state.selectedTab == 0) {
         this.props.fetchTopics({
           type: "pickedTopics",

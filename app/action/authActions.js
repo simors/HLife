@@ -12,6 +12,7 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
 import * as AVUtils from '../util/AVUtils'
+import {calUserRegist} from '../action/pointActions'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -152,9 +153,11 @@ function handleLoginWithPwd(payload, formData) {
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
+      return userInfo
+    }).then((user) => {
       dispatch(initMessageClient(payload))
       AVUtils.updateDeviceUserInfo({
-        userId: userInfo.userInfo.id
+        userId: user.userInfo.id
       })
     }).catch((error) => {
       if (payload.error) {
@@ -185,6 +188,13 @@ function handleSetNickname(payload, formData) {
       lcAuth.become({token: user.token}).then((userInfo) => {
         let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
         dispatch(loginAction({...userInfo}))
+        return userInfo
+      }).then((user) => {
+        dispatch(calUserRegist({userId: user.userInfo.id}))
+        dispatch(initMessageClient(payload))
+        AVUtils.updateDeviceUserInfo({
+          userId: user.userInfo.id
+        })
       })
     })
   }
@@ -222,10 +232,6 @@ function handleRegister(payload, formData) {
     } else {
       lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
         dispatch(registerWithPhoneNum(payload, formData))
-        dispatch(initMessageClient(payload))
-        AVUtils.updateDeviceUserInfo({
-          userId: activeUserId(getState())
-        })
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)

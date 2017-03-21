@@ -6,6 +6,7 @@ import {Actions} from 'react-native-router-flux'
 import {createAction} from 'redux-actions'
 import * as authSelectors from '../selector/authSelector'
 import {initMessageClient} from '../action/messageAction'
+import {fetchUserFollowees} from '../action/authActions'
 import {become} from '../api/leancloud/auth'
 import {UserInfo, UserState, UserStateRecord, UserInfoRecord} from '../models/userModels'
 import configureStore from '../store/configureStore'
@@ -65,13 +66,14 @@ function verifyToken() {
     become(payload).then((user) => {
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...user}))
-      dispatch(initMessageClient())
       console.log('auto login: ', user)
+      return user
+    }).then((user) => {
+      dispatch(initMessageClient())
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
       })
-    }).then(() => {
-      // Actions.HOME()
+      dispatch(fetchUserFollowees())
     }).catch((error) => {
       console.log('verify token error:', error)
     })

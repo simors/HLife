@@ -81,3 +81,11 @@ export function getHealthProfileList(state) {
   }
   return healthProfileList
 }
+
+export function getUserPoint(state, userId) {
+  let point = state.AUTH.getIn(['points', userId])
+  if (point) {
+    return point
+  }
+  return 0
+}

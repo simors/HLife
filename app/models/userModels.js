@@ -27,7 +27,8 @@ export const UserStateRecord = Record({
   followersTotalCount: Map(),
   favoriteArticles: Map(),
   healthProfiles: Map(),
-  shop: List()
+  shop: List(),
+  points: Map(),          // 用户积分
 }, 'UserStateRecord')
 
 export class UserInfo extends UserInfoRecord {

@@ -168,6 +168,10 @@ export function closeMessageClient(payload) {
 export function createConversation(payload) {
   return (dispatch, getState) => {
     dispatch(createLcConversation(payload)).then((conversation) => {
+      if (!conversation) {
+        console.log('create conversation failed.')
+        return
+      }
       dispatch(onCreateConversation(conversation))
       dispatch(enterConversation({conversationId: conversation.id}))
       if (payload.success) {

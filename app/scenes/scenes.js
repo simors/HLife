@@ -70,6 +70,7 @@ import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
 import MyAttention from '../components/Mine/MyAttention'
+import MyFans from '../components/Mine/myFans'
 import LikeUserList from '../components/Find/LikeUserList'
 import ShopNotifyView from '../components/Message/ShopNotifyView'
 import TopicNotifyView from '../components/Message/TopicNotifyView'
@@ -158,6 +159,7 @@ export const scenes = Actions.create(
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
       <Scene key="MYTOPIC" component={MyTopic}/>
       <Scene key="MYATTENTION" component={MyAttention}/>
+      <Scene key="MYFANS" component={MyFans} />
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
       <Scene key="TOPIC_NOTIFY" component={TopicNotifyView} />
       <Scene key="BAI_DU_MAP_VIEW" component={BaiduMapView} />
