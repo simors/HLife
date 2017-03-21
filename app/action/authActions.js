@@ -12,7 +12,7 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
 import * as AVUtils from '../util/AVUtils'
-import {calUserRegist} from '../action/pointActions'
+import {calUserRegist, calRegistShoper, calRegistPromoter} from '../action/pointActions'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -83,22 +83,22 @@ export function submitFormData(payload) {
         dispatch(handleCompleteShopInfo(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION:
-        dispatch(handlePromoterCertification(payload,formData))
+        dispatch(handlePromoterCertification(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
-        dispatch(handleShopCover(payload,formData))
+        dispatch(handleShopCover(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_ALBUM:
-        dispatch(handleShopAlbum(payload,formData))
+        dispatch(handleShopAlbum(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT:
-        dispatch(handlePublishAnnouncement(payload,formData))
+        dispatch(handlePublishAnnouncement(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.PUBLISH_SHOP_COMMENT:
-        dispatch(handlePublishShopComment(payload,formData))
+        dispatch(handlePublishShopComment(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT:
-        dispatch(handleUpdateAnnouncement(payload,formData))
+        dispatch(handleUpdateAnnouncement(payload, formData))
         break
     }
   }
@@ -174,7 +174,7 @@ function handleSetNickname(payload, formData) {
       nickname: formData.nicknameInput.text,
     }
     lcAuth.setUserNickname(form).then((result) => {
-      if (result.errcode == 0 ) {
+      if (result.errcode == 0) {
         if (payload.success) {
           payload.success()
         }
@@ -329,12 +329,15 @@ function handlePromoterCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    if(__DEV__) {
+    if (__DEV__) {
       dispatch(verifyInviteCode(payload, formData))
     }
     else {
       lcAuth.verifySmsCode(smsPayload).then(() => {
         dispatch(verifyInviteCode(payload, formData))
+      }).then(() => {
+        let userId = activeUserId(getState())
+        dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
@@ -387,7 +390,7 @@ function handleShopCertification(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    if(__DEV__) {
+    if (__DEV__) {
       // dispatch(verifyInvitationCode(payload, formData))
       dispatch(shopCertification(payload, formData))
       return
@@ -395,6 +398,9 @@ function handleShopCertification(payload, formData) {
     else {
       lcAuth.verifySmsCode(smsPayload).then(() => {
         dispatch(verifyInvitationCode(payload, formData))
+      }).then(() => {
+        let userId = activeUserId(getState())
+        dispatch(calRegistShoper({userId}))   // 计算注册成为店家的积分
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
@@ -412,7 +418,7 @@ function handleShopReCertification(payload, formData) {
       smsAuthCode: formData.smsAuthCodeInput.text,
       isReCertification: payload.isReCertification
     }
-    if(__DEV__) {
+    if (__DEV__) {
       dispatch(shopCertification(payload, formData))
     }
     else {
@@ -455,7 +461,7 @@ function shopCertification(payload, formData) {
     lcAuth.shopCertification(certPayload).then((shop) => {
       dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
       let actionType = AuthTypes.SHOP_CERTIFICATION_SUCCESS
-      if(payload.isReCertification) {
+      if (payload.isReCertification) {
         actionType = AuthTypes.SHOP_RE_CERTIFICATION_SUCCESS
       }
       let cartificationAction = createAction(actionType)
@@ -510,12 +516,12 @@ function handleShopAlbum(payload, formData) {
 
 function handleCompleteShopInfo(payload, formData) {
   return (dispatch, getState) => {
-    
+
     let shopCategoryObjectId = ''
-    if(payload.canModifyShopCategory) {
+    if (payload.canModifyShopCategory) {
       shopCategoryObjectId = formData.shopCategoryInput.text
     }
-    
+
     let newPayload = {
       shopId: payload.shopId,
       shopCategoryObjectId: shopCategoryObjectId,
@@ -544,7 +550,7 @@ function handleCompleteShopInfo(payload, formData) {
 
 function handlePublishAnnouncement(payload, formData) {
   return (dispatch, getState) => {
-    if(!formData.announcementContentInput || !formData.announcementContentInput.text) {
+    if (!formData.announcementContentInput || !formData.announcementContentInput.text) {
       throw new Error('请填写公告内容')
     }
     let newPayload = {
@@ -570,15 +576,15 @@ function handlePublishShopComment(payload, formData) {
   return (dispatch, getState) => {
     let newPayload = {}
     newPayload.id = payload.id
-    if(formData.content) {
+    if (formData.content) {
       newPayload.content = formData.content.text
-    }else{
+    } else {
       throw new Error('请填写评论内容')
     }
-    if(formData.score) {
+    if (formData.score) {
       newPayload.score = formData.score.text
     }
-    if(formData.imgGroup) {
+    if (formData.imgGroup) {
       newPayload.blueprints = formData.imgGroup.text
     }
     lcShop.submitShopComment(newPayload).then((result) => {
@@ -605,7 +611,7 @@ function handlePublishShopComment(payload, formData) {
 
 function handleUpdateAnnouncement(payload, formData) {
   return (dispatch, getState) => {
-    if(!formData.announcementContentInput || !formData.announcementContentInput.text) {
+    if (!formData.announcementContentInput || !formData.announcementContentInput.text) {
       throw new Error('请填写公告内容')
     }
     let newPayload = {
@@ -852,9 +858,9 @@ export function handleHealthProfileSubmit(payload, formData) {
 export function fetchFavoriteArticles(payload) {
   //console.log('columnId======>')
   return (dispatch, getState) => {
-   // console.log('columnId======>---------------------')
+    // console.log('columnId======>---------------------')
     lcAuth.getFavoriteArticles(payload).then((result) => {
-        //console.log('result======>',result)
+      //console.log('result======>',result)
       let updateAction = createAction(AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS)
       dispatch(updateAction(result))
     }).catch((error) => {

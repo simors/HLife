@@ -25,3 +25,66 @@ export function calUserRegist(payload) {
     })
   }
 }
+
+export function calRegistPromoter(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calRegistPromoter({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
+
+export function calRegistShoper(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calRegistShoper({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
+
+export function calPublishTopic(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calPublishTopic({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
+
+export function calPublishComment(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calPublishComment({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
+
+export function calPublishActivity(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calPublishActivity({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
+
+export function calInvitePromoter(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calInvitePromoter({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
+
+export function calInviteShoper(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calInviteShoper({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
