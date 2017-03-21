@@ -37,6 +37,8 @@ export default function authReducer(state = initialState, action) {
       return handleAddHealthProfile(state, action)
     case AuthTypes.ADD_PERSONAL_IDENTITY:
       return handleAddPersonalIdentity(state, action)
+    case AuthTypes.UPDATE_USER_POINT:
+      return handleUserPoint(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -131,6 +133,13 @@ function handleAddPersonalIdentity(state, action) {
     identity = identity.push(newIdentity)
     state = state.setIn(['profiles', activeUser, 'identity'], identity)
   }
+  return state
+}
+
+function handleUserPoint(state, action) {
+  let point = action.payload.point
+  let userId = action.payload.userId
+  state = state.setIn(['points', userId], point)
   return state
 }
 

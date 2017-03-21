@@ -23,6 +23,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import {fetchUserFollowees} from '../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
+import {fetchUserPoint} from '../../action/pointActions'
 import * as authSelector from '../../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
 
@@ -37,6 +38,7 @@ class Mine extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
+        this.props.fetchUserPoint()
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
       }
@@ -92,7 +94,7 @@ class Mine extends Component {
               <Image style={{marginRight: normalizeW(8), width: normalizeW(9), height: normalizeH(12)}}
                      resizeMode="contain"
                      source={require('../../assets/images/score.png')} />
-              <Text style={{fontSize: 12, color: '#FFF'}}>积分  335</Text>
+              <Text style={{fontSize: 12, color: '#FFF'}}>积分  {this.props.point}</Text>
             </View>
           </View>
         </View>
@@ -228,21 +230,25 @@ class Mine extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let currentUserId = authSelector.activeUserId(state)
   let userInfo = authSelector.activeUserInfo(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
-  let identity = authSelector.getUserIdentity(state, authSelector.activeUserId(state))
+  let identity = authSelector.getUserIdentity(state,currentUserId)
+  let point = authSelector.getUserPoint(state, currentUserId)
   return {
     userInfo: userInfo,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
     identity: identity,
+    point: point,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   fetchUserFollowees,
+  fetchUserPoint,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)
