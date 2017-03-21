@@ -16,7 +16,7 @@ export function calUserRegist(payload) {
   let userId = payload.userId
   let params = {}
   params.userId = userId
-  return AV.Cloud.run('pointsGetUserPoint', params).then((UserPoint) => {
+  return AV.Cloud.run('pointsCalUserRegist', params).then((UserPoint) => {
     return UserPoint.point
   })
 }

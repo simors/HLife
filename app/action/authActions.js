@@ -12,6 +12,7 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
 import * as AVUtils from '../util/AVUtils'
+import {calUserRegist} from '../action/pointActions'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -189,9 +190,10 @@ function handleSetNickname(payload, formData) {
         dispatch(loginAction({...userInfo}))
         return userInfo
       }).then((user) => {
+        dispatch(calUserRegist({userId: user.userInfo.id}))
         dispatch(initMessageClient(payload))
         AVUtils.updateDeviceUserInfo({
-          userId: activeUserId(getState())
+          userId: user.userInfo.id
         })
       })
     })

@@ -16,3 +16,12 @@ export function fetchUserPoint(payload) {
     })
   }
 }
+
+export function calUserRegist(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPoints.calUserRegist({userId}).then((point) => {
+      dispatch(updateUserPoint({userId, point}))
+    })
+  }
+}
