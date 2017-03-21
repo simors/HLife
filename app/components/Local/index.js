@@ -23,7 +23,8 @@ import {
   Platform,
   InteractionManager,
   Modal,
-  ViewPagerAndroid
+  ViewPagerAndroid,
+  StatusBar,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -43,7 +44,6 @@ import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
 import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
 import {fetchShopList, clearShopList} from '../../action/shopAction'
-// import ViewPager from 'react-native-viewpager'
 import ViewPager from '../common/ViewPager'
 import * as DeviceInfo from 'react-native-device-info'
 
@@ -366,6 +366,7 @@ class Local extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content"/>
         <Header
           leftType="none"
           title="邻家优店"

@@ -12,7 +12,8 @@ import {
   RefreshControl,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  StatusBar,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -220,6 +221,7 @@ class Mine extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
           {this.renderHeaderView()}
           {this.renderBodyView()}
