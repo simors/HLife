@@ -78,6 +78,7 @@ import BaiduMapView from '../components/common/BaiduMapView'
 import ShopAddressSelect from '../components/Mine/myShop/ShopAddressSelect'
 import CommentDoctor from '../components/Mine/Doctor/CommentDoctor'
 import QRCodeReader from '../components/Mine/QRCodeReader'
+import PersonalQR from '../components/Mine/PersonalQR'
 import Publish from '../components/Publish'
 import PublishShopPromotion from '../components/shop/PublishShopPromotion'
 
@@ -166,6 +167,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_ADDRESS_SELECT" component={ShopAddressSelect} />
       <Scene key="COMMENT_DOCTOR" component={CommentDoctor}/>
       <Scene key="QRCODEREADER" component={QRCodeReader}/>
+      <Scene key="GEN_PERSONALQR" component={PersonalQR} />
       <Scene key="PUBLISH" component={Publish}/>
       <Scene key="PUBLISH_SHOP_PROMOTION" component={PublishShopPromotion}/>
       <Scene key="SHOP_PROMOTION_DETAIL" component={ShopPromotionDetail}/>

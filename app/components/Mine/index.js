@@ -59,6 +59,15 @@ class Mine extends Component {
     }
   }
 
+  genPersonalQRCode() {
+    let userInfo = {
+      userId: this.props.userInfo.id,
+      nickname: this.props.userInfo.nickname,
+      avatar: this.props.userInfo.avatar,
+    }
+    Actions.GEN_PERSONALQR({data: userInfo})
+  }
+
   renderToolView() {
     return (
       <View style={styles.toolView}>
@@ -100,7 +109,7 @@ class Mine extends Component {
           </View>
         </View>
         <View style={{paddingRight: normalizeW(36)}}>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => {this.genPersonalQRCode()}}>
             <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/code.png')}/>
           </TouchableOpacity>
         </View>
