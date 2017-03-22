@@ -1,32 +1,25 @@
 'use strict';
 
 import React, { Component } from 'react'
-import QRCode from 'react-native-qrcode';
-
 import {
   AppRegistry,
   StyleSheet,
   View,
   TextInput
-} from 'react-native';
+} from 'react-native'
+import QRCode from 'react-native-qrcode'
+import THEME from '../../constants/themes/theme1'
 
 export default class Qrcode extends Component {
-  state = {
-    text: 'http://facebook.github.io/react-native/',
-  };
 
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => this.setState({text: text})}
-          value={this.state.text}
-        />
+
         <QRCode
-          value={this.state.text}
+          value={this.props.data}
           size={200}
-          bgColor='purple'
+          bgColor={THEME.base.mainColor}
           fgColor='white'/>
       </View>
     );
@@ -40,7 +33,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-
   input: {
     height: 40,
     borderColor: 'gray',

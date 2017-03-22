@@ -21,11 +21,14 @@ class QRCodeReader extends Component {
   _onBarCodeRead(result){
     if (this.barCodeFlag) {
       this.barCodeFlag = false;
-      Actions.pop({
-        refresh:{
-          qRCode:result.data
-        }
-      })
+      if (this.props.readQRSuccess) {
+        this.props.readQRSuccess(result.data)
+      }
+      // Actions.pop({
+      //   refresh:{
+      //     qRCode:result.data
+      //   }
+      // })
     }
   }
 

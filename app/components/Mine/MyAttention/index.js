@@ -14,6 +14,7 @@ import {
   InteractionManager,
   ListView,
   RefreshControl,
+  StatusBar,
 } from 'react-native'
 import Header from '../../common/Header'
 import {Actions} from 'react-native-router-flux'
@@ -137,8 +138,10 @@ class MyAttention extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <Header headerContainerStyle={styles.header}
                 leftType='icon'
+                leftStyle={{color: '#FFFFFF'}}
                 leftPress={() => Actions.pop()}
                 title="我的关注"
                 titleStyle={styles.title}>
@@ -220,11 +223,11 @@ const styles = StyleSheet.create({
     flex: 1
   },
   header: {
-    backgroundColor: '#F9F9F9'
+    backgroundColor: THEME.base.mainColor,
   },
   title: {
     fontSize: em(17),
-    color: '#030303'
+    color: '#FFF'
   },
   itemLayout: {
     width: PAGE_WIDTH,

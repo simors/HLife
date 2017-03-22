@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Platform,
   StyleSheet,
+  StatusBar,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -29,6 +30,7 @@ class Publish extends Component {
   render() {
     return (
       <View style={styles.container} >
+        <StatusBar barStyle="dark-content"/>
         <View style={styles.body}>
           <View style={styles.logo}>
             <Image

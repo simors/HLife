@@ -12,7 +12,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   InteractionManager,
-  ScrollView
+  ScrollView,
+  StatusBar
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -240,6 +241,7 @@ export class TopicDetail extends Component {
   render() {
     return (
       <View style={styles.containerStyle}>
+        <StatusBar barStyle="dark-content"/>
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"

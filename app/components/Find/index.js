@@ -14,6 +14,7 @@ import {
   InteractionManager,
   TouchableHighlight,
   ListView,
+  StatusBar,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {fetchUserFollowees} from '../../action/authActions'
@@ -254,6 +255,7 @@ export class Find extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content"/>
         <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.topicId}
                        renderTopics={() => this.renderTopics()}

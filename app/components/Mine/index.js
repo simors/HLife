@@ -12,7 +12,8 @@ import {
   RefreshControl,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  StatusBar,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -58,11 +59,29 @@ class Mine extends Component {
     }
   }
 
+  genPersonalQRCode() {
+    let userInfo = {
+      userId: this.props.userInfo.id,
+      nickname: this.props.userInfo.nickname,
+      avatar: this.props.userInfo.avatar,
+    }
+    Actions.GEN_PERSONALQR({data: userInfo})
+  }
+
   renderToolView() {
     return (
       <View style={styles.toolView}>
         <View style={{marginRight: normalizeW(25)}}>
-          <TouchableOpacity onPress={() => {Actions.QRCODEREADER()}}>
+          <TouchableOpacity onPress={() => {
+            Actions.QRCODEREADER({
+              readQRSuccess: (userInfo) => {
+                let user = JSON.parse(userInfo)
+                console.log('user', user)
+                let userId = user.userId
+                Actions.PERSONAL_HOMEPAGE({userId: userId})
+              }
+            })
+          }}>
             <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/scan.png')}/>
           </TouchableOpacity>
         </View>
@@ -99,7 +118,7 @@ class Mine extends Component {
           </View>
         </View>
         <View style={{paddingRight: normalizeW(36)}}>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => {this.genPersonalQRCode()}}>
             <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/code.png')}/>
           </TouchableOpacity>
         </View>
@@ -220,6 +239,7 @@ class Mine extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
           {this.renderHeaderView()}
           {this.renderBodyView()}

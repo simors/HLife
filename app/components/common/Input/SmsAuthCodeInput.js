@@ -150,7 +150,7 @@ SmsAuthCodeInput.defaultProps = {
 
   //text input
   placeholder: '请输入6位验证码',
-  placeholderTextColor: 'rgba(178,178,178, 1)',
+  placeholderTextColor: '#E1E1E1',
   maxLength: 6,
   autoFocus: false,
   countTimes:60,

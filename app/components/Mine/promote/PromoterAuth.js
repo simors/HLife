@@ -126,10 +126,11 @@ class promoterAuth extends Component {
         <View style={styles.body}>
           <KeyboardAwareScrollView
             keyboardDismissMode='on-drag'
+            keyboardShouldPersistTaps={true}
             automaticallyAdjustContentInsets={false}
           >
             <View style={styles.adv}>
-              <Text style={styles.advText}>欢迎加入吾爱推广大使，完成认证可赚取高额收益</Text>
+              <Text style={styles.advText}>欢迎加入{appConfig.APP_NAME}推广大使，完成认证可赚取高额收益</Text>
             </View>
             <View style={styles.certify}>
               <View style={styles.inputBox}>
@@ -149,8 +150,8 @@ class promoterAuth extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
-                  <PhoneInput {...phoneInput} initValue={this.props.userInfo.phone} placeholder="仅用于客服与你联系" editable={false}
-                              inputStyle={styles.phoneInputStyle}/>
+                  <PhoneInput {...phoneInput} initValue={this.props.userInfo.phone} placeholder="仅用于客服与你联系"
+                              editable={false} showClearBtn={false} inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>
               <View style={styles.inputBox}>
@@ -160,9 +161,9 @@ class promoterAuth extends Component {
                                     textInput={styles.smsAuthCodeTextInput}
                                     inputContainer={{paddingLeft: 17, paddingRight: 17,fontSize:em(17)}}
                                     placeholder = "填写手机验证码"
-                                    codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                                    codeTextContainerDisable={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                                    codeText={{fontSize: em(17)}}
+                                    codeTextContainer={{width: normalizeW(115), height: normalizeH(35)}}
+                                    codeTextContainerDisable={{width: normalizeW(115), height: normalizeH(35)}}
+                                    codeText={{fontSize: em(15)}}
                                     getSmsAuCode={() => this.smsCode()}
                                     reset={!this.props.phoneValid}
                   />
@@ -179,12 +180,17 @@ class promoterAuth extends Component {
               </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>邀请码</Text>
-                <CommonTextInput
-                  {...inviteCodeInput}
-                  placeholder="输入邀请码"
-                  containerStyle={{height: normalizeH(42)}} maxLength={18}
-                  inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}
-                />
+                <View style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
+                  <CommonTextInput
+                    {...inviteCodeInput}
+                    placeholder="输入邀请码"
+                    containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
+                    inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}
+                  />
+                  <TouchableOpacity style={{marginRight: normalizeW(25)}} onPress= {()=> {Actions.QRCODEREADER()}}>
+                    <Image style={{width: 20, height: 20}} source={require('../../../assets/images/scan_red.png')} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
             <TouchableOpacity style={styles.getInvitationWrap} onPress={()=>Actions.GET_INVITE_CODE()}>
@@ -196,10 +202,9 @@ class promoterAuth extends Component {
                 onPress={this.onButtonPress}
               />
 
-              <TouchableOpacity style={styles.shopRegistProtocalWrap} onPress={()=> {
-              }}>
+              <TouchableOpacity style={styles.shopRegistProtocalWrap} onPress={()=> {}}>
                 <Text style={{color: THEME.colors.light, fontSize: em(12)}}>我已阅读</Text>
-                <Text style={{color: THEME.colors.green, fontSize: em(12)}}>《{appConfig.APP_NAME}吾爱推广协议》</Text>
+                <Text style={{color: THEME.colors.green, fontSize: em(12)}}>《{appConfig.APP_NAME}推广协议》</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAwareScrollView>
@@ -238,10 +243,9 @@ const styles = StyleSheet.create(
       flex: 1
     },
     header: {
-      backgroundColor: '#50E3C2',
+      backgroundColor: THEME.base.mainColor,
     },
     left: {
-      fontFamily: 'PingFangSC-Regular',
       fontSize: 17,
       color: '#FFFFFF',
       letterSpacing: -0.41,
@@ -265,22 +269,19 @@ const styles = StyleSheet.create(
       height: normalizeH(44),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(80,226,193,0.23)',
-      // opacity:0.23
+      backgroundColor: 'rgba(255,157,78,0.20);',
     },
     advText: {
-      color: 'black',
+      color: '#FF7819',
       fontSize: em(12),
-      // opacity:1,
     },
     certify: {
-      marginTop: normalizeH(15),
       backgroundColor: '#FFFFFF',
     },
     inputBox: {
       height: normalizeH(44),
       borderBottomWidth: 1,
-      borderBottomColor: '#C8C7CC',
+      borderBottomColor: '#F5F5F5',
       flexDirection: 'row',
       alignItems: 'center',
     },
@@ -293,11 +294,10 @@ const styles = StyleSheet.create(
 
     },
     maintext: {
-      width: normalizeW(66),
-      marginLeft: normalizeW(20),
-      fontFamily: 'PingFangSC-Regular',
-      fontSize: em(16),
-      color: '#656565',
+      width: normalizeW(75),
+      marginLeft: normalizeW(15),
+      fontSize: em(17),
+      color: '#5a5a5a',
     },
     smsAuthCodeTextInput: {
       height: normalizeH(42),
@@ -307,13 +307,13 @@ const styles = StyleSheet.create(
       paddingRight: 0,
     },
     phoneInputStyle: {
-      height: normalizeH(38),
+      height: normalizeH(42),
       backgroundColor: '#FFFFFF',
       borderWidth: 0,
       paddingLeft: 0,
     },
     detail: {
-      marginTop: normalizeH(30),
+      marginTop: normalizeH(8),
       backgroundColor: '#FFFFFF',
 
     },

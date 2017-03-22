@@ -6,6 +6,7 @@ import * as lcTopics from '../api/leancloud/topics'
 import {notifyTopicComment, notifyTopicLike} from './messageAction'
 import * as locSelector from '../selector/locSelector'
 import AV from 'leancloud-storage'
+import * as pointAction from '../action/pointActions'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -70,6 +71,7 @@ function handlePublishTopic(payload, formData) {
       }
       let publishAction = createAction(topicActionTypes.ADD_TOPIC)
       dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
+      dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
     }).catch((error) => {
       console.log("error: ", error)
       if (payload.error) {
@@ -119,6 +121,7 @@ function handlePublishTopicComment(payload, formData) {
         commentId: result.objectId,
         content: payload.content
       }))
+      dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
