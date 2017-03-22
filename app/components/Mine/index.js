@@ -72,7 +72,16 @@ class Mine extends Component {
     return (
       <View style={styles.toolView}>
         <View style={{marginRight: normalizeW(25)}}>
-          <TouchableOpacity onPress={() => {Actions.QRCODEREADER()}}>
+          <TouchableOpacity onPress={() => {
+            Actions.QRCODEREADER({
+              readQRSuccess: (userInfo) => {
+                let user = JSON.parse(userInfo)
+                console.log('user', user)
+                let userId = user.userId
+                Actions.PERSONAL_HOMEPAGE({userId: userId})
+              }
+            })
+          }}>
             <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/scan.png')}/>
           </TouchableOpacity>
         </View>
