@@ -165,7 +165,7 @@ class RegionPicker extends Component {
 
 RegionPicker.defaultProps = {
   placeholder: '请选择城市',
-  placeholderTextColor: '#B2B2B2',
+  placeholderTextColor: '#E1E1E1',
   level: 3,
   maxLength: 32,
   editable: false,

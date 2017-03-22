@@ -131,7 +131,7 @@ class CommonTextInput extends Component {
 
 CommonTextInput.defaultProps = {
   placeholder: '请输入文字',
-  placeholderTextColor: '#B2B2B2',
+  placeholderTextColor: '#E1E1E1',
   maxLength: 16,
   autoFocus: false,
   editable: true,
@@ -157,6 +157,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(CommonTextInput)
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F3F3',
     borderWidth: normalizeBorder(),
     borderColor: '#E9E9E9',
-    fontSize: em(16),
+    fontSize: em(17),
     color: '#B2B2B2'
   },
   defaultClearBtnStyle: {

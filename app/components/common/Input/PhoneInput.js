@@ -126,7 +126,7 @@ class  PhoneInput extends Component {
           inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}
           editable={this.props.editable}
         /> 
-        {this.renderClearBtn()}
+        {this.props.showClearBtn ? this.renderClearBtn() : <View/>}
       </View>
       )
 	}
@@ -137,8 +137,9 @@ PhoneInput.defaultProps = {
 	maxLength: 13, //11位手机号+2位空格
 	autoFocus: false,
 	keyboardType: "phone-pad",
-  placeholderTextColor: '#B2B2B2',
-  editable: true
+  placeholderTextColor: '#E1E1E1',
+  editable: true,
+  showClearBtn: true,
 }
 
 const styles = StyleSheet.create({
