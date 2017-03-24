@@ -2,17 +2,16 @@ import {createAction} from 'redux-actions'
 import * as AuthTypes from '../constants/authActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
-import * as dbOpers from '../api/leancloud/databaseOprs'
 import * as lcAuth from '../api/leancloud/auth'
 import * as lcShop from '../api/leancloud/shop'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
-import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../constants/appConfig'
+import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
 import * as AVUtils from '../util/AVUtils'
-import {calUserRegist, calRegistShoper, calRegistPromoter} from '../action/pointActions'
+import {calUserRegist, calRegistShoper} from '../action/pointActions'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -28,7 +27,6 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   SHOP_RE_CERTIFICATION: 'SHOP_RE_CERTIFICATION',
   HEALTH_PROFILE_SUBMIT: 'HEALTH_PROFILE_SUBMIT',
   COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
-  PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION',
   PROMOTER_RE_CERTIFICATION: 'PROMOTER_RE_CERTIFICATION',
   UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
   UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
@@ -81,9 +79,6 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
         dispatch(handleCompleteShopInfo(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION:
-        dispatch(handlePromoterCertification(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
         dispatch(handleShopCover(payload, formData))
@@ -314,68 +309,6 @@ function handleProfileSubmit(payload, formData) {
       }
       let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
       dispatch(profileAction({...profile}))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-
-function handlePromoterCertification(payload, formData) {
-  return (dispatch, getState) => {
-    let smsPayload = {
-      phone: formData.phoneInput.text,
-      smsAuthCode: formData.smsAuthCodeInput.text,
-    }
-    if (__DEV__) {
-      dispatch(verifyInviteCode(payload, formData))
-    }
-    else {
-      lcAuth.verifySmsCode(smsPayload).then(() => {
-        dispatch(verifyInviteCode(payload, formData))
-      }).then(() => {
-        let userId = activeUserId(getState())
-        dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
-      }).catch((error) => {
-        if (payload.error) {
-          payload.error(error)
-        }
-      })
-    }
-  }
-}
-
-function verifyInviteCode(payload, formData) {
-  return (dispatch, getState) => {
-    lcAuth.verifyInvitationCode({invitationsCode: formData.inviteCodeInput.text}).then(()=> {
-      dispatch(promoterCertification(payload, formData))
-    }).catch((error) => {
-      if (payload.error) {
-        error.message = "邀请码验证失败！"
-        payload.error(error)
-      }
-    })
-  }
-}
-function promoterCertification(payload, formData) {
-  return (dispatch, getState) => {
-    let certPayload = {
-      name: formData.nameInput.text,
-      phone: formData.phoneInput.text,
-      level: 1,
-      address: formData.regionPicker.text,
-      cardId: formData.IDInput.text,
-      //upUser: payload.upUser,
-    }
-    lcAuth.promoteCertification(certPayload).then((promoter) => {
-      dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
-      let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
-      dispatch(certificationAction({promoter}))
-      if (payload.success) {
-        payload.success(promoter)
-      }
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

@@ -190,35 +190,6 @@ export function certification(payload) {
 
 }
 
-
-export function promoteCertification(payload) {
- // console.log('payload=====>',payload)
-  let Promoter = AV.Object.extend('Promoter')
-  let promoter = new Promoter()
-  let currentUser = AV.User.current()
-  promoter.set('name', payload.name)
-  promoter.set('phone', payload.phone)
-  promoter.set('cardId', payload.cardId)
-  promoter.set('level', payload.level+1)
- // promoter.set('upUser', payload.upUser)
-  promoter.set('user', currentUser)
-  promoter.set('address', payload.address)
- // console.log('currentUser=====>',currentUser)
-  currentUser.addUnique('identity', IDENTITY_PROMOTER)
-  currentUser.save()
-
-  return promoter.save().then(function (result) {
-   // console.log('result=====>',result)
-    let promoterInfo = PromoterInfo.fromLeancloudObject(result)
-    return promoterInfo
-  }, function (err) {
-   // console.log(err)
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-
-}
-
 export function profileSubmit(payload) {
   var userInfo = AV.Object.createWithoutData('_User', payload.id);
   userInfo.set('nickname', payload.nickname)
@@ -394,6 +365,11 @@ export function requestSmsAuthCode(payload) {
 export function verifySmsCode(payload) {
   let smsAuthCode = payload.smsAuthCode
   let phone = payload.phone
+  if (__DEV__) {
+    return new Promise((resolve) => {
+      resolve()
+    })
+  }
   return AV.Cloud.verifySmsCode(smsAuthCode, phone).then(function (success) {
     //
   }, function (err) {
@@ -440,7 +416,7 @@ export function verifyInvitationCode(payload) {
     return false
   }
   params.invitationsCode = invitationsCode
-  return AV.Cloud.run('hLifeVerifyInvitationCode', params).then((result)=>{
+  return AV.Cloud.run('utilVerifyInvitationCode', params).then((result)=>{
     return true
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
