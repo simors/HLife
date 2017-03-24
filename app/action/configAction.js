@@ -35,7 +35,7 @@ export function fetchAnnouncement(payload) {
 }
 
 
-export function fetchColumn() {
+export function fetchColumn(payload) {
   return (dispatch, getState) => {
     lcConfig.getColumn().then((column) => {
       let updateColumnAction = createAction(ConfigActionTypes.UPDATE_CONFIG_COLUMN)
@@ -70,6 +70,18 @@ export function fetchShopCategories(payload) {
       if(payload.error){
         payload.error(error)
       }
+    })
+  }
+}
+
+export function fetchAllProvincesAndCities(payload) {
+  return (dispatch, getState) => {
+    lcConfig.fetchAllProvincesAndCities(payload).then((results)=>{
+      // console.log('action***fetchAllProvincesAndCities.results--->>>', results)
+      let updateAction = createAction(ConfigActionTypes.UPDATE_PROVINCES_AND_CITIES)
+      dispatch(updateAction({provinceListWithCityList: results}))
+    }).catch((error) => {
+      console.log('fetchAllProvincesAndCities.error--->>>', error)
     })
   }
 }

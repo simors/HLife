@@ -49,6 +49,8 @@ export default class HLifeEntry extends Component {
     AVUtils.configurePush(
       __DEV__ ? KM_Dev : KM_PRO
     )
+
+    AVUtils.updateProvincesAndCities()
   }
 
   componentWillUnmount() {

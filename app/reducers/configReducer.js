@@ -19,6 +19,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigShopCategories(state, action)
     case ConfigActionTypes.UPDATE_GEO_LOCATION:
       return handleUpdateGeolocation(state, action)
+    case ConfigActionTypes.UPDATE_PROVINCES_AND_CITIES:
+      return handleUpdateProvincesAndCities(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -65,6 +67,13 @@ function handleUpdateConfigShopCategories(state, action) {
   return state
 }
 
+function handleUpdateProvincesAndCities(state, action) {
+  let payload = action.payload
+  let provinceListWithCityList = payload.provinceListWithCityList
+  state = state.set('provinceListWithCityList', new List(provinceListWithCityList))
+  return state
+}
+
 function handleUpdateGeolocation(state, action) {
   let position = action.payload.position
   let location = new LocationRecord({
@@ -100,6 +109,12 @@ function onRehydrate(state, action) {
       streetNumber: position.streetNumber,
     })
     state = state.set('location', location)
+  }
+
+  let provinceListWithCityList = incoming.provinceListWithCityList
+  // console.log('onRehydrate.provinceListWithCityList=====', provinceListWithCityList)
+  if(provinceListWithCityList) {
+    state = state.set('provinceListWithCityList', new List(provinceListWithCityList))
   }
   
   return state
