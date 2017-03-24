@@ -82,6 +82,9 @@ const inviteCodeInput = {
 class promoterAuth extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      inviteCode: '',
+    }
   }
 
   onButtonPress = () => {
@@ -141,7 +144,7 @@ class promoterAuth extends Component {
                 </View>
               </View>
               <View style={styles.inputBox}>
-                <Text style={styles.maintext}>身份证号</Text>
+                <Text style={styles.maintext}>身份证</Text>
                 <View style={{flex: 1}}>
                   <CommonTextInput {...IDInput} containerStyle={{height: normalizeH(42)}} maxLength={18}
                                    inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
@@ -186,8 +189,17 @@ class promoterAuth extends Component {
                     placeholder="输入邀请码"
                     containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
                     inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}
+                    initValue={this.state.inviteCode}
                   />
-                  <TouchableOpacity style={{marginRight: normalizeW(25)}} onPress= {()=> {Actions.QRCODEREADER()}}>
+                  <TouchableOpacity style={{marginRight: normalizeW(25)}}
+                                    onPress= {()=> {
+                                      Actions.QRCODEREADER({
+                                        readQRSuccess: (inviteCode) => {
+                                          this.setState({inviteCode: inviteCode})
+                                          Actions.pop()
+                                        }
+                                      })
+                                    }}>
                     <Image style={{width: 20, height: 20}} source={require('../../../assets/images/scan_red.png')} />
                   </TouchableOpacity>
                 </View>

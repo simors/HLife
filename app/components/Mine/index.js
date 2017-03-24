@@ -76,7 +76,6 @@ class Mine extends Component {
             Actions.QRCODEREADER({
               readQRSuccess: (userInfo) => {
                 let user = JSON.parse(userInfo)
-                console.log('user', user)
                 let userId = user.userId
                 Actions.PERSONAL_HOMEPAGE({userId: userId})
               }
