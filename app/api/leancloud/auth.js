@@ -10,7 +10,10 @@ import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
 import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
+import * as Utils from '../../util/Utils'
 import * as authSelector from '../../selector/authSelector'
+import * as configSelector from '../../selector/configSelector'
+import * as locSelector from '../../selector/locSelector'
 import {store} from '../../store/persistStore'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
 
@@ -69,6 +72,9 @@ export function register(payload) {
   user.setPassword(payload.password)
   user.setMobilePhoneNumber(payload.phone)
   return user.signUp().then((loginedUser) => {
+    updateUserLocationInfo({
+      userId: loginedUser.id
+    })
     let detail = {
       objName: 'UserDetail',
       args: {}
@@ -94,6 +100,50 @@ export function register(payload) {
       userInfo: userInfo,
       token: token,
     }
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function updateUserLocationInfo(payload) {
+  // console.log('updateUserLocationInfo.payload====', payload)
+
+  let userId = payload.userId
+
+  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  // console.log('provincesAndCities====', provincesAndCities)
+
+  let province = locSelector.getProvince(store.getState())
+  // console.log('province====', province)
+  let provinceCode = Utils.getProvinceCode(provincesAndCities, province)
+  // console.log('provinceCode====', provinceCode)
+
+  let city = locSelector.getCity(store.getState())
+  // console.log('city====', city)
+  let cityCode = Utils.getCityCode(provincesAndCities, city)
+  // console.log('cityCode====', cityCode)
+
+  let district = locSelector.getDistrict(store.getState())
+  // console.log('district====', district)
+  let districtCode = Utils.getDistrictCode(provincesAndCities, district)
+  // console.log('districtCode====', districtCode)
+
+  let latlng = locSelector.getGeopoint(store.getState())
+
+  let params = {
+    userId,
+    province,
+    provinceCode,
+    city,
+    cityCode,
+    district,
+    districtCode,
+    ...latlng
+  }
+  // console.log('hLifeUpdateUserLocationInfo.params=======', params)
+  return AV.Cloud.run('hLifeUpdateUserLocationInfo', params).then((result)=>{
+    return result
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

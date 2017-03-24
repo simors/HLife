@@ -66,3 +66,67 @@ export function getCurrentPositionInfo() {
     }
   })
 }
+
+export function getProvinceCode(treeData = [], provinceName = "") {
+  if(treeData && treeData.length && provinceName) {
+    for(let i = 0; i < treeData.length; i++) {
+      if(provinceName == treeData[i].area_name) {
+        return treeData[i].area_code
+      }
+    }
+  }
+  return {}
+}
+
+export function getCityCode(treeData = [], cityName = "") {
+  if(treeData && treeData.length && cityName) {
+    let cityList = getAllCityList(treeData)
+    if(cityList && cityList.length) {
+      for(let i = 0; i < cityList.length; i++) {
+        if(cityName == cityList[i].area_name) {
+          return cityList[i].area_code
+        }
+      }
+    }
+  }
+  return {}
+}
+
+export function getDistrictCode(treeData = [], districtName = '') {
+  if(treeData && treeData.length && districtName) {
+    let districtList = getAllDistrictList(treeData)
+    if(districtList && districtList.length) {
+      for(let i = 0; i < districtList.length; i++) {
+        if(districtName == districtList[i].area_name) {
+          return districtList[i].area_code
+        }
+      }
+    }
+  }
+  return {}
+}
+
+export function getAllCityList(treeData = []) {
+  let cityList = []
+  if(treeData && treeData.length) {
+    treeData.forEach((item) => {
+      if(item.sub && item.sub.length) {
+        cityList = cityList.concat(item.sub)
+      }
+    })
+  }
+  return cityList
+}
+
+export function getAllDistrictList(treeData = []) {
+  let districtList = []
+  let cityList = getAllCityList(treeData)
+  if(cityList && cityList.length) {
+    cityList.forEach((item) => {
+      if(item.sub && item.sub.length) {
+        districtList = districtList.concat(item.sub)
+      }
+    })
+  }
+  return districtList
+}

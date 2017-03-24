@@ -104,3 +104,14 @@ export function getShopCategories(payload) {
     throw err
   })
 }
+
+export function fetchAllProvincesAndCities(payload) {
+  let params = {
+    level: 3,
+    areaCode: 1,
+  }
+  return AV.Cloud.run('hLifeGetSubAreaList2', params).then((results) => {
+    console.log('fetchAllProvincesAndCities.results=====>>>>>', results)
+    return results
+  })
+}
