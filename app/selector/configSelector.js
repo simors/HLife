@@ -82,3 +82,12 @@ export function selectShopCategories(state, num) {
   }
   return undefined
 }
+
+export function selectProvincesAndCities(state) {
+  let config = getConfig(state)
+  if (config) {
+    let provinceListWithCityList = config.provinceListWithCityList.toJS()
+    return provinceListWithCityList || []
+  }
+  return []
+}

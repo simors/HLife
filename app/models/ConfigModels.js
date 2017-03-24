@@ -155,6 +155,7 @@ export const Config = Record({
   article: List(),
   shopCategories: List(),
   location: undefined,
+  provinceListWithCityList: List()
 }, 'Config')
 
 
