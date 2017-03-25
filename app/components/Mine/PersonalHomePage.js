@@ -53,16 +53,11 @@ class PersonalHomePage extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      if(this.props.isLogin) {
-        this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
-        this.props.fetchOtherUserFollowers({userId: this.props.userId})
-        this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
-        this.props.getUserInfoById({userId: this.props.userId})
-        this.props.fetchDoctorByUserId({id: this.props.userId})
-        this.refreshData()
-      }else {
-        Actions.LOGIN()
-      }
+      this.props.getUserInfoById({userId: this.props.userId})
+      // this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
+      this.props.fetchOtherUserFollowers({userId: this.props.userId})
+      this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
+      // this.refreshData()
     })
   }
 
