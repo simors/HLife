@@ -222,7 +222,7 @@ export class TopicDetail extends Component {
     return (
       <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
         <Image style={styles.zanAvatarStyle}
-               source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+               source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait.png")}/>
       </TouchableOpacity>
     )
   }
@@ -258,6 +258,16 @@ export class TopicDetail extends Component {
     )
   }
 
+  renderMoreBtn() {
+    return (
+      <View style={{paddingRight: normalizeW(18), width: normalizeW(30), height: normalizeH(30)}}>
+        <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {this.onRightPress()}}>
+          <Image style={{width: normalizeW(25), height: normalizeH(6)}} source={require('../../assets/images/more.png')}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.containerStyle}>
@@ -267,9 +277,7 @@ export class TopicDetail extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="详情"
-          rightType="text"
-          rightText="..."
-          rightPress={() => this.onRightPress()}
+          rightComponent={() => {return this.renderMoreBtn()}}
         />
         <View style={styles.body}>
           <ScrollView style={{}} ref={"scrollView"}>
