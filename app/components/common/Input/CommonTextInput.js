@@ -166,11 +166,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: normalizeW(17),
     paddingRight: normalizeW(17),
-    height: normalizeH(50),
+    // height: normalizeH(50),
     borderBottomWidth: 0,
     marginLeft: 0,
     marginRight: 0,
-    // width: PAGE_WIDTH,
   },
   defaultInputStyle: {
     flex: 1,

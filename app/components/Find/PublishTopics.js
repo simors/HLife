@@ -257,7 +257,7 @@ class PublishTopics extends Component {
                   <Image style={styles.imageStyle} source={require("../../assets/images/PinLeft_gray.png")}/>
                 </TouchableOpacity>
               </View>
-              <View>
+              <View style={{height: normalizeH(59)}}>
                 <CommonTextInput maxLength={36}
                                  autoFocus={true}
                                  containerStyle={styles.titleContainerStyle}
@@ -360,7 +360,6 @@ const styles = StyleSheet.create({
   },
   titleContainerStyle: {
     flex: 1,
-    height: normalizeH(59),
     paddingLeft: 0,
     paddingRight: 0,
     borderBottomWidth: 1,
