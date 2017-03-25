@@ -123,7 +123,7 @@ class Home extends Component {
   }
 
   renderBannerColumn() {
-    if (this.props.banner && this.props.banner.length != 0) {
+    if (this.props.banner && this.props.banner.length > 1) {
       return (
         <View style={styles.advertisementModule}>
           <CommonBanner2
