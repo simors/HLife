@@ -37,10 +37,17 @@ class PromoterPerformance extends Component {
                           onPress={() => Actions.pop()} >
           <Icon name="ios-arrow-back" style={styles.left} />
         </TouchableOpacity>
-        <PromoterLevelIcon level={1} />
         <TouchableOpacity onPress={() => {}}>
           <Image style={{width: normalizeW(20), height: normalizeH(20)}} source={require('../../../assets/images/revernue_details.png')}/>
         </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderPromoterLevel() {
+    return (
+      <View>
+        <PromoterLevelIcon level={1} />
       </View>
     )
   }
@@ -50,6 +57,7 @@ class PromoterPerformance extends Component {
       <LinearGradient colors={['#F77418', '#F5A623', '#F77418']} style={styles.header}>
         <View style={{flex: 1, backgroundColor: 'transparent'}}>
           {this.renderToolbar()}
+          {this.renderPromoterLevel()}
         </View>
       </LinearGradient>
     )
@@ -117,6 +125,7 @@ const styles = StyleSheet.create({
       },
     }),
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: normalizeH(10),
     paddingBottom: normalizeH(10),

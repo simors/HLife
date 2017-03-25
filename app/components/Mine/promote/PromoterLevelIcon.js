@@ -12,11 +12,11 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 
 const levelName = ['青铜级', '白银级', '黄金级', '钻石级', '皇冠级']
 const levelIcon = [
-  require('../../../assets/images/revernue_details.png'),
-  require('../../../assets/images/revernue_details.png'),
-  require('../../../assets/images/revernue_details.png'),
-  require('../../../assets/images/revernue_details.png'),
-  require('../../../assets/images/revernue_details.png'),
+  require('../../../assets/images/bronze_20.png'),
+  require('../../../assets/images/silver_20.png'),
+  require('../../../assets/images/gold_20.png'),
+  require('../../../assets/images/diamond_20.png'),
+  require('../../../assets/images/crown_20.png'),
 ]
 
 export default class PromoterLevelIcon extends Component {
@@ -26,7 +26,7 @@ export default class PromoterLevelIcon extends Component {
 
   renderLevelIcon(level) {
     if (level >= 1 && level <= 5) {
-      return <Image style={{width: normalizeW(20), height: normalizeH(20)}} source={levelIcon[level-1]} />
+      return <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode="contain" source={levelIcon[level-1]} />
     } else {
       return <View/>
     }
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   },
   levelName: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   levelText: {
     fontSize: em(17),
