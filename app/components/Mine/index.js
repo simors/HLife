@@ -59,6 +59,14 @@ class Mine extends Component {
     }
   }
 
+  promoterManage() {
+    if (this.props.identity && this.props.identity.includes(IDENTITY_PROMOTER)) {
+      Actions.PROMOTER_PERFORMANCE()
+    } else {
+      Actions.PROMOTER_AUTH()
+    }
+  }
+
   genPersonalQRCode() {
     let userInfo = {
       userId: this.props.userInfo.id,
@@ -198,7 +206,7 @@ class Mine extends Component {
               {this.renderShopBtnText()}
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.PROMOTER_AUTH()}}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {this.promoterManage()}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_push.png')} />
             </View>

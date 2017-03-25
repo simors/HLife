@@ -74,7 +74,7 @@ const inviteCodeInput = {
   type: "inviteCodeInput",
 }
 
-class promoterAuth extends Component {
+class PromoterAuth extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -241,7 +241,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(promoterAuth)
+export default connect(mapStateToProps, mapDispatchToProps)(PromoterAuth)
 
 
 const styles = StyleSheet.create(
