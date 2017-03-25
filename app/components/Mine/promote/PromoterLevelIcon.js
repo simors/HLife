@@ -41,7 +41,7 @@ export default class PromoterLevelIcon extends Component {
     )
   }
 
-  render()  {
+  render() {
     return (
       <View style={styles.container}>
         <Image style={styles.backImg} source={require('../../../assets/images/pro_level_back.png')}>

@@ -260,11 +260,11 @@ export class TopicDetail extends Component {
 
   renderMoreBtn() {
     return (
-      <View style={{paddingRight: normalizeW(18), width: normalizeW(30), height: normalizeH(30)}}>
-        <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {this.onRightPress()}}>
-          <Image style={{width: normalizeW(25), height: normalizeH(6)}} source={require('../../assets/images/more.png')}/>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.moreBtnStyle}
+                        onPress={() => {this.onRightPress()}}>
+        <Image style={{width: normalizeW(25), height: normalizeH(6)}} resizeMode="contain"
+               source={require('../../assets/images/more.png')}/>
+      </TouchableOpacity>
     )
   }
 
@@ -487,5 +487,12 @@ const styles = StyleSheet.create({
   shopUpWrap: {
     width: 60,
     alignItems: 'center'
+  },
+  moreBtnStyle: {
+    width: normalizeW(40),
+    height: normalizeH(20),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(15)
   },
 })
