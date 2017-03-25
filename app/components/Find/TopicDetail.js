@@ -268,10 +268,9 @@ export class TopicDetail extends Component {
     )
   }
 
-  render() {
-    return (
-      <View style={styles.containerStyle}>
-        <StatusBar barStyle="dark-content"/>
+  renderHeaderView() {
+    if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
+      return (
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
@@ -279,6 +278,23 @@ export class TopicDetail extends Component {
           title="详情"
           rightComponent={() => {return this.renderMoreBtn()}}
         />
+      )
+    }
+    return (
+      <Header
+        leftType="icon"
+        leftIconName="ios-arrow-back"
+        leftPress={() => Actions.pop()}
+        title="详情"
+      />
+    )
+  }
+
+  render() {
+    return (
+      <View style={styles.containerStyle}>
+        <StatusBar barStyle="dark-content"/>
+        {this.renderHeaderView()}
         <View style={styles.body}>
           <ScrollView style={{}} ref={"scrollView"}>
             <TopicContent topic={this.props.topic}/>
