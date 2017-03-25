@@ -10,6 +10,7 @@ import * as pointAction from '../action/pointActions'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
+  UPDATE_TOPICS: 'UPDATE_TOPICS',
   PUBLISH_TOPICS_COMMENT: 'PUBLISH_TOPICS_COMMENT',
 }
 
@@ -34,6 +35,9 @@ export function publishTopicFormData(payload) {
         break
       case TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT:
         dispatch(handlePublishTopicComment(payload, formData))
+        break
+      case TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS:
+        dispatch(handleUpdateTopic(payload, formData))
         break
     }
   }
@@ -74,6 +78,30 @@ function handlePublishTopic(payload, formData) {
       dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
     }).catch((error) => {
       console.log("error: ", error)
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function handleUpdateTopic(payload, formData) {
+  return (dispatch, getState) => {
+    let updateTopicPayload = {
+      title:formData.topicName.text,
+      content: JSON.stringify(formData.topicContent.text),
+      abstract: formData.topicContent.abstract,
+      imgGroup: payload.images,
+      categoryId: payload.categoryId,
+      topicId: payload.topicId,
+    }
+    lcTopics.updateTopic(updateTopicPayload).then((result) => {
+      if (payload.success) {
+        payload.success()
+      }
+      let updateAction = createAction(topicActionTypes.UPDATE_TOPIC)
+      dispatch(updateAction({topic: result}))
+    }).catch((error) => {
       if (payload.error) {
         payload.error(error)
       }

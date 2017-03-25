@@ -36,6 +36,8 @@ import {
   unLikeTopic,
   fetchTopicLikeUsers
 } from '../../action/topicActions'
+import ActionSheet from 'react-native-actionsheet'
+
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
@@ -65,6 +67,7 @@ export class TopicDetail extends Component {
   }
 
   onRightPress = () => {
+    this.ActionSheet.show()
   }
 
   submitSuccessCallback() {
@@ -237,6 +240,23 @@ export class TopicDetail extends Component {
       )
     }
   }
+  _handleActionSheetPress(index) {
+    if(0 == index) { //编辑
+      Actions.TOPIC_EDIT({topic: this.props.topic})
+    }
+  }
+
+  renderActionSheet() {
+    return (
+      <ActionSheet
+        ref={(o) => this.ActionSheet = o}
+        title=""
+        options={['编辑', '取消']}
+        cancelButtonIndex={1}
+        onPress={this._handleActionSheetPress.bind(this)}
+      />
+    )
+  }
 
   render() {
     return (
@@ -306,6 +326,7 @@ export class TopicDetail extends Component {
               placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
             />
           </KeyboardAwareToolBar>
+          {this.renderActionSheet()}
         </View>
       </View>
     )

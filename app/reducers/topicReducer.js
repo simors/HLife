@@ -25,6 +25,8 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopicLikeUsers(state, action)
     case TopicTypes.ADD_TOPIC:
       return handleAddTopic(state, action)
+    case TopicTypes.UPDATE_TOPIC:
+      return handleUpdateTopic(state, action)
     case TopicTypes.UPDATE_MAINPAGE_TOPICS:
       return handleUpdateMainPageTopics(state, action)
     case REHYDRATE:
@@ -61,6 +63,27 @@ function handleAddTopic(state, action) {
   }
   localTopicList = localTopicList.insert(0, new TopicsItem(topic))
   state = state.set('localTopics', localTopicList)
+  return state
+}
+
+function handleUpdateTopic(state, action) {
+  let topic = action.payload.topic
+
+  let _list = undefined
+  _list = state.get('myTopics')
+  if (_list) {
+    index= _list.findIndex((record) => {
+      return topic.get('objectId') == record.objectId
+    })
+    if (index != -1) {
+      topic.map((value, key) => {
+        if(value)
+          _list = _list.setIn([index, key], value)
+      })
+    }
+  }
+  state = state.set('myTopics', _list)
+
   return state
 }
 

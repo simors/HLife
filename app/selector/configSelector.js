@@ -1,6 +1,7 @@
 /**
  * Created by zachary on 2016/12/14.
  */
+import {TopicCategoryItem} from '../models/ConfigModels'
 
 export function getConfig(state) {
   return state.CONFIG
@@ -58,6 +59,21 @@ export function getColumn(state, type) {
   }
 
   return undefined
+}
+
+export function getTopicCategoriesById(state, categoryId) {
+  let config = getConfig(state)
+  let topicCategories = config.topicCategories
+  if (topicCategories) {
+    let category = topicCategories.find((recode) => {
+      if(recode.get('objectId') === categoryId)
+        return true
+      return false
+    })
+    if(category)
+      return category.toJS()
+  }
+  return new TopicCategoryItem().toJS()
 }
 
 export function getTopicCategories(state) {

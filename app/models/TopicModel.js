@@ -14,6 +14,7 @@ export const TopicsConfig = Record({
   nickname: undefined, //所属用户昵称
   userId:undefined,     // 所属用户的id
   createdAt: undefined,  //创建时间
+  updatedAt: undefined,  //更新时间
   avatar: undefined,  //所属用户头像
   commentNum: undefined, //评论数
   likeCount: undefined, //点赞数
@@ -48,7 +49,10 @@ export class TopicsItem extends TopicsConfig {
       record.set('abstract', attrs.abstract)
       record.set('title', attrs.title)
       record.set('imgGroup', attrs.imgGroup)
-      record.set('createdAt', lcObj.createdAt.valueOf())
+      if(lcObj.createdAt)
+        record.set('createdAt', lcObj.createdAt.valueOf())
+      if(lcObj.updatedAt)
+        record.set('updatedAt', lcObj.updatedAt.valueOf())
       record.set('categoryId', attrs.category.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)

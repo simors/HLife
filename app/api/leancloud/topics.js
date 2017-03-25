@@ -42,6 +42,31 @@ export function publishTopics(payload) {
   })
 }
 
+export function updateTopic(payload) {
+  var topic = AV.Object.createWithoutData('Topics', payload.topicId)
+
+  var topicCategory = AV.Object.createWithoutData('TopicCategory', payload.categoryId)
+
+  topic.set('category', topicCategory)
+  topic.set('imgGroup', payload.imgGroup)
+  topic.set('content', payload.content)
+  topic.set('title', payload.title)
+  topic.set('abstract', payload.abstract)
+
+  return topic.save(null, {fetchWhenSave: true}).then(function (result) {
+    let newTopic = result
+    newTopic.attributes.user = AV.User.current()
+    return TopicsItem.fromLeancloudObject(newTopic)
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  }).catch((error) => {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+
+}
+
 export function fetchTopicLikesCount(payload) {
   let topicId = payload.topicId
   let upType = payload.upType
