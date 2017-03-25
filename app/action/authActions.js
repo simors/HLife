@@ -297,11 +297,11 @@ function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
     let profilePayload = {
       id: payload.id,
-      nickname: formData.nicknameInput.text,
-      avatar: formData.avatarInput.text,
-      phone: formData.phoneInput.text,
-      birthday: formData.dtPicker.text,
-      gender: formData.genderInput.text,
+      nickname: formData.nicknameInput && formData.nicknameInput.text,
+      avatar: formData.avatarInput && formData.avatarInput.text,
+      phone: formData.phoneInput && formData.phoneInput.text,
+      birthday: formData.dtPicker && formData.dtPicker.text,
+      gender: formData.genderInput && formData.genderInput.text,
     }
     lcAuth.profileSubmit(profilePayload).then((profile) => {
       if (payload.success) {
