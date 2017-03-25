@@ -123,7 +123,7 @@ class Home extends Component {
   }
 
   renderBannerColumn() {
-    if (this.props.banner) {
+    if (this.props.banner && this.props.banner.length != 0) {
       return (
         <View style={styles.advertisementModule}>
           <CommonBanner2
@@ -278,7 +278,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const allShopCategories = selectShopCategories(state)
   // console.log('Home.allShopCategories*********>>>>>>>>>>>', allShopCategories)
-
+  
   return {
     // announcement: announcement,
     banner: banner,
