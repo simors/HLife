@@ -25,17 +25,12 @@ import PhoneInput from '../../common/Input/PhoneInput'
 import * as appConfig from '../../../constants/appConfig'
 import CommonTextInput from '../../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
-import ImageInput from '../../common/Input/ImageInput'
-import {submitInputData,submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import {submitDoctorFormData, DOCTOR_FORM_SUBMIT_TYPE} from '../../../action/doctorAction'
+import {submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {promoterCertification} from '../../../action/promoterAction'
 import * as Toast from '../../common/Toast'
 import {isInputValid} from '../../../selector/inputFormSelector'
-import MedicalLabPicker from '../../common/Input/MedicalLabPicker'
 import RegionPicker from '../../common/Input/RegionPicker'
-import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
-import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import {activeUserInfo} from '../../../selector/authSelector'
-
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -88,11 +83,12 @@ class promoterAuth extends Component {
   }
 
   onButtonPress = () => {
-    this.props.submitFormData({
+    this.props.promoterCertification({
       formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.Pr_CERTIFICATION,
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback
+      success: () => {Toast.show('注册为推广员成功')},
+      error: (err) => {
+        Toast.show(err.message)
+      },
     })
   }
 
@@ -241,8 +237,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  //submitDoctorFormData,
-  submitFormData,
+  promoterCertification,
   submitInputData,
 }, dispatch)
 

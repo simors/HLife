@@ -60,7 +60,9 @@ class NicknameView extends Component {
         />
         <View style={styles.body}>
             <View style={{marginTop: 30}}>
-              <CommonTextInput {...nicknameInput}  containerStyle={styles.inputBox} placeholder="取个响亮的名字吧"/>
+              <View style={{height: normalizeH(50)}}>
+                <CommonTextInput {...nicknameInput}  containerStyle={styles.inputBox} placeholder="取个响亮的名字吧"/>
+              </View>
               <Button
                 buttonStyle={styles.btn}
                 onPress={() => this.onButtonPress()}
