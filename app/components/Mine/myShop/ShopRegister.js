@@ -234,7 +234,6 @@ class ShopRegister extends Component {
         <View style={styles.body}>
 
           <KeyboardAwareScrollView
-            keyboardDismissMode='on-drag'
             automaticallyAdjustContentInsets={false}
           >
             <View style={styles.subTitleWrap}>
