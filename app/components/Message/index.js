@@ -205,7 +205,6 @@ class MessageBox extends Component {
         />
         <View style={styles.itemContainer}>
           <ScrollView style={{height: PAGE_HEIGHT}}>
-            {this.renderInquiryMessage()}
             {this.renderPersonalMessage()}
             {this.renderTopicMessage()}
             {this.renderShopMessage()}
