@@ -259,7 +259,7 @@ class TopicEdit extends Component {
                   <Image style={styles.imageStyle} source={require("../../assets/images/PinLeft_gray.png")}/>
                 </TouchableOpacity>
               </View>
-              <View>
+              <View style={{height: normalizeH(59)}}>
                 <CommonTextInput maxLength={36}
                                  autoFocus={true}
                                  containerStyle={styles.titleContainerStyle}
