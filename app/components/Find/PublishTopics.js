@@ -207,7 +207,7 @@ class PublishTopics extends Component {
       <View style={{width: normalizeW(64), backgroundColor: THEME.base.mainColor}}>
         <TouchableOpacity onPress={() => {this.onButtonPress()}}
                           style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{fontSize: 15, color: 'white', lineHeight: 15}}>发布</Text>
+          <Text style={{fontSize: em(15), color: 'white', lineHeight: 15}}>发布</Text>
         </TouchableOpacity>
       </View>
     )
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     top: normalizeH(17),
   },
   topicTypeTitleStyle: {
-    fontSize: em(5),
+    fontSize: em(15),
     color: '#5a5a5a',
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(18),
