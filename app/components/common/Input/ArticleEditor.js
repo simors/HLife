@@ -117,7 +117,7 @@ class ArticleEditor extends Component {
       } else {
         newProps.data.map((comp, index) => {
           if (comp.type === COMP_TEXT) {
-            this.comp.push(this.renderTextInput(comp.text, index, true))
+            this.comp.push(this.renderTextInput(comp.text, index, (this.props.mode == 'edit') ? true : false))
           } else if (comp.type === COMP_IMG) {
             this.comp.push(this.renderImageInput(comp.url, comp.width, comp.height, index))
           }
@@ -544,6 +544,7 @@ ArticleEditor.defaultProps = {
   editable: true,
   placeholder: '输入文字...',
   wrapHeight: 0,
+  mode: 'edit',   // edit: edit at the first time; modify: edit with the given content
 }
 
 const mapStateToProps = (state, ownProps) => {

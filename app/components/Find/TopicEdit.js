@@ -229,6 +229,7 @@ class TopicEdit extends Component {
         onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
         placeholder="分享吃喝玩乐、共享周边生活信息"
         initValue={JSON.parse(initValue)}
+        mode="modify"
       />
     )
   }
