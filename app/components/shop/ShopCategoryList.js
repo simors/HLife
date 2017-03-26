@@ -22,6 +22,7 @@ import {Actions} from 'react-native-router-flux'
 
 import {Geolocation} from '../common/BaiduMap'
 import * as DeviceInfo from 'react-native-device-info'
+import * as locSelector from '../../selector/locSelector'
 
 import Header from '../common/Header'
 import {
@@ -111,44 +112,55 @@ class ShopCategoryList extends Component {
       return
     }
 
-    Geolocation.getCurrentPosition()
-    .then(data => {
-      this.state.searchForm.geo = [data.latitude, data.longitude]
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          geo: this.state.searchForm.geo,
-        }
-      })
-
-      if (Platform.OS == 'ios') {
-        Geolocation.reverseGeoCode(data.latitude, data.longitude)
-          .then(response => {
-            this.state.searchForm.geoCity = response.city,
-              this.setState({
-                searchForm: {
-                  ...this.state.searchForm,
-                  geoCity: this.state.searchForm.geoCity
-                }
-              }, ()=>{
-                callback && callback()
-              })
-          })
-      }else {
-        this.state.searchForm.geoCity = data.city,
-          this.setState({
-            searchForm: {
-              ...this.state.searchForm,
-              geoCity: this.state.searchForm.geoCity
-            }
-          }, ()=>{
-            callback && callback()
-          })
-      }
-
-    }, (reason)=>{
+    console.log('updateCurrentPosition....>>>>>', this.props.curGeoPoint)
+    this.state.searchForm.geo = [this.props.curGeoPoint.latitude, this.props.curGeoPoint.longitude]
+    this.state.searchForm.geoCity = this.props.curCity
+    this.setState({
+      ...this.state.searchForm,
+      geo: this.state.searchForm.geo,
+      geoCity: this.state.searchForm.geoCity
+    }, ()=>{
       callback && callback()
     })
+
+    // Geolocation.getCurrentPosition()
+    // .then(data => {
+    //   this.state.searchForm.geo = [data.latitude, data.longitude]
+    //   this.setState({
+    //     searchForm: {
+    //       ...this.state.searchForm,
+    //       geo: this.state.searchForm.geo,
+    //     }
+    //   })
+    //
+    //   if (Platform.OS == 'ios') {
+    //     Geolocation.reverseGeoCode(data.latitude, data.longitude)
+    //       .then(response => {
+    //         this.state.searchForm.geoCity = response.city,
+    //           this.setState({
+    //             searchForm: {
+    //               ...this.state.searchForm,
+    //               geoCity: this.state.searchForm.geoCity
+    //             }
+    //           }, ()=>{
+    //             callback && callback()
+    //           })
+    //       })
+    //   }else {
+    //     this.state.searchForm.geoCity = data.city,
+    //       this.setState({
+    //         searchForm: {
+    //           ...this.state.searchForm,
+    //           geoCity: this.state.searchForm.geoCity
+    //         }
+    //       }, ()=>{
+    //         callback && callback()
+    //       })
+    //   }
+
+    // }, (reason)=>{
+    //   callback && callback()
+    // })
   }
 
   componentDidMount() {
@@ -697,6 +709,9 @@ const mapStateToProps = (state, ownProps) => {
 
   const allShopTags = selectShopTags(state)
 
+  const curGeoPoint = locSelector.getGeopoint(state)
+  const curCity = locSelector.getCity(state)
+
   return {
     ds: ds.cloneWithRows(shopList),
     shopList: shopList,
@@ -707,6 +722,8 @@ const mapStateToProps = (state, ownProps) => {
     allShopTags: allShopTags,
     isLastPage: isLastPage,
     nextSkipNum: nextSkipNum,
+    curGeoPoint: curGeoPoint,
+    curCity: curCity,
   }
 }
 

@@ -95,10 +95,10 @@ export function getShopList(payload) {
     query.equalTo('containedTag', shopTag)
   }
 
-  // query.equalTo('isOpen', true)
-  // console.log('getShopList.query=****************==', query)
+  query.equalTo('status', 1)
+  console.log('getShopList.query=****************==', query)
   return query.find().then(function (results) {
-    // console.log('getShopList.results==>>>>>>>>>>>>>===', results)
+    console.log('getShopList.results==>>>>>>>>>>>>>===', results)
     let shopList = []
     results.forEach((result) => {
       result.nextSkipNum = parseInt(skipNum) + results.length
@@ -855,8 +855,9 @@ export function fetchGuessYouLikeShopList(payload) {
 }
 
 export function submitShopPromotion(payload) {
+  // console.log('submitShopPromotion===payload=', payload)
   let shopId = payload.shopId
-  let typeId = payload.typeId
+  let typeId = payload.typeId + ""
   let type = payload.type
   let typeDesc = payload.typeDesc
   let coverUrl = payload.coverUrl
@@ -887,6 +888,14 @@ export function submitShopPromotion(payload) {
 
   return shopPromotion.save().then((results) => {
     // console.log('submitShopPromotion===results=', results)
+    let promotion = AV.Object.createWithoutData('ShopPromotion', results.id)
+    shop.addUnique('containedPromotions', [promotion])
+    // console.log('shop/////>>>>>>>>>>', shop)
+    shop.save().then((rep)=>{
+      // console.log('rep---->>>>', rep)
+    }, (error)=>{
+      // console.log('error.........>>>>', error)
+    })
     return results
   }, function (err) {
     // console.log('submitShopPromotion===err=', err)
