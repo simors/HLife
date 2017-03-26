@@ -496,6 +496,7 @@ class ShopDetail extends Component {
               </View>
 
               <ShopPromotionModule
+                title="店铺促销"
                 shopPromotionList={this.props.shopDetail.containedPromotions}
               />
 

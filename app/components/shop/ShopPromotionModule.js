@@ -90,7 +90,7 @@ class ShopPromotionModule extends Component {
         <View style={styles.headerView}>
           <View style={styles.headerItem}>
             <Image source={require('../../assets/images/activity.png')} width={12} height={14}></Image>
-            <Text style={styles.headerText} numberOfLines={1}>附近促销</Text>
+            <Text style={styles.headerText} numberOfLines={1}>{this.props.title || '附近促销'}</Text>
           </View>
         </View>
         <View style={styles.contentItem}>
