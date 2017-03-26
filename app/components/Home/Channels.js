@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   badgeTextStyle: {
     backgroundColor:"transparent",
-    fontSize:11,
+    fontSize: em(11),
     paddingLeft:10,
     color:"#ffffff",
     fontFamily:".PingFangSC-Regular",

@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   defaultAddImageTextStyle: {
-    fontSize: 12,
+    fontSize: em(12),
     position: 'absolute',
     bottom: 6,
     left: 25,

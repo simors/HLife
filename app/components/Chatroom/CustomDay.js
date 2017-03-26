@@ -11,6 +11,7 @@ import {
 import moment from 'moment/min/moment-with-locales.min';
 
 import { isSameDay, isSameUser, warnDeprecated } from './GifedChat/utils';
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class CustomDay extends React.Component {
   render() {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   text: {
     backgroundColor: 'transparent',
     color: '#b2b2b2',
-    fontSize: 12,
+    fontSize: em(12),
     fontWeight: '600',
   },
 });

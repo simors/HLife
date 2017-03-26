@@ -380,7 +380,7 @@ const styles = StyleSheet.create(
       marginTop: normalizeH(10),
       marginLeft: normalizeW(10),
       marginBottom: normalizeH(12),
-      fontSize: normalizeW(17),
+      fontSize: em(17),
       color: '#636363'
     },
     threelike: {

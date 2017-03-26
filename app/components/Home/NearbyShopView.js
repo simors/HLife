@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     paddingTop: normalizeH(10),
   },
   headerText: {
-    fontSize: 12,
+    fontSize: em(12),
     color: '#5A5A5A',
     lineHeight: 12,
     paddingLeft: 5,
@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   shopTitle: {
-    fontSize: 15,
+    fontSize: em(15),
     fontWeight: 'bold',
     lineHeight: 15,
   },
   itemAbstract: {
-    fontSize: 11,
+    fontSize: em(11),
     color: '#AAAAAA',
     lineHeight: 15,
   },

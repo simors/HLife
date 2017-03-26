@@ -562,7 +562,7 @@ const styles = StyleSheet.create(
       borderColor: '#f5a623'
     },
     commentBtnBadgeTxt: {
-      fontSize: 9,
+      fontSize: em(9),
       color: '#fff'
     },
     shopUpWrap: {

@@ -16,6 +16,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {fetchTopicById} from '../../action/topicActions'
 import {getTopicById} from '../../selector/topicSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 class ShopInfoCell extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class ShopInfoCell extends Component {
           <View style={{flexDirection: 'row', backgroundColor: 'rgba(242,242,242,0.50)'}}>
             {this.renderCoverImage()}
             <View style={{flex: 1,padding: 10, paddingBottom: 0}}>
-              <Text style={{fontSize: 17, color: '#4a4a4a'}} numberOfLines={1}>{this.props.topicInfo.title}</Text>
+              <Text style={{fontSize: em(17), color: '#4a4a4a'}} numberOfLines={1}>{this.props.topicInfo.title}</Text>
               <Text style={styles.abstractStyle} numberOfLines={2}>
                 {this.props.topicInfo.abstract}
               </Text>
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     marginRight: 10,
-    fontSize: 15,
+    fontSize: em(15),
     lineHeight: 20,
     color: "#9b9b9b"
   },

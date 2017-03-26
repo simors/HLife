@@ -116,7 +116,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(TopicContent)
 const styles = StyleSheet.create({
   body: {
     color: "#555",
-    fontSize: 16,
+    fontSize: em(16),
     lineHeight: 1.7,
     textAlign: 'justify',
   },

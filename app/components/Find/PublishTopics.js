@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     top: normalizeH(17),
   },
   topicTypeTitleStyle: {
-    fontSize: 15,
+    fontSize: em(5),
     color: '#5a5a5a',
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(18),

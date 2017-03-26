@@ -12,6 +12,7 @@ import {
   ProgressBarAndroid,
   ActivityIndicator,
 } from "react-native"
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class CommonListView extends Component {
 
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     color: '#b4b4b4',
     paddingLeft: 12,
     paddingRight: 12,
-    fontSize: 12
+    fontSize: em(12),
   },
   footLine: {
     flex: 1,

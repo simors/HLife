@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class CustomNameView extends Component {
   constructor(props) {
@@ -51,7 +52,7 @@ const styles = {
 
 const nameStyles = StyleSheet.create({
   nameText: {
-    fontSize: 11,
+    fontSize: em(11),
     color: '#9B9B9B'
   }
 })

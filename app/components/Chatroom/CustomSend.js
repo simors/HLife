@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import {selectPhotoTapped} from '../../util/ImageSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class CustomSend extends Component {
 
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#FFFFFF',
     fontWeight: '600',
-    fontSize: 17,
+    fontSize: em(17),
     backgroundColor: 'transparent',
     marginBottom: 12,
     marginLeft: 10,

@@ -104,17 +104,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   titleStyle: {
-    fontSize: 17,
+    fontSize: em(17),
     color: '#4A4A4A',
     letterSpacing: 0.43,
   },
   msgTip: {
-    fontSize: 14,
+    fontSize: em(14),
     color: '#9B9B9B',
     letterSpacing: 0.43,
   },
   timeTip: {
-    fontSize: 14,
+    fontSize: em(14),
     color: '#9B9B9B',
     letterSpacing: 0.43,
     marginRight: normalizeW(15)

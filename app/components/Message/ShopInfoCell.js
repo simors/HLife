@@ -40,7 +40,7 @@ class ShopInfoCell extends Component {
           <View style={{flexDirection: 'row', backgroundColor: 'rgba(242,242,242,0.50)'}}>
             <Image style={{width: 80, height: 80}} source={{uri: this.props.shopInfo.coverUrl}}></Image>
             <View style={{flex: 1, paddingLeft: 10, paddingTop: 16, paddingRight: 10}}>
-              <Text style={{fontSize: 17, color: '#4a4a4a'}} numberOfLines={1}>{this.props.shopInfo.shopName}</Text>
+              <Text style={{fontSize: em(17), color: '#4a4a4a'}} numberOfLines={1}>{this.props.shopInfo.shopName}</Text>
               <View style={{marginTop: 12}}>
                 <ScoreShow score={parseInt(this.props.shopInfo.score)} bgColor="grey"/>
               </View>

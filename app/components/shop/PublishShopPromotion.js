@@ -765,7 +765,7 @@ const styles = StyleSheet.create({
   },
   typeDescTxt: {
     color: '#b2b2b2',
-    fontSize: 15
+    fontSize: em(15)
   },
   typeRowItem: {
     padding: 10,
@@ -779,28 +779,28 @@ const styles = StyleSheet.create({
   },
   typeRowItemTxt: {
     color: '#5a5a5a',
-    fontSize: 15
+    fontSize: em(15)
   },
   activeType: {
     backgroundColor: '#FF7819'
   },
   activeTypeTxt: {
     color: 'white',
-    fontSize: 15
+    fontSize: em(15)
   },
   defaultType: {
     backgroundColor: '#aaa'
   },
   defaultTypeTxt: {
     color: 'white',
-    fontSize: 15
+    fontSize: em(15)
   },
   customType: {
     backgroundColor: '#f5f5f5'
   },
   customTypeTxt: {
     color: '#aaa',
-    fontSize: 15
+    fontSize: em(15)
   },
   inputContainerStyle: {
     height: 29,
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: 'white',
-    fontSize: 15
+    fontSize: em(15)
   },
   inputWrap: {
     flex: 1,
@@ -877,7 +877,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   titleLabel: {
-    fontSize: 17,
+    fontSize: em(17),
     color: '#aaa'
   },
   titleInput: {
@@ -890,7 +890,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   priceLabel: {
-    fontSize: 15,
+    fontSize: em(15),
     color: '#aaa'
   },
   promotingPriceInput: {

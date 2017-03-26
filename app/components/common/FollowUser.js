@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   userAttentionedTxt: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: em(10),
   },
   commentAttention: {
     width: normalizeW(45),

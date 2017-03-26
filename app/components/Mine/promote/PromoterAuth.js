@@ -252,7 +252,7 @@ const styles = StyleSheet.create(
       backgroundColor: THEME.base.mainColor,
     },
     left: {
-      fontSize: 17,
+      fontSize: em(17),
       color: '#FFFFFF',
       letterSpacing: -0.41,
     },

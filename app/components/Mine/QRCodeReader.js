@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Viewfinder from './Viewfinder';
 import {Actions} from 'react-native-router-flux'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Camera from 'react-native-camera'
 
 class QRCodeReader extends Component {
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
 
   centerText: {
     flex: 1,
-    fontSize: 18,
+    fontSize: em(18),
     padding: 32,
     color: '#777',
   },
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    fontSize: 21,
+    fontSize: em(21),
     color: 'rgb(0,122,255)',
   },
 

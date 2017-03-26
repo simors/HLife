@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(5),
   },
   textStyle: {
-    fontSize: 17,
+    fontSize: em(17),
     color: '#4A4A4A',
     letterSpacing: 0.43,
   }

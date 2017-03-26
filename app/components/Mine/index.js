@@ -120,7 +120,7 @@ class Mine extends Component {
               <Image style={{marginRight: normalizeW(8), width: normalizeW(9), height: normalizeH(12)}}
                      resizeMode="contain"
                      source={require('../../assets/images/score.png')} />
-              <Text style={{fontSize: 12, color: '#FFF'}}>积分  {this.props.point}</Text>
+              <Text style={{fontSize: em(12), color: '#FFF'}}>积分  {this.props.point}</Text>
             </View>
           </View>
         </View>
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFF',
   },
   nicknameStyle: {
-    fontSize: 17,
+    fontSize: em(17),
     fontWeight: 'bold',
     color: '#FFF',
   },
@@ -349,12 +349,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   funBtnText: {
-    fontSize: 17,
+    fontSize: em(17),
     color: 'white',
     marginTop: normalizeH(8),
   },
   countText: {
-    fontSize: 12,
+    fontSize: em(12),
     color: 'white'
   },
   memuItemView: {
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     paddingRight: normalizeW(41),
   },
   menuName: {
-    fontSize: 17,
+    fontSize: em(17),
     color: '#5A5A5A',
   },
   menuImg: {

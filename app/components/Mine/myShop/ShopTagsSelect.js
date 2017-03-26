@@ -152,6 +152,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   tagText: {
-    fontSize: 15
+    fontSize: em(15)
   },
 })

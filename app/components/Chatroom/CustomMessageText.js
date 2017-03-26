@@ -11,6 +11,7 @@ import {
 
 import ParsedText from 'react-native-parsed-text';
 import Communications from 'react-native-communications';
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class MessageText extends React.Component {
   constructor(props) {
@@ -70,7 +71,7 @@ export default class MessageText extends React.Component {
 }
 
 const textStyle = {
-  fontSize: 16,
+  fontSize: em(16),
   lineHeight: 20,
   marginTop: 5,
   marginBottom: 5,

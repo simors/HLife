@@ -16,6 +16,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 
 class GenderInput extends Component {
 
@@ -124,13 +125,13 @@ const genderStyles = StyleSheet.create({
   },
   genderTextSel: {
     marginTop: 16,
-    fontSize: 14,
+    fontSize: em(14),
     color: '#ffffff',
     backgroundColor: 'transparent'
   },
   genderText: {
     marginTop: 16,
-    fontSize: 14,
+    fontSize: em(14),
     color: '#ffffff',
     opacity: 0.5,
     backgroundColor: 'transparent'
