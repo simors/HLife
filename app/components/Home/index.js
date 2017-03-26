@@ -72,9 +72,6 @@ class Home extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
-      this.props.fetchBanner({type: 0})
-      this.props.getAllTopicCategories({})
-      this.props.fetchShopCategories()
       this.refreshData()
     })
   }
@@ -170,6 +167,11 @@ class Home extends Component {
 
 
   refreshData() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchBanner({type: 0})
+      this.props.getAllTopicCategories({})
+      this.props.fetchShopCategories()
+    })
     this.loadMoreData(true)
   }
 
