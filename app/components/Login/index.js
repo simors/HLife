@@ -50,18 +50,18 @@ class Login extends Component {
     this.props.submitFormData({
       formKey: commonForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
-      success:this.submitSuccessCallback,
-      error: this.submitErrorCallback
+      success: (userInfo) => {
+        Toast.show('登录成功!')
+        if (this.props.goHome) {
+          Actions.HOME()
+        } else {
+          Actions.pop()
+        }
+      },
+      error: (error) => {
+        Toast.show(error.message)
+      }
     })
-  }
-
-  submitSuccessCallback(userInfos) {
-    Toast.show('登录成功!')
-    Actions.pop()
-  }
-  
-  submitErrorCallback(error) {
-    Toast.show(error.message)
   }
 
   retrievePassword() {
@@ -99,6 +99,10 @@ class Login extends Component {
     )
   }
 
+}
+
+Login.defaultProps = {
+  goHome: false,
 }
 
 const mapStateToProps = (state, ownProps) => {
