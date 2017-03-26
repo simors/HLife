@@ -80,7 +80,7 @@ class ArticleEditor extends Component {
     }
 
     this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
-    this.setState({editorHeight: new Animated.Value(this.compHeight)})
+    this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding - toolbarHeight)})
 
     let initText = []
     if (this.props.initValue) {
@@ -107,7 +107,7 @@ class ArticleEditor extends Component {
   componentWillReceiveProps(newProps) {
     if (this.props.wrapHeight != newProps.wrapHeight) {
       this.compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
-      this.setState({editorHeight: new Animated.Value(this.compHeight)})
+      this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding- toolbarHeight)})
     }
 
     if (this.props.data != newProps.data) {
