@@ -124,7 +124,6 @@ class PromoterAuth extends Component {
 
         <View style={styles.body}>
           <KeyboardAwareScrollView
-            keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps={true}
             automaticallyAdjustContentInsets={false}
           >
