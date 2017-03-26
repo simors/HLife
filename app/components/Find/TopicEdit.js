@@ -82,7 +82,7 @@ class TopicEdit extends Component {
       shouldUploadImgComponent: false
     })
     Toast.show('恭喜您,更新成功!')
-    Actions.pop(1)
+    Actions.pop({popNum: 2})
   }
 
   submitErrorCallback = (error) => {
