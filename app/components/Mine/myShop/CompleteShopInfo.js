@@ -373,7 +373,6 @@ class CompleteShopInfo extends Component {
         <View style={styles.body}>
 
           <KeyboardAwareScrollView
-            keyboardDismissMode='on-drag'
             automaticallyAdjustContentInsets={false}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}

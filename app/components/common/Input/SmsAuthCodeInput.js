@@ -74,7 +74,7 @@ class SmsAuthCodeInput extends Component {
     } else {
       this.interval && clearInterval(this.interval)
       return (
-        <Text style={[smsStyles.smsCodeText, this.props.codeText && this.props.codeText]}>
+        <Text style={[smsStyles.smsCodeText, {fontSize: em(16)}, this.props.codeText && this.props.codeText]}>
           {this.props.getSmsAuthText}
         </Text>
       )
@@ -187,7 +187,7 @@ const smsStyles = StyleSheet.create({
     backgroundColor: THEME.colors.light
   },
   smsCodeText: {
-    fontSize: em(16),
+    fontSize: em(12),
     color: '#ffffff',
     backgroundColor: 'transparent',
   }

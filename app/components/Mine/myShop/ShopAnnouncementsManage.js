@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     left: PAGE_WIDTH / 2,
   },
   deleteIcon: {
-    fontSize: 32,
+    fontSize: em(32),
   }
 
 })

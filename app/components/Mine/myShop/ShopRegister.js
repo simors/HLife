@@ -234,7 +234,6 @@ class ShopRegister extends Component {
         <View style={styles.body}>
 
           <KeyboardAwareScrollView
-            keyboardDismissMode='on-drag'
             automaticallyAdjustContentInsets={false}
           >
             <View style={styles.subTitleWrap}>
@@ -281,7 +280,7 @@ class ShopRegister extends Component {
                     placeholder = "填写手机验证码"
                     codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
                     codeTextContainerDisable={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                    codeText={{fontSize: 12}}
+                    codeText={{fontSize: em(12)}}
                     getSmsAuCode={() => this.smsCode()}
                     reset={!this.props.phoneValid}
                   />

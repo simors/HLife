@@ -81,6 +81,7 @@ import QRCodeReader from '../components/Mine/QRCodeReader'
 import PersonalQR from '../components/Mine/PersonalQR'
 import Publish from '../components/Publish'
 import PublishShopPromotion from '../components/shop/PublishShopPromotion'
+import PromoterPerformance from '../components/Mine/promote/PromoterPerformance'
 import TopicEdit from '../components/Find/TopicEdit'
 
 const styles = StyleSheet.create({
@@ -172,8 +173,8 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH" component={Publish}/>
       <Scene key="PUBLISH_SHOP_PROMOTION" component={PublishShopPromotion}/>
       <Scene key="SHOP_PROMOTION_DETAIL" component={ShopPromotionDetail}/>
+      <Scene key="PROMOTER_PERFORMANCE" component={PromoterPerformance} />
       <Scene key="TOPIC_EDIT" component={TopicEdit}/>
-
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

@@ -229,6 +229,7 @@ class TopicEdit extends Component {
         onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
         placeholder="分享吃喝玩乐、共享周边生活信息"
         initValue={JSON.parse(initValue)}
+        mode="modify"
       />
     )
   }
@@ -259,7 +260,7 @@ class TopicEdit extends Component {
                   <Image style={styles.imageStyle} source={require("../../assets/images/PinLeft_gray.png")}/>
                 </TouchableOpacity>
               </View>
-              <View>
+              <View style={{height: normalizeH(59)}}>
                 <CommonTextInput maxLength={36}
                                  autoFocus={true}
                                  containerStyle={styles.titleContainerStyle}
@@ -383,7 +384,7 @@ const styles = StyleSheet.create({
     top: normalizeH(17),
   },
   topicTypeTitleStyle: {
-    fontSize: 15,
+    fontSize: em(15),
     color: '#5a5a5a',
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(18),

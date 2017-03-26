@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   tip: {
     width: normalizeW(307),
-    fontSize: 10,
+    fontSize: em(10),
     color: THEME.colors.lighter,
     lineHeight: 15,
     textAlign: 'center'

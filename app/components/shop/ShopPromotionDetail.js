@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   priceTxt: {
     color: '#FF7819',
-    fontSize: 24,
+    fontSize: em(24),
     fontWeight: 'bold'
   },
   footerBtnBox: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     paddingRight: 35,
   },
   footerBtnTxt: {
-    fontSize: 15,
+    fontSize: em(15),
     color: 'white',
     marginLeft: 8
   },
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   },
   titleTxt: {
     color: '#5a5a5a',
-    fontSize: 17,
+    fontSize: em(17),
     lineHeight: 24,
     fontWeight: 'bold'
   },
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   typeTxt: {
     color: 'white',
-    fontSize: 15,
+    fontSize: em(15),
     fontWeight: 'bold'
   },
   typeDescBox: {
@@ -232,11 +232,11 @@ const styles = StyleSheet.create({
   },
   typeDescTxt: {
     color: '#5a5a5a',
-    fontSize: 15,
+    fontSize: em(15),
   },
   pvTxt: {
     color: '#aaa',
-    fontSize: 12,
+    fontSize: em(12),
   },
   shopInfoWrap: {
     flexDirection: 'row',
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   },
   shopInfoTxt: {
     color: '#5a5a5a',
-    fontSize: 12,
+    fontSize: em(12),
   },
   shopNameTxt: {
     marginLeft: 15,
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   shopBtnTxt: {
     color: '#FF7819',
-    fontSize: 15,
+    fontSize: em(15),
     marginRight: 8
   }
 

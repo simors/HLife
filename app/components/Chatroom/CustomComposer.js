@@ -8,6 +8,7 @@ import {
   Platform,
   TextInput
 } from 'react-native'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 export default class CustomComposer extends Component {
   render() {
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: em(16),
     lineHeight: 16,
     marginTop: Platform.select({
       ios: 6,

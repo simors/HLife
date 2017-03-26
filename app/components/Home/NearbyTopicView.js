@@ -183,15 +183,13 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   labelText: {
-    fontSize: 15,
+    fontSize: em(15),
     color: 'white',
-    lineHeight: 15,
     margin: 2
   },
   titleText: {
-    fontSize: 15,
+    fontSize: em(15),
     color: '#AAAAAA',
     marginLeft: 10,
-    lineHeight: 15,
   },
 })

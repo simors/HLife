@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     }),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'stretch',
+    alignItems: 'center',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2',
   },

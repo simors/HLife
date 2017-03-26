@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     paddingTop: normalizeH(10),
   },
   headerText: {
-    fontSize: 12,
+    fontSize: em(12),
     color: '#5A5A5A',
     lineHeight: 12,
     paddingLeft: 5,
@@ -164,12 +164,12 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(5),
   },
   itemTitle: {
-    fontSize: 17,
+    fontSize: em(17),
     fontWeight: 'bold',
     color: '#5A5A5A',
   },
   itemText: {
-    fontSize: 12,
+    fontSize: em(12),
     color: '#AAAAAA',
     lineHeight: 12,
   },
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   saleLabelText: {
     color: 'white',
-    fontSize: 12,
+    fontSize: em(12),
     fontWeight: 'bold',
     lineHeight: 12,
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   priceText: {
-    fontSize: 15,
+    fontSize: em(15),
     fontWeight: 'bold',
     color: '#00BE96',
     lineHeight: 17,

@@ -222,7 +222,7 @@ export class TopicDetail extends Component {
     return (
       <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
         <Image style={styles.zanAvatarStyle}
-               source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+               source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait.png")}/>
       </TouchableOpacity>
     )
   }
@@ -258,19 +258,43 @@ export class TopicDetail extends Component {
     )
   }
 
-  render() {
+  renderMoreBtn() {
     return (
-      <View style={styles.containerStyle}>
-        <StatusBar barStyle="dark-content"/>
+      <TouchableOpacity style={styles.moreBtnStyle}
+                        onPress={() => {this.onRightPress()}}>
+        <Image style={{width: normalizeW(25), height: normalizeH(6)}} resizeMode="contain"
+               source={require('../../assets/images/more.png')}/>
+      </TouchableOpacity>
+    )
+  }
+
+  renderHeaderView() {
+    if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
+      return (
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="详情"
-          rightType="text"
-          rightText="..."
-          rightPress={() => this.onRightPress()}
+          rightComponent={() => {return this.renderMoreBtn()}}
         />
+      )
+    }
+    return (
+      <Header
+        leftType="icon"
+        leftIconName="ios-arrow-back"
+        leftPress={() => Actions.pop()}
+        title="详情"
+      />
+    )
+  }
+
+  render() {
+    return (
+      <View style={styles.containerStyle}>
+        <StatusBar barStyle="dark-content"/>
+        {this.renderHeaderView()}
         <View style={styles.body}>
           <ScrollView style={{}} ref={"scrollView"}>
             <TopicContent topic={this.props.topic}/>
@@ -457,11 +481,18 @@ const styles = StyleSheet.create({
     borderColor: '#f5a623'
   },
   commentBtnBadgeTxt: {
-    fontSize: 9,
+    fontSize: em(9),
     color: '#fff'
   },
   shopUpWrap: {
     width: 60,
     alignItems: 'center'
+  },
+  moreBtnStyle: {
+    width: normalizeW(40),
+    height: normalizeH(20),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(15)
   },
 })

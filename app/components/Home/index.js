@@ -72,9 +72,6 @@ class Home extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
-      this.props.fetchBanner({type: 0})
-      this.props.getAllTopicCategories({})
-      this.props.fetchShopCategories()
       this.refreshData()
     })
   }
@@ -123,7 +120,7 @@ class Home extends Component {
   }
 
   renderBannerColumn() {
-    if (this.props.banner) {
+    if (this.props.banner && this.props.banner.length > 1) {
       return (
         <View style={styles.advertisementModule}>
           <CommonBanner2
@@ -170,6 +167,11 @@ class Home extends Component {
 
 
   refreshData() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchBanner({type: 0})
+      this.props.getAllTopicCategories({})
+      this.props.fetchShopCategories()
+    })
     this.loadMoreData(true)
   }
 
@@ -278,7 +280,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const allShopCategories = selectShopCategories(state)
   // console.log('Home.allShopCategories*********>>>>>>>>>>>', allShopCategories)
-
+  
   return {
     // announcement: announcement,
     banner: banner,

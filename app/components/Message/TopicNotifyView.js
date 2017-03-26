@@ -94,7 +94,7 @@ class TopicNotifyView extends Component {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-              <Text style={{fontSize: 14, color: '#50E3C2'}}>回 复</Text>
+              <Text style={{fontSize: em(14), color: '#50E3C2'}}>回 复</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -107,14 +107,14 @@ class TopicNotifyView extends Component {
     if (notice.msgType === msgActionTypes.MSG_TOPIC_COMMENT) {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: 17, color: '#4a4a4a', lineHeight: 24,}}
+          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: 24,}}
                     content={notice.commentContent}/>
         </View>
       )
     } else {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: 17, color: '#4a4a4a', lineHeight: 24,}} content={notice.text}/>
+          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: 24,}} content={notice.text}/>
         </View>
       )
     }
@@ -136,10 +136,10 @@ class TopicNotifyView extends Component {
               <Text style={styles.userNameStyle}>{notice.nickname ? notice.nickname : '未命名'}</Text>
             </View>
             <View style={{flexDirection: 'row', paddingTop: 2}}>
-              <Text style={{fontSize: 12, color: '#B6B6B6', width: 76}}>{notice.timestamp}</Text>
+              <Text style={{fontSize: em(12), color: '#B6B6B6', width: 76}}>{notice.timestamp}</Text>
               <Image style={{width: 10, height: 13, marginLeft: 18}}
                      source={require("../../assets/images/writer_loaction.png")}/>
-              <Text style={{fontSize: 12, color: '#B6B6B6', paddingLeft: 2}}>长沙</Text>
+              <Text style={{fontSize: em(12), color: '#B6B6B6', paddingLeft: 2}}>长沙</Text>
             </View>
           </View>
           <View style={{flex: 1}}/>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   userNameStyle: {
-    fontSize: 15,
+    fontSize: em(15),
     color: '#50E3C2'
   },
   msgViewStyle: {

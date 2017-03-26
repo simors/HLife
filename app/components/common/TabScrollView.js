@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
 
   tabBarTextStyle: {
-    fontSize: 16,
+    fontSize: em(16),
     paddingBottom: 11,
   },
 

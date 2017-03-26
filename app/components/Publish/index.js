@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   serviceText: {
     paddingTop: normalizeH(15),
     paddingBottom: normalizeH(66),
-    fontSize: 17,
+    fontSize: em(17),
     color: '#5A5A5A'
   },
   item: {

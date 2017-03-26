@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(12)
   },
   contentTitleStyle: {
-    fontSize: 17,
+    fontSize: em(17),
     fontWeight: 'bold',
     lineHeight: 20,
     marginBottom: normalizeH(5),

@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   itemTextStyle: {
     paddingTop: 15,
-    fontSize: 17,
+    fontSize: em(17),
     color: "#4a4a4a",
     fontFamily: ".PingFangSC-Regular",
     letterSpacing: 0.2

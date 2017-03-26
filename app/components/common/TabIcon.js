@@ -17,6 +17,7 @@ import {
 import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
 import {isUserLogined, getUserIdentity, activeUserId} from '../../selector/authSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -40,7 +41,7 @@ class TabIcon extends Component {
         }}>
           <View style={[styles.container, {backgroundColor: THEME.base.mainColor}]}>
             <View>
-              <Text style={{color: 'white', fontSize: 35}}>+</Text>
+              <Text style={{color: 'white', fontSize: em(35)}}>+</Text>
             </View>
             <View style={styles.topLine}/>
           </View>
@@ -65,7 +66,7 @@ class TabIcon extends Component {
   getTitle=(title, selected) =>{
     return (
       <Text
-        style={{color: selected ? THEME.base.mainColor : '#929292', fontSize: 10, marginTop: 4}}
+        style={{color: selected ? THEME.base.mainColor : '#929292', fontSize: em(10), marginTop: 4}}
       >
         {title}
       </Text>

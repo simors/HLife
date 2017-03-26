@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     flex: 1,
-    fontSize: 15,
+    fontSize: em(15),
     color: '#384548',
     alignSelf: 'center',
     backgroundColor: 'transparent',
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     paddingRight: 20
   },
   sendBtnText: {
-    fontSize: 16,
+    fontSize: em(16),
   },
   submitButton: {
     width: 35,
@@ -254,11 +254,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   submitButtonTextEnabled: {
-    fontSize: 15,
+    fontSize: em(15),
     color: '#0081f0',
   },
   submitButtonTextDisable: {
-    fontSize: 15,
+    fontSize: em(15),
     color: '#969696',
   },
   showContainer: {

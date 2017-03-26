@@ -733,7 +733,7 @@ const styles = StyleSheet.create({
   },
   userAttentionedTxt: {
     color: '#fff',
-    fontSize: 9,
+    fontSize: em(9),
   },
   shopName: {
     fontSize: em(17),
@@ -1104,7 +1104,7 @@ const styles = StyleSheet.create({
     borderColor: '#FF9D4E'
   },
   commentBtnBadgeTxt:{
-    fontSize: 9,
+    fontSize: em(9),
     color: '#fff'
   },
   shopUpWrap:{

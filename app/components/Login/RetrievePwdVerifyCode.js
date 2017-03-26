@@ -63,7 +63,7 @@ class RetrievePassword extends Component {
       submitType: INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD,
       success:() => {
         Toast.show('密码重置成功，请登录')
-        Actions.LOGIN()
+        Actions.LOGIN({type:'reset'})
       },
       error: (error) => {Toast.show(error.message)}
     })

@@ -74,7 +74,7 @@ const inviteCodeInput = {
   type: "inviteCodeInput",
 }
 
-class promoterAuth extends Component {
+class PromoterAuth extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -124,7 +124,6 @@ class promoterAuth extends Component {
 
         <View style={styles.body}>
           <KeyboardAwareScrollView
-            keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps={true}
             automaticallyAdjustContentInsets={false}
           >
@@ -241,7 +240,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(promoterAuth)
+export default connect(mapStateToProps, mapDispatchToProps)(PromoterAuth)
 
 
 const styles = StyleSheet.create(
@@ -253,7 +252,7 @@ const styles = StyleSheet.create(
       backgroundColor: THEME.base.mainColor,
     },
     left: {
-      fontSize: 17,
+      fontSize: em(17),
       color: '#FFFFFF',
       letterSpacing: -0.41,
     },
