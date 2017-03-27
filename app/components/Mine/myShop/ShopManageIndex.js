@@ -601,7 +601,6 @@ const styles = StyleSheet.create({
     paddingRight: 10
   },
   locationTxt: {
-    lineHeight: normalizeH(20),
     fontSize: em(17),
     color: '#8f8e94',
   },
@@ -626,7 +625,6 @@ const styles = StyleSheet.create({
     borderTopColor: THEME.colors.lighterA
   },
   contactNumberTxt: {
-    lineHeight: normalizeH(20),
     fontSize: em(17),
     color: '#8f8e94',
   },
@@ -873,7 +871,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   gylShopName: {
-    lineHeight: 20,
     fontSize: em(17),
     color: '#8f8e94'
   },

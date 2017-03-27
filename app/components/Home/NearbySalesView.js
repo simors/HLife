@@ -139,7 +139,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: em(12),
     color: '#5A5A5A',
-    lineHeight: 12,
     paddingLeft: 5,
   },
   contentItem: {
@@ -195,7 +194,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: em(12),
     fontWeight: 'bold',
-    lineHeight: 12,
   },
   priceView: {
     flexDirection: 'row',
@@ -207,6 +205,5 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     fontWeight: 'bold',
     color: '#00BE96',
-    lineHeight: 17,
   },
 })

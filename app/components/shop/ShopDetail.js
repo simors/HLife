@@ -797,7 +797,6 @@ const styles = StyleSheet.create({
     paddingRight: 10
   },
   locationTxt: {
-    lineHeight: normalizeH(20),
     fontSize: em(17),
     color: '#8f8e94',
   },
@@ -820,7 +819,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   contactNumberTxt: {
-    lineHeight: normalizeH(20),
     fontSize: em(17),
     color: '#8f8e94',
   },
@@ -853,7 +851,7 @@ const styles = StyleSheet.create({
   shopAnnouncementTitle: {
     fontSize: em(17),
     color: '#8f8e94',
-    lineHeight: 26
+    lineHeight: em(26)
   },
   shopAnnouncementSubTitleWrap: {
     flexDirection: 'row',
@@ -1035,7 +1033,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   gylShopName: {
-    lineHeight: 20,
     fontSize: em(17),
     color: '#8f8e94'
   },

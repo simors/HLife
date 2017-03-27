@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   titleTxt: {
     color: '#5a5a5a',
     fontSize: em(17),
-    lineHeight: 24,
+    lineHeight: em(24),
     fontWeight: 'bold'
   },
   typeBox: {
