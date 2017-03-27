@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 import ImagePicker from 'react-native-image-crop-picker';
-import {uploadFile} from '../api/leancloud/fileUploader'
+import {uploadFile, batchedUploadFiles} from '../api/leancloud/fileUploader'
 import Loading from '../components/common/Loading'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -114,34 +114,35 @@ export function getImageSize(options) {
 }
 
 let isUploading = false
-export function uploadImgs(options) {
-  let leanImgUrls = []
-  if(options && options.uris && options.uris.length) {
-    if(isUploading) {
-      return
+
+export function batchUploadImgs(uris) {
+  let uploadImgs = []
+  uris.forEach((uri) => {
+    let file = {}
+    file.fileName = uri.split('/').pop()
+    let fileUri = ''
+    if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
+      fileUri = fileUri.concat('file://')
     }
-    isUploading = true
-    let loading = Loading.show()
-    uploadImg({
-      hideLoading: true,
-      uri: options.uris[0],
-      index: 0,
-      success: (response) => {
-        leanImgUrls.push(response.leanImgUrl)
-        if(response.index < options.uris.length-1) {
-          response.index += 1
-          response.uri = options.uris[response.index]
-          uploadImg(response)
-        }else {
-          isUploading = false
-          Loading.hide(loading)
-          if(options.success) {
-            options.success(leanImgUrls)
-          }
-        }
-      }
-    })
+    file.fileUri = fileUri.concat(uri)
+    uploadImgs.push(file)
+  })
+  if(isUploading) {
+    return
   }
+  isUploading = true
+  let loading = Loading.show()
+  let uploadPayload = {
+    uploadFiles: uploadImgs,
+  }
+  return batchedUploadFiles(uploadPayload).then((leanUrls) => {
+    let leanImgUrls = []
+    leanUrls.forEach((leanUrl) => {
+      leanImgUrls.push(leanUrl.savedPos)
+    })
+    Loading.hide(loading)
+    return leanImgUrls
+  })
 }
 
 export function uploadImg(source) {

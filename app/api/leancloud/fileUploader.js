@@ -43,7 +43,7 @@ export function uploadNetFile(payload) {
 }
 
 export function batchedUploadFiles(payload) {
-  let uploadPromises = payload.uploadPayloads.map((item) => {
+  let uploadPromises = payload.uploadFiles.map((item) => {
     return uploadFile(item)
   })
 

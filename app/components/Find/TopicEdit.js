@@ -81,8 +81,8 @@ class TopicEdit extends Component {
     this.setState({
       shouldUploadImgComponent: false
     })
+    Actions.pop({popNum: 2})
     Toast.show('恭喜您,更新成功!')
-    Actions.pop(1)
   }
 
   submitErrorCallback = (error) => {
