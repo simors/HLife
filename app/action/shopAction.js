@@ -522,6 +522,22 @@ export function fetchShopDetail(payload) {
   }
 }
 
+export function fetchShopPromotionDetail(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopPromotionDetail(payload).then((shopPromotionInfo) => {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_DETAIL_SUCCESS)
+      dispatch(updateAction({id: payload.id, shopPromotionInfo: shopPromotionInfo}))
+      if(payload && payload.success){
+        payload.success(shopPromotionInfo)
+      }
+    }).catch((error)=> {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function fetchGuessYouLikeShopList(payload) {
   return (dispatch, getState) => {
     lcShop.fetchGuessYouLikeShopList(payload).then((shopList) => {
@@ -540,7 +556,7 @@ export function fetchGuessYouLikeShopList(payload) {
 
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
-    lcShop.submitShopPromotion(payload).then((result) => {
+    lcShop.submitShshopDopPromotion(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
       dispatch(updateAction(result))
       dispatch(pointAction.calPublishActivity({userId: activeUserId(getState())}))    // 计算发布活动的积分

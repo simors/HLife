@@ -111,7 +111,7 @@ export function fetchAllProvincesAndCities(payload) {
     areaCode: 1,
   }
   return AV.Cloud.run('hLifeGetSubAreaList2', params).then((results) => {
-    console.log('fetchAllProvincesAndCities.results=====>>>>>', results)
+    // console.log('fetchAllProvincesAndCities.results=====>>>>>', results)
     return results
   })
 }
