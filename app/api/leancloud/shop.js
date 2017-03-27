@@ -96,9 +96,9 @@ export function getShopList(payload) {
   }
 
   query.equalTo('status', 1)
-  console.log('getShopList.query=****************==', query)
+  // console.log('getShopList.query=****************==', query)
   return query.find().then(function (results) {
-    console.log('getShopList.results==>>>>>>>>>>>>>===', results)
+    // console.log('getShopList.results==>>>>>>>>>>>>>===', results)
     let shopList = []
     results.forEach((result) => {
       result.nextSkipNum = parseInt(skipNum) + results.length
@@ -161,6 +161,21 @@ export function fetchShopPromotionList(payload) {
     throw err
   })
 
+}
+
+export function fetchShopPromotionDetail(payload) {
+  let id = payload.id
+  let query = new AV.Query('ShopPromotion')
+  query.equalTo('objectId', id)
+  query.include(['targetShop', 'targetShop.owner'])
+  return query.first().then(function (result) {
+    // console.log('fetchShopPromotionsDetail.result=', result)
+    let shopPromotionInfo = ShopPromotion.fromLeancloudObject(result)
+    return new Map(shopPromotionInfo)
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
 
 export function fetchShopDetail(payload) {
