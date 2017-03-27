@@ -17,6 +17,7 @@ export function getBanner(payload) {
   let type = payload.type
   let query = new AV.Query('Banners')
   query.equalTo('type', type)
+  query.equalTo('status', 1)
   if (typeof payload.geo === 'object') {
     let point = new AV.GeoPoint(payload.geo);
     query.withinKilometers('geo', point, 10);
