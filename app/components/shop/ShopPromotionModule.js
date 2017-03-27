@@ -62,7 +62,9 @@ class ShopPromotionModule extends Component {
                     <Text style={styles.priceText}>¥</Text>
                     <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
                     {item.originalPrice &&
-                      <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}>(原价 {item.originalPrice})</Text>
+                      <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
+                        原价 {item.originalPrice}
+                      </Text>
                     }
                   </View>
                   <View>
