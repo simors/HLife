@@ -127,7 +127,7 @@ class PromoterPerformance extends Component {
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           {this.renderTotalEarnings()}
           {this.renderInvitationStat()}
-          <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {}}>
+          <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {Actions.INVITE_CODE_VIEWER()}}>
             <Image style={{width: normalizeW(156), height: normalizeH(156)}}
                    source={require('../../../assets/images/generate_code.png')}/>
           </TouchableOpacity>
@@ -157,7 +157,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PromoterPerformance)
-
 
 const styles = StyleSheet.create({
   container: {
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
   },
   totalEarningsView: {
     flex: 1,
-    height: normalizeH(100),
+    height: normalizeH(110),
     justifyContent: 'center',
     alignItems: 'center',
   },
