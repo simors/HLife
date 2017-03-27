@@ -16,6 +16,21 @@ let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
 let certificatePromoter = createAction(promoterActionTypes.CERTIFICATE_PROMOTER)
 
+export function getInviteCode(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.generateInviteCode().then((code) => {
+      if (code.status == 0) {
+        let generateInviteCode = createAction(promoterActionTypes.GENERATE_INVITE_CODE)
+        dispatch(generateInviteCode({code: code.result}))
+      } else {
+        if (payload.error) {
+          payload.error({message: '生成验证码失败，请重新生成！'})
+        }
+      }
+    })
+  }
+}
+
 export function promoterCertification(payload) {
   return (dispatch, getState) => {
     dispatch(formCheck({formKey: payload.formKey}))

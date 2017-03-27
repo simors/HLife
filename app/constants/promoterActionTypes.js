@@ -2,3 +2,4 @@
  * Created by yangyang on 2017/3/24.
  */
 export const CERTIFICATE_PROMOTER = 'CERTIFICATE_PROMOTER'
+export const GENERATE_INVITE_CODE = 'GENERATE_INVITE_CODE'

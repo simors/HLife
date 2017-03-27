@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  InteractionManager,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -17,10 +18,23 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../../common/Header'
 import THEME from '../../../constants/themes/theme1'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {getInviteCode} from '../../../action/promoterAction'
+import {inviteCode} from '../../../selector/promoterSelector'
+import * as Toast from '../../common/Toast'
 
 class InviteCodeViewer extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.getInviteCode({
+        error: (err) => {
+          Toast.show(err.message)
+        }
+      })
+    })
   }
 
   renderInviteDeclareBtn() {
@@ -47,15 +61,15 @@ class InviteCodeViewer extends Component {
             <Text style={styles.tipText} numberOfLines={2}>扫一扫下面的二维码，获取邀请码或者直接输入以下邀请码</Text>
           </View>
           <View style={{marginTop: normalizeH(43)}}>
-            <QRCode value='abcdef'
+            <QRCode value={this.props.code}
                     size={normalizeW(160)}
                     bgColor='#030303'
                     fgColor='#FFF'/>
           </View>
           <View style={{flexDirection: 'row', marginTop: normalizeH(42), alignItems: 'center'}}>
             <Text style={{fontSize: em(17), color: '#4A4A4A', paddingRight: normalizeW(20)}}>邀请码</Text>
-            <View style={{borderWidth: 1, borderColor: THEME.base.lightColor}}>
-              <Text style={styles.inviteText}>AS883P</Text>
+            <View style={styles.inviteTextView}>
+              <Text style={styles.inviteText}>{this.props.code}</Text>
             </View>
           </View>
         </View>
@@ -65,10 +79,13 @@ class InviteCodeViewer extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let code = inviteCode(state)
   return {
+    code: code ? code : '',
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getInviteCode,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteCodeViewer)
@@ -95,12 +112,19 @@ const styles = StyleSheet.create({
     lineHeight: em(22),
     textAlign: 'center',
   },
+  inviteTextView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: THEME.base.lightColor,
+    width: normalizeW(130),
+    height: normalizeH(30),
+  },
   inviteText: {
     color: THEME.base.mainColor,
     fontSize: em(17),
     fontWeight: 'bold',
     letterSpacing: em(3),
-    padding: normalizeW(8),
     justifyContent: 'center',
     alignItems: 'center',
   },
