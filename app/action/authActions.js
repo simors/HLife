@@ -12,6 +12,7 @@ import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
 import * as AVUtils from '../util/AVUtils'
 import {calUserRegist, calRegistShoper} from '../action/pointActions'
+import {IDENTITY_PROMOTER} from '../constants/appConfig'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -317,29 +318,67 @@ function handleProfileSubmit(payload, formData) {
   }
 }
 
+// function handleShopCertification(payload, formData) {
+//   return (dispatch, getState) => {
+//     let smsPayload = {
+//       phone: formData.phoneInput.text,
+//       smsAuthCode: formData.smsAuthCodeInput.text,
+//     }
+//     if (__DEV__) {
+//       // dispatch(verifyInvitationCode(payload, formData))
+//       dispatch(shopCertification(payload, formData))
+//       return
+//     }
+//     else {
+//       lcAuth.verifySmsCode(smsPayload).then(() => {
+//         dispatch(verifyInvitationCode(payload, formData))
+//       }).then(() => {
+//         let userId = activeUserId(getState())
+//         dispatch(calRegistShoper({userId}))   // 计算注册成为店家的积分
+//       }).catch((error) => {
+//         if (payload.error) {
+//           payload.error(error)
+//         }
+//       })
+//     }
+//   }
+// }
+
 function handleShopCertification(payload, formData) {
   return (dispatch, getState) => {
     let smsPayload = {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    if (__DEV__) {
-      // dispatch(verifyInvitationCode(payload, formData))
-      dispatch(shopCertification(payload, formData))
-      return
-    }
-    else {
-      lcAuth.verifySmsCode(smsPayload).then(() => {
-        dispatch(verifyInvitationCode(payload, formData))
-      }).then(() => {
-        let userId = activeUserId(getState())
-        dispatch(calRegistShoper({userId}))   // 计算注册成为店家的积分
+    lcAuth.verifySmsCode(smsPayload).then(() => {
+      let shopInfo = {
+        inviteCode: formData.invitationCodeInput.text,
+        name: formData.nameInput.text,
+        phone: formData.phoneInput.text,
+        shopName: formData.shopNameInput.text,
+        shopAddress:formData.shopAddrInput && formData.shopAddrInput.text,
+        geo: formData.shopGeoInput && formData.shopGeoInput.text,
+        geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
+        geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
+      }
+      lcShop.shopCertification(shopInfo).then((shop) => {
+        dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
+        if (payload.success) {
+          payload.success(shop)
+        }
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
         }
       })
-    }
+    }).then(() => {
+      let userId = activeUserId(getState())
+      dispatch(calRegistShoper({userId}))   // 计算注册成为店家的积分
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
   }
 }
 
