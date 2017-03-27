@@ -208,7 +208,7 @@ class TopicEdit extends Component {
       <View style={{width: normalizeW(64), backgroundColor: THEME.base.mainColor}}>
         <TouchableOpacity onPress={() => {this.onButtonPress()}}
                           style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{fontSize: 15, color: 'white', lineHeight: 15}}>更新</Text>
+          <Text style={{fontSize: 15, color: 'white'}}>更新</Text>
         </TouchableOpacity>
       </View>
     )

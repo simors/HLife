@@ -509,7 +509,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   shopName: {
-    lineHeight: 20,
     fontSize: em(17),
     color: '#5a5a5a'
   },

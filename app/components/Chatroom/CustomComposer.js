@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: em(16),
-    lineHeight: 16,
+    lineHeight: em(20),
     marginTop: Platform.select({
       ios: 6,
       android: 0,

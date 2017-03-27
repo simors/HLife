@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginRight: 10,
     fontSize: em(15),
-    lineHeight: 20,
+    lineHeight: em(20),
     color: "#9b9b9b"
   },
 })

@@ -420,7 +420,7 @@ class ArticleEditor extends Component {
                 style={{width: 20, height: 20}}
                 source={require('../../../assets/images/insert_picture.png')}>
               </Image>
-              <Text style={{fontSize: 15, color: '#AAAAAA', lineHeight: 15, marginLeft: normalizeW(10)}}>添加图片</Text>
+              <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(10)}}>添加图片</Text>
             </TouchableOpacity>
           </View>
           {this.props.renderCustomToolbar ? this.props.renderCustomToolbar() : <View/>}

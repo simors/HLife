@@ -62,7 +62,9 @@ class ShopPromotionModule extends Component {
                     <Text style={styles.priceText}>¥</Text>
                     <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
                     {item.originalPrice &&
-                      <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}>(原价 {item.originalPrice})</Text>
+                      <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
+                        原价 {item.originalPrice}
+                      </Text>
                     }
                   </View>
                   <View>
@@ -136,7 +138,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: em(12),
     color: '#5A5A5A',
-    lineHeight: 12,
     paddingLeft: 5,
   },
   contentItem: {
@@ -171,10 +172,9 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: em(12),
     color: '#AAAAAA',
-    lineHeight: 12,
   },
   abstractTxt: {
-    lineHeight: 18,
+    lineHeight: em(18),
   },
   distanceBox: {
     justifyContent: 'center',
@@ -203,7 +203,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: em(12),
     fontWeight: 'bold',
-    lineHeight: 12,
   },
   priceView: {
     flexDirection: 'row',
@@ -215,6 +214,5 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     fontWeight: 'bold',
     color: '#00BE96',
-    lineHeight: 17,
   },
 })

@@ -110,7 +110,7 @@ class ShopNotifyView extends Component {
         <View style={styles.msgViewStyle}>
           <Expander
             showLines={3}
-            textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: 24,}}
+            textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}}
             content={notice.commentContent}
           />
         </View>
@@ -118,7 +118,7 @@ class ShopNotifyView extends Component {
     } else {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: 24,}} content={notice.text}/>
+          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}} content={notice.text}/>
         </View>
       )
     }
