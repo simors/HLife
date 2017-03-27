@@ -904,6 +904,23 @@ export function submitShopPromotion(payload) {
   })
 }
 
+export function shopCertification(payload) {
+  let params = {
+    inviteCode: payload.inviteCode,
+    name: payload.name,
+    phone: payload.phone,
+    shopName: payload.shopName,
+    shopAddress: payload.shopAddress,
+    geo: payload.geo,
+    geoCity: payload.geoCity,
+    geoDistrict: payload.geoDistrict,
 
+  }
+  return AV.Cloud.run('hLifeShopCertificate', params).then((shopInfo) => {
+    return shopInfo
+  }, (err) => {
+    throw err
+  })
+}
 
 
