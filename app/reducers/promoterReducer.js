@@ -12,6 +12,8 @@ export default function promoterReducer(state = initialState, action) {
   switch (action.type) {
     case promoterActionTypes.GENERATE_INVITE_CODE:
       return handleGenerateInviteCode(state, action)
+    case promoterActionTypes.CLEAR_INVITE_CODE:
+      return handleClearInviteCode(state, action)
     case promoterActionTypes.SET_ACTIVE_PROMOTER:
       return handleSetActivePromoter(state, action)
     case promoterActionTypes.UPDATE_PROMOTER_INFO:
@@ -26,6 +28,11 @@ export default function promoterReducer(state = initialState, action) {
 function handleGenerateInviteCode(state, action) {
   let code = action.payload.code
   state = state.set('inviteCode',  code)
+  return state
+}
+
+function handleClearInviteCode(state, action) {
+  state = state.set('inviteCode', undefined)
   return state
 }
 

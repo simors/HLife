@@ -21,6 +21,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import {getInviteCode} from '../../../action/promoterAction'
 import {inviteCode} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
+import {clearInviteCode} from '../../../action/promoterAction'
 
 class InviteCodeViewer extends Component {
   constructor(props) {
@@ -52,7 +53,10 @@ class InviteCodeViewer extends Component {
         <Header leftType="icon"
                 leftStyle={{color: THEME.base.mainColor}}
                 leftIconName="ios-arrow-back"
-                leftPress={() => Actions.pop()}
+                leftPress={() => {
+                  this.props.clearInviteCode()
+                  Actions.pop()
+                }}
                 title="邀请码"
                 rightComponent={()=>this.renderInviteDeclareBtn()}
         />
@@ -86,6 +90,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getInviteCode,
+  clearInviteCode,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteCodeViewer)

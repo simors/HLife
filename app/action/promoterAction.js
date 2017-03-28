@@ -34,6 +34,13 @@ export function getInviteCode(payload) {
   }
 }
 
+export function clearInviteCode() {
+  return (dispatch, getState) => {
+    let clearCode = createAction(promoterActionTypes.CLEAR_INVITE_CODE)
+    dispatch(clearCode())
+  }
+}
+
 export function promoterCertification(payload) {
   return (dispatch, getState) => {
     dispatch(formCheck({formKey: payload.formKey}))
