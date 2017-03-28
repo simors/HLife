@@ -205,9 +205,9 @@ class PublishTopics extends Component {
   renderArticleEditorToolbar() {
     return (
       <View style={{width: normalizeW(64), backgroundColor: THEME.base.mainColor}}>
-        <TouchableOpacity onPress={() => {this.onButtonPress()}}
+        <TouchableOpacity onPress={() => {Keyboard.dismiss()}}
                           style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{fontSize: em(15), color: 'white'}}>发布</Text>
+          <Text style={{fontSize: em(15), color: 'white'}}>收起</Text>
         </TouchableOpacity>
       </View>
     )
