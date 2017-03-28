@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../../constants/themes/theme1'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import PromoterLevelIcon from './PromoterLevelIcon'
+import {getPromoterById, activePromoter} from '../../../selector/promoterSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -45,26 +46,34 @@ class PromoterPerformance extends Component {
   }
 
   renderPromoterLevel() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
     return (
       <View style={{paddingTop: normalizeH(15), alignSelf: 'center'}}>
-        <PromoterLevelIcon level={2} />
+        <PromoterLevelIcon level={promoter.level} />
       </View>
     )
   }
 
   renderCategoryEarnings() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
     return (
       <View style={styles.categoryEarningsView}>
         <View style={{flex: 1, borderColor: 'rgba(255,255,255,0.50)', borderRightWidth: 1}}>
           <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
             <Text style={styles.categoryTextStyle}>店铺收益 (元)</Text>
-            <Text style={styles.categoryEarningsText}>9999.00</Text>
+            <Text style={styles.categoryEarningsText}>{promoter.shopEarnings}</Text>
           </TouchableOpacity>
         </View>
         <View style={{flex: 1}}>
           <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
             <Text style={styles.categoryTextStyle}>分成收益 (元)</Text>
-            <Text style={styles.categoryEarningsText}>9999.00</Text>
+            <Text style={styles.categoryEarningsText}>{promoter.royaltyEarnings}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -84,15 +93,25 @@ class PromoterPerformance extends Component {
   }
 
   renderTotalEarnings() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
     return (
       <View style={styles.totalEarningsView}>
         <Text style={{fontSize: em(17), color: '#5A5A5A', paddingTop: normalizeH(25)}}>推广总收益 (元)</Text>
-        <Text style={{fontSize: em(38), color: THEME.base.mainColor, paddingTop: normalizeH(5)}}>0.00</Text>
+        <Text style={{fontSize: em(38), color: THEME.base.mainColor, paddingTop: normalizeH(5)}}>
+          {promoter.shopEarnings + promoter.royaltyEarnings}
+        </Text>
       </View>
     )
   }
 
   renderInvitationStat() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
     return (
       <View style={styles.invitationStatView}>
         <TouchableOpacity style={[styles.statBtn, {borderColor: '#F5F5F5', borderRightWidth: 1}]} onPress={() => {}}>
@@ -102,7 +121,7 @@ class PromoterPerformance extends Component {
             <Text style={styles.statTitleText}>邀请店铺</Text>
           </View>
           <View style={styles.statNum}>
-            <Text style={{fontSize: em(36), color: THEME.base.mainColor, paddingRight: normalizeW(8)}}>99</Text>
+            <Text style={{fontSize: em(36), color: THEME.base.mainColor, paddingRight: normalizeW(8)}}>{promoter.inviteShopNum}</Text>
             <Text style={{fontSize: em(17), color: THEME.base.mainColor, alignSelf: 'flex-end'}}>家</Text>
           </View>
         </TouchableOpacity>
@@ -113,7 +132,7 @@ class PromoterPerformance extends Component {
             <Text style={styles.statTitleText}>团队成员</Text>
           </View>
           <View style={styles.statNum}>
-            <Text style={{fontSize: em(36), color: THEME.base.mainColor, paddingRight: normalizeW(8)}}>89</Text>
+            <Text style={{fontSize: em(36), color: THEME.base.mainColor, paddingRight: normalizeW(8)}}>{promoter.teamMemNum}</Text>
             <Text style={{fontSize: em(17), color: THEME.base.mainColor, alignSelf: 'flex-end'}}>人</Text>
           </View>
         </TouchableOpacity>
@@ -150,7 +169,10 @@ class PromoterPerformance extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let promoterId = activePromoter(state)
+  let promoter = getPromoterById(state, promoterId)
   return {
+    promoter,
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({

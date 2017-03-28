@@ -77,3 +77,46 @@ export function promoterCertification(payload) {
     })
   }
 }
+
+export function getCurrentPromoter(payload) {
+  return (dispatch, getState) => {
+    let userId = activeUserId(getState())
+    lcPromoter.fetchPromterByUser({userId}).then((promoterInfo) => {
+      if (promoterInfo.errcode != 0) {
+        if (payload.error) {
+          payload.error(promoterInfo.message)
+        }
+        return
+      }
+      let promoterId = promoterInfo.promoter.objectId
+      let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
+      dispatch(setActivePromoter({promoterId}))
+      dispatch(updatePromoter({promoterId, promoter}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function getPromoterByUserId(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPromoter.fetchPromterByUser({userId}).then((promoterInfo) => {
+      if (promoterInfo.errcode != 0) {
+        if (payload.error) {
+          payload.error(promoterInfo.message)
+        }
+        return
+      }
+      let promoterId = promoterInfo.promoter.objectId
+      let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
+      dispatch(updatePromoter({promoterId, promoter}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

@@ -10,7 +10,13 @@ export const PromoterRecord = Record({
   cardId: undefined,              // 居民身份证号码
   phone: undefined,               // 联系手机号码
   upUser: undefined,              // 推荐人
-  address:undefined               // 住址
+  address:undefined,              // 住址
+  payment: undefined,                     // 是否已完成支付，0表示未支付，1表示已支付
+  shopEarnings: undefined,                // 邀请店铺收益
+  royaltyEarnings: undefined,             // 团队提成收益
+  inviteShopNum: undefined,               // 邀请的店铺数量
+  teamMemNum: undefined,                  // 团队成员的数量
+  level: undefined,                       // 推广员的级别，目前总共有5个级别，分别为1，2，3，4，5级，默认为1级
 }, 'PromoterRecord')
 
 export class PromoterInfo extends PromoterRecord {
@@ -22,8 +28,14 @@ export class PromoterInfo extends PromoterRecord {
       record.set('name', lcObj.name)
       record.set('cardId', lcObj.cardId)
       record.set('phone', lcObj.phone)
-      record.set('upUser', lcObj.upUser.id)
+      record.set('upUser', lcObj.upUser ? lcObj.upUser.id : undefined)
       record.set('address', lcObj.address)
+      record.set('payment', lcObj.payment)
+      record.set('shopEarnings', lcObj.shopEarnings)
+      record.set('royaltyEarnings', lcObj.royaltyEarnings)
+      record.set('inviteShopNum', lcObj.inviteShopNum)
+      record.set('teamMemNum', lcObj.teamMemNum)
+      record.set('level', lcObj.level)
     })
     return promoter
   }

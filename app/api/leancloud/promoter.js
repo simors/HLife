@@ -27,3 +27,15 @@ export function promoterCertification(payload) {
     throw err
   })
 }
+
+export function fetchPromterByUser(payload) {
+  let userId = payload.userId
+  let params = {
+    userId,
+  }
+  return AV.Cloud.run('promoterFetchByUser', params).then((promoter) => {
+    return promoter
+  }, (err) => {
+    throw err
+  })
+}
