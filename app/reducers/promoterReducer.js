@@ -12,6 +12,10 @@ export default function promoterReducer(state = initialState, action) {
   switch (action.type) {
     case promoterActionTypes.GENERATE_INVITE_CODE:
       return handleGenerateInviteCode(state, action)
+    case promoterActionTypes.SET_ACTIVE_PROMOTER:
+      return handleSetActivePromoter(state, action)
+    case promoterActionTypes.UPDATE_PROMOTER_INFO:
+      return handleUpdatePromoter(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -22,6 +26,19 @@ export default function promoterReducer(state = initialState, action) {
 function handleGenerateInviteCode(state, action) {
   let code = action.payload.code
   state = state.set('inviteCode',  code)
+  return state
+}
+
+function handleSetActivePromoter(state, action) {
+  let promoterId = action.payload.promoterId
+  state = state.set('activePromoter', promoterId)
+  return state
+}
+
+function handleUpdatePromoter(state, action) {
+  let promoterId = action.payload.promoterId
+  let promoter = action.payload.promoter
+  state = state.setIn(['promoters', promoterId], promoter)
   return state
 }
 

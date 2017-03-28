@@ -5,6 +5,7 @@ import {Record, Map, List} from 'immutable'
 
 export const PromoterRecord = Record({
   id: undefined,
+  userId: undefined,              // 对应的用户id
   name: undefined,                // 真实姓名
   cardId: undefined,              // 居民身份证号码
   phone: undefined,               // 联系手机号码
@@ -15,14 +16,14 @@ export const PromoterRecord = Record({
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
-    let attrs = lcObj.attributes
     promoter = promoter.withMutations((record) => {
-      record.set('id', lcObj.id)
-      record.set('name', attrs.name)
-      record.set('cardId', attrs.cardId)
-      record.set('phone', attrs.phone)
-      record.set('upUser', attrs.upUser)
-      record.set('address', attrs.address)
+      record.set('id', lcObj.objectId)
+      record.set('userId', lcObj.user.id)
+      record.set('name', lcObj.name)
+      record.set('cardId', lcObj.cardId)
+      record.set('phone', lcObj.phone)
+      record.set('upUser', lcObj.upUser.id)
+      record.set('address', lcObj.address)
     })
     return promoter
   }

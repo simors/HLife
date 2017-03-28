@@ -11,10 +11,13 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {calRegistPromoter} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
 import * as AuthTypes from '../constants/authActionTypes'
+import {PromoterInfo} from '../models/promoterModel'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
 let certificatePromoter = createAction(promoterActionTypes.CERTIFICATE_PROMOTER)
+let setActivePromoter = createAction(promoterActionTypes.SET_ACTIVE_PROMOTER)
+let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -54,12 +57,14 @@ export function promoterCertification(payload) {
         address: formData.regionPicker.text,
         cardId: formData.IDInput.text,
       }
-      lcPromoter.promoterCertification(promoterInfo).then((promoter) => {
+      lcPromoter.promoterCertification(promoterInfo).then((promoterInfo) => {
+        let promoterId = promoterInfo.promoter.objectId
+        let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
         dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
-        // let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
-        // dispatch(certificationAction({promoter}))
+        dispatch(setActivePromoter({promoterId}))
+        dispatch(updatePromoter({promoterId, promoter}))
         if (payload.success) {
-          payload.success(promoter)
+          payload.success(promoterInfo.message)
         }
       }).catch((error) => {
         if (payload.error) {
