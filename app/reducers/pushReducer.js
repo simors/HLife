@@ -9,6 +9,10 @@ export default function pushReducer(state = initialState, action) {
   switch (action.type) {
     case PushActionTypes.UPDATE_LOCAL_DEVICE_TOKEN:
       return handleUpdateLocalDeviceToken(state, action)
+    case PushActionTypes.UPDATE_SYSTEM_NOTICE:
+      return handleUpdateSystemNotice(state, action)
+    case PushActionTypes.UPDATE_SYSTEM_NOTICE_AS_MARK_READED:
+      return handleUpdateSystemNoticeAsMarkReaded(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -21,6 +25,25 @@ function handleUpdateLocalDeviceToken(state, action) {
   let payload = action.payload
   let deviceToken = payload.deviceToken
   state = state.set('deviceToken',  deviceToken)
+  return state
+}
+
+function handleUpdateSystemNotice(state, action) {
+  let payload = action.payload
+  let sysNoticeRecord = payload.sysNoticeRecord
+  let systemNoticeList = state.systemNoticeList
+  let newSystemNoticeList = systemNoticeList.unshift(sysNoticeRecord)
+  state = state.set('systemNoticeList', newSystemNoticeList)
+  return state
+}
+
+function handleUpdateSystemNoticeAsMarkReaded(state, action){
+  let payload = action.payload
+  let sysNoticeRecord = payload.sysNoticeRecord
+  let systemNoticeList = state.systemNoticeList
+  systemNoticeList = systemNoticeList.delete(0)
+  let newSystemNoticeList = systemNoticeList.unshift(sysNoticeRecord)
+  state = state.set('systemNoticeList', newSystemNoticeList)
   return state
 }
 

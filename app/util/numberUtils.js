@@ -95,6 +95,27 @@ export function getConversationTime(timestamp) {
   return labelText
 }
 
+export function isExceededOneDay(timestamp) {
+  let timeDiffInMS = 0
+  if (timestamp) {
+    timeDiffInMS = Date.now() - timestamp
+    const timeDiffInSec = Math.floor(timeDiffInMS / 1000.0)
+    if (timeDiffInSec > 0) {
+      const timeDiffInMin = Math.floor(timeDiffInSec / 60.0)
+      if (timeDiffInMin > 0) {
+        const timeDiffInHour = Math.floor(timeDiffInMin / 60.0)
+        if (timeDiffInHour > 0) {
+          const timeDiffInDay = Math.floor(timeDiffInHour / 24.0)
+          if (timeDiffInDay > 0) {
+            return true
+          }
+        }
+      }
+    }
+  }
+  return false
+}
+
 /**
  * 将leancloud createdAt, updateAt时间对象转换成指定格式的日期字符串
  *
