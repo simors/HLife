@@ -17,6 +17,7 @@ export function getBanner(payload) {
   let type = payload.type
   let query = new AV.Query('Banners')
   query.equalTo('type', type)
+  query.equalTo('status', 1)
   if (typeof payload.geo === 'object') {
     let point = new AV.GeoPoint(payload.geo);
     query.withinKilometers('geo', point, 10);
@@ -111,7 +112,7 @@ export function fetchAllProvincesAndCities(payload) {
     areaCode: 1,
   }
   return AV.Cloud.run('hLifeGetSubAreaList2', params).then((results) => {
-    console.log('fetchAllProvincesAndCities.results=====>>>>>', results)
+    // console.log('fetchAllProvincesAndCities.results=====>>>>>', results)
     return results
   })
 }

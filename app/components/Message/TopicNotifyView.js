@@ -107,14 +107,14 @@ class TopicNotifyView extends Component {
     if (notice.msgType === msgActionTypes.MSG_TOPIC_COMMENT) {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: 24,}}
+          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}}
                     content={notice.commentContent}/>
         </View>
       )
     } else {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: 24,}} content={notice.text}/>
+          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}} content={notice.text}/>
         </View>
       )
     }

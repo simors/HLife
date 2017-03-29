@@ -35,12 +35,12 @@ export function selectShopDetail(state, id) {
   let shopDetail = {owner: {}}
   let shopList = selectShop(state).shopList
   if(shopList && shopList.length) {
-    shopList.forEach((shopItem)=>{
-      if(shopItem.id == id) {
-        shopDetail = shopItem
-        return
+    for(let i = 0; i < shopList.length; i++) {
+      if(shopList[i].id == id) {
+        shopDetail = shopList[i]
+        break
       }
-    })
+    }
   }
 
   if(!shopDetail.id) {
@@ -57,12 +57,18 @@ export function selectShopPromotionDetail(state, id) {
   let shopPromotionDetail = {targetShop: {}}
   let shopPromotionList = selectShopPromotionList(state)
   if(shopPromotionList && shopPromotionList.length) {
-    shopPromotionList.forEach((item)=>{
-      if(item.id == id) {
-        shopPromotionDetail = item
-        return
+    for(let i = 0; i < shopPromotionList.length; i++) {
+      if(shopPromotionList[i].id == id) {
+        shopPromotionDetail = shopPromotionList[i]
+        break
       }
-    })
+    }
+  }
+
+  if(!shopPromotionDetail.id) {
+    if(state.SHOP.getIn(['shopPromotionDetails', id])) {
+      shopPromotionDetail = state.SHOP.getIn(['shopPromotionDetails', id]).toJS()
+    }
   }
 
   // console.log('shopPromotionDetail=', shopPromotionDetail)

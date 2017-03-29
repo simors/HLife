@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.colors.green,
   },
   badgeTxt: {
-    lineHeight: 20,
     color: '#fff'
   },
   titleWrap: {

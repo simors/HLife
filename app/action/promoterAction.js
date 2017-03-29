@@ -11,10 +11,35 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {calRegistPromoter} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
 import * as AuthTypes from '../constants/authActionTypes'
+import {PromoterInfo} from '../models/promoterModel'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
 let certificatePromoter = createAction(promoterActionTypes.CERTIFICATE_PROMOTER)
+let setActivePromoter = createAction(promoterActionTypes.SET_ACTIVE_PROMOTER)
+let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
+
+export function getInviteCode(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.generateInviteCode().then((code) => {
+      if (code.status == 0) {
+        let generateInviteCode = createAction(promoterActionTypes.GENERATE_INVITE_CODE)
+        dispatch(generateInviteCode({code: code.result}))
+      } else {
+        if (payload.error) {
+          payload.error({message: '生成验证码失败，请重新生成！'})
+        }
+      }
+    })
+  }
+}
+
+export function clearInviteCode() {
+  return (dispatch, getState) => {
+    let clearCode = createAction(promoterActionTypes.CLEAR_INVITE_CODE)
+    dispatch(clearCode())
+  }
+}
 
 export function promoterCertification(payload) {
   return (dispatch, getState) => {
@@ -39,12 +64,14 @@ export function promoterCertification(payload) {
         address: formData.regionPicker.text,
         cardId: formData.IDInput.text,
       }
-      lcPromoter.promoterCertification(promoterInfo).then((promoter) => {
+      lcPromoter.promoterCertification(promoterInfo).then((promoterInfo) => {
+        let promoterId = promoterInfo.promoter.objectId
+        let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
         dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
-        // let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
-        // dispatch(certificationAction({promoter}))
+        dispatch(setActivePromoter({promoterId}))
+        dispatch(updatePromoter({promoterId, promoter}))
         if (payload.success) {
-          payload.success(promoter)
+          payload.success(promoterInfo.message)
         }
       }).catch((error) => {
         if (payload.error) {
@@ -54,6 +81,49 @@ export function promoterCertification(payload) {
     }).then(() => {
       let userId = activeUserId(getState())
       dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
+    })
+  }
+}
+
+export function getCurrentPromoter(payload) {
+  return (dispatch, getState) => {
+    let userId = activeUserId(getState())
+    lcPromoter.fetchPromterByUser({userId}).then((promoterInfo) => {
+      if (promoterInfo.errcode != 0) {
+        if (payload.error) {
+          payload.error(promoterInfo.message)
+        }
+        return
+      }
+      let promoterId = promoterInfo.promoter.objectId
+      let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
+      dispatch(setActivePromoter({promoterId}))
+      dispatch(updatePromoter({promoterId, promoter}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function getPromoterByUserId(payload) {
+  return (dispatch, getState) => {
+    let userId = payload.userId
+    lcPromoter.fetchPromterByUser({userId}).then((promoterInfo) => {
+      if (promoterInfo.errcode != 0) {
+        if (payload.error) {
+          payload.error(promoterInfo.message)
+        }
+        return
+      }
+      let promoterId = promoterInfo.promoter.objectId
+      let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
+      dispatch(updatePromoter({promoterId, promoter}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
     })
   }
 }

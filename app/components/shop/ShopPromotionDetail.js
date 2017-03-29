@@ -24,7 +24,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
-import {fetchUserOwnedShopInfo} from '../../action/shopAction'
+import {fetchShopPromotionDetail, fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {selectShopPromotionDetail} from '../../selector/shopSelector'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
@@ -46,6 +46,7 @@ class ShopPromotionDetail extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       //this.props.fetchUserOwnedShopInfo()
+      this.props.fetchShopPromotionDetail({id: this.props.id})
     })
   }
 
@@ -116,7 +117,9 @@ class ShopPromotionDetail extends Component {
                 </TouchableOpacity>
               </View>
             </View>
-            <ArticleViewer artlcleContent={JSON.parse(shopPromotionDetail.promotionDetailInfo)} />
+            {shopPromotionDetail.promotionDetailInfo &&
+              <ArticleViewer artlcleContent={JSON.parse(shopPromotionDetail.promotionDetailInfo)} />
+            }
           </ScrollView>
           <View style={styles.footerWrap}>
             <View style={styles.priceBox}>
@@ -147,6 +150,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchShopPromotionDetail,
   fetchUserOwnedShopInfo,
 }, dispatch)
 
@@ -207,7 +211,7 @@ const styles = StyleSheet.create({
   titleTxt: {
     color: '#5a5a5a',
     fontSize: em(17),
-    lineHeight: 24,
+    lineHeight: em(24),
     fontWeight: 'bold'
   },
   typeBox: {

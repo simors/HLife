@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: em(12),
     color: '#5A5A5A',
-    lineHeight: 12,
     paddingLeft: 5,
   },
   contentItem: {
@@ -223,12 +222,10 @@ const styles = StyleSheet.create({
   shopTitle: {
     fontSize: em(15),
     fontWeight: 'bold',
-    lineHeight: 15,
   },
   itemAbstract: {
     fontSize: em(11),
     color: '#AAAAAA',
-    lineHeight: 15,
   },
   secondShopImg: {
     paddingTop: 5,

@@ -20,6 +20,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import * as msgTypes from '../../constants/messageActionTypes'
 import {hasNewMessageByType, getNewestMessageByType} from '../../selector/messageSelector'
 import {hasNewNoticeByType, getNewestNoticeByType} from '../../selector/notifySelector'
+import * as pushSelector from '../../selector/pushSelector'
+import {updateSystemNotice, updateSystemNoticeAsMarkReaded} from '../../action/pushAction'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -172,20 +174,22 @@ class MessageBox extends Component {
   renderSystemMessage() {
     return (
       <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => {this.gotoSystemNoticeList()}}>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={styles.noticeIconView}>
               <Image style={styles.noticeIcon} source={require('../../assets/images/System_notice.png')}></Image>
-              <View style={styles.noticeTip}></View>
+              {!this.props.newestSystemNotice.hasReaded &&
+                <View style={styles.noticeTip}></View>
+              }
             </View>
             <View style={{flex: 1}}>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.titleStyle}>系统公告</Text>
                 <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>2017-01-02</Text>
+                <Text style={styles.timeTip}>{this.props.newestSystemNotice.notice_time}</Text>
               </View>
               <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>郝依依医生给您提供的咨询服务对您是否有用，期待您的反馈！</Text>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.newestSystemNotice.message_title || '暂无系统公告'}</Text>
               </View>
             </View>
           </View>
@@ -214,6 +218,11 @@ class MessageBox extends Component {
       </View>
     )
   }
+
+  gotoSystemNoticeList() {
+    // console.log('gotoSystemNoticeList', this.props.newestSystemNotice)
+    this.props.updateSystemNoticeAsMarkReaded(this.props.newestSystemNotice)
+  }
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -226,6 +235,13 @@ const mapStateToProps = (state, ownProps) => {
   let lastTopicNoticeMsg = getNewestNoticeByType(state, msgTypes.TOPIC_TYPE)
   let newShopNotice = hasNewNoticeByType(state, msgTypes.SHOP_TYPE)
   let lastShopNoticeMsg = getNewestNoticeByType(state, msgTypes.SHOP_TYPE)
+  let systemNoticeList = pushSelector.selectSystemNoticeList(state)
+
+  let newestSystemNotice = {}
+  if(systemNoticeList && systemNoticeList.length) {
+    newestSystemNotice = systemNoticeList[0]
+  }
+  // console.log('systemNoticeList--->>>>>', systemNoticeList)
 
   newProps.newInquiry = newInquiry
   newProps.lastInquiryMsg = lastInquiryMsg
@@ -235,9 +251,11 @@ const mapStateToProps = (state, ownProps) => {
   newProps.lastLastNoticeMsg = lastTopicNoticeMsg
   newProps.newShopNotice = newShopNotice
   newProps.lastShopNoticeMsg = lastShopNoticeMsg
+  newProps.newestSystemNotice = newestSystemNotice
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  updateSystemNoticeAsMarkReaded
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBox)

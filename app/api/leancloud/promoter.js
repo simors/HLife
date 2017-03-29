@@ -5,6 +5,14 @@ import AV from 'leancloud-storage'
 import ERROR from '../../constants/errorCode'
 import * as AVUtils from '../../util/AVUtils'
 
+export function generateInviteCode() {
+  return AV.Cloud.run('utilGetInvitationCode').then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
+
 export function promoterCertification(payload) {
   let params = {
     inviteCode: payload.inviteCode,
@@ -15,6 +23,18 @@ export function promoterCertification(payload) {
   }
   return AV.Cloud.run('promoterCertificate', params).then((promoterInfo) => {
     return promoterInfo
+  }, (err) => {
+    throw err
+  })
+}
+
+export function fetchPromterByUser(payload) {
+  let userId = payload.userId
+  let params = {
+    userId,
+  }
+  return AV.Cloud.run('promoterFetchByUser', params).then((promoter) => {
+    return promoter
   }, (err) => {
     throw err
   })

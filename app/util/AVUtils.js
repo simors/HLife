@@ -10,12 +10,13 @@ import AV from 'leancloud-storage'
 import PushNotification from '@zzzkk2009/react-native-leancloud-sdk'
 import {store} from '../store/persistStore'
 import * as Toast from '../components/common/Toast'
-import {updateLocalDeviceToken} from '../action/pushAction'
+import {updateLocalDeviceToken, updateSystemNotice} from '../action/pushAction'
 import {fetchAllProvincesAndCities} from '../action/configAction'
 import * as lcPush from '../api/leancloud/push'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as pushSelect from '../selector/pushSelector'
 import * as configSelector from '../selector/configSelector'
+import * as dateUtils from '../util/dateUtils'
 
 // const EE = new EventEmitter()
 
@@ -115,9 +116,21 @@ export function configurePush(options) {
     
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
-      // console.log( 'NOTIFICATION:', notification );
+      console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
       let data = notification.data
+
+      if(data.notice_type == "SYSTEM_NOTICE"){
+        let notice_time = dateUtils.getCurrentDate()
+        store.dispatch(updateSystemNotice({
+          message_abstract: data.message_abstract,
+          message_title: data.message_title,
+          message_url: data.message_url,
+          message_cover_url: data.message_cover_url,
+          notice_time: notice_time,
+          timestamp: Date.now()
+        }))
+      }
 
       if(notification.foreground) {//程序在前台
         Popup.confirm({
@@ -130,6 +143,8 @@ export function configurePush(options) {
               // console.log('ok')
               if(data.sceneName) {
                 Actions[data.sceneName](data.sceneParams)
+              }else{
+                Actions.MESSAGE_BOX()
               }
             }
           },
@@ -144,8 +159,11 @@ export function configurePush(options) {
         if(notification.userInteraction) {//用户点击通知栏消息
           // Toast.show(notification.data.userInfo.userName)
           // console.log('DATA:', notification.data)
+
           if(data.sceneName) {
             Actions[data.sceneName](data.sceneParams)
+          }else{
+            Actions.MESSAGE_BOX()
           }
         }else {
           //程序接收到远程或本地通知

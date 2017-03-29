@@ -35,7 +35,6 @@ class NearbyTopicView extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      // TODO: 获取附近精选话题
       this.props.fetchMainPageTopics({limited: 10})
     })
   }
@@ -148,32 +147,35 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.base.backgroundColor,
   },
   moduleTitleView: {
-    marginLeft: normalizeW(20),
-    marginRight: normalizeW(10),
+    paddingLeft: normalizeW(20),
+    paddingRight: normalizeW(10),
+    borderRightWidth: 1,
+    borderColor: '#F5F5F5',
   },
   moduleContentView: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: normalizeH(18),
-    marginBottom: normalizeH(12),
-    borderLeftWidth: 1,
-    borderColor: '#F5F5F5',
+    paddingBottom: normalizeH(10),
     ...Platform.select({
       ios: {
+        paddingTop: normalizeH(6),
         paddingLeft: 0,
       },
       android: {
-        paddingLeft: 8,
+        paddingTop: normalizeH(12),
+        paddingLeft: normalizeW(8),
       }
     }),
   },
   swiperView: {
     ...Platform.select({
       ios: {
-        paddingLeft: 5,
+        paddingTop: normalizeH(8),
+        paddingLeft: normalizeW(5),
       },
       android: {
-        marginLeft: 8,
+        paddingTop: normalizeH(8),
+        paddingLeft: normalizeW(8),
       }
     }),
   },

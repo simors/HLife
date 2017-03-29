@@ -18,7 +18,6 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import AutoGrowingTextInput from '../../common/Input/AutoGrowingTextInput'
 import * as ImageUtil from '../../../util/ImageUtil'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
@@ -321,7 +320,7 @@ class ArticleEditor extends Component {
     data[index].text = content
     this.inputChange(data)
     let len = data.length
-    if (Platform.OS === 'android' && len - 1 == index) {
+    if (len - 1 == index) {
       this.refs.scrollView.scrollTo({y: this.state.contentHeight - this.state.scrollViewHeight})
     }
   }
@@ -336,7 +335,7 @@ class ArticleEditor extends Component {
       let scrollResponder = this.refs.scrollView.getScrollResponder();
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
         findNodeHandle(this.refs[refName]),
-        this.keyboardHeight, //additionalOffset
+        toolbarHeight + 80, //additionalOffset
         true
       );
     }, 50);
@@ -362,9 +361,7 @@ class ArticleEditor extends Component {
             this.props.onFocusEditor()
           }
           this.setState({cursor: index, showToolbar: true})
-          if (Platform.OS != 'ios') {
-            this.inputFocused("content_" + index)
-          }
+          this.inputFocused("content_" + index)
         }}
         onSelectionChange={(event) => this.selectChange(event)}
       />
@@ -420,7 +417,7 @@ class ArticleEditor extends Component {
                 style={{width: 20, height: 20}}
                 source={require('../../../assets/images/insert_picture.png')}>
               </Image>
-              <Text style={{fontSize: 15, color: '#AAAAAA', lineHeight: 15, marginLeft: normalizeW(10)}}>添加图片</Text>
+              <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(10)}}>添加图片</Text>
             </TouchableOpacity>
           </View>
           {this.props.renderCustomToolbar ? this.props.renderCustomToolbar() : <View/>}
@@ -476,48 +473,29 @@ class ArticleEditor extends Component {
   }
 
   render() {
-    if (Platform.OS === 'ios') {
-      return (
-        <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
-          <KeyboardAwareScrollView
+    return (
+      <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
+        <Animated.View style={{height: this.state.editorHeight}}>
+          <ScrollView
             ref="scrollView"
             style={{flex: 1}}
-            keyboardDismissMode="on-drag"
             automaticallyAdjustContentInsets={false}
             keyboardShouldPersistTaps={true}
-            extraHeight={this.props.wrapHeight + 50}
+            onContentSizeChange={ (contentWidth, contentHeight) => {
+              this.setState({contentHeight: contentHeight })
+            }}
+            onLayout={ (e) => {
+              const height = e.nativeEvent.layout.height
+              this.setState({scrollViewHeight: height })
+            }}
           >
             {this.renderComponents()}
-          </KeyboardAwareScrollView>
-          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
-          {this.renderActionSheet()}
-        </View>
-      )
-    } else {
-      return (
-        <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
-          <Animated.View style={{height: this.state.editorHeight}}>
-            <ScrollView
-              ref="scrollView"
-              style={{flex: 1}}
-              automaticallyAdjustContentInsets={false}
-              keyboardShouldPersistTaps={true}
-              onContentSizeChange={ (contentWidth, contentHeight) => {
-                this.setState({contentHeight: contentHeight })
-              }}
-              onLayout={ (e) => {
-                const height = e.nativeEvent.layout.height
-                this.setState({scrollViewHeight: height })
-              }}
-            >
-              {this.renderComponents()}
-            </ScrollView>
-          </Animated.View>
-          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
-          {this.renderActionSheet()}
-        </View>
-      )
-    }
+          </ScrollView>
+        </Animated.View>
+        {this.state.showToolbar ? this.renderEditToolView() : <View/>}
+        {this.renderActionSheet()}
+      </View>
+    )
   }
 }
 

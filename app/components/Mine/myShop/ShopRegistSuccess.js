@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     width: normalizeW(307),
     fontSize: em(10),
     color: THEME.colors.lighter,
-    lineHeight: 15,
+    lineHeight: em(15),
     textAlign: 'center'
   },
   red: {

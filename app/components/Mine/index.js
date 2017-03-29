@@ -20,6 +20,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
+import * as Toast from '../common/Toast'
 import LinearGradient from 'react-native-linear-gradient'
 import {fetchUserFollowees} from '../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
@@ -27,6 +28,7 @@ import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {fetchUserPoint} from '../../action/pointActions'
 import * as authSelector from '../../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
+import {getCurrentPromoter} from '../../action/promoterAction'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -42,6 +44,9 @@ class Mine extends Component {
         this.props.fetchUserPoint()
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
+        this.props.getCurrentPromoter({error: (err) => {
+          Toast.show(err)
+        }})
       }
     })
   }
@@ -276,6 +281,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   fetchUserFollowees,
   fetchUserPoint,
+  getCurrentPromoter,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)

@@ -64,7 +64,9 @@ class NearbySalesView extends Component {
                     <Text style={styles.priceText}>¥</Text>
                     <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
                     {item.originalPrice &&
-                      <Text style={[styles.itemText, {marginLeft: normalizeW(5)}]}>(原价 {item.originalPrice})</Text>
+                      <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
+                        原价 {item.originalPrice}
+                      </Text>
                     }
                   </View>
                   <View>
@@ -139,7 +141,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: em(12),
     color: '#5A5A5A',
-    lineHeight: 12,
     paddingLeft: 5,
   },
   contentItem: {
@@ -148,9 +149,16 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(18),
   },
   saleItemView: {
+    ...Platform.select({
+      ios: {
+        height: normalizeH(130),
+      },
+      android: {
+        height: normalizeH(140),
+      }
+    }),
     flex: 1,
     flexDirection: 'row',
-    height: normalizeH(130),
     paddingTop: normalizeH(19),
     paddingBottom: normalizeH(15),
     borderBottomWidth: 1,
@@ -195,7 +203,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: em(12),
     fontWeight: 'bold',
-    lineHeight: 12,
   },
   priceView: {
     flexDirection: 'row',
@@ -207,6 +214,5 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     fontWeight: 'bold',
     color: '#00BE96',
-    lineHeight: 17,
   },
 })

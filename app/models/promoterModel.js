@@ -4,37 +4,46 @@
 import {Record, Map, List} from 'immutable'
 
 export const PromoterRecord = Record({
-  name:           undefined, //真实姓名
-  cardId:             undefined, //居民身份证号码
-  phone:          undefined, //联系手机号码
- // desc:           undefined, //备注
- // upUser: undefined,
-  id:undefined,
-  level:undefined,
-  address:undefined
+  id: undefined,
+  userId: undefined,              // 对应的用户id
+  name: undefined,                // 真实姓名
+  cardId: undefined,              // 居民身份证号码
+  phone: undefined,               // 联系手机号码
+  upUser: undefined,              // 推荐人
+  address:undefined,              // 住址
+  payment: undefined,                     // 是否已完成支付，0表示未支付，1表示已支付
+  shopEarnings: undefined,                // 邀请店铺收益
+  royaltyEarnings: undefined,             // 团队提成收益
+  inviteShopNum: undefined,               // 邀请的店铺数量
+  teamMemNum: undefined,                  // 团队成员的数量
+  level: undefined,                       // 推广员的级别，目前总共有5个级别，分别为1，2，3，4，5级，默认为1级
 }, 'PromoterRecord')
 
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
-    let attrs = lcObj.attributes
-    promoter= promoter.withMutations((record) => {
-      record.set('name', attrs.name)
-      record.set('cardId', attrs.cardId)
-    //  console.log('promoter=====>',promoter)
-
-      record.set('phone', attrs.phone)
-  //    record.set('upUser', attrs.upUser)
-      record.set('id', lcObj.id)
-      record.set('level', attrs.level)
-      record.set('address', attrs.address)
+    promoter = promoter.withMutations((record) => {
+      record.set('id', lcObj.objectId)
+      record.set('userId', lcObj.user.id)
+      record.set('name', lcObj.name)
+      record.set('cardId', lcObj.cardId)
+      record.set('phone', lcObj.phone)
+      record.set('upUser', lcObj.upUser ? lcObj.upUser.id : undefined)
+      record.set('address', lcObj.address)
+      record.set('payment', lcObj.payment)
+      record.set('shopEarnings', lcObj.shopEarnings)
+      record.set('royaltyEarnings', lcObj.royaltyEarnings)
+      record.set('inviteShopNum', lcObj.inviteShopNum)
+      record.set('teamMemNum', lcObj.teamMemNum)
+      record.set('level', lcObj.level)
     })
     return promoter
   }
 }
 
 export const Promoter = Record({
-  promoter: Map(),
-  // likerList: Map(),
+  activePromoter: undefined,        // 当前推广员id
+  inviteCode: undefined,            // 生成的邀请码
+  promoters: Map(),                 // 推广员记录，键为推广员id，值为PromoterInfo
 }, 'Promoter')
 

@@ -236,14 +236,14 @@ const styles = StyleSheet.create({
   contentTitleStyle: {
     fontSize: em(17),
     fontWeight: 'bold',
-    lineHeight: 20,
+    lineHeight: em(20),
     marginBottom: normalizeH(5),
     color: "#5A5A5A"
   },
   contentStyle: {
     marginBottom: normalizeH(13),
     fontSize: em(15),
-    lineHeight: 20,
+    lineHeight: em(20),
     color: "#9b9b9b"
   },
 

@@ -504,6 +504,7 @@ export const Shop = Record({
   shopFollowersTotalCount: Map(),
   similarShops: Map(),
   shopDetails: Map(),
+  shopPromotionDetails: Map(),
   guessYouLikeShopList: List(),
   userFollowedShops: Map()
 }, 'Shop')

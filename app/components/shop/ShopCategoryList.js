@@ -826,7 +826,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   shopName: {
-    lineHeight: 20,
+    lineHeight: em(20),
     fontSize: em(17),
     color: '#8f8e94'
   },

@@ -11,6 +11,7 @@ import shopReducer from './shopReducer'
 import doctorReducer from './doctorReducer'
 import notifyReducer from './notifyReducer'
 import paymentReducer from './paymentReducer'
+import promoterReducer from './promoterReducer'
 
 const rootReducers = combineReducers({
   PUSH: pushReducer,
@@ -24,6 +25,7 @@ const rootReducers = combineReducers({
   DOCTOR: doctorReducer,
   NOTICE: notifyReducer,
   PAYMENT: paymentReducer,
+  PROMOTER: promoterReducer,
 })
 
 const rootReducersWrapper = (state, action) => {
