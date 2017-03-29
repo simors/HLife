@@ -38,7 +38,7 @@
 		9177708741A94F1DB692C8AD /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B583B289C0C4B9BA40FB764 /* libBVLinearGradient.a */; };
 		A329ADAC0A274094BE8DE0B6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 833EA273CD1B4F39BA400B7B /* Zocial.ttf */; };
 		ADD8FAE5242B47F887D10EA2 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED0C6526B00469597D114E8 /* libimageCropPicker.a */; };
-		B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B652CD8A1E696FEF00EE1246 /* libReact.a */; };
+		B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B652CD8A1E696FEF00EE1246 /* libReact.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		B66C85C31E68582500C157EA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B66C85C21E68582500C157EA /* libRCTPushNotification.a */; };
 		B687CD9D1E4EEB2000F47585 /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B687CD9C1E4EEB2000F47585 /* BaiduMapAPI_Base.framework */; };
 		B687CDA41E4EEB3600F47585 /* BaiduMapAPI_Cloud.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B687CD9E1E4EEB3600F47585 /* BaiduMapAPI_Cloud.framework */; };
@@ -70,7 +70,7 @@
 		DD0B3AC91DF9C2A200AE8D91 /* simditor.js in Resources */ = {isa = PBXBuildFile; fileRef = DD0B3AC11DF9C2A200AE8D91 /* simditor.js */; };
 		DD10AE101E10EF1200A462BD /* RnBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = DD10AE0F1E10EF1200A462BD /* RnBridge.m */; };
 		DDC829ED1E02305700F15C42 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDC829D61E02300E00F15C42 /* libRCTAnimation.a */; };
-		E79505E6728449E7AEC393EA /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E9AC06F6A4494CAA9AF468 /* libRNDeviceInfo.a */; };
+		DDE03D971E8BB2D3005FE8F8 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDE03D941E8BAE52005FE8F8 /* libRNDeviceInfo.a */; };
 		F60FD21424D94BECB5C98C02 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C6A68F38C16488FA39D2939 /* Foundation.ttf */; };
 /* End PBXBuildFile section */
 
@@ -347,7 +347,6 @@
 		833EA273CD1B4F39BA400B7B /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		83DEA029E5DD4B2C9F5F22FB /* libAutoGrowTextInput.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAutoGrowTextInput.a; sourceTree = "<group>"; };
 		89409FA3FBBE46EA9C711FF5 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
-		96E9AC06F6A4494CAA9AF468 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		9AEB9DCA635C4E12BEFA3CBD /* RCTRestart.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTRestart.xcodeproj; path = "../node_modules/react-native-restart/ios/RCTRestart.xcodeproj"; sourceTree = "<group>"; };
 		9B50AAF3C82549A7A9B12DC9 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		B01BCA03472F4A6180024FAC /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
@@ -395,6 +394,7 @@
 		DD10AE0F1E10EF1200A462BD /* RnBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RnBridge.m; path = HLife/rn/RnBridge.m; sourceTree = "<group>"; };
 		DD60CB735C6841798DDA8C44 /* ImageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ImageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/ImageCropPicker.xcodeproj"; sourceTree = "<group>"; };
 		DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		DDE03D941E8BAE52005FE8F8 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRNDeviceInfo.a; path = "../../../../Library/Developer/Xcode/DerivedData/HLife-asiksqtlttydeuftlvcwlkcvotos/Build/Products/Debug-iphoneos/RNDeviceInfo/libRNDeviceInfo.a"; sourceTree = "<group>"; };
 		DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBEEPickerManager.a; sourceTree = "<group>"; };
 		F4508DF7717BD0270E31CF83 /* libPods-HLife.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HLife.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -409,6 +409,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDE03D971E8BB2D3005FE8F8 /* libRNDeviceInfo.a in Frameworks */,
 				B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */,
 				B66C85C31E68582500C157EA /* libRCTPushNotification.a in Frameworks */,
 				B6FB9B0E1E52F75700E316C8 /* BaiduMapAPI_Search.framework in Frameworks */,
@@ -442,7 +443,6 @@
 				5A6A280C24E740B89E8644AE /* libRCTRestart.a in Frameworks */,
 				3E8A097182AC4E3AB6FA68ED /* libRCTCamera.a in Frameworks */,
 				373634DB2FA5B55BCDD62509 /* libPods-HLife.a in Frameworks */,
-				E79505E6728449E7AEC393EA /* libRNDeviceInfo.a in Frameworks */,
 				ADD8FAE5242B47F887D10EA2 /* libimageCropPicker.a in Frameworks */,
 				9177708741A94F1DB692C8AD /* libBVLinearGradient.a in Frameworks */,
 			);
@@ -663,6 +663,7 @@
 		B687CD811E4EEB2000F47585 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DDE03D941E8BAE52005FE8F8 /* libRNDeviceInfo.a */,
 				B652CD8A1E696FEF00EE1246 /* libReact.a */,
 				B66C85C21E68582500C157EA /* libRCTPushNotification.a */,
 				B6FB9AB41E4EEF3800E316C8 /* libcrypto.a */,
@@ -1431,6 +1432,7 @@
 					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
