@@ -46,10 +46,17 @@ class SystemNotifyView extends Component {
     Actions.COMMON_WEB_VIEW(payload)
   }
 
+  renderCoverImage(item){
+    if(item.message_cover_url){
+      return (
+        <Image style={styles.itemImg} source={{uri: item.message_cover_url}} />
+      )
+    }
+    return null
+  }
+
   renderNoticeList(){
-    console.log('renderNoticeList======', this.props.systemNoticeList)
     if(this.props.systemNoticeList && this.props.systemNoticeList.length) {
-      console.log('renderNoticeList.f.dfa')
       let listView = this.props.systemNoticeList.map((item, index)=>{
         return(
           <View style={styles.listItemContainer} key={index}>
@@ -59,9 +66,7 @@ class SystemNotifyView extends Component {
 
             <TouchableOpacity style={{}} onPress={()=>{this.handleNoticeClick(item)}}>
               <View style={styles.itemContentBox}>
-                {item.message_cover_url &&
-                  <Image style={styles.itemImg} source={{uri: item.message_cover_url}} />
-                }
+                {this.renderCoverImage(item)}
                 <Text style={styles.itemTitle}>{item.message_title}</Text>
                 <Text style={styles.itemAbstract}>{item.message_abstract}</Text>
               </View>
@@ -76,7 +81,6 @@ class SystemNotifyView extends Component {
         </ScrollView>
       )
     }else{
-      console.log('renderNoticeList.nodnfodnd')
       return (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataTxt}>暂无系统消息</Text>
@@ -144,7 +148,6 @@ const styles = StyleSheet.create({
   noDataTxt: {
     fontSize: 17,
     fontWeight: 'bold',
-    color: '#d8d8d8'
   },
   listItemContainer: {
     flex: 1,
@@ -156,14 +159,13 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 8,
     marginBottom: 10,
-    backgroundColor: 'gray'
+    backgroundColor: '#ddd'
   },
   itemTime: {
     fontSize: 12,
     color: 'white'
   },
   itemContentBox: {
-    marginBottom: 20,
     backgroundColor: 'white',
     padding: 15,
     paddingLeft: 10,

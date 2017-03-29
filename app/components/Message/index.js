@@ -221,7 +221,9 @@ class MessageBox extends Component {
 
   gotoSystemNoticeList() {
     // console.log('gotoSystemNoticeList', this.props.newestSystemNotice)
-    this.props.updateSystemNoticeAsMarkReaded(this.props.newestSystemNotice)
+    if(this.props.newestSystemNotice.message_title) {
+      this.props.updateSystemNoticeAsMarkReaded(this.props.newestSystemNotice)
+    }
     Actions.SYSTEM_NOTIFY()
   }
 }
