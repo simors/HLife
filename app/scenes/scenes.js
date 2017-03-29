@@ -74,6 +74,7 @@ import MyFans from '../components/Mine/myFans'
 import LikeUserList from '../components/Find/LikeUserList'
 import ShopNotifyView from '../components/Message/ShopNotifyView'
 import TopicNotifyView from '../components/Message/TopicNotifyView'
+import SystemNotifyView from '../components/Message/SystemNotifyView'
 import BaiduMapView from '../components/common/BaiduMapView'
 import ShopAddressSelect from '../components/Mine/myShop/ShopAddressSelect'
 import CommentDoctor from '../components/Mine/Doctor/CommentDoctor'
@@ -167,6 +168,7 @@ export const scenes = Actions.create(
       <Scene key="MYFANS" component={MyFans} />
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
       <Scene key="TOPIC_NOTIFY" component={TopicNotifyView} />
+      <Scene key="SYSTEM_NOTIFY" component={SystemNotifyView} />
       <Scene key="BAI_DU_MAP_VIEW" component={BaiduMapView} />
       <Scene key="SHOP_ADDRESS_SELECT" component={ShopAddressSelect} />
       <Scene key="COMMENT_DOCTOR" component={CommentDoctor}/>
