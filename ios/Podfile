@@ -6,4 +6,6 @@ target "HLife" do
     pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
     pod 'React', :path => '../node_modules/react-native'
     pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+    pod 'Pingpp/Alipay'
+    pod 'Pingpp/Wx'
 end

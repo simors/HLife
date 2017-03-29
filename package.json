@@ -53,6 +53,7 @@
     "react-native-scrollable-tab-view": "^0.7.0",
     "react-native-send-intent": "^1.0.14",
     "react-native-swiper": "^1.5.4",
+    "react-native-uuid": "^1.4.9",
     "react-native-vector-icons": "^3.0.0",
     "react-native-webhtmlview": "0.0.3",
     "react-native-webview-bridge": "^0.33.0",

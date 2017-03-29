@@ -1,4 +1,11 @@
 PODS:
+  - BVLinearGradient (1.6.2):
+    - React
+  - Pingpp/Alipay (2.2.12):
+    - Pingpp/Core
+  - Pingpp/Core (2.2.12)
+  - Pingpp/Wx (2.2.12):
+    - Pingpp/Core
   - QBImagePickerController (3.4.0)
   - React (0.38.0):
     - React/Core (= 0.38.0)
@@ -8,23 +15,30 @@ PODS:
   - RSKImageCropper (1.6.0)
 
 DEPENDENCIES:
+  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
+  - Pingpp/Alipay
+  - Pingpp/Wx
   - QBImagePickerController
   - React (from `../node_modules/react-native`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RSKImageCropper
 
 EXTERNAL SOURCES:
+  BVLinearGradient:
+    :path: ../node_modules/react-native-linear-gradient
   React:
-    :path: "../node_modules/react-native"
+    :path: ../node_modules/react-native
   RNDeviceInfo:
-    :path: "../node_modules/react-native-device-info"
+    :path: ../node_modules/react-native-device-info
 
 SPEC CHECKSUMS:
+  BVLinearGradient: 939e6b5bb1e90abf70547ce83f952779c9762247
+  Pingpp: 8a878edad8c9223bb38543b5f6f6e2f519d3f4df
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: 3cdd13d7c8f6ad5c20216aa83e032f0ce4087944
   RNDeviceInfo: dc3cbee96cd2392cf03d6ff6191dc15f1606a166
   RSKImageCropper: 6903235c7a8a79acb1e1f3490e2c911b858f8208
 
-PODFILE CHECKSUM: 4b92b340aa9bc2222c524e2037538a1e98d4440d
+PODFILE CHECKSUM: 41c0691eee8fc22e70daa9746730f5500faaa6fc
 
 COCOAPODS: 1.2.0

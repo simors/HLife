@@ -1,6 +1,6 @@
 rootProject.name = 'HLife'
 
-include ':app'
+include ':app', ':lib:bdwallet_pay_sdk', ':lib:pingpp'
 include ':react-native-linear-gradient'
 project(':react-native-linear-gradient').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-linear-gradient/android')
 include ':zzzkk2009-react-native-leancloud-sdk'

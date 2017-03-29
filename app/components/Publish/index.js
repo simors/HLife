@@ -11,6 +11,7 @@ import {
   Platform,
   StyleSheet,
   StatusBar,
+  NativeModules,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -18,6 +19,11 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
 import * as authSelector from '../../selector/authSelector'
+import {createPingppPayment} from '../../action/paymentActions'
+import uuid from 'react-native-uuid'
+import * as Toast from '../common/Toast'
+
+const LIFEPingPP = NativeModules.LIFEPingPP
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -25,6 +31,35 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 class Publish extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      order_no: undefined,
+    }
+  }
+
+  submitSuccessCallback = (charge) => {
+    Toast.show('Ping++ 获取 charge对象成功！')
+    console.log("get charge:", charge)
+    LIFEPingPP.setDebugMode(true, () => {console.log("setDebugMode success!")})
+    LIFEPingPP.createPayment(charge, 'simorsLjyd', () => {console.log("RCTPingPP.createPayment callback!")})
+  }
+
+  submitErrorCallback = (error) => {
+    Toast.show(error.message)
+  }
+
+  onPaymentTest() {
+    let order_no = uuid.v4().replace(/-/g, '').substr(0, 16)
+    this.setState({
+      order_no: order_no
+    })
+    let paymentPayload = {
+      order_no: order_no,
+      amount: 10,
+      channel: 'alipay',
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback,
+    }
+    this.props.createPingppPayment(paymentPayload)
   }
 
   render() {
@@ -58,6 +93,9 @@ class Publish extends Component {
                 <Text style={styles.serviceText}>店铺活动</Text>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {this.onPaymentTest()}}>
+              <Text style={{fontSize:24, color: 'red'}}>打赏</Text>
+            </TouchableOpacity>
             <View style={styles.closeView}>
               <TouchableOpacity style={styles.close} onPress={() => Actions.pop()}>
                 <Image
@@ -80,6 +118,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  createPingppPayment
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Publish)

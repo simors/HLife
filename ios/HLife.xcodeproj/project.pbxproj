@@ -32,6 +32,7 @@
 		6545956C9A7D4CFDA6C3AB7C /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50343225606A4D92A8CCFC4A /* MaterialIcons.ttf */; };
 		729AE79448D546938744BBC4 /* libRCTBEEPickerManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */; };
 		730332F0DAB040B3BE49C9F8 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */; };
+		7E240EE91E8B51B300D92457 /* RCTPingPP.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E240EE81E8B51B300D92457 /* RCTPingPP.m */; };
 		80598CC119704C77968765E7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AB072ABED6D40D3AB87C366 /* FontAwesome.ttf */; };
 		80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -137,6 +138,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTLinking;
+		};
+		7E240EF01E8BA3CA00D92457 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7E240EEB1E8BA3CA00D92457 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		7E240EF21E8BA3CA00D92457 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7E240EEB1E8BA3CA00D92457 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2DD0EFE61DA8533A00B0C975;
+			remoteInfo = "RCTPushNotification-tvOS";
 		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -342,6 +357,9 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7AB072ABED6D40D3AB87C366 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libReact-Native-Webview-Bridge.a"; sourceTree = "<group>"; };
+		7E240EE81E8B51B300D92457 /* RCTPingPP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTPingPP.m; sourceTree = "<group>"; };
+		7E240EEA1E8B51D300D92457 /* RCTPingPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTPingPP.h; sourceTree = "<group>"; };
+		7E240EEB1E8BA3CA00D92457 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		814F548B871447AE9DF6C561 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		833EA273CD1B4F39BA400B7B /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -531,6 +549,7 @@
 		13B07FAE1A68108700A75B9A /* HLife */ = {
 			isa = PBXGroup;
 			children = (
+				7E240EC41E8B504F00D92457 /* RCTPingPP */,
 				B66C85C41E68619400C157EA /* HLife.entitlements */,
 				DD10ADF51E10ED9C00A462BD /* rn */,
 				DD0B3AB91DF9C28D00AE8D91 /* resources */,
@@ -563,9 +582,28 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		7E240EC41E8B504F00D92457 /* RCTPingPP */ = {
+			isa = PBXGroup;
+			children = (
+				7E240EE81E8B51B300D92457 /* RCTPingPP.m */,
+				7E240EEA1E8B51D300D92457 /* RCTPingPP.h */,
+			);
+			name = RCTPingPP;
+			sourceTree = "<group>";
+		};
+		7E240EEC1E8BA3CA00D92457 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7E240EF11E8BA3CA00D92457 /* libRCTPushNotification.a */,
+				7E240EF31E8BA3CA00D92457 /* libRCTPushNotification-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				7E240EEB1E8BA3CA00D92457 /* RCTPushNotification.xcodeproj */,
 				DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -932,6 +970,10 @@
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
 				},
 				{
+					ProductGroup = 7E240EEC1E8BA3CA00D92457 /* Products */;
+					ProjectRef = 7E240EEB1E8BA3CA00D92457 /* RCTPushNotification.xcodeproj */;
+				},
+				{
 					ProductGroup = DDDC40331E28D7A700291C1B /* Products */;
 					ProjectRef = 9AEB9DCA635C4E12BEFA3CBD /* RCTRestart.xcodeproj */;
 				},
@@ -1045,6 +1087,20 @@
 			fileType = archive.ar;
 			path = libRCTLinking.a;
 			remoteRef = 78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7E240EF11E8BA3CA00D92457 /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 7E240EF01E8BA3CA00D92457 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7E240EF31E8BA3CA00D92457 /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 7E240EF21E8BA3CA00D92457 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {
@@ -1309,6 +1365,7 @@
 				B6FB9ACE1E4EF33700E316C8 /* RCTBaiduMapViewManager.m in Sources */,
 				DD10AE101E10EF1200A462BD /* RnBridge.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				7E240EE91E8B51B300D92457 /* RCTPingPP.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1370,8 +1427,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib/thirdlibs",
-					"\"$(SRCROOT)/HLife\"",
-					"\"$(SRCROOT)/HLife\"",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1382,6 +1437,7 @@
 				PRODUCT_NAME = HLife;
 				PROVISIONING_PROFILE = "59e2dab2-9014-4e40-9980-c011714e47a3";
 				PROVISIONING_PROFILE_SPECIFIER = XiaojeeDevWithPush;
+				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1428,9 +1484,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib/thirdlibs",
-					"\"$(SRCROOT)/HLife\"",
-					"\"$(SRCROOT)/HLife\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1440,6 +1495,7 @@
 				PRODUCT_NAME = HLife;
 				PROVISIONING_PROFILE = "59e2dab2-9014-4e40-9980-c011714e47a3";
 				PROVISIONING_PROFILE_SPECIFIER = XiaojeeDevWithPush;
+				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

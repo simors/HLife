@@ -13,6 +13,7 @@
 #import "RCTRootView.h"
 #import "RCTBaiduMapViewManager.h"
 #import "RCTPushNotificationManager.h"
+#import <Pingpp/Pingpp.h>
 
 @implementation AppDelegate
 
@@ -56,6 +57,11 @@
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
   [RCTPushNotificationManager didReceiveLocalNotification:notification];
+}
+
+// for iOS 9
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
+  return [Pingpp handleOpenURL:url withCompletion:nil];
 }
 
 @end
