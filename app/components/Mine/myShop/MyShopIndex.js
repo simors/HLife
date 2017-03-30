@@ -21,29 +21,26 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import * as Communications from 'react-native-communications'
 import SendIntentAndroid from 'react-native-send-intent'
-import Header from '../common/Header'
-import ImageGroupViewer from '../common/Input/ImageGroupViewer'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import THEME from '../../constants/themes/theme1'
-import * as Toast from '../common/Toast'
-import ScoreShow from '../common/ScoreShow'
-import ShopPromotionModule from './ShopPromotionModule'
+import Header from '../../common/Header'
+import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import THEME from '../../../constants/themes/theme1'
+import * as Toast from '../../common/Toast'
+import ScoreShow from '../../common/ScoreShow'
+import ShopPromotionModule from '../../shop/ShopPromotionModule'
 
-import {fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
-import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
-import {selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
-import * as authSelector from '../../selector/authSelector'
-import Comment from '../common/Comment'
-import ImageGallery from '../common/ImageGallery'
-import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
-
-import * as numberUtils from '../../util/numberUtils'
-import * as ShopDetailTestData from './ShopDetailTestData'
+import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchSimilarShopList, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
+import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../../action/authActions'
+import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectSimilarShopList, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../../selector/shopSelector'
+import * as authSelector from '../../../selector/authSelector'
+import ImageGallery from '../../common/ImageGallery'
+import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
+import * as numberUtils from '../../../util/numberUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class ShopDetail extends Component {
+class MyShopIndex extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -53,167 +50,33 @@ class ShopDetail extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchShopAnnouncements({id: this.props.id})
-      this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
-      this.props.fetchShopCommentTotalCount({id: this.props.id})
-      this.props.fetchGuessYouLikeShopList({id: this.props.id})
-      if(this.props.isUserLogined) {
-        this.props.userIsFollowedShop({id: this.props.id})
-        this.props.fetchUserFollowees()
-        this.props.fetchUserUpShopInfo({id: this.props.id})
+      this.props.fetchUserOwnedShopInfo()
+      if(this.props.userOwnedShopInfo.id) {
+        this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopCommentList({isRefresh: true, id: this.props.userOwnedShopInfo.id})
+        this.props.fetchShopCommentTotalCount({id: this.props.userOwnedShopInfo.id})
+
+        this.props.fetchSimilarShopList({
+          id: this.props.userOwnedShopInfo.id,
+          targetShopCategoryId: this.props.userOwnedShopInfo.targetShopCategory.id
+        })
+
       }
-      // this.props.fetchShopCommentList({id: this.props.shopDetail.id})
+      if(this.props.isUserLogined) {
+        this.props.fetchUserFollowees()
+      }
     })
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(()=>{
-      if(!this.props.shopDetail.id) {
-        this.props.fetchShopDetail({id: this.props.id})
-      }
+
     })
   }
 
   componentWillReceiveProps(nextProps) {
 
-  }
-
-  userUpShop() {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    let payload = {
-      id: this.props.id,
-      success: function(result) {
-        Toast.show(result.message, {duration: 1500})
-      },
-      error: function(error) {
-        Toast.show(error.message, {duration: 1500})
-      }
-    }
-    this.props.userUpShop(payload)
-  }
-
-  userUnUpShop() {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    let payload = {
-      id: this.props.id,
-      success: function(result) {
-        Toast.show(result.message, {duration: 1500})
-      },
-      error: function(error) {
-        Toast.show(error.message, {duration: 1500})
-      }
-    }
-    this.props.userUnUpShop(payload)
-  }
-
-  followShop() {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    let payload = {
-      id: this.props.id,
-      success: function(result) {
-        Toast.show(result.message, {duration: 1500})
-      },
-      error: function(error) {
-        Toast.show(error.message, {duration: 1500})
-      }
-    }
-    this.props.followShop(payload)
-  }
-
-  followUser(userId) {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    const that = this
-    let payload = {
-      userId: userId,
-      success: function(result) {
-        that.props.fetchUserFollowees()
-        Toast.show(result.message, {duration: 1500})
-      },
-      error: function(error) {
-        Toast.show(error.message, {duration: 1500})
-      }
-    }
-    this.props.followUser(payload)
-
-  }
-
-  unFollowUser(userId) {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    const that = this
-    let payload = {
-      userId: userId,
-      success: function(result) {
-        that.props.fetchUserFollowees()
-        Toast.show(result.message, {duration: 1500})
-      },
-      error: function(error) {
-        Toast.show(error.message, {duration: 1500})
-      }
-    }
-    this.props.unFollowUser(payload)
-
-  }
-
-  //deprecated
-  openModel(callback) {
-    this.setState({
-      modalVisible: true
-    })
-    if(callback && typeof callback == 'function'){
-      callback()
-    }
-  }
-
-  //deprecated
-  closeModal(callback) {
-    this.setState({
-      modalVisible: false
-    })
-    if(callback && typeof callback == 'function'){
-      callback()
-    }
-  }
-
-  //deprecated
-  submitComment(commentData) {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    const that = this
-    let payload = {
-      id: this.props.id,
-      shopOwnerId: this.props.shopDetail.owner.id,
-      ...commentData,
-      success: () => {
-        that.props.fetchShopCommentList({isRefresh: true, id: that.props.id})
-        that.props.fetchShopCommentTotalCount({id: that.props.id})
-        that.closeModal(()=>{
-          Toast.show('发布成功', {duration: 1000})
-        })
-      },
-      error: (err) => {
-        that.closeModal(()=>{
-          Toast.show(err.message, {duration: 1000})
-        })
-      }
-    }
-    this.props.submitShopComment(payload)
   }
 
   makePhoneCall(contactNumber) {
@@ -311,16 +174,44 @@ class ShopDetail extends Component {
     }
   }
 
-  userIsFollowedTheUser(userId) {
-    let userFollowees = this.props.userFollowees
-    if(userFollowees && userFollowees.length) {
-      for(let i = 0; i < userFollowees.length; i++) {
-        if(userFollowees[i].id == userId) {
-          return true
-        }
-      }
-      return false
+  renderSimilarShops() {
+    if(this.props.similarShopList.length) {
+      return (
+        <View style={styles.guessYouLikeWrap}>
+          <View style={styles.guessYouLikeTitleWrap}>
+            <Text style={styles.guessYouLikeTitle}>同类店铺</Text>
+          </View>
+          {this.renderSimilarShopList()}
+        </View>
+      )
     }
+  }
+
+  renderSimilarShopList() {
+    let similarShopListView = <View/>
+    if(this.props.similarShopList.length) {
+      similarShopListView = this.props.similarShopList.map((item, index)=> {
+        return (
+          <TouchableWithoutFeedback key={"similar_shop_" + index} onPress={()=>{Actions.SHOP_DETAIL({id: item.id})}}>
+            <View style={styles.shopInfoWrap}>
+              <View style={styles.coverWrap}>
+                <Image style={styles.cover} source={{uri: item.coverUrl}}/>
+              </View>
+              <View style={[styles.shopIntroWrap]}>
+                <Text style={styles.gylShopName} numberOfLines={1}>{item.shopName}</Text>
+                <ScoreShow
+                  score={item.score}
+                />
+                <View style={styles.subInfoWrap}>
+                  <Text style={styles.subTxt}>{item.pv}人看过</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        )
+      })
+    }
+    return similarShopListView
   }
 
   openCommentScene() {
@@ -333,7 +224,7 @@ class ShopDetail extends Component {
 
   renderComments() {
     if(this.props.shopComments && this.props.shopComments.length) {
-      let avatar = require('../../assets/images/default_portrait.png')
+      let avatar = require('../../../assets/images/default_portrait.png')
 
       const commentsView = this.props.shopComments.map((item, index) => {
         if(index > 2) return
@@ -418,24 +309,6 @@ class ShopDetail extends Component {
     }
   }
 
-  renderShopAnnouncement(){
-    let announcementCover = {uri: this.props.latestShopAnnouncement.coverUrl}
-    return (
-      <View style={styles.shopAnnouncementContainer}>
-        <View style={styles.shopAnnouncementCoverWrap}>
-          <Image style={styles.shopAnnouncementCover} source={announcementCover}/>
-        </View>
-        <View style={styles.shopAnnouncementCnt}>
-          <View style={styles.shopAnnouncementTitleWrap}>
-            <Text numberOfLines={3} style={styles.shopAnnouncementTitle}>
-              {this.props.latestShopAnnouncement.content}
-            </Text>
-          </View>
-        </View>
-      </View>
-    )
-  }
-
   render() {
     // console.log('this.props.shopDetail===', this.props.shopDetail)
     return (
@@ -444,7 +317,7 @@ class ShopDetail extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="店铺详情"
+          title="店铺管理"
           rightType="none"
         />
         <View style={styles.body}>
@@ -477,7 +350,7 @@ class ShopDetail extends Component {
                 <View style={styles.shopXYZLeft}>
                   <View style={styles.locationWrap}>
                     <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
-                      <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
+                      <Image style={styles.locationIcon} source={require('../../../assets/images/shop_loaction.png')}/>
                       <View style={styles.locationTxtWrap}>
                         <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
                       </View>
@@ -485,22 +358,12 @@ class ShopDetail extends Component {
                   </View>
                   <View style={styles.contactNumberWrap}>
                     <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
-                      <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
+                      <Image style={styles.contactNumberIcon} source={require('../../../assets/images/shop_call.png')}/>
                       <View style={styles.contactNumberTxtWrap}>
                         <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
-                </View>
-                <View style={styles.shopXYZRight}>
-                  {this.props.isFollowedShop
-                    ? <View style={styles.shopAttentioned}>
-                    <Image source={require('../../assets/images/followed.png')} />
-                  </View>
-                    : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                    <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
-                  </TouchableOpacity>
-                  }
                 </View>
               </View>
 
@@ -530,60 +393,23 @@ class ShopDetail extends Component {
 
               {this.renderComments()}
 
-              {this.renderGuessYouLike()}
-
             </ScrollView>
           </View>
 
           <View style={styles.shopCommentWrap}>
             <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.openCommentScene()}}>
               <View style={[styles.vItem]}>
-                <Image style={{}} source={require('../../assets/images/message.png')}/>
-                <Text style={[styles.vItemTxt, styles.shopCommentInput]}>点评</Text>
-              </View>
-            </TouchableOpacity>
-
-            {
-              this.props.userIsUpedShop
-                ? <TouchableOpacity style={[styles.shopUpWrap]} onPress={this.userUnUpShop.bind(this)}>
-                    <View style={[styles.vItem]}>
-                      <Image style={{}} source={require('../../assets/images/like_selected.png')}/>
-                      <Text style={[styles.vItemTxt]}>取消点赞</Text>
-                    </View>
-                  </TouchableOpacity>
-                : <TouchableOpacity style={[styles.shopUpWrap]} onPress={this.userUpShop.bind(this)}>
-                    <View style={[styles.vItem]}>
-                      <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
-                      <Text style={[styles.vItemTxt]}>点赞</Text>
-                    </View>
-                  </TouchableOpacity>
-            }
-
-            <TouchableOpacity style={[styles.commentBtnWrap]} onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
-              <View style={[styles.vItem]}>
-                <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-                <Text style={[styles.vItemTxt]}>查看</Text>
-                {this.props.shopCommentsTotalCount > 0
-                  ? <View style={styles.commentBtnBadge}>
-                      <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
-                    </View>
-                  : null
-                }
+                <Image style={{}} source={require('../../../assets/images/shop_edite.png')}/>
+                <Text style={[styles.vItemTxt, styles.shopCommentInput]}>编辑店铺</Text>
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
-              <Image style={{}} source={require('../../assets/images/contacted.png')}/>
-              <Text style={[styles.contactedTxt]}>私信</Text>
+              <Image style={{}} source={require('../../../assets/images/activity_edite.png')}/>
+              <Text style={[styles.contactedTxt]}>活动管理</Text>
             </TouchableOpacity>
           </View>
 
-          <Comment
-            modalVisible={this.state.modalVisible}
-            modalTitle="写评论"
-            closeModal={() => this.closeModal()}
-            submitComment={this.submitComment.bind(this)}
-          />
         </View>
       </View>
     )
@@ -591,66 +417,43 @@ class ShopDetail extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let shopDetail = selectShopDetail(state, ownProps.id)
-  // console.log('shopDetail=====>>>>>>', shopDetail)
-  let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
-  // const shopList = selectShopList(state) || []
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  // console.log('userOwnedShopInfo====', userOwnedShopInfo)
   const isUserLogined = authSelector.isUserLogined(state)
-  const shopComments = selectShopComments(state, ownProps.id)
-  const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
-  const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
-
+  const shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
+  const shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
+  let latestShopAnnouncement = selectLatestShopAnnouncemment(state, userOwnedShopInfo.id)
+  const shopComments = selectShopComments(state, userOwnedShopInfo.id)
+  const shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
   const userFollowees = authSelector.selectUserFollowees(state)
-
-  const userIsUpedShop = selectUserIsUpedShop(state, ownProps.id)
-
-  const guessYouLikeList = selectGuessYouLikeShopList(state)
-
-  // let shopDetail = ShopDetailTestData.shopDetail
-  // const shopComments = ShopDetailTestData.shopComments
-  // const shopCommentsTotalCount = 1368
-  // let latestShopAnnouncement = ShopDetailTestData.latestShopAnnouncement
-  // const shopList = ShopDetailTestData.shopList
-  // const isUserLogined = true
-  // const isFollowedShop = true
-
-  // if(shopList.length > 3) {
-  //   shopList.splice(0, shopList.length-3)
-  // }
-
+  const similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
   return {
-    shopDetail: shopDetail,
-    latestShopAnnouncement: latestShopAnnouncement,
-    guessYouLikeList: guessYouLikeList,
+    shopDetail: userOwnedShopInfo,
+    userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
-    isFollowedShop: isFollowedShop,
+    shopFollowers: shopFollowers,
+    shopFollowersTotalCount: shopFollowersTotalCount,
+    latestShopAnnouncement: latestShopAnnouncement,
     shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
     userFollowees: userFollowees,
-    userIsUpedShop: userIsUpedShop,
+    similarShopList: similarShopList,
     currentUser: authSelector.activeUserId(state),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchShopDetail,
-  fetchShopAnnouncements,
-  userIsFollowedShop,
-  followShop,
-  submitShopComment,
   fetchShopCommentList,
   fetchShopCommentTotalCount,
-  followUser,
-  unFollowUser,
-  userIsFollowedTheUser,
   fetchUserFollowees,
-  fetchUserUpShopInfo,
-  userUpShop,
-  userUnUpShop,
-  fetchGuessYouLikeShopList
+  fetchGuessYouLikeShopList,
+  fetchUserOwnedShopInfo,
+  fetchShopFollowers,
+  fetchShopFollowersTotalCount,
+  fetchSimilarShopList,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)
+export default connect(mapStateToProps, mapDispatchToProps)(MyShopIndex)
 
 const styles = StyleSheet.create({
   container: {
@@ -1054,10 +857,12 @@ const styles = StyleSheet.create({
   },
   vItem: {
     flex: 1,
+    alignSelf:'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
-    paddingBottom: 3
+    paddingBottom: 3,
+    paddingLeft: 30
   },
   vItemTxt: {
     marginTop: 6,
@@ -1069,7 +874,7 @@ const styles = StyleSheet.create({
   },
   contactedWrap: {
     width: normalizeW(135),
-    backgroundColor: '#FF9D4E',
+    backgroundColor: '#FF7819',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'

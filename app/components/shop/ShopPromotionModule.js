@@ -27,48 +27,49 @@ class ShopPromotionModule extends Component {
   }
 
   renderSaleItems() {
-    let promotionsView = <View />
     if(this.props.shopPromotionList && this.props.shopPromotionList.length) {
-      promotionsView = this.props.shopPromotionList.map((item, index)=>{
+      let promotionsView = this.props.shopPromotionList.map((item, index)=>{
         return (
           <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {Actions.SHOP_PROMOTION_DETAIL({id:item.id})}}>
             <View style={styles.saleItemView}>
-              <View style={styles.saleImg}>
-                <Image style={{flex: 1}}
-                       source={{uri: item.coverUrl}}/>
-              </View>
-              <View style={styles.saleContent}>
-                <View>
-                  <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
+              <View style={styles.saleItemInnerView}>
+                <View style={styles.saleImg}>
+                  <Image style={{flex: 1}}
+                         source={{uri: item.coverUrl}}/>
                 </View>
-                <View style={styles.addressTextView}>
-                  <View style={{flex:1}}>
-                    <Text style={[styles.itemText, styles.abstractTxt]} numberOfLines={2}>{item.abstract}</Text>
+                <View style={styles.saleContent}>
+                  <View>
+                    <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
                   </View>
-                  <View style={styles.distanceBox}>
-                    <Text style={[styles.itemText, styles.distanceTxt]}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
+                  <View style={styles.addressTextView}>
+                    <View style={{flex:1}}>
+                      <Text style={[styles.itemText, styles.abstractTxt]} numberOfLines={2}>{item.abstract}</Text>
+                    </View>
+                    <View style={styles.distanceBox}>
+                      <Text style={[styles.itemText, styles.distanceTxt]}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
+                    </View>
                   </View>
-                </View>
-                <View style={styles.saleAbstract}>
-                  <View style={styles.saleLabel}>
-                    <Text style={styles.saleLabelText}>{item.type}</Text>
+                  <View style={styles.saleAbstract}>
+                    <View style={styles.saleLabel}>
+                      <Text style={styles.saleLabelText}>{item.type}</Text>
+                    </View>
+                    <View style={{marginLeft: normalizeW(10)}}>
+                      <Text style={styles.itemText} numberOfLines={1}>{item.typeDesc}</Text>
+                    </View>
                   </View>
-                  <View style={{marginLeft: normalizeW(10)}}>
-                    <Text style={styles.itemText} numberOfLines={1}>{item.typeDesc}</Text>
-                  </View>
-                </View>
-                <View style={styles.priceView}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={styles.priceText}>¥</Text>
-                    <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
-                    {item.originalPrice &&
+                  <View style={styles.priceView}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text style={styles.priceText}>¥</Text>
+                      <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
+                      {item.originalPrice &&
                       <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
                         原价 {item.originalPrice}
                       </Text>
-                    }
-                  </View>
-                  <View>
-                    <Text style={styles.itemText}>{item.pv}人看过</Text>
+                      }
+                    </View>
+                    <View>
+                      <Text style={styles.itemText}>{item.pv}人看过</Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -76,11 +77,15 @@ class ShopPromotionModule extends Component {
           </TouchableOpacity>
         )
       })
+      return (
+        <View style={{flex: 1}}>
+          {promotionsView}
+        </View>
+      )
     }
-
     return (
-      <View style={{flex: 1}}>
-        {promotionsView}
+      <View style={styles.noDataContainer}>
+        <Text style={{fontSize:12,color:'#5A5A5A'}}>暂无最新活动</Text>
       </View>
     )
 
@@ -125,8 +130,6 @@ const styles = StyleSheet.create({
     height: normalizeH(42),
     borderBottomWidth: 1,
     borderBottomColor: '#F5F5F5',
-    marginLeft: normalizeW(18),
-    marginRight: normalizeW(18),
   },
   headerItem: {
     flex: 1,
@@ -142,16 +145,27 @@ const styles = StyleSheet.create({
   },
   contentItem: {
     flex: 1,
-    marginLeft: normalizeW(18),
-    marginRight: normalizeW(18),
+  },
+  noDataContainer:{
+    flex: 1,
+    justifyContent:'center',
+    alignItems:'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+    height: normalizeH(50),
   },
   saleItemView: {
     flex: 1,
-    flexDirection: 'row',
     paddingTop: normalizeH(19),
     paddingBottom: normalizeH(15),
     borderBottomWidth: 1,
     borderColor: '#F5F5F5',
+  },
+  saleItemInnerView: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   saleImg: {
     width: normalizeW(100),
