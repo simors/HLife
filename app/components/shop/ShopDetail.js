@@ -333,12 +333,10 @@ class ShopDetail extends Component {
 
   renderComments() {
     if(this.props.shopComments && this.props.shopComments.length) {
-      const that = this
       let avatar = require('../../assets/images/default_portrait.png')
+
       const commentsView = this.props.shopComments.map((item, index) => {
         if(index > 2) return
-        const scoreWidth = (item.score || 0) / 5.0 * 62
-        let userIsFollowedTheUser = that.userIsFollowedTheUser(item.user.id)
         if(item.user.avatar) {
           avatar = {uri: item.user.avatar}
         }
@@ -348,17 +346,6 @@ class ShopDetail extends Component {
               <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
                 <Image style={styles.commentAvatar} source={avatar}/>
               </TouchableOpacity>
-
-              {userIsFollowedTheUser
-                ? <TouchableOpacity style={styles.userAttentioned} onPress={()=>{this.unFollowUser(item.user.id)}}>
-                    {/*<Text style={styles.userAttentionedTxt}>已关注</Text>*/}
-                    <Image source={require('../../assets/images/followed.png')} />
-                  </TouchableOpacity>
-                : <TouchableOpacity onPress={()=>{this.followUser(item.user.id)}}>
-                    <Image style={styles.commentAttention} source={require('../../assets/images/add_follow.png')}/>
-                  </TouchableOpacity>
-              }
-
             </View>
             <View style={styles.commentRight}>
               <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
@@ -367,20 +354,24 @@ class ShopDetail extends Component {
                   <Text style={styles.commentTime}>{item.createdDate}</Text>
                 </View>
               </TouchableOpacity>
-              <View style={styles.commentLine}>
-                <View style={styles.scoresWrap}>
-                  <View style={styles.scoreIconGroup}>
-                    <View style={[styles.scoreBackDrop, {width: scoreWidth}]}></View>
-                    <Image style={styles.scoreIcon} source={require('../../assets/images/star_empty.png')}/>
-                  </View>
-                  <Text style={styles.score}>{item.score}</Text>
-                </View>
+              <View style={[styles.commentLine, {marginBottom: 10}]}>
+                <ScoreShow score={item.score} />
               </View>
-              <View style={[styles.commentFootLine]}>
-
+              <View style={[styles.commentLine, {marginBottom: 10}]}>
                 <Text numberOfLines={2} style={styles.comment}>{item.content}</Text>
-
               </View>
+
+              {
+                item.blueprints && item.blueprints.length
+                  ? <View style={[styles.commentLine, {marginBottom: 10}]}>
+                      <ImageGroupViewer
+                        images={item.blueprints}
+                        containerStyle={{marginLeft:0,marginRight:0}}
+                        imageStyle={{margin:0,marginRight:2}}
+                      />
+                    </View>
+                  : null
+              }
             </View>
           </View>
         )
