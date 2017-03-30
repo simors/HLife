@@ -67,7 +67,7 @@ export class TopicShow extends Component {
               {this.props.topic.abstract}
             </Text>
           </View>
-          <ImageGroupViewer touchShow={false}
+          <ImageGroupViewer browse={false}
                             images={image}
                             imageLineCnt={1}
                             containerStyle={{width: PAGE_WIDTH * 2 / 7, marginRight: 0}}/>
@@ -89,7 +89,7 @@ export class TopicShow extends Component {
           <Text style={styles.contentStyle} numberOfLines={2}>
             {this.props.topic.abstract}
           </Text>
-          <ImageGroupViewer touchShow={false}
+          <ImageGroupViewer browse={false}
                             images={image}
                             imageLineCnt={3}
                             containerStyle={{flex: 1, marginLeft: 0, marginRight: 0}}/>

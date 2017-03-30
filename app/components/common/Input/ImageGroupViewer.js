@@ -80,13 +80,11 @@ export default class ImageGroupViewer extends Component {
   }
 
   toggleModal(isShow, src) {
-    if(this.props.touchShow) {
       this.setState({
         ...this.state,
         imgModalShow: isShow,
         showImg: src
       })
-    }
   }
 
   renderImageBrowse(src) {
@@ -192,7 +190,6 @@ export default class ImageGroupViewer extends Component {
 }
 
 ImageGroupViewer.defaultProps = {
-  touchShow: true,
   imageLineCnt: 3,
   browse: true,
 }
