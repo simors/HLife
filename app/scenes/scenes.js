@@ -33,8 +33,10 @@ import MyShopIndex from '../components/Mine/myShop/MyShopIndex'
 import EditShop from '../components/Mine/myShop/EditShop'
 import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
 import UpdateShopCover from '../components/Mine/myShop/UpdateShopCover'
+import UpdateShopCover4EditShop from '../components/Mine/myShop/UpdateShopCover4EditShop'
 import ShopReCertification from '../components/Mine/myShop/ShopReCertification'
 import UpdateShopAlbum from '../components/Mine/myShop/UpdateShopAlbum'
+import UpdateShopAlbum4EditShop from '../components/Mine/myShop/UpdateShopAlbum4EditShop'
 import ShopAnnouncementsManage from '../components/Mine/myShop/ShopAnnouncementsManage'
 import PublishShopAnnouncement from '../components/Mine/myShop/PublishShopAnnouncement'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
@@ -131,7 +133,9 @@ export const scenes = Actions.create(
       <Scene key="MY_SHOP_INDEX" component={MyShopIndex}/>
       <Scene key="EDIT_SHOP" component={EditShop}/>
       <Scene key="UPDATE_SHOP_COVER" component={UpdateShopCover}/>
+      <Scene key="UPDATE_SHOP_COVER_FOR_EDIT_SHOP" component={UpdateShopCover4EditShop}/>
       <Scene key="UPDATE_SHOP_ALBUM" component={UpdateShopAlbum}/>
+      <Scene key="UPDATE_SHOP_ALBUM_FOR_EDIT_SHOP" component={UpdateShopAlbum4EditShop}/>
       <Scene key="SHOP_RE_CERTIFICATION" component={ShopReCertification}/>
       <Scene key="SHOP_ANNOUNCEMENTS_MANAGE" component={ShopAnnouncementsManage}/>
       <Scene key="PUBLISH_SHOP_ANNOUNCEMENT" component={PublishShopAnnouncement}/>
