@@ -47,17 +47,13 @@ import * as authSelector from '../../../selector/authSelector'
 import {selectShopCategories} from '../../../selector/configSelector'
 import {selectShopTags, selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import {fetchShopCategories} from '../../../action/configAction'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
 
-const shopCategoryInput = {
-  formKey: commonForm,
-  stateKey: Symbol('shopCategoryInput'),
-  type: "shopCategoryInput",
-}
 const serviceTimeInput = {
   formKey: commonForm,
   stateKey: Symbol('serviceTimeInput'),
@@ -68,20 +64,15 @@ const servicePhoneInput = {
   stateKey: Symbol('servicePhoneInput'),
   type: "servicePhoneInput",
 }
+const servicePhone2Input = {
+  formKey: commonForm,
+  stateKey: Symbol('servicePhone2Input'),
+  type: "servicePhone2Input",
+}
 const ourSpecialInput = {
   formKey: commonForm,
   stateKey: Symbol('ourSpecialInput'),
   type: 'ourSpecialInput'
-}
-const shopAlbumInput = {
-  formKey: commonForm,
-  stateKey: Symbol('shopAlbumInput'),
-  type: 'shopAlbumInput'
-}
-const shopCoverInput = {
-  formKey: commonForm,
-  stateKey: Symbol('shopCoverInput'),
-  type: 'shopCoverInput'
 }
 
 const tagsInput = {
@@ -99,7 +90,7 @@ class EditShop extends Component {
         selectShow: false,
         shopTagsSelectShow: false,
         optionListPos: 179,
-        shopTagsSelectTop: 219,
+        shopTagsSelectTop: 379,
         selectedShopTags: [],
         shopCategoryContainedTag: [],
         shouldUploadImage: false,
@@ -110,7 +101,7 @@ class EditShop extends Component {
         selectShow: false,
         shopTagsSelectShow: false,
         optionListPos: 159,
-        shopTagsSelectTop: 199,
+        shopTagsSelectTop: 359,
         selectedShopTags: [],
         shopCategoryContainedTag: [],
         shouldUploadImage: false,
@@ -147,6 +138,14 @@ class EditShop extends Component {
         selectedShopTags: this.props.userOwnedShopInfo.containedTag
       })
     }
+
+    let targetShopCategory = {}
+    if(this.props.userOwnedShopInfo.targetShopCategory) {
+      targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
+      if(targetShopCategory.id) {
+        this.updateShopCategoryContainedTags(targetShopCategory.id)
+      }
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -165,7 +164,6 @@ class EditShop extends Component {
           // console.log('updateShopCategoryContainedTags.=')
           this.setState({
             shopCategoryContainedTag: shopCategoryContainedTag,
-            selectedShopTags: []
           })
           break
         }
@@ -193,7 +191,7 @@ class EditShop extends Component {
     Toast.show(error.message)
   }
 
-  onButtonPress = () => {
+  onEditShopBtnPress = () => {
     // console.log('fadsf')
     //先上传封面
     if(this.localCoverImgUri) { //用户拍照或从相册选择了照片
@@ -247,46 +245,6 @@ class EditShop extends Component {
     })
   }
 
-  rightComponent() {
-    return (
-    <TouchableOpacity onPress={()=>{this.onButtonPress()}}>
-      <View style={styles.completeBtnBox}>
-        <Text style={styles.completeBtn}>完成</Text>
-      </View>
-    </TouchableOpacity>
-    )
-  }
-  
-  _onSelectPress(e){
-    this.setState({
-      selectShow: !this.state.selectShow,
-    })
-  }
-  
-  _getOptionList(OptionListRef) {
-    return this.refs[OptionListRef]
-  }
-
-  _onSelectShopCategory(shopCategoryId) {
-    // console.log('_onSelectShopCategory.shopCategoryId=', shopCategoryId)
-    this.updateShopCategoryContainedTags(shopCategoryId)
-    this.setState({
-      selectShow: !this.state.selectShow
-    })
-  }
-
-  renderShopCategoryOptions() {
-    let optionsView = <View />
-    if(this.props.allShopCategories) {
-      optionsView = this.props.allShopCategories.map((item, index) => {
-        return (
-          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.id}>{item.text}</Option>
-        )
-      })
-    }
-    return optionsView
-  }
-
   onShopBaseInfoWrapLayout(event) {
     if(event.nativeEvent.layout.height) {
       this.shopBaseInfoWrapHeight = event.nativeEvent.layout.height
@@ -297,15 +255,14 @@ class EditShop extends Component {
   calNewPos() {
     const marginBottomHeight = 10
     const inputWrapHeight = 40
+    const coverImageHeight = 200
     if(Platform.OS == 'ios') {
       this.setState({
-        optionListPos: this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
-        shopTagsSelectTop: this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
+        shopTagsSelectTop: this.shopBaseInfoWrapHeight + coverImageHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1
       })
     }else{
       this.setState({
-        optionListPos: this.shopBaseInfoWrapHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1,
-        shopTagsSelectTop: this.shopBaseInfoWrapHeight + inputWrapHeight*2 + marginBottomHeight - this.scrollOffSet + 1
+        shopTagsSelectTop: this.shopBaseInfoWrapHeight + coverImageHeight + inputWrapHeight + marginBottomHeight - this.scrollOffSet + 1
       })
     }
   }
@@ -358,6 +315,12 @@ class EditShop extends Component {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
     }
     // console.log('targetShopCategory===', targetShopCategory)
+
+    let shopCover = require('../../../assets/images/background_shop.png')
+    if(this.props.userOwnedShopInfo.coverUrl) {
+      shopCover = {uri: this.props.userOwnedShopInfo.coverUrl}
+    }
+
     return (
       <View style={styles.container}>
         <Header
@@ -368,7 +331,7 @@ class EditShop extends Component {
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
-          rightComponent={()=>this.rightComponent()}
+          rightType="none"
         />
         <View style={styles.body}>
 
@@ -377,6 +340,34 @@ class EditShop extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}
           >
+            <View style={{flex:1}}>
+              <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
+              <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(90,90,90,0.5)'}}>
+                <TouchableOpacity style={{flex:1}} onPress={()=>{}}>
+                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Image style={{width:44,height:44}} source={require("../../../assets/images/default_picture.png")}/>
+                    <Text style={{marginTop:15,fontSize:15,color:'#fff'}}>编辑封面</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{height:45}} onPress={()=>{}}>
+                  <View
+                    style={{
+                    flex:1,
+                    flexDirection:'row',
+                    justifyContent:'flex-end',
+                    alignItems:'center',
+                    backgroundColor:'rgba(245,245,245,0.49)'
+                  }}>
+                    <Text style={{fontSize:15,color:'#fff'}}>编辑相册</Text>
+                    <Icon
+                      name="ios-arrow-forward"
+                      style={{marginLeft:20,marginRight:15,color:'white',fontSize:17}}/>
+                  </View>
+                </TouchableOpacity>
+
+              </View>
+            </View>
             <View onLayout={this.onShopBaseInfoWrapLayout.bind(this)} style={styles.shopBaseInfoWrap}>
               <View style={styles.shopBaseInfoLeftWrap}>
                 <Text numberOfLines={1} style={styles.shopBaseInfoLeftTitle}>{this.props.userOwnedShopInfo.shopName}</Text>
@@ -386,38 +377,12 @@ class EditShop extends Component {
                 </View>
               </View>
               <View style={styles.shopBaseInfoRightWrap}>
-                <Image source={require("../../../assets/images/shop_certified.png")}/>
+                <TouchableOpacity onPress={()=>{}}>
+                  <Image source={require("../../../assets/images/shop_certified.png")}/>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.inputsWrap}>
-              <View style={styles.inputWrap}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>店铺类型</Text>
-                </View>
-                <View style={[styles.inputBox, styles.selectBox]}>
-                  {targetShopCategory.id
-                    ? <View style={styles.inputInnerBox}>
-                        <Text style={styles.inputInnerStyle}>{targetShopCategory.text}</Text>
-                      </View>
-                    : <SelectInput
-                        {...shopCategoryInput}
-                        show={this.state.selectShow}
-                        onPress={(e)=>this._onSelectPress(e)}
-                        style={{}}
-                        selectRef="SELECT"
-                        overlayPageX={0}
-                        overlayPageY={this.state.optionListPos}
-                        optionListHeight={240}
-                        optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                        defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
-                        defaultValue={targetShopCategory.id}
-                        onSelect={this._onSelectShopCategory.bind(this)}>
-                        {this.renderShopCategoryOptions()}
-                      </SelectInput>
-                  }
-                </View>
-              </View>
-
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺标签</Text>
@@ -431,18 +396,6 @@ class EditShop extends Component {
                 </View>
               </View>
 
-              <View style={[styles.inputWrap, styles.serviceTimeWrap]}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>营业时间</Text>
-                </View>
-                <View style={[styles.inputBox, styles.datePickerBox]}>
-                  <ServiceTimePicker 
-                    {...serviceTimeInput}
-                    initValue={this.props.userOwnedShopInfo.openTime}
-                  />
-                </View>
-              </View>
-
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>服务电话</Text>
@@ -452,6 +405,7 @@ class EditShop extends Component {
                     {...servicePhoneInput}
                     placeholder="点击输入电话号码"
                     maxLength={15}
+                    noFormatPhone={true}
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     clearBtnStyle={{top:6}}
@@ -460,11 +414,44 @@ class EditShop extends Component {
                 </View>
               </View>
 
-              <View style={[styles.inputWrap, styles.ourSpecialWrap]}>
+              <View style={styles.inputWrap}>
+                <View style={styles.inputLabelBox}>
+                  <Text style={styles.inputLabel}>备用电话</Text>
+                </View>
+                <View style={styles.inputBox}>
+                  <PhoneInput
+                    {...servicePhone2Input}
+                    placeholder="备用电话（选填）"
+                    maxLength={15}
+                    noFormatPhone={true}
+                    containerStyle={styles.containerStyle}
+                    inputStyle={styles.inputStyle}
+                    clearBtnStyle={{top:6}}
+                    initValue={this.props.userOwnedShopInfo.contactNumber}
+                  />
+                </View>
+              </View>
+
+              <View style={[styles.inputWrap, styles.serviceTimeWrap]}>
+                <View style={styles.inputLabelBox}>
+                  <Text style={styles.inputLabel}>营业时间</Text>
+                </View>
+                <View style={[styles.inputBox, styles.datePickerBox]}>
+                  <ServiceTimePicker
+                    {...serviceTimeInput}
+                    initValue={this.props.userOwnedShopInfo.openTime}
+                  />
+                </View>
+              </View>
+
+              <View style={[styles.inputWrap, styles.ourSpecialWrap, {borderBottomWidth:0}]}>
                 <View style={[styles.inputLabelBox, styles.ourSpecialInputLabelBox]}>
                   <Text style={styles.inputLabel}>本店特色</Text>
                 </View>
-                <View style={[styles.inputBox, styles.ourSpecialInputBox]}>
+              </View>
+
+              <View style={[styles.inputWrap, {padding:15,paddingTop:0,marginBottom:80}]}>
+                <View style={[styles.inputBox]}>
                   <TextAreaInput
                     {...ourSpecialInput}
                     placeholder={"描述店铺特色、优势「小于100字」"}
@@ -478,54 +465,26 @@ class EditShop extends Component {
 
             </View>
 
-            <View style={styles.coverWrap}>
-              <Text style={styles.albumTitle}>封面图片</Text>
-              <View style={styles.uploadAlbum}>
-                <ImageInput
-                  {...shopCoverInput}
-                  initValue={this.props.userOwnedShopInfo.coverUrl}
-                  containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
-                  addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
-                  choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
-                  addImage={require('../../../assets/images/default_upload.png')}
-                  closeModalAfterSelectedImg={true}
-                  imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
-                  shouldUploadImage={this.state.shouldUploadImage}
-                  uploadImageCallback={(leanImgUrl)=>{this.uploadImageCallback(leanImgUrl)}}
-                />
-              </View>
-            </View>
-
-            <View style={styles.albumWrap}>
-              <Text style={styles.albumTitle}>店铺相册</Text>
-              <View style={styles.uploadAlbum}>
-                <ImageGroupInput
-                  {...shopAlbumInput}
-                  number={9}
-                  imageLineCnt={3}
-                  initValue={this.props.userOwnedShopInfo.album}
-                  getImageList={(imgList)=>{this.localAlbumList = imgList}}
-                  shouldUploadImages={this.state.shouldUploadImages}
-                  uploadImagesCallback={(leanImgUrls)=>{this.uploadImagesCallback(leanImgUrls)}}
-                />
-              </View>
-            </View>
           </KeyboardAwareScrollView>
+
+          <View style={{position:'absolute',bottom:0,left:0,right:0,padding:15,backgroundColor:'white'}}>
+            <CommonButton
+              buttonStyle={{}}
+              onPress={()=>{this.onEditShopBtnPress()}}
+            />
+          </View>
 
           {this.state.shopTagsSelectShow &&
             <ShopTagsSelect
               show={this.state.shopTagsSelectShow}
               containerStyle={{top: this.state.shopTagsSelectTop}}
-              scrollViewStyle={{height:200}}
+              scrollViewStyle={{height:150}}
               onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
               tags={this.state.shopCategoryContainedTag}
               selectedTags={this.state.selectedShopTags}
               onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
             />
           }
-
-          <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
-
 
         </View>
       </View>
@@ -616,7 +575,6 @@ const styles = StyleSheet.create({
   inputLabelBox: {
     justifyContent: 'center',
     alignItems: 'flex-start'
-
   },
   inputLabel: {
     fontSize: em(17),
