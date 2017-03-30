@@ -23,7 +23,8 @@ import {createPingppPayment} from '../../action/paymentActions'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
 
-const LIFEPingPP = NativeModules.LIFEPingPP
+// const LIFEPingPP = NativeModules.LIFEPingPP
+const PingPPModule = NativeModules.PingPPModule
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -38,9 +39,11 @@ class Publish extends Component {
 
   submitSuccessCallback = (charge) => {
     Toast.show('Ping++ 获取 charge对象成功！')
-    console.log("get charge:", charge)
-    LIFEPingPP.setDebugMode(true, () => {console.log("LIFEPingPP.setDebugMode success!")})
-    LIFEPingPP.createPayment(charge, 'simorsLjyd', () => {console.log("LIFEPingPP.createPayment callback!")})
+    console.log("get charge:", JSON.stringify(charge))
+    // LIFEPingPP.setDebugMode(true, () => {console.log("LIFEPingPP.setDebugMode success!")})
+    // LIFEPingPP.createPayment(charge, 'simorsLjyd', () => {console.log("LIFEPingPP.createPayment callback!")})
+    PingPPModule.createPayment(JSON.stringify(charge), 'simorsLjyd', () => {console.log("PingPPModule.createPayment callback!")})
+
   }
 
   submitErrorCallback = (error) => {

@@ -21,36 +21,42 @@ import java.util.Arrays;
 import java.util.List;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
+import com.hlife.RCTPingPP.RCTPingPPPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    protected boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
+  private final ReactNativeHost mReactNativeHost;
+
+    {
+        mReactNativeHost = new ReactNativeHost(this) {
+            @Override
+            protected boolean getUseDeveloperSupport() {
+                return BuildConfig.DEBUG;
+            }
+
+            @Override
+            protected List<ReactPackage> getPackages() {
+                return Arrays.<ReactPackage>asList(
+                        new MainReactPackage(),
+                        new AvOsCloudPackage(),
+                        new PickerPackage(),
+                        new RNDeviceInfo(),
+                        new RCTCameraPackage(),
+                        new RNSendIntentPackage(),
+                        new ReactNativeRestartPackage(),
+                        new PickerViewPackage(),
+                        new WebViewBridgePackage(),
+                        new RNFSPackage(),
+                        new ImagePickerPackage(),
+                        new BaiduMapPackage(getApplicationContext()),
+                        new LinearGradientPackage(),
+                        new RCTPingPPPackage()
+                );
+            }
+        };
     }
 
     @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new AvOsCloudPackage(),
-            new PickerPackage(),
-            new RNDeviceInfo(),
-            new RCTCameraPackage(),
-            new RNSendIntentPackage(),
-            new ReactNativeRestartPackage(),
-            new PickerViewPackage(),
-            new WebViewBridgePackage(),
-            new RNFSPackage(),
-            new ImagePickerPackage(),
-            new BaiduMapPackage(getApplicationContext()),
-            new LinearGradientPackage()
-      );
-    }
-  };
-
-  @Override
   public ReactNativeHost getReactNativeHost() {
     return mReactNativeHost;
   }

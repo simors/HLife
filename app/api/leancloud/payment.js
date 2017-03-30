@@ -12,7 +12,7 @@ export function createPingppPayment(payload) {
     channel: payload.channel,
   }
 
-  return AV.Cloud.run('hLifeCreatePayment', params).then((chargeInfo) =>
+  return AV.Cloud.run('hLifeCreatePayment', params).then((chargeInfo) => {
     return chargeInfo
   }).catch((error) => {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
