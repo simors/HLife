@@ -39,8 +39,8 @@ class Publish extends Component {
   submitSuccessCallback = (charge) => {
     Toast.show('Ping++ 获取 charge对象成功！')
     console.log("get charge:", charge)
-    LIFEPingPP.setDebugMode(true, () => {console.log("setDebugMode success!")})
-    LIFEPingPP.createPayment(charge, 'simorsLjyd', () => {console.log("RCTPingPP.createPayment callback!")})
+    LIFEPingPP.setDebugMode(true, () => {console.log("LIFEPingPP.setDebugMode success!")})
+    LIFEPingPP.createPayment(charge, 'simorsLjyd', () => {console.log("LIFEPingPP.createPayment callback!")})
   }
 
   submitErrorCallback = (error) => {

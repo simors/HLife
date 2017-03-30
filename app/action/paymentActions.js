@@ -14,10 +14,10 @@ export function createPingppPayment(payload) {
       amount: payload.amount,
       channel: payload.channel,
     }
-    lcPayment.createPingppPayment(paymentPayload).then((charge) => {
-      console.log("lcPayment.createPingppPayment return", charge)
+    lcPayment.createPingppPayment(paymentPayload).then((result) => {
+      console.log("lcPayment.createPingppPayment return", result)
       if(payload.success) {
-        payload.success(charge)
+        payload.success(result.charge)
       }
       dispatch(createPaymentAction({charge: charge}))
     }).catch((error) => {

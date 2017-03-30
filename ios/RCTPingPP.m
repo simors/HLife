@@ -17,7 +17,6 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_METHOD(setDebugMode:(BOOL)enabled
                   :(RCTResponseSenderBlock)callback)
 {
-  NSLog(@"setDebugMode = %d", enabled);
   [Pingpp setDebugMode:enabled];
   callback(@[[NSNull null]]);
 }
@@ -43,7 +42,6 @@ RCT_EXPORT_METHOD(createPayment:(NSDictionary *)charge
                   :(NSString *)schema
                   :(RCTResponseSenderBlock)callback)
 {
-  NSLog(@"charge = %@", charge);
   [Pingpp createPayment:charge appURLScheme:schema withCompletion:^(NSString *result, PingppError *error) {
     callback(@[@(error.code), result]);
   }];
