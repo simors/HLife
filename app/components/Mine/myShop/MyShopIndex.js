@@ -409,7 +409,7 @@ class MyShopIndex extends Component {
       Actions.LOGIN()
       return
     }
-    
+    Actions.EDIT_SHOP()
   }
 
   activityManage() {
