@@ -24,6 +24,7 @@ import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import CommonButton from '../common/CommonButton'
 import THEME from '../../constants/themes/theme1'
+import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -51,6 +52,7 @@ class Login extends Component {
       formKey: commonForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
       success: (userInfo) => {
+        this.props.fetchUserOwnedShopInfo()
         Toast.show('登录成功!')
         if (this.props.goHome) {
           Actions.HOME()
@@ -111,6 +113,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
