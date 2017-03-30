@@ -36,6 +36,7 @@ import * as authSelector from '../../../selector/authSelector'
 import ImageGallery from '../../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
 import * as numberUtils from '../../../util/numberUtils'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -214,14 +215,6 @@ class MyShopIndex extends Component {
     return similarShopListView
   }
 
-  openCommentScene() {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-      return
-    }
-    Actions.PUBLISH_SHOP_COMMENT({id: this.props.id, shopOwnerId: this.props.shopDetail.owner.id})
-  }
-
   renderComments() {
     if(this.props.shopComments && this.props.shopComments.length) {
       let avatar = require('../../../assets/images/default_portrait.png')
@@ -272,7 +265,7 @@ class MyShopIndex extends Component {
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
             <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评（{this.props.shopCommentsTotalCount}）</Text>
+            <Text style={styles.titleTxt}>邻友点评·{this.props.shopCommentsTotalCount}</Text>
           </View>
 
           {commentsView}
@@ -293,20 +286,6 @@ class MyShopIndex extends Component {
     ImageGallery.show({
       images: this.props.shopDetail.album
     })
-  }
-
-  sendPrivateMessage() {
-    if (!this.props.isUserLogined) {
-      Actions.LOGIN()
-    } else {
-      let payload = {
-        name: this.props.shopDetail.owner.nickname,
-        members: [this.props.currentUser, this.props.shopDetail.owner.id],
-        conversationType: PERSONAL_CONVERSATION,
-        title: this.props.shopDetail.owner.nickname,
-      }
-      Actions.CHATROOM(payload)
-    }
   }
 
   render() {
@@ -391,20 +370,30 @@ class MyShopIndex extends Component {
                 </View>
               </View>
 
+              <View style={styles.followersWrap}>
+                <View style={{flexDirection:'row'}}>
+                  <View style={styles.titleLine}/>
+                  <Text style={styles.titleTxt}>粉丝·{this.props.shopFollowersTotalCount}</Text>
+                </View>
+                <View style={{flexDirection:'row'}}>
+                  {this.renderShopFollowers()}
+                </View>
+              </View>
+
               {this.renderComments()}
 
             </ScrollView>
           </View>
 
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.openCommentScene()}}>
+            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.editShop()}}>
               <View style={[styles.vItem]}>
                 <Image style={{}} source={require('../../../assets/images/shop_edite.png')}/>
                 <Text style={[styles.vItemTxt, styles.shopCommentInput]}>编辑店铺</Text>
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
+            <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.activityManage()}>
               <Image style={{}} source={require('../../../assets/images/activity_edite.png')}/>
               <Text style={[styles.contactedTxt]}>活动管理</Text>
             </TouchableOpacity>
@@ -412,6 +401,62 @@ class MyShopIndex extends Component {
 
         </View>
       </View>
+    )
+  }
+
+  editShop() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    
+  }
+
+  activityManage() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+  }
+
+  renderShopFollowers() {
+    let shopFollowers = this.props.shopFollowers
+    let shopFollowersTotalCount = this.props.shopFollowersTotalCount
+    // shopFollowersTotalCount = 5
+    // shopFollowers = [{},{},{},{},{}]
+    // console.log('shopFollowersTotalCount====', shopFollowersTotalCount)
+    // console.log('shopFollowers====', shopFollowers)
+    if(shopFollowersTotalCount) {
+      let shopFollowersView = shopFollowers.map((item, index)=>{
+        if(index > 2) {
+          return null
+        }
+        let source = require('../../../assets/images/default_portrait.png')
+        if(item.avatar) {
+          source = {uri: item.avatar}
+        }
+
+        return (
+          <Image
+            key={'shop_follower_' + index}
+            style={{width:20,height:20,marginRight:5}}
+            source={source}
+          />
+        )
+      })
+      return (
+        <TouchableOpacity onPress={()=>{}}>
+          <View style={{flexDirection:'row',alignItems:'center'}}>
+            {shopFollowersView}
+            <Icon
+              name="ios-arrow-forward"
+              style={{marginLeft:6,color:'#8f8e94',fontSize:17}}/>
+          </View>
+        </TouchableOpacity>
+      )
+    }
+    return (
+      <Text style={{color:'#8f8e94'}}>暂无粉丝,赶紧开始推广吧!</Text>
     )
   }
 }
@@ -476,6 +521,17 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
 
+  },
+  followersWrap: {
+    flex:1,
+    flexDirection:'row',
+    padding: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor:'white',
+    justifyContent: 'space-between',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
   shopHead: {
     flexDirection: 'row',
@@ -623,7 +679,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
   shopAnnouncementContainer: {
     flexDirection: 'row',
@@ -769,8 +827,7 @@ const styles = StyleSheet.create({
     color: "#8f8e94"
   },
   serviceInfoContainer: {
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: THEME.colors.lighterA,
+
   },
   openTime: {
     flexDirection: 'row',
@@ -779,7 +836,6 @@ const styles = StyleSheet.create({
   shopSpecial: {
     flexDirection: 'row',
     paddingTop: normalizeH(15),
-    paddingBottom: normalizeH(15)
   },
   serviceTxt: {
     fontSize: em(17),
