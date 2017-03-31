@@ -929,7 +929,7 @@ export function shopCertification(payload) {
     geo: payload.geo,
     geoCity: payload.geoCity,
     geoDistrict: payload.geoDistrict,
-
+    certification: payload.certification,
   }
   return AV.Cloud.run('hLifeShopCertificate', params).then((shopInfo) => {
     return shopInfo

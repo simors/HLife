@@ -13,6 +13,7 @@ import {closeMessageClient} from './messageAction'
 import * as AVUtils from '../util/AVUtils'
 import {calUserRegist, calRegistShoper} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
+import * as ImageUtil from '../util/ImageUtil'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -351,6 +352,18 @@ function handleShopCertification(payload, formData) {
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
     lcAuth.verifySmsCode(smsPayload).then(() => {
+      let localImgs = []
+      if(formData.certificationInput.text) {
+        localImgs.push(formData.certificationInput.text)
+        return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
+          return leanUris
+        }).catch((error) => {
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      }
+    }).then((leanUris) => {
       let shopInfo = {
         inviteCode: formData.invitationCodeInput.text,
         name: formData.nameInput.text,
@@ -360,8 +373,9 @@ function handleShopCertification(payload, formData) {
         geo: formData.shopGeoInput && formData.shopGeoInput.text,
         geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
         geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
+        certification: leanUris[0],
       }
-      lcShop.shopCertification(shopInfo).then((shop) => {
+      return lcShop.shopCertification(shopInfo).then((shop) => {
         dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
         if (payload.success) {
           payload.success(shop)
