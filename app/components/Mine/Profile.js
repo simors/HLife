@@ -69,11 +69,6 @@ const dtPicker = {
 class Profile extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      shouldUploadImage: false
-    }
-
   }
 
   componentWillUnmount() {
@@ -81,16 +76,6 @@ class Profile extends Component {
   }
 
   onButtonPress = () => {
-    this.setState({
-      shouldUploadImage: true
-    })
-  }
-
-  uploadImageCallback() {
-    this.updateProfile()
-  }
-
-  updateProfile() {
     this.props.submitFormData({
       formKey: profileForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT,
@@ -131,8 +116,6 @@ class Profile extends Component {
                 addImage={require('../../assets/images/default_portrait.png')}
                 choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(42), overflow: 'hidden', width: normalizeW(84), height: normalizeH(84), overlayColor: '#FFFFFF'}}
                 addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
-                shouldUploadImage={this.state.shouldUploadImage}
-                uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
               />
             </View>
             <View style={styles.zoneb}>

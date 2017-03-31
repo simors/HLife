@@ -230,8 +230,8 @@ class ShopRegister extends Component {
     return (
       <View style={styles.container}>
         <Header
-          leftType="text"
-          leftText="取消"
+          leftType="icon"
+          leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="注册店铺"
           headerContainerStyle={styles.headerContainerStyle}
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   },
   headerLeftStyle: {
     color: '#fff',
-    fontSize: 17
+    fontSize: 24
   },
   headerTitleStyle: {
     color: '#fff',

@@ -297,20 +297,31 @@ function handleResetPwdSmsCode(payload, formData) {
 
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
-    let profilePayload = {
-      id: payload.id,
-      nickname: formData.nicknameInput && formData.nicknameInput.text,
-      avatar: formData.avatarInput && formData.avatarInput.text,
-      phone: formData.phoneInput && formData.phoneInput.text,
-      birthday: formData.dtPicker && formData.dtPicker.text,
-      gender: formData.genderInput && formData.genderInput.text,
-    }
-    lcAuth.profileSubmit(profilePayload).then((profile) => {
-      if (payload.success) {
-        payload.success()
+    let localImgs = []
+    localImgs.push(formData.avatarInput.text)
+
+    return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
+      return leanUris
+    }).then((leanUris) => {
+      let profilePayload = {
+        id: payload.id,
+        nickname: formData.nicknameInput && formData.nicknameInput.text,
+        avatar: leanUris[0],
+        phone: formData.phoneInput && formData.phoneInput.text,
+        birthday: formData.dtPicker && formData.dtPicker.text,
+        gender: formData.genderInput && formData.genderInput.text,
       }
-      let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
-      dispatch(profileAction({...profile}))
+      return lcAuth.profileSubmit(profilePayload).then((profile) => {
+        if (payload.success) {
+          payload.success()
+        }
+        let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
+        dispatch(profileAction({...profile}))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
