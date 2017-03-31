@@ -610,3 +610,17 @@ export function fetchMyShopExpiredPromotionList(payload) {
   }
 }
 
+export function updateShopPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.updateShopPromotion(payload).then((result)=>{
+      if(payload.success){
+        payload.success(result)
+      }
+    }, (result)=>{
+      if(payload.error){
+        payload.error(result)
+      }
+    })
+  }
+}
+
