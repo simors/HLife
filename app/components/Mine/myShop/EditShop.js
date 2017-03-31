@@ -42,12 +42,12 @@ import ImageInput from '../../common/Input/ImageInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
 import {fetchShopTags, fetchUserOwnedShopInfo} from '../../../action/shopAction'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import * as Toast from '../../common/Toast'
 import * as authSelector from '../../../selector/authSelector'
 import {selectShopCategories} from '../../../selector/configSelector'
 import {selectShopTags, selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import {fetchShopCategories} from '../../../action/configAction'
 import Icon from 'react-native-vector-icons/Ionicons'
+import * as Toast from '../../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -182,43 +182,32 @@ class EditShop extends Component {
     }
   }
 
-  submitSuccessCallback(context) {
-    context.props.fetchUserOwnedShopInfo()
-    Toast.show('更新成功', {
-      duration: 1500,
-      onHidden: () =>{
-        if(context.props.popNum && context.props.popNum > 1) {
-          Actions.pop({
-            popNum: context.props.popNum
-          })
-        }else {
-          Actions.pop()
-        }
-      }
-    })
-  }
-
-  submitErrorCallback(error) {
-    Toast.show(error.message)
-  }
-
-  onEditShopBtnPress = () => {
-    this.submitShopInfo()
-  }
-
-  submitShopInfo() {
-    let targetShopCategory = {}
-    if(this.props.userOwnedShopInfo.targetShopCategory) {
-      targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
-    }
-  
+  onEditShopBtnPress() {
     this.props.submitFormData({
       formKey: commonForm,
       shopId: this.props.userOwnedShopInfo.id,
-      canModifyShopCategory: targetShopCategory.id ? false : true,
-      submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
-      success: ()=>{this.submitSuccessCallback(this)},
-      error: this.submitErrorCallback
+      album: this.localAlbumList,
+      coverUrl: this.localCoverImgUri,
+      submitType: INPUT_FORM_SUBMIT_TYPE.EDIT_SHOP_IFNO,
+      success: ()=>{
+        this.props.fetchUserOwnedShopInfo()
+        console.log('submitSuccessCallback++++++++++++++++=')
+        Toast.show('更新成功', {
+          duration: 1500,
+          onHidden: () =>{
+            if(this.props.popNum && this.props.popNum > 1) {
+              Actions.pop({
+                popNum: this.props.popNum
+              })
+            }else {
+              Actions.pop()
+            }
+          }
+        })
+      },
+      error: ()=>{
+        Toast.show(msg || '更新店铺失败')
+      }
     })
   }
 
@@ -298,12 +287,6 @@ class EditShop extends Component {
   }
 
   render() {
-
-    let targetShopCategory = {}
-    if(this.props.userOwnedShopInfo.targetShopCategory) {
-      targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
-    }
-    // console.log('targetShopCategory===', targetShopCategory)
 
     let shopCover = require('../../../assets/images/background_shop.png')
     if(this.props.userOwnedShopInfo.coverUrl) {
@@ -468,15 +451,15 @@ class EditShop extends Component {
           </View>
 
           {this.state.shopTagsSelectShow &&
-            <ShopTagsSelect
-              show={this.state.shopTagsSelectShow}
-              containerStyle={{top: this.state.shopTagsSelectTop}}
-              scrollViewStyle={{height:150}}
-              onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
-              tags={this.state.shopCategoryContainedTag}
-              selectedTags={this.state.selectedShopTags}
-              onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
-            />
+          <ShopTagsSelect
+            show={this.state.shopTagsSelectShow}
+            containerStyle={{top: this.state.shopTagsSelectTop}}
+            scrollViewStyle={{height:150}}
+            onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
+            tags={this.state.shopCategoryContainedTag}
+            selectedTags={this.state.selectedShopTags}
+            onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
+          />
           }
 
         </View>
