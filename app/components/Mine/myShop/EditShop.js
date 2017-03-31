@@ -116,6 +116,9 @@ class EditShop extends Component {
     this.shopBaseInfoWrapHeight = 64
     this.scrollOffSet = 0
 
+    this.localCoverImgUri = ''
+    this.localAlbumList = []
+
   }
 
   componentWillMount() {
@@ -149,7 +152,15 @@ class EditShop extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if(nextProps.localCoverImgUri) {
+      // console.log('nextProps.localCoverImgUri===>>>', nextProps.localCoverImgUri)
+      this.localCoverImgUri = nextProps.localCoverImgUri
+    }
 
+    if(nextProps.localAlbumList) {
+      // console.log('nextProps.localAlbumList===>>>', nextProps.localAlbumList)
+      this.localAlbumList = nextProps.localAlbumList
+    }
   }
 
   updateShopCategoryContainedTags(shopCategoryId) {
@@ -192,43 +203,9 @@ class EditShop extends Component {
   }
 
   onEditShopBtnPress = () => {
-    // console.log('fadsf')
-    //先上传封面
-    if(this.localCoverImgUri) { //用户拍照或从相册选择了照片
-      this.setState({
-        shouldUploadImage: true
-      })
-    }
-    //上传相册
-    else if(this.localAlbumList && this.localAlbumList.length) {
-      this.setState({
-        shouldUploadImages: true
-      })
-    }
-    //直接更新
-    else {
-      this.submitShopInfo()
-    }
-  }
-
-  uploadImageCallback() {
-    //上传封面成功,开始上传相册
-    if(this.localAlbumList && this.localAlbumList.length) {
-      this.setState({
-        shouldUploadImages: true
-      })
-    }
-    //直接更新
-    else {
-      this.submitShopInfo()
-    }
-  }
-
-  uploadImagesCallback() {
-    //上传相册成功
     this.submitShopInfo()
   }
-  
+
   submitShopInfo() {
     let targetShopCategory = {}
     if(this.props.userOwnedShopInfo.targetShopCategory) {
@@ -308,6 +285,18 @@ class EditShop extends Component {
     }
   }
 
+  editShopCover(){
+    Actions.UPDATE_SHOP_COVER_FOR_EDIT_SHOP({
+      localCoverImgUri: this.localCoverImgUri
+    })
+  }
+
+  editShopAlbum(){
+    Actions.UPDATE_SHOP_ALBUM_FOR_EDIT_SHOP({
+      localAlbumList: this.localAlbumList
+    })
+  }
+
   render() {
 
     let targetShopCategory = {}
@@ -319,6 +308,10 @@ class EditShop extends Component {
     let shopCover = require('../../../assets/images/background_shop.png')
     if(this.props.userOwnedShopInfo.coverUrl) {
       shopCover = {uri: this.props.userOwnedShopInfo.coverUrl}
+    }
+
+    if(this.localCoverImgUri) {
+      shopCover = {uri: this.localCoverImgUri}
     }
 
     return (
@@ -343,14 +336,14 @@ class EditShop extends Component {
             <View style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
               <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(90,90,90,0.5)'}}>
-                <TouchableOpacity style={{flex:1}} onPress={()=>{}}>
+                <TouchableOpacity style={{flex:1}} onPress={()=>{this.editShopCover()}}>
                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                    <Image style={{width:44,height:44}} source={require("../../../assets/images/default_picture.png")}/>
+                    <Image style={{width:44,height:44}} source={require("../../../assets/images/edite_pic_44_white.png")}/>
                     <Text style={{marginTop:15,fontSize:15,color:'#fff'}}>编辑封面</Text>
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={{height:45}} onPress={()=>{}}>
+                <TouchableOpacity style={{height:45}} onPress={()=>{this.editShopAlbum()}}>
                   <View
                     style={{
                     flex:1,
