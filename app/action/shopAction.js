@@ -556,7 +556,7 @@ export function fetchGuessYouLikeShopList(payload) {
 
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
-    lcShop.submitShshopDopPromotion(payload).then((result) => {
+    lcShop.submitShopPromotion(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
       dispatch(updateAction(result))
       dispatch(pointAction.calPublishActivity({userId: activeUserId(getState())}))    // 计算发布活动的积分
@@ -567,6 +567,22 @@ export function submitShopPromotion(payload) {
       if(payload.error){
         payload.error(error)
       }
+    })
+  }
+}
+
+export function fetchShopPromotionMaxNum(payload) {
+  return (dispatch, getState)=>{
+    lcShop.fetchShopPromotionMaxNum(payload).then((maxNum)=>{
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
+      dispatch(updateAction({
+        shopPromotionMaxNum: maxNum
+      }))
+    }, (maxNum)=>{
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
+      dispatch(updateAction({
+        shopPromotionMaxNum: maxNum
+      }))
     })
   }
 }

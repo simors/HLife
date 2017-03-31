@@ -938,4 +938,15 @@ export function shopCertification(payload) {
   })
 }
 
+export function fetchShopPromotionMaxNum(payload) {
+  return AV.Cloud.run('hLifeGetShopPromotionMaxNum', payload).then(result=>{
+    if(result && result.errcode == '0') {
+      return result.message
+    }
+    return 3
+  }, reason=>{
+    return 3
+  })
+}
+
 

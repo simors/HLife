@@ -417,6 +417,7 @@ class MyShopIndex extends Component {
       Actions.LOGIN()
       return
     }
+    Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
   }
 
   renderShopFollowers() {

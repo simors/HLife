@@ -506,5 +506,6 @@ export const Shop = Record({
   shopDetails: Map(),
   shopPromotionDetails: Map(),
   guessYouLikeShopList: List(),
-  userFollowedShops: Map()
+  userFollowedShops: Map(),
+  shopPromotionMaxNum: 3
 }, 'Shop')

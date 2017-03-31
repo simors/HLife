@@ -19,6 +19,10 @@ export function selectShopPromotionList(state) {
   return selectShop(state).shopPromotionList
 }
 
+export function selectShopPromotionMaxNum(state){
+  return selectShop(state).shopPromotionMaxNum
+}
+
 export function selectUserFollowedShopList(state, userId) {
   let userFollowedShopList = state.SHOP.getIn(['userFollowedShops', userId])
   if(userFollowedShopList && userFollowedShopList.size) {

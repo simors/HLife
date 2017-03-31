@@ -64,11 +64,20 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchUserFollowedShopListSuccess(state, action)
     case ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_PAGING_LIST_SUCCESS:
       return handleFetchUserFollowedShopPagingListSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS:
+      return handleFetchShopPromotionMaxNumSuccess(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
       return state
   }
+}
+
+function handleFetchShopPromotionMaxNumSuccess(state, action){
+  let payload = action.payload
+  let shopPromotionMaxNum = payload.shopPromotionMaxNum
+  state = state.set('shopPromotionMaxNum', shopPromotionMaxNum || 3)
+  return state
 }
 
 function handleFetchUserFollowedShopListSuccess(state, action) {
