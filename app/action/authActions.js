@@ -29,6 +29,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   SHOP_RE_CERTIFICATION: 'SHOP_RE_CERTIFICATION',
   HEALTH_PROFILE_SUBMIT: 'HEALTH_PROFILE_SUBMIT',
   COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
+  EDIT_SHOP_IFNO: 'EDIT_SHOP_IFNO',
   PROMOTER_RE_CERTIFICATION: 'PROMOTER_RE_CERTIFICATION',
   UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
   UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
@@ -81,6 +82,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
         dispatch(handleCompleteShopInfo(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.EDIT_SHOP_IFNO:
+        dispatch(handleEditShopInfo(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
         dispatch(handleShopCover(payload, formData))
@@ -540,6 +544,34 @@ function handleCompleteShopInfo(payload, formData) {
       // console.log('error=======', error.code)
       if (payload.error) {
         payload.error(error)
+      }
+    })
+  }
+}
+
+function handleEditShopInfo(payload, formData) {
+  return (dispatch, getState) => {
+
+    let newPayload = {
+      shopId: payload.shopId,
+      album: payload.album,
+      coverUrl: payload.coverUrl,
+      openTime: formData.serviceTimeInput.text,
+      contactNumber: formData.servicePhoneInput.text,
+      contactNumber2: formData.servicePhone2Input.text,
+      ourSpecial: formData.ourSpecialInput.text,
+      tagIds: formData.tagsInput.text,
+    }
+    lcAuth.submitEditShopInfo(newPayload).then((result) => {
+      // console.log('submitEditShopInfo.result====', result)
+      let _action = createAction(AuthTypes.EDIT_SHOP_INFO_SUCCESS)
+      dispatch(_action({}))
+      if (payload.success) {
+        payload.success()
+      }
+    }, (reason)=>{
+      if (payload.error) {
+        payload.error(reason || '更新店铺失败')
       }
     })
   }
