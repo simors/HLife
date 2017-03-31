@@ -21,7 +21,7 @@ import {Actions} from 'react-native-router-flux'
 import AV from 'leancloud-storage'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
@@ -32,6 +32,7 @@ import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
+import ImageInput from '../../common/Input/ImageInput'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -106,13 +107,19 @@ const invitationCodeInput = {
   initValue: {text: '-1'}
 }
 
+const certificationInput = {
+  formKey: commonForm,
+  stateKey: Symbol('certificationInput'),
+  type: "certificationInput",
+}
+
 class ShopRegister extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      shopName: '点击选择店铺名称',
-      shopAddress: '点击选择店铺地址',
+      shopName: '点击输入店铺名称',
+      shopAddress: '标注您的店铺地址',
       qRCode: ''
     }
 
@@ -234,6 +241,7 @@ class ShopRegister extends Component {
         <View style={styles.body}>
 
           <KeyboardAwareScrollView
+            contentContainerStyle={{backgroundColor: 'rgba(0, 0, 0, 0.05)'}}
             automaticallyAdjustContentInsets={false}
           >
             <View style={styles.subTitleWrap}>
@@ -263,7 +271,7 @@ class ShopRegister extends Component {
                     {...phoneInput}
                     placeholder="仅用于客服与你联系"
                     containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}/>
+                    inputStyle={[styles.inputStyle, {height: normalizeH(42)}]}/>
                 </View>
               </View>
 
@@ -274,24 +282,24 @@ class ShopRegister extends Component {
                 <View style={styles.inputBox}>
                   <SmsAuthCodeInput
                     {...smsAuthCodeInput}
-                    containerStyle={{height:normalizeH(44),}}
-                    textInput={{height:normalizeH(44),backgroundColor: '#fff',borderWidth:0,paddingLeft:0}}
-                    inputContainer={{paddingLeft: 17, paddingRight: 17}}
+                    containerStyle={{height:normalizeH(52),}}
+                    textInput={{height:normalizeH(52),backgroundColor: '#fff',borderWidth:0,paddingLeft:0}}
+                    inputContainer={{paddingLeft: 0, paddingRight: 17}}
                     placeholder = "填写手机验证码"
-                    codeTextContainer={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                    codeTextContainerDisable={{width: normalizeW(97), height: normalizeH(30), borderRadius: 5,}}
-                    codeText={{fontSize: em(12)}}
+                    codeTextContainer={{width: normalizeW(115), height: normalizeH(35)}}
+                    codeTextContainerDisable={{width: normalizeW(115), height: normalizeH(35)}}
+                    codeText={{fontSize: 15}}
                     getSmsAuCode={() => this.smsCode()}
                     reset={!this.props.phoneValid}
                   />
                 </View>
               </View>
 
-              <View style={[styles.inputWrap, {marginTop: normalizeH(15)}]}>
+              <View style={[styles.inputWrap, {marginTop: normalizeH(8)}]}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺名称</Text>
                 </View>
-                <View style={[styles.inputBox, styles.shopAddress]}>
+                <View style={[styles.inputBox, styles.shopAddress, {marginTop: normalizeH(5)}]}>
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -336,17 +344,36 @@ class ShopRegister extends Component {
                     initValue={this.state.qRCode}
                   />
                 </View>
-                <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(25), alignItems: 'flex-end'}} onPress= {()=> {Actions.QRCODEREADER()}}>
-                  <Image style={{width: 20, height: 20}}  source={require('../../../assets/images/扫一扫.png')} />
+                <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(62), alignItems: 'flex-end'}}
+                                  onPress= {()=> {Actions.QRCODEREADER()}}>
+                  <Image style={{width: 20, height: 20}}  source={require('../../../assets/images/scan_red.png')} />
                 </TouchableOpacity>
               </View>
-            </View>
 
-            <TouchableOpacity style={styles.getInvitationWrap} onPress= {()=> {
-              Actions.QRCODEREADER()
-            }}>
-              <Text style={{color:THEME.colors.green,fontSize: em(16)}}>如何获取邀请码？</Text>
-            </TouchableOpacity>
+              <View style={styles.inputWrap}>
+                <TouchableOpacity style={styles.getInvitationWrap} onPress= {()=> {
+                  Actions.QRCODEREADER()
+                }}>
+                  <Image style={{width: 12, height: 12}} source={require('../../../assets/images/question_code.png')}/>
+                  <Text style={{marginLeft: normalizeW(5), color:THEME.colors.green,fontSize: 12}}>如何获取邀请码？</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.inputWrap, {marginTop: normalizeH(8)}]}>
+                <View style={{flex: 1}}>
+                  <Text style={[styles.inputLabel, {marginTop: normalizeH(33)}]}>店铺认证</Text>
+                  <Text style={{marginTop: normalizeH(15), fontSize: 12, color: '#B2B2B2'}}>请上传有效营业执照</Text>
+                </View>
+                <ImageInput
+                  {...certificationInput}
+                  containerStyle={{width: 115, height: 90, marginTop: normalizeH(10), marginBottom: normalizeH(30), marginRight: normalizeW(15)}}
+                  addImageBtnStyle={{top:0, left: 0, width: 115, height: 90}}
+                  choosenImageStyle={{width: 115, height: 90}}
+                  addImage={require('../../../assets/images/upload_certificate.png')}
+                />
+              </View>
+
+            </View>
 
             <View style={styles.footer}>
               <CommonButton
@@ -355,8 +382,8 @@ class ShopRegister extends Component {
               />
 
               <TouchableOpacity style={styles.shopRegistProtocalWrap}>
-                <Text style={{color:THEME.colors.light,fontSize: em(12)}}>我已阅读</Text>
-                <Text style={{color:THEME.colors.green,fontSize: em(12)}}>《{appConfig.APP_NAME}店铺推广协议》</Text>
+                <Text style={{color:THEME.colors.light,fontSize: 12}}>我已阅读</Text>
+                <Text style={{color:THEME.colors.green,fontSize: 12}}>《{appConfig.APP_NAME}推广协议》</Text>
               </TouchableOpacity>
             </View>
 
@@ -387,19 +414,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopRegister)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)'
+    // backgroundColor: 'rgba(0, 0, 0, 0.05)'
+    backgroundColor: '#fff'
   },
   shopAddress: {
-    height: normalizeH(50),
+    height: normalizeH(42),
     justifyContent: 'center'
   },
   shopAddressContainer: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: normalizeW(17)
   },
   shopAddressTxt: {
-    fontSize: em(16),
+    fontSize: 16,
     color: '#B2B2B2'
   },
   headerContainerStyle: {
@@ -408,7 +435,7 @@ const styles = StyleSheet.create({
   },
   headerLeftStyle: {
     color: '#fff',
-    fontSize: em(17)
+    fontSize: 17
   },
   headerTitleStyle: {
     color: '#fff',
@@ -425,14 +452,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   subTitleWrap: {
-    height: normalizeH(44),
-    backgroundColor: "rgba(80, 226, 193, 0.23)",
+    height: normalizeH(32),
+    backgroundColor: "rgba(255, 157, 78, 0.20)",
     justifyContent: 'center',
     alignItems: 'center'
   },
   subTitle: {
-    fontSize: em(12),
-    color: THEME.colors.subDark
+    fontSize: 12,
+    color: '#FF7819'
   },
   inputsWrap: {
 
@@ -441,39 +468,44 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     borderBottomWidth: normalizeBorder(),
-    borderBottomColor: THEME.colors.gray,
-    paddingLeft: normalizeW(20),
+    borderBottomColor: '#F5F5F5',
+    borderStyle: 'solid',
+    paddingLeft: normalizeW(15),
   },
   inputLabelBox: {
-    width: normalizeW(86),
+    width: normalizeW(85),
     justifyContent: 'center',
-    alignItems: 'flex-start'
-    
+    alignItems: 'flex-start',
   },
   inputLabel: {
-    fontSize: em(17),
+    fontSize: 17,
     color: THEME.colors.inputLabel
   },
   inputBox: {
     flex: 1
   },
   containerStyle: {
-    paddingRight:0,
+    paddingRight: 0,
+    paddingLeft: 0,
   },
   inputStyle:{
-    height: normalizeH(44),
-    fontSize: em(17),
+    height: normalizeH(47),
+    fontSize: 17,
     backgroundColor: '#fff',
     borderWidth: 0,
     paddingLeft: 0,
   },
   getInvitationWrap: {
-    marginTop: normalizeH(15),
+    flex: 1,
+    flexDirection: 'row',
+    height: normalizeH(37),
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   footer: {
-    marginTop: normalizeH(120)
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: 0,
   },
   shopRegistProtocalWrap: {
     flexDirection: 'row',
