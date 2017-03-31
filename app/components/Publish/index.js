@@ -96,9 +96,6 @@ class Publish extends Component {
                 <Text style={styles.serviceText}>店铺活动</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {this.onPaymentTest()}}>
-              <Text style={{fontSize:24, color: 'red'}}>打赏</Text>
-            </TouchableOpacity>
             <View style={styles.closeView}>
               <TouchableOpacity style={styles.close} onPress={() => Actions.pop()}>
                 <Image
