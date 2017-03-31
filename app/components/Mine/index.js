@@ -44,9 +44,6 @@ class Mine extends Component {
         this.props.fetchUserPoint()
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
-        this.props.getCurrentPromoter({error: (err) => {
-          Toast.show(err)
-        }})
       }
     })
   }
@@ -66,6 +63,11 @@ class Mine extends Component {
 
   promoterManage() {
     if (this.props.identity && this.props.identity.includes(IDENTITY_PROMOTER)) {
+      InteractionManager.runAfterInteractions(()=>{
+        this.props.getCurrentPromoter({error: (err) => {
+          Toast.show(err)
+        }})
+      })
       Actions.PROMOTER_PERFORMANCE()
     } else {
       Actions.PROMOTER_AUTH()
