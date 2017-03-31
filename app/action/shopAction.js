@@ -10,6 +10,7 @@ import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
 import * as pointAction from '../action/pointActions'
+import * as ImageUtil from '../util/ImageUtil'
 
 export function clearShopList(payload) {
   return (dispatch, getState) => {
@@ -556,13 +557,57 @@ export function fetchGuessYouLikeShopList(payload) {
 
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
-    lcShop.submitShopPromotion(payload).then((result) => {
-      let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
-      dispatch(updateAction(result))
-      dispatch(pointAction.calPublishActivity({userId: activeUserId(getState())}))    // 计算发布活动的积分
-      if(payload.success){
-        payload.success(result)
+    let localImgs = []
+    if(payload.localCoverImgUri && payload.localRichTextImagesUrls)
+      localImgs = payload.localRichTextImagesUrls.concat(payload.localCoverImgUri)
+    ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
+      let coverUrl = undefined
+      let leanRichTextImagesUrls = []
+      if(payload.localCoverImgUri) {
+        coverUrl = leanUris.pop()
+        leanRichTextImagesUrls = leanUris
+        return {
+          coverUrl: coverUrl,
+          leanRichTextImagesUrls: leanRichTextImagesUrls,
+        }
+      } else {
+        return {
+          leanRichTextImagesUrls: leanUris,
+        }
       }
+    }).then((results) => {
+      let leanRichTextImagesUrls = results.leanRichTextImagesUrls.reverse()
+      if(payload.promotionDetailInfo.length > 1 && leanRichTextImagesUrls.length > 0) {
+        payload.promotionDetailInfo.forEach((value) => {
+          if(value.type == 'COMP_IMG' && value.url)
+            value.url = leanRichTextImagesUrls.pop()
+        })
+      }
+
+      let shopPromotionPayload = {
+        shopId: payload.shopId,
+        abstract: payload.abstract,
+        coverUrl: results.coverUrl,
+        originalPrice: payload.originalPrice,
+        promotingPrice: payload.promotingPrice,
+        title: payload.title,
+        type: payload.type,
+        typeDesc: payload.typeDesc,
+        typeId: payload.typeId,
+        promotionDetailInfo: payload.promotionDetailInfo,
+      }
+      lcShop.submitShopPromotion(shopPromotionPayload).then((result) => {
+        let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
+        dispatch(updateAction(result))
+        dispatch(pointAction.calPublishActivity({userId: activeUserId(getState())}))    // 计算发布活动的积分
+        if(payload.success){
+          payload.success(result)
+        }
+      }).catch((error) => {
+        if(payload.error){
+          payload.error(error)
+        }
+      })
     }).catch((error) => {
       if(payload.error){
         payload.error(error)

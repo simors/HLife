@@ -870,12 +870,12 @@ export function fetchGuessYouLikeShopList(payload) {
 }
 
 export function submitShopPromotion(payload) {
-  // console.log('submitShopPromotion===payload=', payload)
+
   let shopId = payload.shopId
   let typeId = payload.typeId + ""
   let type = payload.type
   let typeDesc = payload.typeDesc
-  let coverUrl = payload.coverUrl
+  let coverUrl = payload.localCoverImgUri
   let title = payload.title
   let promotingPrice = payload.promotingPrice
   let originalPrice = payload.originalPrice

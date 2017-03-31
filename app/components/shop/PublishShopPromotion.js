@@ -14,6 +14,7 @@ import {
   Image,
   Platform,
   InteractionManager,
+  Keyboard,
   TextInput
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -65,15 +66,13 @@ class PublishShopPromotion extends Component {
       DEFAULT: 'DEFAULT_TYPE_INPUT',
       CUSTOM: 'CUSTOM_TYPE_INPUT',
     }
-
+    this.localCoverImgUri = []
     this.localRichTextImagesUrls = []
-    this.leanRichTextImagesUrls = []
     this.isPublishing = false
 
     this.state = {
 
       rteFocused: false,    // 富文本获取到焦点
-      shouldUploadRichTextImg: false,
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
 
@@ -92,7 +91,6 @@ class PublishShopPromotion extends Component {
       typeDescPlaceholder: '例:店庆活动,全场七折起(15字内)',
       toolBarContentType: this.toolBarContentTypes.DEFAULT,
       toolBarInputFocusNum: 0,
-      shouldUploadCover: false,
       types: [
         {
           id: 0,
@@ -476,16 +474,15 @@ class PublishShopPromotion extends Component {
       return
     }
 
-    //先上传封面
-    this.setState({
-      shouldUploadCover: true
-    })
+    this.submitForm()
   }
 
   submitForm() {
     // console.log('submitForm.this.state=====', this.state)
     this.props.submitShopPromotion({
       ...this.state.form,
+      localCoverImgUri: this.localCoverImgUri,
+      localRichTextImagesUrls: this.localRichTextImagesUrls,
       success: ()=>{
         Toast.show('活动发布成功')
         Actions.SHOP_DETAIL({id: this.state.form.shopId})
@@ -498,45 +495,12 @@ class PublishShopPromotion extends Component {
     })
   }
 
-  uploadCoverCallback(leanImgUrl) {
-    // console.log('uploadCoverCallback.leanImgUrl===', leanImgUrl)
-    this.setState({
-      form: {
-        ...this.state.form,
-        coverUrl: leanImgUrl,
-      }
-    })
-    if(this.localRichTextImagesUrls && this.localRichTextImagesUrls.length) {
-      //封面上传成功,接着上传富文本组件内图片
-      this.setState({
-        shouldUploadRichTextImg: true
-      })
-    }else {
-      this.submitForm()
-    }
-  }
-
-  uploadRichTextImgComponentCallback(leanImgUrls) {
-    //富文本组件内图片上传成功
-    this.leanRichTextImagesUrls = leanImgUrls
-    let pos = 0
-    // console.log('uploadRichTextImgComponentCallback.leanRichTextImagesUrls==', this.leanRichTextImagesUrls)
-    this.state.form.promotionDetailInfo.forEach((item, index)=>{
-      if(item.type == 'COMP_IMG') {
-        item.url = leanImgUrls[pos++]
-      }
-    })
-    // console.log('uploadRichTextImgComponentCallback.this.state===', this.state)
-    this.submitForm()
-  }
-
   getRichTextImages(images) {
     this.localRichTextImagesUrls = images
     // console.log('getRichTextImages.localRichTextImagesUrls==', this.localRichTextImagesUrls)
   }
 
   renderArticleEditorToolbar(customStyle) {
-
     let defaultContainerStyle = {
       justifyContent:'center',
       alignItems: 'center',
@@ -544,9 +508,9 @@ class PublishShopPromotion extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => {this.publishPromotion()}}>
+      <TouchableOpacity onPress={() => {Keyboard.dismiss()}}>
         <View style={[defaultContainerStyle, customStyle]}>
-          <Text style={{fontSize: 15, color: 'white'}}>发布</Text>
+          <Text style={{fontSize: 15, color: 'white'}}>收起</Text>
         </View>
       </TouchableOpacity>
     )
@@ -565,10 +529,6 @@ class PublishShopPromotion extends Component {
           })
         }}
         getImages={(images) => this.getRichTextImages(images)}
-        shouldUploadImgComponent={this.state.shouldUploadRichTextImg}
-        uploadImgComponentCallback={(leanImgUrls)=> {
-          this.uploadRichTextImgComponentCallback(leanImgUrls)
-        }}
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
         onBlurEditor={() => {this.setState({headerHeight: 214})}}
         placeholder="描述一下你的商品及活动详情"
@@ -585,14 +545,10 @@ class PublishShopPromotion extends Component {
           leftPress={() => Actions.pop()}
           title="发布活动"
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
-          rightComponent={()=>{
-            return this.renderArticleEditorToolbar({
-              marginRight:10,
-              padding: 10,
-              paddingLeft: 20,
-              paddingRight: 20
-            })
-          }}
+          rightType="text"
+          rightText="发布"
+          rightPress={() => {this.publishPromotion()}}
+          rightStyle={{color: THEME.base.mainColor}}
         />
         <View style={styles.body}>
           <View style={[styles.contentContainer, {height: this.state.headerHeight, overflow:'hidden'}]}
@@ -621,8 +577,6 @@ class PublishShopPromotion extends Component {
                   addImage={require('../../assets/images/upload_pic.png')}
                   closeModalAfterSelectedImg={true}
                   imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
-                  shouldUploadImage={this.state.shouldUploadCover}
-                  uploadImageCallback={(leanCoverImgUrl)=>{this.uploadCoverCallback(leanCoverImgUrl)}}
                 />
               </View>
               <View style={styles.introBox}>
