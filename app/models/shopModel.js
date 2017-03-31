@@ -163,6 +163,8 @@ export const ShopPromotionRecord = Record({
   createdDate: undefined, //格式化后的创建时间
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
+  updatedDate: undefined,  //格式化后的更新时间
+  updatedDuration: undefined, //更新时长
   nextSkipNum: 0, //分页查询,跳过条数
 })
 
@@ -229,6 +231,8 @@ export class ShopPromotion extends ShopPromotionRecord {
       record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())
+      record.set('updatedDuration', numberUtils.getConversationTime(lcObj.updatedAt))
+      record.set('updatedDate', numberUtils.formatLeancloudTime(lcObj.updatedAt, 'YYYY-MM-DD HH:mm:SS'))
     })
   }
 }
