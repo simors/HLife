@@ -29,9 +29,9 @@ import * as Toast from '../../common/Toast'
 import ScoreShow from '../../common/ScoreShow'
 import ShopPromotionModule from '../../shop/ShopPromotionModule'
 
-import {fetchShopPromotionMaxNum, fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchSimilarShopList, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
+import {fetchMyShopExpiredPromotionList, fetchShopPromotionMaxNum, fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchSimilarShopList, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../../action/authActions'
-import {selectShopPromotionMaxNum, selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectSimilarShopList, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../../selector/shopSelector'
+import {selectMyShopExpiredPromotionList, selectShopPromotionMaxNum, selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectSimilarShopList, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
 import ImageGallery from '../../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
@@ -55,6 +55,7 @@ class MyShopPromotionManageIndex extends Component {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchUserOwnedShopInfo()
       this.props.fetchShopPromotionMaxNum()
+      this.refreshData()
     })
   }
 
@@ -108,7 +109,6 @@ class MyShopPromotionManageIndex extends Component {
               </TouchableOpacity>
             </View>
           </View>
-
         )
       })
     }
@@ -120,15 +120,54 @@ class MyShopPromotionManageIndex extends Component {
   }
 
   renderExpiredPromotionView() {
-    return null
+
+    let expiredPromotionView = <View style={styles.noExpiredDataContainer}>
+                                <Text style={{color:'#AAAAAA', fontSize:17}}>暂无过期活动</Text>
+                              </View>
+
+    if(this.props.myShopExpriredPromotionList && this.props.myShopExpriredPromotionList.length){
+      expiredPromotionView = this.props.myShopExpriredPromotionList.map((item, index)=>{
+        return (
+          <View key={'expired_promotion_' + index} style={{marginBottom:8}}>
+            <MyShopPromotionModule
+              shopPromotion={item}
+            />
+            <View style={{backgroundColor:'white',flexDirection:'row',padding:15,justifyContent:'flex-end',alignItems:'center'}}>
+              <TouchableOpacity onPress={()=>{}}>
+                <View style={styles.bntStyle}>
+                  <Text style={{fontSize:17}}>启用</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=>{}}>
+                <View style={styles.bntStyle}>
+                  <Text style={{fontSize:17}}>编辑</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=>{}}>
+                <View style={styles.bntStyle}>
+                  <Text style={{fontSize:17}}>删除</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )
+      })
+    }
+
+
+    return (
+      <View>
+        <View style={styles.expiredTitleBox}>
+          <Text style={{color:'#5a5a5a', fontSize:17}}>已过期活动</Text>
+        </View>
+        {expiredPromotionView}
+      </View>
+    )
   }
 
   refreshData() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchBanner({type: 0})
-      this.props.getAllTopicCategories({})
-      this.props.fetchShopCategories()
-    })
     this.loadMoreData(true)
   }
 
@@ -142,6 +181,7 @@ class MyShopPromotionManageIndex extends Component {
     let payload = {
       ...this.state.searchForm,
       isRefresh: !!isRefresh,
+      lastUpdatedAt: this.props.lastUpdatedAt,
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -159,6 +199,7 @@ class MyShopPromotionManageIndex extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
+    this.props.fetchMyShopExpiredPromotionList(payload)
   }
 
   render() {
@@ -214,6 +255,12 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const shopPromotionMaxNum = selectShopPromotionMaxNum(state)
   // console.log('shopPromotionMaxNum===>>>', shopPromotionMaxNum)
+  const myShopExpriredPromotionList = selectMyShopExpiredPromotionList(state)
+
+  let lastUpdatedAt = ''
+  if(myShopExpriredPromotionList && myShopExpriredPromotionList.length) {
+    lastUpdatedAt = myShopExpriredPromotionList[myShopExpriredPromotionList.length-1].updatedAt
+  }
 
   return {
     userOwnedShopInfo: userOwnedShopInfo,
@@ -221,12 +268,15 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: authSelector.activeUserId(state),
     shopPromotionMaxNum: shopPromotionMaxNum,
     ds: ds.cloneWithRows(dataArray),
+    myShopExpriredPromotionList: myShopExpriredPromotionList,
+    lastUpdatedAt: lastUpdatedAt
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
-  fetchShopPromotionMaxNum
+  fetchShopPromotionMaxNum,
+  fetchMyShopExpiredPromotionList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyShopPromotionManageIndex)
@@ -254,6 +304,18 @@ const styles = StyleSheet.create({
     paddingLeft:20,
     paddingRight:20,
     marginRight:10
+  },
+  expiredTitleBox: {
+    padding:15,
+    backgroundColor:'white',
+    borderBottomWidth:normalizeBorder(),
+    borderBottomColor:'#f5f5f5',
+  },
+  noExpiredDataContainer: {
+    backgroundColor:'white',
+    justifyContent:'center',
+    alignItems:'center',
+    padding: 20,
   }
 
 })

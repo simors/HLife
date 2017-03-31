@@ -16,7 +16,11 @@ export function selectLocalShopList(state) {
 }
 
 export function selectShopPromotionList(state) {
-  return selectShop(state).shopPromotionList
+  return selectShop(state).shopPromotionList || []
+}
+
+export function selectMyShopExpiredPromotionList(state){
+  return selectShop(state).myShopExpriredPromotionList || []
 }
 
 export function selectShopPromotionMaxNum(state){

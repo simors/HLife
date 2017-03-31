@@ -587,3 +587,26 @@ export function fetchShopPromotionMaxNum(payload) {
   }
 }
 
+export function fetchMyShopExpiredPromotionList(payload) {
+  return (dispatch ,getState) => {
+    lcShop.fetchMyShopExpiredPromotionList(payload).then((shopPromotionList) => {
+      let actionType = ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST_PAGING
+      }
+      if(payload.isRefresh || shopPromotionList.size) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({shopPromotionList: shopPromotionList}))
+      }
+      
+      if(payload.success){
+        payload.success(shopPromotionList.isEmpty())
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
