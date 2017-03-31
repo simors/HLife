@@ -964,9 +964,9 @@ export function fetchMyShopExpiredPromotionList(payload) {
   query.equalTo('status', "0")
   query.addDescending('updatedAt')
 
-  console.log('fetchMyShopExpiredPromotionList.query==*******===', query)
+  // console.log('fetchMyShopExpiredPromotionList.query==*******===', query)
   return query.find().then(function (results) {
-    console.log('fetchMyShopExpiredPromotionList.results===*******===', results)
+    // console.log('fetchMyShopExpiredPromotionList.results===*******===', results)
     let shopPromotionList = []
     results.forEach((result) => {
       shopPromotionList.push(ShopPromotion.fromLeancloudObject(result))
@@ -976,6 +976,77 @@ export function fetchMyShopExpiredPromotionList(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
+}
+
+export function updateShopPromotion(payload) {
+  // console.log('updateShopPromotion===payload=', payload)
+  let updateType = payload.updateType //1-改变状态; 2-删除; 3-更新信息
+  let shopPromotionId = payload.shopPromotionId
+  let shopPromotion = AV.Object.createWithoutData('ShopPromotion', shopPromotionId)
+
+  if(1 == updateType || 2 == updateType) {
+    let status = "2"
+    if(1 == updateType) {
+      status = payload.status + ""
+    }
+
+    let containedPromotions = payload.containedPromotions
+    let containedPromotionObjs = []
+    containedPromotions.forEach((item)=>{
+      let obj = AV.Object.createWithoutData('ShopPromotion', item.id)
+      containedPromotionObjs.push(obj)
+    })
+    let shopId = payload.shopId
+
+    let shop = AV.Object.createWithoutData('Shop', shopId)
+    shopPromotion.set('status', status)
+
+    return shopPromotion.save().then((results) => {
+      shop.set('containedPromotions', containedPromotionObjs)
+      // console.log('shop/////>>>>>>>>>>', shop)
+      return shop.save().then((rep)=>{
+        // console.log('rep---->>>>', rep)
+        return true
+      }, (error)=>{
+        // console.log('error.........>>>>', error)
+        return false
+      })
+    }, function (err) {
+      // console.log('updateShopPromotion===err=', err)
+      return false
+    })
+  }else{
+    let typeId = payload.typeId + ""
+    let type = payload.type
+    let typeDesc = payload.typeDesc
+    let coverUrl = payload.coverUrl
+    let title = payload.title
+    let promotingPrice = payload.promotingPrice
+    let originalPrice = payload.originalPrice
+    let abstract = payload.abstract
+    let promotionDetailInfo = payload.promotionDetailInfo
+    if(Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
+      promotionDetailInfo = JSON.stringify(promotionDetailInfo)
+    }
+
+    shopPromotion.set('targetShop', shop)
+    shopPromotion.set('typeId', typeId)
+    shopPromotion.set('type', type)
+    shopPromotion.set('typeDesc', typeDesc)
+    shopPromotion.set('coverUrl', coverUrl)
+    shopPromotion.set('title', title)
+    shopPromotion.set('promotingPrice', promotingPrice)
+    shopPromotion.set('originalPrice', originalPrice)
+    shopPromotion.set('abstract', abstract)
+    shopPromotion.set('promotionDetailInfo', promotionDetailInfo)
+
+    return shopPromotion.save().then((results) => {
+      return true
+    }, function (err) {
+      return false
+    })
+  }
 
 }
 

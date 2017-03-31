@@ -29,7 +29,7 @@ import * as Toast from '../../common/Toast'
 import ScoreShow from '../../common/ScoreShow'
 import ShopPromotionModule from '../../shop/ShopPromotionModule'
 
-import {fetchMyShopExpiredPromotionList, fetchShopPromotionMaxNum, fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchSimilarShopList, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
+import {updateShopPromotion, fetchMyShopExpiredPromotionList, fetchShopPromotionMaxNum, fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchSimilarShopList, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../../action/authActions'
 import {selectMyShopExpiredPromotionList, selectShopPromotionMaxNum, selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectSimilarShopList, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
@@ -39,6 +39,7 @@ import * as numberUtils from '../../../util/numberUtils'
 import Icon from 'react-native-vector-icons/Ionicons'
 import CommonListView from '../../common/CommonListView'
 import MyShopPromotionModule from './MyShopPromotionModule'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -49,6 +50,9 @@ class MyShopPromotionManageIndex extends Component {
     this.state = {
 
     }
+
+    this.selectedShopPromotion = null
+    this.selectedShopPromotionIndex = -1
   }
 
   componentWillMount() {
@@ -90,19 +94,19 @@ class MyShopPromotionManageIndex extends Component {
               shopPromotion={item}
             />
             <View style={{backgroundColor:'white',flexDirection:'row',padding:15,justifyContent:'flex-end',alignItems:'center'}}>
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{this.closeShopPromotion(item)}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>关闭</Text>
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{Actions.EDIT_SHOP_PROMOTION({shopPromotion:item})}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>编辑</Text>
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{this.onMoreClick(item, index)}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>···</Text>
                 </View>
@@ -119,6 +123,108 @@ class MyShopPromotionManageIndex extends Component {
     )
   }
 
+  filterShopPromotions(shopPromotion) {
+
+    let containedPromotions = this.props.userOwnedShopInfo && this.props.userOwnedShopInfo.containedPromotions
+    if(containedPromotions && containedPromotions.length) {
+
+      let filterFunc = (item)=>{
+        if(item.id == shopPromotion.id) {
+          return false
+        }
+        return true
+      }
+
+      let filteredPromotions = containedPromotions.filter(filterFunc)
+      // console.log('filteredPromotions=====', filteredPromotions)
+      return filteredPromotions
+    }
+    return []
+  }
+
+  addShopPromotions(shopPromotion) {
+    let containedPromotions = this.props.userOwnedShopInfo && this.props.userOwnedShopInfo.containedPromotions
+    if(containedPromotions && containedPromotions.length) {
+      return [].concat(shopPromotion, containedPromotions)
+    }
+    return shopPromotion
+  }
+
+  closeShopPromotion(shopPromotion) {
+    let filteredPromotions = this.filterShopPromotions(shopPromotion)
+    this.props.updateShopPromotion({
+      updateType: "1",
+      shopPromotionId: shopPromotion.id,
+      status: '0',
+      shopId: this.props.userOwnedShopInfo.id,
+      containedPromotions: filteredPromotions,
+      success: ()=>{
+        this.props.fetchUserOwnedShopInfo()
+        this.refreshData()
+        Toast.show('关闭活动成功')
+      },
+      error: ()=>{
+        Toast.show('关闭活动失败')
+      }
+    })
+  }
+
+  isExceededShopPromotionMaxNum(){
+    let shopPromotionMaxNum = this.props.shopPromotionMaxNum
+    let containedPromotionsNum = 0
+    if(this.props.userOwnedShopInfo.containedPromotions) {
+      containedPromotionsNum = this.props.userOwnedShopInfo.containedPromotions.length
+    }
+    return containedPromotionsNum >= shopPromotionMaxNum
+  }
+
+  openShopPromotion(shopPromotion) {
+    if(this.isExceededShopPromotionMaxNum()) {
+      Toast.show('您的店铺活动已达最大数量')
+      return
+    }
+    let addedShopPromotions = this.addShopPromotions(shopPromotion)
+    this.props.updateShopPromotion({
+      updateType: "1",
+      shopPromotionId: shopPromotion.id,
+      status: '1',
+      shopId: this.props.userOwnedShopInfo.id,
+      containedPromotions: addedShopPromotions,
+      success: ()=>{
+        this.props.fetchUserOwnedShopInfo()
+        this.refreshData()
+        Toast.show('启用活动成功')
+      },
+      error: ()=>{
+        Toast.show('启用活动失败')
+      }
+    })
+  }
+
+  deleteShopPromotion(shopPromotion) {
+    let filteredPromotions = this.filterShopPromotions(shopPromotion)
+    this.props.updateShopPromotion({
+      updateType: "2",
+      shopPromotionId: shopPromotion.id,
+      shopId: this.props.userOwnedShopInfo.id,
+      containedPromotions: filteredPromotions,
+      success: ()=>{
+        this.props.fetchUserOwnedShopInfo()
+        this.refreshData()
+        Toast.show('删除活动成功')
+      },
+      error: ()=>{
+        Toast.show('删除活动失败')
+      }
+    })
+  }
+
+  onMoreClick(item, index){
+    this.selectedShopPromotion = item
+    this.selectedShopPromotionIndex = index
+    this.ActionSheet.show()
+  }
+
   renderExpiredPromotionView() {
 
     let expiredPromotionView = <View style={styles.noExpiredDataContainer}>
@@ -133,19 +239,19 @@ class MyShopPromotionManageIndex extends Component {
               shopPromotion={item}
             />
             <View style={{backgroundColor:'white',flexDirection:'row',padding:15,justifyContent:'flex-end',alignItems:'center'}}>
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{this.openShopPromotion(item)}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>启用</Text>
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{Actions.EDIT_SHOP_PROMOTION({shopPromotion:item})}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>编辑</Text>
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{this.deleteShopPromotion(item)}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>删除</Text>
                 </View>
@@ -227,11 +333,28 @@ class MyShopPromotionManageIndex extends Component {
               ref={(listView) => this.listView = listView}
             />
           </View>
+
+          <ActionSheet
+            ref={(o) => this.ActionSheet = o}
+            title="活动管理"
+            options={['分享', '删除','取消']}
+            cancelButtonIndex={2}
+            onPress={this._handleActionSheetPress.bind(this)}
+          />
         </View>
       </View>
     )
   }
 
+  _handleActionSheetPress(index) {
+    console.log('this.selectedShopPromotionIndex====', this.selectedShopPromotionIndex)
+    console.log('this.selectedShopPromotion====', this.selectedShopPromotion)
+    if(0 == index) { //分享
+
+    }else if(1 == index) { //删除
+      this.deleteShopPromotion(this.selectedShopPromotion)
+    }
+  }
 
 }
 
@@ -276,7 +399,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   fetchShopPromotionMaxNum,
-  fetchMyShopExpiredPromotionList
+  fetchMyShopExpiredPromotionList,
+  updateShopPromotion
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyShopPromotionManageIndex)
@@ -316,6 +440,8 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
     padding: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
   }
 
 })
