@@ -938,4 +938,45 @@ export function shopCertification(payload) {
   })
 }
 
+export function fetchShopPromotionMaxNum(payload) {
+  return AV.Cloud.run('hLifeGetShopPromotionMaxNum', payload).then(result=>{
+    if(result && result.errcode == '0') {
+      return result.message
+    }
+    return 3
+  }, reason=>{
+    return 3
+  })
+}
+
+export function fetchMyShopExpiredPromotionList(payload) {
+  let isRefresh = payload.isRefresh
+  let lastUpdatedAt = payload.lastUpdatedAt
+  let query = new AV.Query('ShopPromotion')
+
+  query.include(['targetShop', 'targetShop.owner'])
+  query.limit(5) // 最多返回 5 条结果
+
+  if(!isRefresh) { //分页查询
+    query.lessThan('updatedAt', lastUpdatedAt)
+  }
+
+  query.equalTo('status', "0")
+  query.addDescending('updatedAt')
+
+  console.log('fetchMyShopExpiredPromotionList.query==*******===', query)
+  return query.find().then(function (results) {
+    console.log('fetchMyShopExpiredPromotionList.results===*******===', results)
+    let shopPromotionList = []
+    results.forEach((result) => {
+      shopPromotionList.push(ShopPromotion.fromLeancloudObject(result))
+    })
+    return new List(shopPromotionList)
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+
+}
+
 

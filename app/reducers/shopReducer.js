@@ -20,6 +20,10 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdateShopPromotionList(state, action)
     case ShopActionTypes.UPDATE_PAGING_SHOP_PROMOTION_LIST:
       return handleUpdatePagingShoPromotionpList(state, action)
+    case ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST:
+      return handleUpdateMyShopExpriredPromotionList(state, action)
+    case ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST_PAGING:
+      return handleUpdateMyShopExpriredPromotionListPaging(state, action)
     case ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE:
       return handleFetchShopListArrivedLastPage(state, action)
     case ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST:
@@ -64,11 +68,34 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchUserFollowedShopListSuccess(state, action)
     case ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_PAGING_LIST_SUCCESS:
       return handleFetchUserFollowedShopPagingListSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS:
+      return handleFetchShopPromotionMaxNumSuccess(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
       return state
   }
+}
+
+function handleUpdateMyShopExpriredPromotionList(state, action) {
+  let payload = action.payload
+  state = state.set('myShopExpriredPromotionList',  payload.shopPromotionList)
+  return state
+}
+
+function handleUpdateMyShopExpriredPromotionListPaging(state, action) {
+  let payload = action.payload
+  let shopPromotionList = state.get('myShopExpriredPromotionList')
+  shopPromotionList = shopPromotionList.concat(payload.shopPromotionList)
+  state = state.set('myShopExpriredPromotionList',  shopPromotionList)
+  return state
+}
+
+function handleFetchShopPromotionMaxNumSuccess(state, action){
+  let payload = action.payload
+  let shopPromotionMaxNum = payload.shopPromotionMaxNum
+  state = state.set('shopPromotionMaxNum', shopPromotionMaxNum || 3)
+  return state
 }
 
 function handleFetchUserFollowedShopListSuccess(state, action) {

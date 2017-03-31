@@ -145,6 +145,8 @@ export function batchUploadImgs(uris) {
     Loading.hide(loading)
     isUploading = false
     return leanImgUrls
+  }, (error)=>{
+    return error
   })
 }
 
@@ -186,5 +188,84 @@ export function uploadImg(source) {
       isUploading = false
       Loading.hide(loading)
     }
+    if(typeof source.error == 'function') {
+      source.error(error)
+    }
   })
+}
+
+export function uploadImg2(uri, hideLoading) {
+  return new Promise((resolve, reject)=>{
+    let fileUri = ''
+    if (Platform.OS === 'ios') {
+      fileUri = fileUri.concat('file://')
+    }
+    fileUri = fileUri.concat(uri)
+
+    let fileName = uri.split('/').pop()
+    let uploadPayload = {
+      fileUri: fileUri,
+      fileName: fileName
+    }
+
+    let loading = null
+    if(!hideLoading) {
+      if(isUploading) {
+        return
+      }
+      isUploading = true
+      loading = Loading.show()
+    }
+
+    // console.log('uploadImg2.uploadPayload===', uploadPayload)
+    uploadFile(uploadPayload).then((saved)=>{
+      if(!hideLoading) {
+        isUploading = false
+        Loading.hide(loading)
+      }
+      // console.log('uploadImg2.saved===', saved.savedPos)
+      let leanImgUrl = saved.savedPos
+      resolve(leanImgUrl)
+    }, (reason)=>{
+      reject()
+    })
+  }).catch((error)=>{
+    reject()
+  })
+}
+
+export async function uploadImg3(uri, hideLoading) {
+  try{
+    let fileUri = ''
+    if (Platform.OS === 'ios') {
+      fileUri = fileUri.concat('file://')
+    }
+    fileUri = fileUri.concat(uri)
+
+    let fileName = uri.split('/').pop()
+    let uploadPayload = {
+      fileUri: fileUri,
+      fileName: fileName
+    }
+
+    let loading = null
+    if(!hideLoading) {
+      if(isUploading) {
+        return
+      }
+      isUploading = true
+      loading = Loading.show()
+    }
+    let saved = await uploadFile(uploadPayload)
+
+    if(!hideLoading) {
+      isUploading = false
+      Loading.hide(loading)
+    }
+    // console.log('uploadFile.saved===', saved.savedPos)
+    let leanImgUrl = saved.savedPos
+    return leanImgUrl
+  }catch(error){
+    return false
+  }
 }
