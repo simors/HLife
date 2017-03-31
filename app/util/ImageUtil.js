@@ -128,7 +128,9 @@ export function batchUploadImgs(uris) {
     uploadImgs.push(file)
   })
   if(isUploading) {
-    return
+    return new Promise((resolve) => {
+      resolve()
+    })
   }
   isUploading = true
   let loading = Loading.show()
@@ -141,6 +143,7 @@ export function batchUploadImgs(uris) {
       leanImgUrls.push(leanUrl.savedPos)
     })
     Loading.hide(loading)
+    isUploading = false
     return leanImgUrls
   })
 }
