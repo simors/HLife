@@ -20,7 +20,6 @@ import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import DoctorCertification from '../components/Mine/DoctorCertification'
 import DoctorInfo from '../components/Mine/DoctorInfo'
-import DoctorRevise from '../components/Mine/DoctorRevise'
 import DoctorChecking from '../components/Mine/DoctorChecking'
 import Profile from '../components/Mine/Profile'
 import PersonalHomePage from '../components/Mine/PersonalHomePage'
@@ -121,7 +120,6 @@ export const scenes = Actions.create(
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification} />
       <Scene key="DCTOR_INFO" component={DoctorInfo} />
-      <Scene key="DCTOR_REVISE" component={DoctorRevise} />
       <Scene key="DCTOR_CHECKING" component={DoctorChecking}/>
       <Scene key="PROFILE" component={Profile} />
       <Scene key="PERSONAL_HOMEPAGE" component={PersonalHomePage}/>
