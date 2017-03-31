@@ -120,7 +120,11 @@ class  PhoneInput extends Component {
           placeholderTextColor={this.props.placeholderTextColor}
           maxLength={this.props.maxLength}
           underlineColorAndroid="transparent"
-          value={formatPhone(this.props.data)}
+          value={
+            this.props.noFormatPhone
+              ? this.props.data
+              : formatPhone(this.props.data)
+          }
           keyboardType={this.props.keyboardType}
           containerStyle={[styles.container, this.props.containerStyle && this.props.containerStyle]}
           inputStyle={[styles.input, this.props.inputStyle && this.props.inputStyle]}

@@ -53,7 +53,7 @@ class Mine extends Component {
       Actions.LOGIN()
     }else {
       if(this.props.userOwnedShopInfo.id) {
-        Actions.SHOP_MANAGE_INDEX()
+        Actions.MY_SHOP_INDEX()
       }else {
         Actions.SHOPR_EGISTER()
       }

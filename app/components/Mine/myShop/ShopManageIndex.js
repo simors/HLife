@@ -34,7 +34,7 @@ import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount
 import {fetchUserFollowees} from '../../../action/authActions'
 import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectLatestShopAnnouncemment, selectShopComments, selectShopCommentsTotalCount, selectSimilarShopList} from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
-import Comment from '../../common/Comment'
+import ImageGallery from '../../common/ImageGallery'
 import FollowUser from '../../common/FollowUser'
 import ActionSheet from 'react-native-actionsheet'
 

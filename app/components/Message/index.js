@@ -178,7 +178,7 @@ class MessageBox extends Component {
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={styles.noticeIconView}>
               <Image style={styles.noticeIcon} source={require('../../assets/images/System_notice.png')}></Image>
-              {!this.props.newestSystemNotice.hasReaded &&
+              {!this.props.newestSystemNotice.hasReaded && this.props.newestSystemNotice.message_title &&
                 <View style={styles.noticeTip}></View>
               }
             </View>
@@ -221,7 +221,10 @@ class MessageBox extends Component {
 
   gotoSystemNoticeList() {
     // console.log('gotoSystemNoticeList', this.props.newestSystemNotice)
-    this.props.updateSystemNoticeAsMarkReaded(this.props.newestSystemNotice)
+    if(this.props.newestSystemNotice.message_title) {
+      this.props.updateSystemNoticeAsMarkReaded(this.props.newestSystemNotice)
+    }
+    Actions.SYSTEM_NOTIFY()
   }
 }
 

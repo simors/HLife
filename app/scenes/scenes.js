@@ -29,10 +29,14 @@ import ArticleList from '../components/Articles/ArticleList'
 import Article from '../components/Articles/Article'
 import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
+import MyShopIndex from '../components/Mine/myShop/MyShopIndex'
+import EditShop from '../components/Mine/myShop/EditShop'
 import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
 import UpdateShopCover from '../components/Mine/myShop/UpdateShopCover'
+import UpdateShopCover4EditShop from '../components/Mine/myShop/UpdateShopCover4EditShop'
 import ShopReCertification from '../components/Mine/myShop/ShopReCertification'
 import UpdateShopAlbum from '../components/Mine/myShop/UpdateShopAlbum'
+import UpdateShopAlbum4EditShop from '../components/Mine/myShop/UpdateShopAlbum4EditShop'
 import ShopAnnouncementsManage from '../components/Mine/myShop/ShopAnnouncementsManage'
 import PublishShopAnnouncement from '../components/Mine/myShop/PublishShopAnnouncement'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
@@ -74,6 +78,7 @@ import MyFans from '../components/Mine/myFans'
 import LikeUserList from '../components/Find/LikeUserList'
 import ShopNotifyView from '../components/Message/ShopNotifyView'
 import TopicNotifyView from '../components/Message/TopicNotifyView'
+import SystemNotifyView from '../components/Message/SystemNotifyView'
 import BaiduMapView from '../components/common/BaiduMapView'
 import ShopAddressSelect from '../components/Mine/myShop/ShopAddressSelect'
 import CommentDoctor from '../components/Mine/Doctor/CommentDoctor'
@@ -125,8 +130,12 @@ export const scenes = Actions.create(
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
       <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
+      <Scene key="MY_SHOP_INDEX" component={MyShopIndex}/>
+      <Scene key="EDIT_SHOP" component={EditShop}/>
       <Scene key="UPDATE_SHOP_COVER" component={UpdateShopCover}/>
+      <Scene key="UPDATE_SHOP_COVER_FOR_EDIT_SHOP" component={UpdateShopCover4EditShop}/>
       <Scene key="UPDATE_SHOP_ALBUM" component={UpdateShopAlbum}/>
+      <Scene key="UPDATE_SHOP_ALBUM_FOR_EDIT_SHOP" component={UpdateShopAlbum4EditShop}/>
       <Scene key="SHOP_RE_CERTIFICATION" component={ShopReCertification}/>
       <Scene key="SHOP_ANNOUNCEMENTS_MANAGE" component={ShopAnnouncementsManage}/>
       <Scene key="PUBLISH_SHOP_ANNOUNCEMENT" component={PublishShopAnnouncement}/>
@@ -167,6 +176,7 @@ export const scenes = Actions.create(
       <Scene key="MYFANS" component={MyFans} />
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
       <Scene key="TOPIC_NOTIFY" component={TopicNotifyView} />
+      <Scene key="SYSTEM_NOTIFY" component={SystemNotifyView} />
       <Scene key="BAI_DU_MAP_VIEW" component={BaiduMapView} />
       <Scene key="SHOP_ADDRESS_SELECT" component={ShopAddressSelect} />
       <Scene key="COMMENT_DOCTOR" component={CommentDoctor}/>
