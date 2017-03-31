@@ -18,9 +18,6 @@ import PickerTest from '../components/common/Input/PickerTest'
 import CommonWebView from '../components/common/CommonWebView'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
-import DoctorCertification from '../components/Mine/DoctorCertification'
-import DoctorInfo from '../components/Mine/DoctorInfo'
-import DoctorChecking from '../components/Mine/DoctorChecking'
 import Profile from '../components/Mine/Profile'
 import PersonalHomePage from '../components/Mine/PersonalHomePage'
 import ShopRegister from '../components/Mine/myShop/ShopRegister'
@@ -58,7 +55,6 @@ import AddHealthProfile from '../components/Home/Inquiry/AddHealthProfile'
 import SelectDoctor from '../components/Home/Inquiry/SelectDoctor'
 import QA from '../components/Home/Inquiry/QA'
 import QAList from '../components/Home/Inquiry/QAList'
-import DoctorIntro from '../components/Mine/DoctorIntro'
 import DoctorSpec from '../components/Mine/DoctorSpec'
 import SelectHealthProfile from '../components/Home/Inquiry/SelectHealthProfile'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
@@ -118,9 +114,6 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_VIEW_TEST" component={PublishViewTest} />
       <Scene key="PICKER_TEST" component={PickerTest} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
-      <Scene key="DCTOR_CERTIFICATION" component={DoctorCertification} />
-      <Scene key="DCTOR_INFO" component={DoctorInfo} />
-      <Scene key="DCTOR_CHECKING" component={DoctorChecking}/>
       <Scene key="PROFILE" component={Profile} />
       <Scene key="PERSONAL_HOMEPAGE" component={PersonalHomePage}/>
       <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
@@ -158,7 +151,6 @@ export const scenes = Actions.create(
       <Scene key="SELECT_DOCTOR" component={SelectDoctor} />
       <Scene key="QA" component={QA}/>
       <Scene key="QA_LIST" component={QAList}/>
-      <Scene key="DOCTOR_INTRO" component={DoctorIntro}/>
       <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
       <Scene key="SELECT_HEALTH_PROFILE" component={SelectHealthProfile}/>
       <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
