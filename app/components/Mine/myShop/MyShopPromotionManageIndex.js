@@ -100,7 +100,7 @@ class MyShopPromotionManageIndex extends Component {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{Actions.EDIT_SHOP_PROMOTION({shopPromotion:item})}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>编辑</Text>
                 </View>
@@ -136,7 +136,7 @@ class MyShopPromotionManageIndex extends Component {
       }
 
       let filteredPromotions = containedPromotions.filter(filterFunc)
-      console.log('filteredPromotions=====', filteredPromotions)
+      // console.log('filteredPromotions=====', filteredPromotions)
       return filteredPromotions
     }
     return []
@@ -245,7 +245,7 @@ class MyShopPromotionManageIndex extends Component {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{Actions.EDIT_SHOP_PROMOTION({shopPromotion:item})}}>
                 <View style={styles.bntStyle}>
                   <Text style={{fontSize:17}}>编辑</Text>
                 </View>

@@ -87,6 +87,7 @@ import QRCodeReader from '../components/Mine/QRCodeReader'
 import PersonalQR from '../components/Mine/PersonalQR'
 import Publish from '../components/Publish'
 import PublishShopPromotion from '../components/shop/PublishShopPromotion'
+import EditShopPromotion from '../components/Mine/myShop/EditShopPromotion'
 import PromoterPerformance from '../components/Mine/promote/PromoterPerformance'
 import TopicEdit from '../components/Find/TopicEdit'
 import InviteCodeViewer from '../components/Mine/promote/InviteCodeViewer'
@@ -186,6 +187,7 @@ export const scenes = Actions.create(
       <Scene key="GEN_PERSONALQR" component={PersonalQR} />
       <Scene key="PUBLISH" component={Publish}/>
       <Scene key="PUBLISH_SHOP_PROMOTION" component={PublishShopPromotion}/>
+      <Scene key="EDIT_SHOP_PROMOTION" component={EditShopPromotion}/>
       <Scene key="SHOP_PROMOTION_DETAIL" component={ShopPromotionDetail}/>
       <Scene key="PROMOTER_PERFORMANCE" component={PromoterPerformance} />
       <Scene key="TOPIC_EDIT" component={TopicEdit}/>
