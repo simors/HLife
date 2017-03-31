@@ -191,7 +191,6 @@ class EditShop extends Component {
       submitType: INPUT_FORM_SUBMIT_TYPE.EDIT_SHOP_IFNO,
       success: ()=>{
         this.props.fetchUserOwnedShopInfo()
-        console.log('submitSuccessCallback++++++++++++++++=')
         Toast.show('更新成功', {
           duration: 1500,
           onHidden: () =>{
@@ -220,7 +219,7 @@ class EditShop extends Component {
 
   calNewPos() {
     const marginBottomHeight = 10
-    const inputWrapHeight = 40
+    const inputWrapHeight = 50
     const coverImageHeight = 200
     if(Platform.OS == 'ios') {
       this.setState({
@@ -566,7 +565,7 @@ const styles = StyleSheet.create({
     paddingRight:0,
   },
   inputInnerBox: {
-    height: 40,
+    height: 50,
     paddingLeft: normalizeW(14),
     justifyContent: 'center'
   },
@@ -575,7 +574,7 @@ const styles = StyleSheet.create({
     color: '#333'
   },
   inputStyle:{
-    height: normalizeH(44),
+    height: 50,
     fontSize: em(17),
     backgroundColor: '#fff',
     borderWidth: 0,
@@ -621,8 +620,8 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
   },
   ourSpecialWrap: {
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: 15,
+    paddingBottom: 10,
     paddingRight: 10,
   },
   ourSpecialInputLabelBox: {
