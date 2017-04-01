@@ -19,9 +19,11 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
 import * as authSelector from '../../selector/authSelector'
+import {selectShopPromotionMaxNum, selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {createPingppPayment} from '../../action/paymentActions'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
+import Popup from '@zzzkk2009/react-native-popup'
 
 // const LIFEPingPP = NativeModules.LIFEPingPP
 const PingPPModule = NativeModules.PingPPModule
@@ -65,6 +67,35 @@ class Publish extends Component {
     this.props.createPingppPayment(paymentPayload)
   }
 
+  publishShopActivity() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    if(this.props.isExceededShopPromotionMaxNum){
+      Popup.confirm({
+          title: '店铺活动',
+          content: '您的店铺活动已达最大数量,去管理店铺活动？',
+          ok: {
+            text: '确认',
+            style: {color: '#FF7819'},
+            callback: ()=>{
+              // console.log('ok')
+              Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
+            }
+          },
+          cancel: {
+            text: '取消',
+            callback: ()=>{
+              // console.log('cancel')
+            }
+          }
+        })
+    }else{
+      Actions.PUBLISH_SHOP_PROMOTION()
+    }
+  }
+
   render() {
     return (
       <View style={styles.container} >
@@ -87,7 +118,7 @@ class Publish extends Component {
                 />
                 <Text style={styles.serviceText}>发布话题</Text>
               </TouchableOpacity >
-              <TouchableOpacity style={styles.item} onPress={() => {this.props.isUserLogined? Actions.PUBLISH_SHOP_PROMOTION() : Actions.LOGIN()}}>
+              <TouchableOpacity style={styles.item} onPress={() => {this.publishShopActivity()}}>
                 <Image
                   resizeMode="contain"
                   style={{width: normalizeW(60), height: normalizeH(60)}}
@@ -112,8 +143,23 @@ class Publish extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
+
+  const shopPromotionMaxNum = selectShopPromotionMaxNum(state)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+
+  let isExceededShopPromotionMaxNum = false
+  let containedPromotionsNum = 0
+  if(userOwnedShopInfo && userOwnedShopInfo.containedPromotions) {
+    containedPromotionsNum = userOwnedShopInfo.containedPromotions.length
+  }
+
+  if(containedPromotionsNum >= shopPromotionMaxNum) {
+    isExceededShopPromotionMaxNum = true
+  }
+
   return {
-    isUserLogined: isUserLogined
+    isUserLogined: isUserLogined,
+    isExceededShopPromotionMaxNum: isExceededShopPromotionMaxNum
   }
 }
 

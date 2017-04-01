@@ -606,8 +606,9 @@ class PublishShopPromotion extends Component {
                 <View style={styles.priceBox}>
                   <View style={styles.promotingPriceBox}>
                     <Text style={styles.priceLabel}>价格</Text>
+                    <Text style={{color:'#F56A23',marginLeft:3}}>￥</Text>
                     <TextInput
-                      placeholder='￥0.00'
+                      placeholder='0.00'
                       placeholderTextColor="#F56A23"
                       maxLength={7}
                       keyboardType="numeric"
@@ -627,8 +628,9 @@ class PublishShopPromotion extends Component {
 
                   <View style={styles.originalPriceBox}>
                     <Text style={styles.priceLabel}>原价</Text>
+                    <Text style={{color:'#aaa',marginLeft:3}}>￥</Text>
                     <TextInput
-                      placeholder='￥0.00'
+                      placeholder='0.00'
                       placeholderTextColor="#aaa"
                       maxLength={7}
                       keyboardType="numeric"

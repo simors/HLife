@@ -17,6 +17,7 @@ import {
 import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
 import {isUserLogined, getUserIdentity, activeUserId} from '../../selector/authSelector'
+import {selectShopPromotionMaxNum, selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -26,17 +27,17 @@ class TabIcon extends Component {
   render() {
     return (
       <View>
-        {this.publish(this.props.title, this.props.selected, this.props.number, this.props.onPress, this.props.isLogin, this.props.identity)}
+        {this.publish(this.props.title, this.props.selected, this.props.number, this.props.onPress, this.props.isLogin, this.props.identity, this.props.isExceededShopPromotionMaxNum)}
       </View>
     )
   }
 
-  publish=(title, selected, index, onPressed, isLogin, identity) =>{
+  publish=(title, selected, index, onPressed, isLogin, identity, isExceededShopPromotionMaxNum) =>{
     if (index == 2) {
       return (
         <TouchableWithoutFeedback onPress={()=> {
           if (onPressed) {
-            onPressed({isLogin: isLogin, index: index, identity: identity})
+            onPressed({isLogin: isLogin, index: index, identity: identity, isExceededShopPromotionMaxNum: isExceededShopPromotionMaxNum})
           }
         }}>
           <View style={[styles.container, {backgroundColor: THEME.base.mainColor}]}>
@@ -127,6 +128,22 @@ const mapStateToProps = (state) => {
   const identity = getUserIdentity(state, activeUserId(state))
   newProps.isLogin = isLogin
   newProps.identity = identity
+
+  const shopPromotionMaxNum = selectShopPromotionMaxNum(state)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+
+  let isExceededShopPromotionMaxNum = false
+  let containedPromotionsNum = 0
+  if(userOwnedShopInfo && userOwnedShopInfo.containedPromotions) {
+    containedPromotionsNum = userOwnedShopInfo.containedPromotions.length
+  }
+
+  if(containedPromotionsNum >= shopPromotionMaxNum) {
+    isExceededShopPromotionMaxNum = true
+  }
+  newProps.isExceededShopPromotionMaxNum = isExceededShopPromotionMaxNum
+
+
   return newProps
 }
 

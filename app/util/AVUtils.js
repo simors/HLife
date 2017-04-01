@@ -11,17 +11,28 @@ import PushNotification from '@zzzkk2009/react-native-leancloud-sdk'
 import {store} from '../store/persistStore'
 import * as Toast from '../components/common/Toast'
 import {updateLocalDeviceToken, updateSystemNotice} from '../action/pushAction'
+import {fetchShopPromotionMaxNum, fetchUserOwnedShopInfo} from '../action/shopAction'
 import {fetchAllProvincesAndCities} from '../action/configAction'
 import * as lcPush from '../api/leancloud/push'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as pushSelect from '../selector/pushSelector'
 import * as configSelector from '../selector/configSelector'
+import * as authSelector from '../selector/authSelector'
 import * as dateUtils from '../util/dateUtils'
 
 // const EE = new EventEmitter()
 
 export function updateProvincesAndCities(payload) {
   store.dispatch(fetchAllProvincesAndCities(payload))
+}
+
+export function appInit() {
+  updateProvincesAndCities()
+  
+  if(authSelector.isUserLogined(store.getState())) {
+    store.dispatch(fetchShopPromotionMaxNum())
+    store.dispatch(fetchUserOwnedShopInfo())
+  }
 }
 
 /**
