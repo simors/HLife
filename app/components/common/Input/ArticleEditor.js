@@ -32,7 +32,6 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 const COMP_TEXT = 'COMP_TEXT'
 const COMP_IMG = 'COMP_IMG'
 
-const toolbarHeight = normalizeH(40)
 const androidStatusbarHeight = normalizeH(20)
 
 /****************************************************************
@@ -65,8 +64,8 @@ class ArticleEditor extends Component {
     }
     this.comp = [this.renderTextInput("", 0, false)]
     this.compHeight = 0
-    this.keyboardHeight = 0
     this.inputRef = []
+    this.toolbarHeight = normalizeH(40)
   }
 
   componentDidMount() {
@@ -79,7 +78,7 @@ class ArticleEditor extends Component {
     }
 
     this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
-    this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding - toolbarHeight)})
+    this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding - this.toolbarHeight)})
 
     let initText = []
     if (this.props.initValue) {
@@ -106,11 +105,12 @@ class ArticleEditor extends Component {
   componentWillReceiveProps(newProps) {
     if (this.props.wrapHeight != newProps.wrapHeight) {
       this.compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
-      this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding- toolbarHeight)})
+      this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding- this.toolbarHeight)})
     }
 
     if (this.props.data != newProps.data) {
       this.comp = []
+      this.inputRef = []
       if (!newProps.data) {
         this.comp.push(this.renderTextInput("", 0, false))
       } else {
@@ -153,9 +153,10 @@ class ArticleEditor extends Component {
     })
     if (isFocus) {
       this.setState({showToolbar: true})
+      this.toolbarHeight = normalizeH(40)
     }
 
-    let newEditorHeight = this.compHeight - e.endCoordinates.height - toolbarHeight
+    let newEditorHeight = this.compHeight - e.endCoordinates.height - this.toolbarHeight
     Animated.timing(this.state.editorHeight, {
       toValue: newEditorHeight,
       duration: 210,
@@ -164,13 +165,13 @@ class ArticleEditor extends Component {
     this.setState({
       keyboardPadding: e.endCoordinates.height,
     })
-
-    this.keyboardHeight = e.endCoordinates.height
   }
 
   keyboardWillHide = (e) => {
     this.inputRef.forEach((input) => {
-      input.blur()
+      if (input) {
+        input.blur()
+      }
     })
     if (this.props.onBlurEditor) {
       this.props.onBlurEditor()
@@ -184,6 +185,7 @@ class ArticleEditor extends Component {
       keyboardPadding: 0,
       showToolbar: false,
     })
+    this.toolbarHeight = 0
   }
 
   getImageCollection(data) {
@@ -335,7 +337,7 @@ class ArticleEditor extends Component {
       let scrollResponder = this.refs.scrollView.getScrollResponder();
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
         findNodeHandle(this.refs[refName]),
-        toolbarHeight + 80, //additionalOffset
+        this.toolbarHeight + 80, //additionalOffset
         true
       );
     }, 50);
@@ -406,7 +408,7 @@ class ArticleEditor extends Component {
           left: 0,
           bottom: this.state.keyboardPadding,
           width: PAGE_WIDTH,
-          height: toolbarHeight,
+          height: this.toolbarHeight,
         }]}
       >
         <View style={{flex: 1, flexDirection: 'row'}}>
