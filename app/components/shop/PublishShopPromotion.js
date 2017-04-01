@@ -478,19 +478,24 @@ class PublishShopPromotion extends Component {
   }
 
   submitForm() {
-    // console.log('submitForm.this.state=====', this.state)
+    console.log('submitForm.this.state=====', this.state)
     this.props.submitShopPromotion({
       ...this.state.form,
       localCoverImgUri: this.localCoverImgUri,
       localRichTextImagesUrls: this.localRichTextImagesUrls,
       success: ()=>{
-        Toast.show('活动发布成功')
-        Actions.SHOP_DETAIL({id: this.state.form.shopId})
         this.isPublishing = false
+        Toast.show('活动发布成功')
+        if(this.props.isPop) {
+          this.props.fetchUserOwnedShopInfo()
+          Actions.pop()
+        }else{
+          Actions.SHOP_DETAIL({id: this.state.form.shopId})
+        }
       },
       error: ()=>{
-        Toast.show('活动发布失败')
         this.isPublishing = false
+        Toast.show('活动发布失败')
       }
     })
   }

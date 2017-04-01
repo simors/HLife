@@ -180,6 +180,8 @@ class MyShopPromotionManageIndex extends Component {
     if(this.props.userOwnedShopInfo.containedPromotions) {
       containedPromotionsNum = this.props.userOwnedShopInfo.containedPromotions.length
     }
+    // console.log('containedPromotionsNum===', containedPromotionsNum)
+    // console.log('shopPromotionMaxNum====', shopPromotionMaxNum)
     return containedPromotionsNum >= shopPromotionMaxNum
   }
 
@@ -348,7 +350,11 @@ class MyShopPromotionManageIndex extends Component {
             }}>
               <TouchableOpacity
                 onPress={()=>{
-                  Actions.PUBLISH_SHOP_PROMOTION()
+                  if(this.isExceededShopPromotionMaxNum()) {
+                    Toast.show('您的店铺活动已达最大数量')
+                    return
+                  }
+                  Actions.PUBLISH_SHOP_PROMOTION({isPop:true})
                 }}
               >
                 <View style={{

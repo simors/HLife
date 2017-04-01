@@ -150,6 +150,20 @@ export function batchUploadImgs(uris) {
   })
 }
 
+export function batchUploadImgs2(uris) {
+  return new Promise((resolve, reject)=>{
+    if(!uris || !uris.length) {
+      resolve([])
+    }else{
+      batchUploadImgs(uris).then(results=>{
+        resolve(results)
+      }).catch((error)=>{
+        throw error
+      })
+    }
+  })
+}
+
 export function uploadImg(source) {
   let fileUri = ''
   if (Platform.OS === 'ios') {
