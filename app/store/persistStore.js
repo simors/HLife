@@ -75,6 +75,8 @@ function verifyToken() {
       })
       dispatch(fetchUserFollowees())
     }).catch((error) => {
+      let logoutAction = createAction(AuthTypes.LOGIN_OUT)
+      dispatch(logoutAction({}))
       console.log('verify token error:', error)
     })
   }
