@@ -586,6 +586,8 @@ export function submitShopPromotion(payload) {
 
       let shopPromotionPayload = {
         shopId: payload.shopId,
+        shopPromotionId: payload.shopPromotionId,
+        status: payload.status,
         abstract: payload.abstract,
         coverUrl: results.coverUrl,
         originalPrice: payload.originalPrice,
@@ -604,11 +606,13 @@ export function submitShopPromotion(payload) {
           payload.success(result)
         }
       }).catch((error) => {
+        // console.log('submitShopPromotion==error==>>>', error)
         if(payload.error){
           payload.error(error)
         }
       })
     }).catch((error) => {
+      // console.log('batchUploadImgs==error==>>>', error)
       if(payload.error){
         payload.error(error)
       }

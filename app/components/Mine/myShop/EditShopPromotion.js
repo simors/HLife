@@ -14,7 +14,8 @@ import {
   Image,
   Platform,
   InteractionManager,
-  TextInput
+  TextInput,
+  Keyboard
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -26,7 +27,7 @@ import * as Toast from '../../common/Toast'
 import * as authSelector from '../../../selector/authSelector'
 import {getInputFormData} from '../../../selector/inputFormSelector'
 import Symbol from 'es6-symbol'
-import {fetchUserOwnedShopInfo, submitShopPromotion} from '../../../action/shopAction'
+import {fetchMyShopExpiredPromotionList, fetchUserOwnedShopInfo, submitShopPromotion} from '../../../action/shopAction'
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import CommonTextInput from '../../common/Input/CommonTextInput'
@@ -34,6 +35,7 @@ import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ImageInput from '../../common/Input/ImageInput'
 import ArticleEditor from '../../common/Input/ArticleEditor'
+import Popup from '@zzzkk2009/react-native-popup'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -68,6 +70,7 @@ class EditShopPromotion extends Component {
 
     this.localRichTextImagesUrls = []
     this.leanRichTextImagesUrls = []
+    this.localCoverImgUri = props.shopPromotion.coverUrl
     this.isPublishing = false
 
     this.state = {
@@ -78,16 +81,18 @@ class EditShopPromotion extends Component {
       headerHeight: wrapHeight,
 
       form: {
-        shopId: '',
-        typeId: 0,
-        type: '折扣',
-        typeDesc: '',
-        coverUrl: '',
-        title: '',
-        promotingPrice: 0.00,
-        originalPrice: 0.00,
-        abstract: '',
-        promotionDetailInfo: []
+        shopId: props.userOwnedShopInfo.id,
+        shopPromotionId: props.shopPromotion.id,
+        status: props.shopPromotion.status,
+        typeId: props.shopPromotion.typeId,
+        type: props.shopPromotion.type,
+        typeDesc: props.shopPromotion.typeDesc,
+        coverUrl: props.shopPromotion.coverUrl,
+        title: props.shopPromotion.title,
+        promotingPrice: props.shopPromotion.promotingPrice,
+        originalPrice: props.shopPromotion.originalPrice,
+        abstract: props.shopPromotion.abstract,
+        promotionDetailInfo: props.shopPromotion.promotionDetailInfo && JSON.parse(props.shopPromotion.promotionDetailInfo)
       },
       typeDescPlaceholder: '例:店庆活动,全场七折起(15字内)',
       toolBarContentType: this.toolBarContentTypes.DEFAULT,
@@ -129,14 +134,12 @@ class EditShopPromotion extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchUserOwnedShopInfo()
+      //this.props.fetchUserOwnedShopInfo()
     })
   }
 
   componentDidMount() {
     this.showToolBarInput()
-
-    console.log('this.props.shopPromotion======>>>', this.props.shopPromotion)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -386,6 +389,7 @@ class EditShopPromotion extends Component {
           ref={(input) =>{this._typeDefaultDescInput = input}}
           placeholder={this.state.typeDescPlaceholder}
           maxLength={120}
+          value={this.state.form.typeDesc}
           style={styles.toolbarInputStyle}
           enablesReturnKeyAutomatically={true}
           blurOnSubmit={true}
@@ -441,6 +445,7 @@ class EditShopPromotion extends Component {
             ref={(input) =>{this._typeDescInput = input}}
             placeholder={this.state.typeDescPlaceholder}
             maxLength={120}
+            value={this.state.form.typeDesc}
             style={[styles.toolbarInputStyle, styles.typeDescInputStyle]}
             enablesReturnKeyAutomatically={true}
             blurOnSubmit={true}
@@ -478,58 +483,55 @@ class EditShopPromotion extends Component {
       return
     }
 
-    //先上传封面
-    this.setState({
-      shouldUploadCover: true
-    })
-  }
-
-  submitForm() {
-    // console.log('submitForm.this.state=====', this.state)
-    this.props.submitShopPromotion({
-      ...this.state.form,
-      success: ()=>{
-        Toast.show('活动发布成功')
-        Actions.SHOP_DETAIL({id: this.state.form.shopId})
-        this.isPublishing = false
-      },
-      error: ()=>{
-        Toast.show('活动发布失败')
-        this.isPublishing = false
-      }
-    })
-  }
-
-  uploadCoverCallback(leanImgUrl) {
-    // console.log('uploadCoverCallback.leanImgUrl===', leanImgUrl)
-    this.setState({
-      form: {
-        ...this.state.form,
-        coverUrl: leanImgUrl,
-      }
-    })
-    if(this.localRichTextImagesUrls && this.localRichTextImagesUrls.length) {
-      //封面上传成功,接着上传富文本组件内图片
-      this.setState({
-        shouldUploadRichTextImg: true
+    if('0' == this.state.form.status) {
+      Popup.confirm({
+        title: '编辑活动',
+        content: '是否立即启用该活动?',
+        ok: {
+          text: '启用',
+          style: {color: '#FF7819'},
+          callback: ()=>{
+            this.state.form.status = '1'
+            this.setState({
+              form:{
+                ...this.state.form,
+                status: this.state.form.status
+              }
+            })
+            this.submitForm()
+          }
+        },
+        cancel: {
+          text: '暂不',
+          callback: ()=>{
+            // console.log('cancel')
+            this.submitForm()
+          }
+        }
       })
     }else {
       this.submitForm()
     }
   }
 
-  uploadRichTextImgComponentCallback(leanImgUrls) {
-    //富文本组件内图片上传成功
-    this.leanRichTextImagesUrls = leanImgUrls
-    let pos = 0
-    // console.log('uploadRichTextImgComponentCallback.leanRichTextImagesUrls==', this.leanRichTextImagesUrls)
-    this.state.form.promotionDetailInfo.forEach((item, index)=>{
-      if(item.type == 'COMP_IMG') {
-        item.url = leanImgUrls[pos++]
+  submitForm() {
+    // console.log('submitForm.this.state=====', this.state)
+    this.props.submitShopPromotion({
+      ...this.state.form,
+      localCoverImgUri: this.localCoverImgUri,
+      localRichTextImagesUrls: this.localRichTextImagesUrls,
+      success: ()=>{
+        Toast.show('活动更新成功')
+        this.props.fetchUserOwnedShopInfo()
+        this.props.fetchMyShopExpiredPromotionList({isRefresh:true})
+        Actions.pop()
+        this.isPublishing = false
+      },
+      error: ()=>{
+        Toast.show('活动更新失败')
+        this.isPublishing = false
       }
     })
-    // console.log('uploadRichTextImgComponentCallback.this.state===', this.state)
-    this.submitForm()
   }
 
   getRichTextImages(images) {
@@ -546,9 +548,9 @@ class EditShopPromotion extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => {this.publishPromotion()}}>
+      <TouchableOpacity onPress={() => {Keyboard.dismiss()}}>
         <View style={[defaultContainerStyle, customStyle]}>
-          <Text style={{fontSize: 15, color: 'white'}}>发布</Text>
+          <Text style={{fontSize: 15, color: 'white'}}>收起</Text>
         </View>
       </TouchableOpacity>
     )
@@ -559,7 +561,9 @@ class EditShopPromotion extends Component {
       <ArticleEditor
         {...shopPromotion}
         wrapHeight={this.state.extraHeight}
+        initValue={this.props.shopPromotion.promotionDetailInfo && JSON.parse(this.props.shopPromotion.promotionDetailInfo)}
         toolbarController={true}
+        mode="modify"
         renderCustomToolbar={() => {
           return this.renderArticleEditorToolbar({
              flex:1,
@@ -567,10 +571,6 @@ class EditShopPromotion extends Component {
           })
         }}
         getImages={(images) => this.getRichTextImages(images)}
-        shouldUploadImgComponent={this.state.shouldUploadRichTextImg}
-        uploadImgComponentCallback={(leanImgUrls)=> {
-          this.uploadRichTextImgComponentCallback(leanImgUrls)
-        }}
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
         onBlurEditor={() => {this.setState({headerHeight: 214})}}
         placeholder="描述一下你的商品及活动详情"
@@ -579,22 +579,19 @@ class EditShopPromotion extends Component {
   }
 
   render() {
+    // console.log('this.props.shopPromotion======>>>', this.props.shopPromotion)
     return (
       <View style={styles.container}>
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="发布活动"
+          title="编辑活动"
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
-          rightComponent={()=>{
-            return this.renderArticleEditorToolbar({
-              marginRight:10,
-              padding: 10,
-              paddingLeft: 20,
-              paddingRight: 20
-            })
-          }}
+          rightType="text"
+          rightText="发布"
+          rightPress={() => {this.publishPromotion()}}
+          rightStyle={{color: THEME.base.mainColor}}
         />
         <View style={styles.body}>
           <View style={[styles.contentContainer, {height: this.state.headerHeight, overflow:'hidden'}]}
@@ -621,10 +618,9 @@ class EditShopPromotion extends Component {
                   addImageBtnStyle={{top:0, left: 0, width: 80, height: 80}}
                   choosenImageStyle={{width: 80, height: 80}}
                   addImage={require('../../../assets/images/upload_pic.png')}
+                  initValue={this.state.form.coverUrl}
                   closeModalAfterSelectedImg={true}
                   imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
-                  shouldUploadImage={this.state.shouldUploadCover}
-                  uploadImageCallback={(leanCoverImgUrl)=>{this.uploadCoverCallback(leanCoverImgUrl)}}
                 />
               </View>
               <View style={styles.introBox}>
@@ -633,6 +629,7 @@ class EditShopPromotion extends Component {
                   <TextInput
                     placeholder='商品或服务名称(20字内)'
                     maxLength={120}
+                    value={this.state.form.title}
                     style={[styles.titleInput]}
                     enablesReturnKeyAutomatically={true}
                     underlineColorAndroid="transparent"
@@ -653,6 +650,7 @@ class EditShopPromotion extends Component {
                       placeholder='￥0.00'
                       placeholderTextColor="#F56A23"
                       maxLength={7}
+                      value={this.state.form.promotingPrice}
                       keyboardType="numeric"
                       style={[styles.promotingPriceInput]}
                       enablesReturnKeyAutomatically={true}
@@ -674,6 +672,7 @@ class EditShopPromotion extends Component {
                       placeholder='￥0.00'
                       placeholderTextColor="#aaa"
                       maxLength={7}
+                      value={this.state.form.originalPrice}
                       keyboardType="numeric"
                       style={[styles.originalPriceInput]}
                       enablesReturnKeyAutomatically={true}
@@ -727,6 +726,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   submitShopPromotion,
+  fetchMyShopExpiredPromotionList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditShopPromotion)

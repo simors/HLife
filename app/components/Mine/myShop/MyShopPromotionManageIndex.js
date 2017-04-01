@@ -53,13 +53,18 @@ class MyShopPromotionManageIndex extends Component {
 
     this.selectedShopPromotion = null
     this.selectedShopPromotionIndex = -1
+
+  }
+
+  init(){
+    this.props.fetchUserOwnedShopInfo()
+    this.props.fetchShopPromotionMaxNum()
+    this.refreshData()
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchUserOwnedShopInfo()
-      this.props.fetchShopPromotionMaxNum()
-      this.refreshData()
+      this.init()
     })
   }
 
@@ -70,7 +75,7 @@ class MyShopPromotionManageIndex extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-
+    // console.log('componentWillReceiveProps.nextProps====', nextProps)
   }
 
   renderRow(rowData, rowId) {
@@ -285,7 +290,6 @@ class MyShopPromotionManageIndex extends Component {
     this.isQuering = true
 
     let payload = {
-      ...this.state.searchForm,
       isRefresh: !!isRefresh,
       lastUpdatedAt: this.props.lastUpdatedAt,
       success: (isEmpty) => {
@@ -347,8 +351,8 @@ class MyShopPromotionManageIndex extends Component {
   }
 
   _handleActionSheetPress(index) {
-    console.log('this.selectedShopPromotionIndex====', this.selectedShopPromotionIndex)
-    console.log('this.selectedShopPromotion====', this.selectedShopPromotion)
+    // console.log('this.selectedShopPromotionIndex====', this.selectedShopPromotionIndex)
+    // console.log('this.selectedShopPromotion====', this.selectedShopPromotion)
     if(0 == index) { //分享
 
     }else if(1 == index) { //删除
@@ -385,6 +389,8 @@ const mapStateToProps = (state, ownProps) => {
     lastUpdatedAt = myShopExpriredPromotionList[myShopExpriredPromotionList.length-1].updatedAt
   }
 
+  // console.log('mapStateToProps/ownProps===', ownProps)
+
   return {
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
@@ -392,7 +398,7 @@ const mapStateToProps = (state, ownProps) => {
     shopPromotionMaxNum: shopPromotionMaxNum,
     ds: ds.cloneWithRows(dataArray),
     myShopExpriredPromotionList: myShopExpriredPromotionList,
-    lastUpdatedAt: lastUpdatedAt
+    lastUpdatedAt: lastUpdatedAt,
   }
 }
 

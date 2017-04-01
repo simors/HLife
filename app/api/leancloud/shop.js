@@ -870,8 +870,10 @@ export function fetchGuessYouLikeShopList(payload) {
 }
 
 export function submitShopPromotion(payload) {
-
+  console.log('submitShopPromotion.payload===', payload)
   let shopId = payload.shopId
+  let shopPromotionId = payload.shopPromotionId
+  let status = payload.status
   let typeId = payload.typeId + ""
   let type = payload.type
   let typeDesc = payload.typeDesc
@@ -888,8 +890,15 @@ export function submitShopPromotion(payload) {
 
   let shop = AV.Object.createWithoutData('Shop', shopId)
 
-  let ShopPromotion = AV.Object.extend('ShopPromotion')
-  let shopPromotion = new ShopPromotion()
+  let shopPromotion = null
+  if(shopPromotionId) {
+    shopPromotion = AV.Object.createWithoutData('ShopPromotion', shopPromotionId)
+    shopPromotion.set('status', status)
+  }else {
+    let ShopPromotion = AV.Object.extend('ShopPromotion')
+    shopPromotion = new ShopPromotion()
+  }
+
   shopPromotion.set('targetShop', shop)
   shopPromotion.set('typeId', typeId)
   shopPromotion.set('type', type)
@@ -902,16 +911,19 @@ export function submitShopPromotion(payload) {
   shopPromotion.set('promotionDetailInfo', promotionDetailInfo)
 
   return shopPromotion.save().then((results) => {
-    // console.log('submitShopPromotion===results=', results)
-    let promotion = AV.Object.createWithoutData('ShopPromotion', results.id)
-    shop.addUnique('containedPromotions', [promotion])
-    // console.log('shop/////>>>>>>>>>>', shop)
-    shop.save().then((rep)=>{
-      // console.log('rep---->>>>', rep)
-    }, (error)=>{
-      // console.log('error.........>>>>', error)
-    })
-    return results
+    console.log('submitShopPromotion===results=', results)
+    if(!shopPromotionId || (shopPromotionId && '1' == status)) {
+      let promotion = AV.Object.createWithoutData('ShopPromotion', results.id)
+      shop.addUnique('containedPromotions', [promotion])
+      // console.log('shop/////>>>>>>>>>>', shop)
+      return shop.save().then((result)=>{
+        return true
+        // console.log('rep---->>>>', rep)
+      }, (error)=>{
+        return false
+        // console.log('error.........>>>>', error)
+      })
+    }
   }, function (err) {
     // console.log('submitShopPromotion===err=', err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
