@@ -338,6 +338,33 @@ class MyShopPromotionManageIndex extends Component {
             />
           </View>
 
+
+            <View style={{
+              position:'absolute',
+              left:0,
+              right:0,
+              bottom:0,
+              backgroundColor:'#fafafa',
+            }}>
+              <TouchableOpacity
+                onPress={()=>{
+                  Actions.PUBLISH_SHOP_PROMOTION()
+                }}
+              >
+                <View style={{
+                  padding:15,
+                  flexDirection:'row',
+                  justifyContent:'center',
+                  alignItems:'center',
+                  borderTopWidth:normalizeBorder(),
+                  borderTopColor: THEME.colors.lighterA,
+                }}>
+                  <Image style={{marginRight:10}} source={require('../../../assets/images/publish_activity_4_mgr.png')}/>
+                  <Text style={{color:'#FF7819',fontSize:17}}>发布活动</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
           <ActionSheet
             ref={(o) => this.ActionSheet = o}
             title="活动管理"
