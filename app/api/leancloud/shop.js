@@ -870,14 +870,14 @@ export function fetchGuessYouLikeShopList(payload) {
 }
 
 export function submitShopPromotion(payload) {
-  console.log('submitShopPromotion.payload===', payload)
+  // console.log('submitShopPromotion.payload===', payload)
   let shopId = payload.shopId
   let shopPromotionId = payload.shopPromotionId
   let status = payload.status
   let typeId = payload.typeId + ""
   let type = payload.type
   let typeDesc = payload.typeDesc
-  let coverUrl = payload.localCoverImgUri
+  let coverUrl = payload.coverUrl
   let title = payload.title
   let promotingPrice = payload.promotingPrice
   let originalPrice = payload.originalPrice
@@ -911,7 +911,7 @@ export function submitShopPromotion(payload) {
   shopPromotion.set('promotionDetailInfo', promotionDetailInfo)
 
   return shopPromotion.save().then((results) => {
-    console.log('submitShopPromotion===results=', results)
+    // console.log('submitShopPromotion===results=', results)
     if(!shopPromotionId || (shopPromotionId && '1' == status)) {
       let promotion = AV.Object.createWithoutData('ShopPromotion', results.id)
       shop.addUnique('containedPromotions', [promotion])

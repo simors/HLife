@@ -558,32 +558,46 @@ export function fetchGuessYouLikeShopList(payload) {
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
     let localImgs = []
-    if(payload.localCoverImgUri && payload.localRichTextImagesUrls)
-      localImgs = payload.localRichTextImagesUrls.concat(payload.localCoverImgUri)
-    ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
-      let coverUrl = undefined
+    console.log('submitShopPromotion.payload===', payload)
+    if(payload.localCoverImgUri){
+      // console.log('submitShopPromotion.payload.localCoverImgUri===', payload.localCoverImgUri)
+      localImgs.push(payload.localCoverImgUri)
+    }
+    if(payload.localRichTextImagesUrls) {
+      // console.log('submitShopPromotion.payload.localImgs===', localImgs)
+      // console.log('submitShopPromotion.payload.localRichTextImagesUrls===', payload.localRichTextImagesUrls)
+      localImgs = localImgs.concat(payload.localRichTextImagesUrls)
+      // console.log('submitShopPromotion.payload.localImgs===', localImgs)
+    }
+
+    ImageUtil.batchUploadImgs2(localImgs).then((leanUris) => {
+      let coverUrl = ''
       let leanRichTextImagesUrls = []
-      if(payload.localCoverImgUri) {
-        coverUrl = leanUris.pop()
-        leanRichTextImagesUrls = leanUris
-        return {
-          coverUrl: coverUrl,
-          leanRichTextImagesUrls: leanRichTextImagesUrls,
-        }
-      } else {
-        return {
-          leanRichTextImagesUrls: leanUris,
+      
+      if(leanUris && leanUris.length) {
+        if(payload.localCoverImgUri) {
+          coverUrl = leanUris.shift()
+          leanRichTextImagesUrls = leanUris
+        } else {
+          leanRichTextImagesUrls = leanUris
         }
       }
+      
+      return {
+        coverUrl: coverUrl,
+        leanRichTextImagesUrls: leanRichTextImagesUrls,
+      }
     }).then((results) => {
-      let leanRichTextImagesUrls = results.leanRichTextImagesUrls.reverse()
-      if(payload.promotionDetailInfo.length > 1 && leanRichTextImagesUrls.length > 0) {
+      if(payload.promotionDetailInfo && payload.promotionDetailInfo.length && 
+          results.leanRichTextImagesUrls && results.leanRichTextImagesUrls.length) {
+        let leanRichTextImagesUrls = results.leanRichTextImagesUrls.reverse()
         payload.promotionDetailInfo.forEach((value) => {
           if(value.type == 'COMP_IMG' && value.url)
             value.url = leanRichTextImagesUrls.pop()
         })
       }
 
+      // console.log('results.coverUrl,======', results.coverUrl,)
       let shopPromotionPayload = {
         shopId: payload.shopId,
         shopPromotionId: payload.shopPromotionId,
