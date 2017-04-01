@@ -50,7 +50,7 @@ export default class HLifeEntry extends Component {
       __DEV__ ? KM_Dev : KM_PRO
     )
 
-    AVUtils.updateProvincesAndCities()
+    AVUtils.appInit()
   }
 
   componentWillUnmount() {

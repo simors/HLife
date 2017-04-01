@@ -79,6 +79,7 @@ class EditShopPromotion extends Component {
       shouldUploadRichTextImg: false,
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
+      showOverlay: false,
 
       form: {
         shopId: props.userOwnedShopInfo.id,
@@ -139,7 +140,7 @@ class EditShopPromotion extends Component {
   }
 
   componentDidMount() {
-    this.showToolBarInput()
+    //this.showToolBarInput()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -170,7 +171,8 @@ class EditShopPromotion extends Component {
 
   showToolBarInput(type) {
     this.setState({
-      toolBarInputFocusNum: 1
+      toolBarInputFocusNum: 1,
+      showOverlay: true
     }, ()=>{
       if(type == this.toolBarContentTypes.CUSTOM) {
         this.showCustomTypeInputToolbar()
@@ -262,6 +264,9 @@ class EditShopPromotion extends Component {
     if(!this.checkTypeDesc()) {
       return
     }
+    this.setState({
+      showOverlay:false
+    })
     dismissKeyboard()
   }
 
@@ -279,6 +284,9 @@ class EditShopPromotion extends Component {
 
     this.setState({
       type: newTypes,
+    })
+    this.setState({
+      showOverlay:false
     })
     dismissKeyboard()
   }
@@ -646,8 +654,9 @@ class EditShopPromotion extends Component {
                 <View style={styles.priceBox}>
                   <View style={styles.promotingPriceBox}>
                     <Text style={styles.priceLabel}>价格</Text>
+                    <Text style={{color:'#F56A23',marginLeft:3}}>￥</Text>
                     <TextInput
-                      placeholder='￥0.00'
+                      placeholder='0.00'
                       placeholderTextColor="#F56A23"
                       maxLength={7}
                       value={this.state.form.promotingPrice}
@@ -668,8 +677,9 @@ class EditShopPromotion extends Component {
 
                   <View style={styles.originalPriceBox}>
                     <Text style={styles.priceLabel}>原价</Text>
+                    <Text style={{color:'#aaa',marginLeft:3}}>￥</Text>
                     <TextInput
-                      placeholder='￥0.00'
+                      placeholder='0.00'
                       placeholderTextColor="#aaa"
                       maxLength={7}
                       value={this.state.form.originalPrice}
@@ -694,6 +704,15 @@ class EditShopPromotion extends Component {
 
           {this.renderRichText()}
         </View>
+
+        {this.state.showOverlay &&
+          <TouchableWithoutFeedback onPress={()=>{
+            this.setState({showOverlay:false})
+            dismissKeyboard()
+          }}>
+            <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} />
+          </TouchableWithoutFeedback>
+        }
 
         <KeyboardAwareToolBar
           initKeyboardHeight={-100}

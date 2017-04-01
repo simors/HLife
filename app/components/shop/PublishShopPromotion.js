@@ -75,11 +75,12 @@ class PublishShopPromotion extends Component {
       rteFocused: false,    // 富文本获取到焦点
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
+      showOverlay:false,
 
       form: {
         shopId: '',
-        typeId: 0,
-        type: '折扣',
+        typeId: -1,
+        type: '',
         typeDesc: '',
         coverUrl: '',
         title: '',
@@ -95,8 +96,8 @@ class PublishShopPromotion extends Component {
         {
           id: 0,
           type: '折扣',
-          containerStyle: 'activeType',
-          textStyle: 'activeTypeTxt',
+          containerStyle: 'defaultType', //activeType
+          textStyle: 'defaultTypeTxt',  //activeTypeTxt
           placeholderText: '例:店庆活动,全场七折起(15字内)'
         },
         {
@@ -132,7 +133,7 @@ class PublishShopPromotion extends Component {
   }
 
   componentDidMount() {
-    this.showToolBarInput()
+    //this.showToolBarInput()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -163,7 +164,8 @@ class PublishShopPromotion extends Component {
 
   showToolBarInput(type) {
     this.setState({
-      toolBarInputFocusNum: 1
+      toolBarInputFocusNum: 1,
+      showOverlay:true
     }, ()=>{
       if(type == this.toolBarContentTypes.CUSTOM) {
         this.showCustomTypeInputToolbar()
@@ -255,6 +257,9 @@ class PublishShopPromotion extends Component {
     if(!this.checkTypeDesc()) {
       return
     }
+    this.setState({
+      showOverlay:false
+    })
     dismissKeyboard()
   }
 
@@ -272,6 +277,7 @@ class PublishShopPromotion extends Component {
 
     this.setState({
       type: newTypes,
+      showOverlay:false
     })
     dismissKeyboard()
   }
@@ -606,8 +612,9 @@ class PublishShopPromotion extends Component {
                 <View style={styles.priceBox}>
                   <View style={styles.promotingPriceBox}>
                     <Text style={styles.priceLabel}>价格</Text>
+                    <Text style={{color:'#F56A23',marginLeft:3}}>￥</Text>
                     <TextInput
-                      placeholder='￥0.00'
+                      placeholder='0.00'
                       placeholderTextColor="#F56A23"
                       maxLength={7}
                       keyboardType="numeric"
@@ -627,8 +634,9 @@ class PublishShopPromotion extends Component {
 
                   <View style={styles.originalPriceBox}>
                     <Text style={styles.priceLabel}>原价</Text>
+                    <Text style={{color:'#aaa',marginLeft:3}}>￥</Text>
                     <TextInput
-                      placeholder='￥0.00'
+                      placeholder='0.00'
                       placeholderTextColor="#aaa"
                       maxLength={7}
                       keyboardType="numeric"
@@ -652,6 +660,15 @@ class PublishShopPromotion extends Component {
 
           {this.renderRichText()}
         </View>
+
+        {this.state.showOverlay &&
+          <TouchableWithoutFeedback onPress={()=>{
+            this.setState({showOverlay:false})
+            dismissKeyboard()
+          }}>
+            <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} />
+          </TouchableWithoutFeedback>
+        }
 
         <KeyboardAwareToolBar
           initKeyboardHeight={-100}

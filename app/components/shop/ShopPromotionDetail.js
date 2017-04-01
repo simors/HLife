@@ -200,7 +200,8 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    paddingBottom:50
   },
   headerWrap: {
     padding: 15
