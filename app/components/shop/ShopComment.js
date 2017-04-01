@@ -64,9 +64,6 @@ class ShopComment extends Component {
               : <Image style={styles.commentAvatar} source={require('../../assets/images/default_portrait.png')}/>
             }
           </TouchableOpacity>
-          <FollowUser
-            userId={this.props.userId}
-          />
 
         </View>
         <View style={styles.commentRight}>
