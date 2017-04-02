@@ -194,7 +194,7 @@ function handleUpdateUserFollowShopsInfo(state, action) {
   let shopId = payload.shopId
   let code = payload.code
   let userFollowShopsInfo = state.get('userFollowShopsInfo')
-  if('10000' == code) {
+  if('10000' == code || '10003' == code) {
     userFollowShopsInfo = userFollowShopsInfo.set(shopId, false)
   }else {
     userFollowShopsInfo = userFollowShopsInfo.set(shopId, true)

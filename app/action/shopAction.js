@@ -185,6 +185,28 @@ export function followShop(payload) {
   }
 }
 
+export function unFollowShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.unFollowShop(payload).then((result) =>{
+      let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
+      dispatch(updateAction(result))
+      if(result && '10003' == result.code) {
+        if(payload.success){
+          payload.success(result)
+        }
+      }else {
+        if(payload.error){
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
 /**
  * deprecated:已过时
  * @param payload

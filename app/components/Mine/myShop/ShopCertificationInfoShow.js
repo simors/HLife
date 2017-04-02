@@ -55,7 +55,7 @@ class ShopCertificationInfoShow extends Component {
           			onHidden: ()=>{
           				this.props.getUserInfoById({userId: this.props.activeUserId})
           				this.props.fetchUserOwnedShopInfo()
-          				Actions.MINE()
+          				Actions.HOME({type: 'reset'})
           			}
           		})
           	}
@@ -79,7 +79,7 @@ class ShopCertificationInfoShow extends Component {
     		<Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => this.goBack()}
+          leftPress={() => Actions.pop()}
           title="店铺认证信息"
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
