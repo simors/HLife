@@ -19,7 +19,9 @@ export function promoterCertification(payload) {
     name: payload.name,
     phone: payload.phone,
     cardId: payload.cardId,
-    address: payload.address,
+    liveProvince: payload.liveProvince,
+    liveCity: payload.liveCity,
+    liveDistrict: payload.liveDistrict,
   }
   return AV.Cloud.run('promoterCertificate', params).then((promoterInfo) => {
     return promoterInfo

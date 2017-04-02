@@ -33,7 +33,7 @@ class CommonTextInput extends Component {
       stateKey: this.props.stateKey,
       type: this.props.type,
       initValue: {text: this.props.initValue},
-      checkValid: this.validInput
+      checkValid: this.props.checkValid || this.validInput
     }
     this.props.initInputForm(formInfo)
 
@@ -122,6 +122,7 @@ class CommonTextInput extends Component {
           inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
           onFocus={this.props.onFocus}
           onBlur={this.props.onBlur}
+          autoCorrect={this.props.autoCorrect}
           autoCapitalize='none'
         />
         {this.renderClearBtn()}
@@ -140,6 +141,7 @@ CommonTextInput.defaultProps = {
   containerStyle: {flex: 1},
   inputStyle: {flex: 1},
   clearBtnStyle: {},
+  autoCorrect: true,
 }
 
 const mapStateToProps = (state, ownProps) => {
