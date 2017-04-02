@@ -97,7 +97,7 @@ export default class ImageGroupViewer extends Component {
       )
     } else {
       return (
-        <Image style={{flex: 1}} source={{uri: src}}/>
+        <Image style={imageStyle} source={{uri: src}}/>
       )
     }
   }
