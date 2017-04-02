@@ -128,6 +128,7 @@ class SmsAuthCodeInput extends Component {
             keyboardType="numeric"
             underlineColorAndroid="transparent"
             onChangeText={(text) => this.inputChange(text)}
+            autoCapitalize='none'
           />
           {this.state.countDown ? this.renderGetSmsButtonDisabled() : this.renderGetSmsButtonEnabled()}
         </View>
