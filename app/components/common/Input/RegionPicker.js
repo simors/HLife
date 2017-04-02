@@ -123,12 +123,20 @@ class RegionPicker extends Component {
       pickerData: this.pickerData,
       wheelFlex: [1, 1, 1],
       onPickerConfirm: data => {
-        console.log(data);
-        let text = ""
-        data.map((value, index) => {
-          text += value
-        })
-        this.updateInput(text)
+        if (this.props.mode == 'join') {
+          let text = ""
+          data.map((value, index) => {
+            text += value
+          })
+          this.updateInput(text)
+        } else {
+          let text = {
+            province: data[0],
+            city: data[1],
+            district: data[2],
+          }
+          this.updateInput(text)
+        }
       },
       onPickerCancel: data => {
         console.log(data);
@@ -155,6 +163,7 @@ class RegionPicker extends Component {
               value={this.props.data}
               containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
               inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
+              mode={this.props.mode}
             />
           </View>
         </TouchableOpacity>
@@ -173,13 +182,21 @@ RegionPicker.defaultProps = {
   containerStyle: {flex: 1},
   inputStyle: {flex: 1},
   clearBtnStyle: {},
+  mode: 'join', // 模式选项，join模式表示组织数据时，选择的地址连接起来作为一个字段；segment表示地址分字段保存，即省、市、区三个字段分别保存数据
 }
 
 const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  return {
-    data: inputData.text
+  let data = ""
+  let text = inputData.text
+  if (ownProps.mode == 'join') {
+    data = text
+  } else {
+    if (text) {
+      data = text.province + text.city + text.district
+    }
   }
+  return {data}
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

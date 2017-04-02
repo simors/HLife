@@ -180,7 +180,7 @@ class PromoterAuth extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>常驻地</Text>
                 <View style={{flex: 1}}>
-                  <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(42)}}
+                  <RegionPicker {...regionPicker} mode="segment" containerStyle={{height: normalizeH(42)}}
                                 inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
                 </View>
               </View>
