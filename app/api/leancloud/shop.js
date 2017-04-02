@@ -751,6 +751,14 @@ export function fetchShopTags(payload) {
   })
 }
 
+export function unregistShop(payload) {
+  return AV.Cloud.run('hLifeUnregistShop', payload).then(result=>{
+    return result
+  }, err=>{
+    throw err
+  })
+}
+
 export function fetchUserOwnedShopInfo(payload) {
   let query = new AV.Query('Shop')
   let user = AV.User.current()

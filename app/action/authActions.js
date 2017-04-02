@@ -703,6 +703,10 @@ export function getUserInfoById(payload) {
       let userInfo = UserInfo.fromLeancloudApi(user.userInfo)
       const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
       dispatch(addUserProfile({userInfo}))
+
+      const updateUserIdentityAction = createAction(AuthTypes.UPDATE_USER_IDENTITY)
+      dispatch(updateUserIdentityAction({identity: userInfo.identity}))
+      
     }).catch(error => {
       if (payload.error) {
         payload.error(error)

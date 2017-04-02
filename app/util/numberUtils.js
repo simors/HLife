@@ -4,6 +4,9 @@
  * @param phone
  */
 export function removeSpace(phone) {
+  if (!phone) {
+    return;
+  }
   return phone.toString().replace(/\s+/g, "");
 }
 

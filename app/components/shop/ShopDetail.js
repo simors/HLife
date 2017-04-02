@@ -543,35 +543,6 @@ class ShopDetail extends Component {
               </View>
             </TouchableOpacity>
 
-            {
-              this.props.userIsUpedShop
-                ? <TouchableOpacity style={[styles.shopUpWrap]} onPress={this.userUnUpShop.bind(this)}>
-                    <View style={[styles.vItem]}>
-                      <Image style={{}} source={require('../../assets/images/like_selected.png')}/>
-                      <Text style={[styles.vItemTxt]}>取消点赞</Text>
-                    </View>
-                  </TouchableOpacity>
-                : <TouchableOpacity style={[styles.shopUpWrap]} onPress={this.userUpShop.bind(this)}>
-                    <View style={[styles.vItem]}>
-                      <Image style={{}} source={require('../../assets/images/like_unselect.png')}/>
-                      <Text style={[styles.vItemTxt]}>点赞</Text>
-                    </View>
-                  </TouchableOpacity>
-            }
-
-            <TouchableOpacity style={[styles.commentBtnWrap]} onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
-              <View style={[styles.vItem]}>
-                <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-                <Text style={[styles.vItemTxt]}>查看</Text>
-                {this.props.shopCommentsTotalCount > 0
-                  ? <View style={styles.commentBtnBadge}>
-                      <Text style={styles.commentBtnBadgeTxt}>{this.props.shopCommentsTotalCount > 99 ? '99+' : this.props.shopCommentsTotalCount}</Text>
-                    </View>
-                  : null
-                }
-              </View>
-            </TouchableOpacity>
-
             <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
               <Image style={{}} source={require('../../assets/images/contacted.png')}/>
               <Text style={[styles.contactedTxt]}>私信</Text>
@@ -1054,10 +1025,12 @@ const styles = StyleSheet.create({
   },
   vItem: {
     flex: 1,
+    alignSelf:'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
-    paddingBottom: 3
+    paddingBottom: 3,
+    paddingLeft: 30
   },
   vItemTxt: {
     marginTop: 6,

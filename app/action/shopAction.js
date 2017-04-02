@@ -687,3 +687,17 @@ export function updateShopPromotion(payload) {
   }
 }
 
+export function unregistShop(payload) {
+  return (dispatch, getState) => {
+    lcShop.unregistShop(payload).then((result)=>{
+      if(payload.success){
+        payload.success(result)
+      }
+    }).catch(error=>{
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
