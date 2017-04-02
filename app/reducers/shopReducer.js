@@ -330,9 +330,7 @@ function handleFetchUserOwnedShopInfoSuccess(state, action) {
   let userId = payload.userId
   let shopInfo = payload.shopInfo
   // console.log('handleFetchUserOwnedShopInfoSuccess.shopInfo===', shopInfo)
-  if(shopInfo && shopInfo.size) {
-    state = state.setIn(['userOwnedShopInfo', userId], shopInfo)
-  }
+  state = state.setIn(['userOwnedShopInfo', userId], shopInfo)
   return state
 }
 

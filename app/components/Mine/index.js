@@ -52,7 +52,7 @@ class Mine extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      if(this.props.userOwnedShopInfo.id) {
+      if (this.props.identity && this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
         Actions.MY_SHOP_INDEX()
       }else {
         Actions.SHOPR_EGISTER()

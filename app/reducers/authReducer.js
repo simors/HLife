@@ -39,11 +39,20 @@ export default function authReducer(state = initialState, action) {
       return handleAddPersonalIdentity(state, action)
     case AuthTypes.UPDATE_USER_POINT:
       return handleUserPoint(state, action)
+    case AuthTypes.UPDATE_USER_IDENTITY:
+      return handleUpdateUserIdentity(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
       return state
   }
+}
+
+function handleUpdateUserIdentity(state, action){
+  let newIdentity = action.payload.identity
+  let activeUser = state.get('activeUser')
+  state = state.setIn(['profiles', activeUser, 'identity'], newIdentity)
+  return state
 }
 
 function handleRegisterSuccess(state, action) {

@@ -17,9 +17,13 @@
  import {bindActionCreators} from 'redux'
  import {Actions} from 'react-native-router-flux'
  import Header from '../../common/Header'
- import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
+ import {fetchUserOwnedShopInfo, unregistShop} from '../../../action/shopAction'
+ import {getUserInfoById} from '../../../action/authActions'
  import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
+  import {activeUserId} from '../../../selector/authSelector'
  import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+ import Popup from '@zzzkk2009/react-native-popup'
+ import * as Toast from '../../common/Toast'
 
  const PAGE_WIDTH = Dimensions.get('window').width
  const PAGE_HEIGHT = Dimensions.get('window').height
@@ -33,6 +37,38 @@ class ShopCertificationInfoShow extends Component {
 		InteractionManager.runAfterInteractions(()=>{
 			this.props.fetchUserOwnedShopInfo()
 		})
+	}
+
+	unregistShop() {
+		Popup.confirm({
+      title: '注销店铺',
+      content: '注销后此店铺的所有信息将在平台上删除，是否注销？',
+      ok: {
+        text: '注销',
+        style: {color: 'red'},
+        callback: ()=>{
+          // console.log('ok')
+          this.props.unregistShop({
+          	shopId: this.props.userOwnedShopInfo.id,
+          	success: ()=>{
+          		Toast.show('注销店铺成功', {
+          			onHidden: ()=>{
+          				this.props.getUserInfoById({userId: this.props.activeUserId})
+          				this.props.fetchUserOwnedShopInfo()
+          				Actions.MINE()
+          			}
+          		})
+          	}
+          })
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
+      }
+    })
 	}
 
 	render() {
@@ -101,7 +137,7 @@ class ShopCertificationInfoShow extends Component {
 							<Text style={styles.explainTxt}>以上信息为平台认证信息，不得随意修改。</Text>
 							<Text style={styles.explainTxt}>
 								如需注册新店，可以选择
-								<TouchableOpacity style={{width:63,height:17}}>
+								<TouchableOpacity style={{width:63,height:17}} onPress={()=>{this.unregistShop()}}>
 									<Text style={styles.sltTxt}>注销店铺</Text>
 								</TouchableOpacity>
 								，但注销后此店铺的所有信息将在平台上删除，请慎重选择。
@@ -122,12 +158,15 @@ const mapStateToProps = (state, ownProps) => {
 	const userOwnedShopInfo = selectUserOwnedShopInfo(state)
 
 	return {
-		userOwnedShopInfo: userOwnedShopInfo
+		userOwnedShopInfo: userOwnedShopInfo,
+		activeUserId: activeUserId(state),
 	}
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-	fetchUserOwnedShopInfo
+	fetchUserOwnedShopInfo,
+	unregistShop,
+	getUserInfoById
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCertificationInfoShow)
