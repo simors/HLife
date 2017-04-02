@@ -29,7 +29,7 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
 
-import {fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
+import {fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
@@ -127,6 +127,23 @@ class ShopDetail extends Component {
       }
     }
     this.props.followShop(payload)
+  }
+
+  unFollowShop() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    let payload = {
+      id: this.props.id,
+      success: function(result) {
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.unFollowShop(payload)
   }
 
   followUser(userId) {
@@ -494,12 +511,12 @@ class ShopDetail extends Component {
                 </View>
                 <View style={styles.shopXYZRight}>
                   {this.props.isFollowedShop
-                    ? <View style={styles.shopAttentioned}>
-                    <Image source={require('../../assets/images/followed.png')} />
-                  </View>
+                    ? <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
+                        <Image source={require('../../assets/images/followed.png')} />
+                      </TouchableOpacity>
                     : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                    <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
-                  </TouchableOpacity>
+                        <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
+                      </TouchableOpacity>
                   }
                 </View>
               </View>
@@ -607,6 +624,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopDetail,
   fetchShopAnnouncements,
   userIsFollowedShop,
+  unFollowShop,
   followShop,
   submitShopComment,
   fetchShopCommentList,

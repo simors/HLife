@@ -283,9 +283,11 @@ export function isFollowedShop(payload) {
   query.equalTo('follower', currentUser)
   query.equalTo('shop', shop)
 
-  return query.find().then((result)=>{
-    if(result && result.length) {
+  return query.first().then((result)=>{
+    // console.log('isFollowedShop.result===', result)
+    if(result && result.id) {
       return {
+        shopFollowerId: result.id,
         shopId: shopId,
         code: '10001',
         message: '您已关注过该店铺,请不要重复关注'
@@ -318,19 +320,22 @@ export function followShop(payload) {
     shopFollower.set('follower', currentUser)
     shopFollower.set('shop', shop)
 
-    let ShopFollowee = AV.Object.extend('ShopFollowee')
-    let shopFollowee = new ShopFollowee()
-    shopFollowee.set('user', currentUser)
-    shopFollowee.set('followee', shop)
+    // let ShopFollowee = AV.Object.extend('ShopFollowee')
+    // let shopFollowee = new ShopFollowee()
+    // shopFollowee.set('user', currentUser)
+    // shopFollowee.set('followee', shop)
 
     return shopFollower.save().then(function(shopFollowerResult){
-      return shopFollowee.save()
+      //return shopFollowee.save()
+      return shopFollowerResult
     }).then(()=>{
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
       // console.log('followShop.shopDetail==', shopDetail)
-      AVUtils.pushByUserList([shopDetail.owner.id], {
-        alert: '有新的用户关注了您的店铺,立即查看',
-      })
+      if(currentUser.id != shopDetail.owner.id) {
+        AVUtils.pushByUserList([shopDetail.owner.id], {
+          alert: '有新的用户关注了您的店铺,立即查看',
+        })
+      }
       return {
         shopId: shopId,
         code: '10002',
@@ -341,6 +346,51 @@ export function followShop(payload) {
       throw err
     })
   }).catch((err) =>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function unFollowShop(payload) {
+
+  return isFollowedShop(payload).then((result) =>{
+    // console.log('isFollowedShop.result===', result)
+    if(result && '10000' == result.code) {
+      return result
+    }
+
+    let shopId = payload.id
+    let shopFollowerId = result.shopFollowerId
+    let shop = AV.Object.createWithoutData('Shop', shopId)
+    let currentUser = AV.User.current()
+
+    let shopFollower = AV.Object.createWithoutData('ShopFollower', shopFollowerId)
+    shopFollower.set('follower', currentUser)
+    shopFollower.set('shop', shop)
+
+    return shopFollower.destroy().then(function(shopFollowerResult){
+      // console.log('shopFollowerResult===', shopFollowerResult)
+      return shopFollowerResult
+    }).then(()=>{
+      let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
+      // console.log('followShop.shopDetail==', shopDetail)
+      // if(currentUser.id != shopDetail.owner.id) {
+      //   AVUtils.pushByUserList([shopDetail.owner.id], {
+      //     alert: '有用户取消了对您店铺的关注,立即查看',
+      //   })
+      // }
+      return {
+        shopId: shopId,
+        code: '10003',
+        message: '取消关注成功'
+      }
+    }).catch((err) =>{
+      // console.log('fasdfads===>>>>', err)
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+  }).catch((err) =>{
+    // console.log('zzzzzzz=====', err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
