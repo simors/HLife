@@ -421,13 +421,16 @@ export function submitShopComment(payload) {
     let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
     let activeUser = authSelector.activeUserInfo(store.getState())
     // console.log('followShop.shopDetail==', shopDetail)
-    AVUtils.pushByUserList([shopDetail.owner.id], {
-      alert: `${activeUser.nickname}评论了您的店铺,立即查看`,
-      sceneName: 'SHOP_COMMENT_LIST',
-      sceneParams: {
-        shopId: shopId
-      }
-    })
+    if(activeUser.id != shopDetail.owner.id) {
+      AVUtils.pushByUserList([shopDetail.owner.id], {
+        alert: `${activeUser.nickname}评论了您的店铺,立即查看`,
+        sceneName: 'SHOP_COMMENT_LIST',
+        sceneParams: {
+          shopId: shopId
+        }
+      })
+    }
+    
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -658,13 +661,15 @@ export function userUpShopComment(payload) {
     if(pushUserId) {
       let activeUser = authSelector.activeUserInfo(store.getState())
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
-      AVUtils.pushByUserList([pushUserId], {
-        alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中点赞了您的评论,立即查看`,
-        sceneName: 'SHOP_COMMENT_LIST',
-        sceneParams: {
-          shopId: shopId
-        }
-      })
+      if(activeUser.id != pushUserId) {
+        AVUtils.pushByUserList([pushUserId], {
+          alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中点赞了您的评论,立即查看`,
+          sceneName: 'SHOP_COMMENT_LIST',
+          sceneParams: {
+            shopId: shopId
+          }
+        })
+      }
     }
 
     return result
@@ -729,16 +734,18 @@ export function reply(payload) {
     }
     if(pushUserId) {
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
-      console.log('reply.pushUserId==', pushUserId)
+      // console.log('reply.pushUserId==', pushUserId)
       let activeUser = authSelector.activeUserInfo(store.getState())
-      console.log('reply.activeUser==', activeUser)
-      AVUtils.pushByUserList([pushUserId], {
-        alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中回复了您的评论,立即查看`,
-        sceneName: 'SHOP_COMMENT_LIST',
-        sceneParams: {
-          shopId: shopId
-        }
-      })
+      // console.log('reply.activeUser==', activeUser)
+      if(activeUser.id != pushUserId) {
+        AVUtils.pushByUserList([pushUserId], {
+          alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中回复了您的评论,立即查看`,
+          sceneName: 'SHOP_COMMENT_LIST',
+          sceneParams: {
+            shopId: shopId
+          }
+        })
+      }
     }
 
     return results

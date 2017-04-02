@@ -163,7 +163,7 @@ export function likeTopic(payload) {
       let activeUser = authSelector.activeUserInfo(store.getState())
       let pushUserid = topicInfo && topicInfo.userId
       // console.log('likeTopic.topicInfo==', topicInfo)
-      if(pushUserid) {
+      if(pushUserid && activeUser.id != pushUserid) {
         AVUtils.pushByUserList([pushUserid], {
           alert: `${activeUser.nickname}点赞了您的评论,立即查看`,
           sceneName: 'TOPIC_DETAIL',
@@ -250,7 +250,7 @@ export function publishTopicComments(payload) {
       let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
       let activeUser = authSelector.activeUserInfo(store.getState())
       let pushUserid = topicInfo && topicInfo.userId
-      if(pushUserid) {
+      if(pushUserid && activeUser.id != pushUserid) {
         AVUtils.pushByUserList([pushUserid], {
           alert: `${activeUser.nickname}评论了您,立即查看`,
           sceneName: 'TOPIC_DETAIL',
