@@ -66,7 +66,8 @@ class ShopAddressSelect extends Component {
       showLoading: false
     }
 
-    this.num = 1
+    this.currentPosition = null
+
   }
 
   componentDidMount() {
@@ -79,6 +80,11 @@ class ShopAddressSelect extends Component {
     })
     Geolocation.getCurrentPosition()
       .then(data => {
+        this.currentPosition = {
+          latitude: data.latitude,
+          longitude: data.longitude,
+        }
+
         this.setState({
           showLoading: false,
           center: {
@@ -111,6 +117,19 @@ class ShopAddressSelect extends Component {
 
   }
 
+  resetPosition() {
+    console.log('resetPosition..this.currentPosition===', this.currentPosition)
+    if(this.currentPosition) {
+      MapModule.moveToCenter(this.currentPosition.latitude, this.currentPosition.longitude, this.state.zoom)
+      this.setState({
+        center: {
+          latitude: this.currentPosition.latitude,
+          longitude: this.currentPosition.longitude,
+        }
+      })
+    }
+  }
+
   updateInfoByLatLng(latitude, longitude) {
     Geolocation.reverseGeoCode(latitude, longitude)
       .then(data => {
@@ -136,7 +155,7 @@ class ShopAddressSelect extends Component {
   }
 
   _onRegionDidChangeAnimated4Ios(e) {
-    console.log('_onRegionDidChangeAnimated4Ios.e====', e)
+    // console.log('_onRegionDidChangeAnimated4Ios.e====', e)
     this._onMapStatusChangeFinish4Android(e)
     
   }
@@ -370,6 +389,14 @@ class ShopAddressSelect extends Component {
       <KeyboardAwareToolBar
         initKeyboardHeight={0}
       >
+        {false &&
+          <View style={{position:'absolute',left:15,top:-60}}>
+            <TouchableOpacity onPress={()=>{this.resetPosition()}}>
+              <Image source={require('../../../assets/images/now_location.png')}/>
+            </TouchableOpacity>
+          </View>
+        }
+
         <View style={styles.shopInfosContainer}>
           <View style={styles.shopInfoContainer}>
             <Text style={styles.shopLabelTxt}>店铺名称</Text>
