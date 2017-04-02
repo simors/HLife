@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginTop: normalizeH(85),
+    alignItems: 'center',
   },
   services: {
     flexDirection: 'row',

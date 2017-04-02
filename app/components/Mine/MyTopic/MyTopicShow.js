@@ -64,7 +64,8 @@ export default class MyTopicShow extends Component {
                 {this.props.topic.abstract}
               </Text>
             </View>
-            <ImageGroupViewer images={image}
+            <ImageGroupViewer browse={false}
+                              images={image}
                               imageLineCnt={1}
                               containerStyle={{width: PAGE_WIDTH * 2 / 7, marginRight: 0}}/>
           </TouchableOpacity>
@@ -85,7 +86,8 @@ export default class MyTopicShow extends Component {
             <Text style={styles.contentStyle} numberOfLines={2}>
               {this.props.topic.abstract}
             </Text>
-            <ImageGroupViewer images={image}
+            <ImageGroupViewer browse={false}
+                              images={image}
                               imageLineCnt={3}
                               containerStyle={{flex: 1, marginLeft: 0, marginRight: 0}}/>
           </TouchableOpacity>

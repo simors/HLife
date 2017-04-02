@@ -321,6 +321,10 @@ class ArticleEditor extends Component {
     let data = this.props.data
     data[index].text = content
     this.inputChange(data)
+    // 内容高度小于显示高度是，不调整光标位置
+    if (this.state.contentHeight < this.state.scrollViewHeight) {
+      return
+    }
     let len = data.length
     if (len - 1 == index) {
       this.refs.scrollView.scrollTo({y: this.state.contentHeight - this.state.scrollViewHeight})
@@ -333,6 +337,10 @@ class ArticleEditor extends Component {
   }
 
   inputFocused(refName) {
+    // 内容高度小于显示高度是，不调整光标位置
+    if (this.state.contentHeight < this.state.scrollViewHeight) {
+      return
+    }
     setTimeout(() => {
       let scrollResponder = this.refs.scrollView.getScrollResponder();
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
