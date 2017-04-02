@@ -162,6 +162,7 @@ function handleLoginWithPwd(payload, formData) {
         userId: user.userInfo.id
       })
     }).catch((error) => {
+      dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
       if (payload.error) {
         payload.error(error)
       }

@@ -100,7 +100,7 @@ PasswordInput.defaultProps = {
 	placeholder: '设置密码(6-16位数字或字母)',
 	maxLength: 16, //6-16位数字或字母
 	autoFocus: false,
-  placeholderTextColor: '#B2B2B2',
+  placeholderTextColor: '#E1E1E1',
   editable: true
 }
 
