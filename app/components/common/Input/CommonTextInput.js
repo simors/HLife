@@ -123,6 +123,7 @@ class CommonTextInput extends Component {
           onFocus={this.props.onFocus}
           onBlur={this.props.onBlur}
           autoCorrect={this.props.autoCorrect}
+          autoCapitalize='none'
         />
         {this.renderClearBtn()}
       </View>

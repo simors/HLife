@@ -305,7 +305,10 @@ class MyShopIndex extends Component {
               contentContainerStyle={[styles.contentContainerStyle]}
             >
               <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
-                <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+                {this.props.shopDetail.coverUrl
+                  ? <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+                  : <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={require('../../../assets/images/background_shop.png')}/>
+                }
               </TouchableOpacity>
               <View style={styles.shopHead}>
                 <View style={styles.shopHeadLeft}>
@@ -410,6 +413,7 @@ class MyShopIndex extends Component {
       return
     }
     Actions.EDIT_SHOP()
+    // Actions.COMPLETE_SHOP_INFO()
   }
 
   activityManage() {

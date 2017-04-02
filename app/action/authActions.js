@@ -10,6 +10,7 @@ import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
+
 import * as AVUtils from '../util/AVUtils'
 import {calUserRegist, calRegistShoper} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
@@ -361,51 +362,76 @@ function handleProfileSubmit(payload, formData) {
 //   }
 // }
 
+
+
 function handleShopCertification(payload, formData) {
   return (dispatch, getState) => {
-    let smsPayload = {
-      phone: formData.phoneInput.text,
-      smsAuthCode: formData.smsAuthCodeInput.text,
-    }
-    lcAuth.verifySmsCode(smsPayload).then(() => {
-      let localImgs = []
-      if(formData.certificationInput.text) {
-        localImgs.push(formData.certificationInput.text)
-        return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
-          return leanUris
-        }).catch((error) => {
-          if (payload.error) {
-            payload.error(error)
-          }
-        })
-      }
-    }).then((leanUris) => {
-      let shopInfo = {
-        inviteCode: formData.invitationCodeInput.text,
-        name: formData.nameInput.text,
+
+    if(__DEV__) {
+      dispatch(shopCertification4UploadCertiImg(payload, formData))
+    }else{
+      let smsPayload = {
         phone: formData.phoneInput.text,
-        shopName: formData.shopNameInput.text,
-        shopAddress:formData.shopAddrInput && formData.shopAddrInput.text,
-        geo: formData.shopGeoInput && formData.shopGeoInput.text,
-        geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
-        geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
-        certification: leanUris[0],
+        smsAuthCode: formData.smsAuthCodeInput.text,
       }
-      return lcShop.shopCertification(shopInfo).then((shop) => {
-        dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
-        if (payload.success) {
-          payload.success(shop)
-        }
+      lcAuth.verifySmsCode(smsPayload).then(() => {
+        dispatch(shopCertification4UploadCertiImg(payload, formData))
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
         }
       })
-    }).then(() => {
+    }
+  }
+}
+
+function shopCertification4UploadCertiImg(payload, formData) {
+  return (dispatch, getState) =>{
+    let localImgs = []
+    if(formData.certificationInput.text) {
+      localImgs.push(formData.certificationInput.text)
+      return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
+        payload.certiImgLeanUris = leanUris
+        dispatch(shopCertification4Cloud(payload, formData))
+      }).catch((error) => {
+        if (payload.error) {
+          error.message = error.message || '上传营业执照异常'
+          payload.error(error)
+        }
+      })
+    }else{
+      if (payload.error) {
+        let error = {}
+        error.message = '请上传有效的营业执照'
+        payload.error(error)
+      }
+    }
+  }
+}
+
+function shopCertification4Cloud(payload, formData) {
+  return (dispatch, getState) =>{
+    let shopInfo = {
+      inviteCode: formData.invitationCodeInput.text,
+      name: formData.nameInput.text,
+      phone: formData.phoneInput.text,
+      shopName: formData.shopNameInput.text,
+      shopAddress:formData.shopAddrInput && formData.shopAddrInput.text,
+      geo: formData.shopGeoInput && formData.shopGeoInput.text,
+      geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
+      geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
+      certification: payload.certiImgLeanUris[0],
+    }
+    lcShop.shopCertification(shopInfo).then((shop) => {
       let userId = activeUserId(getState())
       dispatch(calRegistShoper({userId}))   // 计算注册成为店家的积分
+      dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
+      if (payload.success) {
+        payload.success(shop)
+      }
     }).catch((error) => {
       if (payload.error) {
+        error.message = error.message || '注册店铺失败，请稍候再试'
         payload.error(error)
       }
     })
@@ -527,11 +553,12 @@ function handleCompleteShopInfo(payload, formData) {
     let newPayload = {
       shopId: payload.shopId,
       shopCategoryObjectId: shopCategoryObjectId,
+      album: payload.album,
+      coverUrl: payload.coverUrl,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
+      contactNumber2: formData.servicePhone2Input.text,
       ourSpecial: formData.ourSpecialInput.text,
-      album: formData.shopAlbumInput.text,
-      coverUrl: formData.shopCoverInput.text,
       tagIds: formData.tagsInput.text,
     }
     lcAuth.submitCompleteShopInfo(newPayload).then((result) => {

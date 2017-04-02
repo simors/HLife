@@ -932,6 +932,7 @@ export function submitShopPromotion(payload) {
 }
 
 export function shopCertification(payload) {
+  // console.log('shopCertification.payload====', payload)
   let params = {
     inviteCode: payload.inviteCode,
     name: payload.name,
@@ -943,9 +944,11 @@ export function shopCertification(payload) {
     geoDistrict: payload.geoDistrict,
     certification: payload.certification,
   }
+// console.log('shopCertification.params====', params)
   return AV.Cloud.run('hLifeShopCertificate', params).then((shopInfo) => {
     return shopInfo
   }, (err) => {
+    console.log('hLifeShopCertificate.err=====', err)
     throw err
   })
 }

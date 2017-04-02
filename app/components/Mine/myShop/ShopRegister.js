@@ -197,7 +197,7 @@ class ShopRegister extends Component {
   }
 
   submitErrorCallback(error) {
-    Toast.show(error.message)
+    Toast.show(error.message || '店铺注册失败')
   }
 
   onButtonPress = () => {
@@ -420,7 +420,8 @@ const styles = StyleSheet.create({
   },
   shopAddress: {
     height: normalizeH(42),
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingRight:10
   },
   shopAddressContainer: {
     flex: 1,
