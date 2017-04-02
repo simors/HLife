@@ -760,6 +760,7 @@ export function fetchUserOwnedShopInfo(payload) {
     user = AV.Object.createWithoutData('_User', payload.userId)
   }
   query.equalTo('owner', user)
+  query.equalTo('status', 1)
   query.include(['owner', 'targetShopCategory', 'containedTag', 'containedPromotions'])
   return query.first().then((result)=>{
     // console.log('fetchUserOwnedShopInfo.result===', result)

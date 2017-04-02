@@ -15,6 +15,8 @@ export const ShopRecord = Record({
   shopAddress: undefined,//店铺地址
   coverUrl: undefined, //店铺封面图片地址
   contactNumber: undefined, //店铺联系电话（客服电话）
+  contactNumber2: undefined, //店铺联系电话（备用电话）
+  certification: '',
   targetShopCategory: {}, //店铺所属分类信息
   geo:[], //店铺地理坐标
   geoCity:undefined, //店铺地理坐标对应城市名
@@ -52,6 +54,8 @@ export class ShopInfo extends ShopRecord {
         record.set('shopAddress', attrs.shopAddress)
         record.set('coverUrl', attrs.coverUrl)
         record.set('contactNumber', attrs.contactNumber)
+        record.set('contactNumber2', attrs.contactNumber2)
+        record.set('certification', attrs.certification)
 
         let targetShopCategory = {}
         if(attrs.targetShopCategory && attrs.targetShopCategory.attributes) {

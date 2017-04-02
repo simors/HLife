@@ -394,7 +394,7 @@ class CompleteShopInfo extends Component {
                 </View>
               </View>
               <View style={styles.shopBaseInfoRightWrap}>
-                <TouchableOpacity onPress={()=>{}}>
+                <TouchableOpacity onPress={()=>{Actions.SHOP_CERTIFICATION_INFO_SHOW()}}>
                   <Image source={require("../../../assets/images/shop_certified.png")}/>
                 </TouchableOpacity>
               </View>
