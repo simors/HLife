@@ -65,6 +65,8 @@ class ShopAddressSelect extends Component {
       showShopInfoArea: true,
       showLoading: false
     }
+
+    this.num = 1
   }
 
   componentDidMount() {
@@ -118,20 +120,12 @@ class ShopAddressSelect extends Component {
             shopAddress: data.address,
             currentCity: data.city,
             currentDistrict: data.district,
-            center: {
-              latitude: latitude,
-              longitude: longitude,
-            },
           })
         }else {
           this.setState({
             shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber,
             currentCity: data.city,
             currentDistrict: data.district,
-            center: {
-              latitude: latitude,
-              longitude: longitude,
-            },
           })
         }
         // console.log('reverseGeoCode.this.state===', this.state)
@@ -142,8 +136,9 @@ class ShopAddressSelect extends Component {
   }
 
   _onRegionDidChangeAnimated4Ios(e) {
-    // console.log('_onRegionDidChangeAnimated4Ios.e====', e)
+    console.log('_onRegionDidChangeAnimated4Ios.e====', e)
     this._onMapStatusChangeFinish4Android(e)
+    
   }
 
   _onMapStatusChangeFinish4Android(e) {
