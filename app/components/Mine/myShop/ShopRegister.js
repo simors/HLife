@@ -18,10 +18,9 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
 import {Actions} from 'react-native-router-flux'
-import AV from 'leancloud-storage'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import {normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {normalizeW, normalizeH, normalizeBorder, em} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
@@ -241,8 +240,9 @@ class ShopRegister extends Component {
         <View style={styles.body}>
 
           <KeyboardAwareScrollView
-            contentContainerStyle={{backgroundColor: 'rgba(0, 0, 0, 0.05)'}}
+            contentContainerStyle={{backgroundColor: '#F5F5F5'}}
             automaticallyAdjustContentInsets={false}
+            keyboardShouldPersistTaps={true}
           >
             <View style={styles.subTitleWrap}>
               <Text style={styles.subTitle}>欢迎加入{appConfig.APP_NAME}，给你的店铺带好更好的收入</Text>
@@ -339,6 +339,7 @@ class ShopRegister extends Component {
                   <CommonTextInput
                     {...invitationCodeInput}
                     placeholder="输入邀请码"
+                    autoCorrect={false}
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     initValue={this.state.qRCode}
@@ -362,7 +363,7 @@ class ShopRegister extends Component {
               <View style={[styles.inputWrap, {marginTop: normalizeH(8)}]}>
                 <View style={{flex: 1}}>
                   <Text style={[styles.inputLabel, {marginTop: normalizeH(33)}]}>店铺认证</Text>
-                  <Text style={{marginTop: normalizeH(15), fontSize: 12, color: '#B2B2B2'}}>请上传有效营业执照</Text>
+                  <Text style={{marginTop: normalizeH(15), fontSize: em(12), color: '#B2B2B2'}}>请上传有效营业执照</Text>
                 </View>
                 <ImageInput
                   {...certificationInput}
