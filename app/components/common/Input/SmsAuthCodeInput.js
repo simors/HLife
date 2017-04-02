@@ -36,7 +36,7 @@ class SmsAuthCodeInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: "smsAuthCodeInput",
-      checkValid: this.validInput
+      checkValid: this.props.checkValid || this.validInput
     }
     this.props.initInputForm(formInfo)
   }

@@ -42,13 +42,24 @@ const nameInput = {
   formKey: commonForm,
   stateKey: Symbol('nameInput'),
   type: "nameInput",
-
+  checkValid: (data) => {
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入姓名'}
+  }
 }
 const IDInput = {
   formKey: commonForm,
   stateKey: Symbol('IDInput'),
   type: "IDInput",
-  placeholder: "请填写居民身份证号"
+  placeholder: "请填写居民身份证号",
+  checkValid: (data) => {
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入身份证号'}
+  }
 }
 
 const phoneInput = {
@@ -66,19 +77,37 @@ const regionPicker = {
   formKey: commonForm,
   stateKey: Symbol('regionPicker'),
   type: "regionPicker",
-  placeholder: "点击选择地址"
+  placeholder: "点击选择地址",
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请选择常驻地'}
+  }
 }
 
 const inviteCodeInput = {
   formKey: commonForm,
   stateKey: Symbol('inviteCodeInput'),
   type: "inviteCodeInput",
+  checkValid: (data) => {
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入邀请码'}
+  }
 }
 
 const idCardPhotoInput = {
   formKey: commonForm,
   stateKey: Symbol('idCardPhotoInput'),
   type: "idCardPhotoInput",
+  checkValid: (data) => {
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请上传身份证照片'}
+  }
 }
 
 class PromoterAuth extends Component {
@@ -158,7 +187,7 @@ class PromoterAuth extends Component {
                 <View style={{flex: 1,}}>
                   <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(42)}}
                                     textInput={styles.smsAuthCodeTextInput}
-                                    inputContainer={{paddingLeft: 17, paddingRight: 17,fontSize:em(17)}}
+                                    inputContainer={{paddingLeft: 17, paddingRight: 17}}
                                     placeholder = "填写手机验证码"
                                     codeTextContainer={{width: normalizeW(115), height: normalizeH(35)}}
                                     codeTextContainerDisable={{width: normalizeW(115), height: normalizeH(35)}}
