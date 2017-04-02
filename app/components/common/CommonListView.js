@@ -11,8 +11,11 @@ import {
   RefreshControl,
   ProgressBarAndroid,
   ActivityIndicator,
+  Dimensions,
 } from "react-native"
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class CommonListView extends Component {
 
@@ -26,6 +29,7 @@ export default class CommonListView extends Component {
     super(props)
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
+      contentHeight: 0,
       hasMore: true,
       headerLoadRefresh: props.headerLoadRefresh === true,
       hideHeader: props.hideHeader === true,
@@ -45,6 +49,7 @@ export default class CommonListView extends Component {
       <ListView
         ref="listView"
         enableEmptySections={true}
+        onContentSizeChange={(contentWidth, contentHeight) => this.setState({contentHeight})}
         automaticallyAdjustContentInsets={false}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={true}
@@ -138,9 +143,16 @@ export default class CommonListView extends Component {
    * LoadMore
    */
   onLoadMore = () => {
+    if (this.state.contentHeight < this.props.contentViewHeight) {
+      this.setState({hasMore: false})
+      return
+    }
     return this.props.loadMoreData()
   }
+}
 
+CommonListView.defaultProps = {
+  contentViewHeight: PAGE_HEIGHT,
 }
 
 const styles = StyleSheet.create({
