@@ -61,6 +61,10 @@ export default class ArticleViewer extends Component {
     })
   }
 
+  androidHardwareBackPress() {
+    this.toggleModal(false)
+  }
+
   renderImageModal() {
     let index = this.images.findIndex((val) => {
       return (val == this.state.showImg)
@@ -74,7 +78,7 @@ export default class ArticleViewer extends Component {
           visible={this.state.imgModalShow}
           transparent={false}
           animationType='fade'
-          onRequestClose={()=>{}}
+          onRequestClose={()=>{this.androidHardwareBackPress()}}
         >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
