@@ -425,7 +425,7 @@ class EditShop extends Component {
                 </View>
               </View>
 
-              <View style={[styles.inputWrap, {padding:15,paddingTop:0,marginBottom:80}]}>
+              <View style={[styles.inputWrap, {padding:15,paddingTop:0,borderBottomWidth:0}]}>
                 <View style={[styles.inputBox]}>
                   <TextAreaInput
                     {...ourSpecialInput}
@@ -438,27 +438,27 @@ class EditShop extends Component {
                 </View>
               </View>
 
+              <View style={{padding:15,backgroundColor:'white',paddingTop:0}}>
+                <CommonButton
+                  buttonStyle={{}}
+                  onPress={()=>{this.onEditShopBtnPress()}}
+                />
+              </View>
+
             </View>
 
           </KeyboardAwareScrollView>
 
-          <View style={{position:'absolute',bottom:0,left:0,right:0,padding:15,backgroundColor:'white'}}>
-            <CommonButton
-              buttonStyle={{}}
-              onPress={()=>{this.onEditShopBtnPress()}}
-            />
-          </View>
-
           {this.state.shopTagsSelectShow &&
-          <ShopTagsSelect
-            show={this.state.shopTagsSelectShow}
-            containerStyle={{top: this.state.shopTagsSelectTop}}
-            scrollViewStyle={{height:150}}
-            onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
-            tags={this.state.shopCategoryContainedTag}
-            selectedTags={this.state.selectedShopTags}
-            onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
-          />
+            <ShopTagsSelect
+              show={this.state.shopTagsSelectShow}
+              containerStyle={{top: this.state.shopTagsSelectTop}}
+              scrollViewStyle={{height:150}}
+              onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
+              tags={this.state.shopCategoryContainedTag}
+              selectedTags={this.state.selectedShopTags}
+              onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
+            />
           }
 
         </View>

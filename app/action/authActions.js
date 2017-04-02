@@ -553,11 +553,12 @@ function handleCompleteShopInfo(payload, formData) {
     let newPayload = {
       shopId: payload.shopId,
       shopCategoryObjectId: shopCategoryObjectId,
+      album: payload.album,
+      coverUrl: payload.coverUrl,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
+      contactNumber2: formData.servicePhone2Input.text,
       ourSpecial: formData.ourSpecialInput.text,
-      album: formData.shopAlbumInput.text,
-      coverUrl: formData.shopCoverInput.text,
       tagIds: formData.tagsInput.text,
     }
     lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
