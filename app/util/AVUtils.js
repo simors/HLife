@@ -144,28 +144,31 @@ export function configurePush(options) {
       }
 
       if(notification.foreground) {//程序在前台
-        Popup.confirm({
-          title: data.title || '邻家优店通知',
-          content: data.alert || '',
-          ok: {
-            text: '查看',
-            style: {color: '#FF7819'},
-            callback: ()=>{
-              // console.log('ok')
-              if(data.sceneName) {
-                Actions[data.sceneName](data.sceneParams)
-              }else{
-                Actions.MESSAGE_BOX()
+        // if(!Popup.popup) {
+          Popup.confirm({
+            title: data.title || '邻家优店通知',
+            content: data.alert || '',
+            ok: {
+              text: '查看',
+              style: {color: '#FF7819'},
+              callback: ()=>{
+                // console.log('ok')
+                if(data.sceneName) {
+                  Actions[data.sceneName](data.sceneParams)
+                }else{
+                  Actions.MESSAGE_BOX()
+                }
+              }
+            },
+            cancel: {
+              text: '取消',
+              callback: ()=>{
+                // console.log('cancel')
               }
             }
-          },
-          cancel: {
-            text: '取消',
-            callback: ()=>{
-              // console.log('cancel')
-            }
-          }
-        })
+          })
+        // }
+        
       }else {//程序在后台
         if(notification.userInteraction) {//用户点击通知栏消息
           // Toast.show(notification.data.userInfo.userName)
