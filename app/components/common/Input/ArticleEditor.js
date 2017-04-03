@@ -61,9 +61,10 @@ class ArticleEditor extends Component {
       scrollViewHeight: 0,
       contentHeight: 0,
       showToolbar: false,
+      compHeight: 0,
     }
     this.comp = [this.renderTextInput("", 0, false)]
-    this.compHeight = 0
+    // this.compHeight = 0
     this.inputRef = []
     this.toolbarHeight = normalizeH(40)
   }
@@ -77,8 +78,12 @@ class ArticleEditor extends Component {
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
 
-    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
-    this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding - this.toolbarHeight)})
+    // this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
+    let compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
+    this.setState({
+      compHeight: compHeight,
+      editorHeight: new Animated.Value(compHeight - this.state.keyboardPadding - this.toolbarHeight)
+    })
 
     let initText = []
     if (this.props.initValue) {
@@ -104,8 +109,11 @@ class ArticleEditor extends Component {
 
   componentWillReceiveProps(newProps) {
     if (this.props.wrapHeight != newProps.wrapHeight) {
-      this.compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
-      this.setState({editorHeight: new Animated.Value(this.compHeight - this.state.keyboardPadding- this.toolbarHeight)})
+      let compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
+      this.setState({
+        compHeight: compHeight,
+        editorHeight: new Animated.Value(compHeight - this.state.keyboardPadding- this.toolbarHeight)
+      })
     }
 
     if (this.props.data != newProps.data) {
@@ -153,10 +161,10 @@ class ArticleEditor extends Component {
     })
     if (isFocus) {
       this.setState({showToolbar: true})
-      this.toolbarHeight = normalizeH(40)
     }
+    this.toolbarHeight = normalizeH(40)
 
-    let newEditorHeight = this.compHeight - e.endCoordinates.height - this.toolbarHeight
+    let newEditorHeight = this.state.compHeight - e.endCoordinates.height - this.toolbarHeight
     Animated.timing(this.state.editorHeight, {
       toValue: newEditorHeight,
       duration: 210,
@@ -177,7 +185,7 @@ class ArticleEditor extends Component {
       this.props.onBlurEditor()
     }
     Animated.timing(this.state.editorHeight, {
-      toValue: this.compHeight,
+      toValue: this.state.compHeight,
       duration: 210,
     }).start();
 
@@ -370,6 +378,11 @@ class ArticleEditor extends Component {
           if (this.props.onFocusEditor) {
             this.props.onFocusEditor()
           }
+          {/*let newEditorHeight = this.compHeight - this.state.keyboardPadding - this.toolbarHeight*/}
+          {/*Animated.timing(this.state.editorHeight, {*/}
+            {/*toValue: newEditorHeight,*/}
+            {/*duration: 210,*/}
+          {/*}).start();*/}
           this.setState({cursor: index, showToolbar: true})
           this.inputFocused("content_" + index)
         }}
@@ -442,11 +455,6 @@ class ArticleEditor extends Component {
         openType: 'camera',
         success: (response) => {
           this.insertImageComponent(response.path)
-          // this.uploadImg({
-          //   uri: response.path
-          // })
-          // console.log('openPicker==response==', response.path)
-          // console.log('openPicker==response==', response.size)
         },
         fail: (response) => {
           Toast.show(response.message)
@@ -457,11 +465,6 @@ class ArticleEditor extends Component {
         openType: 'gallery',
         success: (response) => {
           this.insertImageComponent(response.path)
-          // this.uploadImg({
-          //   uri: response.path
-          // })
-          // console.log('openPicker==response==', response.path)
-          // console.log('openPicker==response==', response.size)
         },
         fail: (response) => {
           Toast.show(response.message)
@@ -484,7 +487,7 @@ class ArticleEditor extends Component {
 
   render() {
     return (
-      <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
+      <View style={{width: PAGE_WIDTH, height: this.state.compHeight, backgroundColor: 'white'}}>
         <Animated.View style={{height: this.state.editorHeight}}>
           <ScrollView
             ref="scrollView"
