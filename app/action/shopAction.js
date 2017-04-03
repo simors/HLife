@@ -580,7 +580,7 @@ export function fetchGuessYouLikeShopList(payload) {
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
     let localImgs = []
-    console.log('submitShopPromotion.payload===', payload)
+    // console.log('submitShopPromotion.payload===', payload)
     if(payload.localCoverImgUri){
       // console.log('submitShopPromotion.payload.localCoverImgUri===', payload.localCoverImgUri)
       localImgs.push(payload.localCoverImgUri)

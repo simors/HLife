@@ -66,7 +66,7 @@ class PublishShopPromotion extends Component {
       DEFAULT: 'DEFAULT_TYPE_INPUT',
       CUSTOM: 'CUSTOM_TYPE_INPUT',
     }
-    this.localCoverImgUri = []
+    this.localCoverImgUri = ''
     this.localRichTextImagesUrls = []
     this.isPublishing = false
 
@@ -484,7 +484,7 @@ class PublishShopPromotion extends Component {
   }
 
   submitForm() {
-    console.log('submitForm.this.state=====', this.state)
+    // console.log('submitForm.this.state=====', this.state)
     this.props.submitShopPromotion({
       ...this.state.form,
       localCoverImgUri: this.localCoverImgUri,

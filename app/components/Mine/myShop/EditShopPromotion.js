@@ -70,7 +70,7 @@ class EditShopPromotion extends Component {
 
     this.localRichTextImagesUrls = []
     this.leanRichTextImagesUrls = []
-    this.localCoverImgUri = props.shopPromotion.coverUrl
+    this.localCoverImgUri = props.shopPromotion.coverUrl || ''
     this.isPublishing = false
 
     this.state = {
@@ -302,6 +302,7 @@ class EditShopPromotion extends Component {
       return false
     }
 
+    console.log('this.localCoverImgUri===', this.localCoverImgUri)
     if(!this.localCoverImgUri) {
       Toast.show('请添加封面图片')
       return false
