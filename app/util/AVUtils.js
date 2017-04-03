@@ -144,7 +144,7 @@ export function configurePush(options) {
       }
 
       if(notification.foreground) {//程序在前台
-        // if(!Popup.popup) {
+        if(!Popup.popup) {
           Popup.confirm({
             title: data.title || '邻家优店通知',
             content: data.alert || '',
@@ -152,6 +152,7 @@ export function configurePush(options) {
               text: '查看',
               style: {color: '#FF7819'},
               callback: ()=>{
+                Popup.popup = null
                 // console.log('ok')
                 if(data.sceneName) {
                   Actions[data.sceneName](data.sceneParams)
@@ -163,11 +164,12 @@ export function configurePush(options) {
             cancel: {
               text: '取消',
               callback: ()=>{
+                Popup.popup = null
                 // console.log('cancel')
               }
             }
           })
-        // }
+        }
         
       }else {//程序在后台
         if(notification.userInteraction) {//用户点击通知栏消息
