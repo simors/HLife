@@ -6,6 +6,7 @@ import {Platform} from 'react-native'
 import {Geolocation} from '../components/common/BaiduMap'
 import * as DeviceInfo from 'react-native-device-info'
 import * as configTypes from '../constants/configActionTypes'
+import {abbrProvince, abbrCity} from '../util/Utils'
 
 let updateGeolocation = createAction(configTypes.UPDATE_GEO_LOCATION)
 
@@ -18,8 +19,8 @@ export function getCurrentLocation() {
         longitude: geoPoint.longitude,
         address: "湖南省长沙市岳麓区麓松路539号",
         country: "中国",
-        province: "湖南省",
-        city: "长沙市",
+        province: "湖南",
+        city: "长沙",
         district: "岳麓区",
         street: "麓松路",
         streetNumber: "539号",
@@ -34,8 +35,8 @@ export function getCurrentLocation() {
               longitude: geoPoint.longitude,
               address: position.address,
               country: position.country,
-              province: position.province,
-              city: position.city,
+              province: abbrProvince(position.province),
+              city: abbrCity(position.city),
               district: position.district,
               street: position.streetName,
               streetNumber: position.streetNumber,
@@ -52,8 +53,8 @@ export function getCurrentLocation() {
             longitude: geoPoint.longitude,
             address: geoPoint.address,
             country: geoPoint.country,
-            province: geoPoint.province,
-            city: geoPoint.city,
+            province: abbrProvince(geoPoint.province),
+            city: abbrCity(geoPoint.city),
             district: geoPoint.district,
             street: geoPoint.street,
             streetNumber: geoPoint.streetNumber,

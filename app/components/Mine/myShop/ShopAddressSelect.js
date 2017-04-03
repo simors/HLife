@@ -18,6 +18,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import {abbrProvince, abbrCity} from '../../../util/Utils'
 
 import {
   MapView,
@@ -137,13 +138,13 @@ class ShopAddressSelect extends Component {
         if(data.address) {
           this.setState({
             shopAddress: data.address,
-            currentCity: data.city,
+            currentCity: abbrCity(data.city),
             currentDistrict: data.district,
           })
         }else {
           this.setState({
             shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber,
-            currentCity: data.city,
+            currentCity: abbrCity(data.city),
             currentDistrict: data.district,
           })
         }
@@ -248,7 +249,7 @@ class ShopAddressSelect extends Component {
           .then(data => {
             // console.log('_onSearchResultPress.reverseGeoCode.data===', data)
             this.setState({
-              currentCity: data.city,
+              currentCity: abbrCity(data.city),
               currentDistrict: data.district,
             }, ()=>{
               this.getGeoCode()
