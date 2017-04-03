@@ -430,7 +430,7 @@ class ShopDetail extends Component {
         name: this.props.shopDetail.owner.nickname,
         members: [this.props.currentUser, this.props.shopDetail.owner.id],
         conversationType: PERSONAL_CONVERSATION,
-        title: this.props.shopDetail.owner.nickname,
+        title: this.props.shopDetail.shopName,
       }
       Actions.CHATROOM(payload)
     }
