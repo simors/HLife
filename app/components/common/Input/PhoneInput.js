@@ -53,7 +53,8 @@ class  PhoneInput extends Component {
     }
 
     let phoneNum = data.text
-    if (!(/^1[34578]\d{9}$/.test(phoneNum))) {
+    if (!(/^1[34578]\d{9}$/.test(phoneNum))
+      && !/^([0-9]{3,4}-)?[0-9]{7,8}$/.test(phoneNum)) {
       return {isVal:false, errMsg:"手机号码格式有误，请重填"}
     }
     return {isVal:true, errMsg:"ok"}
