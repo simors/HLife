@@ -781,8 +781,6 @@ const styles = StyleSheet.create({
     marginLeft: 51,
     marginTop: 10,
     padding:6,
-    borderWidth: normalizeBorder(),
-    borderColor: '#b2b2b2'
   },
   typeDescTxt: {
     color: '#b2b2b2',
