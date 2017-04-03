@@ -136,11 +136,7 @@ class ShopCertificationInfoShow extends Component {
 							<Text style={styles.explainTitle}>说明</Text>
 							<Text style={styles.explainTxt}>以上信息为平台认证信息，不得随意修改。</Text>
 							<Text style={styles.explainTxt}>
-								如需注册新店，可以选择
-								<TouchableOpacity style={{width:63,height:17}} onPress={()=>{this.unregistShop()}}>
-									<Text style={styles.sltTxt}>注销店铺</Text>
-								</TouchableOpacity>
-								，但注销后此店铺的所有信息将在平台上删除，请慎重选择。
+								如需注册新店，可以选择<Text onPress={()=>{this.unregistShop()}} style={styles.sltTxt}>注销店铺</Text>，但注销后此店铺的所有信息将在平台上删除，请慎重选择。
 							</Text>
 						</View>
 
