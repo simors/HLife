@@ -152,7 +152,7 @@ class MyShopPromotionManageIndex extends Component {
     if(containedPromotions && containedPromotions.length) {
       return [].concat(shopPromotion, containedPromotions)
     }
-    return shopPromotion
+    return [shopPromotion]
   }
 
   closeShopPromotion(shopPromotion) {

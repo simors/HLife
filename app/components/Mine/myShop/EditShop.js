@@ -204,8 +204,8 @@ class EditShop extends Component {
           }
         })
       },
-      error: ()=>{
-        Toast.show(msg || '更新店铺失败')
+      error: (error)=>{
+        Toast.show(error.message || '更新店铺失败')
       }
     })
   }

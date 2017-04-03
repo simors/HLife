@@ -599,7 +599,7 @@ function handleEditShopInfo(payload, formData) {
       }
     }, (reason)=>{
       if (payload.error) {
-        payload.error(reason || '更新店铺失败')
+        payload.error(reason || {message: '更新店铺失败'})
       }
     })
   }

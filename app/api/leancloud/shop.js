@@ -331,6 +331,7 @@ export function followShop(payload) {
     }).then(()=>{
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
       // console.log('followShop.shopDetail==', shopDetail)
+      // console.log('followShop.currentUser==', currentUser)
       if(currentUser.id != shopDetail.owner.id) {
         AVUtils.pushByUserList([shopDetail.owner.id], {
           alert: '有新的用户关注了您的店铺,立即查看',

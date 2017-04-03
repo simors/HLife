@@ -271,7 +271,7 @@ class MyShopIndex extends Component {
           {commentsView}
 
           <View style={styles.commentFoot}>
-            <TouchableOpacity onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
+            <TouchableOpacity onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.shopDetail.id})}}>
               <Text style={styles.allCommentsLink}>查看全部评价</Text>
             </TouchableOpacity>
           </View>

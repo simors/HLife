@@ -471,7 +471,7 @@ export function submitEditShopInfo(payload) {
               reject(reason)
             })
           }, ()=>{
-            reject('上传店铺相册失败')
+            reject({message: '上传店铺相册失败'})
           })
         }else {
           _submitEditShopInfo(shop, payload).then((result)=>{
@@ -481,7 +481,7 @@ export function submitEditShopInfo(payload) {
           })
         }
       }, ()=>{
-        reject('上传店铺封面失败')
+        reject({message: '上传店铺封面失败'})
       })
 
     }else {
@@ -494,7 +494,7 @@ export function submitEditShopInfo(payload) {
             reject(reason)
           })
         }, ()=>{
-          reject('上传店铺相册失败')
+          reject({message: '上传店铺相册失败'})
         })
       }else {
         _submitEditShopInfo(shop, payload).then((result)=>{

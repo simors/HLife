@@ -29,9 +29,9 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
 
-import {fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
+import {fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
-import {selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
+import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import Comment from '../common/Comment'
 import ImageGallery from '../common/ImageGallery'
@@ -61,6 +61,7 @@ class ShopDetail extends Component {
         this.props.userIsFollowedShop({id: this.props.id})
         this.props.fetchUserFollowees()
         this.props.fetchUserUpShopInfo({id: this.props.id})
+        this.props.fetchUserOwnedShopInfo()
       }
       // this.props.fetchShopCommentList({id: this.props.shopDetail.id})
     })
@@ -429,7 +430,7 @@ class ShopDetail extends Component {
         name: this.props.shopDetail.owner.nickname,
         members: [this.props.currentUser, this.props.shopDetail.owner.id],
         conversationType: PERSONAL_CONVERSATION,
-        title: this.props.shopDetail.owner.nickname,
+        title: this.props.shopDetail.shopName,
       }
       Actions.CHATROOM(payload)
     }
@@ -455,6 +456,12 @@ class ShopDetail extends Component {
 
   render() {
     // console.log('this.props.shopDetail===', this.props.shopDetail)
+
+    let detailWrapStyle = {}
+    if(!this.isSelfShop()) {
+      detailWrapStyle = styles.detailWrap
+    }
+
     return (
       <View style={styles.container}>
         <Header
@@ -465,7 +472,7 @@ class ShopDetail extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <View style={styles.detailWrap}>
+          <View style={detailWrapStyle}>
             <ScrollView
               contentContainerStyle={[styles.contentContainerStyle]}
             >
@@ -552,19 +559,7 @@ class ShopDetail extends Component {
             </ScrollView>
           </View>
 
-          <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.openCommentScene()}}>
-              <View style={[styles.vItem]}>
-                <Image style={{}} source={require('../../assets/images/message.png')}/>
-                <Text style={[styles.vItemTxt, styles.shopCommentInput]}>点评</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
-              <Image style={{}} source={require('../../assets/images/contacted.png')}/>
-              <Text style={[styles.contactedTxt]}>私信</Text>
-            </TouchableOpacity>
-          </View>
+          {this.renderBottomView()}
 
           <Comment
             modalVisible={this.state.modalVisible}
@@ -573,6 +568,35 @@ class ShopDetail extends Component {
             submitComment={this.submitComment.bind(this)}
           />
         </View>
+      </View>
+    )
+  }
+
+  isSelfShop() {
+    if(this.props.userOwnedShopInfo && (this.props.userOwnedShopInfo.id == this.props.shopDetail.id)) {
+      return true
+    }
+    return false
+  }
+
+  renderBottomView() {
+    if(this.isSelfShop()) {
+      return null
+    }
+
+    return (
+      <View style={styles.shopCommentWrap}>
+        <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.openCommentScene()}}>
+          <View style={[styles.vItem]}>
+            <Image style={{}} source={require('../../assets/images/message.png')}/>
+            <Text style={[styles.vItemTxt, styles.shopCommentInput]}>点评</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
+          <Image style={{}} source={require('../../assets/images/contacted.png')}/>
+          <Text style={[styles.contactedTxt]}>私信</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -593,6 +617,8 @@ const mapStateToProps = (state, ownProps) => {
   const userIsUpedShop = selectUserIsUpedShop(state, ownProps.id)
 
   const guessYouLikeList = selectGuessYouLikeShopList(state)
+
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
 
   // let shopDetail = ShopDetailTestData.shopDetail
   // const shopComments = ShopDetailTestData.shopComments
@@ -617,6 +643,7 @@ const mapStateToProps = (state, ownProps) => {
     userFollowees: userFollowees,
     userIsUpedShop: userIsUpedShop,
     currentUser: authSelector.activeUserId(state),
+    userOwnedShopInfo: userOwnedShopInfo,
   }
 }
 
@@ -636,7 +663,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserUpShopInfo,
   userUpShop,
   userUnUpShop,
-  fetchGuessYouLikeShopList
+  fetchGuessYouLikeShopList,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

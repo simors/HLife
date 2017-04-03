@@ -52,12 +52,12 @@ class Mine extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      console.log('this.props.identity=====', this.props.identity)
+      // console.log('this.props.identity=====', this.props.identity)
       if (this.props.identity && this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
-        console.log('this.props.identity==1==')
+        // console.log('this.props.identity==1==')
         Actions.MY_SHOP_INDEX()
       }else {
-        console.log('this.props.identity==2===')
+        // console.log('this.props.identity==2===')
         Actions.SHOPR_EGISTER()
       }
 

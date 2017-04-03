@@ -70,7 +70,7 @@ class EditShopPromotion extends Component {
 
     this.localRichTextImagesUrls = []
     this.leanRichTextImagesUrls = []
-    this.localCoverImgUri = props.shopPromotion.coverUrl
+    this.localCoverImgUri = props.shopPromotion.coverUrl || ''
     this.isPublishing = false
 
     this.state = {
@@ -781,8 +781,6 @@ const styles = StyleSheet.create({
     marginLeft: 51,
     marginTop: 10,
     padding:6,
-    borderWidth: normalizeBorder(),
-    borderColor: '#b2b2b2'
   },
   typeDescTxt: {
     color: '#b2b2b2',
