@@ -78,6 +78,22 @@ export default class CascadePicker extends Component {
         this.wheelFlex[i] = 1
       }
     }
+    if (!this.props.initSelected) {
+      this.setState({selectedValues: this.constrctInitSelected()})
+    } else {
+      this.setState({selectedValues: this.props.initSelected})
+    }
+  }
+
+  constrctInitSelected() {
+    let data = this.props.data
+    let selectedValue = []
+    let tmpData = data
+    for (let i = 0; i < this.level; i++) {
+      selectedValue.push(tmpData[0].label)
+      tmpData = tmpData[0].value
+    }
+    return selectedValue
   }
 
   close() {
@@ -97,9 +113,7 @@ export default class CascadePicker extends Component {
 
   _handleSubmit() {
     if (this.props.onSubmit) {
-      this.props.onSubmit({
-        selectedValues: this.state.selectedValues,
-      })
+      this.props.onSubmit(this.state.selectedValues)
     }
     this.close()
   }
@@ -107,6 +121,19 @@ export default class CascadePicker extends Component {
   _handleValueChange(value, index) {
     let selected = this.state.selectedValues
     selected[index] = value
+    let tmpData = this.props.data
+    for (let i = 0; i <= index; i++) {
+      for (let j = 0; j < tmpData.length; j++) {
+        if (selected[i] == tmpData[j].label) {
+          tmpData = tmpData[j].value
+          break
+        }
+      }
+    }
+    for (let i = index + 1; i < this.level; i++) {
+      selected[i] = tmpData[0].label
+      tmpData = tmpData[0].value
+    }
     this.setState({selectedValues: selected})
   }
 
@@ -187,11 +214,11 @@ export default class CascadePicker extends Component {
     return (
       <View style={styles.pickerContainer}>
         <View style={styles.navWrap}>
-          <TouchableOpacity style={styles.navBtn} onPress={this._handleCancel}>
+          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleCancel}>
             <Text style={styles.btnText}>取消</Text>
           </TouchableOpacity>
           <Text style={styles.titleText}>{this.props.title}</Text>
-          <TouchableOpacity style={styles.navBtn} onPress={this._handleSubmit}>
+          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleSubmit}>
             <Text style={styles.btnText}>确定</Text>
           </TouchableOpacity>
         </View>
@@ -214,6 +241,10 @@ export default class CascadePicker extends Component {
         >
           {this.renderPicker()}
         </Modal>
+
+        <TouchableOpacity onPress={this.open}>
+          {this.props.children}
+        </TouchableOpacity>
       </View>
     )
   }
@@ -226,6 +257,7 @@ CascadePicker.defaultProps = {
   onSubmit: () => {},
   onCancel: () => {},
   level: 1,
+  isVisible: true,
 }
 
 const styles = StyleSheet.create({
@@ -234,6 +266,7 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     flex: 1,
+    height: normalizeH(300),
     backgroundColor: '#FFF'
   },
   pickerWrap: {
@@ -255,6 +288,8 @@ const styles = StyleSheet.create({
   },
   titleText: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     fontSize: em(17),
     color: '#5a5a5a',
   },
