@@ -32,6 +32,7 @@ import {isInputValid} from '../../../selector/inputFormSelector'
 import RegionPicker from '../../common/Input/RegionPicker'
 import {activeUserInfo} from '../../../selector/authSelector'
 import ImageInput from '../../common/Input/ImageInput'
+import {getLocation} from '../../../selector/locSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -209,7 +210,12 @@ class PromoterAuth extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>常驻地</Text>
                 <View style={{flex: 1}}>
-                  <RegionPicker {...regionPicker} mode="segment" containerStyle={{height: normalizeH(42)}}
+                  <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(42)}}
+                                initSelected={this.props.location ? [
+                                  this.props.location.province,
+                                  this.props.location.city,
+                                  this.props.location.district
+                                ] : undefined}
                                 inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
                 </View>
               </View>
@@ -287,9 +293,14 @@ const mapStateToProps = (state, ownProps) => {
   } else {
     phoneValid = true
   }
+  let location = getLocation(state)
+  if (!location.latitude) {
+    location = undefined
+  }
   return {
     phoneValid: phoneValid,
     userInfo: userInfo,
+    location: location
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({

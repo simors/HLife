@@ -14,7 +14,6 @@ import NicknameView from '../components/Login/NicknameView'
 import AgreementView from '../components/Login/AgreementView'
 import RetrievePwdVerifyCode from '../components/Login/RetrievePwdVerifyCode'
 import PublishViewTest from '../components/common/Input/PublishViewTest'
-import PickerTest from '../components/common/Input/PickerTest'
 import CommonWebView from '../components/common/CommonWebView'
 import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
@@ -116,7 +115,6 @@ export const scenes = Actions.create(
       <Scene key="AGREEMENT_VIEW" component={AgreementView} />
       <Scene key="RETRIEVE_PWD" component={RetrievePwdVerifyCode}/>
       <Scene key="PUBLISH_VIEW_TEST" component={PublishViewTest} />
-      <Scene key="PICKER_TEST" component={PickerTest} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="PROFILE" component={Profile} />
       <Scene key="PERSONAL_HOMEPAGE" component={PersonalHomePage}/>

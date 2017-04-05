@@ -12,13 +12,11 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { FormInput } from 'react-native-elements'
-import Picker from 'react-native-picker'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
-import './region/province.json'
-import './region/city.json'
-import './region/area.json'
+import CascadePicker from './CascadePicker'
+import {selectProvincesAndCities} from '../../../selector/configSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -26,71 +24,95 @@ class RegionPicker extends Component {
   constructor(props) {
     super(props)
     this.pickerData = []
-    this.generatePickerData()
+    this.generateArea()
   }
 
   componentDidMount() {
-    let formInfo = {
-      formKey: this.props.formKey,
-      stateKey: this.props.stateKey,
-      type: this.props.type,
-      initValue: {text: this.props.initValue},
-      checkValid: this.props.checkValid || this.validInput
+    let formInfo = {}
+    if (this.props.initSelected && 0 != this.props.initSelected.length) {
+      let initValue = {}
+      let initSelected = this.props.initSelected
+      if (this.props.level == 1) {
+        initValue.text = {province: initSelected[0]}
+      } else if (this.props.level == 2) {
+        initValue.text = {province: initSelected[0], city: initSelected[1]}
+      } else if (this.props.level == 3) {
+        initValue.text = {province: initSelected[0], city: initSelected[1], district: initSelected[2]}
+      } else {
+        initValue.text = undefined
+      }
+      formInfo = {
+        formKey: this.props.formKey,
+        stateKey: this.props.stateKey,
+        type: this.props.type,
+        initValue: initValue,
+        checkValid: this.props.checkValid || this.validInput
+      }
+    } else {
+      formInfo = {
+        formKey: this.props.formKey,
+        stateKey: this.props.stateKey,
+        type: this.props.type,
+        checkValid: this.props.checkValid || this.validInput
+      }
     }
+
     this.props.initInputForm(formInfo)
 
-    if (formInfo.initValue.text.length > 0) {
+    if (formInfo.initValue && formInfo.initValue.text.length > 0) {
       this.setState({showClear: true})
     }
   }
 
-  generatePickerData() {
-    if (this.props.level) {
-      let level = this.props.level
-      if (level == 1) {
-        province.map((value, key) => {
-          this.pickerData.push(value.name)
+  generateArea() {
+    let data = this.props.area
+    if (this.props.level == 1) {
+      data.forEach((province) => {
+        let area = {}
+        area.label = province.area_name
+        area.value = province.area_name
+        this.pickerData.push(area)
+      })
+    } else if (this.props.level == 2) {
+      data.forEach((province) => {
+        let area = {}
+        area.label = province.area_name
+        let cities = []
+        province.sub.forEach((city) => {
+          let cityObj = {}
+          cityObj.label = city.area_name
+          cityObj.value = city.area_name
+          cities.push(cityObj)
         })
-      } else if (level == 2) {
-        province.map((value, key) => {
-          let pData = {}
-          let pName = value.name
-          let pId = value.id
-          pData[pName] = []
-          let cityArray = city[pId]
-          if (cityArray) {
-            cityArray.map((value, key) => {
-              let cName = value.name
-              pData[pName].push(cName)
+        area.value = cities
+        this.pickerData.push(area)
+      })
+    } else if (this.props.level == 3) {
+      data.forEach((province) => {
+        let area = {}
+        area.label = province.area_name
+        let cities = []
+        province.sub.forEach((city) => {
+          let cityObj = {}
+          cityObj.label = city.area_name
+          let districts = []
+          // 有某些城市不存在区
+          if (city.sub && Array.isArray(city.sub)) {
+            city.sub.forEach((district) => {
+              let districtObj = {}
+              districtObj.label = district.area_name
+              districtObj.value = district.area_name
+              districts.push(districtObj)
             })
+            cityObj.value = districts
+          } else {
+            cityObj.value = [{label: city.area_name, value: city.area_name}]
           }
-          this.pickerData.push(pData)
+          cities.push(cityObj)
         })
-      } else if (level == 3) {
-        province.map((value, key) => {
-          let pData = {}
-          let pName = value.name
-          let pId = value.id
-          pData[pName] = []
-          let cityArray = city[pId]
-          if (cityArray) {
-            cityArray.map((value, key) => {
-              let cName = value.name
-              let cId = value.id
-              let cData = {}
-              cData[cName] = []
-              let areaArray = area[cId]
-              if (areaArray) {
-                areaArray.map((value, key) => {
-                  cData[cName].push(value.name)
-                })
-              }
-              pData[pName].push(cData)
-            })
-          }
-          this.pickerData.push(pData)
-        })
-      }
+        area.value = cities
+        this.pickerData.push(area)
+      })
     }
   }
 
@@ -117,42 +139,41 @@ class RegionPicker extends Component {
     }
   }
 
-  showPicker() {
-    Picker.init({
-      pickerTitleText: '请选择地区',
-      pickerData: this.pickerData,
-      wheelFlex: [1, 1, 1],
-      onPickerConfirm: data => {
-        if (this.props.mode == 'join') {
-          let text = ""
-          data.map((value, index) => {
-            text += value
-          })
-          this.updateInput(text)
-        } else {
-          let text = {
-            province: data[0],
-            city: data[1],
-            district: data[2],
-          }
-          this.updateInput(text)
-        }
-      },
-      onPickerCancel: data => {
-        console.log(data);
-      },
-      onPickerSelect: data => {
-        console.log(data);
+  getPickerData(data) {
+    if (!this.props.level) {
+      return
+    }
+    let text = {}
+    if (this.props.level == 1) {
+      text = {
+        province: data[0],
       }
-    })
-    Picker.show()
+    } else if (this.props.level == 2) {
+      text = {
+        province: data[0],
+        city: data[1],
+      }
+    } else if (this.props.level == 3) {
+      text = {
+        province: data[0],
+        city: data[1],
+        district: data[2],
+      }
+    }
+    this.updateInput(text)
   }
 
   render() {
     return (
-      <View>
-        <TouchableOpacity onPress={() => this.showPicker()}>
-          <View style={styles.container} pointerEvents='none'>
+      <View style={{flex: 1}}>
+        <CascadePicker
+          onSubmit={(data) => this.getPickerData(data)}
+          level={this.props.level}
+          title="请选择地区"
+          data={this.pickerData}
+          initSelected={this.props.initSelected}
+        >
+          <View style={styles.container} pointerEvents="none">
             <FormInput
               onChangeText={(text) => this.inputChange(text)}
               editable={this.props.editable}
@@ -166,7 +187,7 @@ class RegionPicker extends Component {
               mode={this.props.mode}
             />
           </View>
-        </TouchableOpacity>
+        </CascadePicker>
       </View>
     )
   }
@@ -178,25 +199,23 @@ RegionPicker.defaultProps = {
   level: 3,
   maxLength: 32,
   editable: false,
-  initValue: "",
   containerStyle: {flex: 1},
   inputStyle: {flex: 1},
   clearBtnStyle: {},
-  mode: 'join', // 模式选项，join模式表示组织数据时，选择的地址连接起来作为一个字段；segment表示地址分字段保存，即省、市、区三个字段分别保存数据
 }
 
 const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   let data = ""
   let text = inputData.text
-  if (ownProps.mode == 'join') {
-    data = text
-  } else {
-    if (text) {
-      data = text.province + text.city + text.district
-    }
+  let area = selectProvincesAndCities(state)
+  if (text) {
+    data = text.province + text.city + text.district
   }
-  return {data}
+  return {
+    data,
+    area,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -208,6 +227,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(RegionPicker)
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
