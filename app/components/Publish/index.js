@@ -20,13 +20,9 @@ import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
 import * as authSelector from '../../selector/authSelector'
 import {selectShopPromotionMaxNum, selectUserOwnedShopInfo} from '../../selector/shopSelector'
-import {createPingppPayment} from '../../action/paymentActions'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
-
-// const LIFEPingPP = NativeModules.LIFEPingPP
-const PingPPModule = NativeModules.PingPPModule
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -37,34 +33,6 @@ class Publish extends Component {
     this.state = {
       order_no: undefined,
     }
-  }
-
-  submitSuccessCallback = (charge) => {
-    Toast.show('Ping++ 获取 charge对象成功！')
-    console.log("get charge:", JSON.stringify(charge))
-    // LIFEPingPP.setDebugMode(true, () => {console.log("LIFEPingPP.setDebugMode success!")})
-    // LIFEPingPP.createPayment(charge, 'simorsLjyd', () => {console.log("LIFEPingPP.createPayment callback!")})
-    PingPPModule.createPayment(JSON.stringify(charge), 'simorsLjyd', () => {console.log("PingPPModule.createPayment callback!")})
-
-  }
-
-  submitErrorCallback = (error) => {
-    Toast.show(error.message)
-  }
-
-  onPaymentTest() {
-    let order_no = uuid.v4().replace(/-/g, '').substr(0, 16)
-    this.setState({
-      order_no: order_no
-    })
-    let paymentPayload = {
-      order_no: order_no,
-      amount: 10,
-      channel: 'alipay',
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback,
-    }
-    this.props.createPingppPayment(paymentPayload)
   }
 
   publishShopActivity() {
@@ -164,7 +132,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  createPingppPayment
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Publish)

@@ -87,6 +87,8 @@ import PromoterPerformance from '../components/Mine/promote/PromoterPerformance'
 import TopicEdit from '../components/Find/TopicEdit'
 import InviteCodeViewer from '../components/Mine/promote/InviteCodeViewer'
 import InviteExplain from '../components/Mine/promote/InviteExplain'
+import Payment from '../components/Payment'
+import PaymentSuccess from '../components/Payment/PaymentSuccess'
 
 const styles = StyleSheet.create({
   container: {
@@ -183,6 +185,9 @@ export const scenes = Actions.create(
       <Scene key="TOPIC_EDIT" component={TopicEdit}/>
       <Scene key="INVITE_CODE_VIEWER" component={InviteCodeViewer} />
       <Scene key="INVITE_EXPLAIN" component={InviteExplain}/>
+      <Scene key="PAYMENT" component={Payment}/>
+      <Scene key="PAYMENT_SUCCESS" component={PaymentSuccess}/>
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
