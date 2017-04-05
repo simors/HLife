@@ -28,16 +28,38 @@ class RegionPicker extends Component {
   }
 
   componentDidMount() {
-    let formInfo = {
-      formKey: this.props.formKey,
-      stateKey: this.props.stateKey,
-      type: this.props.type,
-      initValue: {text: this.props.initValue},
-      checkValid: this.props.checkValid || this.validInput
+    let formInfo = {}
+    if (this.props.initSelected && 0 != this.props.initSelected.length) {
+      let initValue = {}
+      let initSelected = this.props.initSelected
+      if (this.props.level == 1) {
+        initValue.text = {province: initSelected[0]}
+      } else if (this.props.level == 2) {
+        initValue.text = {province: initSelected[0], city: initSelected[1]}
+      } else if (this.props.level == 3) {
+        initValue.text = {province: initSelected[0], city: initSelected[1], district: initSelected[2]}
+      } else {
+        initValue.text = undefined
+      }
+      formInfo = {
+        formKey: this.props.formKey,
+        stateKey: this.props.stateKey,
+        type: this.props.type,
+        initValue: initValue,
+        checkValid: this.props.checkValid || this.validInput
+      }
+    } else {
+      formInfo = {
+        formKey: this.props.formKey,
+        stateKey: this.props.stateKey,
+        type: this.props.type,
+        checkValid: this.props.checkValid || this.validInput
+      }
     }
+
     this.props.initInputForm(formInfo)
 
-    if (formInfo.initValue.text.length > 0) {
+    if (formInfo.initValue && formInfo.initValue.text.length > 0) {
       this.setState({showClear: true})
     }
   }
@@ -144,7 +166,13 @@ class RegionPicker extends Component {
   render() {
     return (
       <View>
-        <CascadePicker onSubmit={(data) => this.getPickerData(data)} level={this.props.level} title="请选择地区" data={this.pickerData}>
+        <CascadePicker
+          onSubmit={(data) => this.getPickerData(data)}
+          level={this.props.level}
+          title="请选择地区"
+          data={this.pickerData}
+          initSelected={this.props.initSelected}
+        >
           <View style={styles.container}>
             <FormInput
               onChangeText={(text) => this.inputChange(text)}

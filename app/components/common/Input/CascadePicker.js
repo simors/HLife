@@ -78,7 +78,7 @@ export default class CascadePicker extends Component {
         this.wheelFlex[i] = 1
       }
     }
-    if (!this.props.initSelected) {
+    if (!this.props.initSelected || 0 == this.props.initSelected.length) {
       this.setState({selectedValues: this.constrctInitSelected()})
     } else {
       this.setState({selectedValues: this.props.initSelected})
@@ -190,6 +190,7 @@ export default class CascadePicker extends Component {
     for (let i = 0; i < this.level; i++) {
       let pick = (
         <Picker
+          key={i}
           style={{flex: this.wheelFlex[i]}}
           onValueChange={(value) => this._handleValueChange(value, i)}
           selectedValue={this.state.selectedValues[i]}
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
   navBtn: {
     borderWidth: 1,
     borderRadius: 4,
-    color: THEME.base.mainColor,
+    borderColor: THEME.base.mainColor,
     padding: normalizeW(2),
   },
   titleText: {
