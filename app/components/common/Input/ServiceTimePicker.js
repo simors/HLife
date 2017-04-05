@@ -22,22 +22,7 @@ import CascadePicker from './CascadePicker'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-// const classify = [
-//   ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
-//   ['时'],
-//   ['00', '10', '20', '30', '40', '50'],
-//   ['分'],
-//   ['--'],
-//   ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
-//   ['时'],
-//   ['00', '10', '20', '30', '40', '50'],
-//   ['分']
-// ]
-
 const classify = [
-  ['00时', '01时', '02时', '03时', '04时', '05时', '06时', '07时', '08时', '09时', '10时', '11时', '12时', '13时', '14时', '15时', '16时', '17时', '18时', '19时', '20时', '21时', '22时', '23时'],
-  ['00分', '10分', '20分', '30分', '40分', '50分'],
-  ['--'],
   ['00时', '01时', '02时', '03时', '04时', '05时', '06时', '07时', '08时', '09时', '10时', '11时', '12时', '13时', '14时', '15时', '16时', '17时', '18时', '19时', '20时', '21时', '22时', '23时'],
   ['00分', '10分', '20分', '30分', '40分', '50分']
 ]
@@ -45,14 +30,33 @@ const classify = [
 class ServiceTimePicker extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      beginHour: '',
+      beginMin: '',
+      endHour: '',
+      endMin: '',
+    }
   }
 
   componentDidMount() {
+    let initTime = this.props.initValue
+    if (!initTime) {
+      initTime = '08:30--21:30'
+    }
+    let beginTime = this.getBeginTime(initTime)
+    let endTime = this.getEndTime(initTime)
+    this.setState({
+      beginHour: this.getHour(beginTime),
+      beginMin: this.getMin(beginTime),
+      endHour: this.getHour(endTime),
+      endMin: this.getMin(endTime)
+    })
+
     let formInfo = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: {text: this.props.initValue},
+      initValue: {text: initTime},
       checkValid: this.validInput
     }
     this.props.initInputForm(formInfo)
@@ -62,6 +66,32 @@ class ServiceTimePicker extends Component {
     if(this.props.initValue != nextProps.initValue) {
       this.updateInput(nextProps.initValue)
     }
+  }
+
+  getBeginTime(text) {
+    if (!text) {
+      return ""
+    }
+    let begin = text.substring(0, text.indexOf('--'))
+    return begin
+  }
+
+  getEndTime(text) {
+    if (!text) {
+      return ""
+    }
+    let end = text.substring(text.indexOf('--')+2)
+    return end
+  }
+
+  getHour(time) {
+    let hour = time.substring(0, time.indexOf(':'))
+    return hour
+  }
+
+  getMin(time) {
+    let min = time.substring(time.indexOf(':')+1)
+    return min
   }
 
   validInput(data) {
@@ -77,45 +107,90 @@ class ServiceTimePicker extends Component {
     this.props.inputFormUpdate(inputForm)
   }
 
-  inputChange(text) {
+  getPickerData(data, isBegin) {
+    let text = ''
+    if (isBegin) {
+      text = data[0].replace('时', ':') + data[1].replace('分', '') + '--' + this.state.endHour + ':' + this.state.endMin
+    } else {
+      text = this.state.beginHour + ':' + this.state.beginMin + '--' + data[0].replace('时', ':') + data[1].replace('分', '')
+    }
     this.updateInput(text)
   }
 
-  getPickerData(data) {
-    let text = data[0].replace('时', ':') + data[1].replace('分', '') + data[2] + data[3].replace('时', ':') + data[4].replace('分', '')
-    this.updateInput(text)
+  getBeginSelected() {
+    if (!this.props.data) {
+      return []
+    }
+    let beginTime = this.getBeginTime(this.props.data)
+    return [this.getHour(beginTime) + '时', this.getMin(beginTime) + '分']
+  }
+
+  getEndSelected() {
+    if (!this.props.data) {
+      return []
+    }
+    let endTime = this.getEndTime(this.props.data)
+    return [this.getHour(endTime) + '时', this.getMin(endTime) + '分']
   }
 
   render() {
     return (
-      <CascadePicker
-        onSubmit={(data) => this.getPickerData(data)}
-        level={5}
-        title="选择营业时间"
-        data={classify}
-        initSelected={["08时", "30分", "--", "22时", "30分"]}
-        cascade={false}
-      >
-        <View style={styles.container} pointerEvents="none">
-          <FormInput
-            onChangeText={(text) => this.inputChange(text)}
-            editable={this.props.editable}
-            placeholder={this.props.placeholder}
-            placeholderTextColor={this.props.placeholderTextColor}
-            maxLength={this.props.maxLength}
-            underlineColorAndroid="transparent"
-            value={this.props.data}
-            containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
-            inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
-          />
+      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{width: normalizeW(50), justifyContent: 'center'}}>
+          <CascadePicker
+            onSubmit={(data) => this.getPickerData(data, true)}
+            level={2}
+            title="选择营业时间"
+            data={classify}
+            initSelected={this.getBeginSelected()}
+            cascade={false}
+          >
+            <View style={styles.container} pointerEvents="none">
+              <FormInput
+                editable={this.props.editable}
+                placeholder="上班时间"
+                placeholderTextColor={this.props.placeholderTextColor}
+                maxLength={this.props.maxLength}
+                underlineColorAndroid="transparent"
+                value={this.getBeginTime(this.props.data)}
+                containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
+                inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
+              />
+            </View>
+          </CascadePicker>
         </View>
-      </CascadePicker>
+        <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: normalizeW(20), paddingRight: normalizeW(20)}}>
+          <Text style={{fontSize: em(17), color: '#5A5A5A'}}>--</Text>
+        </View>
+        <View style={{width: normalizeW(50), justifyContent: 'center'}}>
+          <CascadePicker
+            onSubmit={(data) => this.getPickerData(data, false)}
+            level={2}
+            title="选择打烊时间"
+            data={classify}
+            initSelected={this.getEndSelected()}
+            cascade={false}
+          >
+            <View style={styles.container} pointerEvents="none">
+              <FormInput
+                editable={this.props.editable}
+                placeholder="打烊时间"
+                placeholderTextColor={this.props.placeholderTextColor}
+                maxLength={this.props.maxLength}
+                underlineColorAndroid="transparent"
+                value={this.getEndTime(this.props.data)}
+                containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
+                inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
+              />
+            </View>
+          </CascadePicker>
+        </View>
+      </View>
     )
   }
 }
 
 ServiceTimePicker.defaultProps = {
-  placeholder: '点击选择营业时间',
   placeholderTextColor: '#E1E1E1',
   maxLength: 32,
   editable: false,

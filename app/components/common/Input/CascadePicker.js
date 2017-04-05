@@ -87,6 +87,16 @@ export default class CascadePicker extends Component {
     }
   }
 
+  componentWillReceiveProps(newProps) {
+    if (this.props.initSelected != newProps.initSelected) {
+      if (!newProps.initSelected || 0 == newProps.initSelected.length) {
+        this.setState({selectedValues: this.constrctInitSelected()})
+      } else {
+        this.setState({selectedValues: newProps.initSelected})
+      }
+    }
+  }
+
   constrctInitSelected() {
     let data = this.props.data
     let selectedValue = []
