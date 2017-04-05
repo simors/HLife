@@ -15,7 +15,6 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { FormInput } from 'react-native-elements'
-import Picker from 'react-native-picker'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -80,29 +79,6 @@ class ServiceTimePicker extends Component {
 
   inputChange(text) {
     this.updateInput(text)
-  }
-
-  showPicker() {
-    Picker.init({
-      pickerTitleText: '营业时间选择',
-      pickerData: classify,
-      wheelFlex: [1, 1, 1, 1, 1],
-      pickerFontSize: 10,
-      selectedValue: ["08时", "30分", "--", "22时", "30分"],
-      onPickerConfirm: data => {
-        // console.log(data)
-        let text = data[0].replace('时', ':') + data[1].replace('分', '') + data[2] + data[3].replace('时', ':') + data[4].replace('分', '')
-        // console.log(text)
-        this.updateInput(text)
-      },
-      onPickerCancel: data => {
-        //console.log(data);
-      },
-      onPickerSelect: data => {
-        //console.log(data);
-      }
-    })
-    Picker.show()
   }
 
   getPickerData(data) {
