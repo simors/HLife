@@ -186,7 +186,7 @@ export const scenes = Actions.create(
       <Scene key="INVITE_CODE_VIEWER" component={InviteCodeViewer} />
       <Scene key="INVITE_EXPLAIN" component={InviteExplain}/>
       <Scene key="PAYMENT" component={Payment}/>
-      <Scene key="PAYMENT_SUCCESS" component={PaymentSuccess} initial={true}/>
+      <Scene key="PAYMENT_SUCCESS" component={PaymentSuccess}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
