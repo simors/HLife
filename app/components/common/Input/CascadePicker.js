@@ -214,11 +214,11 @@ export default class CascadePicker extends Component {
     return (
       <View style={styles.pickerContainer}>
         <View style={styles.navWrap}>
-          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleCancel}>
+          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleCancel()}>
             <Text style={styles.btnText}>取消</Text>
           </TouchableOpacity>
           <Text style={styles.titleText}>{this.props.title}</Text>
-          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleSubmit}>
+          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleSubmit()}>
             <Text style={styles.btnText}>确定</Text>
           </TouchableOpacity>
         </View>
@@ -242,7 +242,7 @@ export default class CascadePicker extends Component {
           {this.renderPicker()}
         </Modal>
 
-        <TouchableOpacity onPress={this.open}>
+        <TouchableOpacity onPress={() => this.open()}>
           {this.props.children}
         </TouchableOpacity>
       </View>
@@ -257,7 +257,7 @@ CascadePicker.defaultProps = {
   onSubmit: () => {},
   onCancel: () => {},
   level: 1,
-  isVisible: true,
+  isVisible: false,
 }
 
 const styles = StyleSheet.create({

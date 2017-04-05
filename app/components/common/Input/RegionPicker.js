@@ -12,13 +12,11 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { FormInput } from 'react-native-elements'
-import Picker from 'react-native-picker'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
-import './region/province.json'
-import './region/city.json'
-import './region/area.json'
+import CascadePicker from './CascadePicker'
+import {selectProvincesAndCities} from '../../../selector/configSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -26,7 +24,7 @@ class RegionPicker extends Component {
   constructor(props) {
     super(props)
     this.pickerData = []
-    this.generatePickerData()
+    this.generateArea()
   }
 
   componentDidMount() {
@@ -44,53 +42,55 @@ class RegionPicker extends Component {
     }
   }
 
-  generatePickerData() {
-    if (this.props.level) {
-      let level = this.props.level
-      if (level == 1) {
-        province.map((value, key) => {
-          this.pickerData.push(value.name)
+  generateArea() {
+    let data = this.props.area
+    if (this.props.level == 1) {
+      data.forEach((province) => {
+        let area = {}
+        area.label = province.area_name
+        area.value = province.area_name
+        this.pickerData.push(area)
+      })
+    } else if (this.props.level == 2) {
+      data.forEach((province) => {
+        let area = {}
+        area.label = province.area_name
+        let cities = []
+        province.sub.forEach((city) => {
+          let cityObj = {}
+          cityObj.label = city.area_name
+          cityObj.value = city.area_name
+          cities.push(cityObj)
         })
-      } else if (level == 2) {
-        province.map((value, key) => {
-          let pData = {}
-          let pName = value.name
-          let pId = value.id
-          pData[pName] = []
-          let cityArray = city[pId]
-          if (cityArray) {
-            cityArray.map((value, key) => {
-              let cName = value.name
-              pData[pName].push(cName)
+        area.value = cities
+        this.pickerData.push(area)
+      })
+    } else if (this.props.level == 3) {
+      data.forEach((province) => {
+        let area = {}
+        area.label = province.area_name
+        let cities = []
+        province.sub.forEach((city) => {
+          let cityObj = {}
+          cityObj.label = city.area_name
+          let districts = []
+          // 有某些城市不存在区
+          if (city.sub && Array.isArray(city.sub)) {
+            city.sub.forEach((district) => {
+              let districtObj = {}
+              districtObj.label = district.area_name
+              districtObj.value = district.area_name
+              districts.push(districtObj)
             })
+            cityObj.value = districts
+          } else {
+            cityObj.value = city.area_name
           }
-          this.pickerData.push(pData)
+          cities.push(cityObj)
         })
-      } else if (level == 3) {
-        province.map((value, key) => {
-          let pData = {}
-          let pName = value.name
-          let pId = value.id
-          pData[pName] = []
-          let cityArray = city[pId]
-          if (cityArray) {
-            cityArray.map((value, key) => {
-              let cName = value.name
-              let cId = value.id
-              let cData = {}
-              cData[cName] = []
-              let areaArray = area[cId]
-              if (areaArray) {
-                areaArray.map((value, key) => {
-                  cData[cName].push(value.name)
-                })
-              }
-              pData[pName].push(cData)
-            })
-          }
-          this.pickerData.push(pData)
-        })
-      }
+        area.value = cities
+        this.pickerData.push(area)
+      })
     }
   }
 
@@ -117,42 +117,35 @@ class RegionPicker extends Component {
     }
   }
 
-  showPicker() {
-    Picker.init({
-      pickerTitleText: '请选择地区',
-      pickerData: this.pickerData,
-      wheelFlex: [1, 1, 1],
-      onPickerConfirm: data => {
-        if (this.props.mode == 'join') {
-          let text = ""
-          data.map((value, index) => {
-            text += value
-          })
-          this.updateInput(text)
-        } else {
-          let text = {
-            province: data[0],
-            city: data[1],
-            district: data[2],
-          }
-          this.updateInput(text)
-        }
-      },
-      onPickerCancel: data => {
-        console.log(data);
-      },
-      onPickerSelect: data => {
-        console.log(data);
+  getPickerData(data) {
+    if (!this.props.level) {
+      return
+    }
+    let text = {}
+    if (this.props.level == 1) {
+      text = {
+        province: data[0],
       }
-    })
-    Picker.show()
+    } else if (this.props.level == 2) {
+      text = {
+        province: data[0],
+        city: data[1],
+      }
+    } else if (this.props.level == 3) {
+      text = {
+        province: data[0],
+        city: data[1],
+        district: data[2],
+      }
+    }
+    this.updateInput(text)
   }
 
   render() {
     return (
       <View>
-        <TouchableOpacity onPress={() => this.showPicker()}>
-          <View style={styles.container} pointerEvents='none'>
+        <CascadePicker onSubmit={(data) => this.getPickerData(data)} level={this.props.level} title="请选择地区" data={this.pickerData}>
+          <View style={styles.container}>
             <FormInput
               onChangeText={(text) => this.inputChange(text)}
               editable={this.props.editable}
@@ -166,7 +159,7 @@ class RegionPicker extends Component {
               mode={this.props.mode}
             />
           </View>
-        </TouchableOpacity>
+        </CascadePicker>
       </View>
     )
   }
@@ -189,6 +182,7 @@ const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   let data = ""
   let text = inputData.text
+  let area = selectProvincesAndCities(state)
   if (ownProps.mode == 'join') {
     data = text
   } else {
@@ -196,7 +190,10 @@ const mapStateToProps = (state, ownProps) => {
       data = text.province + text.city + text.district
     }
   }
-  return {data}
+  return {
+    data,
+    area,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -208,6 +205,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(RegionPicker)
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
