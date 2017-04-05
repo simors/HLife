@@ -19,6 +19,7 @@ import Picker from 'react-native-picker'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import CascadePicker from './CascadePicker'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -104,11 +105,20 @@ class ServiceTimePicker extends Component {
     Picker.show()
   }
 
+  getPickerData(data) {
+    let text = data[0].replace('时', ':') + data[1].replace('分', '') + data[2] + data[3].replace('时', ':') + data[4].replace('分', '')
+    this.updateInput(text)
+  }
+
   render() {
     return (
-      <TouchableOpacity
-        style={{flex: 1}}
-        onPress={() => this.showPicker()}
+      <CascadePicker
+        onSubmit={(data) => this.getPickerData(data)}
+        level={5}
+        title="选择营业时间"
+        data={classify}
+        initSelected={["08时", "30分", "--", "22时", "30分"]}
+        cascade={false}
       >
         <View style={styles.container} pointerEvents="none">
           <FormInput
@@ -123,14 +133,14 @@ class ServiceTimePicker extends Component {
             inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
           />
         </View>
-      </TouchableOpacity>
+      </CascadePicker>
     )
   }
 }
 
 ServiceTimePicker.defaultProps = {
   placeholder: '点击选择营业时间',
-  placeholderTextColor: '#B2B2B2',
+  placeholderTextColor: '#E1E1E1',
   maxLength: 32,
   editable: false,
   initValue: "",
@@ -154,6 +164,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ServiceTimePicker)
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

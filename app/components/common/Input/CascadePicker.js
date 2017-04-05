@@ -77,6 +77,8 @@ export default class CascadePicker extends Component {
       for (let i = 0; i < this.level; i++) {
         this.wheelFlex[i] = 1
       }
+    } else {
+      this.wheelFlex = this.props.wheelFlex
     }
     if (!this.props.initSelected || 0 == this.props.initSelected.length) {
       this.setState({selectedValues: this.constrctInitSelected()})
@@ -89,10 +91,17 @@ export default class CascadePicker extends Component {
     let data = this.props.data
     let selectedValue = []
     let tmpData = data
-    for (let i = 0; i < this.level; i++) {
-      selectedValue.push(tmpData[0].label)
-      tmpData = tmpData[0].value
+    if (this.props.cascade) {
+      for (let i = 0; i < this.level; i++) {
+        selectedValue.push(tmpData[0].label)
+        tmpData = tmpData[0].value
+      }
+    } else {
+      for (let i = 0; i < this.level; i++) {
+        selectedValue.push(tmpData[i][0])
+      }
     }
+
     return selectedValue
   }
 
@@ -118,7 +127,7 @@ export default class CascadePicker extends Component {
     this.close()
   }
 
-  _handleValueChange(value, index) {
+  _handleCascadeValueChange(value, index) {
     let selected = this.state.selectedValues
     selected[index] = value
     let tmpData = this.props.data
@@ -137,19 +146,26 @@ export default class CascadePicker extends Component {
     this.setState({selectedValues: selected})
   }
 
+  _handleNonCascadeValueChange(value, index) {
+    let selected = this.state.selectedValues
+    selected[index] = value
+    this.setState({selectedValues: selected})
+  }
+
   renderNonCascadeLevelPicker() {
     let pickers = []
     for (let i = 0; i < this.level; i++) {
       let pick = (
         <Picker
+          key={i}
           style={{flex: this.wheelFlex[i]}}
-          onValueChange={(value) => this._handleValueChange(value, i)}
+          onValueChange={(value) => this._handleNonCascadeValueChange(value, i)}
           selectedValue={this.state.selectedValues[i]}
         >
           {
-            this.props.data[i].map((value, index) => {
+            this.props.data[i].map((item, index) => {
               return (
-                <Picker.Item value={value} label={value} key={index} />
+                <Picker.Item value={item} label={item} key={index} />
               )
             })
           }
@@ -192,7 +208,7 @@ export default class CascadePicker extends Component {
         <Picker
           key={i}
           style={{flex: this.wheelFlex[i]}}
-          onValueChange={(value) => this._handleValueChange(value, i)}
+          onValueChange={(value) => this._handleCascadeValueChange(value, i)}
           selectedValue={this.state.selectedValues[i]}
         >
           {this.renderCascadePickerItem(i, this.state.selectedValues)}
