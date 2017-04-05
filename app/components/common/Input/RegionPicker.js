@@ -199,11 +199,9 @@ RegionPicker.defaultProps = {
   level: 3,
   maxLength: 32,
   editable: false,
-  initValue: "",
   containerStyle: {flex: 1},
   inputStyle: {flex: 1},
   clearBtnStyle: {},
-  mode: 'join', // 模式选项，join模式表示组织数据时，选择的地址连接起来作为一个字段；segment表示地址分字段保存，即省、市、区三个字段分别保存数据
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -211,12 +209,8 @@ const mapStateToProps = (state, ownProps) => {
   let data = ""
   let text = inputData.text
   let area = selectProvincesAndCities(state)
-  if (ownProps.mode == 'join') {
-    data = text
-  } else {
-    if (text) {
-      data = text.province + text.city + text.district
-    }
+  if (text) {
+    data = text.province + text.city + text.district
   }
   return {
     data,
