@@ -215,11 +215,13 @@ export default class CascadePicker extends Component {
     return (
       <View style={styles.pickerContainer}>
         <View style={styles.navWrap}>
-          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleCancel()}>
+          <TouchableOpacity style={[styles.navBtn, {marginLeft: normalizeW(15)}]} onPress={() => this._handleCancel()}>
             <Text style={styles.btnText}>取消</Text>
           </TouchableOpacity>
-          <Text style={styles.titleText}>{this.props.title}</Text>
-          <TouchableOpacity style={styles.navBtn} onPress={() => this._handleSubmit()}>
+          <View style={styles.titleView}>
+            <Text style={styles.titleText}>{this.props.title}</Text>
+          </View>
+          <TouchableOpacity style={[styles.navBtn, {marginRight: normalizeW(15)}]} onPress={() => this._handleSubmit()}>
             <Text style={styles.btnText}>确定</Text>
           </TouchableOpacity>
         </View>
@@ -240,7 +242,12 @@ export default class CascadePicker extends Component {
           onRequestClose={this.close}
           animationType={this.props.animationType}
         >
-          {this.renderPicker()}
+          <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'flex-end'}}
+                pointerEvents="auto"
+                onPress={() => this._handleCancel()}
+          >
+            {this.renderPicker()}
+          </View>
         </Modal>
 
         <TouchableOpacity onPress={() => this.open()}>
@@ -252,7 +259,7 @@ export default class CascadePicker extends Component {
 }
 
 CascadePicker.defaultProps = {
-  animationType: 'slide',
+  animationType: 'fade',
   cascade: true,
   transparent: true,
   onSubmit: () => {},
@@ -266,9 +273,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pickerContainer: {
-    flex: 1,
+    // flex: 1,
     height: normalizeH(300),
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
   },
   pickerWrap: {
     flexDirection: 'row',
@@ -278,24 +286,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: '#ccc'
+    borderColor: '#F5F5F5',
+    height: normalizeH(42),
   },
   navBtn: {
-    borderWidth: 1,
     borderRadius: 4,
-    borderColor: THEME.base.mainColor,
-    padding: normalizeW(2),
+    overflow: 'hidden',
+    backgroundColor: THEME.base.mainColor,
+    padding: normalizeW(4),
   },
-  titleText: {
+  titleView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  titleText: {
     fontSize: em(17),
     color: '#5a5a5a',
   },
   btnText: {
     fontSize: em(15),
-    color: THEME.base.mainColor,
+    color: '#FFF',
   }
 })

@@ -106,7 +106,7 @@ class RegionPicker extends Component {
             })
             cityObj.value = districts
           } else {
-            cityObj.value = city.area_name
+            cityObj.value = [{label: city.area_name, value: city.area_name}]
           }
           cities.push(cityObj)
         })
