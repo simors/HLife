@@ -165,7 +165,7 @@ class RegionPicker extends Component {
 
   render() {
     return (
-      <View>
+      <View style={{flex: 1}}>
         <CascadePicker
           onSubmit={(data) => this.getPickerData(data)}
           level={this.props.level}
@@ -173,7 +173,7 @@ class RegionPicker extends Component {
           data={this.pickerData}
           initSelected={this.props.initSelected}
         >
-          <View style={styles.container}>
+          <View style={styles.container} pointerEvents="none">
             <FormInput
               onChangeText={(text) => this.inputChange(text)}
               editable={this.props.editable}

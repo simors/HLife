@@ -237,20 +237,18 @@ export default class CascadePicker extends Component {
     return (
       <View style={styles.container}>
         <Modal
-          transparent={this.props.transparent}
+          transparent={true}
           visible={this.state.isVisible}
           onRequestClose={this.close}
           animationType={this.props.animationType}
+          style={{flex: 1}}
         >
-          <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'flex-end'}}
-                pointerEvents="auto"
-                onPress={() => this._handleCancel()}
-          >
+          <View style={styles.modalContainer}>
             {this.renderPicker()}
           </View>
         </Modal>
 
-        <TouchableOpacity onPress={() => this.open()}>
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.open()}>
           {this.props.children}
         </TouchableOpacity>
       </View>
@@ -261,7 +259,6 @@ export default class CascadePicker extends Component {
 CascadePicker.defaultProps = {
   animationType: 'fade',
   cascade: true,
-  transparent: true,
   onSubmit: () => {},
   onCancel: () => {},
   level: 1,
@@ -273,10 +270,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pickerContainer: {
-    // flex: 1,
-    height: normalizeH(300),
     backgroundColor: '#FFF',
-    justifyContent: 'center',
   },
   pickerWrap: {
     flexDirection: 'row',
@@ -307,5 +301,17 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: em(15),
     color: '#FFF',
-  }
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    ...Platform.select({
+      ios: {
+        justifyContent: 'flex-end'
+      },
+      android: {
+        justifyContent: 'center'
+      }
+    }),
+  },
 })
