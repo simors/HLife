@@ -6,14 +6,14 @@
 //  Copyright © 2017年 Facebook. All rights reserved.
 //
 
-#ifndef HLIFEPingPP_h
-#define HLIFEPingPP_h
+#ifndef PingPPModule_h
+#define PingPPModule_h
 
 #import <Foundation/Foundation.h>
 #import "Base/RCTBridgeModule.h"
 
-@interface LIFEPingPP : NSObject <RCTBridgeModule>
+@interface PingPPModule : NSObject <RCTBridgeModule>
 
 @end
 
-#endif /* HLIFEPingPP_h */
+#endif /* PingPPModule_h */

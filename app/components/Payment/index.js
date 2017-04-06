@@ -29,8 +29,7 @@ import {createPingppPayment} from '../../action/paymentActions'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
 
-const LIFEPingPP = NativeModules.LIFEPingPP
-// const PingPPModule = NativeModules.PingPPModule
+const PingPPModule = NativeModules.PingPPModule
 
 class Payment extends Component {
   constructor(props) {
@@ -44,12 +43,23 @@ class Payment extends Component {
 
   }
 
+  paymentCallback = (errorCode, result) => {
+    console.log("PingPPModule.createPayment callback!")
+    console.log("errorCode:", errorCode)
+    console.log("result:", result)
+    if(errorCode == 0)
+      Actions.PAYMENT_SUCCESS()
+  }
+
   submitSuccessCallback = (charge) => {
     Toast.show('Ping++ 获取 charge对象成功！')
     console.log("get charge:", JSON.stringify(charge))
-    LIFEPingPP.setDebugMode(true, () => {console.log("LIFEPingPP.setDebugMode success!")})
-    LIFEPingPP.createPayment(charge, 'simorsLjyd', () => {console.log("LIFEPingPP.createPayment callback!")})
-    // PingPPModule.createPayment(JSON.stringify(charge), 'simorsLjyd', () => {console.log("PingPPModule.createPayment callback!")})
+    if(Platform.OS === 'ios') {
+      PingPPModule.setDebugMode(true, () => {console.log("PingPPModule.setDebugMode success!")})
+      PingPPModule.createPayment(charge, 'simorsLjyd', this.paymentCallback)
+    } else if(Platform.OS === 'android') {
+      PingPPModule.createPayment(JSON.stringify(charge), 'simorsLjyd', this.paymentCallback)
+    }
 
   }
 
@@ -64,7 +74,7 @@ class Payment extends Component {
     })
     let paymentPayload = {
       order_no: order_no,
-      amount: 58*1000,
+      amount: 58*100,
       channel: this.state.selectedChannel,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,

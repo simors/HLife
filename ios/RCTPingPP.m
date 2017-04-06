@@ -10,7 +10,7 @@
 #import "Base/RCTLog.h"
 #import "Pingpp.h"
 
-@implementation LIFEPingPP
+@implementation PingPPModule
 
 RCT_EXPORT_MODULE()
 
