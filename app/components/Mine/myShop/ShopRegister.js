@@ -245,7 +245,7 @@ class ShopRegister extends Component {
             keyboardShouldPersistTaps={true}
           >
             <View style={styles.subTitleWrap}>
-              <Text style={styles.subTitle}>欢迎加入{appConfig.APP_NAME}，给你的店铺带好更好的收入</Text>
+              <Text style={styles.subTitle}>欢迎加入{appConfig.APP_NAME}，给你的店铺带来更好的收入</Text>
             </View>
             <View style={styles.inputsWrap}>
               <View style={styles.inputWrap}>
