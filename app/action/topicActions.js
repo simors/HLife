@@ -7,6 +7,7 @@ import {notifyTopicComment, notifyTopicLike} from './messageAction'
 import * as locSelector from '../selector/locSelector'
 import AV from 'leancloud-storage'
 import * as pointAction from '../action/pointActions'
+import * as ImageUtil from '../util/ImageUtil'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -56,56 +57,123 @@ function handlePublishTopic(payload, formData) {
       }
       return
     }
-    let publishTopicPayload = {
-      position: position,
-      geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
-      province: province,
-      city: city,
-      district: district,
-      title:formData.topicName.text,
-      content: JSON.stringify(formData.topicContent.text),
-      abstract: formData.topicContent.abstract,
-      imgGroup: payload.images,
-      categoryId: payload.categoryId,
-      userId: payload.userId,
+    if(payload.images && payload.images.length > 0) {
+      return ImageUtil.batchUploadImgs(payload.images).then((leanUris) => {
+        return leanUris
+      }).then((leanUris) => {
+        let publishTopicPayload = {
+          position: position,
+          geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
+          province: province,
+          city: city,
+          district: district,
+          title:formData.topicName.text,
+          content: JSON.stringify(formData.topicContent.text),
+          abstract: formData.topicContent.abstract,
+          imgGroup: leanUris,
+          categoryId: payload.categoryId,
+          userId: payload.userId,
+        }
+        lcTopics.publishTopics(publishTopicPayload).then((result) => {
+          if (payload.success) {
+            payload.success()
+          }
+          let publishAction = createAction(topicActionTypes.ADD_TOPIC)
+          dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
+          dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
+        }).catch((error) => {
+          console.log("error: ", error)
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    } else {
+      let publishTopicPayload = {
+        position: position,
+        geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
+        province: province,
+        city: city,
+        district: district,
+        title:formData.topicName.text,
+        content: JSON.stringify(formData.topicContent.text),
+        abstract: formData.topicContent.abstract,
+        imgGroup: payload.images,
+        categoryId: payload.categoryId,
+        userId: payload.userId,
+      }
+      lcTopics.publishTopics(publishTopicPayload).then((result) => {
+        if (payload.success) {
+          payload.success()
+        }
+        let publishAction = createAction(topicActionTypes.ADD_TOPIC)
+        dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
+        dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
+      }).catch((error) => {
+        console.log("error: ", error)
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
     }
-    lcTopics.publishTopics(publishTopicPayload).then((result) => {
-      if (payload.success) {
-        payload.success()
-      }
-      let publishAction = createAction(topicActionTypes.ADD_TOPIC)
-      dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
-      dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
-    }).catch((error) => {
-      console.log("error: ", error)
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
   }
 }
 
 function handleUpdateTopic(payload, formData) {
   return (dispatch, getState) => {
-    let updateTopicPayload = {
-      title:formData.topicName.text,
-      content: JSON.stringify(formData.topicContent.text),
-      abstract: formData.topicContent.abstract,
-      imgGroup: payload.images,
-      categoryId: payload.categoryId,
-      topicId: payload.topicId,
+    if(payload.images && payload.images.length > 0) {
+      return ImageUtil.batchUploadImgs(payload.images).then((leanUris) => {
+        return leanUris
+      }).then((leanUris) => {
+        let updateTopicPayload = {
+          title:formData.topicName.text,
+          content: JSON.stringify(formData.topicContent.text),
+          abstract: formData.topicContent.abstract,
+          imgGroup: leanUris,
+          categoryId: payload.categoryId,
+          topicId: payload.topicId,
+        }
+        lcTopics.updateTopic(updateTopicPayload).then((result) => {
+          if (payload.success) {
+            payload.success()
+          }
+          let updateAction = createAction(topicActionTypes.UPDATE_TOPIC)
+          dispatch(updateAction({topic: result}))
+        }).catch((error) => {
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    } else {
+      let updateTopicPayload = {
+        title:formData.topicName.text,
+        content: JSON.stringify(formData.topicContent.text),
+        abstract: formData.topicContent.abstract,
+        imgGroup: payload.images,
+        categoryId: payload.categoryId,
+        topicId: payload.topicId,
+      }
+      lcTopics.updateTopic(updateTopicPayload).then((result) => {
+        if (payload.success) {
+          payload.success()
+        }
+        let updateAction = createAction(topicActionTypes.UPDATE_TOPIC)
+        dispatch(updateAction({topic: result}))
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
     }
-    lcTopics.updateTopic(updateTopicPayload).then((result) => {
-      if (payload.success) {
-        payload.success()
-      }
-      let updateAction = createAction(topicActionTypes.UPDATE_TOPIC)
-      dispatch(updateAction({topic: result}))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
   }
 }
 

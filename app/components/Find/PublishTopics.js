@@ -67,12 +67,10 @@ class PublishTopics extends Component {
       isDisabled: false,
       selectedTopic: undefined,
       rteFocused: false,    // 富文本获取到焦点
-      shouldUploadImgComponent: false,
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
     };
     this.insertImages = []
-    this.leanImgUrls = []
     this.isPublishing = false
   }
 
@@ -86,39 +84,20 @@ class PublishTopics extends Component {
     Toast.show(error.message)
   }
 
-  uploadImgComponentCallback(leanImgUrls) {
-    this.leanImgUrls = leanImgUrls
-    this.publishTopic()
-  }
 
   onButtonPress = () => {
     if (this.props.isLogin) {
       if (this.state.selectedTopic) {
-        if (this.insertImages && this.insertImages.length) {
-          if (this.isPublishing) {
-            return
-          }
-          this.isPublishing = true
-          Toast.show('开始发布...', {
-            duration: 1000,
-            onHidden: ()=> {
-              this.setState({
-                shouldUploadImgComponent: true
-              })
-            }
-          })
-        } else {
-          if (this.isPublishing) {
-            return
-          }
-          this.isPublishing = true
-          Toast.show('开始发布...', {
-            duration: 1000,
-            onHidden: ()=> {
-              this.publishTopic()
-            }
-          })
+        if (this.isPublishing) {
+          return
         }
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.publishTopic()
+          }
+        })
       }
       else {
         Toast.show("请选择一个话题")
@@ -132,7 +111,7 @@ class PublishTopics extends Component {
   publishTopic() {
     this.props.publishTopicFormData({
       formKey: topicForm,
-      images: this.leanImgUrls,
+      images: this.insertImages,
       categoryId: this.state.selectedTopic.objectId,
       userId: this.props.userInfo.id,
       submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
@@ -220,10 +199,6 @@ class PublishTopics extends Component {
         wrapHeight={this.state.extraHeight}
         renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
         getImages={(images) => this.getRichTextImages(images)}
-        shouldUploadImgComponent={this.state.shouldUploadImgComponent}
-        uploadImgComponentCallback={(leanImgUrls)=> {
-          this.uploadImgComponentCallback(leanImgUrls)
-        }}
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
         onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
         placeholder="分享吃喝玩乐、共享周边生活信息"

@@ -72,15 +72,11 @@ class TopicEdit extends Component {
       headerHeight: wrapHeight,
     };
     this.insertImages = []
-    this.leanImgUrls = []
     this.isPublishing = false
   }
 
   submitSuccessCallback = () => {
     this.isPublishing = false
-    this.setState({
-      shouldUploadImgComponent: false
-    })
     Actions.pop({popNum: 2})
     Toast.show('恭喜您,更新成功!')
   }
@@ -89,39 +85,19 @@ class TopicEdit extends Component {
     Toast.show(error.message)
   }
 
-  uploadImgComponentCallback(leanImgUrls) {
-    this.leanImgUrls = leanImgUrls
-    this.publishTopic()
-  }
-
   onButtonPress = () => {
     if (this.props.isLogin) {
       if (this.state.selectedTopic) {
-        if (this.insertImages && this.insertImages.length) {
-          if (this.isPublishing) {
-            return
-          }
-          this.isPublishing = true
-          Toast.show('开始更新...', {
-            duration: 1000,
-            onHidden: ()=> {
-              this.setState({
-                shouldUploadImgComponent: true
-              })
-            }
-          })
-        } else {
-          if (this.isPublishing) {
-            return
-          }
-          this.isPublishing = true
-          Toast.show('开始更新...', {
-            duration: 1000,
-            onHidden: ()=> {
-              this.publishTopic()
-            }
-          })
+        if (this.isPublishing) {
+          return
         }
+        this.isPublishing = true
+        Toast.show('开始更新...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.publishTopic()
+          }
+        })
       }
       else {
         Toast.show("请选择一个话题")
@@ -135,7 +111,7 @@ class TopicEdit extends Component {
   publishTopic() {
     this.props.publishTopicFormData({
       formKey: updateTopicForm,
-      images: this.leanImgUrls,
+      images: this.insertImages,
       topicId: this.props.topic.objectId,
       categoryId: this.state.selectedTopic.objectId,
       submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
@@ -221,10 +197,6 @@ class TopicEdit extends Component {
         wrapHeight={this.state.extraHeight}
         renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
         getImages={(images) => this.getRichTextImages(images)}
-        shouldUploadImgComponent={this.state.shouldUploadImgComponent}
-        uploadImgComponentCallback={(leanImgUrls)=> {
-          this.uploadImgComponentCallback(leanImgUrls)
-        }}
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
         onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
         placeholder="分享吃喝玩乐、共享周边生活信息"
