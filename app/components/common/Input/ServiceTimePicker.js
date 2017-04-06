@@ -41,7 +41,7 @@ class ServiceTimePicker extends Component {
   componentDidMount() {
     let initTime = this.props.initValue
     if (!initTime) {
-      initTime = '08:30--21:30'
+      initTime = '08:30-21:30'
     }
     let beginTime = this.getBeginTime(initTime)
     let endTime = this.getEndTime(initTime)
@@ -72,7 +72,7 @@ class ServiceTimePicker extends Component {
     if (!text) {
       return ""
     }
-    let begin = text.substring(0, text.indexOf('--'))
+    let begin = text.substring(0, text.indexOf('-'))
     return begin
   }
 
@@ -80,17 +80,23 @@ class ServiceTimePicker extends Component {
     if (!text) {
       return ""
     }
-    let end = text.substring(text.indexOf('--')+2)
+    let end = text.substring(text.indexOf('-')+1)
     return end
   }
 
   getHour(time) {
     let hour = time.substring(0, time.indexOf(':'))
+    if (hour.length == 1) {
+      hour = '0' + hour
+    }
     return hour
   }
 
   getMin(time) {
     let min = time.substring(time.indexOf(':')+1)
+    if (min.length == 1) {
+      min = '0' + min
+    }
     return min
   }
 
@@ -110,9 +116,9 @@ class ServiceTimePicker extends Component {
   getPickerData(data, isBegin) {
     let text = ''
     if (isBegin) {
-      text = data[0].replace('时', ':') + data[1].replace('分', '') + '--' + this.state.endHour + ':' + this.state.endMin
+      text = data[0].replace('时', ':') + data[1].replace('分', '') + '-' + this.state.endHour + ':' + this.state.endMin
     } else {
-      text = this.state.beginHour + ':' + this.state.beginMin + '--' + data[0].replace('时', ':') + data[1].replace('分', '')
+      text = this.state.beginHour + ':' + this.state.beginMin + '-' + data[0].replace('时', ':') + data[1].replace('分', '')
     }
     this.updateInput(text)
   }
