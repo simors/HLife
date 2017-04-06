@@ -58,33 +58,24 @@ export function promoterCertification(payload) {
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
     lcAuth.verifySmsCode(smsPayload).then(() => {
-      let cardIdUrls = [formData.idCardPhotoInput.text]
-      ImageUtil.batchUploadImgs(cardIdUrls).then((leanCardIdUrls) => {
-        let region = formData.regionPicker.text
-        let promoterInfo = {
-          inviteCode: formData.inviteCodeInput.text,
-          name: formData.nameInput.text,
-          phone: formData.phoneInput.text,
-          liveProvince: region.province,
-          liveCity: region.city,
-          liveDistrict: region.district,
-          cardId: formData.IDInput.text,
-          cardIdPhoto: leanCardIdUrls[0],
+      let region = formData.regionPicker.text
+      let promoterInfo = {
+        inviteCode: formData.inviteCodeInput.text,
+        name: formData.nameInput.text,
+        phone: formData.phoneInput.text,
+        liveProvince: region.province,
+        liveCity: region.city,
+        liveDistrict: region.district,
+      }
+      lcPromoter.promoterCertification(promoterInfo).then((promoterInfo) => {
+        let promoterId = promoterInfo.promoter.objectId
+        let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
+        dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
+        dispatch(setActivePromoter({promoterId}))
+        dispatch(updatePromoter({promoterId, promoter}))
+        if (payload.success) {
+          payload.success(promoterInfo.message)
         }
-        lcPromoter.promoterCertification(promoterInfo).then((promoterInfo) => {
-          let promoterId = promoterInfo.promoter.objectId
-          let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
-          dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
-          dispatch(setActivePromoter({promoterId}))
-          dispatch(updatePromoter({promoterId, promoter}))
-          if (payload.success) {
-            payload.success(promoterInfo.message)
-          }
-        }).catch((error) => {
-          if (payload.error) {
-            payload.error(error)
-          }
-        })
       }).then(() => {
         let userId = activeUserId(getState())
         dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分

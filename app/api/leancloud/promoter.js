@@ -18,7 +18,6 @@ export function promoterCertification(payload) {
     inviteCode: payload.inviteCode,
     name: payload.name,
     phone: payload.phone,
-    cardId: payload.cardId,
     liveProvince: payload.liveProvince,
     liveCity: payload.liveCity,
     liveDistrict: payload.liveDistrict,
