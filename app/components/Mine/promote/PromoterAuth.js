@@ -50,18 +50,6 @@ const nameInput = {
     return {isVal: false, errMsg: '请输入姓名'}
   }
 }
-const IDInput = {
-  formKey: commonForm,
-  stateKey: Symbol('IDInput'),
-  type: "IDInput",
-  placeholder: "请填写居民身份证号",
-  checkValid: (data) => {
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '请输入身份证号'}
-  }
-}
 
 const phoneInput = {
   formKey: commonForm,
@@ -96,18 +84,6 @@ const inviteCodeInput = {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '请输入邀请码'}
-  }
-}
-
-const idCardPhotoInput = {
-  formKey: commonForm,
-  stateKey: Symbol('idCardPhotoInput'),
-  type: "idCardPhotoInput",
-  checkValid: (data) => {
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '请上传身份证照片'}
   }
 }
 
@@ -201,13 +177,6 @@ class PromoterAuth extends Component {
             </View>
             <View style={styles.detail}>
               <View style={styles.inputBox}>
-                <Text style={styles.maintext}>身份证</Text>
-                <View style={{flex: 1}}>
-                  <CommonTextInput {...IDInput} containerStyle={{height: normalizeH(42)}} maxLength={18}
-                                   inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
-                </View>
-              </View>
-              <View style={styles.inputBox}>
                 <Text style={styles.maintext}>常驻地</Text>
                 <View style={{flex: 1}}>
                   <RegionPicker {...regionPicker} containerStyle={{height: normalizeH(42)}}
@@ -250,33 +219,16 @@ class PromoterAuth extends Component {
                 <Text style={{color: THEME.colors.green, fontSize: em(12), marginLeft: normalizeW(5)}}>如何获取邀请码？</Text>
               </TouchableOpacity>
             </View>
+            <View style={styles.footer}>
+              <CommonButton
+                title="成为推广大使"
+                onPress={this.onButtonPress}
+              />
 
-            <View style={styles.certificateView}>
-              <View style={styles.certificateImgView}>
-                <View style={{marginLeft: normalizeW(15)}}>
-                  <Text style={styles.certificateTitle}>身份认证</Text>
-                  <Text style={{marginTop: normalizeH(15), fontSize: em(12), color: '#B2B2B2'}}>请上传身份证正面照</Text>
-                </View>
-                <ImageInput
-                  {...idCardPhotoInput}
-                  containerStyle={{width: normalizeW(115), height: normalizeH(90), marginRight: normalizeW(15)}}
-                  addImageBtnStyle={{top:0, left: 0, width: normalizeW(115), height: normalizeH(90)}}
-                  choosenImageStyle={{width: normalizeW(115), height: normalizeH(90)}}
-                  addImage={require('../../../assets/images/upload_certificate.png')}
-                />
-              </View>
-
-              <View style={styles.footer}>
-                <CommonButton
-                  title="成为推广大使"
-                  onPress={this.onButtonPress}
-                />
-
-                <TouchableOpacity style={styles.shopRegistProtocalWrap} onPress={()=> {}}>
-                  <Text style={{color: THEME.colors.light, fontSize: em(12)}}>我已阅读</Text>
-                  <Text style={{color: THEME.colors.green, fontSize: em(12)}}>《{appConfig.APP_NAME}推广协议》</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity style={styles.shopRegistProtocalWrap} onPress={()=> {}}>
+                <Text style={{color: THEME.colors.light, fontSize: em(12)}}>我已阅读</Text>
+                <Text style={{color: THEME.colors.green, fontSize: em(12)}}>《{appConfig.APP_NAME}推广协议》</Text>
+              </TouchableOpacity>
             </View>
           </KeyboardAwareScrollView>
         </View>
@@ -389,7 +341,6 @@ const styles = StyleSheet.create({
   detail: {
     marginTop: normalizeH(8),
     backgroundColor: '#FFFFFF',
-
   },
   getInvitationWrap: {
     flex: 1,
@@ -398,28 +349,15 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   footer: {
+    backgroundColor: '#FFFFFF',
     paddingBottom: normalizeH(24),
+    paddingTop: normalizeH(50),
+    height: normalizeH(224),
   },
   shopRegistProtocalWrap: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: normalizeH(10)
-  },
-  certificateView: {
-    height: normalizeH(226),
-    backgroundColor: '#FFF',
-    justifyContent: 'space-between',
-    marginTop: normalizeH(8),
-  },
-  certificateImgView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: normalizeH(10),
-  },
-  certificateTitle: {
-    fontSize: em(17),
-    color: '#5A5A5A',
   },
 })
