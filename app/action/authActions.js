@@ -378,7 +378,7 @@ function handleShopCertification(payload, formData) {
         dispatch(shopCertification4UploadCertiImg(payload, formData))
       }).catch((error) => {
         if (payload.error) {
-          payload.error(error)
+          payload.error(error || '验证码校验失败')
         }
       })
     }

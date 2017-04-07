@@ -516,6 +516,7 @@ class ShopDetail extends Component {
                     </TouchableOpacity>
                   </View>
                 </View>
+                
                 <View style={styles.shopXYZRight}>
                   {this.props.isFollowedShop
                     ? <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
@@ -530,6 +531,7 @@ class ShopDetail extends Component {
 
               <ShopPromotionModule
                 title="近期活动"
+                fromWhere='shopDetail'
                 shopPromotionList={this.props.shopDetail.containedPromotions}
               />
 

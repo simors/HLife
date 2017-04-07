@@ -96,6 +96,7 @@ class PublishShopPromotion extends Component {
         {
           id: 0,
           type: '折扣',
+          typeDesc: '',
           containerStyle: 'defaultType', //activeType
           textStyle: 'defaultTypeTxt',  //activeTypeTxt
           placeholderText: '例:店庆活动,全场七折起(15字内)'
@@ -103,6 +104,7 @@ class PublishShopPromotion extends Component {
         {
           id: 1,
           type: '预售',
+          typeDesc: '',
           containerStyle: 'defaultType',
           textStyle: 'defaultTypeTxt',
           placeholderText: '例:3月15号到货(15字内)'
@@ -110,6 +112,7 @@ class PublishShopPromotion extends Component {
         {
           id: 2,
           type: '限时购',
+          typeDesc: '',
           containerStyle: 'defaultType',
           textStyle: 'defaultTypeTxt',
           placeholderText: '例:每天下午18:00~22:00(15字内)'
@@ -117,6 +120,7 @@ class PublishShopPromotion extends Component {
         {
           id: 3,
           type: '自定义',
+          typeDesc: '',
           containerStyle: 'customType',
           textStyle: 'customTypeTxt',
           placeholderText: '用简短的文字描述活动(15字内)'
@@ -192,40 +196,58 @@ class PublishShopPromotion extends Component {
   changeType(_index) {
     let newTypes = this.state.types.map((item, index) => {
       if(_index == index) {
-        item.containerStyle = 'activeType'
-        item.textStyle = 'activeTypeTxt'
-
-        if(item.id == 3) {
-          this.setState({
-            form: {
-              ...this.state.form,
-              typeId: item.id,
-              type: item.type,
-              typeDesc: ''
-            },
-            toolBarContentType: this.toolBarContentTypes.CUSTOM,
-            typeDescPlaceholder: item.placeholderText
-          }, ()=>{
-            // console.log('changeType===',  this.state)
-            this.showToolBarInput(this.toolBarContentTypes.CUSTOM)
-          })
+        if(item.containerStyle == 'activeType') {
+          if(item.id == 3) {
+            this.setState({
+              toolBarContentType: this.toolBarContentTypes.CUSTOM,
+              typeDescPlaceholder: item.placeholderText
+            }, ()=>{
+              this.showToolBarInput(this.toolBarContentTypes.CUSTOM)
+            })
+          }else {
+            this.setState({
+              toolBarContentType: this.toolBarContentTypes.DEFAULT,
+              typeDescPlaceholder: item.placeholderText
+            }, ()=>{
+              this.showToolBarInput()
+            })
+          }
         }else {
-          this.setState({
-            form: {
-              ...this.state.form,
-              typeId: item.id,
-              type: item.type,
-              typeDesc: ''
-            },
-            toolBarContentType: this.toolBarContentTypes.DEFAULT,
-            typeDescPlaceholder: item.placeholderText
-          }, ()=>{
-            this.showToolBarInput()
-          })
+          item.containerStyle = 'activeType'
+          item.textStyle = 'activeTypeTxt'
+
+          if(item.id == 3) {
+            this.setState({
+              form: {
+                ...this.state.form,
+                typeId: item.id,
+                type: item.type == '自定义' ? '' : item.type,
+                typeDesc: item.typeDesc
+              },
+              toolBarContentType: this.toolBarContentTypes.CUSTOM,
+              typeDescPlaceholder: item.placeholderText
+            }, ()=>{
+              // console.log('changeType===',  this.state)
+              this.showToolBarInput(this.toolBarContentTypes.CUSTOM)
+            })
+          }else {
+            this.setState({
+              form: {
+                ...this.state.form,
+                typeId: item.id,
+                type: item.type,
+                typeDesc: item.typeDesc
+              },
+              toolBarContentType: this.toolBarContentTypes.DEFAULT,
+              typeDescPlaceholder: item.placeholderText
+            }, ()=>{
+              this.showToolBarInput()
+            })
+          }
         }
       }else {
         if(item.id == 3) {
-          item.type = '自定义'
+          // item.type = '自定义'
           item.containerStyle = 'customType'
           item.textStyle = 'customTypeTxt'
         }else {
@@ -280,6 +302,14 @@ class PublishShopPromotion extends Component {
       showOverlay:false
     })
     dismissKeyboard()
+  }
+
+  onOverlayPress() {
+    if(this.state.form.typeId != 3) {
+      this.onDefaultTypeBtnPress()
+    }else {
+      this.onCustomTypeBtnPress()
+    }
   }
 
   checkForm() {
@@ -381,6 +411,14 @@ class PublishShopPromotion extends Component {
     })
   }
 
+  updateTypesDesc(typeDesc) {
+    this.state.types.forEach((item) =>{
+      if(item.id == this.state.form.typeId) {
+        item.typeDesc = typeDesc
+      }
+    })
+  }
+
   renderToolBarDefaultTypeInput() {
     return (
       <View style={styles.toolbarDefaultTypeInputContainer}>
@@ -388,12 +426,14 @@ class PublishShopPromotion extends Component {
           ref={(input) =>{this._typeDefaultDescInput = input}}
           placeholder={this.state.typeDescPlaceholder}
           maxLength={120}
+          value={this.state.form.typeDesc}
           style={styles.toolbarInputStyle}
           enablesReturnKeyAutomatically={true}
           blurOnSubmit={true}
           underlineColorAndroid="transparent"
           onBlur={()=>{this.checkShouldShowToolBarInput()}}
           onChangeText={(text) => {
+            this.updateTypesDesc(text)
             this.setState({
               form: {
                 ...this.state.form,
@@ -424,6 +464,7 @@ class PublishShopPromotion extends Component {
               ref={(input) =>{this._typeNameInput = input}}
               placeholder="请输入类型名(4字内)"
               maxLength={24}
+              value={this.state.form.type}
               style={[styles.toolbarInputStyle, styles.typeNameInputStyle]}
               enablesReturnKeyAutomatically={true}
               blurOnSubmit={true}
@@ -443,12 +484,14 @@ class PublishShopPromotion extends Component {
             ref={(input) =>{this._typeDescInput = input}}
             placeholder={this.state.typeDescPlaceholder}
             maxLength={120}
+            value={this.state.form.typeDesc}
             style={[styles.toolbarInputStyle, styles.typeDescInputStyle]}
             enablesReturnKeyAutomatically={true}
             blurOnSubmit={true}
             underlineColorAndroid="transparent"
             onBlur={()=>{this.checkShouldShowToolBarInput()}}
             onChangeText={(text) => {
+              this.updateTypesDesc(text)
               this.setState({
                 form: {
                   ...this.state.form,
@@ -663,8 +706,7 @@ class PublishShopPromotion extends Component {
 
         {this.state.showOverlay &&
           <TouchableWithoutFeedback onPress={()=>{
-            this.setState({showOverlay:false})
-            dismissKeyboard()
+            this.onOverlayPress()
           }}>
             <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} />
           </TouchableWithoutFeedback>
