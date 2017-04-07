@@ -91,8 +91,12 @@ class MyShopPromotionManageIndex extends Component {
 
   renderIsPromotingView() {
     let promotingView = <View />
-    if(this.props.userOwnedShopInfo.containedPromotions) {
-      promotingView = this.props.userOwnedShopInfo.containedPromotions.map((item, index)=>{
+    let containedPromotions = this.props.userOwnedShopInfo.containedPromotions
+    if(containedPromotions) {
+      containedPromotions.sort((item1, item2)=>{
+        return item2.updatedAt - item1.updatedAt
+      })
+      promotingView = containedPromotions.map((item, index)=>{
         return (
           <View key={'promotion_' + index} style={{marginBottom:8}}>
             <MyShopPromotionModule
