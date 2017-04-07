@@ -641,28 +641,54 @@ function handlePublishShopComment(payload, formData) {
     if (formData.score) {
       newPayload.score = formData.score.text
     }
-    if (formData.imgGroup) {
-      newPayload.blueprints = formData.imgGroup.text
+    if (formData.imgGroup && formData.imgGroup.text.length > 0) {
+      return ImageUtil.batchUploadImgs(formData.imgGroup.text).then((leanUris) => {
+        newPayload.blueprints = leanUris
+        lcShop.submitShopComment(newPayload).then((result) => {
+          let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
+          dispatch(_action({}))
+          let params = {
+            shopId: payload.id,
+            replyTo: payload.shopOwnerId,
+            commentId: result.id,
+            content: newPayload.content,
+          }
+          // console.log('handlePublishShopComment=====params=', params)
+          dispatch(msgAction.notifyShopComment(params))
+          if (payload.success) {
+            payload.success()
+          }
+        }).catch((error) => {
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    } else {
+      newPayload.blueprints = []
+      lcShop.submitShopComment(newPayload).then((result) => {
+        let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
+        dispatch(_action({}))
+        let params = {
+          shopId: payload.id,
+          replyTo: payload.shopOwnerId,
+          commentId: result.id,
+          content: newPayload.content,
+        }
+        dispatch(msgAction.notifyShopComment(params))
+        if (payload.success) {
+          payload.success()
+        }
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
     }
-    lcShop.submitShopComment(newPayload).then((result) => {
-      let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
-      dispatch(_action({}))
-      let params = {
-        shopId: payload.id,
-        replyTo: payload.shopOwnerId,
-        commentId: result.id,
-        content: newPayload.content,
-      }
-      // console.log('handlePublishShopComment=====params=', params)
-      dispatch(msgAction.notifyShopComment(params))
-      if (payload.success) {
-        payload.success()
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
   }
 }
 
