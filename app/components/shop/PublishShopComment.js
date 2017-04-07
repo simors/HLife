@@ -52,12 +52,8 @@ const imageGroupInput = {
 class PublishShopComment extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      shouldUploadImages: false
-    }
-
     this.isPublishing = false
+    this.imgList = []
   }
 
   componentWillMount() {
@@ -74,14 +70,7 @@ class PublishShopComment extends Component {
       Actions.LOGIN()
       return
     }
-
-    if(this.imgList && this.imgList.length) {
-      this.setState({
-        shouldUploadImages: true
-      })
-    }else {
-      this.publishShopComment()
-    }
+    this.publishShopComment()
   }
 
   publishShopComment() {
@@ -104,10 +93,6 @@ class PublishShopComment extends Component {
         Toast.show(err.message || '发表评论失败')
       }
     })
-  }
-  
-  uploadImagesCallback(leanImgUrls) {
-    this.publishShopComment()
   }
 
   rightComponent() {
@@ -141,7 +126,6 @@ class PublishShopComment extends Component {
                   placeholder="对店铺的满意度"
                 />
               </View>
-
               <View style={styles.contentWrap}>
                 <MultilineText
                   containerStyle={{backgroundColor: '#fff'}}
@@ -149,21 +133,15 @@ class PublishShopComment extends Component {
                   inputStyle={{height: normalizeH(232),borderTopWidth:0,borderBottomWidth:0}}
                   {...commentInput}/>
               </View>
-
               <View style={styles.ImageInputWrap}>
                 <ImageGroupInput
                   {...imageGroupInput}
                   number={9}
                   imageLineCnt={3}
                   getImageList={(imgList)=>{this.imgList = imgList}}
-                  shouldUploadImages={this.state.shouldUploadImages}
-                  uploadImagesCallback={(leanImgUrls)=>{this.uploadImagesCallback(leanImgUrls)}}
                 />
               </View>
-
             </View>
-
-
           </ScrollView>
         </View>
 

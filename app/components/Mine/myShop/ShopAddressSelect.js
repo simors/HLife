@@ -65,6 +65,9 @@ class ShopAddressSelect extends Component {
       shopName: '',
       shopAddress: '',
       showShopInfoArea: true,
+      shopNameIsFocus: false,
+      shopAddressIsFocus: false,
+      keyboardIsShow: false,
       showLoading: false
     }
 
@@ -73,6 +76,14 @@ class ShopAddressSelect extends Component {
   }
 
   componentDidMount() {
+
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
 
     InteractionManager.runAfterInteractions(() => {
 
@@ -121,7 +132,39 @@ class ShopAddressSelect extends Component {
   }
 
   componentWillUnmount() {
-    
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
+  }
+
+  onKeyboardWillShow = (e) => {
+    this.setState({
+      keyboardIsShow: true
+    })
+  }
+
+  onKeyboardWillHide = (e) => {
+    this.setState({
+      keyboardIsShow: false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    console.log('onKeyboardDidShow')
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    console.log('onKeyboardDidHide')
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
   }
 
   resetPosition() {
@@ -182,17 +225,17 @@ class ShopAddressSelect extends Component {
   }
 
   _searchTextChange(text) {
+    // console.log('_searchTextChange.text===', text)
     this.setState({
       searchText: text,
       showClearBtn: !!text
     })
-
-    // console.log('_searchTextChange.text===', text)
+    
     if(!text) {
       this.clearSearchInput()
       return
     }
-    // console.log('searchInCityProcess.params===', this.state.currentCity + ",keyword=" + text)
+
     PoiSearch.searchInCityProcess(this.state.currentCity, text, 1)
       .then(data => {
         // console.log('searchInCityProcess.data===', data)
@@ -216,6 +259,7 @@ class ShopAddressSelect extends Component {
           }
         })
       })
+    
   }
 
   clearSearchInput() {
@@ -246,7 +290,8 @@ class ShopAddressSelect extends Component {
     this.setState({
       showSearchResult: false,
       shopName: poiInfo.name,
-      shopAddress: poiInfo.address
+      shopAddress: poiInfo.address,
+      searchText: poiInfo.name
     })
 
     if(this.state.center) {
@@ -292,9 +337,9 @@ class ShopAddressSelect extends Component {
   }
 
   _onSearchInputBlur() {
-    this.setState({
-      showShopInfoArea: true,
-    })
+    // this.setState({
+    //   showShopInfoArea: true,
+    // })
   }
 
   _onSearchInputFocus() {
@@ -303,9 +348,9 @@ class ShopAddressSelect extends Component {
         showSearchResult: true,
       })
     }
-    this.setState({
-      showShopInfoArea: false,
-    })
+    // this.setState({
+    //   showShopInfoArea: false,
+    // })
   }
 
   onShopBtnPress() {
@@ -342,7 +387,7 @@ class ShopAddressSelect extends Component {
     if(this.state.searchResult.error != 0) {
       return (
         <View style={styles.noSearchResultContainer}>
-          <Text style={styles.noSearchResultTxt}>{this.state.searchResult.message}</Text>
+          <Text style={styles.noSearchResultTxt}>未找到结果</Text>
         </View>
       )
     }
@@ -387,8 +432,34 @@ class ShopAddressSelect extends Component {
     )
   }
 
+  _onShopNameBlur() {
+    // console.log('_onShopNameBlur')
+    this.setState({
+      shopNameIsFocus: false
+    })
+  }
+
+  _onShopNameFocus() {
+    // console.log('_onShopNameFocus')
+    this.setState({
+      shopNameIsFocus: true
+    })
+  }
+
+  _onShopAddressBlur() {
+    this.setState({
+      shopAddressIsFocus: false
+    })
+  }
+
+  _onShopAddressFocus() {
+    this.setState({
+      shopAddressIsFocus: true
+    })
+  }
+
   renderShopInfoArea() {
-    if(!this.state.showShopInfoArea) {
+    if(this.state.showSearchResult && this.state.searchResult.error == 0) {
       return null
     }
 
@@ -414,6 +485,8 @@ class ShopAddressSelect extends Component {
               containerStyle={[styles.shopInputContainerStyle]}
               inputStyle={[styles.shopInputStyle]}
               value={this.state.shopName}
+              onBlur={this._onShopNameBlur.bind(this)}
+              onFocus={this._onShopNameFocus.bind(this)}
             />
           </View>
           <View style={styles.shopInfoContainer}>
@@ -425,6 +498,8 @@ class ShopAddressSelect extends Component {
               containerStyle={[styles.shopInputContainerStyle]}
               inputStyle={[styles.shopInputStyle]}
               value={this.state.shopAddress}
+              onBlur={this._onShopAddressBlur.bind(this)}
+              onFocus={this._onShopAddressFocus.bind(this)}
             />
           </View>
           <CommonButton

@@ -20,6 +20,7 @@ export default class KeyboardAwareToolBar extends Component {
   }
 
   constructor(props) {
+    // console.log('constructor.props=====', props)
     super(props)
     this._keyboardHeight = new Animated.Value(this.props.initKeyboardHeight || 0)
     this._isTypingDisabled = false
@@ -55,7 +56,7 @@ export default class KeyboardAwareToolBar extends Component {
   }
 
   componentWillReceiveProps(nextProps = {}) {
-
+    // console.log('componentWillReceiveProps.nextProps=====', nextProps)
   }
 
   componentWillUnmount() {
