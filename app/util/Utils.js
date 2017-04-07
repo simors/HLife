@@ -23,6 +23,9 @@ export function userIsFollowedTheUser(userId, userFollowees) {
 }
 
 export function abbrProvince(province) {
+  if (!province || province == '') {
+    return ''
+  }
   let newProvince = province
   if (province.endsWith('省')) {
     newProvince = province.substring(0, province.lastIndexOf('省'))
@@ -47,6 +50,9 @@ export function abbrProvince(province) {
 }
 
 export function abbrCity(city) {
+  if (!city || city == '') {
+    return ''
+  }
   let newCity = city
   if (city.endsWith('市')) {
     newCity = city.substring(0, city.lastIndexOf('市'))

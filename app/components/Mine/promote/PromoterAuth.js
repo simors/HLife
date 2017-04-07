@@ -98,7 +98,10 @@ class PromoterAuth extends Component {
   onButtonPress = () => {
     this.props.promoterCertification({
       formKey: commonForm,
-      success: () => {Toast.show('注册为推广员成功')},
+      success: () => {
+        Toast.show('注册为推广员成功')
+        Actions.PAYMENT()
+      },
       error: (err) => {
         Toast.show(err.message)
       },

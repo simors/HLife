@@ -104,6 +104,13 @@ class Setting extends Component {
               <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>退出登录</Text>
             </TouchableOpacity>
           </View>
+          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PAYMENT()}>
+              <Image source={require('../../assets/images/mine_collection.png')}></Image>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>支付测试</Text>
+            </TouchableOpacity>
+          </View>
+
         </View>
       </View>
     )
