@@ -26,7 +26,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {getBanner, selectShopCategories} from '../../selector/configSelector'
+import {getBanner, selectShopCategories, getTopicCategories} from '../../selector/configSelector'
 import {fetchBanner, fetchShopCategories, getAllTopicCategories} from '../../action/configAction'
 import {getCurrentLocation} from '../../action/locAction'
 import CommonListView from '../common/CommonListView'
@@ -39,7 +39,7 @@ import CommonMarquee2 from '../common/CommonMarquee2'
 import Channels from './Channels'
 import DailyChosen from './DailyChosen'
 import Columns from './Columns'
-import {getTopicCategories} from '../../selector/configSelector'
+import * as authSelector from '../../selector/authSelector'
 import MessageBell from '../common/MessageBell'
 import NearbyTopicView from './NearbyTopicView'
 import NearbyShopView from './NearbyShopView'
@@ -275,7 +275,20 @@ const mapStateToProps = (state, ownProps) => {
     nextSkipNum = shopPromotionList[shopPromotionList.length-1].nextSkipNum
   }
 
+  let activeUserInfo = authSelector.activeUserInfo(state)
+
   let geoPoint = getGeopoint(state)
+  let geoCity = getCity(state)
+
+  if(geoCity == '全国') {
+    if(activeUserInfo && activeUserInfo.geoCity) {
+      geoCity = activeUserInfo.geoCity
+    }
+
+    if(activeUserInfo && activeUserInfo.geo) {
+      geoPoint = activeUserInfo.geo
+    }
+  }
 
   const allShopCategories = selectShopCategories(state)
   // console.log('Home.allShopCategories*********>>>>>>>>>>>', allShopCategories)
@@ -285,12 +298,11 @@ const mapStateToProps = (state, ownProps) => {
     banner: banner,
     // topics: pickedTopics,
     ds: ds.cloneWithRows(dataArray),
-    city: getCity(state),
+    city: geoCity,
     geoPoint: geoPoint,
     nextSkipNum: nextSkipNum,
     shopPromotionList: shopPromotionList,
     allShopCategories: allShopCategories,
-
   }
 }
 

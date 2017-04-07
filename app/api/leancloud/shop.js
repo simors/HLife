@@ -126,24 +126,28 @@ export function fetchShopPromotionList(payload) {
     query.skip(skipNum)
   }
 
-  //构建内嵌查询
-  let innerQuery = new AV.Query('Shop')
-  if(distance) {
-    if (Array.isArray(geo)) {
-      let point = new AV.GeoPoint(geo)
-      innerQuery.withinKilometers('geo', point, distance)
-    }
+  if(!geoCity || geoCity == '全国') {
+    query.addDescending('updatedAt')
   }else {
-    if(geoCity) {
-      innerQuery.contains('geoCity', geoCity)
+    //构建内嵌查询
+    let innerQuery = new AV.Query('Shop')
+    if(distance) {
+      if (Array.isArray(geo)) {
+        let point = new AV.GeoPoint(geo)
+        innerQuery.withinKilometers('geo', point, distance)
+      }
+    }else {
+      if(geoCity) {
+        innerQuery.contains('geoCity', geoCity)
+      }
+      if (Array.isArray(geo)) {
+        let point = new AV.GeoPoint(geo)
+        innerQuery.withinKilometers('geo', point, 100) //距离降序
+      }
     }
-    if (Array.isArray(geo)) {
-      let point = new AV.GeoPoint(geo)
-      innerQuery.withinKilometers('geo', point, 100) //距离降序
-    }
+    //执行内嵌查询
+    query.matchesQuery('targetShop', innerQuery)
   }
-  //执行内嵌查询
-  query.matchesQuery('targetShop', innerQuery)
 
   query.equalTo('status', "1")
 
@@ -241,8 +245,10 @@ export function fetchUserFollowShops(payload) {
     userId = currentUser.id
   }
   let user = AV.Object.createWithoutData('_User', userId)
-  let query = new AV.Query('ShopFollowee')
-  query.equalTo('user', user)
+  // let query = new AV.Query('ShopFollowee')
+  // query.equalTo('user', user)
+  let query = new AV.Query('ShopFollower')
+  query.equalTo('follower', user)
   if(!isRefresh) { //分页查询
     if(lastCreatedAt) {
       query.lessThan('createdAt', new Date(lastCreatedAt))
@@ -257,12 +263,13 @@ export function fetchUserFollowShops(payload) {
   }
   query.addDescending('createdAt')
   query.limit(5)
-  query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
+  // query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
+  query.include(['shop','shop.targetShopCategory', 'shop.owner', 'shop.containedTag'])
   let userFollowedShops = []
   return query.find().then(function(results) {
     // console.log('fetchUserFollowShops.results=====', results)
     results.forEach((result)=>{
-      userFollowedShops.push(ShopInfo.fromLeancloudObject(result, 'followee'))
+      userFollowedShops.push(ShopInfo.fromLeancloudObject(result, 'shop'))
     })
     return {
       userId: userId,

@@ -41,14 +41,21 @@ class ShopPromotionModule extends Component {
                   <View>
                     <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
                   </View>
-                  <View style={styles.addressTextView}>
-                    <View style={{flex:1}}>
-                      <Text style={[styles.itemText, styles.abstractTxt]} numberOfLines={2}>{item.abstract}</Text>
-                    </View>
-                    <View style={styles.distanceBox}>
-                      <Text style={[styles.itemText, styles.distanceTxt]}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
-                    </View>
-                  </View>
+                  {this.props.fromWhere == 'shopDetail'
+                    ? <View style={styles.addressTextView}>
+                        <View style={{flex:1}}>
+                          <Text style={[styles.itemText, styles.abstractTxt]} numberOfLines={1}>{item.abstract}</Text>
+                        </View>
+                      </View>
+                    : <View style={styles.addressTextView}> 
+                         <View style={{flex:1}}>
+                           <Text style={[styles.itemText, styles.abstractTxt]} numberOfLines={2}>{item.abstract}</Text>
+                         </View>
+                         <View style={styles.distanceBox}>
+                          <Text style={[styles.itemText, styles.distanceTxt]}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
+                         </View>  
+                      </View>
+                  }
                   <View style={styles.saleAbstract}>
                     <View style={styles.saleLabel}>
                       <Text style={styles.saleLabelText}>{item.type}</Text>

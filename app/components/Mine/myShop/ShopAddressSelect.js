@@ -13,7 +13,8 @@ import {
   Image,
   Platform,
   InteractionManager,
-  ActivityIndicator
+  ActivityIndicator,
+  Keyboard
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -72,6 +73,7 @@ class ShopAddressSelect extends Component {
   }
 
   componentDidMount() {
+
     InteractionManager.runAfterInteractions(() => {
 
     })
@@ -116,6 +118,10 @@ class ShopAddressSelect extends Component {
 
   componentWillReceiveProps(nextProps) {
 
+  }
+
+  componentWillUnmount() {
+    
   }
 
   resetPosition() {
@@ -382,7 +388,7 @@ class ShopAddressSelect extends Component {
   }
 
   renderShopInfoArea() {
-    if(!this.state.showShopInfoArea || this.state.showSearchResult) {
+    if(!this.state.showShopInfoArea) {
       return null
     }
 
