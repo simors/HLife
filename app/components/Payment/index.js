@@ -52,7 +52,6 @@ class Payment extends Component {
   }
 
   submitSuccessCallback = (charge) => {
-    Toast.show('Ping++ 获取 charge对象成功！')
     console.log("get charge:", JSON.stringify(charge))
     if(Platform.OS === 'ios') {
       PingPPModule.setDebugMode(true, () => {console.log("PingPPModule.setDebugMode success!")})
@@ -64,7 +63,8 @@ class Payment extends Component {
   }
 
   submitErrorCallback = (error) => {
-    Toast.show(error.message)
+    Toast.show("支付失败")
+    console.log("error:", error)
   }
 
   onPayment() {
@@ -73,8 +73,9 @@ class Payment extends Component {
       order_no: order_no
     })
     let paymentPayload = {
+      subject: '加盟费',
       order_no: order_no,
-      amount: 58*100,
+      amount: 1,
       channel: this.state.selectedChannel,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
@@ -109,8 +110,8 @@ class Payment extends Component {
               <Text style={styles.amountText}>支付金额</Text>
               <Text style={styles.price}>¥ 58.00元</Text>
             </View>
+            <Text style={styles.channelTrip}>选择支付方式</Text>
             <View style={styles.channel}>
-              <Text style={styles.channelTrip}>选择支付方式</Text>
               <TouchableOpacity style={styles.wx} onPress= {() => this.onSwitchChannel('wx')}>
                 <Image source={require('../../assets/images/payment_weixin_36.png')}/>
                 <Text style={{flex: 1, fontSize: 17, marginLeft: normalizeW(15)}}>微信</Text>
@@ -208,12 +209,13 @@ const styles = StyleSheet.create({
   },
   channelTrip: {
     position: 'absolute',
-    top: -6,
+    top: normalizeH(138),
     left: normalizeW(145),
     paddingLeft: 10,
     paddingRight: 10,
     fontSize: 12,
     color: '#AAAAAA',
+    backgroundColor: '#FFFFFF'
   },
   wx: {
     flexDirection: 'row',

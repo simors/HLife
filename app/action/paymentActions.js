@@ -10,6 +10,7 @@ let createPaymentAction = createAction(CREATE_PAYMENT)
 export function createPingppPayment(payload) {
   return (dispatch, getState) => {
     paymentPayload = {
+      subject: payload.subject,
       order_no: payload.order_no,
       amount: payload.amount,
       channel: payload.channel,
@@ -19,7 +20,7 @@ export function createPingppPayment(payload) {
       if(payload.success) {
         payload.success(result.charge)
       }
-      dispatch(createPaymentAction({charge: charge}))
+      dispatch(createPaymentAction({charge: result.charge}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
