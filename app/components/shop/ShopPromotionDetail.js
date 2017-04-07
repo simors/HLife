@@ -65,7 +65,8 @@ class ShopPromotionDetail extends Component {
       name: targetShop.owner.nickname,
       members: [this.props.currentUser, targetShop.owner.id],
       conversationType: PERSONAL_CONVERSATION,
-      title: targetShop.owner.nickname,
+      title: targetShop.shopName
+      // title: targetShop.owner.nickname,
     }
     Actions.CHATROOM(payload)
   }
