@@ -9,6 +9,13 @@ export const UserInfoRecord = Record({
   gender: undefined,
   birthday: undefined,
   identity: undefined,
+  geo: undefined,
+  geoProvince: undefined,
+  geoProvinceCode: undefined,
+  geoCity: undefined,
+  geoCityCode: undefined,
+  geoDistrict: undefined,
+  geoDistrictCode: undefined,
 }, 'UserInfoRecord')
 
 export const HealthProfileRecord = Record({
@@ -42,12 +49,19 @@ export class UserInfo extends UserInfoRecord {
     let info = new UserInfoRecord()
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)
-      record.set('avatar',lcObj.attributes.avatar)
+      record.set('avatar',attrs.avatar)
       record.set('phone', attrs.mobilePhoneNumber)
       record.set('nickname', attrs.nickname)
       record.set('gender', attrs.gender)
       record.set('birthday', attrs.birthday)
       record.set('identity', new List(attrs.identity))
+      record.set('geo', attrs.geo)
+      record.set('geoProvince', attrs.geoProvince)
+      record.set('geoProvinceCode', attrs.geoProvinceCode)
+      record.set('geoCity', attrs.geoCity)
+      record.set('geoCityCode', attrs.geoCityCode)
+      record.set('geoDistrict', attrs.geoDistrict)
+      record.set('geoDistrictCode', attrs.geoDistrictCode)
     })
     return info
   }
@@ -62,6 +76,13 @@ export class UserInfo extends UserInfoRecord {
       record.set('gender', lcObj.gender)
       record.set('birthday', lcObj.birthday)
       record.set('identity', new List(lcObj.identity))
+      record.set('geo', lcObj.geo)
+      record.set('geoProvince', lcObj.geoProvince)
+      record.set('geoProvinceCode', lcObj.geoProvinceCode)
+      record.set('geoCity', lcObj.geoCity)
+      record.set('geoCityCode', lcObj.geoCityCode)
+      record.set('geoDistrict', lcObj.geoDistrict)
+      record.set('geoDistrictCode', lcObj.geoDistrictCode)
     })
     return info
   }

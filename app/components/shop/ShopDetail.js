@@ -516,6 +516,7 @@ class ShopDetail extends Component {
                     </TouchableOpacity>
                   </View>
                 </View>
+                
                 <View style={styles.shopXYZRight}>
                   {this.props.isFollowedShop
                     ? <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
