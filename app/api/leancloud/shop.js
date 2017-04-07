@@ -241,8 +241,10 @@ export function fetchUserFollowShops(payload) {
     userId = currentUser.id
   }
   let user = AV.Object.createWithoutData('_User', userId)
-  let query = new AV.Query('ShopFollowee')
-  query.equalTo('user', user)
+  // let query = new AV.Query('ShopFollowee')
+  // query.equalTo('user', user)
+  let query = new AV.Query('ShopFollower')
+  query.equalTo('follower', user)
   if(!isRefresh) { //分页查询
     if(lastCreatedAt) {
       query.lessThan('createdAt', new Date(lastCreatedAt))
@@ -257,12 +259,13 @@ export function fetchUserFollowShops(payload) {
   }
   query.addDescending('createdAt')
   query.limit(5)
-  query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
+  // query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
+  query.include(['shop','shop.targetShopCategory', 'shop.owner', 'shop.containedTag'])
   let userFollowedShops = []
   return query.find().then(function(results) {
     // console.log('fetchUserFollowShops.results=====', results)
     results.forEach((result)=>{
-      userFollowedShops.push(ShopInfo.fromLeancloudObject(result, 'followee'))
+      userFollowedShops.push(ShopInfo.fromLeancloudObject(result, 'shop'))
     })
     return {
       userId: userId,
