@@ -69,7 +69,9 @@ class Mine extends Component {
 
     }
   }
-
+  jumpToAdvise(){
+    Actions.ADVISE_FEEDBACK()
+  }
   promoterManage() {
     if (this.props.identity && this.props.identity.includes(IDENTITY_PROMOTER)) {
       InteractionManager.runAfterInteractions(()=>{
@@ -246,7 +248,7 @@ class Mine extends Component {
               <Text style={styles.menuName}>联系客服</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {this.jumpToAdvise()}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/sugguestion.png')} />
             </View>
