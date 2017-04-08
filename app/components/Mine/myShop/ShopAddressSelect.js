@@ -504,7 +504,7 @@ class ShopAddressSelect extends Component {
     }
 
     return (
-      <View>
+      <View style={{flex:1}}>
         {false &&
           <View style={{position:'absolute',left:15,top:-60}}>
             <TouchableOpacity onPress={()=>{this.resetPosition()}}>
