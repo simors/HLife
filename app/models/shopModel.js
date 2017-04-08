@@ -35,6 +35,7 @@ export const ShopRecord = Record({
   containedTag: [], //店铺拥有的标签
   containedPromotions: List(), //店铺促销活动
   nextSkipNum: 0, //分页查询,跳过条数
+  status: -1, //0-后台关闭； 1-正常； 2-店主自己关闭
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
@@ -56,6 +57,7 @@ export class ShopInfo extends ShopRecord {
         record.set('contactNumber', attrs.contactNumber)
         record.set('contactNumber2', attrs.contactNumber2)
         record.set('certification', attrs.certification)
+        record.set('status', attrs.status && parseInt(attrs.status))
 
         let targetShopCategory = {}
         if(attrs.targetShopCategory && attrs.targetShopCategory.attributes) {
@@ -65,7 +67,6 @@ export class ShopInfo extends ShopRecord {
           targetShopCategory.status = targetShopCategoryAttrs.status
           targetShopCategory.text = targetShopCategoryAttrs.text
           targetShopCategory.id = attrs.targetShopCategory.id
-
         }
         record.set('targetShopCategory', targetShopCategory)
 
