@@ -35,11 +35,7 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 let adviseForm = Symbol('adviseForm')
-const adviseName = {
-  formKey: adviseForm,
-  stateKey: Symbol('adviseName'),
-  type: "adviseName",
-}
+
 
 const adviseContent = {
   formKey: adviseForm,
@@ -76,11 +72,12 @@ class AdviseFeedback extends Component {
 
   submitSuccessCallback(context) {
     this.isPublishing = false
-    Toast.show('恭喜您,发布成功!')
+    // Toast.show('恭喜您,发布成功!')
     Actions.SUBMIT_ADVISE_SUCCESS()
   }
 
   submitErrorCallback(error) {
+    this.isPublishing = false
     Toast.show(error.message)
   }
 
@@ -94,7 +91,7 @@ class AdviseFeedback extends Component {
         Toast.show('开始发布...', {
           duration: 1000,
           onHidden: ()=> {
-            this.publishTopic()
+            this.publishAdvise()
           }
         })
 
@@ -105,7 +102,7 @@ class AdviseFeedback extends Component {
     }
   }
 
-  publishTopic() {
+  publishAdvise() {
     this.props.publishAdviseFormData({
       formKey: adviseForm,
       images: this.insertImages,
@@ -120,58 +117,14 @@ class AdviseFeedback extends Component {
   }
 
   componentDidMount() {
-    if (this.props.topicId && this.props.topicId.objectId) {
-      this.setState({selectedTopic: this.props.topicId});
-    }
+
   }
 
-  openModal() {
-    Keyboard.dismiss()
-    this.refs.modal3.open();
-  }
 
-  closeModal(value) {
-    this.setState({selectedTopic: value})
-    this.refs.modal3.close();
-  }
 
-  renderTopicsSelected() {
-    if (this.props.topics) {
-      return (
-        this.props.topics.map((value, key)=> {
-          if (value && value.objectId) {
-            return (
-              <View key={key} style={styles.modalTopicButtonStyle}>
-                <TouchableOpacity style={styles.modalTopicStyle}
-                                  onPress={()=>this.closeModal(value)}>
-                  <Text style={styles.ModalTopicTextStyle}>
-                    {value.title}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )
-          }
-        })
-      )
-    }
-  }
 
-  renderSelectedTopic() {
-    if (this.state.selectedTopic) {
-      return (
-        <View style={styles.selectedTopicStyle}>
-          <Text style={styles.selectedTopicTextStyle}>
-            {this.state.selectedTopic.title}
-          </Text>
-        </View>
-      )
-    }
-    else {
-      return (
-        <View/>
-      )
-    }
-  }
+
+
 
   getRichTextImages(images) {
     this.insertImages = images
