@@ -35,6 +35,7 @@ import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ImageInput from '../common/Input/ImageInput'
 import ArticleEditor from '../common/Input/ArticleEditor'
+import Loading from '../common/Loading'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -528,12 +529,14 @@ class PublishShopPromotion extends Component {
 
   submitForm() {
     // console.log('submitForm.this.state=====', this.state)
+    this.loading = Loading.show()
     this.props.submitShopPromotion({
       ...this.state.form,
       localCoverImgUri: this.localCoverImgUri,
       localRichTextImagesUrls: this.localRichTextImagesUrls,
       success: ()=>{
         this.isPublishing = false
+        Loading.hide(this.loading)
         Toast.show('活动发布成功')
         if(this.props.isPop) {
           this.props.fetchUserOwnedShopInfo()
@@ -544,6 +547,7 @@ class PublishShopPromotion extends Component {
       },
       error: ()=>{
         this.isPublishing = false
+        Loading.hide(this.loading)
         Toast.show('活动发布失败')
       }
     })

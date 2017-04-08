@@ -48,6 +48,7 @@ import {selectShopTags, selectUserOwnedShopInfo} from '../../../selector/shopSel
 import {fetchShopCategories} from '../../../action/configAction'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Toast from '../../common/Toast'
+import Loading from '../../common/Loading'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -58,31 +59,64 @@ const serviceTimeInput = {
   formKey: commonForm,
   stateKey: Symbol('serviceTimeInput'),
   type: "serviceTimeInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '服务时间为空'}
+  },
 }
 const servicePhoneInput = {
   formKey: commonForm,
   stateKey: Symbol('servicePhoneInput'),
   type: "servicePhoneInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '服务电话为空'}
+  },
 }
 const servicePhone2Input = {
   formKey: commonForm,
   stateKey: Symbol('servicePhone2Input'),
   type: "servicePhone2Input",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '备用电话为空'}
+  },
 }
 const ourSpecialInput = {
   formKey: commonForm,
   stateKey: Symbol('ourSpecialInput'),
-  type: 'ourSpecialInput'
+  type: 'ourSpecialInput',
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '本店特色为空'}
+  },
 }
 const shopCategoryInput = {
   formKey: commonForm,
   stateKey: Symbol('shopCategoryInput'),
   type: "shopCategoryInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺类型为空'}
+  },
 }
 const tagsInput = {
   formKey: commonForm,
   stateKey: Symbol('tagsInput'),
-  type: 'tagsInput'
+  type: 'tagsInput',
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
 }
 
 class CompleteShopInfo extends Component {
@@ -187,6 +221,12 @@ class CompleteShopInfo extends Component {
   }
 
   onEditShopBtnPress() {
+    if(this.isSubmiting) {
+      return
+    }
+    this.isSubmiting = true
+    this.loading = Loading.show()
+
     this.props.submitFormData({
       formKey: commonForm,
       shopId: this.props.userOwnedShopInfo.id,
@@ -195,6 +235,8 @@ class CompleteShopInfo extends Component {
       coverUrl: this.localCoverImgUri,
       submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
       success: ()=>{
+        this.isSubmiting = false
+        Loading.hide(this.loading)
         this.props.fetchUserOwnedShopInfo()
         Toast.show('更新店铺资料成功', {
           duration: 1500,
@@ -209,7 +251,10 @@ class CompleteShopInfo extends Component {
           }
         })
       },
-      error: ()=>{
+      error: (error)=>{
+        console.log('error=====', error)
+        this.isSubmiting = false
+        Loading.hide(this.loading)
         Toast.show('更新店铺资料失败')
       }
     })

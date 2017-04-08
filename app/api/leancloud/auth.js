@@ -546,7 +546,7 @@ export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({
       mobilePhoneNumber:phone,
-      name: '吾爱',
+      name: '邻家优店',
       op: '注册',
       ttl: 10}).then(function () {
       // do nothing

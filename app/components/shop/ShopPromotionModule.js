@@ -41,10 +41,10 @@ class ShopPromotionModule extends Component {
                   <View>
                     <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
                   </View>
-                  {this.props.fromWhere == 'shopDetail'
+                  {this.props.noDistance
                     ? <View style={styles.addressTextView}>
                         <View style={{flex:1}}>
-                          <Text style={[styles.itemText, styles.abstractTxt]} numberOfLines={1}>{item.abstract}</Text>
+                          <Text style={[styles.itemText, styles.abstractTxt, {fontSize:em(14)}]} numberOfLines={1}>{item.abstract}</Text>
                         </View>
                       </View>
                     : <View style={styles.addressTextView}> 
@@ -68,10 +68,11 @@ class ShopPromotionModule extends Component {
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text style={styles.priceText}>¥</Text>
                       <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
-                      {item.originalPrice &&
-                      <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
-                        原价 {item.originalPrice}
-                      </Text>
+                      {item.originalPrice 
+                        ? <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
+                            原价 {item.originalPrice}
+                          </Text>
+                        : null
                       }
                     </View>
                     <View>
