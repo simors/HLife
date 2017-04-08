@@ -302,7 +302,7 @@ export function getLocalTopics(payload) {
   if (!isRefresh && lastCreatedAt) { //分页查询
     query.lessThan('createdAt', new Date(lastCreatedAt))
   }
-
+  query.equalTo('status',1)
   query.equalTo('city', city)
   query.equalTo('province', province)
 
@@ -340,6 +340,7 @@ export function getTopics(payload) {
       let currentUser = AV.User.current()
       query.equalTo('user', currentUser)
     }
+    query.equalTo('status',1)
 
     if (payload.type == "pickedTopics") {
       query.equalTo('picked', true)

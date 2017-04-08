@@ -29,7 +29,7 @@ export default {
     });
   },
 
-  searchInCityProcess(city, keyword, pageNum) {
+  searchInCityProcess(city, keyword, pageNum=1) {
     return new Promise((resolve, reject) => {
       try {
         _module.searchInCityProcess(city, keyword, pageNum);
@@ -43,5 +43,30 @@ export default {
       });
     });
   },
+
+  requestSuggestion(city, keyword, withLocation=false, latitude=0.0, longitude=0.0, citilimit=false) {
+    return new Promise((resolve, reject) => {
+      try {
+        // console.log('requestSuggestion===city=', city)
+        // console.log('requestSuggestion===keyword=', keyword)
+        // console.log('requestSuggestion===citilimit=', citilimit)
+        // console.log('requestSuggestion===withLocation=', withLocation)
+        // console.log('requestSuggestion===latitude=', latitude)
+        // console.log('requestSuggestion===longitude=', longitude)
+        if (Platform.OS == 'ios') {
+           _module.requestSuggestion(city, keyword, citilimit);
+        }else{
+           _module.requestSuggestion(city, keyword, citilimit, withLocation, latitude, longitude);
+        }
+      }
+      catch (e) {
+        reject(e);
+        return;
+      }
+      DeviceEventEmitter.once('onGetSuggestionResult', resp => {
+        resolve(resp);
+      });
+    });
+  }
 
 };

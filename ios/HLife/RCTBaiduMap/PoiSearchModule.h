@@ -14,7 +14,7 @@
 #import <BaiduMapAPI_Map/BMKMapComponent.h>
 #import <BaiduMapAPI_Search/BMKSearchComponent.h>
 
-@interface PoiSearchModule : BaseModule <BMKPoiSearchDelegate> {
+@interface PoiSearchModule : BaseModule <BMKPoiSearchDelegate, BMKSuggestionSearchDelegate> {
   int searchType;
 }
 

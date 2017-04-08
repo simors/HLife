@@ -62,8 +62,8 @@ class ShopAddressSelect extends Component {
       },
       showClearBtn: false,
       searchText: '',
-      shopName: '',
-      shopAddress: '',
+      shopName: props.shopName || '',
+      shopAddress: props.shopAddress || '',
       showShopInfoArea: true,
       shopNameIsFocus: false,
       shopAddressIsFocus: false,
@@ -168,7 +168,7 @@ class ShopAddressSelect extends Component {
   }
 
   resetPosition() {
-    console.log('resetPosition..this.currentPosition===', this.currentPosition)
+    // console.log('resetPosition..this.currentPosition===', this.currentPosition)
     if(this.currentPosition) {
       MapModule.moveToCenter(this.currentPosition.latitude, this.currentPosition.longitude, this.state.zoom)
       this.setState({
@@ -207,7 +207,6 @@ class ShopAddressSelect extends Component {
   _onRegionDidChangeAnimated4Ios(e) {
     // console.log('_onRegionDidChangeAnimated4Ios.e====', e)
     this._onMapStatusChangeFinish4Android(e)
-    
   }
 
   _onMapStatusChangeFinish4Android(e) {
@@ -236,15 +235,18 @@ class ShopAddressSelect extends Component {
       return
     }
 
-    PoiSearch.searchInCityProcess(this.state.currentCity, text, 1)
+    PoiSearch.requestSuggestion(this.state.currentCity, text)
       .then(data => {
-        // console.log('searchInCityProcess.data===', data)
+        // console.log('requestSuggestion.data===', data)
+        if(data.suggestionList && data.suggestionList.length) {
+          data.suggestionList.shift()
+        }
         this.setState({
           showSearchResult: true,
           searchResult: {
             error: data.errcode && data.errcode,
             message: data.message && data.message,
-            data: data.poiResult && data.poiResult.poiInfos
+            data: data.suggestionList || []
           }
         })
       })
@@ -259,6 +261,30 @@ class ShopAddressSelect extends Component {
           }
         })
       })
+
+    // PoiSearch.searchInCityProcess(this.state.currentCity, text, 1)
+    //   .then(data => {
+    //     // console.log('searchInCityProcess.data===', data)
+    //     this.setState({
+    //       showSearchResult: true,
+    //       searchResult: {
+    //         error: data.errcode && data.errcode,
+    //         message: data.message && data.message,
+    //         data: data.poiResult && data.poiResult.poiInfos
+    //       }
+    //     })
+    //   })
+    //   .catch(e =>{
+    //     console.warn(e, 'error')
+    //     this.setState({
+    //       showSearchResult: true,
+    //       searchResult: {
+    //         error: -9,
+    //         message: '查询异常,请稍候再试!',
+    //         data: []
+    //       }
+    //     })
+    //   })
     
   }
 
@@ -286,33 +312,47 @@ class ShopAddressSelect extends Component {
     })
   }
 
-  _onSearchResultPress(poiInfo) {
+  _onSearchResultPress(item) {
+    // console.log('_onSearchResultPress.item====', item)
     this.setState({
       showSearchResult: false,
-      shopName: poiInfo.name,
-      shopAddress: poiInfo.address,
-      searchText: poiInfo.name
+      shopName: item.key,
+      searchText: item.key,
+      currentCity: item.city,
+      currentDistrict: item.district,
+      center: {
+        latitude: item.latitude,
+        longitude: item.longitude
+      }
     })
 
-    if(this.state.center) {
-      if(!this.state.currentCity) {
-        Geolocation.reverseGeoCode(this.state.center.latitude, this.state.center.longitude)
-          .then(data => {
-            // console.log('_onSearchResultPress.reverseGeoCode.data===', data)
-            this.setState({
-              currentCity: abbrCity(data.city),
-              currentDistrict: data.district,
-            }, ()=>{
-              this.getGeoCode()
-            })
-          })
-          .catch(e =>{
-            console.warn(e, 'error')
-          })
-      }else {
-        this.getGeoCode()
-      }
-    }
+    Geolocation.reverseGeoCode(parseFloat(item.latitude), parseFloat(item.longitude))
+      .then(data => {
+        // console.log('_onSearchResultPress.data====', data)
+        this.setState({
+          shopAddress: data.address
+        })
+      })
+
+    // if(this.state.center) {
+    //   if(!this.state.currentCity) {
+    //     Geolocation.reverseGeoCode(this.state.center.latitude, this.state.center.longitude)
+    //       .then(data => {
+    //         // console.log('_onSearchResultPress.reverseGeoCode.data===', data)
+    //         this.setState({
+    //           currentCity: abbrCity(data.city),
+    //           currentDistrict: data.district,
+    //         }, ()=>{
+    //           this.getGeoCode()
+    //         })
+    //       })
+    //       .catch(e =>{
+    //         console.warn(e, 'error')
+    //       })
+    //   }else {
+    //     this.getGeoCode()
+    //   }
+    // }
 
   }
 
@@ -384,7 +424,7 @@ class ShopAddressSelect extends Component {
       return null
     }
 
-    if(this.state.searchResult.error != 0) {
+    if(this.state.searchResult.error != 0 || !this.state.searchResult.data.length) {
       return (
         <View style={styles.noSearchResultContainer}>
           <Text style={styles.noSearchResultTxt}>未找到结果</Text>
@@ -415,8 +455,8 @@ class ShopAddressSelect extends Component {
               source={require("../../../assets/images/doctor_certifi_hospital.png")}
             />
             <View style={styles.searchResultRightContainer}>
-              <Text numberOfLines={1} style={styles.searchResultName}>{item.name}</Text>
-              <Text numberOfLines={1} style={styles.searchResultAddr}>{item.address}</Text>
+              <Text numberOfLines={1} style={styles.searchResultName}>{item.key}</Text>
+              <Text numberOfLines={1} style={styles.searchResultAddr}>{item.city + item.district}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -458,15 +498,13 @@ class ShopAddressSelect extends Component {
     })
   }
 
-  renderShopInfoArea() {
+  renderToolBarContent() {
     if(this.state.showSearchResult && this.state.searchResult.error == 0) {
       return null
     }
 
     return (
-      <KeyboardAwareToolBar
-        initKeyboardHeight={0}
-      >
+      <View style={{flex:1}}>
         {false &&
           <View style={{position:'absolute',left:15,top:-60}}>
             <TouchableOpacity onPress={()=>{this.resetPosition()}}>
@@ -509,6 +547,16 @@ class ShopAddressSelect extends Component {
             buttonStyle={styles.shopBtnStyle}
           />
         </View>
+      </View>
+    )
+  }
+
+  renderShopInfoArea() {
+    return (
+      <KeyboardAwareToolBar
+        initKeyboardHeight={0}
+      >
+        {this.renderToolBarContent()}
       </KeyboardAwareToolBar>
     )
   }

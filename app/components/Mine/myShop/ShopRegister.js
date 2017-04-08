@@ -32,6 +32,8 @@ import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../a
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import ImageInput from '../../common/Input/ImageInput'
+import * as authSelector from '../../../selector/authSelector'
+import Loading from '../../common/Loading'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -42,16 +44,34 @@ const nameInput = {
   formKey: commonForm,
   stateKey: Symbol('nameInput'),
   type: "nameInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '姓名为空'}
+  },
 }
 const phoneInput = {
   formKey: commonForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '手机号为空'}
+  },
 }
 const smsAuthCodeInput = {
   formKey: commonForm,
   stateKey: Symbol('smsAuthCodeInput'),
   type: "smsAuthCodeInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '验证码为空'}
+  },
 }
 const shopNameInput = {
   formKey: commonForm,
@@ -61,7 +81,7 @@ const shopNameInput = {
     if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '输入有误'}
+    return {isVal: false, errMsg: '店铺名称为空'}
   },
   initValue: {text: '未知'}
 }
@@ -73,7 +93,7 @@ const shopAddrInput = {
     if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '输入有误'}
+    return {isVal: false, errMsg: '店铺地址为空'}
   },
   initValue: {text: '未知'}
 }
@@ -102,7 +122,12 @@ const invitationCodeInput = {
   formKey: commonForm,
   stateKey: Symbol('invitationCodeInput'),
   type: "invitationCodeInput",
-  checkValid: ()=>{return {isVal: true}},
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0 && (data.text !== '-1')) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '邀请码为空'}
+  },
   initValue: {text: '-1'}
 }
 
@@ -110,6 +135,12 @@ const certificationInput = {
   formKey: commonForm,
   stateKey: Symbol('certificationInput'),
   type: "certificationInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺认证图片为空'}
+  },
 }
 
 class ShopRegister extends Component {
@@ -179,29 +210,38 @@ class ShopRegister extends Component {
         data: {text:nextProps.currentDistrict},
       })
     }
-    if(nextProps.qRCode) {
-      this.setState({
-        qRCode: nextProps.qRCode
-      })
-      nextProps.inputFormUpdate({
-        formKey: invitationCodeInput.formKey,
-        stateKey: invitationCodeInput.stateKey,
-        data: {text:nextProps.qRCode},
-      })
-    }
+    // if(nextProps.qRCode) {
+    //   this.setState({
+    //     qRCode: nextProps.qRCode
+    //   })
+    //   nextProps.inputFormUpdate({
+    //     formKey: invitationCodeInput.formKey,
+    //     stateKey: invitationCodeInput.stateKey,
+    //     data: {text:nextProps.qRCode},
+    //   })
+    // }
 
   }
 
-  submitSuccessCallback() {
+  submitSuccessCallback = () => {
+    this.isSubmiting = false
+    Loading.hide(this.loading)
     Actions.SHOPR_EGISTER_SUCCESS()
   }
 
-  submitErrorCallback(error) {
+  submitErrorCallback = (error) => {
+    this.isSubmiting = false
+    Loading.hide(this.loading)
     Toast.show(error.message || '店铺注册失败')
   }
 
   onButtonPress = () => {
     // console.log('onButtonPress===submitFormData')
+    if(this.isSubmiting) {
+      return
+    }
+    this.isSubmiting = true
+    this.loading = Loading.show()
     this.props.submitFormData({
       formKey: commonForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION,
@@ -270,6 +310,9 @@ class ShopRegister extends Component {
                   <PhoneInput
                     {...phoneInput}
                     placeholder="仅用于客服与你联系"
+                    initValue={this.props.phone}
+                    editable={false}
+                    showClearBtn={false}
                     containerStyle={styles.containerStyle}
                     inputStyle={[styles.inputStyle, {height: normalizeH(42)}]}/>
                 </View>
@@ -299,36 +342,46 @@ class ShopRegister extends Component {
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺名称</Text>
                 </View>
-                <View style={[styles.inputBox, styles.shopAddress, {marginTop: normalizeH(5)}]}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                  >
-                    <TouchableOpacity
-                      style={styles.shopAddressContainer}
-                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
-                      <Text style={styles.shopAddressTxt}>{this.state.shopName}</Text>
-                    </TouchableOpacity>
-                  </ScrollView>
-                </View>
+                <TouchableOpacity style={{flex:1}}
+                      onPress={()=>{
+                        Actions.SHOP_ADDRESS_SELECT({
+                          shopName:this.state.shopName == '点击输入店铺名称' ? '' : this.state.shopName,
+                          shopAddress:this.state.shopAddress
+                        })}}>
+                  <View style={[styles.inputBox, styles.shopAddress, {marginTop: normalizeH(5)}]}>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      <View style={styles.shopAddressContainer}>
+                        <Text style={styles.shopAddressTxt}>{this.state.shopName}</Text>
+                      </View>
+                    </ScrollView>
+                  </View>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺地址</Text>
                 </View>
-                <View style={[styles.inputBox, styles.shopAddress]}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                  >
-                    <TouchableOpacity
-                      style={styles.shopAddressContainer}
-                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
-                      <Text style={styles.shopAddressTxt}>{this.state.shopAddress}</Text>
-                    </TouchableOpacity>
-                  </ScrollView>
-                </View>
+                <TouchableOpacity style={{flex:1}}
+                      onPress={()=>{
+                        Actions.SHOP_ADDRESS_SELECT({
+                          shopName:this.state.shopName == '点击输入店铺名称' ? '' : this.state.shopName,
+                          shopAddress:this.state.shopAddress
+                        })}}>
+                  <View style={[styles.inputBox, styles.shopAddress]}>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      <View style={styles.shopAddressContainer}>
+                        <Text style={styles.shopAddressTxt}>{this.state.shopAddress}</Text>
+                      </View>
+                    </ScrollView>
+                  </View>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.inputWrap}>
@@ -346,7 +399,21 @@ class ShopRegister extends Component {
                   />
                 </View>
                 <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(62), alignItems: 'flex-end'}}
-                                  onPress= {()=> {Actions.QRCODEREADER()}}>
+                                  onPress= {()=> {
+                                    Actions.QRCODEREADER({
+                                      readQRSuccess: (code) => {
+                                        this.setState({
+                                          qRCode: code
+                                        })
+                                        this.props.inputFormUpdate({
+                                          formKey: invitationCodeInput.formKey,
+                                          stateKey: invitationCodeInput.stateKey,
+                                          data: {text:code},
+                                        })
+                                        Actions.pop()
+                                      }
+                                    })
+                                  }}>
                   <Image style={{width: 20, height: 20}}  source={require('../../../assets/images/scan_red.png')} />
                 </TouchableOpacity>
               </View>
@@ -398,8 +465,11 @@ class ShopRegister extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-  return {
+  const activeUserInfo = authSelector.activeUserInfo(state)
+  const phone = activeUserInfo.phone
 
+  return {
+    phone: phone,
   }
 }
 
