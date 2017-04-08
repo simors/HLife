@@ -63,7 +63,7 @@ function handlePublishTopic(payload, formData) {
       }).then((leanUris) => {
         if(formData.topicContent && formData.topicContent.text.length &&
           leanUris && leanUris.length) {
-          let contentImgs = leanUris.reverse()
+          let contentImgs = leanUris.concat([]).reverse()
           formData.topicContent.text.forEach((value) => {
             if(value.type == 'COMP_IMG' && value.url)
               value.url = contentImgs.pop()
@@ -139,7 +139,7 @@ function handleUpdateTopic(payload, formData) {
       }).then((leanUris) => {
         if(formData.topicContent && formData.topicContent.text.length &&
           leanUris && leanUris.length) {
-          let contentImgs = leanUris.reverse()
+          let contentImgs = leanUris.concat([]).reverse()
           formData.topicContent.text.forEach((value) => {
             if(value.type == 'COMP_IMG' && value.url)
               value.url = contentImgs.pop()
