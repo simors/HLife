@@ -32,6 +32,7 @@ import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../a
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import ImageInput from '../../common/Input/ImageInput'
+import * as authSelector from '../../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -270,6 +271,9 @@ class ShopRegister extends Component {
                   <PhoneInput
                     {...phoneInput}
                     placeholder="仅用于客服与你联系"
+                    initValue={this.props.phone}
+                    editable={false}
+                    showClearBtn={false}
                     containerStyle={styles.containerStyle}
                     inputStyle={[styles.inputStyle, {height: normalizeH(42)}]}/>
                 </View>
@@ -346,7 +350,21 @@ class ShopRegister extends Component {
                   />
                 </View>
                 <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(62), alignItems: 'flex-end'}}
-                                  onPress= {()=> {Actions.QRCODEREADER()}}>
+                                  onPress= {()=> {
+                                    Actions.QRCODEREADER({
+                                      readQRSuccess: (code) => {
+                                        this.setState({
+                                          qRCode: code
+                                        })
+                                        this.props.inputFormUpdate({
+                                          formKey: invitationCodeInput.formKey,
+                                          stateKey: invitationCodeInput.stateKey,
+                                          data: {text:code},
+                                        })
+                                        Actions.pop()
+                                      }
+                                    })
+                                  }}>
                   <Image style={{width: 20, height: 20}}  source={require('../../../assets/images/scan_red.png')} />
                 </TouchableOpacity>
               </View>
@@ -398,8 +416,11 @@ class ShopRegister extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-  return {
+  const activeUserInfo = authSelector.activeUserInfo(state)
+  const phone = activeUserInfo.phone
 
+  return {
+    phone: phone,
   }
 }
 
