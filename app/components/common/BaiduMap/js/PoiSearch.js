@@ -53,7 +53,11 @@ export default {
         // console.log('requestSuggestion===withLocation=', withLocation)
         // console.log('requestSuggestion===latitude=', latitude)
         // console.log('requestSuggestion===longitude=', longitude)
-        _module.requestSuggestion(city, keyword, citilimit, withLocation, latitude, longitude);
+        if (Platform.OS == 'ios') {
+           _module.requestSuggestion(city, keyword, citilimit);
+        }else{
+           _module.requestSuggestion(city, keyword, citilimit, withLocation, latitude, longitude);
+        }
       }
       catch (e) {
         reject(e);

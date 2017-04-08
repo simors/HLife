@@ -313,6 +313,7 @@ class ShopAddressSelect extends Component {
   }
 
   _onSearchResultPress(item) {
+    // console.log('_onSearchResultPress.item====', item)
     this.setState({
       showSearchResult: false,
       shopName: item.key,
@@ -325,8 +326,9 @@ class ShopAddressSelect extends Component {
       }
     })
 
-    Geolocation.reverseGeoCode(item.latitude, item.longitude)
+    Geolocation.reverseGeoCode(parseFloat(item.latitude), parseFloat(item.longitude))
       .then(data => {
+        // console.log('_onSearchResultPress.data====', data)
         this.setState({
           shopAddress: data.address
         })
@@ -496,15 +498,13 @@ class ShopAddressSelect extends Component {
     })
   }
 
-  renderShopInfoArea() {
+  renderToolBarContent() {
     if(this.state.showSearchResult && this.state.searchResult.error == 0) {
       return null
     }
 
     return (
-      <KeyboardAwareToolBar
-        initKeyboardHeight={0}
-      >
+      <View>
         {false &&
           <View style={{position:'absolute',left:15,top:-60}}>
             <TouchableOpacity onPress={()=>{this.resetPosition()}}>
@@ -547,6 +547,16 @@ class ShopAddressSelect extends Component {
             buttonStyle={styles.shopBtnStyle}
           />
         </View>
+      </View>
+    )
+  }
+
+  renderShopInfoArea() {
+    return (
+      <KeyboardAwareToolBar
+        initKeyboardHeight={0}
+      >
+        {this.renderToolBarContent()}
       </KeyboardAwareToolBar>
     )
   }

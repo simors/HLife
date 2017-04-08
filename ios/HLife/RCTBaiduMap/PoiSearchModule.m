@@ -13,6 +13,7 @@
 @synthesize bridge = _bridge;
 
 static BMKPoiSearch *_poisearch;
+static BMKSuggestionSearch *_suggestionSearch;
 
 RCT_EXPORT_MODULE(BaiduPoiSearchModule);
 
@@ -57,6 +58,62 @@ RCT_EXPORT_METHOD(searchInCityProcess:(NSString *)city keyword:(NSString *)keywo
   }
 }
 
+RCT_EXPORT_METHOD(requestSuggestion:(NSString *)city keyword:(NSString *)keyword cityLimit:(BOOL)cityLimit){
+  [self getSuggestionSearch].delegate = self;
+  
+  BMKSuggestionSearchOption* option = [[BMKSuggestionSearchOption alloc] init];
+  option.cityname = city;
+  option.keyword = keyword;
+  if(cityLimit) {
+    option.cityLimit = cityLimit;
+  }
+  BOOL flag = [[self getSuggestionSearch] suggestionSearch: option];
+  if(flag)
+  {
+    NSLog(@"建议检索发送成功");
+  }
+  else
+  {
+    NSLog(@"建议检索发送失败");
+  }
+}
+
+- (void)onGetSuggestionResult:(BMKSuggestionSearch*)searcher result:(BMKSuggestionResult*)result errorCode:(BMKSearchErrorCode)error{
+  NSLog(@"onGetSuggestionResult获取建议检索结果");
+  NSMutableDictionary *body = [self getEmptyBody];
+  
+  if(error == BMK_SEARCH_NO_ERROR){
+    NSMutableArray *suggestionList = [NSMutableArray array];
+    for(int i = 0; i < result.keyList.count; i++) {
+      NSMutableDictionary *item = [self getEmptyBody];
+      NSString* key = [result.keyList objectAtIndex:i];
+      NSString* city = [result.cityList objectAtIndex:i];
+      NSString* district = [result.districtList objectAtIndex:i];
+      NSValue* pt = [result.ptList objectAtIndex:i];
+      if(pt != nil) {
+        CLLocationCoordinate2D coor;
+        [pt getValue:&coor];
+        NSString *latitude = [NSString stringWithFormat:@"%f", coor.latitude];
+        NSString *longitude = [NSString stringWithFormat:@"%f", coor.longitude];
+        item[@"latitude"] = latitude;
+        item[@"longitude"] = longitude;
+      }
+      item[@"key"] = key;
+      item[@"city"] = city;
+      item[@"district"] = district;
+      [suggestionList addObject: item];
+    }
+    body[@"errcode"] = @"0";
+    body[@"message"] = @"成功";
+    body[@"suggestionList"] = suggestionList;
+  }else{
+    body[@"errcode"] = @"-1";
+    body[@"message"] = @"失败";
+  }
+  
+  [self sendEvent:@"onGetSuggestionResult" body:body];
+}
+
 - (void)onGetPoiResult:(BMKPoiSearch *)searcher result:(BMKPoiResult*)result errorCode:(BMKSearchErrorCode)error{
   NSLog(@"onGetPoiResult获取检索结果");
   NSMutableDictionary *body = [self getEmptyBody];
@@ -89,7 +146,14 @@ RCT_EXPORT_METHOD(searchInCityProcess:(NSString *)city keyword:(NSString *)keywo
   
 }
 
--(BMKPoiSearch *)getPoisearch{
+-(BMKSuggestionSearch *) getSuggestionSearch{
+  if(_suggestionSearch == nil) {
+    _suggestionSearch = [[BMKSuggestionSearch alloc]init];
+  }
+  return _suggestionSearch;
+}
+
+-(BMKPoiSearch *) getPoisearch{
   if(_poisearch == nil) {
     _poisearch = [[BMKPoiSearch alloc]init];
   }
