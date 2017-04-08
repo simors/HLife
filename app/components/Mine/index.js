@@ -55,9 +55,14 @@ class Mine extends Component {
       // console.log('this.props.identity=====', this.props.identity)
       if (this.props.identity && this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
         // console.log('this.props.identity==1==')
-        if(this.props.userOwnedShopInfo.status == 1) {
-          Actions.MY_SHOP_INDEX()
-        }else if(this.props.userOwnedShopInfo.status == 0) {
+        let userOwnedShopInfo = this.props.userOwnedShopInfo
+        if(userOwnedShopInfo.status == 1) {
+          if(!userOwnedShopInfo.coverUrl) {
+            Actions.COMPLETE_SHOP_INFO()
+          }else{
+            Actions.MY_SHOP_INDEX()
+          }
+        }else if(userOwnedShopInfo.status == 0) {
           Toast.show('您的店铺已被关闭，请与客服联系')
         }else{
           Toast.show('您的店铺目前处于异常状态，请联系客服')

@@ -36,6 +36,7 @@ import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ImageInput from '../../common/Input/ImageInput'
 import ArticleEditor from '../../common/Input/ArticleEditor'
 import Popup from '@zzzkk2009/react-native-popup'
+import Loading from '../../common/Loading'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -527,6 +528,7 @@ class EditShopPromotion extends Component {
       return
     }
     this.isPublishing = true
+    
 
     if(!this.checkForm()) {
       this.isPublishing = false
@@ -566,6 +568,7 @@ class EditShopPromotion extends Component {
 
   submitForm() {
     // console.log('submitForm.this.state=====', this.state)
+    this.loading = Loading.show()
     this.props.submitShopPromotion({
       ...this.state.form,
       localCoverImgUri: this.localCoverImgUri,
@@ -576,10 +579,12 @@ class EditShopPromotion extends Component {
         this.props.fetchMyShopExpiredPromotionList({isRefresh:true})
         Actions.pop()
         this.isPublishing = false
+        Loading.hide(this.loading)
       },
       error: ()=>{
         Toast.show('活动更新失败')
         this.isPublishing = false
+        Loading.hide(this.loading)
       }
     })
   }
