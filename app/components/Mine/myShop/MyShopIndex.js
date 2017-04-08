@@ -470,13 +470,24 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   // console.log('userOwnedShopInfo====', userOwnedShopInfo)
   const isUserLogined = authSelector.isUserLogined(state)
-  const shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
-  const shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
-  let latestShopAnnouncement = selectLatestShopAnnouncemment(state, userOwnedShopInfo.id)
-  const shopComments = selectShopComments(state, userOwnedShopInfo.id)
-  const shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
   const userFollowees = authSelector.selectUserFollowees(state)
-  const similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
+
+  let shopFollowers = []
+  let shopFollowersTotalCount = 0
+  let latestShopAnnouncement = {}
+  let shopComments = []
+  let shopCommentsTotalCount = 0
+  let similarShopList = []
+  if(userOwnedShopInfo.id) {
+    shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
+    shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
+    latestShopAnnouncement = selectLatestShopAnnouncemment(state, userOwnedShopInfo.id)
+    shopComments = selectShopComments(state, userOwnedShopInfo.id)
+    // console.log('shopComments==***==', shopComments)
+    shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
+    similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
+  }
+
   return {
     shopDetail: userOwnedShopInfo,
     userOwnedShopInfo: userOwnedShopInfo,

@@ -146,7 +146,7 @@ class ServiceTimePicker extends Component {
           <CascadePicker
             onSubmit={(data) => this.getPickerData(data, true)}
             level={2}
-            title="选择营业时间"
+            title="选择上班时间"
             data={classify}
             initSelected={this.getBeginSelected()}
             cascade={false}

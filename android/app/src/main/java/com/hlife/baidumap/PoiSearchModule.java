@@ -17,6 +17,7 @@ import com.baidu.mapapi.search.poi.PoiSortType;
 import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
+import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
@@ -53,6 +54,18 @@ public class PoiSearchModule extends BaseModule
         // 初始化建议搜索模块，注册建议搜索事件监听
         mSuggestionSearch = SuggestionSearch.newInstance();
         mSuggestionSearch.setOnGetSuggestionResultListener(this);
+    }
+
+    @ReactMethod
+    public void requestSuggestion(String city, String keyword, Boolean citylimit, Boolean withLocation, double latitude, double longitude) {
+        SuggestionSearchOption suggestionSearchOption = new SuggestionSearchOption();
+        suggestionSearchOption.city(city).keyword(keyword).citylimit(citylimit);
+
+        if(withLocation) {
+            suggestionSearchOption.location(new LatLng(latitude, longitude));
+        }
+
+        mSuggestionSearch.requestSuggestion(suggestionSearchOption);
     }
 
     /**
@@ -218,7 +231,38 @@ public class PoiSearchModule extends BaseModule
      */
     @Override
     public void onGetSuggestionResult(SuggestionResult result) {
+        WritableMap params = Arguments.createMap();
+        if (result == null || result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
+            params.putInt("errcode", -1);
+            params.putString("message", "未找到结果");
+        }
+        else if(result.error == SearchResult.ERRORNO.NO_ERROR) {//成功
+            params.putInt("errcode", 0);
+            params.putString("message", "成功");
 
+            if(result != null) {
+                java.util.List<SuggestionResult.SuggestionInfo> suggestions = result.getAllSuggestions();
+                WritableArray suggestionArr = Arguments.createArray();
+                for(int i = 0; i < suggestions.size(); i++) {
+                    WritableMap suggestion = Arguments.createMap();
+                    suggestion.putString("city", suggestions.get(i).city); //联想词city
+                    suggestion.putString("district", suggestions.get(i).district); //联想结果所在行政区
+                    suggestion.putString("key", suggestions.get(i).key); //联想词key
+                    suggestion.putString("uid", suggestions.get(i).uid); //联想结果uid
+                    if(suggestions.get(i).pt != null) {
+                        suggestion.putDouble("latitude", suggestions.get(i).pt.latitude); //联想结果经度
+                        suggestion.putDouble("longitude", suggestions.get(i).pt.longitude); //联想结果纬度
+                    }
+                    suggestionArr.pushMap(suggestion);
+                }
+                params.putArray("suggestionList", suggestionArr);
+            }
+        }
+        else if(result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
+
+        }
+
+        sendEvent("onGetSuggestionResult", params);
     }
 
     @Override
