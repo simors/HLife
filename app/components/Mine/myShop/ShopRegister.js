@@ -33,6 +33,7 @@ import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import ImageInput from '../../common/Input/ImageInput'
 import * as authSelector from '../../../selector/authSelector'
+import Loading from '../../common/Loading'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -222,16 +223,25 @@ class ShopRegister extends Component {
 
   }
 
-  submitSuccessCallback() {
+  submitSuccessCallback = () => {
+    this.isSubmiting = false
+    Loading.hide(this.loading)
     Actions.SHOPR_EGISTER_SUCCESS()
   }
 
-  submitErrorCallback(error) {
+  submitErrorCallback = (error) => {
+    this.isSubmiting = false
+    Loading.hide(this.loading)
     Toast.show(error.message || '店铺注册失败')
   }
 
   onButtonPress = () => {
     // console.log('onButtonPress===submitFormData')
+    if(this.isSubmiting) {
+      return
+    }
+    this.isSubmiting = true
+    this.loading = Loading.show()
     this.props.submitFormData({
       formKey: commonForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION,
