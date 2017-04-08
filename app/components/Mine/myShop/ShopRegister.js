@@ -43,16 +43,34 @@ const nameInput = {
   formKey: commonForm,
   stateKey: Symbol('nameInput'),
   type: "nameInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '姓名为空'}
+  },
 }
 const phoneInput = {
   formKey: commonForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '手机号为空'}
+  },
 }
 const smsAuthCodeInput = {
   formKey: commonForm,
   stateKey: Symbol('smsAuthCodeInput'),
   type: "smsAuthCodeInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '验证码为空'}
+  },
 }
 const shopNameInput = {
   formKey: commonForm,
@@ -62,7 +80,7 @@ const shopNameInput = {
     if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '输入有误'}
+    return {isVal: false, errMsg: '店铺名称为空'}
   },
   initValue: {text: '未知'}
 }
@@ -74,7 +92,7 @@ const shopAddrInput = {
     if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '输入有误'}
+    return {isVal: false, errMsg: '店铺地址为空'}
   },
   initValue: {text: '未知'}
 }
@@ -103,7 +121,12 @@ const invitationCodeInput = {
   formKey: commonForm,
   stateKey: Symbol('invitationCodeInput'),
   type: "invitationCodeInput",
-  checkValid: ()=>{return {isVal: true}},
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0 && (data.text !== '-1')) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '邀请码为空'}
+  },
   initValue: {text: '-1'}
 }
 
@@ -111,6 +134,12 @@ const certificationInput = {
   formKey: commonForm,
   stateKey: Symbol('certificationInput'),
   type: "certificationInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺认证图片为空'}
+  },
 }
 
 class ShopRegister extends Component {
@@ -180,16 +209,16 @@ class ShopRegister extends Component {
         data: {text:nextProps.currentDistrict},
       })
     }
-    if(nextProps.qRCode) {
-      this.setState({
-        qRCode: nextProps.qRCode
-      })
-      nextProps.inputFormUpdate({
-        formKey: invitationCodeInput.formKey,
-        stateKey: invitationCodeInput.stateKey,
-        data: {text:nextProps.qRCode},
-      })
-    }
+    // if(nextProps.qRCode) {
+    //   this.setState({
+    //     qRCode: nextProps.qRCode
+    //   })
+    //   nextProps.inputFormUpdate({
+    //     formKey: invitationCodeInput.formKey,
+    //     stateKey: invitationCodeInput.stateKey,
+    //     data: {text:nextProps.qRCode},
+    //   })
+    // }
 
   }
 
