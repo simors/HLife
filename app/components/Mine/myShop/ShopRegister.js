@@ -303,36 +303,38 @@ class ShopRegister extends Component {
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺名称</Text>
                 </View>
-                <View style={[styles.inputBox, styles.shopAddress, {marginTop: normalizeH(5)}]}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                  >
-                    <TouchableOpacity
-                      style={styles.shopAddressContainer}
+                <TouchableOpacity style={{flex:1}}
                       onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
-                      <Text style={styles.shopAddressTxt}>{this.state.shopName}</Text>
-                    </TouchableOpacity>
-                  </ScrollView>
-                </View>
+                  <View style={[styles.inputBox, styles.shopAddress, {marginTop: normalizeH(5)}]}>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      <View style={styles.shopAddressContainer}>
+                        <Text style={styles.shopAddressTxt}>{this.state.shopName}</Text>
+                      </View>
+                    </ScrollView>
+                  </View>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺地址</Text>
                 </View>
-                <View style={[styles.inputBox, styles.shopAddress]}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                  >
-                    <TouchableOpacity
-                      style={styles.shopAddressContainer}
+                <TouchableOpacity style={{flex:1}}
                       onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
-                      <Text style={styles.shopAddressTxt}>{this.state.shopAddress}</Text>
-                    </TouchableOpacity>
-                  </ScrollView>
-                </View>
+                  <View style={[styles.inputBox, styles.shopAddress]}>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      <View style={styles.shopAddressContainer}>
+                        <Text style={styles.shopAddressTxt}>{this.state.shopAddress}</Text>
+                      </View>
+                    </ScrollView>
+                  </View>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.inputWrap}>
