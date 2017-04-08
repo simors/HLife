@@ -58,9 +58,17 @@ function handlePublishTopic(payload, formData) {
       return
     }
     if(payload.images && payload.images.length > 0) {
-      return ImageUtil.batchUploadImgs(payload.images).then((leanUris) => {
+      return ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
         return leanUris
       }).then((leanUris) => {
+        if(formData.topicContent && formData.topicContent.text.length &&
+          leanUris && leanUris.length) {
+          let contentImgs = leanUris.reverse()
+          formData.topicContent.text.forEach((value) => {
+            if(value.type == 'COMP_IMG' && value.url)
+              value.url = contentImgs.pop()
+          })
+        }
         let publishTopicPayload = {
           position: position,
           geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
@@ -126,9 +134,17 @@ function handlePublishTopic(payload, formData) {
 function handleUpdateTopic(payload, formData) {
   return (dispatch, getState) => {
     if(payload.images && payload.images.length > 0) {
-      return ImageUtil.batchUploadImgs(payload.images).then((leanUris) => {
+      return ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
         return leanUris
       }).then((leanUris) => {
+        if(formData.topicContent && formData.topicContent.text.length &&
+          leanUris && leanUris.length) {
+          let contentImgs = leanUris.reverse()
+          formData.topicContent.text.forEach((value) => {
+            if(value.type == 'COMP_IMG' && value.url)
+              value.url = contentImgs.pop()
+          })
+        }
         let updateTopicPayload = {
           title:formData.topicName.text,
           content: JSON.stringify(formData.topicContent.text),
