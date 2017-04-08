@@ -531,7 +531,7 @@ class ShopDetail extends Component {
 
               <ShopPromotionModule
                 title="近期活动"
-                fromWhere='shopDetail'
+                noDistance={true}
                 shopPromotionList={this.props.shopDetail.containedPromotions}
               />
 

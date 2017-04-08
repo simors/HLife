@@ -37,6 +37,7 @@ import ImageGallery from '../../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
 import * as numberUtils from '../../../util/numberUtils'
 import Icon from 'react-native-vector-icons/Ionicons'
+import MyShopPromotionModule from './MyShopPromotionModule'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -318,9 +319,6 @@ class MyShopIndex extends Component {
                       containerStyle={{flex:1}}
                       score={this.props.shopDetail.score}
                     />
-                    {this.props.shopDetail.distance &&
-                    <Text style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
-                    }
                     {this.props.shopDetail.pv &&
                     <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
                     }
@@ -351,6 +349,7 @@ class MyShopIndex extends Component {
 
               <ShopPromotionModule
                 title="近期活动"
+                noDistance={true}
                 shopPromotionList={this.props.shopDetail.containedPromotions}
               />
 

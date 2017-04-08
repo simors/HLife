@@ -501,6 +501,7 @@ export function fetchShopCommentTotalCount(payload) {
   innerQuery.equalTo('objectId', shopId)
   //执行内嵌查询
   query.matchesQuery('targetShop', innerQuery)
+  query.equalTo('status', 1)
   return query.count().then((results)=>{
     return results
   }, function (err) {
