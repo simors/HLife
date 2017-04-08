@@ -62,8 +62,8 @@ class ShopAddressSelect extends Component {
       },
       showClearBtn: false,
       searchText: '',
-      shopName: '',
-      shopAddress: '',
+      shopName: props.shopName || '',
+      shopAddress: props.shopAddress || '',
       showShopInfoArea: true,
       shopNameIsFocus: false,
       shopAddressIsFocus: false,
@@ -168,7 +168,7 @@ class ShopAddressSelect extends Component {
   }
 
   resetPosition() {
-    console.log('resetPosition..this.currentPosition===', this.currentPosition)
+    // console.log('resetPosition..this.currentPosition===', this.currentPosition)
     if(this.currentPosition) {
       MapModule.moveToCenter(this.currentPosition.latitude, this.currentPosition.longitude, this.state.zoom)
       this.setState({

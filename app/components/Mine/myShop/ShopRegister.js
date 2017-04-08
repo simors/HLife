@@ -304,7 +304,7 @@ class ShopRegister extends Component {
                   <Text style={styles.inputLabel}>店铺名称</Text>
                 </View>
                 <TouchableOpacity style={{flex:1}}
-                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
+                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT({shopName:this.state.shopName,shopAddress:this.state.shopAddress})}}>
                   <View style={[styles.inputBox, styles.shopAddress, {marginTop: normalizeH(5)}]}>
                     <ScrollView
                       horizontal={true}
@@ -323,7 +323,7 @@ class ShopRegister extends Component {
                   <Text style={styles.inputLabel}>店铺地址</Text>
                 </View>
                 <TouchableOpacity style={{flex:1}}
-                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT()}}>
+                      onPress={()=>{Actions.SHOP_ADDRESS_SELECT({shopName:this.state.shopName,shopAddress:this.state.shopAddress})}}>
                   <View style={[styles.inputBox, styles.shopAddress]}>
                     <ScrollView
                       horizontal={true}
