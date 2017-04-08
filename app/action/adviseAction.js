@@ -46,20 +46,32 @@ function handlePublishAdvise(payload, formData) {
       }
       return
     }
-    console.log('formData', formData, payload)
+    // console.log('formData', formData.adviseContent.text)
     if (payload.images && payload.images.length > 0) {
-      return ImageUtil.batchUploadImgs(payload.images).then((leanUris) => {
+      return ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
         return leanUris
-      }).then((leanUris) => {
+      }).then((results) => {
         // console.log('leanuris',leanUris)
+        if(results&&results.length>0&&formData.adviseContent.text&&formData.adviseContent.text.length>0){
+          // let leanRichTextImagesUrls = results
+          // reverse()
+          let imgCount=0
+          formData.adviseContent.text.map((value,index)=>{
+            console.log('imga',results)
+            // console.log('value',value)
+            if(value.type == 'COMP_IMG' && value.url)
+              value.url = results[imgCount++]
+          })
+        }
+        console.log('imga',results)
         let publishAdvisePayload = {
           position: position,
-          geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
+          // geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
           province: province,
           city: city,
           district: district,
           content: JSON.stringify(formData.adviseContent.text),
-          imgGroup: leanUris,
+          imgGroup: results,
           userId: payload.userId,
         }
         publishAdvise(publishAdvisePayload).then((result) => {
