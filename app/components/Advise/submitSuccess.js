@@ -29,7 +29,10 @@ export default class SubmitAdviseSuccess extends Component{
     super(props)
   }
   jumpToLogin(){
-    Actions.HOME_INDEX()
+    // Actions.HOME_INDEX()
+    Actions.pop({popNum:2})
+    // Actions.pop()
+
   }
   render(){
     return(

@@ -2,7 +2,7 @@
  * Created by lilu on 2017/4/8.
  */
 import {createAction} from 'redux-actions'
-import * as topicActionTypes from '../constants/topicActionTypes'
+// import * as adviseActionType from '../constants/adviseActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import {publishAdvise} from '../api/leancloud/advise'
@@ -10,6 +10,7 @@ import * as locSelector from '../selector/locSelector'
 import AV from 'leancloud-storage'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
+import {Actions} from 'react-native-router-flux'
 
 
 export function publishAdviseFormData(payload) {
@@ -27,7 +28,7 @@ export function publishAdviseFormData(payload) {
       }
       formData = getInputFormData(getState(), payload.formKey)
     }
-   dispatch(handlePublishAdvise(payload,formData))
+    dispatch(handlePublishAdvise(payload, formData))
   }
 }
 
@@ -45,11 +46,13 @@ function handlePublishAdvise(payload, formData) {
       }
       return
     }
-    if(payload.images && payload.images.length > 0) {
+    console.log('formData', formData, payload)
+    if (payload.images && payload.images.length > 0) {
       return ImageUtil.batchUploadImgs(payload.images).then((leanUris) => {
         return leanUris
       }).then((leanUris) => {
-        let publishTopicPayload = {
+        // console.log('leanuris',leanUris)
+        let publishAdvisePayload = {
           position: position,
           geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
           province: province,
@@ -59,11 +62,14 @@ function handlePublishAdvise(payload, formData) {
           imgGroup: leanUris,
           userId: payload.userId,
         }
-        publishAdvise(publishTopicPayload).then((result) => {
+        publishAdvise(publishAdvisePayload).then((result) => {
           if (payload.success) {
             payload.success()
           }
-           // 计算发布话题积分
+
+          // Actions.SUBMIT_ADVISE_SUCCESS()
+
+          // 计算发布话题积分
         }).catch((error) => {
           console.log("error: ", error)
           if (payload.error) {
@@ -76,7 +82,7 @@ function handlePublishAdvise(payload, formData) {
         }
       })
     } else {
-      let publishTopicPayload = {
+      let publishAdvisePayload = {
         position: position,
         geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
         province: province,
@@ -87,11 +93,13 @@ function handlePublishAdvise(payload, formData) {
         imgGroup: payload.images,
         userId: payload.userId,
       }
-      publishAdvise(publishTopicPayload).then((result) => {
+      publishAdvise(publishAdvisePayload).then((result) => {
         if (payload.success) {
           payload.success()
         }
-          // 计算发布话题积分
+        // Actions.SUBMIT_ADVISE_SUCCESS()
+
+        // 计算发布话题积分
       }).catch((error) => {
         console.log("error: ", error)
         if (payload.error) {
