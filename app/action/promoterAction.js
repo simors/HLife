@@ -19,6 +19,7 @@ const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
 let certificatePromoter = createAction(promoterActionTypes.CERTIFICATE_PROMOTER)
 let setActivePromoter = createAction(promoterActionTypes.SET_ACTIVE_PROMOTER)
 let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
+let updateTenant = createAction(promoterActionTypes.UPDATE_TENANT_FEE)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -73,12 +74,12 @@ export function promoterCertification(payload) {
         dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
         dispatch(setActivePromoter({promoterId}))
         dispatch(updatePromoter({promoterId, promoter}))
-        if (payload.success) {
-          payload.success(promoterInfo.message)
-        }
       }).then(() => {
         let userId = activeUserId(getState())
         dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
+        if (payload.success) {
+          payload.success()
+        }
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
@@ -131,6 +132,22 @@ export function getPromoterByUserId(payload) {
       if (payload.error) {
         payload.error(error)
       }
+    })
+  }
+}
+
+export function getShopTenant(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.getShopTenantFee(payload).then((tenant) => {
+      dispatch(updateTenant({tenant}))
+    })
+  }
+}
+
+export function getPromoterTenant(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.getPormoterTenant(payload).then((tenant) => {
+      dispatch(updateTenant({tenant}))
     })
   }
 }

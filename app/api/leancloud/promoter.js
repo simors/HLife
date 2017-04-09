@@ -40,3 +40,24 @@ export function fetchPromterByUser(payload) {
     throw err
   })
 }
+
+export function getShopTenantFee(payload) {
+  let params = {
+    province: payload.province,
+    city: payload.city,
+  }
+
+  return AV.Cloud.run('promoterGetShopTenantByCity', params).then((tenantFee) => {
+    return tenantFee.tenant
+  }, (err) => {
+    throw err
+  })
+}
+
+export function getPormoterTenant(payload) {
+  return AV.Cloud.run('promoterGetPromoterTenant').then((tenantFee) => {
+    return tenantFee.tenant
+  }, (err) => {
+    throw err
+  })
+}

@@ -44,6 +44,7 @@ export class PromoterInfo extends PromoterRecord {
 export const Promoter = Record({
   activePromoter: undefined,        // 当前推广员id
   inviteCode: undefined,            // 生成的邀请码
+  fee: undefined,                   // 获取到店铺或者推广员的入驻费
   promoters: Map(),                 // 推广员记录，键为推广员id，值为PromoterInfo
 }, 'Promoter')
 

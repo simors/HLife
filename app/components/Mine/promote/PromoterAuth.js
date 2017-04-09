@@ -11,6 +11,7 @@ import {
   ScrollView,
   Platform,
   Image,
+  InteractionManager,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -31,8 +32,9 @@ import * as Toast from '../../common/Toast'
 import {isInputValid} from '../../../selector/inputFormSelector'
 import RegionPicker from '../../common/Input/RegionPicker'
 import {activeUserInfo} from '../../../selector/authSelector'
-import ImageInput from '../../common/Input/ImageInput'
 import {getLocation} from '../../../selector/locSelector'
+import {getPromoterTenant} from '../../../action/promoterAction'
+import {getTenantFee} from '../../../selector/promoterSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -95,12 +97,18 @@ class PromoterAuth extends Component {
     }
   }
 
-  onButtonPress = () => {
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.getPromoterTenant()
+    })
+  }
+
+  onButtonPress() {
     this.props.promoterCertification({
       formKey: commonForm,
       success: () => {
+        Actions.PAYMENT({title: '支付推广员注册费', price: this.props.fee})
         Toast.show('注册为推广员成功')
-        Actions.PAYMENT()
       },
       error: (err) => {
         Toast.show(err.message)
@@ -225,7 +233,7 @@ class PromoterAuth extends Component {
             <View style={styles.footer}>
               <CommonButton
                 title="成为推广大使"
-                onPress={this.onButtonPress}
+                onPress={() => this.onButtonPress()}
               />
 
               <TouchableOpacity style={styles.shopRegistProtocalWrap} onPress={()=> {}}>
@@ -255,12 +263,15 @@ const mapStateToProps = (state, ownProps) => {
   return {
     phoneValid: phoneValid,
     userInfo: userInfo,
-    location: location
+    location: location,
+    fee: getTenantFee(state),
   }
 }
+
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   promoterCertification,
   submitInputData,
+  getPromoterTenant,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PromoterAuth)

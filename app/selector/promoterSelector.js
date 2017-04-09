@@ -19,3 +19,16 @@ export function getPromoterById(state, id) {
   }
   return undefined
 }
+
+export function isPromoterPaid(state, id) {
+  let promoter = getPromoterById(state, id)
+  if (promoter) {
+    return promoter.payment
+  }
+  return 0
+}
+
+export function getTenantFee(state) {
+  let fee = state.PROMOTER.get('fee')
+  return fee
+}

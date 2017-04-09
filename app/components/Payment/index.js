@@ -99,7 +99,7 @@ class Payment extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="支付店铺入驻费用"
+          title={this.props.title}
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
@@ -108,7 +108,7 @@ class Payment extends Component {
           <ScrollView>
             <View style={styles.amount}>
               <Text style={styles.amountText}>支付金额</Text>
-              <Text style={styles.price}>¥ 58.00元</Text>
+              <Text style={styles.price}>¥ {this.props.price}元</Text>
             </View>
             <Text style={styles.channelTrip}>选择支付方式</Text>
             <View style={styles.channel}>
@@ -132,7 +132,7 @@ class Payment extends Component {
             </View>
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20)}}
-              title="支付"
+              title="支  付"
               onPress={()=>{this.onPayment()}}
             />
           </ScrollView>
@@ -140,6 +140,11 @@ class Payment extends Component {
       </View>
     )
   }
+}
+
+Payment.defaultProps = {
+  price: 0,
+  title: '',
 }
 
 const mapStateToProps = (state, ownProps) => {

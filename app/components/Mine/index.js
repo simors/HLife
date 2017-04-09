@@ -28,7 +28,8 @@ import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {fetchUserPoint} from '../../action/pointActions'
 import * as authSelector from '../../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
-import {getCurrentPromoter} from '../../action/promoterAction'
+import {getCurrentPromoter, getPromoterTenant} from '../../action/promoterAction'
+import {isPromoterPaid, activePromoter, getTenantFee} from '../../selector/promoterSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -44,6 +45,10 @@ class Mine extends Component {
         this.props.fetchUserPoint()
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
+        this.props.getCurrentPromoter({error: (err) => {
+          Toast.show(err)
+        }})
+        this.props.getPromoterTenant()
       }
     })
   }
@@ -74,17 +79,18 @@ class Mine extends Component {
 
     }
   }
+
   jumpToAdvise(){
     Actions.ADVISE_FEEDBACK()
   }
+
   promoterManage() {
     if (this.props.identity && this.props.identity.includes(IDENTITY_PROMOTER)) {
-      InteractionManager.runAfterInteractions(()=>{
-        this.props.getCurrentPromoter({error: (err) => {
-          Toast.show(err)
-        }})
-      })
-      Actions.PROMOTER_PERFORMANCE()
+      if (this.props.isPaid) {
+        Actions.PROMOTER_PERFORMANCE()
+      } else {
+        Actions.PAYMENT({title: '支付推广员注册费', price: this.props.fee})
+      }
     } else {
       Actions.PROMOTER_AUTH()
     }
@@ -286,12 +292,15 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   let identity = authSelector.getUserIdentity(state,currentUserId)
   let point = authSelector.getUserPoint(state, currentUserId)
+  let isPaid = isPromoterPaid(state, activePromoter(state))
   return {
     userInfo: userInfo,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
     identity: identity,
+    isPaid: isPaid,
     point: point,
+    fee: getTenantFee(state),
   }
 }
 
@@ -300,6 +309,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserFollowees,
   fetchUserPoint,
   getCurrentPromoter,
+  getPromoterTenant,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)
