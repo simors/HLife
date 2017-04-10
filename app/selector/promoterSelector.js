@@ -32,3 +32,8 @@ export function getTenantFee(state) {
   let fee = state.PROMOTER.get('fee')
   return fee
 }
+
+export function getUpPromoterId(state) {
+  let upPromoterId = state.PROMOTER.get('upPromoterId')
+  return upPromoterId
+}

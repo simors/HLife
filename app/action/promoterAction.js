@@ -12,6 +12,7 @@ import {calRegistPromoter} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
 import * as AuthTypes from '../constants/authActionTypes'
 import {PromoterInfo} from '../models/promoterModel'
+import {UserInfo} from '../models/userModels'
 import * as ImageUtil from '../util/ImageUtil'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
@@ -20,6 +21,8 @@ let certificatePromoter = createAction(promoterActionTypes.CERTIFICATE_PROMOTER)
 let setActivePromoter = createAction(promoterActionTypes.SET_ACTIVE_PROMOTER)
 let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
 let updateTenant = createAction(promoterActionTypes.UPDATE_TENANT_FEE)
+let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
+let updateUpPromoter = createAction(promoterActionTypes.UPDATE_UPPROMOTER_ID)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -148,6 +151,20 @@ export function getPromoterTenant(payload) {
   return (dispatch, getState) => {
     lcPromoter.getPormoterTenant(payload).then((tenant) => {
       dispatch(updateTenant({tenant}))
+    })
+  }
+}
+
+export function getMyUpPromoter(payload) {
+  return (dispatch, getState) => {
+    let userId = activeUserId(getState())
+    lcPromoter.getUpPromoter({userId}).then((promoterInfo) => {
+      let promoterId = promoterInfo.promoter.objectId
+      let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
+      let userInfo = UserInfo.fromLeancloudApi(promoterInfo.user)
+      dispatch(addUserProfile({userInfo}))
+      dispatch(updatePromoter({promoterId, promoter}))
+      dispatch(updateUpPromoter({upPromoterId: promoterId}))
     })
   }
 }

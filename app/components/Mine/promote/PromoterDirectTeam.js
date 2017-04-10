@@ -22,6 +22,10 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import Header from '../../common/Header'
 import CommonListView from '../../common/CommonListView'
 import PromoterLevelIcon from './PromoterLevelIcon'
+import {getMyUpPromoter} from '../../../action/promoterAction'
+import {getPromoterById, getUpPromoterId} from '../../../selector/promoterSelector'
+import {userInfoById} from '../../../selector/authSelector'
+import {getConversationTime} from '../../../util/numberUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -33,6 +37,7 @@ class PromoterDirectTeam extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.getMyUpPromoter()
     })
   }
 
@@ -55,6 +60,11 @@ class PromoterDirectTeam extends Component {
   }
 
   renderUpPromoterView() {
+    let upUser = this.props.upUser
+    let upPromoter = this.props.upPromoter
+    if (!upUser || !upPromoter) {
+      return <View/>
+    }
     return (
       <View>
         <View style={styles.tipView}>
@@ -64,13 +74,13 @@ class PromoterDirectTeam extends Component {
           <TouchableOpacity style={styles.infoView} onPress={() => {}}>
             <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
               <Image style={styles.avatarStyle} resizeMode="contain"
-                     source={require("../../../assets/images/default_portrait.png")} />
+                     source={upUser.avatar ? {uri: upUser.avatar} : require("../../../assets/images/default_portrait.png")} />
             </View>
             <View style={{flex: 1}}>
-              <Text style={styles.usernameText}>白天不懂夜的黑</Text>
+              <Text style={styles.usernameText}>{upUser.nickname}</Text>
               <View style={styles.promoterInfoView}>
-                <PromoterLevelIcon level={2} mode="tiny"/>
-                <Text style={styles.promoterDealText}>最新业绩： 一天前</Text>
+                <PromoterLevelIcon level={upPromoter.level} mode="tiny"/>
+                <Text style={styles.promoterDealText}>最新业绩： {getConversationTime(new Date(upPromoter.updatedAt))}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -241,11 +251,22 @@ const mapStateToProps = (state, ownProps) => {
 
   let comps = [{type: 'myUpPromoter'}, {type: 'myTeam'}]
 
+  let upUser = undefined
+  let upPromoterId = getUpPromoterId(state)
+  let upPromoter = getPromoterById(state, upPromoterId)
+  if (upPromoter) {
+    upUser = userInfoById(state, upPromoter.userId).toJS()
+  }
+  
   return {
     dataSource: ds.cloneWithRows(comps),
+    upPromoter: upPromoter,
+    upUser: upUser,
   }
 }
+
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getMyUpPromoter,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PromoterDirectTeam)
