@@ -125,7 +125,7 @@ class PromoterPerformance extends Component {
             <Text style={{fontSize: em(17), color: THEME.base.mainColor, alignSelf: 'flex-end'}}>家</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.statBtn} onPress={() => {}}>
+        <TouchableOpacity style={styles.statBtn} onPress={() => {Actions.DIRECT_TEAM()}}>
           <View style={styles.statTitleStyle}>
             <Image style={{width: normalizeW(25), height: normalizeH(21)}}
                    source={require('../../../assets/images/my_team.png')}/>

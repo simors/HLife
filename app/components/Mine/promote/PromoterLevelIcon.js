@@ -18,6 +18,13 @@ const levelIcon = [
   require('../../../assets/images/diamond_20.png'),
   require('../../../assets/images/crown_20.png'),
 ]
+const tinyLevelIcon = [
+  require('../../../assets/images/bronze_16.png'),
+  require('../../../assets/images/silver_16.png'),
+  require('../../../assets/images/gold_16.png'),
+  require('../../../assets/images/diamond_16.png'),
+  require('../../../assets/images/crown_16.png'),
+]
 
 export default class PromoterLevelIcon extends Component {
   constructor(props) {
@@ -26,7 +33,11 @@ export default class PromoterLevelIcon extends Component {
 
   renderLevelIcon(level) {
     if (level >= 1 && level <= 5) {
-      return <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode="contain" source={levelIcon[level-1]} />
+      if (this.props.mode == 'common') {
+        return <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode="contain" source={levelIcon[level-1]} />
+      } else {
+        return <Image style={{width: normalizeW(16), height: normalizeH(16)}} resizeMode="contain" source={tinyLevelIcon[level-1]} />
+      }
     } else {
       return <View/>
     }
@@ -42,14 +53,26 @@ export default class PromoterLevelIcon extends Component {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Image style={styles.backImg} source={require('../../../assets/images/pro_level_back.png')}>
-          {this.renderLevelName(this.props.level)}
-        </Image>
-      </View>
-    )
+    if (this.props.mode == 'common') {
+      return (
+        <View style={styles.container}>
+          <Image style={styles.backImg} source={require('../../../assets/images/pro_level_back.png')}>
+            {this.renderLevelName(this.props.level)}
+          </Image>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          {this.renderLevelIcon(this.props.level)}
+        </View>
+      )
+    }
   }
+}
+
+PromoterLevelIcon.defaultProps = {
+  mode: 'common',
 }
 
 const styles = StyleSheet.create({
