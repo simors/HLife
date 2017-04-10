@@ -418,8 +418,9 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('userOwnedShopInfo====', userOwnedShopInfo)
   const isUserLogined = authSelector.isUserLogined(state)
   const shopPromotionMaxNum = selectShopPromotionMaxNum(state)
+  const currentUserId = authSelector.activeUserId(state)
   // console.log('shopPromotionMaxNum===>>>', shopPromotionMaxNum)
-  const myShopExpriredPromotionList = selectMyShopExpiredPromotionList(state)
+  const myShopExpriredPromotionList = selectMyShopExpiredPromotionList(state, currentUserId)
 
   let lastUpdatedAt = ''
   if(myShopExpriredPromotionList && myShopExpriredPromotionList.length) {
@@ -431,7 +432,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
-    currentUser: authSelector.activeUserId(state),
+    currentUser: currentUserId,
     shopPromotionMaxNum: shopPromotionMaxNum,
     ds: ds.cloneWithRows(dataArray),
     myShopExpriredPromotionList: myShopExpriredPromotionList,

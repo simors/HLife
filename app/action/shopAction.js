@@ -674,14 +674,16 @@ export function fetchShopPromotionMaxNum(payload) {
 
 export function fetchMyShopExpiredPromotionList(payload) {
   return (dispatch ,getState) => {
-    lcShop.fetchMyShopExpiredPromotionList(payload).then((shopPromotionList) => {
+    lcShop.fetchMyShopExpiredPromotionList(payload).then((result) => {
       let actionType = ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST_PAGING
       }
+      const shopPromotionList = result.shopPromotionList
+      const userId = result.userId
       if(payload.isRefresh || shopPromotionList.size) {
         let updateAction = createAction(actionType)
-        dispatch(updateAction({shopPromotionList: shopPromotionList}))
+        dispatch(updateAction({userId: userId, shopPromotionList: shopPromotionList}))
       }
       
       if(payload.success){

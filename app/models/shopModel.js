@@ -501,7 +501,7 @@ export const Shop = Record({
   shopList: List(),
   localShopList: List(),
   shopPromotionList: List(),
-  myShopExpriredPromotionList: List(),
+  myShopExpriredPromotionList: Map(),
   fetchShopListArrivedLastPage: false,
   shopAnnouncements: Map(),
   userFollowShopsInfo: Map(),

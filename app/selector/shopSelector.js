@@ -19,8 +19,12 @@ export function selectShopPromotionList(state) {
   return selectShop(state).shopPromotionList || []
 }
 
-export function selectMyShopExpiredPromotionList(state){
-  return selectShop(state).myShopExpriredPromotionList || []
+export function selectMyShopExpiredPromotionList(state, userId){
+  let expriredPromotionList = state.SHOP.getIn(['myShopExpriredPromotionList', userId])
+  if(expriredPromotionList && expriredPromotionList.size) {
+    return expriredPromotionList.toJS()
+  }
+  return []
 }
 
 export function selectShopPromotionMaxNum(state){
