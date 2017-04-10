@@ -23,6 +23,8 @@ let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
 let updateTenant = createAction(promoterActionTypes.UPDATE_TENANT_FEE)
 let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
 let updateUpPromoter = createAction(promoterActionTypes.UPDATE_UPPROMOTER_ID)
+let setPromoterTeam = createAction(promoterActionTypes.SET_MY_TEAM)
+let addPromoterTeam = createAction(promoterActionTypes.ADD_MY_TEAM)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -165,6 +167,35 @@ export function getMyUpPromoter(payload) {
       dispatch(addUserProfile({userInfo}))
       dispatch(updatePromoter({promoterId, promoter}))
       dispatch(updateUpPromoter({upPromoterId: promoterId}))
+    })
+  }
+}
+
+export function getMyPromoterTeam(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.getMyPromoterTeam(payload).then((result) => {
+      let team = []
+      let promoters = result.promoters
+      let users = result.users
+      promoters.forEach((promoter) => {
+        let promoterId = promoter.objectId
+        let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+        team.push(promoterId)
+        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+      })
+      users.forEach((user) => {
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        dispatch(addUserProfile({userInfo}))
+      })
+      if (more) {
+        dispatch(addPromoterTeam({newTeam: team}))
+      } else {
+        dispatch(setPromoterTeam({team: team}))
+      }
     })
   }
 }

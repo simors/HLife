@@ -22,7 +22,6 @@ export const PromoterRecord = Record({
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
-    console.log('lcObj', lcObj)
     promoter = promoter.withMutations((record) => {
       record.set('id', lcObj.objectId)
       record.set('userId', lcObj.user.id)
@@ -48,5 +47,6 @@ export const Promoter = Record({
   fee: undefined,                   // 获取到店铺或者推广员的入驻费
   upPromoterId: undefined,          // 记录当前推广员的上级推广员id
   promoters: Map(),                 // 推广员记录，键为推广员id，值为PromoterInfo
+  myTeam: List(),                   // 记录我的团队中所有推广员的id号，此列表按照推广员最后业绩时间排序
 }, 'Promoter')
 
