@@ -163,7 +163,7 @@ class PersonalHomePage extends Component {
           </View>
           {userInfo.geoCity 
             ?  <View style={styles.row}>
-                <Text style={styles.address}>{userInfo.geoCity + ' ' + userInfo.geoDistrict}</Text>
+                <Text style={styles.address}>{userInfo.geoCity + ' ' + (userInfo.geoDistrict || '')}</Text>
                 {distance
                   ? <Text style={styles.distance}>{'距我' + distance + distanceUnit}</Text>
                   : null
