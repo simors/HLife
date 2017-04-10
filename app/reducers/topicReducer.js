@@ -29,11 +29,20 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopic(state, action)
     case TopicTypes.UPDATE_MAINPAGE_TOPICS:
       return handleUpdateMainPageTopics(state, action)
+    case TopicTypes.FETCH_USER_TOPICS_TOTAL_COUNT_SUCCESS:
+      return handleFetchUserTopicsTotalCountSuccess(state, action)  
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
       return state
   }
+}
+
+function handleFetchUserTopicsTotalCountSuccess(state, action) {
+  let userId = action.payload.userId
+  let userTopicsTotalCount = action.payload.userTopicsTotalCount
+  state = state.setIn(['userTopicsTotalCount', userId], userTopicsTotalCount)
+  return state
 }
 
 function handleAddTopicComment(state, action) {

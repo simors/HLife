@@ -23,19 +23,19 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount} from '../../action/authActions'
+import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount, followUser, unFollowUser,fetchUserFollowees} from '../../action/authActions'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
-import {selectUserTopics} from '../../selector/topicSelector'
-import {fetchTopicsByUserid} from '../../action/topicActions'
+import {selectUserTopics, selectUserTopicsTotalCount} from '../../selector/topicSelector'
+import {fetchTopicsByUserid, fetchUserTopicsTotalCount} from '../../action/topicActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as authSelector from '../../selector/authSelector'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import FollowUser from '../common/FollowUser'
-import {getDoctorInfoByUserId} from '../../selector/doctorSelector'
-import {fetchDoctorByUserId} from '../../action/doctorAction'
 import MyTopicShow from './MyTopic/MyTopicShow'
 import * as Utils from '../../util/Utils'
+import * as AVUtils from '../../util/AVUtils'
+import {getPromoterById, activePromoter} from '../../selector/promoterSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -44,8 +44,6 @@ class PersonalHomePage extends Component {
   constructor(props) {
     super(props)
 
-    this.replyInput = null
-    
     this.state = {
 
     }
@@ -54,10 +52,12 @@ class PersonalHomePage extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.getUserInfoById({userId: this.props.userId})
-      // this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
+      // // this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
       this.props.fetchOtherUserFollowers({userId: this.props.userId})
       this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
-      // this.refreshData()
+      this.props.fetchUserTopicsTotalCount({userId: this.props.userId})
+      this.props.fetchUserFollowees()
+      this.refreshData()
     })
   }
 
@@ -83,23 +83,7 @@ class PersonalHomePage extends Component {
       Actions.CHATROOM(payload)
     }
   }
-
-  onUserDoctorClick() {
-    if(this.props.doctorInfo) {
-
-    }else {
-      Toast.show('该用户还不是医生')
-    }
-  }
-
-  onUserShopClick() {
-    if(this.props.userOwnedShopInfo.id) {
-      Actions.SHOP_DETAIL({id: this.props.userOwnedShopInfo.id})
-    }else {
-      Toast.show('该用户暂未注册店铺')
-    }
-  }
-
+  
   renderRow(rowData, sectionId, rowId) {
     switch (rowData.type) {
       case 'PERSONAL_INFO_COLUMN':
@@ -111,180 +95,116 @@ class PersonalHomePage extends Component {
     }
   }
 
-  renderRowFollowers(userFollowers, rowIndex, totalCount) {
-    let followersView = userFollowers.map((item, index)=>{
-      if(totalCount && userFollowers.length == (index + 1)) {
-        // console.log('renderRowFollowers.totalCount===', totalCount)
-        return (
-          <View key={"follower_totalCount"} style={styles.followersTotalCountWrap}>
-            <Text style={styles.followersTotalCountTxt}>{totalCount > 99 ? '99+' : totalCount}</Text>
-          </View>
-        )
-      }
+  renderUserFollowers() {
+    let userFollowers = this.props.userFollowers
+    let userFollowersTotalCount = this.props.userFollowersTotalCount
+    // userFollowersTotalCount = 5
+    // userFollowers = [{},{},{},{},{}]
+    // console.log('shopFollowersTotalCount====', shopFollowersTotalCount)
+    // console.log('shopFollowers====', shopFollowers)
+    if(userFollowersTotalCount) {
+      let shopFollowersView = userFollowers.map((item, index)=>{
+        if(index > 2) {
+          return null
+        }
+        let source = require('../../assets/images/default_portrait.png')
+        if(item.avatar) {
+          source = {uri: item.avatar}
+        }
 
-      let source = require('../../assets/images/default_portrait.png')
-      if(item.avatar) {
-        source = {uri: item.avatar}
-      }
-      return (
-        <View
-          key={"follower_" + (8 * (rowIndex-1) + index)}
-          style={styles.attentionAvatar}
-        >
+        return (
           <Image
-            style={styles.attentionAvatarImg}
+            key={'user_follower_' + index}
+            style={{width:20,height:20,marginRight:5,borderRadius:10}}
             source={source}
           />
-        </View>
-      )
-    })
-
-    return (
-      <View key={"follower_row_" + rowIndex} style={styles.attentionAvatarWrap}>
-        {followersView}
-      </View>
-    )
-  }
-
-  renderFollowers() {
-    if(this.props.userFollowers && this.props.userFollowers.length) {
-      if(this.props.userFollowers.length <= 8) {
-        return this.renderRowFollowers(this.props.userFollowers, 1)
-      }else if (this.props.userFollowers.length <= 16) {
-        let multiRow = []
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(0, 8), 1))
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(8), 2))
-        return multiRow
-      }else if (this.props.userFollowers.length <= 24) {
-        let multiRow = []
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(0, 8), 1))
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(8, 16), 2))
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(16), 3))
-        return multiRow
-      }else {
-        let multiRow = []
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(0, 8), 1))
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(8, 16), 2))
-        multiRow.push(this.renderRowFollowers(this.props.userFollowers.slice(16, 24), 3, this.props.userFollowersTotalCount))
-        return multiRow
-      }
-    }else {
+        )
+      })
       return (
-        <View style={styles.noAttentionWrap}>
-          <Text style={styles.noAttentionTxt}>暂无粉丝</Text>
+        <View style={{flexDirection:'row',alignItems:'center'}}>
+          {shopFollowersView}
+          <Icon
+            name="ios-arrow-forward"
+            style={{marginLeft:6,color:'#f5f5f5',fontSize:17}}/>
         </View>
       )
     }
-  }
-
-  renderNoFollow() {
     return (
-      <Text style={styles.btnTxt}>关注</Text>
-    )
-  }
-
-  renderFollow() {
-    return (
-      <Text style={styles.btnTxt}>已关注</Text>
+      <Text style={{color:'#8f8e94'}}>暂无粉丝!</Text>
     )
   }
 
   renderPersonalInfoColumn() {
+    let userInfo = this.props.userInfo
+    let distance = this.props.distance
+    let distanceUnit = this.props.distanceUnit
+    let promoter = this.props.promoter
     let avatar = require('../../assets/images/default_portrait.png')
-    if(this.props.userInfo.avatar) {
+    if(userInfo.avatar) {
       avatar = {uri: this.props.userInfo.avatar}
     }
     let genderIcon = require('../../assets/images/male.png')
-    if(this.props.userInfo.gender == 'female') {
+    if(userInfo.gender == 'female') {
       genderIcon = require('../../assets/images/female.png')
+    }
+
+    let promoterLevelInfo = null
+    if(promoter) {
+      promoterLevelInfo = AVUtils.getPromoterLevelInfo(promoter.level)
     }
     
     return (
-      <View style={styles.personalInfoWrap}>
-        <View style={[styles.row, styles.baseInfoWrap]}>
-          <View style={styles.goBackBox}>
-            <TouchableOpacity onPress={()=>{Actions.pop()}}>
-              <Icon
-                name='ios-arrow-back'
-                style={[styles.goBack]}/>
-            </TouchableOpacity>
+      <View style={styles.personalInfoContainer}>
+        <View style={styles.personalInfoWrap}>
+          <Image style={styles.avatarImg} source={avatar}/>
+          <View style={styles.row}>
+            <Text style={styles.nickname}>{userInfo.nickname}</Text>
+            <Image style={styles.sexImg} source={genderIcon} />
           </View>
-          <View style={styles.thumbnailWrap}>
-            <Image
-              style={styles.avatarImg}
-              source={avatar}
-            />
-            <View style={styles.sexNameWrap}>
-              <Image
-                style={styles.sexImg}
-                source={genderIcon}
-              />
-              <Text style={styles.nickname}>{this.props.userInfo.nickname}</Text>
-            </View>
-          </View>
-          <View style={styles.btnWrap}>
-            <TouchableOpacity style={{flex:1}} onPress={() => this.toggleFollow()}>
-              <View style={[styles.btnBox, styles.rightBorder]}>
-                <FollowUser
-                  userId={this.props.userId}
-                  renderFollow={this.renderFollow.bind(this)}
-                  renderNoFollow={this.renderNoFollow.bind(this)}
-                  attentionedContainerStyle={{backgroundColor:'#fff'}}
-                  attentionedTxtStyle={{color: THEME.colors.green, fontSize:em(17)}}
-                />
+          {userInfo.geoCity 
+            ?  <View style={styles.row}>
+                <Text style={styles.address}>{userInfo.geoCity + ' ' + userInfo.geoDistrict}</Text>
+                {distance
+                  ? <Text style={styles.distance}>{'距我' + distance + distanceUnit}</Text>
+                  : null
+                }
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex:1}} onPress={() => this.sendPrivateMessage()}>
-              <View style={styles.btnBox}>
-                <Text style={styles.btnTxt}>发私信</Text>
-              </View>
-            </TouchableOpacity>
+            : null
+          }
+          {promoterLevelInfo &&
+            <View style={styles.promoterLevelBox}>
+              <Image style={styles.promoterLevelIcon} source={promoterLevelInfo.levelMainIcon} />
+              <Text style={styles.promoterLevelName}>{promoterLevelInfo.levelName + '推广员'}</Text>
+            </View>
+          }
+        </View>
+
+        <TouchableWithoutFeedback onPress={()=>{}}>
+          <View style={styles.followersWrap}>
+            <View style={{flexDirection:'row'}}>
+              <View style={styles.titleLine}/>
+              <Text style={styles.titleTxt}>粉丝·{this.props.userFollowersTotalCount}</Text>
+            </View>
+            <View style={{flexDirection:'row'}}>
+              {this.renderUserFollowers()}
+            </View>
           </View>
-        </View>
-
-        <View style={[styles.row, styles.otherInfoWrap]}>
-          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserDoctorClick()}}>
-            <View style={[styles.otherInfoBox, styles.borderBottom]}>
-              <Image
-                source={require('../../assets/images/doctor_small.png')}
-              />
-              <Text style={styles.otherInfoTxt}>医生专属</Text>
-              <Icon
-                name='ios-arrow-forward'
-                style={[styles.arrowForward]}/>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={{flex:1}} onPress={()=>{this.onUserShopClick()}}>
-            <View style={styles.otherInfoBox}>
-              <Image
-                source={require('../../assets/images/shop_small.png')}
-              />
-              <Text style={styles.otherInfoTxt}>个人店铺</Text>
-              <Icon
-                name='ios-arrow-forward'
-                style={[styles.arrowForward]}/>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={[styles.row, styles.followersInfoWrap]}>
-          <Text style={styles.attentionTitle}>粉丝</Text>
-          {this.renderFollowers()}
-        </View>
-
+        </TouchableWithoutFeedback>
       </View>
     )
   }
 
   renderTopicsColumn() {
-
     let topicShowView = <View />
     if(this.props.userTopics && this.props.userTopics.length) {
       topicShowView = this.props.userTopics.map((item, index) =>{
         return (
           <MyTopicShow
             key={index}
-            containerStyle={{marginBottom: 10}}
+            containerStyle={{
+              borderBottomWidth: normalizeBorder(),
+              borderBottomColor: '#f5f5f5'
+            }}
             topic={item}
           />
         )
@@ -293,6 +213,10 @@ class PersonalHomePage extends Component {
 
     return (
       <View style={styles.topicsWrap}>
+        <View style={styles.titleWrap}>
+          <View style={styles.titleLine}/>
+          <Text style={styles.titleTxt}>发布话题·{this.props.userTopicsTotalCount}</Text>
+        </View>
         {topicShowView}
       </View>
     )
@@ -338,16 +262,129 @@ class PersonalHomePage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <CommonListView
-          contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
-          dataSource={this.props.ds}
-          renderRow={(rowData, sectionId, rowId) => this.renderRow(rowData, sectionId, rowId)}
-          loadNewData={()=>{this.refreshData()}}
-          loadMoreData={()=>{this.loadMoreData()}}
-          ref={(listView) => this.listView = listView}
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.pop()}
+          rightType="none"
+          headerContainerStyle={{borderBottomWidth:0}}
         />
+        <View style={styles.body}>
+          <CommonListView
+            contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, sectionId, rowId) => this.renderRow(rowData, sectionId, rowId)}
+            loadNewData={()=>{this.refreshData()}}
+            loadMoreData={()=>{this.loadMoreData()}}
+            ref={(listView) => this.listView = listView}
+          />
+        </View>
+
+        {this.renderBottomView()}
+      </View>  
+    )
+  }
+
+  renderBottomView() {
+    let userIsFollowedTheUser = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
+    let userOwnedShopInfo = this.props.userOwnedShopInfo
+
+    return (
+      <View style={styles.bottomViewWrap}>
+        {userIsFollowedTheUser
+          ? <TouchableOpacity style={[styles.bottomViewItemBox]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
+              <View style={[styles.vItem]}>
+                <Image style={styles.followImg} source={require('../../assets/images/followed.png')}/>
+              </View>
+            </TouchableOpacity>
+          : <TouchableOpacity style={[styles.bottomViewItemBox]} onPress={()=>{this.followUser(this.props.userId)}}>
+              <View style={[styles.vItem]}>
+                <Image style={styles.followImg} source={require('../../assets/images/add_follow.png')}/>
+              </View>
+            </TouchableOpacity>  
+        }
+
+        <TouchableOpacity style={[styles.bottomViewItemBox]} onPress={()=>{Actions.SHOP_DETAIL({id: userOwnedShopInfo.id})}}>
+          <View style={[styles.vItem]}>
+            <Image style={{}} source={require('../../assets/images/shop_24_personal.png')}/>
+            <Text style={[styles.vItemTxt, {color:'#FF7819'}]}>个人店铺</Text>
+          </View>
+        </TouchableOpacity>
+
+        <View style={[styles.bottomViewItemBox]}></View>
+
+        <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
+          <Image style={{}} source={require('../../assets/images/contacted.png')}/>
+          <Text style={[styles.contactedTxt]}>私信</Text>
+        </TouchableOpacity>
       </View>
     )
+  }
+
+  sendPrivateMessage() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      let userInfo = this.props.userInfo
+      let activeUserInfo = this.props.activeUserInfo
+      let payload = {
+        name: userInfo.nickname,
+        members: [this.props.userId, activeUserInfo.id],
+        conversationType: PERSONAL_CONVERSATION,
+        title: userInfo.nickname,
+      }
+      Actions.CHATROOM(payload)
+    }
+  }
+
+  followUser(userId) {
+    if(this.isProcessing) {
+      return
+    }
+    this.isProcessing = true
+    if(!this.props.isLogin) {
+      Actions.LOGIN()
+      return
+    }
+    const that = this
+    let payload = {
+      userId: userId,
+      success: function(result) {
+        that.isProcessing = false
+        that.props.fetchUserFollowees()
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        that.isProcessing = false
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.followUser(payload)
+  }
+
+  unFollowUser(userId) {
+    if(this.isProcessing) {
+      return
+    }
+    this.isProcessing = true
+    if(!this.props.isLogin) {
+      Actions.LOGIN()
+      return
+    }
+    const that = this
+    let payload = {
+      userId: userId,
+      success: function(result) {
+        that.isProcessing = false
+        that.props.fetchUserFollowees()
+        Toast.show(result.message, {duration: 1500})
+      },
+      error: function(error) {
+        that.isProcessing = false
+        Toast.show(error.message, {duration: 1500})
+      }
+    }
+    this.props.unFollowUser(payload)
   }
 }
 
@@ -365,37 +402,62 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'PERSONAL_INFO_COLUMN'})
   dataArray.push({type: 'TOPICS_COLUMN'})
 
-  const doctorInfo = getDoctorInfoByUserId(state, ownProps.userId)
   const isLogin = authSelector.isUserLogined(state)
-  const userInfo = authSelector.userInfoById(state, ownProps.userId)
+  const userInfo = authSelector.selectUserInfoById(state, ownProps.userId)
+  const activeUserInfo = authSelector.selectActiveUserInfo(state)
+  let distance = undefined
+  let distanceUnit = 'km'
+  if(userInfo.geo && activeUserInfo.geo) {
+    distance = activeUserInfo.geo.kilometersTo(userInfo.geo)
+    if(distance > 1) {
+      distance = Number(distance).toFixed(1)
+    }else {
+      distance = Number(distance * 1000).toFixed(0)
+      distanceUnit = 'm'
+    }
+  }
+  // console.log('userInfo===', userInfo)
+  // console.log('activeUserInfo===', activeUserInfo)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
   const userFollowers = authSelector.selectUserFollowers(state, ownProps.userId)
   const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
 
-  const userTopics = selectUserTopics(state, ownProps.userId)
   const userFollowees = authSelector.selectUserFollowees(state)
+
+  const userTopics = selectUserTopics(state, ownProps.userId)
+  const userTopicsTotalCount = selectUserTopicsTotalCount(state, ownProps.userId)
+
+  let promoterId = activePromoter(state)
+  let promoter = getPromoterById(state, promoterId)
 
   return {
     ds: ds.cloneWithRows(dataArray),
     isLogin: isLogin,
     currentUser: authSelector.activeUserId(state),
     userInfo: userInfo,
+    activeUserInfo: activeUserInfo,
     userFollowers: userFollowers,
     userFollowersTotalCount: userFollowersTotalCount,
     userOwnedShopInfo: userOwnedShopInfo,
-    doctorInfo: doctorInfo,
     userTopics: userTopics,
-    userFollowees: userFollowees
+    userTopicsTotalCount: userTopicsTotalCount,
+    distance: distance,
+    distanceUnit: distanceUnit,
+    promoter: promoter,
+    userFollowees: userFollowees,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicsByUserid,
+  fetchUserTopicsTotalCount,
   fetchOtherUserFollowers,
   fetchOtherUserFollowersTotalCount,
   getUserInfoById,
   fetchUserOwnedShopInfo,
-  fetchDoctorByUserId
+  followUser, 
+  unFollowUser, 
+  fetchUserFollowees
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
@@ -403,142 +465,139 @@ export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: 'rgba(0,0,0,0.05)'
   },
-  personalInfoWrap: {
-
-  },
-  goBackBox: {
-    paddingLeft: 10,
-    paddingTop: 10,
-    marginBottom: 10
-  },
-  goBack: {
-    fontSize: em(28),
-    color: THEME.colors.green
-  },
-  row: {
-    backgroundColor: '#fff',
-    marginBottom: normalizeH(10)
-  },
-  baseInfoWrap: {
-    backgroundColor: '#fff',
+  body: {
     ...Platform.select({
       ios: {
-        paddingTop: 20,
+        marginTop: normalizeH(64),
       },
+      android: {
+        marginTop: normalizeH(44)
+      }
     }),
+    flex: 1,
   },
-  thumbnailWrap: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  personalInfoContainer: {
+
+  },
+  personalInfoWrap: {
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: 'white',
+    padding:15,
+    paddingTop: 0,
     borderBottomWidth: normalizeBorder(),
-    borderBottomColor: '#e6e6e6'
+    borderBottomColor: '#f5f5f5'
   },
-  btnWrap: {
-    flexDirection: 'row'
+  row: {
+    flexDirection: 'row',
+    marginBottom: 10
   },
   avatarImg: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10
-  },
-  sexNameWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20
-  },
-  sexImg: {
-    marginRight: 5
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    marginBottom: 12
   },
   nickname: {
-    fontSize: em(17),
-    color: '#4a4a4a'
-  },
-  btnBox: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 40
-  },
-  btnTxt: {
-    fontSize: em(17),
-    color: THEME.base.mainColor,
-  },
-  rightBorder: {
-    borderRightWidth: normalizeBorder(),
-    borderRightColor: '#e6e6e6'
-  },
-  borderBottom: {
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: '#e6e6e6'
-  },
-  otherInfoWrap: {
-    backgroundColor: '#fff',
-  },
-  otherInfoBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 40,
-    padding: 10,
-    paddingLeft: 20
-  },
-  otherInfoTxt: {
-    flex: 1,
-    paddingLeft: 10,
-    paddingRight: 10,
-    fontSize: em(17),
-    color: '#4a4a4a'
-  },
-  arrowForward: {
-    fontSize: em(20),
-    color: '#e9e9e9'
-  },
-  followersInfoWrap: {
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  attentionTitle: {
-    fontSize: em(17),
+    fontSize: 17,
     color: '#4a4a4a',
-    marginBottom: 10,
   },
-  attentionAvatarWrap: {
+  sexImg:{
+    marginLeft: 8
+  },
+  address: {
+    fontSize: 12,
+    color: '#9b9b9b'
+  },
+  distance: {
+    fontSize: 12,
+    color: '#9b9b9b',
+    marginLeft: 8
+  },
+  promoterLevelBox: {
     flexDirection: 'row',
-    marginBottom: 10
-  },
-  attentionAvatar: {
+    padding: 10,
+    backgroundColor: '#f5f5f5',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: normalizeW(10),
+    borderRadius: 100
   },
-  attentionAvatarImg: {
-    width: normalizeW(35),
-    height: normalizeW(35),
-    borderRadius: normalizeW(35/2),
+  promoterLevelIcon: {
+    marginRight: 10
   },
-  noAttentionWrap: {
+  promoterLevelName: {
+    fontSize: 12,
+    color: '#9b9b9b'
+  },
+  followersWrap: {
+    flex:1,
+    flexDirection:'row',
+    padding: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor:'white',
+    justifyContent: 'space-between',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
+  },
+  titleWrap: {
+    flex:1,
+    flexDirection:'row',
+    paddingTop: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor:'white',
+  },
+  titleLine: {
+    width: 3,
+    backgroundColor: '#ff7819',
+    marginRight: 5,
+  },
+  titleTxt: {
+    color: '#FF7819',
+    fontSize: em(15)
+  },
+  bottomViewWrap: {
+    position:'absolute',
+    left:0,
+    bottom:0,
+    borderTopWidth:normalizeBorder(),
+    borderTopColor: THEME.colors.lighterA,
+    backgroundColor:'#fafafa',
+    flexDirection:'row',
+  },
+  vItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 3,
+    justifyContent: 'center',
+  },
+  vItemTxt: {
+    marginTop: 6,
+    fontSize: em(10),
+    color: '#aaa'
+  },
+  bottomViewItemBox: {
+    flex: 1,
+  },
+  contactedWrap: {
+    width: normalizeW(135),
+    backgroundColor: '#FF9D4E',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
   },
-  noAttentionTxt: {
-    color: '#b2b2b2',
+  contactedTxt: {
+    color: 'white',
     fontSize: em(15),
+    marginLeft: normalizeW(9)
   },
-  followersTotalCountWrap: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: normalizeW(10),
-    width: normalizeW(35),
-    height: normalizeW(35),
-    borderRadius: normalizeW(35/2),
-    backgroundColor: THEME.colors.green
-  },
-  followersTotalCountTxt: {
-    color: '#fff',
-    fontSize: em(15),
-  },
+  followImg: {
+    width:50,
+    height:45
+  }
 
 })

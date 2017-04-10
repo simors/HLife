@@ -15,6 +15,22 @@ export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS_COMMENT: 'PUBLISH_TOPICS_COMMENT',
 }
 
+export function fetchUserTopicsTotalCount(payload) {
+  return (dispatch, getState) => {
+    lcTopics.fetchUserTopicsTotalCount(payload).then((result)=> {
+      let updateAction = createAction(topicActionTypes.FETCH_USER_TOPICS_TOTAL_COUNT_SUCCESS)
+      dispatch(updateAction(result))
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function publishTopicFormData(payload) {
   return (dispatch, getState) => {
     let formData = undefined
@@ -265,16 +281,16 @@ export function fetchTopics(payload) {
 
 export function fetchTopicsByUserid(payload) {
   return (dispatch, getState) => {
-    lcTopics.getTopics(payload).then((topics) => {
+    lcTopics.getTopics(payload).then((result) => {
       let updateTopicsAction = createAction(topicActionTypes.UPDATE_TOPICS)
       dispatch(updateTopicsAction({
         isPaging: !payload.isRefresh,
         userId:payload.userId,
         type:payload.type,
-        topics: topics
+        topics: result.topics
       }))
       if(payload.success) {
-        payload.success(topics.size==0)
+        payload.success(result.topics.size==0)
       }
     }).catch((error) => {
       if (payload.error) {

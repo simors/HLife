@@ -35,6 +35,36 @@ export function appInit() {
   }
 }
 
+export function getPromoterLevelInfo(level) {
+
+  if(level < 1 || level > 5) {
+    return null
+  }
+
+  const levelName = ['青铜级', '白银级', '黄金级', '钻石级', '皇冠级']
+
+  const levelMainIcon = [
+    require('../assets/images/bronze_16.png'),
+    require('../assets/images/silver_16.png'),
+    require('../assets/images/gold_16.png'),
+    require('../assets/images/diamond_16.png'),
+    require('../assets/images/crown_16.png'),
+  ]
+  const levelMainReverseIcon = [
+    require('../assets/images/bronze_20.png'),
+    require('../assets/images/silver_20.png'),
+    require('../assets/images/gold_20.png'),
+    require('../assets/images/diamond_20.png'),
+    require('../assets/images/crown_20.png'),
+  ]
+
+  return {
+    levelName: levelName[level-1],
+    levelMainIcon: levelMainIcon[level-1],
+    levelMainReverseIcon: levelMainReverseIcon[level-1]
+  }
+}
+
 /**
  * 推送初始化
  * @param options
