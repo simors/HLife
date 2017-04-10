@@ -1042,6 +1042,8 @@ export function fetchShopPromotionMaxNum(payload) {
 export function fetchMyShopExpiredPromotionList(payload) {
   let isRefresh = payload.isRefresh
   let lastUpdatedAt = payload.lastUpdatedAt
+  let user = AV.User.current()
+  let userId = user.id
   let query = new AV.Query('ShopPromotion')
 
   query.include(['targetShop', 'targetShop.owner'])
@@ -1061,7 +1063,11 @@ export function fetchMyShopExpiredPromotionList(payload) {
     results.forEach((result) => {
       shopPromotionList.push(ShopPromotion.fromLeancloudObject(result))
     })
-    return new List(shopPromotionList)
+    // return new List(shopPromotionList)
+    return {
+      userId: userId,
+      shopPromotionList: new List(shopPromotionList)
+    }
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

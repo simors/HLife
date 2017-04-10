@@ -79,15 +79,19 @@ export default function shopReducer(state = initialState, action) {
 
 function handleUpdateMyShopExpriredPromotionList(state, action) {
   let payload = action.payload
-  state = state.set('myShopExpriredPromotionList',  payload.shopPromotionList)
+  let userId = payload.userId
+  let shopPromotionList = payload.shopPromotionList
+  state = state.setIn(['myShopExpriredPromotionList', userId], shopPromotionList)
   return state
 }
 
 function handleUpdateMyShopExpriredPromotionListPaging(state, action) {
   let payload = action.payload
-  let shopPromotionList = state.get('myShopExpriredPromotionList')
-  shopPromotionList = shopPromotionList.concat(payload.shopPromotionList)
-  state = state.set('myShopExpriredPromotionList',  shopPromotionList)
+  let userId = payload.userId
+  let shopPromotionList = payload.shopPromotionList
+  let _shopPromotionList = state.get('myShopExpriredPromotionList')
+  let newShopPromotionList = _shopPromotionList.concat(shopPromotionList)
+  state = state.setIn(['myShopExpriredPromotionList', userId], newShopPromotionList)
   return state
 }
 
