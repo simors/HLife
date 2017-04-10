@@ -827,11 +827,14 @@ export function unregistShop(payload) {
 
 export function fetchUserOwnedShopInfo(payload) {
   let query = new AV.Query('Shop')
-  let user = AV.User.current()
-  let userId = user.id
+  let user = null
+  let userId = ''
   if(payload && payload.userId) {
     userId = payload.userId
     user = AV.Object.createWithoutData('_User', payload.userId)
+  }else {
+    user = AV.User.current()
+    userId = user.id
   }
   query.equalTo('owner', user)
   //query.equalTo('status', 1)

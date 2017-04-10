@@ -16,6 +16,19 @@ export const UserInfoRecord = Record({
   geoCityCode: undefined,
   geoDistrict: undefined,
   geoDistrictCode: undefined,
+  createdAt: '',
+  createdDate: '',
+  updatedAt: '',
+  updatedDate: '',
+  lastLoginDuration: '',
+  username: '',
+  type: '',
+  emailVerified: false,
+  status: '',
+  mobilePhoneNumber: '',
+  mobilePhoneVerified: false,
+  detail: {},
+  enable: false,
 }, 'UserInfoRecord')
 
 export const HealthProfileRecord = Record({
@@ -49,19 +62,13 @@ export class UserInfo extends UserInfoRecord {
     let info = new UserInfoRecord()
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)
-      record.set('avatar',attrs.avatar)
-      record.set('phone', attrs.mobilePhoneNumber)
-      record.set('nickname', attrs.nickname)
-      record.set('gender', attrs.gender)
-      record.set('birthday', attrs.birthday)
-      record.set('identity', new List(attrs.identity))
-      record.set('geo', attrs.geo)
-      record.set('geoProvince', attrs.geoProvince)
-      record.set('geoProvinceCode', attrs.geoProvinceCode)
-      record.set('geoCity', attrs.geoCity)
-      record.set('geoCityCode', attrs.geoCityCode)
-      record.set('geoDistrict', attrs.geoDistrict)
-      record.set('geoDistrictCode', attrs.geoDistrictCode)
+      for(let key in attrs) {
+        if('identity' == key) {
+          record.set('identity', new List(attrs.identity))
+        }else {
+          record.set(key, attrs[key])
+        }
+      }
     })
     return info
   }
@@ -69,20 +76,13 @@ export class UserInfo extends UserInfoRecord {
   static fromLeancloudApi(lcObj) {
     let info = new UserInfoRecord()
     info = info.withMutations((record) => {
-      record.set('id', lcObj.id)
-      record.set('avatar',lcObj.avatar)
-      record.set('phone', lcObj.phone)
-      record.set('nickname', lcObj.nickname)
-      record.set('gender', lcObj.gender)
-      record.set('birthday', lcObj.birthday)
-      record.set('identity', new List(lcObj.identity))
-      record.set('geo', lcObj.geo)
-      record.set('geoProvince', lcObj.geoProvince)
-      record.set('geoProvinceCode', lcObj.geoProvinceCode)
-      record.set('geoCity', lcObj.geoCity)
-      record.set('geoCityCode', lcObj.geoCityCode)
-      record.set('geoDistrict', lcObj.geoDistrict)
-      record.set('geoDistrictCode', lcObj.geoDistrictCode)
+      for(let key in lcObj) {
+        if('identity' == key) {
+          record.set('identity', new List(lcObj.identity))
+        }else {
+          record.set(key, lcObj[key])
+        }
+      }
     })
     return info
   }

@@ -23,24 +23,22 @@ class UserFolloweesView extends Component {
   render() {
     let userInfo = this.props.userInfo
     return (
-      <View style={styles.container}>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id})}>
+      <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id})}>
+        <View style={styles.container}>
+          <View style={{flexDirection: 'row'}}>
             <Image style={styles.avatarStyle}
-                   source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")}/>
-          </TouchableOpacity>
-          <View>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id})}>
+                source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")}/>
+            <View>
               <Text style={styles.userNameStyle}>{userInfo.nickname}</Text>
-            </TouchableOpacity>
-            <View style={styles.timeLocationStyle}>
-              <Text style={styles.timeTextStyle}>
-                粉丝: 3
-              </Text>
+              <View style={styles.timeLocationStyle}>
+                <Text style={styles.timeTextStyle}>
+                  粉丝: 3
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 }

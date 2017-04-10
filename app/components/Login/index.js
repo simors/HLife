@@ -52,7 +52,7 @@ class Login extends Component {
       formKey: commonForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
       success: (userInfo) => {
-        this.props.fetchUserOwnedShopInfo()
+        // this.props.fetchUserOwnedShopInfo({userId: userInfo.id})
         Toast.show('登录成功!')
         if (this.props.goHome) {
           Actions.HOME()
