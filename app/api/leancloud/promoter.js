@@ -61,3 +61,14 @@ export function getPormoterTenant(payload) {
     throw err
   })
 }
+
+export function getUpPromoter(payload) {
+  let params = {
+    userId: payload.userId,
+  }
+  return AV.Cloud.run('promoterGetUpPromoter', params).then((promoterInfo) => {
+    return promoterInfo
+  }, (err) => {
+    throw err
+  })
+}

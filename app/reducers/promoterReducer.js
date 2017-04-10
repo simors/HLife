@@ -20,6 +20,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleUpdatePromoter(state, action)
     case promoterActionTypes.UPDATE_TENANT_FEE:
       return handleUpdateTenant(state, action)
+    case promoterActionTypes.UPDATE_UPPROMOTER_ID:
+      return handleUpdateUpPromoter(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -54,6 +56,12 @@ function handleUpdatePromoter(state, action) {
 function handleUpdateTenant(state, action) {
   let tenant = action.payload.tenant
   state = state.set('fee', tenant)
+  return state
+}
+
+function handleUpdateUpPromoter(state, action) {
+  let upPromoterId = action.payload.upPromoterId
+  state = state.set('upPromoterId', upPromoterId)
   return state
 }
 
