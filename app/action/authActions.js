@@ -7,6 +7,7 @@ import * as lcShop from '../api/leancloud/shop'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
+import * as shopAction from './shopAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
@@ -150,13 +151,16 @@ function handleLoginWithPwd(payload, formData) {
       password: formData.passwordInput.text,
     }
     lcAuth.loginWithPwd(loginPayload).then((userInfo) => {
+      // console.log('handleLoginWithPwd===userInfo=', userInfo)
       if (payload.success) {
-        payload.success(userInfo)
+        payload.success(userInfo.userInfo.toJS())
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
+      dispatch(shopAction.fetchUserOwnedShopInfo({userId: userInfo.userInfo.id}))
       return userInfo
     }).then((user) => {
+      // console.log('handleLoginWithPwd===user=', user)
       dispatch(initMessageClient(payload))
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
