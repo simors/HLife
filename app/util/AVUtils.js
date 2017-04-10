@@ -143,50 +143,51 @@ export function configurePush(options) {
         }))
       }
 
-      if(notification.foreground) {//程序在前台
-        if(!Popup.popup) {
-          Popup.confirm({
-            title: data.title || '邻家优店通知',
-            content: data.alert || '',
-            ok: {
-              text: '查看',
-              style: {color: '#FF7819'},
-              callback: ()=>{
-                Popup.popup = null
-                // console.log('ok')
-                if(data.sceneName) {
-                  Actions[data.sceneName](data.sceneParams)
-                }else{
-                  Actions.MESSAGE_BOX()
+      if(authSelector.isUserLogined(store.getState())) {
+        if(notification.foreground) {//程序在前台
+          if(!Popup.popup) {
+            Popup.confirm({
+              title: data.title || '邻家优店通知',
+              content: data.alert || '',
+              ok: {
+                text: '查看',
+                style: {color: '#FF7819'},
+                callback: ()=>{
+                  Popup.popup = null
+                  // console.log('ok')
+                  if(data.sceneName) {
+                    Actions[data.sceneName](data.sceneParams)
+                  }else{
+                    Actions.MESSAGE_BOX()
+                  }
+                }
+              },
+              cancel: {
+                text: '取消',
+                callback: ()=>{
+                  Popup.popup = null
+                  // console.log('cancel')
                 }
               }
-            },
-            cancel: {
-              text: '取消',
-              callback: ()=>{
-                Popup.popup = null
-                // console.log('cancel')
-              }
-            }
-          })
-        }
-        
-      }else {//程序在后台
-        if(notification.userInteraction) {//用户点击通知栏消息
-          // Toast.show(notification.data.userInfo.userName)
-          // console.log('DATA:', notification.data)
-
-          if(data.sceneName) {
-            Actions[data.sceneName](data.sceneParams)
-          }else{
-            Actions.MESSAGE_BOX()
+            })
           }
-        }else {
-          //程序接收到远程或本地通知
+          
+        }else {//程序在后台
+          if(notification.userInteraction) {//用户点击通知栏消息
+            // Toast.show(notification.data.userInfo.userName)
+            // console.log('DATA:', notification.data)
 
+            if(data.sceneName) {
+              Actions[data.sceneName](data.sceneParams)
+            }else{
+              Actions.MESSAGE_BOX()
+            }
+          }else {
+            //程序接收到远程或本地通知
+
+          }
         }
       }
-
 
     },
     
