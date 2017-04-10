@@ -20,6 +20,15 @@ export function isUserLogined(state) {
   return activeUser ? true : false
 }
 
+export function selectUserInfoById(state, userId) {
+  return state.AUTH ? state.AUTH.getUserInfoById(userId).toJS() : {}
+}
+
+export function selectActiveUserInfo(state) {
+  let activeUser = activeUserId(state)
+  return activeUser ? state.AUTH.getUserInfoById(activeUser).toJS() : {}
+}
+
 export function userInfoById(state, userId) {
   return state.AUTH ? state.AUTH.getUserInfoById(userId) : new UserInfo()
 }

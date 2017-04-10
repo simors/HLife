@@ -85,3 +85,8 @@ export function getMainPageTopics(state) {
   }
   return []
 }
+
+export function selectUserTopicsTotalCount(state, userId) {
+  let userTopicsTotalCount = state.TOPIC.userTopicsTotalCount.get(userId)
+  return userTopicsTotalCount ? userTopicsTotalCount : 0
+}

@@ -376,6 +376,25 @@ export function getTopics(payload) {
   }
 }
 
+export function fetchUserTopicsTotalCount(payload) {
+  let userId = payload.userId
+  let query = new AV.Query('Topics')
+  var user = AV.Object.createWithoutData('_User', userId)
+  query.equalTo('user', user)
+  query.equalTo('status',1)
+
+  return query.count().then((totalCount)=>{
+    // console.log('fetchOtherUserFollowersTotalCount==totalCount=', totalCount)
+    return {
+      userId: userId,
+      userTopicsTotalCount: totalCount
+    }
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 
 export function getTopicById(payload) {
   let query = new AV.Query('Topics')
