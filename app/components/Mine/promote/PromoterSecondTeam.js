@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/4/9.
+ * Created by yangyang on 2017/4/11.
  */
 import React, {Component} from 'react'
 import {
@@ -23,15 +23,15 @@ import Header from '../../common/Header'
 import CommonListView from '../../common/CommonListView'
 import PromoterLevelIcon from './PromoterLevelIcon'
 import PromoterTeamItem from './PromoterTeamItem'
-import {getMyUpPromoter, getMyPromoterTeam} from '../../../action/promoterAction'
-import {getPromoterById, getUpPromoterId, activePromoter, getTeamMember} from '../../../selector/promoterSelector'
+import {getPromoterTeamById} from '../../../action/promoterAction'
+import {getPromoterById, activePromoter, getTeamMember} from '../../../selector/promoterSelector'
 import {userInfoById} from '../../../selector/authSelector'
 import {getConversationTime} from '../../../util/numberUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class PromoterDirectTeam extends Component {
+class PromoterSecondTeam extends Component {
   constructor(props) {
     super(props)
     this.lastUpdatedAt = undefined
@@ -39,59 +39,49 @@ class PromoterDirectTeam extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.getMyUpPromoter()
-      this.props.getMyPromoterTeam({limit: 10})
+      this.props.getPromoterTeamById({limit: 10, promoterId: this.props.promoter.id})
     })
   }
 
   refreshData() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.getMyPromoterTeam({limit: 10})
+      this.props.getPromoterTeamById({limit: 10, promoterId: this.props.promoter.id})
     })
   }
 
   loadMoreData() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.getMyPromoterTeam({
+      this.props.getPromoterTeamById({
         limit: 10,
         more: true,
+        promoterId: this.props.promoter.id,
         lastUpdatedAt: this.lastUpdatedAt,
       })
     })
   }
 
-  renderExplainBtn() {
-    return (
-      <TouchableOpacity style={styles.explainBtnStyle}
-                        onPress={() => {}}>
-        <Image style={{width: normalizeW(18), height: normalizeH(18)}} resizeMode="contain"
-               source={require('../../../assets/images/explain_revernue.png')}/>
-      </TouchableOpacity>
-    )
-  }
-
-  renderUpPromoterView() {
-    let upUser = this.props.upUser
-    let upPromoter = this.props.upPromoter
-    if (!upUser || !upPromoter) {
+  renderPromoterView() {
+    let user = this.props.user
+    let promoter = this.props.promoter
+    if (!user || !user) {
       return <View/>
     }
     return (
       <View>
         <View style={styles.tipView}>
-          <Text style={styles.tipText}>我的邀请者</Text>
+          <Text style={styles.tipText}>我的一级好友</Text>
         </View>
         <View>
           <TouchableOpacity style={styles.infoView} onPress={() => {}}>
             <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
               <Image style={styles.avatarStyle} resizeMode="contain"
-                     source={upUser.avatar ? {uri: upUser.avatar} : require("../../../assets/images/default_portrait.png")} />
+                     source={user.avatar ? {uri: user.avatar} : require("../../../assets/images/default_portrait.png")} />
             </View>
             <View style={{flex: 1}}>
-              <Text style={styles.usernameText}>{upUser.nickname}</Text>
+              <Text style={styles.usernameText}>{user.nickname}</Text>
               <View style={styles.promoterInfoView}>
-                <PromoterLevelIcon level={upPromoter.level} mode="tiny"/>
-                <Text style={styles.promoterDealText}>最新业绩： {getConversationTime(new Date(upPromoter.updatedAt))}</Text>
+                <PromoterLevelIcon level={promoter.level} mode="tiny"/>
+                <Text style={styles.promoterDealText}>最新业绩： {getConversationTime(new Date(promoter.updatedAt))}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -105,13 +95,13 @@ class PromoterDirectTeam extends Component {
       this.props.team.map((promoter, index) => {
         this.lastUpdatedAt = promoter.updatedAt
         return (
-          <PromoterTeamItem key={index} promoter={promoter} />
+          <PromoterTeamItem key={index} promoter={promoter} showDetail={false} />
         )
       })
     )
   }
 
-  renderMyTeamView() {
+  renderTeamView() {
     let promoter = this.props.promoter
     if (!promoter) {
       return <View/>
@@ -119,7 +109,7 @@ class PromoterDirectTeam extends Component {
     return (
       <View>
         <View style={[styles.tipView, {flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}]}>
-          <Text style={styles.tipText}>我的一级好友</Text>
+          <Text style={styles.tipText}>我的二级好友</Text>
           <Text style={{fontSize: em(15), color: THEME.base.mainColor, paddingLeft: normalizeW(8)}}>{promoter.teamMemNum}</Text>
           <Text style={[styles.tipText, {paddingLeft: normalizeW(8)}]}>人</Text>
         </View>
@@ -129,10 +119,10 @@ class PromoterDirectTeam extends Component {
   }
 
   renderRow(rowData, index) {
-    if (rowData.type == 'myUpPromoter') {
-      return this.renderUpPromoterView()
-    } else if (rowData.type == 'myTeam') {
-      return this.renderMyTeamView()
+    if (rowData.type == 'SHOW_PROMOTER') {
+      return this.renderPromoterView()
+    } else if (rowData.type == 'PROMOTER_TEAM') {
+      return this.renderTeamView()
     }
   }
 
@@ -145,8 +135,7 @@ class PromoterDirectTeam extends Component {
                 leftPress={()=> {
                   Actions.pop()
                 }}
-                title="团队成员"
-                rightComponent={() => {return this.renderExplainBtn()}}
+                title="二级团队成员"
         />
         <View style={styles.body}>
           <CommonListView
@@ -177,35 +166,21 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
-  let comps = [{type: 'myUpPromoter'}, {type: 'myTeam'}]
+  let comps = [{type: 'SHOW_PROMOTER'}, {type: 'PROMOTER_TEAM'}]
 
-  let upUser = undefined
-  let upPromoterId = getUpPromoterId(state)
-  let upPromoter = getPromoterById(state, upPromoterId)
-  if (upPromoter) {
-    upUser = userInfoById(state, upPromoter.userId).toJS()
-  }
-
-  let promoterId = activePromoter(state)
-  let promoter = getPromoterById(state, promoterId)
-
-  let team = getTeamMember(state, promoterId)
+  let team = getTeamMember(state, ownProps.promoter.id)
 
   return {
     dataSource: ds.cloneWithRows(comps),
-    upPromoter: upPromoter,
-    promoter: promoter,
-    upUser: upUser,
     team: team,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  getMyUpPromoter,
-  getMyPromoterTeam,
+  getPromoterTeamById,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PromoterDirectTeam)
+export default connect(mapStateToProps, mapDispatchToProps)(PromoterSecondTeam)
 
 const styles = StyleSheet.create({
   container: {

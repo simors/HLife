@@ -47,6 +47,6 @@ export const Promoter = Record({
   fee: undefined,                   // 获取到店铺或者推广员的入驻费
   upPromoterId: undefined,          // 记录当前推广员的上级推广员id
   promoters: Map(),                 // 推广员记录，键为推广员id，值为PromoterInfo
-  myTeam: List(),                   // 记录我的团队中所有推广员的id号，此列表按照推广员最后业绩时间排序
+  team: Map(),                      // 记录团队列表信息，键为推广员id，值为其推广团队中所有推广员的id号，此列表按照推广员最后业绩时间排序
 }, 'Promoter')
 

@@ -85,6 +85,8 @@ import PaymentSuccess from '../components/Payment/PaymentSuccess'
 import AdviseFeedback from '../components/Advise/index'
 import SubmitAdviseSuccess from '../components/Advise/submitSuccess'
 import PromoterDirectTeam from '../components/Mine/promote/PromoterDirectTeam'
+import PromoterSecondTeam from '../components/Mine/promote/PromoterSecondTeam'
+import InvitedShops from '../components/Mine/promote/InvitedShops'
 
 const styles = StyleSheet.create({
   container: {
@@ -179,6 +181,8 @@ export const scenes = Actions.create(
       <Scene key="ADVISE_FEEDBACK" component={AdviseFeedback}/>
       <Scene key="SUBMIT_ADVISE_SUCCESS" component={SubmitAdviseSuccess}/>
       <Scene key="DIRECT_TEAM" component={PromoterDirectTeam} />
+      <Scene key="PROMOTER_SECOND_TEAM" component={PromoterSecondTeam} />
+      <Scene key="INVITED_SHOPS" component={InvitedShops} />
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

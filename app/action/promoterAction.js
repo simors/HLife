@@ -13,7 +13,7 @@ import {IDENTITY_PROMOTER} from '../constants/appConfig'
 import * as AuthTypes from '../constants/authActionTypes'
 import {PromoterInfo} from '../models/promoterModel'
 import {UserInfo} from '../models/userModels'
-import * as ImageUtil from '../util/ImageUtil'
+import {activePromoter} from '../selector/promoterSelector'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
@@ -23,8 +23,8 @@ let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
 let updateTenant = createAction(promoterActionTypes.UPDATE_TENANT_FEE)
 let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
 let updateUpPromoter = createAction(promoterActionTypes.UPDATE_UPPROMOTER_ID)
-let setPromoterTeam = createAction(promoterActionTypes.SET_MY_TEAM)
-let addPromoterTeam = createAction(promoterActionTypes.ADD_MY_TEAM)
+let setPromoterTeam = createAction(promoterActionTypes.SET_PROMOTER_TEAM)
+let addPromoterTeam = createAction(promoterActionTypes.ADD_PROMOTER_TEAM)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -192,9 +192,38 @@ export function getMyPromoterTeam(payload) {
         dispatch(addUserProfile({userInfo}))
       })
       if (more) {
-        dispatch(addPromoterTeam({newTeam: team}))
+        dispatch(addPromoterTeam({promoterId: activePromoter(getState()), newTeam: team}))
       } else {
-        dispatch(setPromoterTeam({team: team}))
+        dispatch(setPromoterTeam({promoterId: activePromoter(getState()), team: team}))
+      }
+    })
+  }
+}
+
+export function getPromoterTeamById(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.getPromoterTeamById(payload).then((result) => {
+      let team = []
+      let promoters = result.promoters
+      let users = result.users
+      promoters.forEach((promoter) => {
+        let promoterId = promoter.objectId
+        let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+        team.push(promoterId)
+        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+      })
+      users.forEach((user) => {
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        dispatch(addUserProfile({userInfo}))
+      })
+      if (more) {
+        dispatch(addPromoterTeam({promoterId: payload.promoterId, newTeam: team}))
+      } else {
+        dispatch(setPromoterTeam({promoterId: payload.promoterId, team: team}))
       }
     })
   }

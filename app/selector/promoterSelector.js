@@ -38,14 +38,17 @@ export function getUpPromoterId(state) {
   return upPromoterId
 }
 
-export function getMyTeam(state) {
-  let myTeam = []
-  let team = state.PROMOTER.get('myTeam')
-  team.forEach((promoterId) => {
-    let promoter = getPromoterById(state, promoterId)
+export function getTeamMember(state, promoterId) {
+  let team = []
+  let teamArray = state.PROMOTER.getIn(['team', promoterId])
+  if (!teamArray) {
+    return team
+  }
+  teamArray.forEach((memPromoterId) => {
+    let promoter = getPromoterById(state, memPromoterId)
     if (promoter) {
-      myTeam.push(promoter)
+      team.push(promoter)
     }
   })
-  return myTeam
+  return team
 }
