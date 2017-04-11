@@ -14,6 +14,7 @@ import {Actions} from 'react-native-router-flux'
 
 
 export function publishAdviseFormData(payload) {
+  // console.log('hahahahahahahha')
   return (dispatch, getState) => {
     let formData = undefined
     if (payload.formKey) {

@@ -9,8 +9,10 @@ import {
   Image,
   Text,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  NativeModules
 } from 'react-native'
+import Icon from 'react-native-vector-icons/Ionicons'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
@@ -26,6 +28,7 @@ import {userLogOut} from '../../action/authActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
+const CommonNative = NativeModules.jsVersionUpdate
 
 class Setting extends Component {
   constructor(props) {
@@ -55,6 +58,51 @@ class Setting extends Component {
         }
       }
     })
+  }
+  clickListener(index, banners) {
+    let banner = banners[index]
+    let actionType = banner.actionType
+    let action = banner.action
+    let title = banner.title
+    if(actionType == 'link') {
+      let payload = {
+        url: action,
+        showHeader: !!title,
+        headerTitle: title
+      }
+      return (
+        Actions.COMMON_WEB_VIEW(payload)
+      )
+    }else if(actionType == 'toast') {
+      Toast.show(action)
+    }else if(actionType == 'action') {
+      Actions[action]()
+    }
+  }
+
+  checkUpdate(){
+    console.log('jhahahah',CommonNative)
+    CommonNative.getVersion((data)=> {
+     console.log('data',data)
+    })
+  }
+  toUserGuide(){
+    let payload = {
+      url:'http://www.baidu.com',
+      showHeader:true,
+      headerTitle:'用户指南',
+    }
+    Actions.COMMON_WEB_VIEW(payload)
+  }
+
+
+  toAbout(){
+    let payload = {
+      url:'http://www.baidu.com',
+      showHeader:true,
+      headerTitle:'关于邻家优店',
+    }
+    Actions.COMMON_WEB_VIEW(payload)
   }
 
   clearUserInfo() {
@@ -92,25 +140,43 @@ class Setting extends Component {
           title="设置"
         />
         <View style={styles.itemContainer}>
-          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => this.clearApplication()}>
-              <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>清空缓存</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => this.clearUserInfo()}>
-              <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>退出登录</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PAYMENT()}>
-              <Image source={require('../../assets/images/mine_collection.png')}></Image>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(20)}]}>支付测试</Text>
-            </TouchableOpacity>
-          </View>
 
+          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => this.checkUpdate()}>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>
+              <View>
+                <Icon name="ios-arrow-forward"></Icon>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => this.toAbout()}>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>关于邻家优店</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => this.toUserGuide()}>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>用户指南</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => this.clearApplication()}>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>清空缓存</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PAYMENT()}>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>支付测试</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1,marginTop:normalizeH(30),backgroundColor:'#F5F5F5', borderColor: '#F7F7F7',width:normalizeW(345),height:normalizeH(50) }}>
+            <TouchableOpacity style={{alignItems:'center',justifyContent:'center'}} onPress={() => this.clearUserInfo()}>
+              <Text style={[styles.textStyle,{color:'#FF7819',marginTop:normalizeH(16)}]}>退出登录</Text>
+            </TouchableOpacity>
+          </View>
+          <View >
+            <Text style={{fontSize:em(12),color:'#00BE96',marginLeft:normalizeW(138),marginTop:normalizeH(15)}}>邻家优店用户协议</Text>
+          </View>
         </View>
       </View>
     )
@@ -144,8 +210,8 @@ const styles = StyleSheet.create({
   },
   selectItem: {
     flexDirection: 'row',
-    height: normalizeH(45),
-    paddingLeft: normalizeW(25),
+    height: normalizeH(60),
+    paddingLeft: normalizeW(0),
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     marginBottom: normalizeH(2),
@@ -155,5 +221,18 @@ const styles = StyleSheet.create({
     fontSize: em(17),
     color: '#4A4A4A',
     letterSpacing: 0.43,
-  }
+  },
+  rightWrap: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingRight: 12
+  },
 })

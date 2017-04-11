@@ -84,7 +84,7 @@ export default class Header extends Component {
         <View style={styles.rightWrap}>
           <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]}
                             onPress={() => this.props.rightPress()}>
-            <Icon
+            <Iconx
               name={this.props.rightIconName}
               style={[styles.right, this.props.rightStyle]}/>
             {this.props.rightIconLabel
