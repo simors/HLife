@@ -23,7 +23,7 @@ class UserFolloweesView extends Component {
   render() {
     let userInfo = this.props.userInfo
     return (
-      <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id})}>
+      <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id, backSceneName:'MYATTENTION'})}>
         <View style={styles.container}>
            <Image style={styles.avatarStyle}
                 source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")}/>

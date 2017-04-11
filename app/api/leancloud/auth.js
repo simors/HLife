@@ -794,20 +794,17 @@ export function fetchUserFollowees(payload) {
 
 export function userIsFollowedTheUser(payload) {
   let userId = payload.userId
-
+  let followee = AV.Object.createWithoutData('_User', userId)
   let query = AV.User.current().followeeQuery()
-  query.include('followee')
-  return query.find().then(function(results) {
-    let followees = []
-    results.forEach((result)=>{
-      followees.push(UserInfo.fromLeancloudObject(result))
-    })
-    for(let i = 0; i < results.length; i++) {
-      if(userId == followees[i].id) {
-        return true
-      }
+  query.equalTo('followee', followee)
+  return query.count().then(function(totalCount) {
+    if(totalCount) {
+      return true
     }
     return false
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 

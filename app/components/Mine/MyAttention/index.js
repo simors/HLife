@@ -52,6 +52,10 @@ class MyAttention extends Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+
+  }
+
   refreshFollowees() {
     this.loadMoreData(true)
   }
@@ -163,7 +167,7 @@ class MyAttention extends Component {
         <Header headerContainerStyle={styles.header}
                 leftType='icon'
                 leftStyle={{color: '#FFFFFF'}}
-                leftPress={() => Actions.pop()}
+                leftPress={() => {Actions.pop()}}
                 title="我的关注"
                 titleStyle={styles.title}>
         </Header>
@@ -223,7 +227,7 @@ const mapStateToProps = (state, ownProps) => {
   if(userFollowees && userFollowees.length) {
     userFolloweesLastCreatedAt = userFollowees[userFollowees.length-1].createdAt
   }
-  console.log('userFollowees===', userFollowees)
+  // console.log('userFollowees===', userFollowees)
   const userFollowedShopList = selectUserFollowedShopList(state, activeUserId(state))
   let lastCreatedAt = ''
   if(userFollowedShopList && userFollowedShopList.length) {

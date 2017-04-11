@@ -23,7 +23,7 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount, followUser, unFollowUser,fetchUserFollowees} from '../../action/authActions'
+import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount, followUser, unFollowUser,fetchUserFollowees, userIsFollowedTheUser} from '../../action/authActions'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {selectUserTopics, selectUserTopicsTotalCount} from '../../selector/topicSelector'
 import {fetchTopicsByUserid, fetchUserTopicsTotalCount} from '../../action/topicActions'
@@ -45,19 +45,29 @@ class PersonalHomePage extends Component {
     super(props)
 
     this.state = {
-
+      userIsFollowedTheUser: false
     }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.userIsFollowedTheUser({
+        userId: this.props.userId,
+        success: (result)=>{
+          this.setState({
+            userIsFollowedTheUser: result
+          })
+        }
+      })
+
       this.props.getUserInfoById({userId: this.props.userId})
       // // this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
       this.props.fetchOtherUserFollowers({userId: this.props.userId})
       this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
       this.props.fetchUserTopicsTotalCount({userId: this.props.userId})
-      this.props.fetchUserFollowees()
+      // this.props.fetchUserFollowees()
       this.refreshData()
+
     })
   }
 
@@ -69,8 +79,7 @@ class PersonalHomePage extends Component {
     if (!this.props.isLogin) {
       Actions.LOGIN()
     } else {
-      let isFollowed = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
-      if(!isFollowed) {
+      if(!this.state.userIsFollowedTheUser) {
         Toast.show('只有关注了才能发私信哦!!')
         return
       }
@@ -265,7 +274,14 @@ class PersonalHomePage extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+            if(this.props.backSceneName) {
+              Actions.pop({popNum:2})
+              Actions[this.props.backSceneName](this.props.backSceneParams)
+            }else{
+              Actions.pop()
+            }
+          }}
           rightType="none"
           headerContainerStyle={{borderBottomWidth:0}}
         />
@@ -286,7 +302,7 @@ class PersonalHomePage extends Component {
   }
 
   renderBottomView() {
-    let userIsFollowedTheUser = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
+    let userIsFollowedTheUser = this.state.userIsFollowedTheUser
     let userOwnedShopInfo = this.props.userOwnedShopInfo
 
     return (
@@ -351,7 +367,10 @@ class PersonalHomePage extends Component {
       userId: userId,
       success: function(result) {
         that.isProcessing = false
-        that.props.fetchUserFollowees()
+        that.setState({
+          userIsFollowedTheUser: true
+        })
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -376,7 +395,10 @@ class PersonalHomePage extends Component {
       userId: userId,
       success: function(result) {
         that.isProcessing = false
-        that.props.fetchUserFollowees()
+        that.setState({
+          userIsFollowedTheUser: false
+        })
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -457,7 +479,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   followUser, 
   unFollowUser, 
-  fetchUserFollowees
+  fetchUserFollowees,
+  userIsFollowedTheUser
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
