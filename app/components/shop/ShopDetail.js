@@ -270,14 +270,16 @@ class ShopDetail extends Component {
                     score={item.score}
                   />
                   <View style={styles.subInfoWrap}>
-                    {item &&
-                    <Text style={[styles.subTxt]}>{shopTag}</Text>
+                    {shopTag 
+                      ? <Text style={[styles.subTxt]}>{shopTag}</Text>
+                      : null
                     }
                     <View style={{flex:1,flexDirection:'row'}}>
                       <Text style={styles.subTxt}>{item.geoDistrict && item.geoDistrict}</Text>
                     </View>
-                    {item.distance &&
-                    <Text style={[styles.subTxt]}>{item.distance + item.distanceUnit}</Text>
+                    {item.distance 
+                      ? <Text style={[styles.subTxt]}>{item.distance + item.distanceUnit}</Text>
+                      : null
                     }
                   </View>
                 </View>
