@@ -46,7 +46,7 @@ class Mine extends Component {
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
         this.props.getCurrentPromoter({error: (err) => {
-          Toast.show(err)
+          Toast.show(err.message)
         }})
         this.props.getPromoterTenant()
       }

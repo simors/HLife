@@ -36,6 +36,8 @@ export const ShopRecord = Record({
   containedPromotions: List(), //店铺促销活动
   nextSkipNum: 0, //分页查询,跳过条数
   status: -1, //0-后台关闭； 1-正常； 2-店主自己关闭
+  payment: 0, // 记录店铺注册后是否已完成支付流程，0表示未支付，1表示已支付
+  tenant: 0,  // 记录店铺注册时缴纳的入驻费
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
@@ -95,7 +97,7 @@ export class ShopInfo extends ShopRecord {
           })
         }
         record.set('containedTag', containedTag)
-  
+
         let containedPromotions = []
         if(attrs.containedPromotions && attrs.containedPromotions.length) {
           // console.log('attrs.containedPromotions=====', attrs.containedPromotions)
@@ -112,7 +114,7 @@ export class ShopInfo extends ShopRecord {
         }
         // console.log('containedPromotions=>????????====', containedPromotions)
         record.set('containedPromotions', new List(containedPromotions))
-        
+
         record.set('geo', attrs.geo)
         // console.log('lcObj.userCurGeo===', lcObj.userCurGeo)
         // console.log('attrs.geo===', attrs.geo)
@@ -140,6 +142,8 @@ export class ShopInfo extends ShopRecord {
         record.set('ourSpecial', attrs.ourSpecial)
         record.set('openTime', attrs.openTime)
         record.set('album', new List(attrs.album))
+        record.set('payment', attrs.payment)
+        record.set('tenant', attrs.tenant)
         record.set('createdAt', lcObj.createdAt.valueOf())
         record.set('updatedAt', lcObj.updatedAt.valueOf())
       })
@@ -147,7 +151,56 @@ export class ShopInfo extends ShopRecord {
       console.log('shopModel.err=======', err)
       throw err
     }
+  }
 
+  static fromLeancloudApi(lcObj) {
+    try{
+      let shopRecord = new ShopRecord()
+      return shopRecord.withMutations((record) => {
+        record.set('id', lcObj.objectId)
+        record.set('name', lcObj.name)
+        record.set('phone', lcObj.phone)
+        record.set('shopName', lcObj.shopName)
+        record.set('shopAddress', lcObj.shopAddress)
+        record.set('coverUrl', lcObj.coverUrl)
+        record.set('contactNumber', lcObj.contactNumber)
+        record.set('contactNumber2', lcObj.contactNumber2)
+        record.set('certification', lcObj.certification)
+        record.set('status', lcObj.status && parseInt(lcObj.status))
+
+        record.set('geo', lcObj.geo)
+        if(lcObj.geo) {
+          let userCurGeo = locSelector.getGeopoint(store.getState())
+          let curGeoPoint = new AV.GeoPoint(userCurGeo)
+          let geo = new AV.GeoPoint(lcObj.geo)
+          let distance = geo.kilometersTo(curGeoPoint)
+          let distanceUnit = 'km'
+          if(distance > 1) {
+            distance = Number(distance).toFixed(1)
+          }else {
+            distance = Number(distance * 1000).toFixed(0)
+            distanceUnit = 'm'
+          }
+          record.set('distance', distance)
+          record.set('distanceUnit', distanceUnit)
+        }
+        record.set('nextSkipNum', lcObj.nextSkipNum || 0)
+        record.set('geoName', lcObj.geoName)
+        record.set('geoCity', lcObj.geoCity)
+        record.set('geoDistrict', lcObj.geoDistrict)
+        record.set('pv', numberUtils.formatNum(lcObj.pv))
+        record.set('score', lcObj.score)
+        record.set('ourSpecial', lcObj.ourSpecial)
+        record.set('openTime', lcObj.openTime)
+        record.set('album', new List(lcObj.album))
+        record.set('payment', lcObj.payment)
+        record.set('tenant', lcObj.tenant)
+        record.set('createdAt', lcObj.createdAt.valueOf())
+        record.set('updatedAt', lcObj.updatedAt.valueOf())
+      })
+    } catch(err) {
+      throw err
+    }
   }
 }
 

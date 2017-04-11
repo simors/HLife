@@ -1,6 +1,7 @@
 /**
  * Created by yangyang on 2017/3/27.
  */
+import {selectShopDetail} from './shopSelector'
 
 export function inviteCode(state) {
   let code = state.PROMOTER.get('inviteCode')
@@ -51,4 +52,19 @@ export function getTeamMember(state, promoterId) {
     }
   })
   return team
+}
+
+export function getInvitedShop(state, promoterId) {
+  let shops = []
+  let shopArray = state.PROMOTER.getIn(['invitedShops', promoterId])
+  if (!shopArray) {
+    return shops
+  }
+  shopArray.forEach((shopId) => {
+    let shop = selectShopDetail(state, shopId)
+    if (shop) {
+      shops.push(shop)
+    }
+  })
+  return shops
 }

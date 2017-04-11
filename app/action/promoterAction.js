@@ -6,6 +6,7 @@ import * as uiTypes from '../constants/uiActionTypes'
 import * as promoterActionTypes from '../constants/promoterActionTypes'
 import * as lcAuth from '../api/leancloud/auth'
 import * as lcPromoter from '../api/leancloud/promoter'
+import * as shopActionTypes from '../constants/shopActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {calRegistPromoter} from '../action/pointActions'
@@ -13,6 +14,7 @@ import {IDENTITY_PROMOTER} from '../constants/appConfig'
 import * as AuthTypes from '../constants/authActionTypes'
 import {PromoterInfo} from '../models/promoterModel'
 import {UserInfo} from '../models/userModels'
+import {ShopInfo} from '../models/shopModel'
 import {activePromoter} from '../selector/promoterSelector'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
@@ -25,6 +27,9 @@ let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
 let updateUpPromoter = createAction(promoterActionTypes.UPDATE_UPPROMOTER_ID)
 let setPromoterTeam = createAction(promoterActionTypes.SET_PROMOTER_TEAM)
 let addPromoterTeam = createAction(promoterActionTypes.ADD_PROMOTER_TEAM)
+let addShopDetail = createAction(shopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
+let addPromoterShops = createAction(promoterActionTypes.ADD_PROMOTER_SHOPS)
+let setPromoterShops = createAction(promoterActionTypes.SET_PROMOTER_SHOPS)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -224,6 +229,28 @@ export function getPromoterTeamById(payload) {
         dispatch(addPromoterTeam({promoterId: payload.promoterId, newTeam: team}))
       } else {
         dispatch(setPromoterTeam({promoterId: payload.promoterId, team: team}))
+      }
+    })
+  }
+}
+
+export function getMyInvitedShops(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.getMyInvitedShops(payload).then((shops) => {
+      let shopIds = []
+      shops.forEach((shop) => {
+        let shopRecord = ShopInfo.fromLeancloudApi(shop)
+        shopIds.push(shop.objectId)
+        dispatch(addShopDetail({id: shop.objectId, shopInfo: shopRecord}))
+      })
+      if (more) {
+        dispatch(addPromoterShops({promoterId: activePromoter(getState()), newShops: shopIds}))
+      } else {
+        dispatch(setPromoterShops({promoterId: activePromoter(getState()), shops: shopIds}))
       }
     })
   }

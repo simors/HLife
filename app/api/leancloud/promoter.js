@@ -97,3 +97,15 @@ export function getPromoterTeamById(payload) {
     throw err
   })
 }
+
+export function getMyInvitedShops(payload) {
+  let params = {
+    limit: payload.limit,
+    lastCreatedAt: payload.lastCreatedAt,
+  }
+  return AV.Cloud.run('promoterGetPromoterShops', params).then((result) => {
+    return result.shops
+  }, (err) => {
+    throw err
+  })
+}

@@ -48,5 +48,6 @@ export const Promoter = Record({
   upPromoterId: undefined,          // 记录当前推广员的上级推广员id
   promoters: Map(),                 // 推广员记录，键为推广员id，值为PromoterInfo
   team: Map(),                      // 记录团队列表信息，键为推广员id，值为其推广团队中所有推广员的id号，此列表按照推广员最后业绩时间排序
+  invitedShops: Map(),              // 记录邀请的店铺，键为推广员id，值为店铺的id列表
 }, 'Promoter')
 
