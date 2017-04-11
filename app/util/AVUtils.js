@@ -22,6 +22,15 @@ import * as dateUtils from '../util/dateUtils'
 
 // const EE = new EventEmitter()
 
+export function pop(payload) {
+  if(payload && payload.backSceneName) {
+    Actions.pop({popNum:2})
+    Actions[payload.backSceneName](payload.backSceneParams)
+  }else{
+    Actions.pop()
+  }
+}
+
 export function updateProvincesAndCities(payload) {
   store.dispatch(fetchAllProvincesAndCities(payload))
 }

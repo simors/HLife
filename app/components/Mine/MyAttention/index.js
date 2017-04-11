@@ -42,17 +42,46 @@ class MyAttention extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tabType: 0
+      tabType: props.tabType ? 1 : 0
     }
   }
 
-  refreshFollowees() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUserFollowees()
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      //this.toggleTab(this.props.tabType ? 1 : 0)
+      if(0 == this.state.tabType) {
+        this.refreshFollowees()
+      } else if(1 == this.state.tabType) {
+        this.refreshShopList()
+      }
     })
   }
 
-  loadMoreData() {
+  componentWillReceiveProps(nextProps) {
+
+  }
+
+  refreshFollowees() {
+    this.loadMoreData(true)
+  }
+
+  loadMoreData(isRefresh) {
+    let payload = {
+      lastCreatedAt: this.props.userFolloweesLastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.followeeListView) {
+          return
+        }
+        if(isEmpty) {
+          this.followeeListView.isLoadUp(false)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchUserFollowees(payload)
   }
 
   renderFollowees(value, key) {
@@ -75,6 +104,7 @@ class MyAttention extends Component {
         loadMoreData={()=> {
           this.loadMoreData()
         }}
+        ref={(listView) => this.followeeListView = listView}
       />
     )
   }
@@ -142,7 +172,7 @@ class MyAttention extends Component {
         <Header headerContainerStyle={styles.header}
                 leftType='icon'
                 leftStyle={{color: '#FFFFFF'}}
-                leftPress={() => Actions.pop()}
+                leftPress={() => {Actions.pop()}}
                 title="我的关注"
                 titleStyle={styles.title}>
         </Header>
@@ -198,7 +228,11 @@ class MyAttention extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userFollowees = selectUserFollowees(state)
-  console.log('userFollowees===', userFollowees)
+  let userFolloweesLastCreatedAt = ''
+  if(userFollowees && userFollowees.length) {
+    userFolloweesLastCreatedAt = userFollowees[userFollowees.length-1].createdAt
+  }
+  // console.log('userFollowees===', userFollowees)
   const userFollowedShopList = selectUserFollowedShopList(state, activeUserId(state))
   let lastCreatedAt = ''
   if(userFollowedShopList && userFollowedShopList.length) {
@@ -206,6 +240,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   return {
     userFollowees: ds.cloneWithRows(userFollowees),
+    userFolloweesLastCreatedAt: userFolloweesLastCreatedAt,
     userFollowedShopList: ds.cloneWithRows(userFollowedShopList),
     lastCreatedAt: lastCreatedAt
   }

@@ -73,7 +73,7 @@ class AdviseFeedback extends Component {
   submitSuccessCallback(context) {
     this.isPublishing = false
     // Toast.show('恭喜您,发布成功!')
-    Actions.SUBMIT_ADVISE_SUCCESS()
+    Actions.SUBMIT_ADVISE_SUCCESS({type: 'reset'})
   }
 
   submitErrorCallback(error) {
@@ -83,19 +83,22 @@ class AdviseFeedback extends Component {
 
 
   onButtonPress = () => {
+    // console.log('hahahahahahahha')
+
     if (this.props.isLogin) {
         if (this.isPublishing) {
           return
         }
-        this.isPublishing = true
+      console.log('hahahahahahahha>>>>>>>>>>>>>>>')
+
+      this.isPublishing = true
         Toast.show('开始发布...', {
           duration: 1000,
           onHidden: ()=> {
             this.publishAdvise()
           }
         })
-
-
+      // this.publishAdvise()
     }
     else {
       Actions.LOGIN()
@@ -103,6 +106,8 @@ class AdviseFeedback extends Component {
   }
 
   publishAdvise() {
+    console.log('>>>>>>>>>>>>>>>>>hahahahahahahha')
+
     this.props.publishAdviseFormData({
       formKey: adviseForm,
       images: this.insertImages,

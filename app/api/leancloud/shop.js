@@ -264,7 +264,7 @@ export function fetchUserFollowShops(payload) {
   query.addDescending('createdAt')
   query.limit(5)
   // query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
-  query.include(['shop','shop.targetShopCategory', 'shop.owner', 'shop.containedTag'])
+  query.include(['shop','shop.targetShopCategory', 'shop.owner', 'shop.containedTag', 'shop.containedPromotions'])
   let userFollowedShops = []
   return query.find().then(function(results) {
     // console.log('fetchUserFollowShops.results=====', results)

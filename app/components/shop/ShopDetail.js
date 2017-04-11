@@ -38,6 +38,7 @@ import ImageGallery from '../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 import * as numberUtils from '../../util/numberUtils'
+import * as AVUtils from '../../util/AVUtils'
 import * as ShopDetailTestData from './ShopDetailTestData'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -269,14 +270,16 @@ class ShopDetail extends Component {
                     score={item.score}
                   />
                   <View style={styles.subInfoWrap}>
-                    {item &&
-                    <Text style={[styles.subTxt]}>{shopTag}</Text>
+                    {shopTag 
+                      ? <Text style={[styles.subTxt]}>{shopTag}</Text>
+                      : null
                     }
                     <View style={{flex:1,flexDirection:'row'}}>
                       <Text style={styles.subTxt}>{item.geoDistrict && item.geoDistrict}</Text>
                     </View>
-                    {item.distance &&
-                    <Text style={[styles.subTxt]}>{item.distance + item.distanceUnit}</Text>
+                    {item.distance 
+                      ? <Text style={[styles.subTxt]}>{item.distance + item.distanceUnit}</Text>
+                      : null
                     }
                   </View>
                 </View>
@@ -467,7 +470,12 @@ class ShopDetail extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+            AVUtils.pop({
+              backSceneName: this.props.backSceneName,
+              backSceneParams: this.props.backSceneParams
+            })
+          }}
           title="店铺详情"
           rightType="none"
         />

@@ -30,8 +30,9 @@ export default class SubmitAdviseSuccess extends Component{
   }
   jumpToLogin(){
     // Actions.HOME_INDEX()
-    Actions.pop({popNum:2})
+    // Actions.pop({popNum:2})
     // Actions.pop()
+    Actions.HOME({type: 'reset'})
 
   }
   render(){
@@ -39,11 +40,8 @@ export default class SubmitAdviseSuccess extends Component{
       <View style={styles.container}>
 
         <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftType='none'
           title="意见反馈"
-
         />
 
         <View style={styles.body}>
