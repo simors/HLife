@@ -22,8 +22,9 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import Header from '../../common/Header'
 import CommonListView from '../../common/CommonListView'
 import PromoterLevelIcon from './PromoterLevelIcon'
-import {getMyUpPromoter} from '../../../action/promoterAction'
-import {getPromoterById, getUpPromoterId} from '../../../selector/promoterSelector'
+import PromoterTeamItem from './PromoterTeamItem'
+import {getMyUpPromoter, getMyPromoterTeam} from '../../../action/promoterAction'
+import {getPromoterById, getUpPromoterId, activePromoter, getMyTeam} from '../../../selector/promoterSelector'
 import {userInfoById} from '../../../selector/authSelector'
 import {getConversationTime} from '../../../util/numberUtils'
 
@@ -33,20 +34,30 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class PromoterDirectTeam extends Component {
   constructor(props) {
     super(props)
+    this.lastUpdatedAt = undefined
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.getMyUpPromoter()
+      this.props.getMyPromoterTeam({limit: 10})
     })
   }
 
   refreshData() {
-
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.getMyPromoterTeam({limit: 10})
+    })
   }
 
   loadMoreData() {
-
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.getMyPromoterTeam({
+        limit: 10,
+        more: true,
+        lastUpdatedAt: this.lastUpdatedAt,
+      })
+    })
   }
 
   renderExplainBtn() {
@@ -89,113 +100,30 @@ class PromoterDirectTeam extends Component {
     )
   }
 
+  renderTeamList() {
+    return (
+      this.props.team.map((promoter, index) => {
+        this.lastUpdatedAt = promoter.updatedAt
+        return (
+          <PromoterTeamItem key={index} promoter={promoter} />
+        )
+      })
+    )
+  }
+
   renderMyTeamView() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
     return (
       <View>
         <View style={[styles.tipView, {flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}]}>
           <Text style={styles.tipText}>我的一级好友</Text>
-          <Text style={{fontSize: em(15), color: THEME.base.mainColor, paddingLeft: normalizeW(8)}}>35</Text>
+          <Text style={{fontSize: em(15), color: THEME.base.mainColor, paddingLeft: normalizeW(8)}}>{promoter.teamMemNum}</Text>
           <Text style={[styles.tipText, {paddingLeft: normalizeW(8)}]}>人</Text>
         </View>
-        <View>
-          <TouchableOpacity style={styles.teamInfoView} onPress={() => {}}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
-                <Image style={styles.avatarStyle} resizeMode="contain"
-                       source={require("../../../assets/images/default_portrait.png")} />
-              </View>
-              <View style={styles.memberView}>
-                <View>
-                  <Text style={styles.usernameText}>白天不懂夜的黑</Text>
-                  <View style={styles.promoterInfoView}>
-                    <PromoterLevelIcon level={2} mode="tiny"/>
-                    <Text style={styles.promoterDealText}>最新业绩： 一天前</Text>
-                  </View>
-                </View>
-                <View style={styles.memNumView}>
-                  <Image style={{width: normalizeW(18), height: normalizeH(15)}} source={require('../../../assets/images/team_18.png')}/>
-                  <Text style={{fontSize: em(15), color: '#5A5A5A', paddingTop: normalizeH(10)}}>88 人</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.performView}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.performText}>总业绩</Text>
-                <Text style={styles.royaltyText}>9999.00</Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center', paddingRight: normalizeW(15)}}>
-                <Text style={styles.performText}>我的分成</Text>
-                <Text style={styles.royaltyText}>9999.00</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity style={styles.teamInfoView} onPress={() => {}}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
-                <Image style={styles.avatarStyle} resizeMode="contain"
-                       source={require("../../../assets/images/default_portrait.png")} />
-              </View>
-              <View style={styles.memberView}>
-                <View>
-                  <Text style={styles.usernameText}>白天不懂夜的黑</Text>
-                  <View style={styles.promoterInfoView}>
-                    <PromoterLevelIcon level={2} mode="tiny"/>
-                    <Text style={styles.promoterDealText}>最新业绩： 一天前</Text>
-                  </View>
-                </View>
-                <View style={styles.memNumView}>
-                  <Image style={{width: normalizeW(18), height: normalizeH(15)}} source={require('../../../assets/images/team_18.png')}/>
-                  <Text style={{fontSize: em(15), color: '#5A5A5A', paddingTop: normalizeH(10)}}>88 人</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.performView}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.performText}>总业绩</Text>
-                <Text style={styles.royaltyText}>9999.00</Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center', paddingRight: normalizeW(15)}}>
-                <Text style={styles.performText}>我的分成</Text>
-                <Text style={styles.royaltyText}>9999.00</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity style={styles.teamInfoView} onPress={() => {}}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
-                <Image style={styles.avatarStyle} resizeMode="contain"
-                       source={require("../../../assets/images/default_portrait.png")} />
-              </View>
-              <View style={styles.memberView}>
-                <View>
-                  <Text style={styles.usernameText}>白天不懂夜的黑</Text>
-                  <View style={styles.promoterInfoView}>
-                    <PromoterLevelIcon level={2} mode="tiny"/>
-                    <Text style={styles.promoterDealText}>最新业绩： 一天前</Text>
-                  </View>
-                </View>
-                <View style={styles.memNumView}>
-                  <Image style={{width: normalizeW(18), height: normalizeH(15)}} source={require('../../../assets/images/team_18.png')}/>
-                  <Text style={{fontSize: em(15), color: '#5A5A5A', paddingTop: normalizeH(10)}}>88 人</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.performView}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.performText}>总业绩</Text>
-                <Text style={styles.royaltyText}>9999.00</Text>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center', paddingRight: normalizeW(15)}}>
-                <Text style={styles.performText}>我的分成</Text>
-                <Text style={styles.royaltyText}>9999.00</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
+        {this.renderTeamList()}
       </View>
     )
   }
@@ -257,16 +185,24 @@ const mapStateToProps = (state, ownProps) => {
   if (upPromoter) {
     upUser = userInfoById(state, upPromoter.userId).toJS()
   }
-  
+
+  let promoterId = activePromoter(state)
+  let promoter = getPromoterById(state, promoterId)
+
+  let team = getMyTeam(state)
+
   return {
     dataSource: ds.cloneWithRows(comps),
     upPromoter: upPromoter,
+    promoter: promoter,
     upUser: upUser,
+    team: team,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getMyUpPromoter,
+  getMyPromoterTeam,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PromoterDirectTeam)
@@ -333,39 +269,5 @@ const styles = StyleSheet.create({
     height: normalizeH(44),
     borderRadius: normalizeW(22),
     overflow: 'hidden',
-  },
-  teamInfoView: {
-    paddingTop: normalizeH(20),
-    paddingBottom: normalizeH(16),
-    borderBottomWidth: 1,
-    borderColor: '#F5F5F5',
-  },
-  memberView: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: normalizeH(12),
-    borderBottomWidth: 1,
-    borderColor: '#F5F5F5',
-  },
-  memNumView: {
-    paddingRight: normalizeW(15),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  performView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: normalizeW(69),
-    paddingTop: normalizeH(12),
-  },
-  performText: {
-    fontSize: em(12),
-    color: '#5A5A5A',
-    paddingRight: normalizeW(5),
-  },
-  royaltyText: {
-    fontSize: em(15),
-    color: THEME.base.mainColor,
   },
 })

@@ -37,3 +37,15 @@ export function getUpPromoterId(state) {
   let upPromoterId = state.PROMOTER.get('upPromoterId')
   return upPromoterId
 }
+
+export function getMyTeam(state) {
+  let myTeam = []
+  let team = state.PROMOTER.get('myTeam')
+  team.forEach((promoterId) => {
+    let promoter = getPromoterById(state, promoterId)
+    if (promoter) {
+      myTeam.push(promoter)
+    }
+  })
+  return myTeam
+}

@@ -72,3 +72,15 @@ export function getUpPromoter(payload) {
     throw err
   })
 }
+
+export function getMyPromoterTeam(payload) {
+  let params = {
+    limit: payload.limit,
+    lastUpdatedAt: payload.lastUpdatedAt,
+  }
+  return AV.Cloud.run('promoterGetPromoterTeam', params).then((result) => {
+    return {promoters: result.promoters, users: result.users}
+  }, (err) => {
+    throw err
+  })
+}

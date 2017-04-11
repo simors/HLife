@@ -22,6 +22,10 @@ export default function promoterReducer(state = initialState, action) {
       return handleUpdateTenant(state, action)
     case promoterActionTypes.UPDATE_UPPROMOTER_ID:
       return handleUpdateUpPromoter(state, action)
+    case promoterActionTypes.SET_MY_TEAM:
+      return handleSetMyTeam(state, action)
+    case promoterActionTypes.ADD_MY_TEAM:
+      return handleAddMyTeam(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -62,6 +66,19 @@ function handleUpdateTenant(state, action) {
 function handleUpdateUpPromoter(state, action) {
   let upPromoterId = action.payload.upPromoterId
   state = state.set('upPromoterId', upPromoterId)
+  return state
+}
+
+function handleSetMyTeam(state, action) {
+  let team = action.payload.team
+  state = state.set('myTeam', new List(team))
+  return state
+}
+
+function handleAddMyTeam(state, action) {
+  let newTeam = action.payload.newTeam
+  let team = state.get('myTeam')
+  state = state.set('myTeam', team.concat(new List(newTeam)))
   return state
 }
 
