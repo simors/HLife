@@ -25,7 +25,15 @@ class ShopFolloweesView extends Component {
     let shopInfo = this.props.shopInfo
     return (
       <View>
-        <TouchableOpacity onPress={()=>{Actions.SHOP_DETAIL({id: shopInfo.id})}}>
+        <TouchableOpacity onPress={()=>{
+          Actions.SHOP_DETAIL({
+            id: shopInfo.id, 
+            backSceneName:'MYATTENTION',
+            backSceneParams: {
+              tabType: 1
+            }
+          })
+        }}>
           <View style={[styles.shopInfoWrap]}>
             <View style={styles.coverWrap}>
               <Image style={styles.cover} source={{uri: shopInfo.coverUrl}}/>

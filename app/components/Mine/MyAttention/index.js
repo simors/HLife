@@ -42,13 +42,18 @@ class MyAttention extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tabType: 0
+      tabType: props.tabType ? 1 : 0
     }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.toggleTab(this.props.tabType ? 1 : 0)
+      //this.toggleTab(this.props.tabType ? 1 : 0)
+      if(0 == this.state.tabType) {
+        this.refreshFollowees()
+      } else if(1 == this.state.tabType) {
+        this.refreshShopList()
+      }
     })
   }
 

@@ -38,6 +38,7 @@ import ImageGallery from '../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 import * as numberUtils from '../../util/numberUtils'
+import * as AVUtils from '../../util/AVUtils'
 import * as ShopDetailTestData from './ShopDetailTestData'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -467,7 +468,12 @@ class ShopDetail extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+            AVUtils.pop({
+              backSceneName: this.props.backSceneName,
+              backSceneParams: this.props.backSceneParams
+            })
+          }}
           title="店铺详情"
           rightType="none"
         />

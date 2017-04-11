@@ -275,12 +275,10 @@ class PersonalHomePage extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => {
-            if(this.props.backSceneName) {
-              Actions.pop({popNum:2})
-              Actions[this.props.backSceneName](this.props.backSceneParams)
-            }else{
-              Actions.pop()
-            }
+            AVUtils.pop({
+              backSceneName: this.props.backSceneName,
+              backSceneParams: this.props.backSceneParams
+            })
           }}
           rightType="none"
           headerContainerStyle={{borderBottomWidth:0}}
