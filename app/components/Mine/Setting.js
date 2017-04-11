@@ -144,34 +144,47 @@ class Setting extends Component {
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.checkUpdate()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>
-              <View>
-                <Icon name="ios-arrow-forward"></Icon>
+              <View style={styles.rightWrap}>
+                <Image source={require("../../assets/images/arrow_left.png")}/>
               </View>
             </TouchableOpacity>
           </View>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.toAbout()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>关于邻家优店</Text>
+              <View style={styles.rightWrap}>
+                <Image source={require("../../assets/images/arrow_left.png")}/>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.toUserGuide()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>用户指南</Text>
+              <View style={styles.rightWrap}>
+                <Image source={require("../../assets/images/arrow_left.png")}/>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.clearApplication()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>清空缓存</Text>
+              <View style={styles.rightWrap}>
+                <Image source={require("../../assets/images/arrow_left.png")}/>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PAYMENT()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>支付测试</Text>
+              <View style={styles.rightWrap}>
+                <Image source={require("../../assets/images/arrow_left.png")}/>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1,marginTop:normalizeH(30),backgroundColor:'#F5F5F5', borderColor: '#F7F7F7',width:normalizeW(345),height:normalizeH(50) }}>
             <TouchableOpacity style={{alignItems:'center',justifyContent:'center'}} onPress={() => this.clearUserInfo()}>
               <Text style={[styles.textStyle,{color:'#FF7819',marginTop:normalizeH(16)}]}>退出登录</Text>
+              
             </TouchableOpacity>
           </View>
           <View >
@@ -227,6 +240,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingRight:normalizeW(30)
   },
   rightContainer: {
     flex: 1,
