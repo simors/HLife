@@ -25,44 +25,74 @@ class PromoterTeamItem extends Component {
     super(props)
   }
 
+  renderMemberCount(promoter) {
+    if (this.props.showDetail) {
+      return (
+        <View style={styles.memNumView}>
+          <Image style={{width: normalizeW(18), height: normalizeH(15)}} source={require('../../../assets/images/team_18.png')}/>
+          <Text style={{fontSize: em(15), color: '#5A5A5A', paddingTop: normalizeH(10)}}>{promoter.teamMemNum} 人</Text>
+        </View>
+      )
+    }
+    return <View/>
+  }
+
+  renderItem(promoter, userInfo) {
+    return (
+      <View>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
+            <Image style={styles.avatarStyle} resizeMode="contain"
+                   source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")} />
+          </View>
+          <View style={styles.memberView}>
+            <View>
+              <Text style={styles.usernameText}>{userInfo.nickname}</Text>
+              <View style={styles.promoterInfoView}>
+                <PromoterLevelIcon level={promoter.level} mode="tiny"/>
+                <Text style={styles.promoterDealText}>最新业绩： {getConversationTime(new Date(promoter.updatedAt))}</Text>
+              </View>
+            </View>
+            {this.renderMemberCount(promoter)}
+          </View>
+        </View>
+        <View style={styles.performView}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.performText}>总业绩</Text>
+            <Text style={styles.royaltyText}>{promoter.royaltyEarnings + promoter.shopEarnings}</Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     let promoter = this.props.promoter
     let userInfo = this.props.userInfo
     if (!promoter || !userInfo) {
       return <View/>
     }
+    if (this.props.showDetail) {
+      return (
+        <View>
+          <TouchableOpacity style={styles.teamInfoView} onPress={() => {Actions.PROMOTER_SECOND_TEAM({promoter, user: userInfo})}}>
+            {this.renderItem(promoter, userInfo)}
+          </TouchableOpacity>
+        </View>
+      )
+    }
     return (
       <View>
-        <TouchableOpacity style={styles.teamInfoView} onPress={() => {}}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
-              <Image style={styles.avatarStyle} resizeMode="contain"
-                     source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")} />
-            </View>
-            <View style={styles.memberView}>
-              <View>
-                <Text style={styles.usernameText}>{userInfo.nickname}</Text>
-                <View style={styles.promoterInfoView}>
-                  <PromoterLevelIcon level={promoter.level} mode="tiny"/>
-                  <Text style={styles.promoterDealText}>最新业绩： {getConversationTime(new Date(promoter.updatedAt))}</Text>
-                </View>
-              </View>
-              <View style={styles.memNumView}>
-                <Image style={{width: normalizeW(18), height: normalizeH(15)}} source={require('../../../assets/images/team_18.png')}/>
-                <Text style={{fontSize: em(15), color: '#5A5A5A', paddingTop: normalizeH(10)}}>{promoter.teamMemNum} 人</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.performView}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={styles.performText}>总业绩</Text>
-              <Text style={styles.royaltyText}>{promoter.royaltyEarnings + promoter.shopEarnings}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.teamInfoView}>
+          {this.renderItem(promoter, userInfo)}
+        </View>
       </View>
     )
   }
+}
+
+PromoterTeamItem.defaultProps = {
+  showDetail: true,
 }
 
 const mapStateToProps = (state, ownProps) => {

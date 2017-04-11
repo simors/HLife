@@ -199,3 +199,32 @@ export function getMyPromoterTeam(payload) {
     })
   }
 }
+
+export function getPromoterTeamById(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.getPromoterTeamById(payload).then((result) => {
+      let team = []
+      let promoters = result.promoters
+      let users = result.users
+      promoters.forEach((promoter) => {
+        let promoterId = promoter.objectId
+        let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+        team.push(promoterId)
+        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+      })
+      users.forEach((user) => {
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        dispatch(addUserProfile({userInfo}))
+      })
+      if (more) {
+        dispatch(addPromoterTeam({promoterId: payload.promoterId, newTeam: team}))
+      } else {
+        dispatch(setPromoterTeam({promoterId: payload.promoterId, team: team}))
+      }
+    })
+  }
+}
