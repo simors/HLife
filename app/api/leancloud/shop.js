@@ -831,11 +831,11 @@ export function fetchUserOwnedShopInfo(payload) {
   let userId = ''
   if(payload && payload.userId) {
     userId = payload.userId
-    user = AV.Object.createWithoutData('_User', payload.userId)
   }else {
-    user = AV.User.current()
-    userId = user.id
+    userId = authSelector.activeUserId(store.getState())
   }
+  user = AV.Object.createWithoutData('_User', userId)
+
   query.equalTo('owner', user)
   //query.equalTo('status', 1)
   query.include(['owner', 'targetShopCategory', 'containedTag', 'containedPromotions'])

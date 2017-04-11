@@ -1,4 +1,5 @@
 import {Record, Map, List} from 'immutable'
+import * as numberUtils from '../util/numberUtils'
 
 export const UserInfoRecord = Record({
   id: undefined,
@@ -62,6 +63,16 @@ export class UserInfo extends UserInfoRecord {
     let info = new UserInfoRecord()
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)
+
+      let createdAt = lcObj.createdAt
+      let updatedAt = lcObj.updatedAt
+
+      record.set('createdAt', createdAt.valueOf())
+      record.set('createdDate', numberUtils.formatLeancloudTime(createdAt, 'YYYY-MM-DD HH:mm:SS'))
+      record.set('updatedAt', updatedAt.valueOf())
+      record.set('updatedDate', numberUtils.formatLeancloudTime(updatedAt, 'YYYY-MM-DD HH:mm:SS'))
+      record.set('lastLoginDuration', numberUtils.getConversationTime(updatedAt))
+
       for(let key in attrs) {
         if('identity' == key) {
           record.set('identity', new List(attrs.identity))

@@ -19,23 +19,21 @@ import {store} from '../../store/persistStore'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
 
 export function become(payload) {
-  let token = payload.token
-  var params = { token }
-  return AV.Cloud.run('hLifeLogin', params).then((result) => {
-    // console.log('become====hLifeLogin****=result=', result)
-    if(result.code == 1) {
-      let userInfo = UserInfo.fromLeancloudApi(result.user)
-      // console.log('become====hLifeLogin****=userInfo=', userInfo)
-      return {
-        userInfo: userInfo,
-      }
-    }else{
-      throw result
+  return AV.User.become(payload.token).then((user) => {
+    let userInfo = UserInfo.fromLeancloudObject(user)
+    let token = user.getSessionToken()
+    userInfo = userInfo.set('token', token)
+
+    var params = { token }
+    AV.Cloud.run('hLifeLogin', params)//更新updatedAt时间
+
+    return {
+      userInfo: userInfo,
     }
   }, (err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
 }
 
 export function logOut(payload) {
@@ -54,20 +52,18 @@ export function logOut(payload) {
 export function loginWithPwd(payload) {
   let phone = payload.phone
   let password = payload.password
-  var params = {
-    phone: phone,
-    password: password
-  }
-  return AV.Cloud.run('hLifeLogin', params).then((result) => {
-    // console.log('loginWithPwd====hLifeLogin****=result=', result)
-    if(result.code == 1) {
-      let userInfo = UserInfo.fromLeancloudApi(result.user)
-      // console.log('loginWithPwd====hLifeLogin****=userInfo=', userInfo)
-      return {
-        userInfo: userInfo,
-      }
-    }else{
-      throw result
+
+  return AV.User.logInWithMobilePhone(phone, password).then((loginedUser) => {
+    // console.log('loginWithPwd==loginedUser=', loginedUser)
+    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    // console.log('loginWithPwd==userInfo=', userInfo)
+    userInfo = userInfo.set('token', loginedUser.getSessionToken())
+
+    AV.Cloud.run('hLifeLogin', payload)//更新updatedAt时间
+
+    // console.log("loginWithPwd", userInfo)
+    return {
+      userInfo: userInfo,
     }
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

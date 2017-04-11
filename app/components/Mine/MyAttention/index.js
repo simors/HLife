@@ -198,6 +198,7 @@ class MyAttention extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userFollowees = selectUserFollowees(state)
+  console.log('userFollowees===', userFollowees)
   const userFollowedShopList = selectUserFollowedShopList(state, activeUserId(state))
   let lastCreatedAt = ''
   if(userFollowedShopList && userFollowedShopList.length) {
