@@ -46,13 +46,33 @@ class MyAttention extends Component {
     }
   }
 
-  refreshFollowees() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUserFollowees()
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.toggleTab(this.props.tabType ? 1 : 0)
     })
   }
 
-  loadMoreData() {
+  refreshFollowees() {
+    this.loadMoreData(true)
+  }
+
+  loadMoreData(isRefresh) {
+    let payload = {
+      lastCreatedAt: this.props.userFolloweesLastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.followeeListView) {
+          return
+        }
+        if(isEmpty) {
+          this.followeeListView.isLoadUp(false)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchUserFollowees(payload)
   }
 
   renderFollowees(value, key) {
@@ -75,6 +95,7 @@ class MyAttention extends Component {
         loadMoreData={()=> {
           this.loadMoreData()
         }}
+        ref={(listView) => this.followeeListView = listView}
       />
     )
   }
@@ -198,6 +219,10 @@ class MyAttention extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userFollowees = selectUserFollowees(state)
+  let userFolloweesLastCreatedAt = ''
+  if(userFollowees && userFollowees.length) {
+    userFolloweesLastCreatedAt = userFollowees[userFollowees.length-1].createdAt
+  }
   console.log('userFollowees===', userFollowees)
   const userFollowedShopList = selectUserFollowedShopList(state, activeUserId(state))
   let lastCreatedAt = ''
@@ -206,6 +231,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   return {
     userFollowees: ds.cloneWithRows(userFollowees),
+    userFolloweesLastCreatedAt: userFolloweesLastCreatedAt,
     userFollowedShopList: ds.cloneWithRows(userFollowedShopList),
     lastCreatedAt: lastCreatedAt
   }
