@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/4/9.
+ * Created by yangyang on 2017/4/11.
  */
 import React, {Component} from 'react'
 import {
@@ -24,14 +24,14 @@ import CommonListView from '../../common/CommonListView'
 import PromoterLevelIcon from './PromoterLevelIcon'
 import PromoterTeamItem from './PromoterTeamItem'
 import {getMyUpPromoter, getMyPromoterTeam} from '../../../action/promoterAction'
-import {getPromoterById, getUpPromoterId, activePromoter, getTeamMember} from '../../../selector/promoterSelector'
+import {getPromoterById, getUpPromoterId, activePromoter, getMyTeam} from '../../../selector/promoterSelector'
 import {userInfoById} from '../../../selector/authSelector'
 import {getConversationTime} from '../../../util/numberUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class PromoterDirectTeam extends Component {
+class PromoterSecondTeam extends Component {
   constructor(props) {
     super(props)
     this.lastUpdatedAt = undefined
@@ -60,16 +60,6 @@ class PromoterDirectTeam extends Component {
     })
   }
 
-  renderExplainBtn() {
-    return (
-      <TouchableOpacity style={styles.explainBtnStyle}
-                        onPress={() => {}}>
-        <Image style={{width: normalizeW(18), height: normalizeH(18)}} resizeMode="contain"
-               source={require('../../../assets/images/explain_revernue.png')}/>
-      </TouchableOpacity>
-    )
-  }
-
   renderUpPromoterView() {
     let upUser = this.props.upUser
     let upPromoter = this.props.upPromoter
@@ -79,7 +69,7 @@ class PromoterDirectTeam extends Component {
     return (
       <View>
         <View style={styles.tipView}>
-          <Text style={styles.tipText}>我的邀请者</Text>
+          <Text style={styles.tipText}>我的一级好友</Text>
         </View>
         <View>
           <TouchableOpacity style={styles.infoView} onPress={() => {}}>
@@ -119,7 +109,7 @@ class PromoterDirectTeam extends Component {
     return (
       <View>
         <View style={[styles.tipView, {flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}]}>
-          <Text style={styles.tipText}>我的一级好友</Text>
+          <Text style={styles.tipText}>我的二级好友</Text>
           <Text style={{fontSize: em(15), color: THEME.base.mainColor, paddingLeft: normalizeW(8)}}>{promoter.teamMemNum}</Text>
           <Text style={[styles.tipText, {paddingLeft: normalizeW(8)}]}>人</Text>
         </View>
@@ -145,8 +135,7 @@ class PromoterDirectTeam extends Component {
                 leftPress={()=> {
                   Actions.pop()
                 }}
-                title="团队成员"
-                rightComponent={() => {return this.renderExplainBtn()}}
+                title="二级团队成员"
         />
         <View style={styles.body}>
           <CommonListView
@@ -189,7 +178,7 @@ const mapStateToProps = (state, ownProps) => {
   let promoterId = activePromoter(state)
   let promoter = getPromoterById(state, promoterId)
 
-  let team = getTeamMember(state, promoterId)
+  let team = getMyTeam(state)
 
   return {
     dataSource: ds.cloneWithRows(comps),
@@ -205,7 +194,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   getMyPromoterTeam,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PromoterDirectTeam)
+export default connect(mapStateToProps, mapDispatchToProps)(PromoterSecondTeam)
 
 const styles = StyleSheet.create({
   container: {
