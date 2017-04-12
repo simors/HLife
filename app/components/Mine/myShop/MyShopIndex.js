@@ -443,7 +443,7 @@ class MyShopIndex extends Component {
         return (
           <Image
             key={'shop_follower_' + index}
-            style={{width:20,height:20,marginRight:5}}
+            style={{width:20,height:20,marginRight:5,borderRadius:10}}
             source={source}
           />
         )
