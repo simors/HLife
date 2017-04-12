@@ -244,8 +244,9 @@ export function getMyInvitedShops(payload) {
       let shopIds = []
       shops.forEach((shop) => {
         let shopRecord = ShopInfo.fromLeancloudApi(shop)
-        shopIds.push(shop.objectId)
-        dispatch(addShopDetail({id: shop.objectId, shopInfo: shopRecord}))
+        console.log('shopRecord:', shopRecord)
+        shopIds.push(shop.id)
+        dispatch(addShopDetail({id: shop.id, shopInfo: shopRecord}))
       })
       if (more) {
         dispatch(addPromoterShops({promoterId: activePromoter(getState()), newShops: shopIds}))
