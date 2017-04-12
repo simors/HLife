@@ -296,18 +296,25 @@ export class TopicDetail extends Component {
     )
   }
 
-  renderHeaderView() {
-    if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
-      return (
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
-          title="详情"
-          rightComponent={() => {return this.renderMoreBtn()}}
-        />
-      )
+  isSelfTopic() {
+    if(this.props.topic && this.props.userInfo && this.props.topic.userId == this.props.userInfo.id) {
+      return true
     }
+    return false
+  }
+
+  renderHeaderView() {
+    // if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
+    //   return (
+    //     <Header
+    //       leftType="icon"
+    //       leftIconName="ios-arrow-back"
+    //       leftPress={() => Actions.pop()}
+    //       title="详情"
+    //       rightComponent={() => {return this.renderMoreBtn()}}
+    //     />
+    //   )
+    // }
     return (
       <Header
         leftType="icon"
@@ -367,7 +374,8 @@ export class TopicDetail extends Component {
             <TopicContent 
               topic={this.props.topic}
               userFollowersTotalCount={this.props.userFollowersTotalCount}
-              />
+              isSelfTopic={this.isSelfTopic()}
+            />
             <TouchableOpacity style={styles.likeStyle}
                               onLayout={this.measureMyComponent.bind(this)}
                               onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers: this.props.topicLikeUsers})}>
@@ -407,29 +415,50 @@ export class TopicDetail extends Component {
   }
 
   renderBottomView() {
-    let isLiked = this.props.isLiked
-    let likeImgSource = require("../../assets/images/like_unselect_main.png")
-    if(isLiked) {
-      likeImgSource = require("../../assets/images/like_selected.png")
+    if(this.isSelfTopic()) {
+      return (
+        <TouchableOpacity 
+          style={{
+            height:50,
+            borderTopWidth: normalizeBorder(),
+            borderTopColor: THEME.colors.lighterA,
+            backgroundColor: 'rgba(250,250,250, 0.9)',
+            justifyContent: 'center',
+            alignItems:'center',
+            flexDirection:'row'
+          }}
+          onPress={()=>{Actions.TOPIC_EDIT({topic: this.props.topic})}}
+        >
+          <Image style={{marginRight:10}} source={require('../../assets/images/shop_edite.png')}/>
+          <Text style={{color:'#ff7819',fontSize:17}}>编辑话题</Text>
+        </TouchableOpacity>
+      )
+    }else {
+      let isLiked = this.props.isLiked
+      let likeImgSource = require("../../assets/images/like_unselect_main.png")
+      if(isLiked) {
+        likeImgSource = require("../../assets/images/like_selected.png")
+      }
+
+      return (
+        <View style={styles.shopCommentWrap}>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
+            <View style={[styles.vItem]}>
+              <Image style={{width:24,height:24}} source={likeImgSource}/>
+              <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>点赞</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.openModel()}>
+            <View style={[styles.contactedBox]}>
+              <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
+              <Text style={[styles.contactedTxt]}>评论</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )
     }
-
-    return (
-      <View style={styles.shopCommentWrap}>
-        <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
-          <View style={[styles.vItem]}>
-            <Image style={{width:24,height:24}} source={likeImgSource}/>
-            <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>点赞</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.openModel()}>
-          <View style={[styles.contactedBox]}>
-            <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
-            <Text style={[styles.contactedTxt]}>评论</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
+    
   }
 
 }
@@ -499,8 +528,8 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     marginTop:8,
     padding: 15,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
     backgroundColor:'white',
     justifyContent: 'space-between',
     borderBottomWidth: normalizeBorder(),
