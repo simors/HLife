@@ -36,6 +36,7 @@ import MyTopicShow from './MyTopic/MyTopicShow'
 import * as Utils from '../../util/Utils'
 import * as AVUtils from '../../util/AVUtils'
 import {getPromoterById, activePromoter} from '../../selector/promoterSelector'
+import {getPromoterByUserId} from '../../action/promoterAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -65,6 +66,7 @@ class PersonalHomePage extends Component {
       this.props.fetchOtherUserFollowers({userId: this.props.userId})
       this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
       this.props.fetchUserTopicsTotalCount({userId: this.props.userId})
+      this.props.getPromoterByUserId({userId: this.props.userId})
       // this.props.fetchUserFollowees()
       this.refreshData()
 
@@ -478,7 +480,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   followUser, 
   unFollowUser, 
   fetchUserFollowees,
-  userIsFollowedTheUser
+  userIsFollowedTheUser,
+  getPromoterByUserId
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)

@@ -49,6 +49,39 @@ export class TopicContent extends Component {
     }
   }
 
+  renderUserIntroView() {
+    let topic = this.props.topic
+    
+    if(this.props.isSelfTopic) {
+      return null
+    }
+
+    return (
+      <View style={styles.introWrapStyle}>
+        <View style={{flex:1,flexDirection: 'row',alignItems:'stretch'}}>
+          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>
+            <Image style={styles.avatarStyle}
+                   source={topic.avatar ? {uri: topic.avatar} : require("../../assets/images/default_portrait.png")}/>
+          </TouchableOpacity>
+          <View style={{flex: 1, justifyContent:'space-between'}}>
+            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>
+              <Text numberOfLines={1} style={styles.userNameStyle}>{topic.nickname}</Text>
+            </TouchableOpacity>
+            <View style={styles.timeLocationStyle}>
+              <Text style={styles.timeTextStyle}>
+                {topic.lastLoginDuration}
+              </Text>
+              <Text style={styles.timeTextStyle}>粉丝：{this.props.userFollowersTotalCount}</Text>
+            </View>
+          </View>
+          <View style={styles.attentionStyle}>
+            {this.renderFollowUserView(topic.userId)}
+          </View>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     let topic = this.props.topic
     return (
@@ -57,34 +90,13 @@ export class TopicContent extends Component {
           <Text style={styles.titleStyle}>
             {this.props.topic.title}
           </Text>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', alignItems:'center'}}>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
             <Text style={styles.timeTextStyle}>{(topic.position && topic.position.city) ? topic.position.city : '未知'}</Text>
             <Text style={styles.timeTextStyle}>最近编辑  {topic.createdDate}</Text>
           </View>
         </View>
-        <View style={styles.introWrapStyle}>
-          <View style={{flex:1,flexDirection: 'row',alignItems:'stretch'}}>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>
-              <Image style={styles.avatarStyle}
-                     source={topic.avatar ? {uri: topic.avatar} : require("../../assets/images/default_portrait.png")}/>
-            </TouchableOpacity>
-            <View style={{flex: 1, justifyContent:'space-between'}}>
-              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>
-                <Text numberOfLines={1} style={styles.userNameStyle}>{topic.nickname}</Text>
-              </TouchableOpacity>
-              <View style={styles.timeLocationStyle}>
-                <Text style={styles.timeTextStyle}>
-                  {topic.lastLoginDuration}
-                </Text>
-                <Text style={styles.timeTextStyle}>粉丝：{this.props.userFollowersTotalCount}</Text>
-              </View>
-            </View>
-            <View style={styles.attentionStyle}>
-              {this.renderFollowUserView(topic.userId)}
-            </View>
-          </View>
-        </View>
+        {this.renderUserIntroView()}
         <ArticleViewer artlcleContent={JSON.parse(topic.content)} />
       </View>
 

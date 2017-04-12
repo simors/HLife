@@ -45,7 +45,7 @@ class UserFolloweesView extends Component {
               
               <View style={styles.row}>
                 <View style={styles.locationBox}>
-                  <Image style={{marginRight:4}} source={require("../../../assets/images/writer_loaction.png")}/>
+                  <Image style={{marginRight:4,width:8,height:11}} source={require("../../../assets/images/writer_loaction.png")}/>
                   <Text style={styles.assistTxt}>{userInfo.geoCity || '未知'}</Text>
                 </View>
                 <Text style={[styles.assistTxt, styles.lastLoginDuration]}>{userInfo.lastLoginDuration + '来过'}</Text>
