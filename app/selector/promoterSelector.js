@@ -77,3 +77,11 @@ export function getInvitedShop(state, promoterId) {
   })
   return shops
 }
+
+export function selectPromoterIdentity(state, id) {
+  let promoter = getPromoterById(state, id)
+  if (promoter) {
+    return promoter.identity
+  }
+  return undefined
+}
