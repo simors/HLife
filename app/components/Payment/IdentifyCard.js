@@ -24,19 +24,27 @@ import * as authSelector from '../../selector/authSelector'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import CommonTextInput from '../common/Input/CommonTextInput'
+import {identifyCardInfo} from '../../action/paymentActions'
+import THEME from '../../constants/themes/theme1'
 
 let cardForm = Symbol('cardForm')
 
-const cardNumberInput = {
+const userNameInput = {
   formKey: cardForm,
-  stateKey: Symbol('cardNumberInput'),
-  type: "cardNumberInput",
+  stateKey: Symbol('userNameInput'),
+  type: "userNameInput",
 }
 
-const bankCodeInput = {
+const idNumberInput = {
   formKey: cardForm,
-  stateKey: Symbol('bankCodeInput'),
-  type: "bankCodeInput",
+  stateKey: Symbol('idNumberInput'),
+  type: "idNumberInput",
+}
+
+const phoneInput = {
+  formKey: cardForm,
+  stateKey: Symbol('phoneInput'),
+  type: "phoneInput",
 }
 
 class IdentifyCard extends Component {
@@ -47,8 +55,11 @@ class IdentifyCard extends Component {
     }
   }
 
-  onNext = () => {
+  onIdentify = () => {
+    this.props.identifyCardInfo({
+      formKey: cardForm,
 
+    })
   }
 
   render() {
@@ -64,14 +75,20 @@ class IdentifyCard extends Component {
           titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
-          <View style={{justifyContent: 'center', height: normalizeH(65), }}>
-            <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>银行卡  交通银行储蓄卡</Text>
-            <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>卡号  5222 8888 8888 8888</Text>
+          <View style={{justifyContent: 'center', height: normalizeH(104), borderBottomColor: '#AAAAAA', borderBottomWidth: 1}}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{marginLeft: normalizeW(30), width: normalizeW(60), fontSize: 17, color: '#5A5A5A'}}>银行卡</Text>
+              <Text style={{fontSize: 17, color: '#5A5A5A'}}>交通银行储蓄卡</Text>
+            </View>
+            <View style={{flexDirection: 'row', marginTop: normalizeH(20)}}>
+              <Text style={{marginLeft: normalizeW(30), width: normalizeW(60),fontSize: 17, color: '#5A5A5A'}}>卡号</Text>
+              <Text style={{fontSize: 17, color: '#5A5A5A'}}>5222 8888 8888 8888</Text>
+            </View>
           </View>
           <View style={styles.itemContainer}>
             <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>持卡人</Text>
             <CommonTextInput
-              {...cardNumberInput}
+              {...userNameInput}
               placeholder="持卡人姓名"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
@@ -80,7 +97,7 @@ class IdentifyCard extends Component {
           <View style={styles.itemContainer}>
             <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>身份证</Text>
             <CommonTextInput
-              {...cardNumberInput}
+              {...idNumberInput}
               placeholder="持卡人身份证号"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
@@ -89,7 +106,7 @@ class IdentifyCard extends Component {
           <View style={styles.itemContainer}>
             <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>手机号</Text>
             <CommonTextInput
-              {...cardNumberInput}
+              {...phoneInput}
               placeholder="银行预留手机号"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
@@ -97,13 +114,14 @@ class IdentifyCard extends Component {
             />
           </View>
           <View style={styles.agreement}>
-            <Text>同意</Text>
-            <Text>《银联用户服务协议》</Text>
+            <Text style={{fontSize: 14, color: '#5A5A5A'}}>同意</Text>
+            <Text style={{fontSize: 14, color: THEME.base.mainColor}}>《银联用户服务协议》</Text>
           </View>
 
 
           <CommonButton
-            onPress={this.onNext}
+            buttonStyle={{marginTop:normalizeH(46)}}
+            onPress={this.onIdentify}
             title="验证信息"
           />
 
@@ -121,7 +139,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  identifyCardInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(IdentifyCard)
@@ -164,7 +182,9 @@ const styles = StyleSheet.create({
   },
   agreement: {
     flexDirection: 'row',
-
+    paddingLeft: normalizeW(30),
+    marginTop: normalizeH(15),
+    alignItems: 'center',
   }
 
 })

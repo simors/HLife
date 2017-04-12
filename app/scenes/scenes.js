@@ -90,6 +90,8 @@ import WithdrawCash from '../components/Payment/WithdrawCash'
 import MyCard from '../components/Payment/MyCard'
 import AddCard from '../components/Payment/AddCard'
 import IdentifyCard from '../components/Payment/IdentifyCard'
+import PaymentSmsAuth from '../components/Payment/PaymentSmsAuth'
+import PaymentPassword from '../components/Payment/PaymentPassword'
 
 const styles = StyleSheet.create({
   container: {
@@ -189,6 +191,8 @@ export const scenes = Actions.create(
       <Scene key="MY_CARD" component={MyCard} />
       <Scene key="ADD_CARD" component={AddCard} />
       <Scene key="IDENTIFY_CARD" component={IdentifyCard} />
+      <Scene key="PAYMENT_SMS_AUTH" component={PaymentSmsAuth} />
+      <Scene key="PAYMENT_PASSWORD" component={PaymentPassword} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

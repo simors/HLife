@@ -65,7 +65,7 @@ class Wallet extends Component {
               <Text style={{fontSize: 12, color: '#AAAAAA', marginTop: normalizeH(10)}}>平台推广总收益：88888:00</Text>
             </View>
             <View style={styles.setting}>
-              <TouchableOpacity style={{flexDirection: 'row'}}>
+              <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => Actions.PAYMENT_SMS_AUTH()}>
                 <Image source={require('../../assets/images/promot_set_wallet.png')}/>
                 <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(5)}}>支付设置</Text>
               </TouchableOpacity>

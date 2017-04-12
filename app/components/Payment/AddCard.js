@@ -49,7 +49,9 @@ class AddCard extends Component {
   }
 
   onNext = () => {
-    Actions.IDENTIFY_CARD()
+    Actions.IDENTIFY_CARD({
+      formKey: cardForm,
+    })
   }
 
   render() {
