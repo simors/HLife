@@ -3,7 +3,7 @@
  */
 import {createAction} from 'redux-actions'
 import * as lcPayment from '../api/leancloud/payment'
-import {CREATE_PAYMENT} from '../constants/paymentActionTypes'
+import {CREATE_PAYMENT, CREATE_TRANSFERS, IDENTIFY_INFO} from '../constants/paymentActionTypes'
 
 let createPaymentAction = createAction(CREATE_PAYMENT)
 
@@ -21,6 +21,46 @@ export function createPingppPayment(payload) {
         payload.success(result.charge)
       }
       dispatch(createPaymentAction({charge: result.charge}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function createPingppTransfers(payload) {
+  return (dispatch, getState) => {
+    transfersPayload = {
+
+    }
+    lcPayment.createPingppTransfers(transfersPayload).then((result) => {
+      console.log("lcPayment.createPingppTransfers return", result)
+      if(payload.success) {
+        payload.success(result.charge)
+      }
+      let createTransfersAction = createAction(CREATE_TRANSFERS)
+      dispatch(createTransfersAction({transfers: result.transfers}))
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function identifyCardInfo(payload) {
+  return (dispatch, getState) => {
+    identifyPayload = {
+
+    }
+    lcPayment.identifyCardInfo(identifyPayload).then((result) => {
+      console.log("lcPayment.identifyCardInfo return", result)
+      if(payload.success) {
+        payload.success(result.charge)
+      }
+      let createIdentifyAction = createAction(IDENTIFY_INFO)
+      dispatch(createIdentifyAction({}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)

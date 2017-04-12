@@ -86,6 +86,10 @@ import AdviseFeedback from '../components/Advise/index'
 import SubmitAdviseSuccess from '../components/Advise/submitSuccess'
 import PromoterDirectTeam from '../components/Mine/promote/PromoterDirectTeam'
 import Wallet from '../components/Payment/Wallet'
+import WithdrawCash from '../components/Payment/WithdrawCash'
+import MyCard from '../components/Payment/MyCard'
+import AddCard from '../components/Payment/AddCard'
+import IdentifyCard from '../components/Payment/IdentifyCard'
 
 const styles = StyleSheet.create({
   container: {
@@ -181,6 +185,11 @@ export const scenes = Actions.create(
       <Scene key="SUBMIT_ADVISE_SUCCESS" component={SubmitAdviseSuccess}/>
       <Scene key="DIRECT_TEAM" component={PromoterDirectTeam} />
       <Scene key="WALLET" component={Wallet} />
+      <Scene key="WITHDRAW_CASH" component={WithdrawCash} />
+      <Scene key="MY_CARD" component={MyCard} />
+      <Scene key="ADD_CARD" component={AddCard} />
+      <Scene key="IDENTIFY_CARD" component={IdentifyCard} />
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

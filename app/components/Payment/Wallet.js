@@ -22,6 +22,7 @@ import {normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import * as authSelector from '../../selector/authSelector'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
+import THEME from '../../constants/themes/theme1'
 
 
 
@@ -34,11 +35,14 @@ class Wallet extends Component {
   }
 
   onBoundCard = () => {
-
+    if(this.state.boundCarded)
+      Actions.MY_CARD()
+    else
+      Actions.ADD_CARD()
   }
 
   onWithdrawCash = () => {
-
+    Actions.WITHDRAW_CASH()
   }
 
   render() {
@@ -48,7 +52,7 @@ class Wallet extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title='我的钱包'
+          title='钱包'
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
@@ -69,7 +73,7 @@ class Wallet extends Component {
           </View>
           <View style={styles.cash}>
             <CommonButton
-              buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5}}
+              buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5, backgroundColor: THEME.base.lightColor}}
               onPress={this.onBoundCard}
               title={this.state.boundCarded? '我的银行卡': '绑定银行卡'}
             />

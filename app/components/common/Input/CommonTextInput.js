@@ -124,6 +124,7 @@ class CommonTextInput extends Component {
           onBlur={this.props.onBlur}
           autoCorrect={this.props.autoCorrect}
           autoCapitalize='none'
+          keyboardType={this.props.keyboardType}
         />
         {this.renderClearBtn()}
       </View>
@@ -142,6 +143,7 @@ CommonTextInput.defaultProps = {
   inputStyle: {flex: 1},
   clearBtnStyle: {},
   autoCorrect: true,
+  keyboardType: 'default'
 }
 
 const mapStateToProps = (state, ownProps) => {

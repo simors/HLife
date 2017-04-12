@@ -12,6 +12,10 @@ export default function paymentReducer(state = initialState, action) {
   switch (action.type) {
     case PaymentActionTypes.CREATE_PAYMENT:
       return handleCreatePayment(state, action)
+    case PaymentActionTypes.CREATE_TRANSFERS:
+      return state
+    case PaymentActionTypes.IDENTIFY_INFO:
+      return state
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
