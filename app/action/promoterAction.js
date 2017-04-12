@@ -30,6 +30,7 @@ let addPromoterTeam = createAction(promoterActionTypes.ADD_PROMOTER_TEAM)
 let addShopDetail = createAction(shopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
 let addPromoterShops = createAction(promoterActionTypes.ADD_PROMOTER_SHOPS)
 let setPromoterShops = createAction(promoterActionTypes.SET_PROMOTER_SHOPS)
+let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -117,6 +118,7 @@ export function getCurrentPromoter(payload) {
       let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
       dispatch(setActivePromoter({promoterId}))
       dispatch(updatePromoter({promoterId, promoter}))
+      dispatch(setUserPromoterMap({userId: activeUserId(getState), promoterId: promoterId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -138,6 +140,7 @@ export function getPromoterByUserId(payload) {
       let promoterId = promoterInfo.promoter.objectId
       let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
       dispatch(updatePromoter({promoterId, promoter}))
+      dispatch(setUserPromoterMap({userId, promoterId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

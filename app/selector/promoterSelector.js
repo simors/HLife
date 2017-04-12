@@ -21,6 +21,15 @@ export function getPromoterById(state, id) {
   return undefined
 }
 
+export function getPromoterByUserId(state, userId) {
+  let promoterId = state.PROMOTER.getIn(['userToPromoter', userId])
+  if (promoterId) {
+    let promoter = getPromoterById(state, promoterId)
+    return promoter
+  }
+  return undefined
+}
+
 export function isPromoterPaid(state, id) {
   let promoter = getPromoterById(state, id)
   if (promoter) {

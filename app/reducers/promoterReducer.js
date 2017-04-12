@@ -16,6 +16,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleClearInviteCode(state, action)
     case promoterActionTypes.SET_ACTIVE_PROMOTER:
       return handleSetActivePromoter(state, action)
+    case promoterActionTypes.SET_USER_PROMOTER_MAP:
+      return handleSetUserPromoterMap(state, action)
     case promoterActionTypes.UPDATE_PROMOTER_INFO:
       return handleUpdatePromoter(state, action)
     case promoterActionTypes.UPDATE_TENANT_FEE:
@@ -51,6 +53,13 @@ function handleClearInviteCode(state, action) {
 function handleSetActivePromoter(state, action) {
   let promoterId = action.payload.promoterId
   state = state.set('activePromoter', promoterId)
+  return state
+}
+
+function handleSetUserPromoterMap(state, action) {
+  let userId = action.payload.userId
+  let promoterId = action.payload.promoterId
+  state = state.setIn(['userToPromoter', userId], promoterId)
   return state
 }
 
