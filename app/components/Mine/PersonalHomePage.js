@@ -35,7 +35,7 @@ import FollowUser from '../common/FollowUser'
 import MyTopicShow from './MyTopic/MyTopicShow'
 import * as Utils from '../../util/Utils'
 import * as AVUtils from '../../util/AVUtils'
-import {getPromoterById, activePromoter} from '../../selector/promoterSelector'
+import {getPromoterById, activePromoter, selectPromoterByUserId} from '../../selector/promoterSelector'
 import {getPromoterByUserId} from '../../action/promoterAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -449,8 +449,10 @@ const mapStateToProps = (state, ownProps) => {
   const userTopics = selectUserTopics(state, ownProps.userId)
   const userTopicsTotalCount = selectUserTopicsTotalCount(state, ownProps.userId)
 
-  let promoterId = activePromoter(state)
-  let promoter = getPromoterById(state, promoterId)
+  // let promoterId = activePromoter(state)
+  // let promoter = getPromoterById(state, promoterId)
+  let promoter = selectPromoterByUserId(state, ownProps.userId)
+  // console.log('promoter=====', promoter)
 
   return {
     ds: ds.cloneWithRows(dataArray),
