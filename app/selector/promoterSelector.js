@@ -21,7 +21,7 @@ export function getPromoterById(state, id) {
   return undefined
 }
 
-export function getPromoterByUserId(state, userId) {
+export function selectPromoterByUserId(state, userId) {
   let promoterId = state.PROMOTER.getIn(['userToPromoter', userId])
   if (promoterId) {
     let promoter = getPromoterById(state, promoterId)

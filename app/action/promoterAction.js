@@ -118,7 +118,7 @@ export function getCurrentPromoter(payload) {
       let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
       dispatch(setActivePromoter({promoterId}))
       dispatch(updatePromoter({promoterId, promoter}))
-      dispatch(setUserPromoterMap({userId: activeUserId(getState), promoterId: promoterId}))
+      dispatch(setUserPromoterMap({userId: activeUserId(getState()), promoterId: promoterId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
