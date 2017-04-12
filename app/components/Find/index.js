@@ -132,12 +132,14 @@ export class Find extends Component {
 
   loadMoreData(isRefresh) {
     let lastCreatedAt = undefined
+    let lastUpdatedAt = undefined
     let payload = undefined
     if (this.props.topics) {
       if (this.state.selectedTab == 0 || this.state.selectedTab == 1) {
         let currentTopics = this.props.topics[this.state.selectedTab]
         if (currentTopics && currentTopics.length) {
           lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
+          lastUpdatedAt = currentTopics[currentTopics.length - 1].updatedAt
         }
       } else {
         let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
@@ -150,6 +152,7 @@ export class Find extends Component {
       payload = {
         type: "pickedTopics",
         lastCreatedAt: lastCreatedAt,
+        lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
           if (!this.listView) {
@@ -169,6 +172,7 @@ export class Find extends Component {
       payload = {
         type: "localTopics",
         lastCreatedAt: lastCreatedAt,
+        lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
           if (!this.listView) {
@@ -189,6 +193,7 @@ export class Find extends Component {
         type: "topics",
         categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
         lastCreatedAt: lastCreatedAt,
+        lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
           if (!this.listView) {
