@@ -175,6 +175,7 @@ export function getMyUpPromoter(payload) {
       dispatch(addUserProfile({userInfo}))
       dispatch(updatePromoter({promoterId, promoter}))
       dispatch(updateUpPromoter({upPromoterId: promoterId}))
+      dispatch(setUserPromoterMap({userId: promoterInfo.user.id, promoterId}))
     })
   }
 }
@@ -194,6 +195,7 @@ export function getMyPromoterTeam(payload) {
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
         team.push(promoterId)
         dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
       })
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
@@ -223,6 +225,7 @@ export function getPromoterTeamById(payload) {
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
         team.push(promoterId)
         dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
       })
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
@@ -247,7 +250,6 @@ export function getMyInvitedShops(payload) {
       let shopIds = []
       shops.forEach((shop) => {
         let shopRecord = ShopInfo.fromLeancloudApi(shop)
-        console.log('shopRecord:', shopRecord)
         shopIds.push(shop.id)
         dispatch(addShopDetail({id: shop.id, shopInfo: shopRecord}))
       })
