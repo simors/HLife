@@ -13,6 +13,7 @@ import configureStore from '../store/configureStore'
 import * as AuthTypes from '../constants/authActionTypes'
 import * as AVUtils from '../util/AVUtils'
 import * as shopAction from '../action/shopAction'
+import {getCurrentPromoter} from '../action/promoterAction'
 
 const messageFilter = createFilter(
   'MESSAGE',
@@ -75,6 +76,7 @@ function verifyToken() {
         userId: user.userInfo.id
       })
       dispatch(fetchUserFollowees())
+      dispatch(getCurrentPromoter())
       dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
     }).catch((error) => {
       let logoutAction = createAction(AuthTypes.LOGIN_OUT)

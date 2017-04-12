@@ -11,6 +11,7 @@ import * as shopAction from './shopAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
+import {getCurrentPromoter} from './promoterAction'
 
 import * as AVUtils from '../util/AVUtils'
 import {calUserRegist, calRegistShoper} from '../action/pointActions'
@@ -157,10 +158,10 @@ function handleLoginWithPwd(payload, formData) {
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
-      dispatch(shopAction.fetchUserOwnedShopInfo({userId: userInfo.userInfo.id}))
       return userInfo
     }).then((user) => {
-      // console.log('handleLoginWithPwd===user=', user)
+      dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
+      dispatch(getCurrentPromoter())
       dispatch(initMessageClient(payload))
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
