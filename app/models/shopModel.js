@@ -157,7 +157,7 @@ export class ShopInfo extends ShopRecord {
     try{
       let shopRecord = new ShopRecord()
       return shopRecord.withMutations((record) => {
-        record.set('id', lcObj.objectId)
+        record.set('id', lcObj.id)
         record.set('name', lcObj.name)
         record.set('phone', lcObj.phone)
         record.set('shopName', lcObj.shopName)
@@ -167,6 +167,53 @@ export class ShopInfo extends ShopRecord {
         record.set('contactNumber2', lcObj.contactNumber2)
         record.set('certification', lcObj.certification)
         record.set('status', lcObj.status && parseInt(lcObj.status))
+
+        let targetShopCategory = {}
+        if(lcObj.targetShopCategory) {
+          let targetShopCategoryAttrs = lcObj.targetShopCategory
+          targetShopCategory.imageSource = targetShopCategoryAttrs.imageSource
+          targetShopCategory.shopCategoryId = targetShopCategoryAttrs.shopCategoryId
+          targetShopCategory.status = targetShopCategoryAttrs.status
+          targetShopCategory.text = targetShopCategoryAttrs.text
+          targetShopCategory.id = targetShopCategoryAttrs.id
+        }
+        record.set('targetShopCategory', targetShopCategory)
+
+        let owner = {}
+        if(lcObj.owner) {
+          let ownerAttrs = lcObj.owner
+          owner.nickname = ownerAttrs.nickname
+          owner.avatar = ownerAttrs.avatar
+          owner.id = ownerAttrs.id
+        }
+        record.set('owner', owner)
+
+        let containedTag = []
+        if(lcObj.containedTag && lcObj.containedTag.length) {
+          lcObj.containedTag.forEach((containedTagAttrs)=>{
+            let tag = {
+              id: containedTagAttrs.id,
+              name: containedTagAttrs.name,
+              createdDate: numberUtils.formatLeancloudTime(new Date(containedTagAttrs.createdAt), 'YYYY-MM-DD HH:mm:SS'),
+              createdAt: containedTagAttrs.createdAt.valueOf(),
+              updatedAt: containedTagAttrs.updatedAt.valueOf(),
+            }
+            containedTag.push(tag)
+          })
+        }
+        record.set('containedTag', containedTag)
+
+        let containedPromotions = []
+        if(lcObj.containedPromotions && lcObj.containedPromotions.length) {
+          lcObj.containedPromotions.forEach((promotion)=>{
+            // TODO: promotion的其他数据还没有获取到
+            let promotionRecord = {
+              id: promotion.id,
+            }
+            containedPromotions.push(promotionRecord)
+          })
+        }
+        record.set('containedPromotions', new List(containedPromotions))
 
         record.set('geo', lcObj.geo)
         if(lcObj.geo) {

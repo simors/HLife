@@ -67,7 +67,9 @@ class InvitedShops extends Component {
           <View style={{flex: 1}}>
             <Text style={styles.shopNameText}>{shop.shopName}</Text>
             <View style={{flexDirection: 'row', paddingTop: normalizeH(10)}}>
-              <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>粤菜</Text>
+              {
+                shop.containedTag[0] ? <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>{shop.containedTag[0].name}</Text> : <View/>
+              }
               <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>{shop.geoDistrict}</Text>
               <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>{shop.distance}{shop.distanceUnit}</Text>
             </View>
