@@ -50,38 +50,42 @@ export class TopicContent extends Component {
   }
 
   render() {
+    let topic = this.props.topic
     return (
       <View style={[styles.containerStyle, this.props.containerStyle]}>
         <View style={styles.titleContainerStyle}>
           <Text style={styles.titleStyle}>
             {this.props.topic.title}
           </Text>
+          <View style={{flexDirection: 'row'}}>
+            <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
+            <Text style={styles.timeTextStyle}>{(topic.position && topic.position.city) ? topic.position.city : '未知'}</Text>
+            <Text style={styles.timeTextStyle}>最近编辑  {topic.createdDate}</Text>
+          </View>
         </View>
         <View style={styles.introWrapStyle}>
-          <View style={{flexDirection: 'row'}} onPress={()=> {
-          }}>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
+          <View style={{flex:1,flexDirection: 'row',alignItems:'stretch'}}>
+            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>
               <Image style={styles.avatarStyle}
-                     source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+                     source={topic.avatar ? {uri: topic.avatar} : require("../../assets/images/default_portrait.png")}/>
             </TouchableOpacity>
-            <View style={{flex: 1}}>
-              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-                <Text style={styles.userNameStyle}>{this.props.topic.nickname}</Text>
+            <View style={{flex: 1, justifyContent:'space-between'}}>
+              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>
+                <Text numberOfLines={1} style={styles.userNameStyle}>{topic.nickname}</Text>
               </TouchableOpacity>
               <View style={styles.timeLocationStyle}>
                 <Text style={styles.timeTextStyle}>
-                  {getConversationTime(this.props.topic.createdAt.valueOf())}
+                  {topic.lastLoginDuration}
                 </Text>
-                <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
-                <Text style={styles.timeTextStyle}>长沙</Text>
+                <Text style={styles.timeTextStyle}>粉丝：{this.props.userFollowersTotalCount}</Text>
               </View>
             </View>
             <View style={styles.attentionStyle}>
-              {this.renderFollowUserView(this.props.topic.userId)}
+              {this.renderFollowUserView(topic.userId)}
             </View>
           </View>
         </View>
-          <ArticleViewer artlcleContent={JSON.parse(this.props.topic.content)} />
+        <ArticleViewer artlcleContent={JSON.parse(topic.content)} />
       </View>
 
     )
@@ -133,28 +137,32 @@ const styles = StyleSheet.create({
   },
   titleContainerStyle: {
     flex: 1,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 20,
     alignSelf: 'center',
     width: PAGE_WIDTH,
   },
   titleStyle: {
-    fontSize: em(20),
+    fontSize: 17,
     flex: 1,
-    paddingTop: normalizeW(10),
-    paddingBottom: normalizeH(10),
-    backgroundColor: '#FFFFFF',
-    color: '#4a4a4a',
-    alignItems: 'center'
+    color: '#030303',
+    alignItems: 'center',
+    fontWeight:'bold',
+    lineHeight:24,
+    paddingBottom: 10,
   },
   //用户、时间、地点信息
   introWrapStyle: {
     flex: 1,
-    marginTop: normalizeH(12),
-    marginLeft: normalizeW(12),
-    marginBottom: normalizeH(15),
+    padding: 15,
+    paddingTop:10,
+    paddingBottom: 10,
+    backgroundColor: '#f5f5f5',
+    marginTop: 15
   },
   userNameStyle: {
+    flex: 1,
     fontSize: em(15),
     marginTop: 1,
     marginLeft: 10,

@@ -1,7 +1,7 @@
 /**
  * Created by wuxingyu on 2016/12/24.
  */
-import {hidePhoneNumberDetail} from '../util/numberUtils'
+import {hidePhoneNumberDetail, formatLeancloudTime, getConversationTime} from '../util/numberUtils'
 import {Map, Record,List} from 'immutable'
 
 export const TopicsConfig = Record({
@@ -20,7 +20,9 @@ export const TopicsConfig = Record({
   likeCount: undefined, //点赞数
   geoPoint: undefined,
   position: undefined,
-  likedUsers: undefined  //点赞用户列表
+  likedUsers: undefined,  //点赞用户列表
+  createdDate: undefined,
+  lastLoginDuration: undefined,
 }, 'TopicsConfig')
 
 export class TopicsItem extends TopicsConfig {
@@ -28,15 +30,17 @@ export class TopicsItem extends TopicsConfig {
     let topicsConfig = new TopicsConfig()
     let attrs = lcObj.attributes
     let user = lcObj.get('user')
-    let nickname = "吾爱用户"
+    let nickname = "邻家用户"
     let avatar = undefined
     let userId = undefined
+    let userUpdatedAt = undefined
 
     //用户昵称解析
     if (user) {
       userId = user.id
       avatar = user.get('avatar')
       nickname = user.get('nickname')
+      userUpdatedAt = user.updatedAt
       if (!nickname) {
         let phoneNumber = user.getMobilePhoneNumber()
         nickname = hidePhoneNumberDetail(phoneNumber)
@@ -49,10 +53,19 @@ export class TopicsItem extends TopicsConfig {
       record.set('abstract', attrs.abstract)
       record.set('title', attrs.title)
       record.set('imgGroup', attrs.imgGroup)
-      if(lcObj.createdAt)
+      if(lcObj.createdAt){
         record.set('createdAt', lcObj.createdAt.valueOf())
-      if(lcObj.updatedAt)
+        record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      }
+        
+      if(lcObj.updatedAt){
         record.set('updatedAt', lcObj.updatedAt.valueOf())
+      }
+
+      if(userUpdatedAt) {
+        record.set('lastLoginDuration', getConversationTime(userUpdatedAt.valueOf()))
+      }
+      
       record.set('categoryId', attrs.category.id)
       record.set('nickname', nickname)
       record.set('avatar', avatar)
@@ -83,7 +96,7 @@ export class TopicCommentsItem extends TopicCommentsConfig {
     let topicCommentsConfig = new TopicCommentsConfig()
     let attrs = lcObj.attributes
     let user = lcObj.get('user')
-    let nickname = "吾爱用户"
+    let nickname = "邻家用户"
     let avatar = undefined
 
     //用户昵称解析
@@ -97,7 +110,7 @@ export class TopicCommentsItem extends TopicCommentsConfig {
     }
 
     let parentUserPoint = undefined
-    let parentCommentUser = "吾爱用户"
+    let parentCommentUser = "邻家用户"
 
     //有父评论的情况下
     if (attrs.parentComment) {
@@ -141,7 +154,7 @@ export class TopicLikeUser extends TopicLikeUserConfig {
   static fromLeancloudObject(lcObj) {
     let topicLikeUserConfig = new TopicLikeUserConfig()
     let user = lcObj.get('user')
-    let nickname = "吾爱用户"
+    let nickname = "邻家用户"
     let avatar = undefined
     let userId = undefined
 
