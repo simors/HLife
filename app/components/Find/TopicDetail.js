@@ -129,7 +129,11 @@ export class TopicDetail extends Component {
             )
           })
     }else {
-      commentsView = <Text style={{alignSelf: 'center', paddingTop: 20}}>目前没有评论，快来抢沙发吧！~~~</Text>
+      commentsView = <View style={{padding:15,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
+                      <Text style={{}}>
+                        目前没有评论，快来抢沙发吧！~~~
+                      </Text>
+                    </View>
     }
 
     return (
@@ -165,9 +169,11 @@ export class TopicDetail extends Component {
   renderNoComment() {
     if (this.props.commentsTotalCount == 0) {
       return (
-        <Text style={{alignSelf: 'center', paddingTop: 20}}>
-          目前没有评论，快来抢沙发吧！~~~
-        </Text>
+        <View style={{padding:15,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
+          <Text style={{}}>
+            目前没有评论，快来抢沙发吧！~~~
+          </Text>
+        </View>
       )
     }
   }
