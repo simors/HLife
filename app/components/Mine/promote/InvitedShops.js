@@ -59,7 +59,7 @@ class InvitedShops extends Component {
     this.lastCreatedAt = shop.createdAt
     return (
       <View>
-        <TouchableOpacity style={styles.shopItemView} onPress={() => {}}>
+        <TouchableOpacity style={styles.shopItemView} onPress={() => {Actions.SHOP_DETAIL({id: shop.id})}}>
           <View style={styles.shopCoverView}>
             <Image style={{width: normalizeW(100), height: normalizeH(75)}}
                   source={shop.coverUrl ? {uri: shop.coverUrl} : require('../../../assets/images/shop_defualt.png')}/>
