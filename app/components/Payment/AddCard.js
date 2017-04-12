@@ -24,6 +24,7 @@ import * as authSelector from '../../selector/authSelector'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import CommonTextInput from '../common/Input/CommonTextInput'
+import OpenBankPicker from '../common/Input/OpenBankPicker'
 
 let cardForm = Symbol('cardForm')
 
@@ -64,26 +65,28 @@ class AddCard extends Component {
           titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
-          <View style={{justifyContent: 'center', height: normalizeH(65), }}>
+          <View style={{justifyContent: 'center', height: normalizeH(65), borderBottomWidth: 1, borderBottomColor: '#AAAAAA'}}>
             <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>请绑定本人的银行卡</Text>
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>卡号</Text>
+            <Text style={{width: normalizeW(60), marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>卡号</Text>
             <CommonTextInput
               {...cardNumberInput}
               placeholder="仅用于余额体现"
-              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
+              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
               keyboardType="numeric"
             />
           </View>
 
           <View style={styles.itemContainer}>
-            <Text style={{marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>卡类型</Text>
-
+            <Text style={{width: normalizeW(60), marginLeft: normalizeW(30), fontSize: 17, color: '#5A5A5A'}}>卡类型</Text>
+            <OpenBankPicker {...bankCodeInput} containerStyle={{height: normalizeH(42)}}
+                          inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}/>
           </View>
 
           <CommonButton
+            buttonStyle={{marginTop:normalizeH(50)}}
             onPress={this.onNext}
             title="下一步"
           />
@@ -136,6 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
+    backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     height: normalizeH(65),
     alignItems: 'center',
