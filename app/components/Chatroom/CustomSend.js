@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   container: {
     height: 44,
     justifyContent: 'flex-end',
-    backgroundColor: '#50E3C2',
+    backgroundColor: '#ff7819',
     borderRadius: 5,
   },
   text: {
