@@ -87,7 +87,31 @@ class AgentPromoter extends Component {
 
   renderBodyView() {
     return (
-      <View></View>
+      <View style={{marginTop: normalizeH(15), backgroundColor: '#F5F5F5'}}>
+        <View style={styles.statItemView}>
+          <View style={{paddingLeft: normalizeW(15)}}>
+            <Text style={styles.itemTitle}>入驻店铺数</Text>
+          </View>
+          <View style={{paddingRight: normalizeW(15)}}>
+            <Text style={styles.itemData}>9990家</Text>
+          </View>
+        </View>
+        <View style={[styles.statItemView, {borderTopWidth: 1, borderColor: '#f5f5f5',}]}>
+          <View style={{paddingLeft: normalizeW(15)}}>
+            <Text style={styles.itemTitle}>推广团队总人数</Text>
+          </View>
+          <View style={{paddingRight: normalizeW(15)}}>
+            <Text style={styles.itemData}>9990人</Text>
+          </View>
+        </View>
+        <View style={styles.totalPerView}>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>全省总业绩（元）</Text>
+          <Text style={{fontSize: em(36), color: THEME.base.mainColor, fontWeight: 'bold', paddingTop: normalizeH(15)}}>99999.00</Text>
+        </View>
+        <View style={styles.sevenTitleView}>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>近七日业绩（万元）</Text>
+        </View>
+      </View>
     )
   }
 
@@ -156,5 +180,35 @@ const styles = StyleSheet.create({
   goBack: {
     fontSize: em(28),
     color: '#FFF'
+  },
+  statItemView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: normalizeH(52),
+    backgroundColor: '#FFF',
+  },
+  itemTitle: {
+    fontSize: em(17),
+    color: '#5a5a5a',
+  },
+  itemData: {
+    fontSize: em(17),
+    color: THEME.base.mainColor,
+  },
+  totalPerView: {
+    height: normalizeH(104),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: normalizeH(8),
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderColor: '#f5f5f5',
+  },
+  sevenTitleView: {
+    backgroundColor: '#FFF',
+    height: normalizeH(53),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
