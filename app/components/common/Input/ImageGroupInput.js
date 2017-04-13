@@ -48,6 +48,8 @@ class ImageGroupInput extends Component {
   }
 
   componentDidMount() {
+    // console.log('componentDidMount++++123+++++this.imgList=', this.imgList)
+    // console.log('componentDidMount+++++++++this.props.initValue=', this.props.initValue)
     let formInfo = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
@@ -56,6 +58,7 @@ class ImageGroupInput extends Component {
       initValue: {text: this.props.initValue}
     }
     this.props.initInputForm(formInfo)
+    // console.log('componentDidMount+++++++++this.imgList=', this.imgList)
   }
 
   calculateImageWidth() {
@@ -72,6 +75,14 @@ class ImageGroupInput extends Component {
       reSltImageIndex: index
     })
     this.ActionSheet.show()
+  }
+
+  componentWillMount() {
+    // console.log('componentWillMount+++++++++this.imgList=', this.imgList)
+  }
+
+  componentWillUnmount(){
+    // console.log('componentWillUnmount+++++++++this.imgList=', this.imgList)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -209,6 +220,8 @@ class ImageGroupInput extends Component {
   renderImageRow() {
     if (this.props.data) {
       this.imgList = this.props.data
+    }else{
+      this.imgList = []
     }
     let imgComp = this.imgList.map((item, key) => {
       return (
