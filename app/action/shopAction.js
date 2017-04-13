@@ -501,7 +501,7 @@ export function fetchShopFollowersTotalCount(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopFollowersTotalCount(payload).then((shopFollowerTotalCount) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS)
-      dispatch(updateAction({shopId: payload.id, shopFollowerTotalCount: shopFollowerTotalCount}))
+      dispatch(updateAction({id: payload.id, shopFollowerTotalCount: shopFollowerTotalCount}))
       if(payload.success){
         payload.success(shopFollowerTotalCount)
       }
