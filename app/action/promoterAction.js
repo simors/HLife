@@ -12,7 +12,7 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {calRegistPromoter} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
 import * as AuthTypes from '../constants/authActionTypes'
-import {PromoterInfo} from '../models/promoterModel'
+import {PromoterInfo, PromoterStatistics} from '../models/promoterModel'
 import {UserInfo} from '../models/userModels'
 import {ShopInfo} from '../models/shopModel'
 import {activePromoter} from '../selector/promoterSelector'
@@ -31,6 +31,7 @@ let addShopDetail = createAction(shopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
 let addPromoterShops = createAction(promoterActionTypes.ADD_PROMOTER_SHOPS)
 let setPromoterShops = createAction(promoterActionTypes.SET_PROMOTER_SHOPS)
 let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
+let updateStatistics = createAction(promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -258,6 +259,16 @@ export function getMyInvitedShops(payload) {
       } else {
         dispatch(setPromoterShops({promoterId: activePromoter(getState()), shops: shopIds}))
       }
+    })
+  }
+}
+
+export function getTotalPerformance(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.getTotalPerformance(payload).then((performance) => {
+      console.log('performance:', performance)
+      let performanceRecord = PromoterStatistics.fromLeancloudObject(performance)
+      dispatch(updateStatistics({statistics: performanceRecord}))
     })
   }
 }
