@@ -841,7 +841,11 @@ export function fetchOtherUserFollowersTotalCount(payload) {
 export function fetchUserFollowers(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowers(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS)
+      let actionType = AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = AuthTypes.FETCH_USER_FOLLOWERS_PAGING_SUCCESS
+      }
+      let updateAction = createAction(actionType)
       dispatch(updateAction(result))
       if (payload.success) {
         payload.success(result)
