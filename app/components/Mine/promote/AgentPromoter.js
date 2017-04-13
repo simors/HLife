@@ -23,7 +23,8 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import LinearGradient from 'react-native-linear-gradient'
-import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../../constants/appConfig'
+import PromoterAgentIcon from './PromoterAgentIcon'
+import {getPromoterById, activePromoter} from '../../../selector/promoterSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -59,11 +60,26 @@ class AgentPromoter extends Component {
     )
   }
 
+  renderAgentIconView() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
+    return (
+      <View style={{alignSelf: 'center'}}>
+        <TouchableOpacity>
+          <PromoterAgentIcon identity={promoter.identity} province={promoter.province} city={promoter.city} district={promoter.district} />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   renderHeaderView() {
     return (
       <LinearGradient colors={['#F77418', '#F5A623', '#F77418']} style={styles.header}>
         <View style={{flex: 1, backgroundColor: 'transparent'}}>
           {this.renderToolView()}
+          {this.renderAgentIconView()}
         </View>
       </LinearGradient>
     )
@@ -89,7 +105,10 @@ class AgentPromoter extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let currentPromoterId = activePromoter(state)
+  let promoter = getPromoterById(state, currentPromoterId)
   return {
+    promoter,
   }
 }
 
