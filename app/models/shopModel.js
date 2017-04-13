@@ -388,6 +388,7 @@ export const ShopCommentRecord = Record({
   score: 4, // 用户打分
   user: {}, //评论用户详细信息
   createdDate: '', //格式化后的创建时间
+  createdDetailDate: '',
   shopCommentTime: '', //评论列表友好显示时间
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
@@ -420,7 +421,8 @@ export class ShopComment extends ShopCommentRecord {
       }
       record.set('user', user)
       record.set('shopCommentTime', numberUtils.getConversationTime(lcObj.updatedAt.valueOf()))
-      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))
+      record.set('createdDetailDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
@@ -436,7 +438,8 @@ export class ShopComment extends ShopCommentRecord {
       record.set('targetShop', lcJson.targetShop)
       record.set('user', lcJson.user)
       record.set('shopCommentTime', lcJson.shopCommentTime)
-      record.set('createdDate', lcJson.createdDate)
+      record.set('createdDate', lcJson.createdDate.split(' ')[0])
+      record.set('createdDetailDate', lcJson.createdDate)
       record.set('createdAt', lcJson.createdAt)
       record.set('updatedAt', lcJson.updatedAt)
       record.set('containedReply', lcJson.replys)
