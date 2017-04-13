@@ -27,6 +27,7 @@ import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
 import MyShopIndex from '../components/Mine/myShop/MyShopIndex'
 import EditShop from '../components/Mine/myShop/EditShop'
 import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
+import ShopFansIndex from '../components/Mine/myShop/ShopFansIndex'
 import MyShopPromotionManageIndex from '../components/Mine/myShop/MyShopPromotionManageIndex'
 import ShopCertificationInfoShow from '../components/Mine/myShop/ShopCertificationInfoShow'
 import UpdateShopCover from '../components/Mine/myShop/UpdateShopCover'
@@ -123,6 +124,7 @@ export const scenes = Actions.create(
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
       <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
+      <Scene key="SHOP_FANS_INDEX" component={ShopFansIndex}/>
       <Scene key="MY_SHOP_PROMOTION_MANAGE_INDEX" component={MyShopPromotionManageIndex}/>
       <Scene key="SHOP_CERTIFICATION_INFO_SHOW" component={ShopCertificationInfoShow}/>
       <Scene key="MY_SHOP_INDEX" component={MyShopIndex}/>

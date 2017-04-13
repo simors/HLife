@@ -372,7 +372,7 @@ class MyShopIndex extends Component {
                 </View>
               </View>
 
-              <TouchableOpacity onPress={()=>{}}>
+              <TouchableOpacity onPress={()=>{Actions.SHOP_FANS_INDEX({shopId: this.props.shopDetail.id})}}>
                 <View style={styles.followersWrap}>
                   <View style={{flexDirection:'row'}}>
                     <View style={styles.titleLine}/>
