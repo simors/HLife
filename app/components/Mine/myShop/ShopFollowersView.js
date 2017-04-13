@@ -15,7 +15,7 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 
-class UserFollowersView extends Component {
+class ShopFollowersView extends Component {
   constructor(props) {
     super(props)
   }
@@ -23,7 +23,7 @@ class UserFollowersView extends Component {
   render() {
     let userInfo = this.props.userInfo
     return (
-      <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id, backSceneName:'MYFANS'})}>
+      <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id, backSceneName:'SHOP_FANS_INDEX', backSceneParams: {shopId: this.props.shopId}})}>
         <View style={styles.container}>
            <Image style={styles.avatarStyle}
                 source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")}/>
@@ -67,7 +67,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserFollowersView)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopFollowersView)
 
 const styles = StyleSheet.create({
   container: {

@@ -23,19 +23,19 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import THEME from '../../../constants/themes/theme1'
 import CommonListView from '../../common/CommonListView'
-import {fetchUserFollowers} from '../../../action/authActions'
-import {activeUserId, selectUserFollowers} from '../../../selector/authSelector'
-import UserFollowersView from './UserFollowersView'
+import {fetchShopFollowers} from '../../../action/shopAction'
+import {selectShopFollowers} from '../../../selector/shopSelector'
+import ShopFollowersView from './ShopFollowersView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class MyFans extends Component {
+class ShopFansIndex extends Component {
   constructor(props) {
     super(props)
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.refreshFollowers()
     })
@@ -44,7 +44,7 @@ class MyFans extends Component {
   renderFollowers(value, key) {
     return (
       <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}>
-        <UserFollowersView userInfo={value} />
+        <ShopFollowersView userInfo={value} shopId={this.props.shopId}/>
       </View>
     )
   }
@@ -57,6 +57,7 @@ class MyFans extends Component {
     let payload = {
       lastCreatedAt: this.props.userFollowersLastCreatedAt,
       isRefresh: !!isRefresh,
+      id: this.props.shopId,
       success: (isEmpty) => {
         if(!this.followerListView) {
           return
@@ -69,7 +70,7 @@ class MyFans extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    this.props.fetchUserFollowers(payload)
+    this.props.fetchShopFollowers(payload)
   }
 
   render() {
@@ -80,13 +81,13 @@ class MyFans extends Component {
                 leftType='icon'
                 leftStyle={{color: '#FFFFFF'}}
                 leftPress={() => Actions.pop()}
-                title="我的粉丝"
+                title="店铺粉丝"
                 titleStyle={styles.title}>
         </Header>
         <View style={styles.body}>
           <CommonListView
             contentContainerStyle={styles.itemLayout}
-            dataSource={this.props.userFollowers}
+            dataSource={this.props.shopFollowers}
             renderRow={(rowData, rowId) => this.renderFollowers(rowData, rowId)}
             loadNewData={()=> {
               this.refreshFollowers()
@@ -106,23 +107,24 @@ const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 != r2,
   })
-  let currentUserId = activeUserId(state)
-  let userFollowers = selectUserFollowers(state, currentUserId)
-  let userFollowersLastCreatedAt = ''
-  if(userFollowers && userFollowers.length) {
-    userFollowersLastCreatedAt = userFollowers[userFollowers.length-1].createdAt
+  let shopId = ownProps.shopId
+  let shopFollowers = selectShopFollowers(state, shopId)
+  // console.log('shopFollowers: ', shopFollowers)
+  let lastCreatedAt = ''
+  if(shopFollowers && shopFollowers.length) {
+    lastCreatedAt = shopFollowers[shopFollowers.length-1].createdAt
   }
-  // console.log('userFollowers: ', userFollowers)
+  
   return {
-    userFollowers: ds.cloneWithRows(userFollowers),
+    shopFollowers: ds.cloneWithRows(shopFollowers),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchUserFollowers,
+  fetchShopFollowers,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyFans)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopFansIndex)
 
 
 const styles = StyleSheet.create({

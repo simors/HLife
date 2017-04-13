@@ -484,7 +484,11 @@ export function fetchUserOwnedShopInfo(payload) {
 export function fetchShopFollowers(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopFollowers(payload).then((shopFollowers) => {
-      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS)
+      let actionType = ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.FETCH_SHOP_FOLLOWERS_PAGING_SUCCESS
+      }
+      let updateAction = createAction(actionType)
       dispatch(updateAction({id: payload.id, shopFollowers: shopFollowers}))
       if(payload && payload.success){
         payload.success(shopFollowers)
@@ -501,7 +505,7 @@ export function fetchShopFollowersTotalCount(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopFollowersTotalCount(payload).then((shopFollowerTotalCount) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS)
-      dispatch(updateAction({shopId: payload.id, shopFollowerTotalCount: shopFollowerTotalCount}))
+      dispatch(updateAction({id: payload.id, shopFollowerTotalCount: shopFollowerTotalCount}))
       if(payload.success){
         payload.success(shopFollowerTotalCount)
       }

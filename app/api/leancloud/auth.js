@@ -727,22 +727,48 @@ export function fetchUserFollowersTotalCount() {
  * @returns {*}
  */
 export function fetchUserFollowers(payload) {
-  let query = AV.User.current().followerQuery()
-  query.include('follower')
-  return query.find().then(function(results) {
-    let followers = []
-    results.forEach((result)=>{
-      followers.push(UserInfo.fromLeancloudObject(result))
-    })
+  var params = {}
+  if(!payload) {
+    params = {
+      isRefresh: true
+    }
+  }else {
+    params = {
+      isRefresh: payload.isRefresh,
+      lastCreatedAt: payload.lastCreatedAt
+    }
+  }
+  // console.log('hLifeFetchUserFollowers===params=====', params)
+  return AV.Cloud.run('hLifeFetchUserFollowers', params).then((result) => {
+    // console.log('hLifeFetchUserFollowers===result===', result)
     return {
       userId: AV.User.current().id,
-      followers: new List(followers)
+      followers: new List(result.userFollowers)
     }
-  }).catch((err) =>{
+  }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
 }
+
+// export function fetchUserFollowers(payload) {
+//   let query = AV.User.current().followerQuery()
+//   query.include('follower')
+//   return query.find().then(function(results) {
+//     let followers = []
+//     results.forEach((result)=>{
+//       followers.push(UserInfo.fromLeancloudObject(result))
+//     })
+//     return {
+//       userId: AV.User.current().id,
+//       followers: new List(followers)
+//     }
+//   }).catch((err) =>{
+//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//     throw err
+//   })
+// }
 
 /**
  * 查询自己关注的用户列表

@@ -54,6 +54,8 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchUserOwnedShopInfoSuccess(state, action)
     case ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS:
       return handleFetchShopFollowersSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_FOLLOWERS_PAGING_SUCCESS:
+      return handleFetchShopFollowersPagingSuccess(state, action)  
     case ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS:
       return handleFetchShopFollowersTotalCountSuccess(state, action)
     case ShopActionTypes.FETCH_SIMILAR_SHOP_LIST_SUCCESS:
@@ -343,6 +345,16 @@ function handleFetchShopFollowersSuccess(state, action) {
   let shopId = payload.id
   let shopFollowers = payload.shopFollowers
   state = state.setIn(['shopFollowers', shopId], shopFollowers)
+  return state
+}
+
+function handleFetchShopFollowersPagingSuccess(state, action) {
+  let payload = action.payload
+  let shopId = payload.id
+  let shopFollowers = payload.shopFollowers
+  let _shopFollowers = state.getIn(['shopFollowers', shopId])
+  let newShopFollowers = _shopFollowers.concat(shopFollowers)
+  state = state.setIn(['shopFollowers', shopId], newShopFollowers)
   return state
 }
 
