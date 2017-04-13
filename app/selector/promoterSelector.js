@@ -85,3 +85,11 @@ export function selectPromoterIdentity(state, id) {
   }
   return undefined
 }
+
+export function selectPromoterStatistics(state) {
+  let stat = state.PROMOTER.get('statistics')
+  if (stat) {
+    return stat.toJS()
+  }
+  return undefined
+}

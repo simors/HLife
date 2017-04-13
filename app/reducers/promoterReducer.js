@@ -32,6 +32,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleSetPromoterShops(state, action)
     case promoterActionTypes.ADD_PROMOTER_SHOPS:
       return handleAddPromoterShops(state, action)
+    case promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE:
+      return handleUpdateTotalPerformance(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -109,6 +111,12 @@ function handleAddPromoterShops(state, action) {
   let promoterId = action.payload.promoterId
   let shops = state.getIn(['invitedShops', promoterId])
   state = state.setIn(['invitedShops', promoterId], shops.concat(new List(newShops)))
+  return state
+}
+
+function handleUpdateTotalPerformance(state, action) {
+  let statistics = action.payload.statistics
+  state = state.set('statistics', statistics)
   return state
 }
 

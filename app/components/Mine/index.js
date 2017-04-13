@@ -29,7 +29,13 @@ import {fetchUserPoint} from '../../action/pointActions'
 import * as authSelector from '../../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
 import {getCurrentPromoter, getPromoterTenant} from '../../action/promoterAction'
-import {isPromoterPaid, activePromoter, getTenantFee, selectPromoterIdentity} from '../../selector/promoterSelector'
+import {
+  isPromoterPaid,
+  activePromoter,
+  getTenantFee,
+  selectPromoterIdentity,
+  getPromoterById
+} from '../../selector/promoterSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -87,9 +93,8 @@ class Mine extends Component {
   promoterManage() {
     if (this.props.identity && this.props.identity.includes(IDENTITY_PROMOTER)) {
       if (this.props.isPaid) {
-        console.log('promoterIdentity', this.props.promoterIdentity)
-        if (this.props.promoterIdentity && this.props.promoterIdentity > 0) {
-          Actions.AGENT_PROMOTER()
+        if (this.props.promoterIdentity && this.props.promoterIdentity > 0 && this.props.promoter) {
+          Actions.AGENT_PROMOTER({promoter: this.props.promoter})
         } else {
           Actions.PROMOTER_PERFORMANCE()
         }
@@ -300,6 +305,7 @@ const mapStateToProps = (state, ownProps) => {
   let point = authSelector.getUserPoint(state, currentUserId)
   let isPaid = isPromoterPaid(state, currentPromoterId)
   let promoterIdentity = selectPromoterIdentity(state, currentPromoterId)
+  let promoter = getPromoterById(state, currentPromoterId)
   return {
     userInfo: userInfo,
     userOwnedShopInfo: userOwnedShopInfo,
@@ -309,6 +315,7 @@ const mapStateToProps = (state, ownProps) => {
     point: point,
     fee: getTenantFee(state),
     promoterIdentity: promoterIdentity,
+    promoter: promoter,
   }
 }
 

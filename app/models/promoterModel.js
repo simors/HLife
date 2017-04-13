@@ -27,6 +27,12 @@ export const PromoterRecord = Record({
   updatedAt: undefined,
 }, 'PromoterRecord')
 
+export const PromoterStatisticsRecord = Record({
+  totalInvitedShops: undefined,
+  totalTeamMems: undefined,
+  totalPerformance: undefined,
+})
+
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
@@ -57,6 +63,18 @@ export class PromoterInfo extends PromoterRecord {
   }
 }
 
+export class PromoterStatistics extends PromoterStatisticsRecord {
+  static fromLeancloudObject(lcObj) {
+    let statistics = new PromoterStatisticsRecord()
+    statistics = statistics.withMutations((record) => {
+      record.set('totalInvitedShops', lcObj.totalInvitedShops)
+      record.set('totalTeamMems', lcObj.totalTeamMems)
+      record.set('totalPerformance', lcObj.totalPerformance)
+    })
+    return statistics
+  }
+}
+
 export const Promoter = Record({
   activePromoter: undefined,        // 当前推广员id
   inviteCode: undefined,            // 生成的邀请码
@@ -66,5 +84,6 @@ export const Promoter = Record({
   promoters: Map(),                 // 推广员记录，键为推广员id，值为PromoterInfo
   team: Map(),                      // 记录团队列表信息，键为推广员id，值为其推广团队中所有推广员的id号，此列表按照推广员最后业绩时间排序
   invitedShops: Map(),              // 记录邀请的店铺，键为推广员id，值为店铺的id列表
+  statistics: undefined,            // 统计数据，为PromoterStatisticsRecord结构
 }, 'Promoter')
 
