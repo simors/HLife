@@ -68,7 +68,7 @@ class ShopRegisterSuccess extends Component {
             <Image style={styles.image} source={require("../../../assets/images/shop_congratuation.png")} />
             <View style={styles.congratulationWrap}>
               <Text style={styles.congratulationTxt}>恭喜您</Text>
-              <Text style={styles.congratulationTxt}>已成功入驻吾爱店铺</Text>
+              <Text style={styles.congratulationTxt}>已成功入驻邻家店铺</Text>
             </View>
             <View style={styles.tipWrap}>
               <Text style={[styles.tip, styles.red]}>我们通过线上推广和传播给您的线下店铺带来更多的生意</Text>

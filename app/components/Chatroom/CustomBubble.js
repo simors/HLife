@@ -156,7 +156,7 @@ const styles = {
     },
     wrapper: {
       borderRadius: 5,
-      backgroundColor: '#50E3C2',
+      backgroundColor: '#ff7819',
       marginLeft: 60,
       minHeight: 20,
       justifyContent: 'flex-end',
@@ -174,7 +174,7 @@ const styles = {
       borderTopColor: 'transparent',
       borderRightColor: 'transparent',
       borderBottomColor: 'transparent',
-      borderLeftColor: '#50E3C2',
+      borderLeftColor: '#ff7819',
     },
   }),
 };
