@@ -114,7 +114,7 @@ function handleFetchUserFolloweesPagingSuccess(state, action) {
   let payload = action.payload
   let currentUserId = payload.currentUserId
   let followees = payload.followees
-  let _followees = state.get('followees')
+  let _followees = state.getIn(['followees', currentUserId])
   let newFollowees = _followees.concat(followees)
   state = state.setIn(['followees', currentUserId], newFollowees)
   return state
@@ -131,7 +131,7 @@ function handleFetchUserFollowersPagingSuccess(state, action) {
   let payload = action.payload
   let userId = payload.userId
   let followers = payload.followers
-  let _followers = state.get('followers')
+  let _followers = state.getIn(['followers', userId])
   let newFollowers = _followers.concat(followers)
   state = state.setIn(['followers', userId], newFollowers)
   return state
