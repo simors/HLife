@@ -879,7 +879,7 @@ export function fetchUserOwnedShopInfo(payload) {
 // }
 
 export function fetchShopFollowers(payload) {
-  let shopId = payload.shopId
+  let shopId = payload.id
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
   let params = {
@@ -889,7 +889,7 @@ export function fetchShopFollowers(payload) {
   }
   // console.log('hLifeFetchShopFollowers===params=====', params)
   return AV.Cloud.run('hLifeFetchShopFollowers', params).then((result) => {
-    // console.log('hLifeFetchShopFollowers===result===', result)
+    console.log('hLifeFetchShopFollowers===result===', result)
     if(result.code == 0) {
       return new List(result.shopFollowers)
     }else{

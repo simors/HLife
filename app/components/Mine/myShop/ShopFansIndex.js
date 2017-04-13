@@ -57,7 +57,7 @@ class ShopFansIndex extends Component {
     let payload = {
       lastCreatedAt: this.props.userFollowersLastCreatedAt,
       isRefresh: !!isRefresh,
-      shopId: this.props.shopId,
+      id: this.props.shopId,
       success: (isEmpty) => {
         if(!this.followerListView) {
           return
@@ -109,7 +109,7 @@ const mapStateToProps = (state, ownProps) => {
   })
   let shopId = ownProps.shopId
   let shopFollowers = selectShopFollowers(state, shopId)
-  console.log('shopFollowers: ', shopFollowers)
+  // console.log('shopFollowers: ', shopFollowers)
   let lastCreatedAt = ''
   if(shopFollowers && shopFollowers.length) {
     lastCreatedAt = shopFollowers[shopFollowers.length-1].createdAt

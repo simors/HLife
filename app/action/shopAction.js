@@ -484,9 +484,9 @@ export function fetchUserOwnedShopInfo(payload) {
 export function fetchShopFollowers(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopFollowers(payload).then((shopFollowers) => {
-      let actionType = AuthTypes.FETCH_SHOP_FOLLOWERS_SUCCESS
+      let actionType = ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS
       if(!payload.isRefresh) {
-        actionType = AuthTypes.FETCH_SHOP_FOLLOWERS_PAGING_SUCCESS
+        actionType = ShopActionTypes.FETCH_SHOP_FOLLOWERS_PAGING_SUCCESS
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction({id: payload.id, shopFollowers: shopFollowers}))
