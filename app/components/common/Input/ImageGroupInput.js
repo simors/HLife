@@ -75,6 +75,8 @@ class ImageGroupInput extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // console.log('this.props.initValue========', this.props.initValue)
+    // console.log('nextProps.initValue========', nextProps.initValue)
     if(nextProps.initValue && nextProps.initValue.length) {
       if(this.props.initValue) {
         if(this.props.initValue.length != nextProps.initValue.length) {
@@ -353,6 +355,7 @@ ImageGroupInput.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  // console.log('mapStateToProps.inputData====', inputData)
   return {
     data: inputData.text
   }
