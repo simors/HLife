@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Keyboard,
   ScrollView,
+
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -20,6 +21,8 @@ import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
+import {fetchTopicDraft, handleDestroyTopicDraft} from '../../action/draftAction'
+import uuid from 'react-native-uuid'
 import {getTopicCategories} from '../../selector/configSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ModalBox from 'react-native-modalbox';
@@ -72,6 +75,8 @@ class PublishTopics extends Component {
     };
     this.insertImages = []
     this.isPublishing = false
+    this.draftId=uuid.v1()
+
   }
 
   submitSuccessCallback(context) {
@@ -83,7 +88,10 @@ class PublishTopics extends Component {
   submitErrorCallback(error) {
     Toast.show(error.message)
   }
-
+  componentWillUnmount(){
+    console.log('unmount')
+    // this.timer&&clearInterval(this.timer)
+  }
 
   onButtonPress = () => {
     if (this.props.isLogin) {
@@ -126,6 +134,12 @@ class PublishTopics extends Component {
     if (this.props.topicId && this.props.topicId.objectId) {
       this.setState({selectedTopic: this.props.topicId});
     }
+    this.setInterval(()=>{
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,
+      })
+      console.log('here is uid ',this.draftId)
+    },1000)
+
   }
 
   openModal() {
@@ -213,7 +227,7 @@ class PublishTopics extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => Actions.pop({type:'refresh'})}
           title="发布话题"
           rightType="text"
           rightText="发布"
@@ -273,7 +287,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  publishTopicFormData
+  publishTopicFormData,
+  fetchTopicDraft
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)

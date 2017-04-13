@@ -253,6 +253,14 @@ class Mine extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
             <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_wallet.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>草稿箱</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+            <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/contact.png')} />
             </View>
             <View>

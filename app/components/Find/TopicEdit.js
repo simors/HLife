@@ -29,7 +29,7 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
-
+import uuid from 'react-native-uuid'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -73,6 +73,7 @@ class TopicEdit extends Component {
     };
     this.insertImages = []
     this.isPublishing = false
+    this.draftId=uuid.v1()
   }
 
   submitSuccessCallback = () => {
@@ -124,6 +125,9 @@ class TopicEdit extends Component {
     if (this.props.topicId && this.props.topicId.objectId) {
       this.setState({selectedTopic: this.props.topicId});
     }
+    this.setInterval(()=>{
+      console.log('here is uid ',this.draftId)
+    },1000)
   }
 
   openModal() {
@@ -135,7 +139,9 @@ class TopicEdit extends Component {
     this.setState({selectedTopic: value})
     this.refs.modal3.close();
   }
-
+  componentWillUnmount(){
+    console.log('unmount component')
+  }
   renderTopicsSelected() {
     if (this.props.topics) {
       return (
