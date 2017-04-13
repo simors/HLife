@@ -46,7 +46,7 @@ class PaymentSuccess extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.SHOP_MANAGE_INDEX({popNum: 3})
+      Actions.MY_SHOP_INDEX({popNum: 3})
     }
   }
 

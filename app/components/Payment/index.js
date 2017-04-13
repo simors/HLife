@@ -73,9 +73,9 @@ class Payment extends Component {
       order_no: order_no
     })
     let paymentPayload = {
-      subject: '加盟费',
+      subject: this.props.subject || '加盟费',
       order_no: order_no,
-      amount: 1,
+      amount: this.props.price * 100,
       channel: this.state.selectedChannel,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
@@ -143,7 +143,7 @@ class Payment extends Component {
 }
 
 Payment.defaultProps = {
-  price: 0,
+  price: 0, //单位元
   title: '',
 }
 
