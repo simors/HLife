@@ -55,9 +55,9 @@ class Payment extends Component {
     console.log("get charge:", JSON.stringify(charge))
     if(Platform.OS === 'ios') {
       PingPPModule.setDebugMode(true, () => {console.log("PingPPModule.setDebugMode success!")})
-      PingPPModule.createPayment(charge, 'simorsLjyd', this.paymentCallback)
+      PingPPModule.createPayment(charge, 'wxdcaaa68c51754994', this.paymentCallback)
     } else if(Platform.OS === 'android') {
-      PingPPModule.createPayment(JSON.stringify(charge), 'simorsLjyd', this.paymentCallback)
+      PingPPModule.createPayment(JSON.stringify(charge), 'wxdcaaa68c51754994', this.paymentCallback)
     }
 
   }
