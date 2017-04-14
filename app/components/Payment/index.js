@@ -73,6 +73,7 @@ class Payment extends Component {
       order_no: order_no
     })
     let paymentPayload = {
+      user: this.props.currentUserId,
       subject: this.props.subject || '加盟费',
       order_no: order_no,
       amount: this.props.price * 100,
@@ -143,13 +144,15 @@ class Payment extends Component {
 }
 
 Payment.defaultProps = {
-  price: 0, //单位元
+  price: 0.01, //单位元
   title: '',
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let currentUserId = authSelector.activeUserId(state)
   const isUserLogined = authSelector.isUserLogined(state)
   return {
+    currentUserId: currentUserId,
     isUserLogined: isUserLogined,
   }
 }
