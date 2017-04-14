@@ -20,6 +20,8 @@ import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
+import {fetchTopicDraft, handleDestroyTopicDraft} from '../../action/draftAction'
+
 import {getTopicCategories, getTopicCategoriesById} from '../../selector/configSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ModalBox from 'react-native-modalbox';
@@ -77,6 +79,8 @@ class TopicEdit extends Component {
   }
 
   submitSuccessCallback = () => {
+    this.props.handleDestroyTopicDraft({id:this.draftId})
+
     this.isPublishing = false
     Actions.pop({popNum: 2})
     Toast.show('恭喜您,更新成功!')
@@ -126,6 +130,8 @@ class TopicEdit extends Component {
       this.setState({selectedTopic: this.props.topicId});
     }
     this.setInterval(()=>{
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,
+      })
       console.log('here is uid ',this.draftId)
     },1000)
   }
@@ -282,7 +288,9 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  publishTopicFormData
+  publishTopicFormData,
+  handleDestroyTopicDraft,
+  fetchTopicDraft
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicEdit)

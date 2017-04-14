@@ -80,6 +80,7 @@ class PublishTopics extends Component {
   }
 
   submitSuccessCallback(context) {
+    this.props.handleDestroyTopicDraft({id:this.draftId})
     this.isPublishing = false
     Toast.show('恭喜您,发布成功!')
     Actions.pop()
@@ -288,7 +289,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishTopicFormData,
-  fetchTopicDraft
+  fetchTopicDraft,
+  handleDestroyTopicDraft
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)

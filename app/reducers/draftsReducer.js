@@ -6,6 +6,7 @@ import {REHYDRATE} from 'redux-persist/constants'
 import {Drafts} from '../models/draftsModels'
 import * as draftActionTypes from '../constants/draftActionTypes'
 const initialState = Drafts()
+
 export default function draftsReducer(state = initialState, action) {
   switch (action.type) {
     case draftActionTypes.UPDATE_SHOP_PROMOTION_DRAFT:
@@ -15,7 +16,9 @@ export default function draftsReducer(state = initialState, action) {
     case draftActionTypes.DESTROY_SHOP_PROMOTION_DRAFT:
       return destroyShopPromotionDraft(state,action)
     case draftActionTypes.DESTROY_TOPIC_DRAFT:
-      return destroyTopicDraft
+      return destroyTopicDraft(state,action)
+    case REHYDRATE:
+      return onRehydrate(state, action)
     default:
       return state
   }
@@ -45,9 +48,33 @@ function updateTopicDraft(state,action){
 }
 
 function destroyTopicDraft(state,action){
-
+  let payload = action.payload
+  let id = payload.id
+  let _map = state.get('topics')
+  _map = _map.delete(id)
+  state  = state.set('topics',_map)
+  return state
 }
 
 function destroyShopPromotionDraft(state,action){
+  let payload = action.payload
+  let id = payload.id
+  let _map = state.get('shopPromotions')
+  _map = _map.delete(id)
+  state  = state.set('shopPromotions',_map)
+  return state
+}
 
+
+function onRehydrate(state, action) {
+  let incoming = action.payload.DRAFTS
+  console.log('incoming',incoming)
+  if(incoming){
+      let topics = Map(incoming.topics)
+      let shopPromotions = Map(incoming.shopPromotion)
+      state = state.set('topics',topics)
+      state = state.set('shopPromotions',shopPromotions)
+  }
+
+  return state
 }
