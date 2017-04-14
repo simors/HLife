@@ -291,7 +291,7 @@ class Mine extends Component {
               <Text style={styles.menuName}>钱包</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.MY_DRAFTS()}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_wallet.png')} />
             </View>

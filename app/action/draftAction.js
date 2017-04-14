@@ -30,7 +30,7 @@ export const fetchTopicDraft=(payload)=>{
       formData = getInputFormData(getState(), payload.formKey)
     }
 
-    dispatch(updateTopicDraft({id:payload.draftId,topicDraft:formData}))
+    dispatch(updateTopicDraft({id:payload.draftId,topicDraft:formData,images:payload.images}))
   }
 }
 

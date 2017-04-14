@@ -137,7 +137,7 @@ class PublishTopics extends Component {
       this.setState({selectedTopic: this.props.topicId});
     }
     this.setInterval(()=>{
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,
       })
       console.log('here is uid ',this.draftId)
     },1000)

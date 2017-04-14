@@ -43,14 +43,13 @@ export class MyTopic extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({isRefresh: true, type: "myTopics"})
-    })
+
   }
 
-  renderTopicItem(value, key) {
+  renderTopicItem(value, key,rowId) {
+    console.log('valeu',value,rowId)
     return (
-      <MyTopicShow key={key}
+      <TopicDraftShow key={rowId}
                    containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
                    topic={value}
       />
@@ -61,34 +60,34 @@ export class MyTopic extends Component {
     this.loadMoreData(true)
   }
 
-  loadMoreData(isRefresh) {
-    let lastUpdatedAt = undefined
-    if(this.props.topics){
-      let currentTopics = this.props.topics
-      if(currentTopics && currentTopics.length) {
-        lastUpdatedAt = currentTopics[currentTopics.length-1].updatedAt
-      }
-    }
-    let payload = {
-      type: "myTopics",
-      lastUpdatedAt: lastUpdatedAt,
-      isRefresh: !!isRefresh,
-      success: (isEmpty) => {
-        if(!this.listView) {
-          return
-        }
-        if(isEmpty) {
-          this.listView.isLoadUp(false)
-        }else {
-          this.listView.isLoadUp(true)
-        }
-      },
-      error: (err)=>{
-        Toast.show(err.message, {duration: 1000})
-      }
-    }
-    this.props.fetchTopics(payload)
-  }
+  // loadMoreData(isRefresh) {
+  //   let lastUpdatedAt = undefined
+  //   if(this.props.topics){
+  //     let currentTopics = this.props.topics
+  //     if(currentTopics && currentTopics.length) {
+  //       lastUpdatedAt = currentTopics[currentTopics.length-1].updatedAt
+  //     }
+  //   }
+  //   let payload = {
+  //     type: "myTopics",
+  //     lastUpdatedAt: lastUpdatedAt,
+  //     isRefresh: !!isRefresh,
+  //     success: (isEmpty) => {
+  //       if(!this.listView) {
+  //         return
+  //       }
+  //       if(isEmpty) {
+  //         this.listView.isLoadUp(false)
+  //       }else {
+  //         this.listView.isLoadUp(true)
+  //       }
+  //     },
+  //     error: (err)=>{
+  //       Toast.show(err.message, {duration: 1000})
+  //     }
+  //   }
+  //   this.props.fetchTopics(payload)
+  // }
 
   render() {
     return (
@@ -106,23 +105,15 @@ export class MyTopic extends Component {
         />
         <View style={styles.body}>
           <SwipeListView
-            dataSource={this.props.topics.cloneWithRows(data)}
-            renderRow={ (data, secId, rowId) => (
-              <SwipeRow
-                disableRightSwipe={parseInt(rowId) % 2 !== 0}
-                disableLeftSwipe={parseInt(rowId) % 2 === 0}
-                leftOpenValue={20 + parseInt(rowId) * 5}
-                rightOpenValue={-150}
-              >
-                <View style={styles.rowBack}>
-                  <Text>Left Hidden</Text>
-                  <Text>Right Hidden</Text>
-                </View>
-                <View style={styles.rowFront}>
-                  <Text>Row front | {data}</Text>
-                </View>
-              </SwipeRow>
-            )}
+            dataSource={this.props.dataSrc}
+            renderRow={ (data,key,rowId) => ( this.renderTopicItem(data,key,rowId)
+              )
+             // console.log('data',data,key,rowId)
+
+            }
+
+            leftOpenValue={75}
+            rightOpenValue={-75}
           />
         </View>
       </View>
@@ -133,8 +124,13 @@ export class MyTopic extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const topics = getMyTopicDrafts(state)
-  console.log('topics',topics)
+  let topicArr = []
+  for(let key in topics){
+    topicArr.push({key:key,data:topics[key]})
+  }
+  console.log('topicArr',topicArr)
   return {
+    dataSrc: ds.cloneWithRows(topics),
     // dataSrc: ds.cloneWithRows(topics),
     topics: topics,
   }

@@ -41,8 +41,10 @@ function updateTopicDraft(state,action){
   console.log('payload',payload)
   let id = payload.id
   let topicDraft = payload.topicDraft
+  let images = payload.images
+  let data = {...topicDraft,images:images}
   let _map = state.get('topics')
-  _map = _map.set(id, topicDraft)
+  _map = _map.set(id, data)
   state = state.set('topics', _map)
   return state
 }
