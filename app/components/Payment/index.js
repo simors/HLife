@@ -108,13 +108,13 @@ class Payment extends Component {
       order_no: order_no
     })
     let paymentPayload = {
-      user: this.props.currentUserId,
       subject: this.props.subject || '邻家优店加盟费',
       order_no: order_no,
       amount: this.props.price * 100,
       channel: this.state.selectedChannel,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
+      metadata: this.props.metadata || {} //自定义参数
     }
     this.props.createPingppPayment(paymentPayload)
   }

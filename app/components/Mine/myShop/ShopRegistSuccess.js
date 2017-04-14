@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(193),
     marginLeft: normalizeW(30),
     marginRight: normalizeW(30)
-  }
+  },
   congratulationWrap: {
     marginTop: normalizeH(20),
     justifyContent: 'center',

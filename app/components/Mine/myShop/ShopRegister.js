@@ -241,6 +241,7 @@ class ShopRegister extends Component {
       city: shopInfo.geoCity,
       success: (tenant) =>{
         Actions.PAYMENT({
+          metadata: {shopId:shopInfo.id, tenant: tenant},
           price: tenant,
           popNum: 2,
           paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
