@@ -372,15 +372,17 @@ class MyShopIndex extends Component {
                 </View>
               </View>
 
-              <View style={styles.followersWrap}>
-                <View style={{flexDirection:'row'}}>
-                  <View style={styles.titleLine}/>
-                  <Text style={styles.titleTxt}>粉丝·{this.props.shopFollowersTotalCount}</Text>
+              <TouchableOpacity onPress={()=>{Actions.SHOP_FANS_INDEX({shopId: this.props.shopDetail.id})}}>
+                <View style={styles.followersWrap}>
+                  <View style={{flexDirection:'row'}}>
+                    <View style={styles.titleLine}/>
+                    <Text style={styles.titleTxt}>粉丝·{this.props.shopFollowersTotalCount}</Text>
+                  </View>
+                  <View style={{flexDirection:'row'}}>
+                    {this.renderShopFollowers()}
+                  </View>
                 </View>
-                <View style={{flexDirection:'row'}}>
-                  {this.renderShopFollowers()}
-                </View>
-              </View>
+              </TouchableOpacity>
 
               {this.renderComments()}
 
@@ -443,20 +445,18 @@ class MyShopIndex extends Component {
         return (
           <Image
             key={'shop_follower_' + index}
-            style={{width:20,height:20,marginRight:5}}
+            style={{width:20,height:20,marginRight:5,borderRadius:10}}
             source={source}
           />
         )
       })
       return (
-        <TouchableOpacity onPress={()=>{}}>
-          <View style={{flexDirection:'row',alignItems:'center'}}>
-            {shopFollowersView}
-            <Icon
-              name="ios-arrow-forward"
-              style={{marginLeft:6,color:'#8f8e94',fontSize:17}}/>
-          </View>
-        </TouchableOpacity>
+        <View style={{flexDirection:'row',alignItems:'center'}}>
+          {shopFollowersView}
+          <Icon
+            name="ios-arrow-forward"
+            style={{marginLeft:6,color:'#8f8e94',fontSize:17}}/>
+        </View>
       )
     }
     return (
@@ -486,6 +486,9 @@ const mapStateToProps = (state, ownProps) => {
     shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
     similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
   }
+  // console.log('userOwnedShopInfo===', userOwnedShopInfo)
+  // console.log('shopFollowers===', shopFollowers)
+  // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
 
   return {
     shopDetail: userOwnedShopInfo,

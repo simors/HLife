@@ -20,7 +20,11 @@ export const ShopRecord = Record({
   targetShopCategory: {}, //店铺所属分类信息
   geo:[], //店铺地理坐标
   geoCity:undefined, //店铺地理坐标对应城市名
-  geoDistrict:[], //店铺地理坐标对应区名
+  geoDistrict:'', //店铺地理坐标对应区名
+  geoProvince: undefined,
+  geoProvinceCode: undefined,
+  geoCityCode: undefined,
+  geoDistrictCode: undefined,
   distance: undefined, //用户与店铺的距离
   distanceUnit: 'km', //用户与店铺的距离单位
   geoName: undefined, //店铺地理坐标对应城市区域名称
@@ -36,6 +40,8 @@ export const ShopRecord = Record({
   containedPromotions: List(), //店铺促销活动
   nextSkipNum: 0, //分页查询,跳过条数
   status: -1, //0-后台关闭； 1-正常； 2-店主自己关闭
+  payment: 0, // 记录店铺注册后是否已完成支付流程，0表示未支付，1表示已支付
+  tenant: 0,  // 记录店铺注册时缴纳的入驻费
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
@@ -95,7 +101,7 @@ export class ShopInfo extends ShopRecord {
           })
         }
         record.set('containedTag', containedTag)
-  
+
         let containedPromotions = []
         if(attrs.containedPromotions && attrs.containedPromotions.length) {
           // console.log('attrs.containedPromotions=====', attrs.containedPromotions)
@@ -112,7 +118,7 @@ export class ShopInfo extends ShopRecord {
         }
         // console.log('containedPromotions=>????????====', containedPromotions)
         record.set('containedPromotions', new List(containedPromotions))
-        
+
         record.set('geo', attrs.geo)
         // console.log('lcObj.userCurGeo===', lcObj.userCurGeo)
         // console.log('attrs.geo===', attrs.geo)
@@ -135,11 +141,17 @@ export class ShopInfo extends ShopRecord {
         record.set('geoName', attrs.geoName)
         record.set('geoCity', attrs.geoCity)
         record.set('geoDistrict', attrs.geoDistrict)
+        record.set('geoDistrictCode', attrs.geoDistrictCode)
+        record.set('geoCityCode', attrs.geoCityCode)
+        record.set('geoProvince', attrs.geoProvince)
+        record.set('geoProvinceCode', attrs.geoProvinceCode)
         record.set('pv', numberUtils.formatNum(attrs.pv))
         record.set('score', attrs.score)
         record.set('ourSpecial', attrs.ourSpecial)
         record.set('openTime', attrs.openTime)
         record.set('album', new List(attrs.album))
+        record.set('payment', attrs.payment)
+        record.set('tenant', attrs.tenant)
         record.set('createdAt', lcObj.createdAt.valueOf())
         record.set('updatedAt', lcObj.updatedAt.valueOf())
       })
@@ -147,7 +159,107 @@ export class ShopInfo extends ShopRecord {
       console.log('shopModel.err=======', err)
       throw err
     }
+  }
 
+  static fromLeancloudApi(lcObj) {
+    try{
+      let shopRecord = new ShopRecord()
+      return shopRecord.withMutations((record) => {
+        record.set('id', lcObj.id)
+        record.set('name', lcObj.name)
+        record.set('phone', lcObj.phone)
+        record.set('shopName', lcObj.shopName)
+        record.set('shopAddress', lcObj.shopAddress)
+        record.set('coverUrl', lcObj.coverUrl)
+        record.set('contactNumber', lcObj.contactNumber)
+        record.set('contactNumber2', lcObj.contactNumber2)
+        record.set('certification', lcObj.certification)
+        record.set('status', lcObj.status && parseInt(lcObj.status))
+
+        let targetShopCategory = {}
+        if(lcObj.targetShopCategory) {
+          let targetShopCategoryAttrs = lcObj.targetShopCategory
+          targetShopCategory.imageSource = targetShopCategoryAttrs.imageSource
+          targetShopCategory.shopCategoryId = targetShopCategoryAttrs.shopCategoryId
+          targetShopCategory.status = targetShopCategoryAttrs.status
+          targetShopCategory.text = targetShopCategoryAttrs.text
+          targetShopCategory.id = targetShopCategoryAttrs.id
+        }
+        record.set('targetShopCategory', targetShopCategory)
+
+        let owner = {}
+        if(lcObj.owner) {
+          let ownerAttrs = lcObj.owner
+          owner.nickname = ownerAttrs.nickname
+          owner.avatar = ownerAttrs.avatar
+          owner.id = ownerAttrs.id
+        }
+        record.set('owner', owner)
+
+        let containedTag = []
+        if(lcObj.containedTag && lcObj.containedTag.length) {
+          lcObj.containedTag.forEach((containedTagAttrs)=>{
+            let tag = {
+              id: containedTagAttrs.id,
+              name: containedTagAttrs.name,
+              createdDate: numberUtils.formatLeancloudTime(new Date(containedTagAttrs.createdAt), 'YYYY-MM-DD HH:mm:SS'),
+              createdAt: containedTagAttrs.createdAt.valueOf(),
+              updatedAt: containedTagAttrs.updatedAt.valueOf(),
+            }
+            containedTag.push(tag)
+          })
+        }
+        record.set('containedTag', containedTag)
+
+        let containedPromotions = []
+        if(lcObj.containedPromotions && lcObj.containedPromotions.length) {
+          lcObj.containedPromotions.forEach((promotion)=>{
+            // TODO: promotion的其他数据还没有获取到
+            let promotionRecord = {
+              id: promotion.id,
+            }
+            containedPromotions.push(promotionRecord)
+          })
+        }
+        record.set('containedPromotions', new List(containedPromotions))
+
+        record.set('geo', lcObj.geo)
+        if(lcObj.geo) {
+          let userCurGeo = locSelector.getGeopoint(store.getState())
+          let curGeoPoint = new AV.GeoPoint(userCurGeo)
+          let geo = new AV.GeoPoint(lcObj.geo)
+          let distance = geo.kilometersTo(curGeoPoint)
+          let distanceUnit = 'km'
+          if(distance > 1) {
+            distance = Number(distance).toFixed(1)
+          }else {
+            distance = Number(distance * 1000).toFixed(0)
+            distanceUnit = 'm'
+          }
+          record.set('distance', distance)
+          record.set('distanceUnit', distanceUnit)
+        }
+        record.set('nextSkipNum', lcObj.nextSkipNum || 0)
+        record.set('geoName', lcObj.geoName)
+        record.set('geoCity', lcObj.geoCity)
+        record.set('geoDistrict', lcObj.geoDistrict)
+        record.set('geoDistrictCode', attrs.geoDistrictCode)
+        record.set('geoCityCode', attrs.geoCityCode)
+        record.set('geoProvince', attrs.geoProvince)
+        record.set('geoProvinceCode', attrs.geoProvinceCode)
+        record.set('pv', numberUtils.formatNum(lcObj.pv))
+        record.set('score', lcObj.score)
+        record.set('ourSpecial', lcObj.ourSpecial)
+        record.set('openTime', lcObj.openTime)
+        record.set('album', new List(lcObj.album))
+        record.set('payment', lcObj.payment)
+        record.set('tenant', lcObj.tenant)
+        record.set('createdAt', lcObj.createdAt.valueOf())
+        record.set('updatedAt', lcObj.updatedAt.valueOf())
+      })
+    } catch(err) {
+      throw err
+    }
   }
 }
 
@@ -288,6 +400,7 @@ export const ShopCommentRecord = Record({
   score: 4, // 用户打分
   user: {}, //评论用户详细信息
   createdDate: '', //格式化后的创建时间
+  createdDetailDate: '',
   shopCommentTime: '', //评论列表友好显示时间
   createdAt: undefined, //创建时间戳
   updatedAt: undefined,  //更新时间戳
@@ -320,7 +433,8 @@ export class ShopComment extends ShopCommentRecord {
       }
       record.set('user', user)
       record.set('shopCommentTime', numberUtils.getConversationTime(lcObj.updatedAt.valueOf()))
-      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))
+      record.set('createdDetailDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD HH:mm:SS'))
+      record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
@@ -336,7 +450,8 @@ export class ShopComment extends ShopCommentRecord {
       record.set('targetShop', lcJson.targetShop)
       record.set('user', lcJson.user)
       record.set('shopCommentTime', lcJson.shopCommentTime)
-      record.set('createdDate', lcJson.createdDate)
+      record.set('createdDate', lcJson.createdDate.split(' ')[0])
+      record.set('createdDetailDate', lcJson.createdDate)
       record.set('createdAt', lcJson.createdAt)
       record.set('updatedAt', lcJson.updatedAt)
       record.set('containedReply', lcJson.replys)

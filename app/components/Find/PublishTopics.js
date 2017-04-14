@@ -32,6 +32,7 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -261,16 +262,24 @@ class PublishTopics extends Component {
             {this.renderRichText()}
           </View>
 
-          <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
+          
+
+        </View>
+
+
+        <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
+            <View style={styles.modalTitleContainer}>
+              <Text style={styles.modalTitleTxt}>选择一个主题</Text>
+              <TouchableOpacity onPress={()=>{this.closeModal(this.state.selectedTopic)}} style={{position:'absolute',right:0,top:0}}>
+                <Icon name='ios-close' style={{fontSize:24,height:24}} />
+              </TouchableOpacity>
+            </View>
             <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
-              <Text style={styles.modalShowTopicsStyle}>选择一个主题</Text>
               <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
                 {this.renderTopicsSelected()}
               </View>
             </ScrollView>
           </ModalBox>
-
-        </View>
       </View>
     );
   }
@@ -381,6 +390,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     height: PAGE_HEIGHT,
     alignItems: 'flex-start',
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(20),
+      },
+      android: {
+        paddingTop: normalizeH(0)
+      }
+    }),
   },
   modalTextStyle: {
     marginTop: normalizeH(17),
@@ -389,12 +406,19 @@ const styles = StyleSheet.create({
     color: "#5a5a5a",
     fontSize: em(12)
   },
-  modalShowTopicsStyle: {
-    marginTop: normalizeH(17),
-    marginBottom: normalizeH(18),
-    alignSelf: 'center',
+  modalTitleContainer: {
+    height: 24,
+    width: PAGE_WIDTH - 30,
+    margin:15,
+    marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  modalTitleTxt: {
     color: "#4a4a4a",
-    fontSize: em(12)
+    fontSize: em(12),
+    lineHeight: 24,
   },
   modalTopicButtonStyle: {
     alignItems: 'flex-start',

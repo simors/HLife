@@ -37,7 +37,7 @@ class MyFans extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUserFollowers()
+      this.refreshFollowers()
     })
   }
 
@@ -50,13 +50,26 @@ class MyFans extends Component {
   }
 
   refreshFollowers() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUserFollowers()
-    })
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
-
+  loadMoreData(isRefresh) {
+    let payload = {
+      lastCreatedAt: this.props.userFollowersLastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.followerListView) {
+          return
+        }
+        if(isEmpty) {
+          this.followerListView.isLoadUp(false)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchUserFollowers(payload)
   }
 
   render() {
@@ -81,6 +94,7 @@ class MyFans extends Component {
             loadMoreData={()=> {
               this.loadMoreData()
             }}
+            ref={(listView) => this.followerListView = listView}
           />
         </View>
       </View>
@@ -94,7 +108,11 @@ const mapStateToProps = (state, ownProps) => {
   })
   let currentUserId = activeUserId(state)
   let userFollowers = selectUserFollowers(state, currentUserId)
-  console.log('userFollowers: ', userFollowers)
+  let userFollowersLastCreatedAt = ''
+  if(userFollowers && userFollowers.length) {
+    userFollowersLastCreatedAt = userFollowers[userFollowers.length-1].createdAt
+  }
+  // console.log('userFollowers: ', userFollowers)
   return {
     userFollowers: ds.cloneWithRows(userFollowers),
   }

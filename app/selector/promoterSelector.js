@@ -1,6 +1,7 @@
 /**
  * Created by yangyang on 2017/3/27.
  */
+import {selectShopDetail} from './shopSelector'
 
 export function inviteCode(state) {
   let code = state.PROMOTER.get('inviteCode')
@@ -16,6 +17,15 @@ export function getPromoterById(state, id) {
   let promoter = state.PROMOTER.getIn(['promoters', id])
   if (promoter) {
     return promoter.toJS()
+  }
+  return undefined
+}
+
+export function selectPromoterByUserId(state, userId) {
+  let promoterId = state.PROMOTER.getIn(['userToPromoter', userId])
+  if (promoterId) {
+    let promoter = getPromoterById(state, promoterId)
+    return promoter
   }
   return undefined
 }
@@ -51,4 +61,35 @@ export function getTeamMember(state, promoterId) {
     }
   })
   return team
+}
+
+export function getInvitedShop(state, promoterId) {
+  let shops = []
+  let shopArray = state.PROMOTER.getIn(['invitedShops', promoterId])
+  if (!shopArray) {
+    return shops
+  }
+  shopArray.forEach((shopId) => {
+    let shop = selectShopDetail(state, shopId)
+    if (shop) {
+      shops.push(shop)
+    }
+  })
+  return shops
+}
+
+export function selectPromoterIdentity(state, id) {
+  let promoter = getPromoterById(state, id)
+  if (promoter) {
+    return promoter.identity
+  }
+  return undefined
+}
+
+export function selectPromoterStatistics(state) {
+  let stat = state.PROMOTER.get('statistics')
+  if (stat) {
+    return stat.toJS()
+  }
+  return undefined
 }

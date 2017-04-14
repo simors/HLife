@@ -16,6 +16,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleClearInviteCode(state, action)
     case promoterActionTypes.SET_ACTIVE_PROMOTER:
       return handleSetActivePromoter(state, action)
+    case promoterActionTypes.SET_USER_PROMOTER_MAP:
+      return handleSetUserPromoterMap(state, action)
     case promoterActionTypes.UPDATE_PROMOTER_INFO:
       return handleUpdatePromoter(state, action)
     case promoterActionTypes.UPDATE_TENANT_FEE:
@@ -26,6 +28,12 @@ export default function promoterReducer(state = initialState, action) {
       return handleSetPromoterTeam(state, action)
     case promoterActionTypes.ADD_PROMOTER_TEAM:
       return handleAddPromoterTeam(state, action)
+    case promoterActionTypes.SET_PROMOTER_SHOPS:
+      return handleSetPromoterShops(state, action)
+    case promoterActionTypes.ADD_PROMOTER_SHOPS:
+      return handleAddPromoterShops(state, action)
+    case promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE:
+      return handleUpdateTotalPerformance(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -47,6 +55,13 @@ function handleClearInviteCode(state, action) {
 function handleSetActivePromoter(state, action) {
   let promoterId = action.payload.promoterId
   state = state.set('activePromoter', promoterId)
+  return state
+}
+
+function handleSetUserPromoterMap(state, action) {
+  let userId = action.payload.userId
+  let promoterId = action.payload.promoterId
+  state = state.setIn(['userToPromoter', userId], promoterId)
   return state
 }
 
@@ -81,6 +96,27 @@ function handleAddPromoterTeam(state, action) {
   let promoterId = action.payload.promoterId
   let team = state.getIn(['team', promoterId])
   state = state.setIn(['team', promoterId], team.concat(new List(newTeam)))
+  return state
+}
+
+function handleSetPromoterShops(state, action) {
+  let shops = action.payload.shops
+  let promoterId = action.payload.promoterId
+  state = state.setIn(['invitedShops', promoterId], new List(shops))
+  return state
+}
+
+function handleAddPromoterShops(state, action) {
+  let newShops = action.payload.newShops
+  let promoterId = action.payload.promoterId
+  let shops = state.getIn(['invitedShops', promoterId])
+  state = state.setIn(['invitedShops', promoterId], shops.concat(new List(newShops)))
+  return state
+}
+
+function handleUpdateTotalPerformance(state, action) {
+  let statistics = action.payload.statistics
+  state = state.set('statistics', statistics)
   return state
 }
 

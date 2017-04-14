@@ -6,13 +6,15 @@ import * as uiTypes from '../constants/uiActionTypes'
 import * as promoterActionTypes from '../constants/promoterActionTypes'
 import * as lcAuth from '../api/leancloud/auth'
 import * as lcPromoter from '../api/leancloud/promoter'
+import * as shopActionTypes from '../constants/shopActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {calRegistPromoter} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
 import * as AuthTypes from '../constants/authActionTypes'
-import {PromoterInfo} from '../models/promoterModel'
+import {PromoterInfo, PromoterStatistics} from '../models/promoterModel'
 import {UserInfo} from '../models/userModels'
+import {ShopInfo} from '../models/shopModel'
 import {activePromoter} from '../selector/promoterSelector'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
@@ -25,6 +27,11 @@ let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
 let updateUpPromoter = createAction(promoterActionTypes.UPDATE_UPPROMOTER_ID)
 let setPromoterTeam = createAction(promoterActionTypes.SET_PROMOTER_TEAM)
 let addPromoterTeam = createAction(promoterActionTypes.ADD_PROMOTER_TEAM)
+let addShopDetail = createAction(shopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
+let addPromoterShops = createAction(promoterActionTypes.ADD_PROMOTER_SHOPS)
+let setPromoterShops = createAction(promoterActionTypes.SET_PROMOTER_SHOPS)
+let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
+let updateStatistics = createAction(promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -112,6 +119,7 @@ export function getCurrentPromoter(payload) {
       let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
       dispatch(setActivePromoter({promoterId}))
       dispatch(updatePromoter({promoterId, promoter}))
+      dispatch(setUserPromoterMap({userId: activeUserId(getState()), promoterId: promoterId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -133,6 +141,7 @@ export function getPromoterByUserId(payload) {
       let promoterId = promoterInfo.promoter.objectId
       let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
       dispatch(updatePromoter({promoterId, promoter}))
+      dispatch(setUserPromoterMap({userId, promoterId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -145,6 +154,13 @@ export function getShopTenant(payload) {
   return (dispatch, getState) => {
     lcPromoter.getShopTenantFee(payload).then((tenant) => {
       dispatch(updateTenant({tenant}))
+      if(payload.success) {
+        payload.success(tenant)
+      }
+    }, (error)=>{
+      if(payload.error) {
+        payload.error(error)
+      }
     })
   }
 }
@@ -167,6 +183,7 @@ export function getMyUpPromoter(payload) {
       dispatch(addUserProfile({userInfo}))
       dispatch(updatePromoter({promoterId, promoter}))
       dispatch(updateUpPromoter({upPromoterId: promoterId}))
+      dispatch(setUserPromoterMap({userId: promoterInfo.user.id, promoterId}))
     })
   }
 }
@@ -186,6 +203,7 @@ export function getMyPromoterTeam(payload) {
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
         team.push(promoterId)
         dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
       })
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
@@ -215,6 +233,7 @@ export function getPromoterTeamById(payload) {
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
         team.push(promoterId)
         dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
       })
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
@@ -225,6 +244,38 @@ export function getPromoterTeamById(payload) {
       } else {
         dispatch(setPromoterTeam({promoterId: payload.promoterId, team: team}))
       }
+    })
+  }
+}
+
+export function getMyInvitedShops(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.getMyInvitedShops(payload).then((shops) => {
+      let shopIds = []
+      shops.forEach((shop) => {
+        let shopRecord = ShopInfo.fromLeancloudApi(shop)
+        shopIds.push(shop.id)
+        dispatch(addShopDetail({id: shop.id, shopInfo: shopRecord}))
+      })
+      if (more) {
+        dispatch(addPromoterShops({promoterId: activePromoter(getState()), newShops: shopIds}))
+      } else {
+        dispatch(setPromoterShops({promoterId: activePromoter(getState()), shops: shopIds}))
+      }
+    })
+  }
+}
+
+export function getTotalPerformance(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.getTotalPerformance(payload).then((performance) => {
+      console.log('performance:', performance)
+      let performanceRecord = PromoterStatistics.fromLeancloudObject(performance)
+      dispatch(updateStatistics({statistics: performanceRecord}))
     })
   }
 }

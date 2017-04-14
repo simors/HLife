@@ -28,8 +28,14 @@ import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {fetchUserPoint} from '../../action/pointActions'
 import * as authSelector from '../../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
-import {getCurrentPromoter, getPromoterTenant} from '../../action/promoterAction'
-import {isPromoterPaid, activePromoter, getTenantFee} from '../../selector/promoterSelector'
+import {getCurrentPromoter, getPromoterTenant, getShopTenant} from '../../action/promoterAction'
+import {
+  isPromoterPaid,
+  activePromoter,
+  getTenantFee,
+  selectPromoterIdentity,
+  getPromoterById
+} from '../../selector/promoterSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -39,14 +45,20 @@ class Mine extends Component {
     super(props)
   }
 
+  componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps.this.props===', this.props)
+    // console.log('componentWillReceiveProps.nextProps===', nextProps)
+  }
+
   componentWillMount() {
+    // console.log('componentWillMount=this.props====', this.props)
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
         this.props.fetchUserPoint()
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
         this.props.getCurrentPromoter({error: (err) => {
-          Toast.show(err)
+          //Toast.show(err.message)
         }})
         this.props.getPromoterTenant()
       }
@@ -62,10 +74,32 @@ class Mine extends Component {
         // console.log('this.props.identity==1==')
         let userOwnedShopInfo = this.props.userOwnedShopInfo
         if(userOwnedShopInfo.status == 1) {
-          if(!userOwnedShopInfo.coverUrl) {
-            Actions.COMPLETE_SHOP_INFO()
-          }else{
-            Actions.MY_SHOP_INDEX()
+          if(userOwnedShopInfo.payment == 1) { //已注册，已支付
+            if(!userOwnedShopInfo.coverUrl) {
+              Actions.COMPLETE_SHOP_INFO()
+            }else{
+              Actions.MY_SHOP_INDEX()
+            }
+          }else{//已注册，未支付
+            this.props.getShopTenant({
+              province: userOwnedShopInfo.geoProvince,
+              city: userOwnedShopInfo.geoCity,
+              success: (tenant) =>{
+                Actions.PAYMENT({
+                  price: tenant,
+                  paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
+                  paySuccessJumpSceneParams: {
+                    shopId: userOwnedShopInfo.id,
+                    tenant: tenant,
+                  },
+                  payErrorJumpScene: 'MINE',
+                  payErrorJumpSceneParams: {}
+                })
+              },
+              error: (error)=>{
+                Toast.show('获取加盟费金额失败')
+              }
+            })
           }
         }else if(userOwnedShopInfo.status == 0) {
           Toast.show('您的店铺已被关闭，请与客服联系')
@@ -87,7 +121,11 @@ class Mine extends Component {
   promoterManage() {
     if (this.props.identity && this.props.identity.includes(IDENTITY_PROMOTER)) {
       if (this.props.isPaid) {
-        Actions.PROMOTER_PERFORMANCE()
+        if (this.props.promoterIdentity && this.props.promoterIdentity > 0 && this.props.promoter) {
+          Actions.AGENT_PROMOTER({promoter: this.props.promoter})
+        } else {
+          Actions.PROMOTER_PERFORMANCE()
+        }
       } else {
         Actions.PAYMENT({title: '支付推广员注册费', price: this.props.fee})
       }
@@ -108,7 +146,7 @@ class Mine extends Component {
   renderToolView() {
     return (
       <View style={styles.toolView}>
-        <View style={{marginRight: normalizeW(25)}}>
+        <View style={{marginRight: normalizeW(20)}}>
           <TouchableOpacity onPress={() => {
             Actions.QRCODEREADER({
               readQRSuccess: (userInfo) => {
@@ -295,12 +333,15 @@ class Mine extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let currentUserId = authSelector.activeUserId(state)
+  let currentPromoterId = activePromoter(state)
   let userInfo = authSelector.activeUserInfo(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
   let identity = authSelector.getUserIdentity(state,currentUserId)
   let point = authSelector.getUserPoint(state, currentUserId)
-  let isPaid = isPromoterPaid(state, activePromoter(state))
+  let isPaid = isPromoterPaid(state, currentPromoterId)
+  let promoterIdentity = selectPromoterIdentity(state, currentPromoterId)
+  let promoter = getPromoterById(state, currentPromoterId)
   return {
     userInfo: userInfo,
     userOwnedShopInfo: userOwnedShopInfo,
@@ -309,6 +350,8 @@ const mapStateToProps = (state, ownProps) => {
     isPaid: isPaid,
     point: point,
     fee: getTenantFee(state),
+    promoterIdentity: promoterIdentity,
+    promoter: promoter,
   }
 }
 
@@ -318,6 +361,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserPoint,
   getCurrentPromoter,
   getPromoterTenant,
+  getShopTenant
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)

@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   InteractionManager
 } from 'react-native'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import {getTopicLikedTotalCount, isTopicLiked} from '../../selector/topicSelector'
 import {isUserLogined} from '../../selector/authSelector'
@@ -85,7 +85,7 @@ export class TopicComment extends Component {
         <View style={styles.avatarViewStyle}>
           <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
             <Image style={styles.avatarStyle}
-                   source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
+                   source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
           </TouchableOpacity>
         </View>
 
@@ -108,7 +108,7 @@ export class TopicComment extends Component {
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
               <Image style={styles.likeImageStyle}
                      source={this.props.isLiked ?
-                       require("../../assets/images/like_select.png") :
+                       require("../../assets/images/like_selected.png") :
                        require("../../assets/images/like_unselect.png")}/>
               <Text style={styles.commentTextStyle}>{this.props.likesCount?this.props.likesCount:0}</Text>
             </TouchableOpacity>
@@ -165,11 +165,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     width: PAGE_WIDTH,
-    marginBottom: normalizeH(10)
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
   commentUserStyle: {
     fontSize: em(15),
-    color: "#50e3c2"
+    color: "#ff7819"
   },
   avatarViewStyle: {
     width: normalizeW(57),
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
   userNameStyle: {
     fontSize: em(15),
     marginTop: normalizeH(10),
-    color: "#50e3c2"
+    color: "#ff7819"
   },
   parentCommentTextStyle: {
     color: '#000000',

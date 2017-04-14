@@ -299,8 +299,12 @@ export function getLocalTopics(payload) {
 
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
-  if (!isRefresh && lastCreatedAt) { //分页查询
-    query.lessThan('createdAt', new Date(lastCreatedAt))
+  let lastUpdatedAt = payload.lastUpdatedAt
+  // if (!isRefresh && lastCreatedAt) { //分页查询
+  //   query.lessThan('createdAt', new Date(lastCreatedAt))
+  // }
+  if (!isRefresh && lastUpdatedAt) { //分页查询
+    query.lessThan('updatedAt', new Date(lastUpdatedAt))
   }
   query.equalTo('status',1)
   query.equalTo('city', city)
@@ -308,7 +312,7 @@ export function getLocalTopics(payload) {
 
   query.limit(10)
   query.include(['user'])
-  query.descending('createdAt')
+  query.descending('updatedAt')
 
   return query.find().then(function (results) {
     let topics = []
@@ -352,14 +356,21 @@ export function getTopics(payload) {
     }
 
     let isRefresh = payload.isRefresh
-    let lastCreatedAt = payload.lastCreatedAt
-    if (!isRefresh && lastCreatedAt) { //分页查询
-      query.lessThan('createdAt', new Date(lastCreatedAt))
+    // let lastCreatedAt = payload.lastCreatedAt
+    let lastCreatedAt = ''
+    let lastUpdatedAt = payload.lastUpdatedAt
+    if (!isRefresh) { //分页查询
+      if(lastCreatedAt) {
+        query.lessThan('createdAt', new Date(lastCreatedAt))
+        query.descending('createdAt')
+      }else if(lastUpdatedAt) {
+        query.lessThan('updatedAt', new Date(lastCreatedAt))
+        query.descending('updatedAt')
+      }
     }
 
     query.limit(10) // 最多返回 10 条结果
     query.include(['user'])
-    query.descending('createdAt')
 
     return query.find().then(function (results) {
       let topics = []

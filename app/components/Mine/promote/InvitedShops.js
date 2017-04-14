@@ -21,6 +21,8 @@ import THEME from '../../../constants/themes/theme1'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import Header from '../../common/Header'
 import CommonListView from '../../common/CommonListView'
+import {getMyInvitedShops} from '../../../action/promoterAction'
+import {getInvitedShop, activePromoter} from '../../../selector/promoterSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -28,86 +30,55 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class InvitedShops extends Component {
   constructor(props) {
     super(props)
+    this.lastCreatedAt = undefined
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.getMyInvitedShops({limit: 10})
     })
   }
 
   refreshData() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.getMyInvitedShops({limit: 10})
     })
   }
 
   loadMoreData() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.getMyInvitedShops({
+        limit: 10,
+        more: true,
+        lastCreatedAt: this.lastCreatedAt,
+      })
     })
   }
 
-  renderRow(rowData, index) {
+  renderRow(shop, index) {
+    this.lastCreatedAt = shop.createdAt
     return (
       <View>
-        <View>
-          <TouchableOpacity style={styles.shopItemView} onPress={() => {}}>
-            <View style={styles.shopCoverView}>
-              <Image style={{width: normalizeW(100), height: normalizeH(75)}}
-                    source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491905602838&di=e6bec8302adfa1e44dcbf4f10339e0b5&imgtype=0&src=http%3A%2F%2Fimg.china-ef.com%2Fuser%2F201504%2F16%2F2015041607441901.jpg'}}/>
+        <TouchableOpacity style={styles.shopItemView} onPress={() => {Actions.SHOP_DETAIL({id: shop.id})}}>
+          <View style={styles.shopCoverView}>
+            <Image style={{width: normalizeW(100), height: normalizeH(75)}}
+                  source={shop.coverUrl ? {uri: shop.coverUrl} : require('../../../assets/images/shop_defualt.png')}/>
+          </View>
+          <View style={{flex: 1}}>
+            <Text style={styles.shopNameText}>{shop.shopName}</Text>
+            <View style={{flexDirection: 'row', paddingTop: normalizeH(10)}}>
+              {
+                shop.containedTag[0] ? <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>{shop.containedTag[0].name}</Text> : <View/>
+              }
+              <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>{shop.geoDistrict}</Text>
+              <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>{shop.distance}{shop.distanceUnit}</Text>
             </View>
-            <View style={{flex: 1}}>
-              <Text style={styles.shopNameText}>乐惠港式茶餐厅</Text>
-              <View style={{flexDirection: 'row', paddingTop: normalizeH(10)}}>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>粤菜</Text>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>银盆岭</Text>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>4.3km</Text>
-              </View>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: normalizeH(15), alignItems: 'center'}}>
-                <Text style={{fontSize: em(12), color: THEME.base.mainColor}}>入驻费（元）</Text>
-                <Text style={{fontSize: em(18), color: THEME.base.mainColor, fontWeight: 'bold', paddingRight: normalizeW(15)}}>¥ 150</Text>
-              </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: normalizeH(15), alignItems: 'center'}}>
+              <Text style={{fontSize: em(12), color: THEME.base.mainColor}}>入驻费（元）</Text>
+              <Text style={{fontSize: em(18), color: THEME.base.mainColor, fontWeight: 'bold', paddingRight: normalizeW(15)}}>¥ {shop.tenant}</Text>
             </View>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity style={styles.shopItemView} onPress={() => {}}>
-            <View style={styles.shopCoverView}>
-              <Image style={{width: normalizeW(100), height: normalizeH(75)}}
-                     source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491905602838&di=e6bec8302adfa1e44dcbf4f10339e0b5&imgtype=0&src=http%3A%2F%2Fimg.china-ef.com%2Fuser%2F201504%2F16%2F2015041607441901.jpg'}}/>
-            </View>
-            <View style={{flex: 1}}>
-              <Text style={styles.shopNameText}>乐惠港式茶餐厅</Text>
-              <View style={{flexDirection: 'row', paddingTop: normalizeH(10)}}>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>粤菜</Text>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>银盆岭</Text>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>4.3km</Text>
-              </View>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: normalizeH(15), alignItems: 'center'}}>
-                <Text style={{fontSize: em(12), color: THEME.base.mainColor}}>入驻费（元）</Text>
-                <Text style={{fontSize: em(18), color: THEME.base.mainColor, fontWeight: 'bold', paddingRight: normalizeW(15)}}>¥ 150</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity style={styles.shopItemView} onPress={() => {}}>
-            <View style={styles.shopCoverView}>
-              <Image style={{width: normalizeW(100), height: normalizeH(75)}}
-                     source={{uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1491905602838&di=e6bec8302adfa1e44dcbf4f10339e0b5&imgtype=0&src=http%3A%2F%2Fimg.china-ef.com%2Fuser%2F201504%2F16%2F2015041607441901.jpg'}}/>
-            </View>
-            <View style={{flex: 1}}>
-              <Text style={styles.shopNameText}>乐惠港式茶餐厅</Text>
-              <View style={{flexDirection: 'row', paddingTop: normalizeH(10)}}>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>粤菜</Text>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>银盆岭</Text>
-                <Text style={[styles.tipText, {paddingRight: normalizeW(8)}]}>4.3km</Text>
-              </View>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop: normalizeH(15), alignItems: 'center'}}>
-                <Text style={{fontSize: em(12), color: THEME.base.mainColor}}>入驻费（元）</Text>
-                <Text style={{fontSize: em(18), color: THEME.base.mainColor, fontWeight: 'bold', paddingRight: normalizeW(15)}}>¥ 150</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -163,7 +134,8 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
-  let comps = ['aaa']
+  let promoterId = activePromoter(state)
+  let comps = getInvitedShop(state, promoterId)
 
   return {
     dataSource: ds.cloneWithRows(comps),
@@ -171,6 +143,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getMyInvitedShops,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(InvitedShops)

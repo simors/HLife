@@ -99,12 +99,13 @@ export default class MyTopicShow extends Component {
   render() {
     if (this.props.topic) {
       let createDate = new Date(this.props.topic.createdAt)
+      let updateDate = new Date(this.props.topic.updatedAt)
       return (
         <View style={[styles.containerStyle, this.props.containerStyle]}>
           <View style={styles.timeWrapStyle}>
             <View style={{backgroundColor: THEME.base.mainColor, borderRadius: 5, padding: 5}}>
-              <Text style={styles.dayStyle}>{getLeancloudTimeToDay(createDate)}</Text>
-              <Text style={styles.monthStyle}>{getLeancloudTimeToMonth(createDate)}</Text>
+              <Text style={styles.dayStyle}>{getLeancloudTimeToDay(updateDate)}</Text>
+              <Text style={styles.monthStyle}>{getLeancloudTimeToMonth(updateDate)}</Text>
             </View>
           </View>
           <View style={{flex: 1, paddingLeft: normalizeW(10)}}>
