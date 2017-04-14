@@ -22,6 +22,7 @@ import {connect} from 'react-redux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
+import {selectSubArea} from '../../../selector/configSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -100,8 +101,14 @@ class AreaPromoterManager extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+  let promoter = ownProps.promoter
+  let subArea = []
+  if (promoter.identity == 1 || promoter.identity == 2) {
+    subArea = selectSubArea(state, {sublevel: promoter.identity, province: promoter.province, city: promoter.city})
+  }
+
   return {
-    areaSource: ds.cloneWithRows(['长沙', '湘潭']),
+    areaSource: ds.cloneWithRows(subArea),
   }
 }
 
