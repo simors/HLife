@@ -1,7 +1,6 @@
 /**
  * Created by wanpeng on 2017/4/12.
  */
-
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -33,8 +32,8 @@ class PaymentPassword extends Component {
     }
   }
 
-  onPasswordEnd = () => {
-
+  onPasswordEnd = (password) => {
+    console.log("onPasswordEnd:", password)
   }
   render() {
     return(

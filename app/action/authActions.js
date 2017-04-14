@@ -38,6 +38,8 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   PUBLISH_ANNOUNCEMENT: 'PUBLISH_ANNOUNCEMENT',
   PUBLISH_SHOP_COMMENT: 'PUBLISH_SHOP_COMMENT',
   UPDATE_ANNOUNCEMENT: 'UPDATE_ANNOUNCEMENT',
+  GET_PAYMENT_SMS_CODE: 'GET_PAYMENT_SMS_CODE',
+  PAYMENT_AUTH: 'PAYMENT_AUTH',
 }
 
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
@@ -103,6 +105,9 @@ export function submitFormData(payload) {
       case INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT:
         dispatch(handleUpdateAnnouncement(payload, formData))
         break
+      case INPUT_FORM_SUBMIT_TYPE.PAYMENT_AUTH:
+        dispatch(handlePaymentAuth(payload, formData))
+        break
     }
   }
 }
@@ -140,6 +145,9 @@ export function submitInputData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE:
         dispatch(handleRequestResetPwdSmsCode(payload, data))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.GET_PAYMENT_SMS_CODE:
+        dispatch(handlePaymentSmsAuth(payload, data))
         break
     }
   }
@@ -226,6 +234,24 @@ function handleGetSmsCode(payload, data) {
   }
 }
 
+
+function handlePaymentSmsAuth(payload, data) {
+  return (dispatch, getState) => {
+    paymentSmsAuthPayload = {
+      phone: payload.phone,
+    }
+    lcAuth.requestResetPwdSmsCode(paymentSmsAuthPayload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 function handleRegister(payload, formData) {
   return (dispatch, getState) => {
     let verifyRegSmsPayload = {
@@ -245,6 +271,24 @@ function handleRegister(payload, formData) {
         }
       })
     }
+  }
+}
+
+function handlePaymentAuth(payload, formData) {
+  return (dispatch, getState) => {
+    let verifyRegSmsPayload = {
+      phone: payload.phone,
+      smsAuthCode: formData.smsAuthCodeInput.text,
+    }
+    lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
   }
 }
 
