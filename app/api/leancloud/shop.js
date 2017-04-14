@@ -18,8 +18,11 @@ import {
 import {UserInfo} from '../../models/userModels'
 import {Geolocation} from '../../components/common/BaiduMap'
 import * as AVUtils from '../../util/AVUtils'
+import * as Utils from '../../util/Utils'
 import * as shopSelector from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
+import * as configSelector from '../../selector/configSelector'
+import * as locSelector from '../../selector/locSelector'
 import {store} from '../../store/persistStore'
 
 export function getShopList(payload) {
@@ -1034,7 +1037,7 @@ export function submitShopPromotion(payload) {
 }
 
 export function shopCertification(payload) {
-  console.log('shopCertification.payload====', payload)
+  // console.log('shopCertification.payload====', payload)
   let params = {
     inviteCode: payload.inviteCode,
     name: payload.name,
@@ -1046,7 +1049,29 @@ export function shopCertification(payload) {
     geoDistrict: payload.geoDistrict,
     certification: payload.certification,
   }
-  console.log('shopCertification.params====', params)
+
+  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  // console.log('provincesAndCities====', provincesAndCities)
+
+  let province = locSelector.getProvince(store.getState())
+  // console.log('province====', province)
+  let provinceCode = Utils.getProvinceCode(provincesAndCities, province)
+  // console.log('provinceCode====', provinceCode)
+
+  let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
+  // console.log('cityCode====', cityCode)
+
+  let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
+
+  params.geoProvince = province
+  params.geoProvinceCode = provinceCode
+  params.geoCityCode = cityCode
+  params.geoDistrictCode = districtCode
+
+  let userId = authSelector.activeUserId(store.getState())
+  params.userId = userId
+
+  // console.log('shopCertification.params====', params)
   return AV.Cloud.run('hLifeShopCertificate', params).then((shopInfo) => {
     return shopInfo
   }, (err) => {
@@ -1171,6 +1196,51 @@ export function updateShopPromotion(payload) {
     })
   }
 
+}
+
+export function updateShopLocationInfo(payload) {
+  // console.log('updateUserLocationInfo.payload====', payload)
+
+  let shopId = payload.shopId
+
+  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  // console.log('provincesAndCities====', provincesAndCities)
+
+  let province = locSelector.getProvince(store.getState())
+  // console.log('province====', province)
+  let provinceCode = Utils.getProvinceCode(provincesAndCities, province)
+  // console.log('provinceCode====', provinceCode)
+
+  let city = locSelector.getCity(store.getState())
+  // console.log('city====', city)
+  let cityCode = Utils.getCityCode(provincesAndCities, city)
+  // console.log('cityCode====', cityCode)
+
+  let district = locSelector.getDistrict(store.getState())
+  // console.log('district====', district)
+  let districtCode = Utils.getDistrictCode(provincesAndCities, district)
+  // console.log('districtCode====', districtCode)
+
+  let latlng = locSelector.getGeopoint(store.getState())
+
+  let params = {
+    shopId,
+    province,
+    provinceCode,
+    city,
+    cityCode,
+    district,
+    districtCode,
+    ...latlng
+  }
+  // console.log('hLifeUpdateShopLocationInfo.params=======', params)
+  return AV.Cloud.run('hLifeUpdateShopLocationInfo', params).then((result)=>{
+    // console.log('hLifeUpdateShopLocationInfo.result=======', result)
+    return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
 
 

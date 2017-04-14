@@ -76,6 +76,9 @@ export class UserInfo extends UserInfoRecord {
       for(let key in attrs) {
         if('identity' == key) {
           record.set('identity', new List(attrs.identity))
+        }else if('mobilePhoneNumber' == key){
+          record.set(key, attrs[key])
+          record.set('phone', attrs[key])
         }else {
           record.set(key, attrs[key])
         }

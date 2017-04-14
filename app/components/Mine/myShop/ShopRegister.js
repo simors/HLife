@@ -466,6 +466,7 @@ class ShopRegister extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const activeUserInfo = authSelector.activeUserInfo(state)
+  // console.log('activeUserInfo===', activeUserInfo)
   const phone = activeUserInfo.phone
 
   return {
