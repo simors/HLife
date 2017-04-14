@@ -37,19 +37,19 @@ class ShopRegisterSuccess extends Component {
     })
   }
 
-  completeShopInfo() {
+  onOk() {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.COMPLETE_SHOP_INFO({popNum: 3})
+      Actions.COMPLETE_SHOP_INFO()
     }
   }
 
-  goShopManage() {
+  onCancel() {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.MY_SHOP_INDEX({popNum: 3})
+      Actions.MINE()
     }
   }
 
@@ -78,12 +78,12 @@ class ShopRegisterSuccess extends Component {
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20)}}
               title="完善店铺资料"
-              onPress={()=>{this.completeShopInfo()}}
+              onPress={()=>{this.onOk()}}
             />
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20), backgroundColor:'#d8d8d8'}}
               title="取消"
-              onPress={()=>{this.goShopManage()}}
+              onPress={()=>{this.onCancel()}}
             />
           </ScrollView>
         </View>

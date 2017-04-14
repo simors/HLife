@@ -28,6 +28,7 @@ import * as authSelector from '../../selector/authSelector'
 import {createPingppPayment} from '../../action/paymentActions'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
+import Popup from '@zzzkk2009/react-native-popup'
 
 const PingPPModule = NativeModules.PingPPModule
 
@@ -43,12 +44,47 @@ class Payment extends Component {
 
   }
 
+  showErrorMessage = (errorCode = -99, result = '异常') => {
+    Popup.tip({
+      title: '支付失败',
+      content: '支付错误码：' + errorCode + '\n错误原因：' + result,
+      bnt: {
+        text: '确认',
+        style: {color: '#FF7819'},
+        callback: ()=>{
+          if(this.props.payErrorJumpScene) {
+            Actions[this.props.payErrorJumpScene](this.props.payErrorJumpSceneParams)
+          }else{
+            Actions.MINE()
+          }
+        }
+      }
+    })
+  }
+
   paymentCallback = (errorCode, result) => {
     console.log("PingPPModule.createPayment callback!")
     console.log("errorCode:", errorCode)
     console.log("result:", result)
-    if(errorCode == 0)
-      Actions.PAYMENT_SUCCESS()
+    if(errorCode == 'success'){
+      Toast.show("支付成功")
+      if(this.props.paySuccessJumpScene) {
+        if(this.props.popNum) {
+          Actions.pop({
+            popNum: this.props.popNum
+          })
+        }else{
+          Actions.pop()
+        }
+        setTimeout(()=>{
+          Actions[this.props.paySuccessJumpScene](this.props.paySuccessJumpSceneParams)
+        }, 10)
+      }else{
+        Actions.MINE()
+      }
+    }else{
+      this.showErrorMessage(errorCode, result)
+    }
   }
 
   submitSuccessCallback = (charge) => {
@@ -63,8 +99,7 @@ class Payment extends Component {
   }
 
   submitErrorCallback = (error) => {
-    Toast.show("支付失败")
-    console.log("error:", error)
+    this.showErrorMessage(error.code, error.message)
   }
 
   onPayment() {
@@ -74,7 +109,7 @@ class Payment extends Component {
     })
     let paymentPayload = {
       user: this.props.currentUserId,
-      subject: this.props.subject || '加盟费',
+      subject: this.props.subject || '邻家优店加盟费',
       order_no: order_no,
       amount: this.props.price * 100,
       channel: this.state.selectedChannel,
@@ -100,7 +135,7 @@ class Payment extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title={this.props.title}
+          title={this.props.title || '收银台'}
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}

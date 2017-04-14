@@ -28,7 +28,7 @@ import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {fetchUserPoint} from '../../action/pointActions'
 import * as authSelector from '../../selector/authSelector'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
-import {getCurrentPromoter, getPromoterTenant} from '../../action/promoterAction'
+import {getCurrentPromoter, getPromoterTenant, getShopTenant} from '../../action/promoterAction'
 import {
   isPromoterPaid,
   activePromoter,
@@ -45,14 +45,20 @@ class Mine extends Component {
     super(props)
   }
 
+  componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps.this.props===', this.props)
+    // console.log('componentWillReceiveProps.nextProps===', nextProps)
+  }
+
   componentWillMount() {
+    // console.log('componentWillMount=this.props====', this.props)
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
         this.props.fetchUserPoint()
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
         this.props.getCurrentPromoter({error: (err) => {
-          Toast.show(err.message)
+          //Toast.show(err.message)
         }})
         this.props.getPromoterTenant()
       }
@@ -68,10 +74,32 @@ class Mine extends Component {
         // console.log('this.props.identity==1==')
         let userOwnedShopInfo = this.props.userOwnedShopInfo
         if(userOwnedShopInfo.status == 1) {
-          if(!userOwnedShopInfo.coverUrl) {
-            Actions.COMPLETE_SHOP_INFO()
-          }else{
-            Actions.MY_SHOP_INDEX()
+          if(userOwnedShopInfo.payment == 1) { //已注册，已支付
+            if(!userOwnedShopInfo.coverUrl) {
+              Actions.COMPLETE_SHOP_INFO()
+            }else{
+              Actions.MY_SHOP_INDEX()
+            }
+          }else{//已注册，未支付
+            this.props.getShopTenant({
+              province: userOwnedShopInfo.geoProvince,
+              city: userOwnedShopInfo.geoCity,
+              success: (tenant) =>{
+                Actions.PAYMENT({
+                  price: tenant,
+                  paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
+                  paySuccessJumpSceneParams: {
+                    shopId: userOwnedShopInfo.id,
+                    tenant: tenant,
+                  },
+                  payErrorJumpScene: 'MINE',
+                  payErrorJumpSceneParams: {}
+                })
+              },
+              error: (error)=>{
+                Toast.show('获取加盟费金额失败')
+              }
+            })
           }
         }else if(userOwnedShopInfo.status == 0) {
           Toast.show('您的店铺已被关闭，请与客服联系')
@@ -325,6 +353,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserPoint,
   getCurrentPromoter,
   getPromoterTenant,
+  getShopTenant
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)

@@ -154,6 +154,13 @@ export function getShopTenant(payload) {
   return (dispatch, getState) => {
     lcPromoter.getShopTenantFee(payload).then((tenant) => {
       dispatch(updateTenant({tenant}))
+      if(payload.success) {
+        payload.success(tenant)
+      }
+    }, (error)=>{
+      if(payload.error) {
+        payload.error(error)
+      }
     })
   }
 }

@@ -346,13 +346,14 @@ class CompleteShopInfo extends Component {
   }
 
   goBack() {
-    if(this.props.popNum > 2) {
-      Actions.pop({
-        popNum: this.props.popNum
-      })
-    }else {
-      Actions.pop()
-    }
+    // if(this.props.popNum > 2) {
+    //   Actions.pop({
+    //     popNum: this.props.popNum
+    //   })
+    // }else {
+    //   Actions.pop()
+    // }
+    Actions.MINE()
   }
 
   editShopCover(){
