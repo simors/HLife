@@ -7,6 +7,7 @@ import * as AVUtils from '../../util/AVUtils'
 
 export function createPingppPayment(payload) {
   let params = {
+    user: payload.user,
     subject: payload.subject,
     order_no: payload.order_no,
     amount: payload.amount,

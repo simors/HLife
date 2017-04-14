@@ -20,7 +20,11 @@ export const ShopRecord = Record({
   targetShopCategory: {}, //店铺所属分类信息
   geo:[], //店铺地理坐标
   geoCity:undefined, //店铺地理坐标对应城市名
-  geoDistrict:[], //店铺地理坐标对应区名
+  geoDistrict:'', //店铺地理坐标对应区名
+  geoProvince: undefined,
+  geoProvinceCode: undefined,
+  geoCityCode: undefined,
+  geoDistrictCode: undefined,
   distance: undefined, //用户与店铺的距离
   distanceUnit: 'km', //用户与店铺的距离单位
   geoName: undefined, //店铺地理坐标对应城市区域名称
@@ -137,6 +141,10 @@ export class ShopInfo extends ShopRecord {
         record.set('geoName', attrs.geoName)
         record.set('geoCity', attrs.geoCity)
         record.set('geoDistrict', attrs.geoDistrict)
+        record.set('geoDistrictCode', attrs.geoDistrictCode)
+        record.set('geoCityCode', attrs.geoCityCode)
+        record.set('geoProvince', attrs.geoProvince)
+        record.set('geoProvinceCode', attrs.geoProvinceCode)
         record.set('pv', numberUtils.formatNum(attrs.pv))
         record.set('score', attrs.score)
         record.set('ourSpecial', attrs.ourSpecial)
@@ -235,6 +243,10 @@ export class ShopInfo extends ShopRecord {
         record.set('geoName', lcObj.geoName)
         record.set('geoCity', lcObj.geoCity)
         record.set('geoDistrict', lcObj.geoDistrict)
+        record.set('geoDistrictCode', attrs.geoDistrictCode)
+        record.set('geoCityCode', attrs.geoCityCode)
+        record.set('geoProvince', attrs.geoProvince)
+        record.set('geoProvinceCode', attrs.geoProvinceCode)
         record.set('pv', numberUtils.formatNum(lcObj.pv))
         record.set('score', lcObj.score)
         record.set('ourSpecial', lcObj.ourSpecial)

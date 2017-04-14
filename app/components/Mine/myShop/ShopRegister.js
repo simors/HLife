@@ -29,11 +29,16 @@ import PhoneInput from '../../common/Input/PhoneInput'
 import CommonTextInput from '../../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {getShopTenant} from '../../../action/promoterAction'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
 import ImageInput from '../../common/Input/ImageInput'
 import * as authSelector from '../../../selector/authSelector'
+import * as promoterSelector from '../../../selector/promoterSelector'
 import Loading from '../../common/Loading'
+import * as Utils from '../../../util/Utils'
+import * as configSelector from '../../../selector/configSelector'
+import {store} from '../../../store/persistStore'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -202,13 +207,17 @@ class ShopRegister extends Component {
         stateKey: shopGeoCityInput.stateKey,
         data: {text:nextProps.currentCity},
       })
+
     }
+
     if(nextProps.currentDistrict) {
       nextProps.inputFormUpdate({
         formKey: shopGeoDistrictInput.formKey,
         stateKey: shopGeoDistrictInput.stateKey,
         data: {text:nextProps.currentDistrict},
       })
+
+      
     }
     // if(nextProps.qRCode) {
     //   this.setState({
@@ -223,10 +232,31 @@ class ShopRegister extends Component {
 
   }
 
-  submitSuccessCallback = () => {
+  submitSuccessCallback = (shopInfo) => {
     this.isSubmiting = false
     Loading.hide(this.loading)
-    Actions.SHOPR_EGISTER_SUCCESS()
+
+    this.props.getShopTenant({
+      province: shopInfo.geoProvince,
+      city: shopInfo.geoCity,
+      success: (tenant) =>{
+        Actions.PAYMENT({
+          metadata: {shopId:shopInfo.id, tenant: tenant},
+          price: tenant,
+          popNum: 2,
+          paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
+          paySuccessJumpSceneParams: {
+            shopId: shopInfo.id,
+            tenant: tenant,
+          },
+          payErrorJumpScene: 'MINE',
+          payErrorJumpSceneParams: {}
+        })
+      },
+      error: (error)=>{
+        Actions.MINE()
+      }
+    })
   }
 
   submitErrorCallback = (error) => {
@@ -479,6 +509,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
   inputFormUpdate,
   initInputForm,
+  getShopTenant
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopRegister)
