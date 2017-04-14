@@ -152,7 +152,7 @@ function handleLoginWithPwd(payload, formData) {
       password: formData.passwordInput.text,
     }
     lcAuth.loginWithPwd(loginPayload).then((userInfo) => {
-      // console.log('handleLoginWithPwd===userInfo=', userInfo)
+      console.log('handleLoginWithPwd===userInfo=', userInfo)
       if (payload.success) {
         payload.success(userInfo.userInfo.toJS())
       }
