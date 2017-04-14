@@ -65,9 +65,6 @@ class ReplyList extends Component {
                 }
                 <Text style={styles.replyWord}>:</Text>
               </View>
-              <View style={styles.replyTimeWrap}>
-                <Text style={styles.replyTime}>{item.createdDate}</Text>
-              </View>
             </View>
 
             <TouchableOpacity style={styles.replyContentWrap} onPress={()=>{this.reply(item.id, item.user.nickname, item.user.id)}}>

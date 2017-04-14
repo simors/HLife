@@ -24,7 +24,7 @@ import CommonListView from '../../common/CommonListView'
 import PromoterLevelIcon from './PromoterLevelIcon'
 import PromoterTeamItem from './PromoterTeamItem'
 import {getMyUpPromoter, getMyPromoterTeam} from '../../../action/promoterAction'
-import {getPromoterById, getUpPromoterId, activePromoter, getMyTeam} from '../../../selector/promoterSelector'
+import {getPromoterById, getUpPromoterId, activePromoter, getTeamMember} from '../../../selector/promoterSelector'
 import {userInfoById} from '../../../selector/authSelector'
 import {getConversationTime} from '../../../util/numberUtils'
 
@@ -189,7 +189,7 @@ const mapStateToProps = (state, ownProps) => {
   let promoterId = activePromoter(state)
   let promoter = getPromoterById(state, promoterId)
 
-  let team = getMyTeam(state)
+  let team = getTeamMember(state, promoterId)
 
   return {
     dataSource: ds.cloneWithRows(comps),

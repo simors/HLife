@@ -10,6 +10,7 @@ let createPaymentAction = createAction(CREATE_PAYMENT)
 export function createPingppPayment(payload) {
   return (dispatch, getState) => {
     paymentPayload = {
+      user: payload.user,
       subject: payload.subject,
       order_no: payload.order_no,
       amount: payload.amount,

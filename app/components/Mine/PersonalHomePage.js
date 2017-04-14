@@ -23,7 +23,7 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
-import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount, followUser, unFollowUser,fetchUserFollowees} from '../../action/authActions'
+import {getUserInfoById, fetchOtherUserFollowers, fetchOtherUserFollowersTotalCount, followUser, unFollowUser,fetchUserFollowees, userIsFollowedTheUser} from '../../action/authActions'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {selectUserTopics, selectUserTopicsTotalCount} from '../../selector/topicSelector'
 import {fetchTopicsByUserid, fetchUserTopicsTotalCount} from '../../action/topicActions'
@@ -35,7 +35,8 @@ import FollowUser from '../common/FollowUser'
 import MyTopicShow from './MyTopic/MyTopicShow'
 import * as Utils from '../../util/Utils'
 import * as AVUtils from '../../util/AVUtils'
-import {getPromoterById, activePromoter} from '../../selector/promoterSelector'
+import {getPromoterById, activePromoter, selectPromoterByUserId} from '../../selector/promoterSelector'
+import {getPromoterByUserId} from '../../action/promoterAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -45,19 +46,30 @@ class PersonalHomePage extends Component {
     super(props)
 
     this.state = {
-
+      userIsFollowedTheUser: false
     }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.userIsFollowedTheUser({
+        userId: this.props.userId,
+        success: (result)=>{
+          this.setState({
+            userIsFollowedTheUser: result
+          })
+        }
+      })
+
       this.props.getUserInfoById({userId: this.props.userId})
       // // this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
       this.props.fetchOtherUserFollowers({userId: this.props.userId})
       this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
       this.props.fetchUserTopicsTotalCount({userId: this.props.userId})
-      this.props.fetchUserFollowees()
+      this.props.getPromoterByUserId({userId: this.props.userId})
+      // this.props.fetchUserFollowees()
       this.refreshData()
+
     })
   }
 
@@ -69,8 +81,7 @@ class PersonalHomePage extends Component {
     if (!this.props.isLogin) {
       Actions.LOGIN()
     } else {
-      let isFollowed = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
-      if(!isFollowed) {
+      if(!this.state.userIsFollowedTheUser) {
         Toast.show('只有关注了才能发私信哦!!')
         return
       }
@@ -265,7 +276,12 @@ class PersonalHomePage extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+            AVUtils.pop({
+              backSceneName: this.props.backSceneName,
+              backSceneParams: this.props.backSceneParams
+            })
+          }}
           rightType="none"
           headerContainerStyle={{borderBottomWidth:0}}
         />
@@ -286,7 +302,7 @@ class PersonalHomePage extends Component {
   }
 
   renderBottomView() {
-    let userIsFollowedTheUser = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
+    let userIsFollowedTheUser = this.state.userIsFollowedTheUser
     let userOwnedShopInfo = this.props.userOwnedShopInfo
 
     return (
@@ -351,7 +367,10 @@ class PersonalHomePage extends Component {
       userId: userId,
       success: function(result) {
         that.isProcessing = false
-        that.props.fetchUserFollowees()
+        that.setState({
+          userIsFollowedTheUser: true
+        })
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -376,7 +395,10 @@ class PersonalHomePage extends Component {
       userId: userId,
       success: function(result) {
         that.isProcessing = false
-        that.props.fetchUserFollowees()
+        that.setState({
+          userIsFollowedTheUser: false
+        })
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -427,8 +449,10 @@ const mapStateToProps = (state, ownProps) => {
   const userTopics = selectUserTopics(state, ownProps.userId)
   const userTopicsTotalCount = selectUserTopicsTotalCount(state, ownProps.userId)
 
-  let promoterId = activePromoter(state)
-  let promoter = getPromoterById(state, promoterId)
+  // let promoterId = activePromoter(state)
+  // let promoter = getPromoterById(state, promoterId)
+  let promoter = selectPromoterByUserId(state, ownProps.userId)
+  // console.log('promoter=====', promoter)
 
   return {
     ds: ds.cloneWithRows(dataArray),
@@ -457,7 +481,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   followUser, 
   unFollowUser, 
-  fetchUserFollowees
+  fetchUserFollowees,
+  userIsFollowedTheUser,
+  getPromoterByUserId
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)

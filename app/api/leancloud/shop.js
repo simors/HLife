@@ -18,8 +18,11 @@ import {
 import {UserInfo} from '../../models/userModels'
 import {Geolocation} from '../../components/common/BaiduMap'
 import * as AVUtils from '../../util/AVUtils'
+import * as Utils from '../../util/Utils'
 import * as shopSelector from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
+import * as configSelector from '../../selector/configSelector'
+import * as locSelector from '../../selector/locSelector'
 import {store} from '../../store/persistStore'
 
 export function getShopList(payload) {
@@ -264,7 +267,7 @@ export function fetchUserFollowShops(payload) {
   query.addDescending('createdAt')
   query.limit(5)
   // query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
-  query.include(['shop','shop.targetShopCategory', 'shop.owner', 'shop.containedTag'])
+  query.include(['shop','shop.targetShopCategory', 'shop.owner', 'shop.containedTag', 'shop.containedPromotions'])
   let userFollowedShops = []
   return query.find().then(function(results) {
     // console.log('fetchUserFollowShops.results=====', results)
@@ -856,26 +859,50 @@ export function fetchUserOwnedShopInfo(payload) {
   })
 }
 
+// export function fetchShopFollowers(payload) {
+//   let shopId = payload.id
+//   let query = new AV.Query('ShopFollower')
+//   let shop = AV.Object.createWithoutData('Shop', shopId)
+//   query.equalTo('shop', shop)
+//   query.include('follower')
+//   return query.find().then((results)=> {
+//     // console.log('fetchShopFollowers.results===', results)
+//     let shopFollowers = []
+//     if(results && results.length) {
+//       results.forEach((result)=>{
+//         shopFollowers.push(UserInfo.fromShopFollowersLeancloudObject(result))
+//       })
+//     }
+//     // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
+//     return new List(shopFollowers)
+//   }, (err) => {
+//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//     throw err
+//   })
+// }
+
 export function fetchShopFollowers(payload) {
   let shopId = payload.id
-  let query = new AV.Query('ShopFollower')
-  let shop = AV.Object.createWithoutData('Shop', shopId)
-  query.equalTo('shop', shop)
-  query.include('follower')
-  return query.find().then((results)=> {
-    // console.log('fetchShopFollowers.results===', results)
-    let shopFollowers = []
-    if(results && results.length) {
-      results.forEach((result)=>{
-        shopFollowers.push(UserInfo.fromShopFollowersLeancloudObject(result))
-      })
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  let params = {
+    shopId,
+    isRefresh,
+    lastCreatedAt
+  }
+  // console.log('hLifeFetchShopFollowers===params=====', params)
+  return AV.Cloud.run('hLifeFetchShopFollowers', params).then((result) => {
+    console.log('hLifeFetchShopFollowers===result===', result)
+    if(result.code == 0) {
+      return new List(result.shopFollowers)
+    }else{
+      throw result
     }
-    // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
-    return new List(shopFollowers)
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
 }
 
 export function fetchShopFollowersTotalCount(payload) {
@@ -1010,7 +1037,7 @@ export function submitShopPromotion(payload) {
 }
 
 export function shopCertification(payload) {
-  console.log('shopCertification.payload====', payload)
+  // console.log('shopCertification.payload====', payload)
   let params = {
     inviteCode: payload.inviteCode,
     name: payload.name,
@@ -1022,9 +1049,34 @@ export function shopCertification(payload) {
     geoDistrict: payload.geoDistrict,
     certification: payload.certification,
   }
-  console.log('shopCertification.params====', params)
-  return AV.Cloud.run('hLifeShopCertificate', params).then((shopInfo) => {
-    return shopInfo
+
+  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  // console.log('provincesAndCities====', provincesAndCities)
+
+  let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
+
+  let province = provinceInfo.provinceName
+  // console.log('province====', province)
+  let provinceCode = provinceInfo.provinceCode
+  // console.log('provinceCode====', provinceCode)
+
+  let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
+  // console.log('cityCode====', cityCode)
+
+  let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
+
+  params.geoProvince = province
+  params.geoProvinceCode = provinceCode
+  params.geoCityCode = cityCode
+  params.geoDistrictCode = districtCode
+
+  let userId = authSelector.activeUserId(store.getState())
+  params.userId = userId
+
+  // console.log('shopCertification.params====', params)
+  return AV.Cloud.run('hLifeShopCertificate', params).then((result) => {
+    // console.log('shopCertification.result====', result)
+    return result && result.shopInfo
   }, (err) => {
     console.log('hLifeShopCertificate.err=====', err)
     throw err
@@ -1147,6 +1199,51 @@ export function updateShopPromotion(payload) {
     })
   }
 
+}
+
+export function updateShopLocationInfo(payload) {
+  // console.log('updateUserLocationInfo.payload====', payload)
+
+  let shopId = payload.shopId
+
+  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  // console.log('provincesAndCities====', provincesAndCities)
+
+  let province = locSelector.getProvince(store.getState())
+  // console.log('province====', province)
+  let provinceCode = Utils.getProvinceCode(provincesAndCities, province)
+  // console.log('provinceCode====', provinceCode)
+
+  let city = locSelector.getCity(store.getState())
+  // console.log('city====', city)
+  let cityCode = Utils.getCityCode(provincesAndCities, city)
+  // console.log('cityCode====', cityCode)
+
+  let district = locSelector.getDistrict(store.getState())
+  // console.log('district====', district)
+  let districtCode = Utils.getDistrictCode(provincesAndCities, district)
+  // console.log('districtCode====', districtCode)
+
+  let latlng = locSelector.getGeopoint(store.getState())
+
+  let params = {
+    shopId,
+    province,
+    provinceCode,
+    city,
+    cityCode,
+    district,
+    districtCode,
+    ...latlng
+  }
+  // console.log('hLifeUpdateShopLocationInfo.params=======', params)
+  return AV.Cloud.run('hLifeUpdateShopLocationInfo', params).then((result)=>{
+    // console.log('hLifeUpdateShopLocationInfo.result=======', result)
+    return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
 
 

@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/3/20.
+ * Created by yangyang on 2017/3/18.
  */
 import React, {Component} from 'react'
 import {
@@ -23,24 +23,37 @@ class UserFollowersView extends Component {
   render() {
     let userInfo = this.props.userInfo
     return (
-      <View style={styles.container}>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id})}>
-            <Image style={styles.avatarStyle}
-                   source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")}/>
-          </TouchableOpacity>
-          <View>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id})}>
-              <Text style={styles.userNameStyle}>{userInfo.nickname}</Text>
-            </TouchableOpacity>
-            <View style={styles.timeLocationStyle}>
-              <Text style={styles.timeTextStyle}>
-                粉丝: 3
-              </Text>
+      <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: userInfo.id, backSceneName:'MYFANS'})}>
+        <View style={styles.container}>
+           <Image style={styles.avatarStyle}
+                source={userInfo.avatar ? {uri: userInfo.avatar} : require("../../../assets/images/default_portrait.png")}/>
+            <View style={styles.rightWrap}>
+              <View style={styles.row}>
+                {userInfo.shopInfo
+                  ? <Image style={{marginRight:10,marginBottom:10}} source={require("../../../assets/images/personal_shop_16.png")}/>
+                  : null
+                }
+                <Text numberOfLines={1} style={styles.titleTxt}>{userInfo.nickname}</Text>
+              </View>
+              {userInfo.latestTopic
+                ?  <View style={styles.row}>
+                    <Text numberOfLines={1} style={styles.subTxt}>最新发布：</Text>
+                    <Text numberOfLines={1} style={[styles.subTxt, {flex:1}]}>{userInfo.latestTopic.abstract}</Text>
+                  </View>
+                : null
+              }
+              
+              <View style={styles.row}>
+                <View style={styles.locationBox}>
+                  <Image style={{marginRight:4,width:8,height:11}} source={require("../../../assets/images/writer_loaction.png")}/>
+                  <Text style={styles.assistTxt}>{userInfo.geoCity || '未知'}</Text>
+                </View>
+                <Text style={[styles.assistTxt, styles.lastLoginDuration]}>{userInfo.lastLoginDuration + '来过'}</Text>
+                <Text style={styles.assistTxt}>粉丝: {userInfo.followersCounts || 0}</Text>
+              </View>
             </View>
-          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 }
@@ -58,32 +71,48 @@ export default connect(mapStateToProps, mapDispatchToProps)(UserFollowersView)
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: normalizeH(12),
-    marginBottom: normalizeH(12),
-    backgroundColor: '#ffffff',
+    padding: 15,
+    paddingTop: 20,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  locationBox: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   avatarStyle: {
-    height: normalizeH(44),
-    width: normalizeW(44),
-    marginLeft: normalizeW(12),
+    height: 44,
+    width: 44,
     borderRadius: 22,
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
-  userNameStyle: {
-    fontSize: em(15),
-    marginTop: 1,
-    marginLeft: 10,
-    color: "#4a4a4a"
+  rightWrap: {
+    flex: 1,
+    marginLeft: 10
   },
-  timeLocationStyle: {
-    marginLeft: normalizeW(11),
-    marginTop: normalizeH(9),
-    flexDirection: 'row'
+  titleTxt: {
+    flex: 1,
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: "#5a5a5a",
+    marginBottom: 10,
   },
-  timeTextStyle: {
-    marginRight: normalizeW(26),
-    fontSize: em(12),
-    color: THEME.colors.lighter
+  subTxt: {
+    fontSize: 12,
+    color: '#5a5a5a',
+    marginBottom: 10,
   },
+  assistTxt: {
+    fontSize: 12,
+    color: '#b6b6b6',
+  },
+  lastLoginDuration: {
+    marginLeft: 30,
+    marginRight: 30
+  }
 })

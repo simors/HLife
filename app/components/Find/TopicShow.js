@@ -99,17 +99,20 @@ export class TopicShow extends Component {
   }
 
   renderFollowUserView(userId) {
-    if (this.props.currentUserId == userId) {
-      return (
-        <View/>
-      )
-    } else {
-      return (
-        <FollowUser
-          userId={userId}
-        />
-      )
-    }
+    return (
+      <View/>
+    )
+    // if (this.props.currentUserId == userId) {
+    //   return (
+    //     <View/>
+    //   )
+    // } else {
+    //   return (
+    //     <FollowUser
+    //       userId={userId}
+    //     />
+    //   )
+    // }
   }
 
   render() {

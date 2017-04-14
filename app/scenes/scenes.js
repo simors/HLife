@@ -27,6 +27,7 @@ import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
 import MyShopIndex from '../components/Mine/myShop/MyShopIndex'
 import EditShop from '../components/Mine/myShop/EditShop'
 import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
+import ShopFansIndex from '../components/Mine/myShop/ShopFansIndex'
 import MyShopPromotionManageIndex from '../components/Mine/myShop/MyShopPromotionManageIndex'
 import ShopCertificationInfoShow from '../components/Mine/myShop/ShopCertificationInfoShow'
 import UpdateShopCover from '../components/Mine/myShop/UpdateShopCover'
@@ -92,6 +93,10 @@ import AddCard from '../components/Payment/AddCard'
 import IdentifyCard from '../components/Payment/IdentifyCard'
 import PaymentSmsAuth from '../components/Payment/PaymentSmsAuth'
 import PaymentPassword from '../components/Payment/PaymentPassword'
+import PromoterSecondTeam from '../components/Mine/promote/PromoterSecondTeam'
+import InvitedShops from '../components/Mine/promote/InvitedShops'
+import AgentPromoter from '../components/Mine/promote/AgentPromoter'
+import AreaPromoterManager from '../components/Mine/promote/AreaPromoterManager'
 
 const styles = StyleSheet.create({
   container: {
@@ -127,6 +132,7 @@ export const scenes = Actions.create(
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
       <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
       <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
+      <Scene key="SHOP_FANS_INDEX" component={ShopFansIndex}/>
       <Scene key="MY_SHOP_PROMOTION_MANAGE_INDEX" component={MyShopPromotionManageIndex}/>
       <Scene key="SHOP_CERTIFICATION_INFO_SHOW" component={ShopCertificationInfoShow}/>
       <Scene key="MY_SHOP_INDEX" component={MyShopIndex}/>
@@ -193,7 +199,10 @@ export const scenes = Actions.create(
       <Scene key="IDENTIFY_CARD" component={IdentifyCard} />
       <Scene key="PAYMENT_SMS_AUTH" component={PaymentSmsAuth} />
       <Scene key="PAYMENT_PASSWORD" component={PaymentPassword} />
-
+      <Scene key="PROMOTER_SECOND_TEAM" component={PromoterSecondTeam} />
+      <Scene key="INVITED_SHOPS" component={InvitedShops} />
+      <Scene key="AGENT_PROMOTER" component={AgentPromoter} />
+      <Scene key="AREA_MANAGER" component={AreaPromoterManager}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

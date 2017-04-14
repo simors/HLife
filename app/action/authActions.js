@@ -11,6 +11,7 @@ import * as shopAction from './shopAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
+import {getCurrentPromoter} from './promoterAction'
 
 import * as AVUtils from '../util/AVUtils'
 import {calUserRegist, calRegistShoper} from '../action/pointActions'
@@ -159,16 +160,16 @@ function handleLoginWithPwd(payload, formData) {
       password: formData.passwordInput.text,
     }
     lcAuth.loginWithPwd(loginPayload).then((userInfo) => {
-      // console.log('handleLoginWithPwd===userInfo=', userInfo)
+      console.log('handleLoginWithPwd===userInfo=', userInfo)
       if (payload.success) {
         payload.success(userInfo.userInfo.toJS())
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
-      dispatch(shopAction.fetchUserOwnedShopInfo({userId: userInfo.userInfo.id}))
       return userInfo
     }).then((user) => {
-      // console.log('handleLoginWithPwd===user=', user)
+      dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
+      dispatch(getCurrentPromoter())
       dispatch(initMessageClient(payload))
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
@@ -817,7 +818,11 @@ export function fetchUsers(payload) {
 export function fetchUserFollowees(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowees(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS)
+      let actionType = AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = AuthTypes.FETCH_USER_FOLLOWEES_PAGING_SUCCESS
+      }
+      let updateAction = createAction(actionType)
       dispatch(updateAction(result))
       if (payload.success) {
         payload.success(result)
@@ -880,7 +885,11 @@ export function fetchOtherUserFollowersTotalCount(payload) {
 export function fetchUserFollowers(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowers(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS)
+      let actionType = AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = AuthTypes.FETCH_USER_FOLLOWERS_PAGING_SUCCESS
+      }
+      let updateAction = createAction(actionType)
       dispatch(updateAction(result))
       if (payload.success) {
         payload.success(result)

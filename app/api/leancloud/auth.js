@@ -726,62 +726,111 @@ export function fetchUserFollowersTotalCount() {
  * 查询自己的粉丝
  * @returns {*}
  */
-export function fetchUserFollowers() {
-  let query = AV.User.current().followerQuery()
-  query.include('follower')
-  return query.find().then(function(results) {
-    let followers = []
-    results.forEach((result)=>{
-      followers.push(UserInfo.fromLeancloudObject(result))
-    })
+export function fetchUserFollowers(payload) {
+  var params = {}
+  if(!payload) {
+    params = {
+      isRefresh: true
+    }
+  }else {
+    params = {
+      isRefresh: payload.isRefresh,
+      lastCreatedAt: payload.lastCreatedAt
+    }
+  }
+  // console.log('hLifeFetchUserFollowers===params=====', params)
+  return AV.Cloud.run('hLifeFetchUserFollowers', params).then((result) => {
+    // console.log('hLifeFetchUserFollowers===result===', result)
     return {
       userId: AV.User.current().id,
-      followers: new List(followers)
+      followers: new List(result.userFollowers)
     }
-  }).catch((err) =>{
+  }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
 }
+
+// export function fetchUserFollowers(payload) {
+//   let query = AV.User.current().followerQuery()
+//   query.include('follower')
+//   return query.find().then(function(results) {
+//     let followers = []
+//     results.forEach((result)=>{
+//       followers.push(UserInfo.fromLeancloudObject(result))
+//     })
+//     return {
+//       userId: AV.User.current().id,
+//       followers: new List(followers)
+//     }
+//   }).catch((err) =>{
+//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//     throw err
+//   })
+// }
 
 /**
  * 查询自己关注的用户列表
  * @returns {*}
  */
-export function fetchUserFollowees() {
-  let query = AV.User.current().followeeQuery()
-  query.include('followee')
-  return query.find().then(function(results) {
-    let followees = []
-    results.forEach((result)=>{
-      followees.push(UserInfo.fromLeancloudObject(result))
-    })
+export function fetchUserFollowees(payload) {
+  var params = {}
+  if(!payload) {
+    params = {
+      isRefresh: true
+    }
+  }else {
+    params = {
+      isRefresh: payload.isRefresh,
+      lastCreatedAt: payload.lastCreatedAt
+    }
+  }
+  // console.log('hLifeFetchUserFollowees===params=====', params)
+  return AV.Cloud.run('hLifeFetchUserFollowees', params).then((result) => {
+    // console.log('hLifeFetchUserFollowees===result===', result)
     return {
       currentUserId: AV.User.current().id,
-      followees: new List(followees)
+      followees: new List(result.userFollowees)
     }
-  }).catch((err) =>{
+  }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
+
 }
+
+// export function fetchUserFollowees() {
+//   let query = AV.User.current().followeeQuery()
+//   query.include('followee')
+//   return query.find().then(function(results) {
+//     let followees = []
+//     results.forEach((result)=>{
+//       followees.push(UserInfo.fromLeancloudObject(result))
+//     })
+//     return {
+//       currentUserId: AV.User.current().id,
+//       followees: new List(followees)
+//     }
+//   }).catch((err) =>{
+//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//     throw err
+//   })
+// }
 
 export function userIsFollowedTheUser(payload) {
   let userId = payload.userId
-
+  let followee = AV.Object.createWithoutData('_User', userId)
   let query = AV.User.current().followeeQuery()
-  query.include('followee')
-  return query.find().then(function(results) {
-    let followees = []
-    results.forEach((result)=>{
-      followees.push(UserInfo.fromLeancloudObject(result))
-    })
-    for(let i = 0; i < results.length; i++) {
-      if(userId == followees[i].id) {
-        return true
-      }
+  query.equalTo('followee', followee)
+  return query.count().then(function(totalCount) {
+    if(totalCount) {
+      return true
     }
     return false
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 

@@ -193,6 +193,28 @@ export function getCurrentPositionInfo() {
   })
 }
 
+export function getProvinceInfoByCityName(provinceList = [], cityName) {
+  // console.log('getProvinceInfoByCityCode.provinceList===', provinceList)
+  // console.log('getProvinceInfoByCityCode.cityName===', cityName)
+  if(provinceList && provinceList.length && cityName) {
+    for(let i = 0; i < provinceList.length; i++) {
+      let provinceInfo = provinceList[i]
+      let cityList = provinceInfo.sub
+      if(cityList && cityList.length) {
+        for(let j = 0; j < cityList.length; j++) {
+          if(cityName == cityList[j].area_name) {
+            return {
+              provinceName: provinceInfo.area_name,
+              provinceCode: provinceInfo.area_code
+            }
+          }
+        }
+      }
+    }
+  }
+  return {}
+}
+
 export function getProvinceCode(treeData = [], provinceName = "") {
   if(treeData && treeData.length && provinceName) {
     for(let i = 0; i < treeData.length; i++) {

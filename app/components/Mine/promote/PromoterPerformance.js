@@ -114,7 +114,7 @@ class PromoterPerformance extends Component {
     }
     return (
       <View style={styles.invitationStatView}>
-        <TouchableOpacity style={[styles.statBtn, {borderColor: '#F5F5F5', borderRightWidth: 1}]} onPress={() => {}}>
+        <TouchableOpacity style={[styles.statBtn, {borderColor: '#F5F5F5', borderRightWidth: 1}]} onPress={() => {Actions.INVITED_SHOPS()}}>
           <View style={styles.statTitleStyle}>
             <Image style={{width: normalizeW(25), height: normalizeH(23)}}
                    source={require('../../../assets/images/shop_invite.png')}/>

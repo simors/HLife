@@ -84,3 +84,42 @@ export function getMyPromoterTeam(payload) {
     throw err
   })
 }
+
+export function getPromoterTeamById(payload) {
+  let params = {
+    limit: payload.limit,
+    promoterId: payload.promoterId,
+    lastUpdatedAt: payload.lastUpdatedAt,
+  }
+  return AV.Cloud.run('promoterGetPromoterTeamById', params).then((result) => {
+    return {promoters: result.promoters, users: result.users}
+  }, (err) => {
+    throw err
+  })
+}
+
+export function getMyInvitedShops(payload) {
+  let params = {
+    limit: payload.limit,
+    lastCreatedAt: payload.lastCreatedAt,
+  }
+  return AV.Cloud.run('promoterGetPromoterShops', params).then((result) => {
+    return result.shops
+  }, (err) => {
+    throw err
+  })
+}
+
+export function getTotalPerformance(payload) {
+  let params = {
+    identity: payload.identity,
+    province: payload.province,
+    city: payload.city,
+    district: payload.district,
+  }
+  return AV.Cloud.run('promoterGetTotalPerformance', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

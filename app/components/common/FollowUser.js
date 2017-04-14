@@ -30,10 +30,22 @@ class FollowUser extends Component {
   constructor(props) {
     super(props)
     this.isProcessing = false
+
+    this.state = {
+      userIsFollowedTheUser: false
+    }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.userIsFollowedTheUser({
+        userId: this.props.userId,
+        success: (result)=>{
+          this.setState({
+            userIsFollowedTheUser: result
+          })
+        }
+      })
     })
   }
 
@@ -59,7 +71,9 @@ class FollowUser extends Component {
       userId: userId,
       success: function(result) {
         that.isProcessing = false
-        that.props.fetchUserFollowees()
+        that.setState({
+          userIsFollowedTheUser: true
+        })
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -70,9 +84,11 @@ class FollowUser extends Component {
     this.props.followUser(payload)
   }
 
-  unFollowUser(userId) {if(this.isProcessing) {
-    return
-  }
+  unFollowUser(userId) {
+    if(this.isProcessing) {
+      return
+    }
+    
     this.isProcessing = true
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
@@ -83,7 +99,10 @@ class FollowUser extends Component {
       userId: userId,
       success: function(result) {
         that.isProcessing = false
-        that.props.fetchUserFollowees()
+        // that.props.fetchUserFollowees()
+        that.setState({
+          userIsFollowedTheUser: false
+        })
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -95,7 +114,9 @@ class FollowUser extends Component {
   }
 
   render() {
-    let userIsFollowedTheUser = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
+    // let userIsFollowedTheUser = Utils.userIsFollowedTheUser(this.props.userId, this.props.userFollowees)
+
+    let userIsFollowedTheUser = this.state.userIsFollowedTheUser
 
     if(userIsFollowedTheUser) {
       if (this.props.renderFollow) {
@@ -143,7 +164,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserFollowees,
   followUser,
-  unFollowUser
+  unFollowUser,
+  userIsFollowedTheUser
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(FollowUser)

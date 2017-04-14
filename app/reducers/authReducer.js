@@ -27,10 +27,14 @@ export default function authReducer(state = initialState, action) {
       return handleAddUserProfile(state, action)
     case AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS:
       return handleFetchUserFollowersSuccess(state, action)
+    case AuthTypes.FETCH_USER_FOLLOWERS_PAGING_SUCCESS:
+      return handleFetchUserFollowersPagingSuccess(state, action)  
     case AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS:
       return handleFetchUserFollowersTotalCountSuccess(state, action)
     case AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS:
       return handleFetchUserFolloweesSuccess(state, action)
+    case AuthTypes.FETCH_USER_FOLLOWEES_PAGING_SUCCESS:
+      return handleFetchUserFolloweesPagingSuccess(state, action)
     case AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS:
       return handleFetchUserFavoriteArticleSuccess(state,action)
     case AuthTypes.ADD_HEALTH_PROFILE:
@@ -106,10 +110,30 @@ function handleFetchUserFolloweesSuccess(state, action) {
   return state
 }
 
+function handleFetchUserFolloweesPagingSuccess(state, action) {
+  let payload = action.payload
+  let currentUserId = payload.currentUserId
+  let followees = payload.followees
+  let _followees = state.getIn(['followees', currentUserId])
+  let newFollowees = _followees.concat(followees)
+  state = state.setIn(['followees', currentUserId], newFollowees)
+  return state
+}
+
 function handleFetchUserFollowersSuccess(state, action) {
   let userId = action.payload.userId
   let followers = action.payload.followers
   state = state.setIn(['followers', userId], followers)
+  return state
+}
+
+function handleFetchUserFollowersPagingSuccess(state, action) {
+  let payload = action.payload
+  let userId = payload.userId
+  let followers = payload.followers
+  let _followers = state.getIn(['followers', userId])
+  let newFollowers = _followers.concat(followers)
+  state = state.setIn(['followers', userId], newFollowers)
   return state
 }
 

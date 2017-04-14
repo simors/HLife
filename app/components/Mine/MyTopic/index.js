@@ -58,16 +58,16 @@ export class MyTopic extends Component {
   }
 
   loadMoreData(isRefresh) {
-    let lastCreatedAt = undefined
+    let lastUpdatedAt = undefined
     if(this.props.topics){
       let currentTopics = this.props.topics
       if(currentTopics && currentTopics.length) {
-        lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
+        lastUpdatedAt = currentTopics[currentTopics.length-1].updatedAt
       }
     }
     let payload = {
       type: "myTopics",
-      lastCreatedAt: lastCreatedAt,
+      lastUpdatedAt: lastUpdatedAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
         if(!this.listView) {

@@ -37,19 +37,19 @@ class ShopRegisterSuccess extends Component {
     })
   }
 
-  completeShopInfo() {
+  onOk() {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.COMPLETE_SHOP_INFO({popNum: 3})
+      Actions.COMPLETE_SHOP_INFO()
     }
   }
 
-  goShopManage() {
+  onCancel() {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.MY_SHOP_INDEX({popNum: 3})
+      Actions.MINE()
     }
   }
 
@@ -68,7 +68,7 @@ class ShopRegisterSuccess extends Component {
             <Image style={styles.image} source={require("../../../assets/images/shop_congratuation.png")} />
             <View style={styles.congratulationWrap}>
               <Text style={styles.congratulationTxt}>恭喜您</Text>
-              <Text style={styles.congratulationTxt}>已成功入驻吾爱店铺</Text>
+              <Text style={styles.congratulationTxt}>已成功入驻邻家店铺</Text>
             </View>
             <View style={styles.tipWrap}>
               <Text style={[styles.tip, styles.red]}>我们通过线上推广和传播给您的线下店铺带来更多的生意</Text>
@@ -78,12 +78,12 @@ class ShopRegisterSuccess extends Component {
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20)}}
               title="完善店铺资料"
-              onPress={()=>{this.completeShopInfo()}}
+              onPress={()=>{this.onOk()}}
             />
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20), backgroundColor:'#d8d8d8'}}
               title="取消"
-              onPress={()=>{this.goShopManage()}}
+              onPress={()=>{this.onCancel()}}
             />
           </ScrollView>
         </View>

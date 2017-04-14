@@ -26,8 +26,11 @@ import dismissKeyboard from 'react-native-dismiss-keyboard'
 import TopicContent from './TopicContent'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
+import {fetchOtherUserFollowersTotalCount} from '../../action/authActions'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import * as authSelector from '../../selector/authSelector'
+import Icon from 'react-native-vector-icons/Ionicons'
 import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
 import {
   fetchTopicLikesCount,
@@ -62,6 +65,10 @@ export class TopicDetail extends Component {
       this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
       if (this.props.isLogin) {
         this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+      }
+
+      if(this.props.topic && this.props.topic.userId) {
+        this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
       }
     })
   }
@@ -112,15 +119,34 @@ export class TopicDetail extends Component {
   }
 
   renderTopicCommentPage() {
-    if (this.props.topicComments) {
-      return (
-        this.props.topicComments.map((value, key)=> {
-          return (
-            this.renderTopicCommentItem(value, key)
-          )
-        })
-      )
+    let commentsView = <View/>
+    let topicComments = this.props.topicComments
+    let commentsTotalCount = this.props.commentsTotalCount
+    if (commentsTotalCount && topicComments && topicComments.length) {
+      commentsView = topicComments.map((value, key)=> {
+            return (
+              this.renderTopicCommentItem(value, key)
+            )
+          })
+    }else {
+      commentsView = <View style={{padding:15,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
+                      <Text style={{}}>
+                        目前没有评论，快来抢沙发吧！~~~
+                      </Text>
+                    </View>
     }
+
+    return (
+      <View style={{flex:1}}>
+        <View style={{flexDirection: 'row',padding:15,paddingTop:20,backgroundColor:'white'}}>
+          <View style={styles.titleLine}/>
+          <Text style={styles.titleTxt}>邻友点评·{commentsTotalCount > 999 ? '999+' : commentsTotalCount}</Text>
+        </View>
+        <View style={{flex:1}}>
+          {commentsView}
+        </View>
+      </View>
+    )
   }
 
   onCommentButton(topic) {
@@ -143,9 +169,11 @@ export class TopicDetail extends Component {
   renderNoComment() {
     if (this.props.commentsTotalCount == 0) {
       return (
-        <Text style={{alignSelf: 'center', paddingTop: 20}}>
-          目前没有评论，快来抢沙发吧！~~~
-        </Text>
+        <View style={{padding:15,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
+          <Text style={{}}>
+            目前没有评论，快来抢沙发吧！~~~
+          </Text>
+        </View>
       )
     }
   }
@@ -268,18 +296,25 @@ export class TopicDetail extends Component {
     )
   }
 
-  renderHeaderView() {
-    if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
-      return (
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
-          title="详情"
-          rightComponent={() => {return this.renderMoreBtn()}}
-        />
-      )
+  isSelfTopic() {
+    if(this.props.topic && this.props.userInfo && this.props.topic.userId == this.props.userInfo.id) {
+      return true
     }
+    return false
+  }
+
+  renderHeaderView() {
+    // if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
+    //   return (
+    //     <Header
+    //       leftType="icon"
+    //       leftIconName="ios-arrow-back"
+    //       leftPress={() => Actions.pop()}
+    //       title="详情"
+    //       rightComponent={() => {return this.renderMoreBtn()}}
+    //     />
+    //   )
+    // }
     return (
       <Header
         leftType="icon"
@@ -290,6 +325,45 @@ export class TopicDetail extends Component {
     )
   }
 
+  renderTopicLikeUsersView() {
+    let topicLikeUsers = this.props.topicLikeUsers
+    let likesCount = this.props.likesCount
+    // likesCount = 5
+    // topicLikeUsers = [{},{},{},{},{}]
+    // console.log('likesCount====', likesCount)
+    // console.log('topicLikeUsers====', topicLikeUsers)
+    if(likesCount) {
+      let topicLikeUsersView = topicLikeUsers.map((item, index)=>{
+        if(index > 2) {
+          return null
+        }
+        let source = require('../../assets/images/default_portrait.png')
+        if(item.avatar) {
+          source = {uri: item.avatar}
+        }
+
+        return (
+          <Image
+            key={'topick_like_' + index}
+            style={{width:20,height:20,marginRight:5,borderRadius:10}}
+            source={source}
+          />
+        )
+      })
+      return (
+        <View style={{flexDirection:'row',alignItems:'center'}}>
+          {topicLikeUsersView}
+          <Icon
+            name="ios-arrow-forward"
+            style={{marginLeft:6,color:'#f5f5f5',fontSize:17}}/>
+        </View>
+      )
+    }
+    return (
+      <Text style={{color:'#8f8e94'}}>暂无点赞!</Text>
+    )
+  }
+
   render() {
     return (
       <View style={styles.containerStyle}>
@@ -297,46 +371,29 @@ export class TopicDetail extends Component {
         {this.renderHeaderView()}
         <View style={styles.body}>
           <ScrollView style={{}} ref={"scrollView"}>
-            <TopicContent topic={this.props.topic}/>
+            <TopicContent 
+              topic={this.props.topic}
+              userFollowersTotalCount={this.props.userFollowersTotalCount}
+              isSelfTopic={this.isSelfTopic()}
+            />
             <TouchableOpacity style={styles.likeStyle}
                               onLayout={this.measureMyComponent.bind(this)}
                               onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers: this.props.topicLikeUsers})}>
-              <View style={styles.zanStyle}>
-                <Text style={styles.zanTextStyle}>
-                  赞
-                </Text>
-              </View>
-              {this.renderTopicLikeUsers()}
-              <View style={styles.zanStyle}>
-                <Text style={styles.zanTextStyle}>
-                  {this.props.likesCount}
-                </Text>
+              <View style={styles.topicLikesWrap}>
+                <View style={{flexDirection:'row'}}>
+                  <View style={styles.titleLine}/>
+                  <Text style={styles.titleTxt}>点赞·{this.props.likesCount}</Text>
+                </View>
+                <View style={{flexDirection:'row'}}>
+                  {this.renderTopicLikeUsersView()}
+                </View>
               </View>
             </TouchableOpacity>
             {this.renderTopicCommentPage()}
-            {this.renderNoComment()}
           </ScrollView>
 
-          <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={styles.shopCommentInputBox} onPress={this.openModel.bind(this)}>
-              <Text style={styles.shopCommentInput}>写评论...</Text>
-            </TouchableOpacity>
+          {this.renderBottomView()}
 
-            <TouchableOpacity style={styles.commentBtnWrap} onPress={this.scrollToComment.bind(this)}>
-              <Image style={{}} source={require('../../assets/images/artical_comments_unselect.png')}/>
-              <View style={styles.commentBtnBadge}>
-                <Text style={styles.commentBtnBadgeTxt}>
-                  {this.props.commentsTotalCount > 99 ? '99+' : this.props.commentsTotalCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.shopUpWrap} onPress={this.onLikeButton.bind(this)}>
-              <Image style={{}} source={this.props.isLiked ?
-                require("../../assets/images/like_select.png") :
-                require("../../assets/images/like_unselect.png")}/>
-            </TouchableOpacity>
-          </View>
           <KeyboardAwareToolBar
             initKeyboardHeight={-normalizeH(50)}
           >
@@ -350,11 +407,60 @@ export class TopicDetail extends Component {
               placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
             />
           </KeyboardAwareToolBar>
+
           {this.renderActionSheet()}
         </View>
       </View>
     )
   }
+
+  renderBottomView() {
+    if(this.isSelfTopic()) {
+      return (
+        <TouchableOpacity 
+          style={{
+            height:50,
+            borderTopWidth: normalizeBorder(),
+            borderTopColor: THEME.colors.lighterA,
+            backgroundColor: 'rgba(250,250,250, 0.9)',
+            justifyContent: 'center',
+            alignItems:'center',
+            flexDirection:'row'
+          }}
+          onPress={()=>{Actions.TOPIC_EDIT({topic: this.props.topic})}}
+        >
+          <Image style={{marginRight:10}} source={require('../../assets/images/shop_edite.png')}/>
+          <Text style={{color:'#ff7819',fontSize:17}}>编辑话题</Text>
+        </TouchableOpacity>
+      )
+    }else {
+      let isLiked = this.props.isLiked
+      let likeImgSource = require("../../assets/images/like_unselect_main.png")
+      if(isLiked) {
+        likeImgSource = require("../../assets/images/like_selected.png")
+      }
+
+      return (
+        <View style={styles.shopCommentWrap}>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
+            <View style={[styles.vItem]}>
+              <Image style={{width:24,height:24}} source={likeImgSource}/>
+              <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>点赞</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.openModel()}>
+            <View style={[styles.contactedBox]}>
+              <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
+              <Text style={[styles.contactedTxt]}>评论</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+    
+  }
+
 }
 
 TopicDetail.defaultProps = {}
@@ -367,6 +473,13 @@ const mapStateToProps = (state, ownProps) => {
   const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
   const commentsTotalCount = topicComments[ownProps.topic.objectId] ? topicComments[ownProps.topic.objectId].length : undefined
+
+
+  let userFollowersTotalCount = 0
+  if(ownProps.topic && ownProps.topic.userId) {
+    userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.topic.userId)
+  }
+
   return {
     topicComments: topicComments[ownProps.topic.objectId],
     topicLikeUsers: topicLikeUsers,
@@ -374,7 +487,8 @@ const mapStateToProps = (state, ownProps) => {
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
-    commentsTotalCount: commentsTotalCount
+    commentsTotalCount: commentsTotalCount,
+    userFollowersTotalCount: userFollowersTotalCount
   }
 }
 
@@ -385,7 +499,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicLikeUsers,
   fetchTopicLikesCount,
   likeTopic,
-  unLikeTopic
+  unLikeTopic,
+  fetchOtherUserFollowersTotalCount
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)
@@ -408,14 +523,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E5E5E5',
   },
-
-  likeStyle: {
-    backgroundColor: '#E5E5E5',
-    height: normalizeH(59),
-    alignItems: 'flex-start',
-    flexDirection: 'row',
+  topicLikesWrap: {
+    flex:1,
+    flexDirection:'row',
+    marginTop:8,
+    padding: 15,
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor:'white',
+    justifyContent: 'space-between',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
-
+  titleLine: {
+    width: 3,
+    backgroundColor: '#ff7819',
+    marginRight: 5,
+  },
+  titleTxt: {
+    color: '#FF7819',
+    fontSize: em(15)
+  },
+  likeStyle: {
+    flex:1
+  },
   zanStyle: {
     backgroundColor: THEME.colors.green,
     borderColor: 'transparent',
@@ -439,29 +570,52 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(7),
     alignSelf: 'center',
   },
-
-
   shopCommentWrap: {
-    height: 50,
-    paddingLeft: 10,
     borderTopWidth: normalizeBorder(),
     borderTopColor: THEME.colors.lighterA,
-    backgroundColor: 'rgba(0,0,0,0.005)',
+    backgroundColor: 'rgba(250,250,250, 0.9)',
     flexDirection: 'row',
-    alignItems: 'center'
+    height:50
+  },
+  vItem: {
+    flex: 1,
+    alignSelf:'flex-start',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    paddingBottom: 3,
+    paddingLeft: 30
+  },
+  vItemTxt: {
+    marginTop: 2,
+    fontSize: em(10),
+    color: '#aaa'
+  },
+  bottomZanTxt: {
+    color:'#ff7819'
   },
   shopCommentInputBox: {
     flex: 1,
-    marginRight: 10,
-    padding: 6,
-    borderWidth: normalizeBorder(),
-    borderColor: THEME.colors.lighterA,
-    borderRadius: 10,
-    backgroundColor: '#fff'
   },
   shopCommentInput: {
     fontSize: em(17),
     color: '#8f8e94'
+  },
+  contactedWrap: {
+    width: normalizeW(135),
+    backgroundColor: '#FF9D4E',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  contactedBox: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  contactedTxt: {
+    color: 'white',
+    fontSize: em(15),
+    marginLeft: normalizeW(9)
   },
   commentBtnWrap: {
     width: 60,
