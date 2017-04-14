@@ -74,7 +74,13 @@ class Mine extends Component {
         // console.log('this.props.identity==1==')
         let userOwnedShopInfo = this.props.userOwnedShopInfo
         if(userOwnedShopInfo.status == 1) {
-          if(userOwnedShopInfo.payment == 0) { //已注册，未支付
+          if(userOwnedShopInfo.payment == 1) { //已注册，已支付
+            if(!userOwnedShopInfo.coverUrl) {
+              Actions.COMPLETE_SHOP_INFO()
+            }else{
+              Actions.MY_SHOP_INDEX()
+            }
+          }else{//已注册，未支付
             this.props.getShopTenant({
               province: userOwnedShopInfo.geoProvince,
               city: userOwnedShopInfo.geoCity,
@@ -94,11 +100,6 @@ class Mine extends Component {
                 Toast.show('获取加盟费金额失败')
               }
             })
-          }
-          if(!userOwnedShopInfo.coverUrl) {
-            Actions.COMPLETE_SHOP_INFO()
-          }else{
-            Actions.MY_SHOP_INDEX()
           }
         }else if(userOwnedShopInfo.status == 0) {
           Toast.show('您的店铺已被关闭，请与客服联系')
