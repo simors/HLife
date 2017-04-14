@@ -112,7 +112,7 @@ class ShopAddressSelect extends Component {
         }else {
           this.setState({
             shopAddress: data.address,
-            currentCity: data.city,
+            currentCity: abbrCity(data.city),
             currentDistrict: data.district
           })
         }
@@ -318,7 +318,7 @@ class ShopAddressSelect extends Component {
       showSearchResult: false,
       shopName: item.key,
       searchText: item.key,
-      currentCity: item.city,
+      currentCity: abbrCity(item.city),
       currentDistrict: item.district,
       center: {
         latitude: item.latitude,

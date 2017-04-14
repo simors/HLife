@@ -1053,9 +1053,11 @@ export function shopCertification(payload) {
   let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
   // console.log('provincesAndCities====', provincesAndCities)
 
-  let province = locSelector.getProvince(store.getState())
+  let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
+
+  let province = provinceInfo.provinceName
   // console.log('province====', province)
-  let provinceCode = Utils.getProvinceCode(provincesAndCities, province)
+  let provinceCode = provinceInfo.provinceCode
   // console.log('provinceCode====', provinceCode)
 
   let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
@@ -1072,8 +1074,9 @@ export function shopCertification(payload) {
   params.userId = userId
 
   // console.log('shopCertification.params====', params)
-  return AV.Cloud.run('hLifeShopCertificate', params).then((shopInfo) => {
-    return shopInfo
+  return AV.Cloud.run('hLifeShopCertificate', params).then((result) => {
+    // console.log('shopCertification.result====', result)
+    return result && result.shopInfo
   }, (err) => {
     console.log('hLifeShopCertificate.err=====', err)
     throw err
