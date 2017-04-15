@@ -45,52 +45,60 @@ export class Find extends Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      if (this.state.selectedTab == 0) {
-        this.props.fetchTopics({
-          type: "pickedTopics",
-          isRefresh: true
-        })
-      }
-      else if (this.state.selectedTab == 1) {
-        this.props.fetchTopics({
-          type: "localTopics",
-          isRefresh: true
-        })
-      } else {
-        this.props.fetchTopics({
-          type: "topics",
-          categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
-          isRefresh: true
-        })
-      }
+      this.refreshTopic()
     })
   }
 
+  componentDidMount() {
+    // InteractionManager.runAfterInteractions(() => {
+    //   if (this.state.selectedTab == 0) {
+    //     this.props.fetchTopics({
+    //       type: "pickedTopics",
+    //       isRefresh: true
+    //     })
+    //   }
+    //   else if (this.state.selectedTab == 1) {
+    //     this.props.fetchTopics({
+    //       type: "localTopics",
+    //       isRefresh: true
+    //     })
+    //   } else {
+    //     this.props.fetchTopics({
+    //       type: "topics",
+    //       categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+    //       isRefresh: true
+    //     })
+    //   }
+    // })
+  }
+
   getSelectedTab(index) {
-    this.setState({selectedTab: index})
-    InteractionManager.runAfterInteractions(() => {
-      if (index == 0) {
-        this.props.fetchTopics({
-          type: "pickedTopics",
-          isRefresh: true
-        })
-      }
-      else if (index == 1) {
-        this.props.fetchTopics({
-          type: "localTopics",
-          isRefresh: true
-        })
-      }
-      else {
-        this.props.fetchTopics({
-          type: "topics",
-          categoryId: this.props.topicCategories[index].objectId,
-          isRefresh: true
-        })
-      }
+    this.setState({selectedTab: index}, ()=>{
+      this.refreshTopic()
     })
+    // InteractionManager.runAfterInteractions(() => {
+    //   if (index == 0) {
+    //     this.props.fetchTopics({
+    //       type: "pickedTopics",
+    //       isRefresh: true
+    //     })
+    //   }
+    //   else if (index == 1) {
+    //     this.props.fetchTopics({
+    //       type: "localTopics",
+    //       isRefresh: true
+    //     })
+    //   }
+    //   else {
+    //     this.props.fetchTopics({
+    //       type: "topics",
+    //       categoryId: this.props.topicCategories[index].objectId,
+    //       isRefresh: true
+    //     })
+    //   }
+    // })
   }
 
   onLikeButton(payload) {
