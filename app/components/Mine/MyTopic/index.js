@@ -58,6 +58,11 @@ export class MyTopic extends Component {
   }
 
   loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     let lastUpdatedAt = undefined
     if(this.props.topics){
       let currentTopics = this.props.topics
@@ -70,6 +75,7 @@ export class MyTopic extends Component {
       lastUpdatedAt: lastUpdatedAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
+        this.isQuering = false
         if(!this.listView) {
           return
         }
@@ -80,6 +86,7 @@ export class MyTopic extends Component {
         }
       },
       error: (err)=>{
+        this.isQuering = false
         Toast.show(err.message, {duration: 1000})
       }
     }

@@ -131,6 +131,11 @@ export class Find extends Component {
   }
 
   loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     let lastCreatedAt = undefined
     let lastUpdatedAt = undefined
     let payload = undefined
@@ -145,6 +150,7 @@ export class Find extends Component {
         let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
         if (currentTopics && currentTopics.length) {
           lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
+          lastUpdatedAt = currentTopics[currentTopics.length - 1].updatedAt
         }
       }
     }
@@ -155,6 +161,7 @@ export class Find extends Component {
         lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
+          this.isQuering = false
           if (!this.listView) {
             return
           }
@@ -165,6 +172,7 @@ export class Find extends Component {
           }
         },
         error: (err)=> {
+          this.isQuering = false
           Toast.show(err.message, {duration: 1000})
         }
       }
@@ -175,6 +183,7 @@ export class Find extends Component {
         lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
+          this.isQuering = false
           if (!this.listView) {
             return
           }
@@ -185,6 +194,7 @@ export class Find extends Component {
           }
         },
         error: (err)=> {
+          this.isQuering = false
           Toast.show(err.message, {duration: 1000})
         }
       }
@@ -196,6 +206,7 @@ export class Find extends Component {
         lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
+          this.isQuering = false
           if (!this.listView) {
             return
           }
@@ -206,6 +217,7 @@ export class Find extends Component {
           }
         },
         error: (err)=> {
+          this.isQuering = false
           Toast.show(err.message, {duration: 1000})
         }
       }
