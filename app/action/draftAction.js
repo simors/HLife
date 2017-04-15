@@ -46,7 +46,7 @@ export const fetchShopPromotionDraft=(payload)=>{
   // console.log('shopPromotionDraft',payload)
 
   return (dispatch)=>{
-    dispatch(updateShopPomotionDraft({id:payload.draftId,...payload,coverUrl:payload.localCoverImgUri,}))
+    dispatch(updateShopPomotionDraft({draftId:payload.draftId,...payload,coverUrl:payload.localCoverImgUri,}))
   }
 }
 

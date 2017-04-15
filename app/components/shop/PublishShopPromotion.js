@@ -140,6 +140,11 @@ class PublishShopPromotion extends Component {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchUserOwnedShopInfo()
     })
+
+  }
+
+  componentDidMount() {
+    //this.showToolBarInput()
     this.setInterval(()=>{
 
       this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
@@ -151,10 +156,6 @@ class PublishShopPromotion extends Component {
       })
       // console.log('here is uid ',this.draftId)
     },5000)
-  }
-
-  componentDidMount() {
-    //this.showToolBarInput()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -554,12 +555,15 @@ class PublishShopPromotion extends Component {
         this.isPublishing = false
         Loading.hide(this.loading)
         Toast.show('活动发布成功')
-        this.props.handleDestroyShopPromotionDraft({id:this.draftId})
         if(this.props.isPop) {
           this.props.fetchUserOwnedShopInfo()
           Actions.pop()
+          this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+
         }else{
           Actions.SHOP_DETAIL({id: this.state.form.shopId})
+          this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+
         }
       },
       error: ()=>{

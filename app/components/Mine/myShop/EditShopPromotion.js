@@ -73,12 +73,17 @@ class EditShopPromotion extends Component {
       DEFAULT: 'DEFAULT_TYPE_INPUT',
       CUSTOM: 'CUSTOM_TYPE_INPUT',
     }
-
+    console.log('props.shopPromotion',this.props.shopPromotion)
     this.localRichTextImagesUrls = []
     this.leanRichTextImagesUrls = []
     this.localCoverImgUri = props.shopPromotion.coverUrl || ''
     this.isPublishing = false
-    this.draftId = this.props.shopPromotion.id?this.props.shopPromotion.id:uuid.v1()
+    this.draftId=''
+    if(this.props.shopPromotion.id){
+      this.draftId = this.props.shopPromotion.id
+    }else if (this.props.shopPromotion.draftId){
+      this.draftId = this.props.shopPromotion.draftId
+    }
     this.state = {
 
       rteFocused: false,    // 富文本获取到焦点
@@ -89,7 +94,7 @@ class EditShopPromotion extends Component {
 
       form: {
         shopId: props.userOwnedShopInfo.id,
-        shopPromotionId: props.shopPromotion.id,
+        shopPromotionId: this.props.shopPromotion.shopPromotionId?this.props.shopPromotion.shopPromotionId:props.shopPromotion.id,
         status: props.shopPromotion.status,
         typeId: props.shopPromotion.typeId,
         type: props.shopPromotion.type,
@@ -141,6 +146,7 @@ class EditShopPromotion extends Component {
       ]
     }
 
+
   }
 
   componentWillMount() {
@@ -190,7 +196,9 @@ class EditShopPromotion extends Component {
       // console.log('componentWillReceiveProps=this.state=', this.state)
     })
   }
-
+  componentWillUnmount(){
+    console.log('i-M un mount hahahahahahahahaha')
+  }
   showToolBarInput(type) {
     this.setState({
       toolBarInputFocusNum: 1,
@@ -584,26 +592,61 @@ class EditShopPromotion extends Component {
 
   submitForm() {
     // console.log('submitForm.this.state=====', this.state)
-    this.loading = Loading.show()
-    this.props.submitShopPromotion({
-      ...this.state.form,
-      localCoverImgUri: this.localCoverImgUri,
-      localRichTextImagesUrls: this.localRichTextImagesUrls,
-      success: ()=>{
-        Toast.show('活动更新成功')
-        this.props.fetchUserOwnedShopInfo()
-        this.props.fetchMyShopExpiredPromotionList({isRefresh:true})
-        this.props.handleDestroyShopPromotionDraft({id:this.draftId})
-        Actions.pop()
-        this.isPublishing = false
-        Loading.hide(this.loading)
-      },
-      error: ()=>{
-        Toast.show('活动更新失败')
-        this.isPublishing = false
-        Loading.hide(this.loading)
-      }
-    })
+    if(this.state.shopPromotionId){
+      console.log('不是重新发布咯')
+      this.loading = Loading.show()
+      this.props.submitShopPromotion({
+        ...this.state.form,
+        localCoverImgUri: this.localCoverImgUri,
+        localRichTextImagesUrls: this.localRichTextImagesUrls,
+        success: ()=>{
+          Toast.show('活动更新成功')
+          this.props.fetchUserOwnedShopInfo()
+          this.props.fetchMyShopExpiredPromotionList({isRefresh:true})
+          Actions.pop()
+          this.isPublishing = false
+          this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+          Loading.hide(this.loading)
+        },
+        error: ()=>{
+          Toast.show('活动更新失败')
+          this.isPublishing = false
+          Loading.hide(this.loading)
+        }
+      })
+    }else{
+      console.log('重新发布咯')
+      this.loading = Loading.show()
+      this.props.submitShopPromotion({
+        ...this.state.form,
+        localCoverImgUri: this.localCoverImgUri,
+        localRichTextImagesUrls: this.localRichTextImagesUrls,
+        success: ()=>{
+          this.isPublishing = false
+          Loading.hide(this.loading)
+          Toast.show('活动发布成功')
+          if(this.props.isPop) {
+            this.props.fetchUserOwnedShopInfo()
+
+            Actions.pop()
+            this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+
+          }else{
+            // Actions.SHOP_DETAIL({id: this.state.form.shopId})
+            Actions.pop()
+
+            this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+
+          }
+        },
+        error: ()=>{
+          this.isPublishing = false
+          Loading.hide(this.loading)
+          Toast.show('活动发布失败')
+        }
+      })
+    }
+
   }
 
   getRichTextImages(images) {
