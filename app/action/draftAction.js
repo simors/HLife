@@ -43,15 +43,15 @@ export const fetchTopicDraft=(payload)=>{
 }
 
 export const fetchShopPromotionDraft=(payload)=>{
-  console.log('destroy',payload)
+  // console.log('shopPromotionDraft',payload)
 
   return (dispatch)=>{
-    dispatch(updateShopPomotionDraft({id:payload.draftId,...payload}))
+    dispatch(updateShopPomotionDraft({id:payload.draftId,...payload,coverUrl:payload.localCoverImgUri,}))
   }
 }
 
 export const handleDestroyTopicDraft=(payload)=>{
-  console.log('destroy',payload)
+  // console.log('destroy',payload)
   return (dispatch)=>{
 
     dispatch(destroyTopicDraft(payload))

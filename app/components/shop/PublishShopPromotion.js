@@ -145,7 +145,9 @@ class PublishShopPromotion extends Component {
       this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
         abstract: this.state.form.abstract,
         promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
-        shopId: this.state.form.shopId
+        shopId: this.state.form.shopId,
+        localCoverImgUri: this.localCoverImgUri,
+        localRichTextImagesUrls: this.localRichTextImagesUrls,
       })
       // console.log('here is uid ',this.draftId)
     },5000)
@@ -619,7 +621,9 @@ class PublishShopPromotion extends Component {
             this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
               abstract: this.state.form.abstract,
               promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
-              shopId: this.state.form.shopId
+              shopId: this.state.form.shopId,
+              localCoverImgUri: this.localCoverImgUri,
+              localRichTextImagesUrls: this.localRichTextImagesUrls,
             })
             Actions.pop()}}
           title="发布活动"

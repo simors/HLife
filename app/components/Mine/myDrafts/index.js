@@ -248,7 +248,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const topics = getMyTopicDrafts(state)
   const shopPromotions = getMyShopPromotionDrafts(state)
-  console.log('shopPromotions',shopPromotions)
+  // console.log('shopPromotions',shopPromotions)
   let topicArr = []
   // for (let key in topics) {
   //   topicArr.push({

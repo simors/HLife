@@ -32,7 +32,7 @@ class shopPromotionDraftShow extends Component {
 
   render() {
     let item = this.props.shopPromotion
-    console.log('item=============', item)
+     // console.log('item=============', item)
     if(!item) {
       return null
     }
