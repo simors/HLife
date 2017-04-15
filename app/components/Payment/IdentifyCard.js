@@ -114,6 +114,7 @@ class IdentifyCard extends Component {
             />
           </View>
           <View style={styles.agreement}>
+            <Image source={require('../../assets/images/selected_agreement.png')}/>
             <Text style={{fontSize: 14, color: '#5A5A5A'}}>同意</Text>
             <Text style={{fontSize: 14, color: THEME.base.mainColor}}>《银联用户服务协议》</Text>
           </View>
