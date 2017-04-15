@@ -3,7 +3,7 @@
  */
 import {Record, Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Promoter} from '../models/promoterModel'
+import {Promoter, AreaAgent} from '../models/promoterModel'
 import * as promoterActionTypes from '../constants/promoterActionTypes'
 
 const initialState = Promoter()
@@ -34,6 +34,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleAddPromoterShops(state, action)
     case promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE:
       return handleUpdateTotalPerformance(state, action)
+    case promoterActionTypes.UPDATE_AREA_AGENTS:
+      return handleUpdateAreaAgents(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -117,6 +119,23 @@ function handleAddPromoterShops(state, action) {
 function handleUpdateTotalPerformance(state, action) {
   let statistics = action.payload.statistics
   state = state.set('statistics', statistics)
+  return state
+}
+
+function handleUpdateAreaAgents(state, action) {
+  let agentsSet = action.payload.agentsSet
+  let key = undefined
+  let mapArray = []
+  agentsSet.forEach((agent) => {
+    let agentRecord = new AreaAgent({
+      area: agent.area,
+      tenant: agent.tenant,
+      promoterId: agent.promoterId,
+      userId: agent.userId,
+    })
+    mapArray.push(agentRecord)
+  })
+  state = state.set('areaAgents', List(mapArray))
   return state
 }
 

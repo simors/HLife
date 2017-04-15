@@ -2,6 +2,7 @@
  * Created by yangyang on 2017/3/27.
  */
 import {selectShopDetail} from './shopSelector'
+import {selectUserInfoById} from './authSelector'
 
 export function inviteCode(state) {
   let code = state.PROMOTER.get('inviteCode')
@@ -92,4 +93,23 @@ export function selectPromoterStatistics(state) {
     return stat.toJS()
   }
   return undefined
+}
+
+export function selectAreaAgents(state) {
+  let agents = state.PROMOTER.get('areaAgents')
+  let retAgents = []
+  agents.forEach((agentRecord) => {
+    let tmpAgent = {}
+    let agent = agentRecord.toJS()
+    tmpAgent.area = agent.area
+    tmpAgent.tenant = agent.tenant
+    if (agent.userId) {
+      let userInfo = selectUserInfoById(state, agent.userId)
+      tmpAgent.userId = userInfo.id
+      tmpAgent.avatar = userInfo.avatar
+      tmpAgent.nickname = userInfo.nickname
+    }
+    retAgents.push(tmpAgent)
+  })
+  return retAgents
 }
