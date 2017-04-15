@@ -28,6 +28,8 @@ import * as authSelector from '../../../selector/authSelector'
 import {getInputFormData} from '../../../selector/inputFormSelector'
 import Symbol from 'es6-symbol'
 import {fetchMyShopExpiredPromotionList, fetchUserOwnedShopInfo, submitShopPromotion} from '../../../action/shopAction'
+import {fetchShopPromotionDraft,handleDestroyShopPromotionDraft} from '../../../action/draftAction'
+
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import CommonTextInput from '../../common/Input/CommonTextInput'
@@ -37,8 +39,10 @@ import ImageInput from '../../common/Input/ImageInput'
 import ArticleEditor from '../../common/Input/ArticleEditor'
 import Popup from '@zzzkk2009/react-native-popup'
 import Loading from '../../common/Loading'
+import uuid from 'react-native-uuid'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+import TimerMixin from 'react-timer-mixin'
 
 let shopPromotionForm = Symbol('shopPromotionForm')
 const shopPromotion = {
@@ -73,7 +77,7 @@ class EditShopPromotion extends Component {
     this.leanRichTextImagesUrls = []
     this.localCoverImgUri = props.shopPromotion.coverUrl || ''
     this.isPublishing = false
-
+    this.draftId = this.props.shopPromotion.id?this.props.shopPromotion.id:uuid.v1()
     this.state = {
 
       rteFocused: false,    // 富文本获取到焦点
@@ -147,6 +151,15 @@ class EditShopPromotion extends Component {
   componentDidMount() {
     //this.showToolBarInput()
     this.updateTypesDesc(this.state.form.typeDesc)
+    this.setInterval(()=>{
+
+      this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+        abstract: this.state.form.abstract,
+        promotionDetailInfo:  this.state.form.promotionDetailInfo,
+        shopId: this.state.form.shopId
+      })
+      // console.log('here is uid ',this.draftId)
+    },5000)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -577,6 +590,7 @@ class EditShopPromotion extends Component {
         Toast.show('活动更新成功')
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchMyShopExpiredPromotionList({isRefresh:true})
+        this.props.handleDestroyShopPromotionDraft({id:this.draftId})
         Actions.pop()
         this.isPublishing = false
         Loading.hide(this.loading)
@@ -645,7 +659,13 @@ class EditShopPromotion extends Component {
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightType="text"
           rightText="发布"
-          rightPress={() => {this.publishPromotion()}}
+          rightPress={() => {
+              this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+                abstract: this.state.form.abstract,
+                promotionDetailInfo:  this.state.form.promotionDetailInfo,
+                shopId: this.state.form.shopId
+              })
+            this.publishPromotion()}}
           rightStyle={{color: THEME.base.mainColor}}
         />
         <View style={styles.body}>
@@ -791,10 +811,13 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   submitShopPromotion,
+  fetchShopPromotionDraft,
+  handleDestroyShopPromotionDraft,
   fetchMyShopExpiredPromotionList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditShopPromotion)
+Object.assign(EditShopPromotion.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {

@@ -27,10 +27,11 @@ export default function draftsReducer(state = initialState, action) {
 
 function updateShopPromotionDraft(state,action){
   let payload = action.payload
+  console.log('payload======>',payload)
   let id = payload.id
-  let shopPromotionDraft = payload.shopPromotionDraft
+  let data = {...payload}
   let _map = state.get('shopPromotions')
-  _map = _map.set(id, shopPromotionDraft)
+  _map = _map.set(id, data)
   state = state.set('shopPromotions', _map)
   return state
 }
@@ -77,7 +78,7 @@ function onRehydrate(state, action) {
   console.log('incoming',incoming)
   if(incoming){
       let topics = Map(incoming.topics)
-      let shopPromotions = Map(incoming.shopPromotion)
+      let shopPromotions = Map(incoming.shopPromotions)
       state = state.set('topics',topics)
       state = state.set('shopPromotions',shopPromotions)
   }

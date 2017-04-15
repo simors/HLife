@@ -29,7 +29,7 @@ import TopicDraftShow from './topicDraftShow'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 import {SwipeListView,SwipeRow} from 'react-native-swipe-list-view'
-import {fetchTopicDraft, handleDestroyTopicDraft} from '../../../action/draftAction'
+import {fetchTopicDraft, handleDestroyTopicDraft,handleDestroyShopPromotionDraft} from '../../../action/draftAction'
 import THEME from '../../../constants/themes/theme1'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -54,7 +54,10 @@ export class MyTopic extends Component {
   delectDraft(rowId){
     this.props.handleDestroyTopicDraft({id:rowId})
   }
-  renderTopicItem(value, key,rowId) {
+  delectShopDraft(rowId){
+    this.props.handleDestroyShopPromotionDraft({id:rowId})
+  }
+  renderShopPromotionItem(value, key,rowId) {
     // console.log('valeu',value,rowId)
     return (
       <SwipeRow style = {{flex:1,width:PAGE_WIDTH}}
@@ -62,23 +65,45 @@ export class MyTopic extends Component {
                 leftOpenValue={20 + parseInt(rowId) * 5}
                 rightOpenValue={-normalizeW(75)}>
 
-        <TouchableHighlight onPress={()=>{this.delectDraft(rowId)}} style={{marginLeft:normalizeW(300)}}>
+        <TouchableHighlight onPress={()=>{this.delectShopDraft(rowId)}} style={{marginLeft:normalizeW(300)}}>
           <View >
             <Text>删除</Text>
           </View>
         </TouchableHighlight>
         <View style={{flex:1}}>
-          <TopicDraftShow key={rowId}
-                          containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
-                          topic={value}
-                          commentButtonPress={()=>{Actions.TOPIC_EDIT({topic: value})}}
-          />
-          {/*<Text>Row front | </Text>*/}
-        </View>
 
-        </SwipeRow>
+          <Text>{value.title}</Text>
+        </View >
+
+      </SwipeRow>
     )
   }
+
+  renderTopicItem(value, key,rowId) {
+  // console.log('valeu',value,rowId)
+  return (
+    <SwipeRow style = {{flex:1,width:PAGE_WIDTH}}
+              disableRightSwipe={true}
+              leftOpenValue={20 + parseInt(rowId) * 5}
+              rightOpenValue={-normalizeW(75)}>
+
+      <TouchableHighlight onPress={()=>{this.delectDraft(rowId)}} style={{marginLeft:normalizeW(300)}}>
+        <View >
+          <Text>删除</Text>
+        </View>
+      </TouchableHighlight>
+      <View style={{flex:1}}>
+        <TopicDraftShow key={rowId}
+                        containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
+                        topic={value}
+                        commentButtonPress={()=>{Actions.TOPIC_EDIT({topic: value})}}
+        />
+        {/*<Text>Row front | </Text>*/}
+      </View>
+
+    </SwipeRow>
+  )
+}
   toggleTab(type) {
     this.setState({tabType: type}, ()=>{
       if(0 == type) {
@@ -137,7 +162,17 @@ export class MyTopic extends Component {
     )
   }
   renderShopList(){
-    return(<View></View>)
+    return(<SwipeListView
+      dataSource={this.props.shopDataSrc}
+      renderRow={ (data,key,rowId) => ( this.renderShopPromotionItem(data,key,rowId)
+      )
+        // console.log('data',data,key,rowId)
+
+      }
+
+      leftOpenValue={75}
+      rightOpenValue={-75}
+    />)
   }
   render() {
     return (
@@ -192,7 +227,7 @@ export class MyTopic extends Component {
                       color: THEME.base.mainColor,
                       fontWeight: 'bold',
                     } : {color: '#4A4A4A'}]}
-                  >活动</Text>
+                  >店铺活动</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -208,6 +243,8 @@ export class MyTopic extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const topics = getMyTopicDrafts(state)
+  const shopPromotions = getMyShopPromotionDrafts(state)
+  console.log('shopPromotions',shopPromotions)
   let topicArr = []
   // for (let key in topics) {
   //   topicArr.push({
@@ -226,6 +263,7 @@ const mapStateToProps = (state, ownProps) => {
   //   console.log('topicArr', topicArr)
   // }
     return {
+      shopDataSrc : ds.cloneWithRows(shopPromotions),
       dataSrc: ds.cloneWithRows(topics),
       // dataSrc: ds.cloneWithRows(topics),
       topics: topics,
