@@ -20,6 +20,8 @@ import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
+import {fetchTopicDraft, handleDestroyTopicDraft} from '../../action/draftAction'
+
 import {getTopicCategories, getTopicCategoriesById} from '../../selector/configSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ModalBox from 'react-native-modalbox';
@@ -29,7 +31,7 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
-
+import uuid from 'react-native-uuid'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -73,11 +75,17 @@ class TopicEdit extends Component {
     };
     this.insertImages = []
     this.isPublishing = false
-  }
+    this.draftId=this.props.topic.id?this.props.topic.id:uuid.v1()
+    this.draftMonth=new Date().getMonth() + 1
+    this.draftDay = new Date().getDate()  }
 
   submitSuccessCallback = () => {
+    console.log('this.draftId',this.draftId)
+
     this.isPublishing = false
     Actions.pop({popNum: 2})
+    this.props.handleDestroyTopicDraft({id:this.draftId})
+
     Toast.show('恭喜您,更新成功!')
   }
 
@@ -109,21 +117,46 @@ class TopicEdit extends Component {
   }
 
   publishTopic() {
-    this.props.publishTopicFormData({
-      formKey: updateTopicForm,
-      images: this.insertImages,
-      topicId: this.props.topic.objectId,
-      categoryId: this.state.selectedTopic.objectId,
-      submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback
-    })
+    if(this.props.topic&&this.props.topic.objectId){
+      // console.log('asasasas')
+      this.props.publishTopicFormData({
+        formKey: updateTopicForm,
+        images: this.insertImages,
+        topicId: this.props.topic.objectId,
+        categoryId: this.state.selectedTopic.objectId,
+        submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
+        success: this.submitSuccessCallback,
+        error: this.submitErrorCallback
+      })
+    }else{
+      // console.log('hahahahah')
+      this.props.publishTopicFormData({
+        formKey: updateTopicForm,
+        images: this.insertImages,
+        categoryId: this.state.selectedTopic.objectId,
+         userId: this.props.userInfo.id,
+        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+        success: ()=> {
+          this.submitSuccessCallback(this)
+        },
+        error: this.submitErrorCallback
+      })
+    }
+
   }
 
   componentDidMount() {
     if (this.props.topicId && this.props.topicId.objectId) {
       this.setState({selectedTopic: this.props.topicId});
     }
+    if(this.props.topic.objectId){
+      this.draftId=this.props.topic.objectId
+    }
+    this.setInterval(()=>{
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      })
+      // console.log('here is uid ',this.draftId)
+    },5000)
   }
 
   openModal() {
@@ -135,7 +168,9 @@ class TopicEdit extends Component {
     this.setState({selectedTopic: value})
     this.refs.modal3.close();
   }
-
+  componentWillUnmount(){
+    console.log('unmount component')
+  }
   renderTopicsSelected() {
     if (this.props.topics) {
       return (
@@ -213,7 +248,9 @@ class TopicEdit extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+          abstract:this.props.topic.abstract})
+            Actions.pop()}}
           title="更新话题"
           rightType="text"
           rightText="更新"
@@ -267,6 +304,7 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const topicCategory = getTopicCategoriesById(state, ownProps.topic.categoryId)
+  console.log('userinfo',userInfo.id)
   return {
     topics: topics,
     topicCategory: topicCategory,
@@ -276,7 +314,9 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  publishTopicFormData
+  publishTopicFormData,
+  handleDestroyTopicDraft,
+  fetchTopicDraft
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicEdit)

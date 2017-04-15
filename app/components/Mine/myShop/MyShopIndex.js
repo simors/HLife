@@ -205,7 +205,10 @@ class MyShopIndex extends Component {
                   score={item.score}
                 />
                 <View style={styles.subInfoWrap}>
-                  <Text style={styles.subTxt}>{item.pv}人看过</Text>
+                  {item.pv
+                    ? <Text style={styles.subTxt}>{item.pv}人看过</Text>
+                    : null
+                  }
                 </View>
               </View>
             </View>
@@ -319,8 +322,9 @@ class MyShopIndex extends Component {
                       containerStyle={{flex:1}}
                       score={this.props.shopDetail.score}
                     />
-                    {this.props.shopDetail.pv &&
-                    <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
+                    {this.props.shopDetail.pv
+                      ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
+                      : null
                     }
                   </View>
                 </View>

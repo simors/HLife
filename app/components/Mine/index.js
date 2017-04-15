@@ -73,8 +73,8 @@ class Mine extends Component {
     }else {
       // console.log('this.props.identity=====', this.props.identity)
       if (this.props.identity && this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
-        // console.log('this.props.identity==1==')
         let userOwnedShopInfo = this.props.userOwnedShopInfo
+        // console.log('this.props.userOwnedShopInfo==1==', userOwnedShopInfo)
         if(userOwnedShopInfo.status == 1) {
           if(userOwnedShopInfo.payment == 1) { //已注册，已支付
             if(!userOwnedShopInfo.coverUrl) {
@@ -289,6 +289,14 @@ class Mine extends Component {
             </View>
             <View>
               <Text style={styles.menuName}>钱包</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.MY_DRAFTS()}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_wallet.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>草稿箱</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {}}>

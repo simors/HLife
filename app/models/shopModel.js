@@ -28,7 +28,7 @@ export const ShopRecord = Record({
   distance: undefined, //用户与店铺的距离
   distanceUnit: 'km', //用户与店铺的距离单位
   geoName: undefined, //店铺地理坐标对应城市区域名称
-  pv: 1000, //店铺点击量
+  pv: 0, //店铺点击量
   score: 4.5, //店铺评分
   ourSpecial: '', //本店特色
   openTime: '', //营业时间
@@ -145,7 +145,7 @@ export class ShopInfo extends ShopRecord {
         record.set('geoCityCode', attrs.geoCityCode)
         record.set('geoProvince', attrs.geoProvince)
         record.set('geoProvinceCode', attrs.geoProvinceCode)
-        record.set('pv', numberUtils.formatNum(attrs.pv))
+        // record.set('pv', numberUtils.formatNum(attrs.pv))
         record.set('score', attrs.score)
         record.set('ourSpecial', attrs.ourSpecial)
         record.set('openTime', attrs.openTime)
@@ -247,7 +247,7 @@ export class ShopInfo extends ShopRecord {
         record.set('geoCityCode', attrs.geoCityCode)
         record.set('geoProvince', attrs.geoProvince)
         record.set('geoProvinceCode', attrs.geoProvinceCode)
-        record.set('pv', numberUtils.formatNum(lcObj.pv))
+        // record.set('pv', numberUtils.formatNum(lcObj.pv))
         record.set('score', lcObj.score)
         record.set('ourSpecial', lcObj.ourSpecial)
         record.set('openTime', lcObj.openTime)
@@ -301,7 +301,7 @@ export class ShopPromotion extends ShopPromotionRecord {
       record.set('promotingPrice', attrs.promotingPrice)
       record.set('originalPrice', attrs.originalPrice)
       record.set('status', attrs.status)
-      record.set('pv', numberUtils.formatNum(attrs.pv))
+      // record.set('pv', numberUtils.formatNum(attrs.pv))
       record.set('promotionDetailInfo', attrs.promotionDetailInfo)
       record.set('nextSkipNum', lcObj.nextSkipNum || 0)
 

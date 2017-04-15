@@ -36,6 +36,7 @@ import * as authSelector from '../../selector/authSelector'
 import Comment from '../common/Comment'
 import ImageGallery from '../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
 
 import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
@@ -434,9 +435,18 @@ class ShopDetail extends Component {
         members: [this.props.currentUser, this.props.shopDetail.owner.id],
         conversationType: PERSONAL_CONVERSATION,
         title: this.props.shopDetail.shopName,
+        customTopView: this.customTopView()
       }
       Actions.CHATROOM(payload)
     }
+  }
+
+  customTopView() {
+    return (
+      <ChatroomShopCustomTopView
+        shopInfo={this.props.shopDetail}
+      />
+    )
   }
 
   renderShopAnnouncement(){
@@ -498,8 +508,9 @@ class ShopDetail extends Component {
                     {this.props.shopDetail.distance &&
                     <Text style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
                     }
-                    {this.props.shopDetail.pv &&
-                    <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
+                    {this.props.shopDetail.pv
+                      ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
+                      : null
                     }
                   </View>
                 </View>

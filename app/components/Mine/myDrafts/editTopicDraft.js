@@ -1,5 +1,8 @@
 /**
- * Created by wuxingyu on 2016/12/21.
+ * Created by lilu on 2017/4/15.
+ */
+/**
+ * Created by wanpeng on 2017/3/24.
  */
 import React, {Component} from 'react'
 import {
@@ -13,40 +16,38 @@ import {
   TouchableOpacity,
   Keyboard,
   ScrollView,
-
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Symbol from 'es6-symbol'
-import Header from '../common/Header'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
-import {fetchTopicDraft, handleDestroyTopicDraft} from '../../action/draftAction'
-import uuid from 'react-native-uuid'
-import {getTopicCategories} from '../../selector/configSelector'
-import CommonTextInput from '../common/Input/CommonTextInput'
+import Header from '../../common/Header'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../../action/topicActions'
+import {fetchTopicDraft, handleDestroyTopicDraft} from '../../../action/draftAction'
+import {getMyTopicDrafts,getMyShopPromotionDrafts} from '../../../selector/draftSelector'
+import {getTopicCategories, getTopicCategoriesById} from '../../../selector/configSelector'
+import CommonTextInput from '../../common/Input/CommonTextInput'
 import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
-import * as Toast from '../common/Toast'
-import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import ArticleEditor from '../common/Input/ArticleEditor'
+import * as Toast from '../../common/Toast'
+import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
+import ArticleEditor from '../../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
-import THEME from '../../constants/themes/theme1'
-import Icon from 'react-native-vector-icons/Ionicons'
-
+import THEME from '../../../constants/themes/theme1'
+import uuid from 'react-native-uuid'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let topicForm = Symbol('topicForm')
+let updateTopicForm = Symbol('updateTopicForm')
 const topicName = {
-  formKey: topicForm,
+  formKey: updateTopicForm,
   stateKey: Symbol('topicName'),
   type: "topicName",
 }
 
 const topicContent = {
-  formKey: topicForm,
+  formKey: updateTopicForm,
   stateKey: Symbol('topicContent'),
   type: 'topicContent',
 }
@@ -64,40 +65,32 @@ const rteHeight = {
 
 const wrapHeight = normalizeH(118)
 
-class PublishTopics extends Component {
+class EditTopicDraft extends Component {
   constructor(props) {
     super(props)
     this.state = {
       isDisabled: false,
-      selectedTopic: undefined,
+      selectedTopic: this.props.topicCategory,
       rteFocused: false,    // 富文本获取到焦点
+      shouldUploadImgComponent: false,
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
     };
     this.insertImages = []
     this.isPublishing = false
     this.draftId=uuid.v1()
-    this.draftMonth=new Date().getMonth() + 1
-    this.draftDay = new Date().getDate()
-
-
   }
 
-  submitSuccessCallback(context) {
-    this.isPublishing = false
-    Toast.show('恭喜您,发布成功!')
-
-    Actions.pop()
+  submitSuccessCallback = () => {
     this.props.handleDestroyTopicDraft({id:this.draftId})
 
+    this.isPublishing = false
+    Actions.pop({popNum: 2})
+    Toast.show('恭喜您,更新成功!')
   }
 
-  submitErrorCallback(error) {
+  submitErrorCallback = (error) => {
     Toast.show(error.message)
-  }
-  componentWillUnmount(){
-    console.log('unmount')
-    // this.timer&&clearInterval(this.timer)
   }
 
   onButtonPress = () => {
@@ -107,7 +100,7 @@ class PublishTopics extends Component {
           return
         }
         this.isPublishing = true
-        Toast.show('开始发布...', {
+        Toast.show('开始更新...', {
           duration: 1000,
           onHidden: ()=> {
             this.publishTopic()
@@ -125,14 +118,12 @@ class PublishTopics extends Component {
 
   publishTopic() {
     this.props.publishTopicFormData({
-      formKey: topicForm,
+      formKey: updateTopicForm,
       images: this.insertImages,
+      topicId: this.props.topic.objectId,
       categoryId: this.state.selectedTopic.objectId,
-      userId: this.props.userInfo.id,
-      submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-      success: ()=> {
-        this.submitSuccessCallback(this)
-      },
+      submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
+      success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
   }
@@ -142,12 +133,10 @@ class PublishTopics extends Component {
       this.setState({selectedTopic: this.props.topicId});
     }
     this.setInterval(()=>{
-
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,
       })
-      // console.log('here is uid ',this.draftId)
-    },5000)
-
+      console.log('here is uid ',this.draftId)
+    },1000)
   }
 
   openModal() {
@@ -159,7 +148,9 @@ class PublishTopics extends Component {
     this.setState({selectedTopic: value})
     this.refs.modal3.close();
   }
-
+  componentWillUnmount(){
+    console.log('unmount component')
+  }
   renderTopicsSelected() {
     if (this.props.topics) {
       return (
@@ -208,13 +199,13 @@ class PublishTopics extends Component {
       <View style={{width: normalizeW(64), backgroundColor: THEME.base.mainColor}}>
         <TouchableOpacity onPress={() => {Keyboard.dismiss()}}
                           style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{fontSize: em(15), color: 'white'}}>收起</Text>
+          <Text style={{fontSize: 15, color: 'white'}}>收起</Text>
         </TouchableOpacity>
       </View>
     )
   }
 
-  renderRichText() {
+  renderRichText(initValue) {
     return (
       <ArticleEditor
         {...topicContent}
@@ -224,6 +215,8 @@ class PublishTopics extends Component {
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
         onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
         placeholder="分享吃喝玩乐、共享周边生活信息"
+        initValue={JSON.parse(initValue)}
+        mode="modify"
       />
     )
   }
@@ -235,13 +228,10 @@ class PublishTopics extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => {
-            this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
-            })
-            Actions.pop({type:'refresh'})}}
-          title="发布话题"
+          leftPress={() => Actions.pop()}
+          title="更新话题"
           rightType="text"
-          rightText="发布"
+          rightText="更新"
           rightPress={() => this.onButtonPress()}
         />
 
@@ -263,32 +253,25 @@ class PublishTopics extends Component {
                                  containerStyle={styles.titleContainerStyle}
                                  inputStyle={styles.titleInputStyle}
                                  clearBtnStyle={styles.titleCleanBtnStyle}
+                                 initValue={this.props.topic.title}
                                  {...topicName}
                                  placeholder="标题"/>
               </View>
             </View>
 
-            {this.renderRichText()}
+            {this.renderRichText(this.props.topic.content)}
           </View>
 
-          
-
-        </View>
-
-
-        <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
-            <View style={styles.modalTitleContainer}>
-              <Text style={styles.modalTitleTxt}>选择一个主题</Text>
-              <TouchableOpacity onPress={()=>{this.closeModal(this.state.selectedTopic)}} style={{position:'absolute',right:0,top:0}}>
-                <Icon name='ios-close' style={{fontSize:24,height:24}} />
-              </TouchableOpacity>
-            </View>
+          <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
             <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
+              <Text style={styles.modalShowTopicsStyle}>选择一个主题</Text>
               <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
                 {this.renderTopicsSelected()}
               </View>
             </ScrollView>
           </ModalBox>
+
+        </View>
       </View>
     );
   }
@@ -298,8 +281,10 @@ const mapStateToProps = (state, ownProps) => {
   const topics = getTopicCategories(state)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
+  const topicCategory = getTopicCategoriesById(state, ownProps.topic.categoryId)
   return {
     topics: topics,
+    topicCategory: topicCategory,
     isLogin: isLogin,
     userInfo: userInfo
   }
@@ -307,13 +292,13 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishTopicFormData,
-  fetchTopicDraft,
-  handleDestroyTopicDraft
+  handleDestroyTopicDraft,
+  fetchTopicDraft
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)
+export default connect(mapStateToProps, mapDispatchToProps)(EditTopicDraft)
 
-Object.assign(PublishTopics.prototype, TimerMixin)
+Object.assign(EditTopicDraft.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {
@@ -370,6 +355,7 @@ const styles = StyleSheet.create({
   },
   titleContainerStyle: {
     flex: 1,
+    height: normalizeH(59),
     paddingLeft: 0,
     paddingRight: 0,
     borderBottomWidth: 1,
@@ -399,14 +385,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     height: PAGE_HEIGHT,
     alignItems: 'flex-start',
-    ...Platform.select({
-      ios: {
-        paddingTop: normalizeH(20),
-      },
-      android: {
-        paddingTop: normalizeH(0)
-      }
-    }),
   },
   modalTextStyle: {
     marginTop: normalizeH(17),
@@ -415,19 +393,12 @@ const styles = StyleSheet.create({
     color: "#5a5a5a",
     fontSize: em(12)
   },
-  modalTitleContainer: {
-    height: 24,
-    width: PAGE_WIDTH - 30,
-    margin:15,
-    marginBottom: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  modalTitleTxt: {
+  modalShowTopicsStyle: {
+    marginTop: normalizeH(17),
+    marginBottom: normalizeH(18),
+    alignSelf: 'center',
     color: "#4a4a4a",
-    fontSize: em(12),
-    lineHeight: 24,
+    fontSize: em(12)
   },
   modalTopicButtonStyle: {
     alignItems: 'flex-start',

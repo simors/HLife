@@ -330,7 +330,9 @@ function createLcConversation(payload) {
         payload.error()
       }
       console.log('leancloud Messenger init failed, can\'t get client')
-      return undefined
+      return new Promise((resolve, reject)=>{
+        resolve(null)
+      })
     }
     if (payload.type === msgTypes.INQUIRY_CONVERSATION) {
       let wuaiSysDoctor = payload.members.includes(msgTypes.WUAI_SYSTEM_DOCTOR)

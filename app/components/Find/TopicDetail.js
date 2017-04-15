@@ -72,7 +72,9 @@ export class TopicDetail extends Component {
       }
     })
   }
-
+  componentWillUnmount(){
+    console.log('unmount component')
+  }
   onRightPress = () => {
     this.ActionSheet.show()
   }

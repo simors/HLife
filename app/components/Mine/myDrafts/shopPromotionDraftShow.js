@@ -1,4 +1,7 @@
 /**
+ * Created by lilu on 2017/4/15.
+ */
+/**
  * Created by zachary on 2017/3/17.
  */
 import React, {Component} from 'react'
@@ -22,19 +25,19 @@ import THEME from '../../../constants/themes/theme1'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class MyShopPromotionModule extends Component {
+class shopPromotionDraftShow extends Component {
   constructor(props) {
     super(props)
   }
 
   render() {
     let item = this.props.shopPromotion
-    // console.log('item=============', item)
+     // console.log('item=============', item)
     if(!item) {
       return null
     }
     return (
-      <TouchableWithoutFeedback style={styles.contentItem}>
+      <TouchableWithoutFeedback style={styles.contentItem} onPress={()=>{Actions.EDIT_SHOP_PROMOTION({shopPromotion:item})}}>
         <View style={styles.saleItemView}>
           <View style={styles.saleItemInnerView}>
             <View style={styles.saleImg}>
@@ -60,10 +63,10 @@ class MyShopPromotionModule extends Component {
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text style={styles.priceText}>¥</Text>
                   <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
-                  {item.originalPrice 
+                  {item.originalPrice
                     ? <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
-                        原价 {item.originalPrice}
-                      </Text>
+                    原价 {item.originalPrice}
+                  </Text>
                     : null
                   }
                 </View>
@@ -72,7 +75,7 @@ class MyShopPromotionModule extends Component {
                     ? <Text style={styles.itemText}>{item.pv}人看过</Text>
                     : null
                   }
-                  
+
                 </View>
               </View>
             </View>
@@ -91,7 +94,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyShopPromotionModule)
+export default connect(mapStateToProps, mapDispatchToProps)(shopPromotionDraftShow)
 
 const styles = StyleSheet.create({
   contentItem: {

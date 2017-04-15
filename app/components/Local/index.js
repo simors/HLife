@@ -374,7 +374,7 @@ class Local extends Component {
           rightComponent={() => {return <MessageBell />}}
         />
         <View style={styles.body}>
-          <View>
+          <View style={{flex:1}}>
             <CommonListView
               contentContainerStyle={{backgroundColor: '#fff'}}
               dataSource={this.props.ds}

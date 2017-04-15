@@ -28,6 +28,8 @@ import * as authSelector from '../../../selector/authSelector'
 import {getInputFormData} from '../../../selector/inputFormSelector'
 import Symbol from 'es6-symbol'
 import {fetchMyShopExpiredPromotionList, fetchUserOwnedShopInfo, submitShopPromotion} from '../../../action/shopAction'
+import {fetchShopPromotionDraft,handleDestroyShopPromotionDraft} from '../../../action/draftAction'
+
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import CommonTextInput from '../../common/Input/CommonTextInput'
@@ -37,6 +39,9 @@ import ImageInput from '../../common/Input/ImageInput'
 import ArticleEditor from '../../common/Input/ArticleEditor'
 import Popup from '@zzzkk2009/react-native-popup'
 import Loading from '../../common/Loading'
+import uuid from 'react-native-uuid'
+import TimerMixin from 'react-timer-mixin'
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -68,12 +73,17 @@ class EditShopPromotion extends Component {
       DEFAULT: 'DEFAULT_TYPE_INPUT',
       CUSTOM: 'CUSTOM_TYPE_INPUT',
     }
-
+    console.log('props.shopPromotion',this.props.shopPromotion)
     this.localRichTextImagesUrls = []
     this.leanRichTextImagesUrls = []
     this.localCoverImgUri = props.shopPromotion.coverUrl || ''
     this.isPublishing = false
-
+    this.draftId=''
+    if(this.props.shopPromotion.id){
+      this.draftId = this.props.shopPromotion.id
+    }else if (this.props.shopPromotion.draftId){
+      this.draftId = this.props.shopPromotion.draftId
+    }
     this.state = {
 
       rteFocused: false,    // 富文本获取到焦点
@@ -84,7 +94,7 @@ class EditShopPromotion extends Component {
 
       form: {
         shopId: props.userOwnedShopInfo.id,
-        shopPromotionId: props.shopPromotion.id,
+        shopPromotionId: this.props.shopPromotion.shopPromotionId?this.props.shopPromotion.shopPromotionId:props.shopPromotion.id,
         status: props.shopPromotion.status,
         typeId: props.shopPromotion.typeId,
         type: props.shopPromotion.type,
@@ -136,6 +146,7 @@ class EditShopPromotion extends Component {
       ]
     }
 
+
   }
 
   componentWillMount() {
@@ -147,6 +158,17 @@ class EditShopPromotion extends Component {
   componentDidMount() {
     //this.showToolBarInput()
     this.updateTypesDesc(this.state.form.typeDesc)
+    this.setInterval(()=>{
+
+      this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+        abstract: this.state.form.abstract,
+        promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
+        shopId: this.state.form.shopId,
+        localCoverImgUri: this.localCoverImgUri,
+        localRichTextImagesUrls: this.localRichTextImagesUrls,
+      })
+      // console.log('here is uid ',this.draftId)
+    },5000)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -174,7 +196,9 @@ class EditShopPromotion extends Component {
       // console.log('componentWillReceiveProps=this.state=', this.state)
     })
   }
-
+  componentWillUnmount(){
+    console.log('i-M un mount hahahahahahahahaha')
+  }
   showToolBarInput(type) {
     this.setState({
       toolBarInputFocusNum: 1,
@@ -568,25 +592,61 @@ class EditShopPromotion extends Component {
 
   submitForm() {
     // console.log('submitForm.this.state=====', this.state)
-    this.loading = Loading.show()
-    this.props.submitShopPromotion({
-      ...this.state.form,
-      localCoverImgUri: this.localCoverImgUri,
-      localRichTextImagesUrls: this.localRichTextImagesUrls,
-      success: ()=>{
-        Toast.show('活动更新成功')
-        this.props.fetchUserOwnedShopInfo()
-        this.props.fetchMyShopExpiredPromotionList({isRefresh:true})
-        Actions.pop()
-        this.isPublishing = false
-        Loading.hide(this.loading)
-      },
-      error: ()=>{
-        Toast.show('活动更新失败')
-        this.isPublishing = false
-        Loading.hide(this.loading)
-      }
-    })
+    if(this.state.shopPromotionId){
+      console.log('不是重新发布咯')
+      this.loading = Loading.show()
+      this.props.submitShopPromotion({
+        ...this.state.form,
+        localCoverImgUri: this.localCoverImgUri,
+        localRichTextImagesUrls: this.localRichTextImagesUrls,
+        success: ()=>{
+          Toast.show('活动更新成功')
+          this.props.fetchUserOwnedShopInfo()
+          this.props.fetchMyShopExpiredPromotionList({isRefresh:true})
+          Actions.pop()
+          this.isPublishing = false
+          this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+          Loading.hide(this.loading)
+        },
+        error: ()=>{
+          Toast.show('活动更新失败')
+          this.isPublishing = false
+          Loading.hide(this.loading)
+        }
+      })
+    }else{
+      console.log('重新发布咯')
+      this.loading = Loading.show()
+      this.props.submitShopPromotion({
+        ...this.state.form,
+        localCoverImgUri: this.localCoverImgUri,
+        localRichTextImagesUrls: this.localRichTextImagesUrls,
+        success: ()=>{
+          this.isPublishing = false
+          Loading.hide(this.loading)
+          Toast.show('活动发布成功')
+          if(this.props.isPop) {
+            this.props.fetchUserOwnedShopInfo()
+
+            Actions.pop()
+            this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+
+          }else{
+            // Actions.SHOP_DETAIL({id: this.state.form.shopId})
+            Actions.pop()
+
+            this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+
+          }
+        },
+        error: ()=>{
+          this.isPublishing = false
+          Loading.hide(this.loading)
+          Toast.show('活动发布失败')
+        }
+      })
+    }
+
   }
 
   getRichTextImages(images) {
@@ -645,7 +705,15 @@ class EditShopPromotion extends Component {
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightType="text"
           rightText="发布"
-          rightPress={() => {this.publishPromotion()}}
+          rightPress={() => {
+              this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+                abstract: this.state.form.abstract,
+                promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
+                shopId: this.state.form.shopId,
+                localCoverImgUri: this.localCoverImgUri,
+                localRichTextImagesUrls: this.localRichTextImagesUrls,
+              })
+            this.publishPromotion()}}
           rightStyle={{color: THEME.base.mainColor}}
         />
         <View style={styles.body}>
@@ -791,10 +859,13 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   submitShopPromotion,
+  fetchShopPromotionDraft,
+  handleDestroyShopPromotionDraft,
   fetchMyShopExpiredPromotionList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditShopPromotion)
+Object.assign(EditShopPromotion.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {
