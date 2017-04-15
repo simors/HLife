@@ -88,7 +88,6 @@ class PaymentSmsAuth extends Component {
             {...smsAuthCodeInput}
             containerStyle={styles.inputBox}
             getSmsAuCode={() => {return this.smsCode()}}
-
           />
 
           <CommonButton

@@ -23,15 +23,30 @@ import * as authSelector from '../../selector/authSelector'
 import Header from '../common/Header'
 import THEME from '../../constants/themes/theme1'
 import PaymentPasswordInput from '../common/Input/PaymentPasswordInput'
+import * as Toast from '../common/Toast'
+import {setPaymentPassword} from '../../action/authActions'
 
-class PaymentPassword extends Component {
+
+class PasswordConfirm extends Component {
   constructor(props) {
     super(props)
   }
 
   onPasswordEnd = (password) => {
     console.log("onPasswordEnd:", password)
-    Actions.PASSWORD_CONFIRM({password: password})
+    if(password === this.props.password) {
+      this.props.setPaymentPassword({
+        userId: this.props.currentUserId,
+        password: password,
+        success: () => {
+          Toast.show("设置成功")
+          Actions.WALLET()
+        },
+        error: (error) => {Toast.show(error.message)}
+      })
+    } else {
+      Toast.show("两次密码输入不一致！")
+    }
   }
   render() {
     return(
@@ -40,14 +55,14 @@ class PaymentPassword extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title='输入支付密码'
+          title='确认支付密码'
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(46), height: normalizeH(93), alignItems: 'center'}}>
-            <Text style={{fontSize: 17, color: '#5A5A5A'}}>设置在邻家优店的支付密码</Text>
+            <Text style={{fontSize: 17, color: '#5A5A5A'}}>再次填写以确认</Text>
           </View>
           <View style={{marginLeft: normalizeW(15), width: normalizeW(345), height: normalizeH(50)}}>
             <PaymentPasswordInput
@@ -63,16 +78,20 @@ class PaymentPassword extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const currentUserId = authSelector.activeUserId(state)
   const isUserLogined = authSelector.isUserLogined(state)
   return {
+    currentUserId: currentUserId,
     isUserLogined: isUserLogined,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  setPaymentPassword,
+
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordConfirm)
 
 const styles = StyleSheet.create({
   container: {
