@@ -28,6 +28,7 @@ import {fetchShopPromotionDetail, fetchUserOwnedShopInfo} from '../../action/sho
 import {selectShopPromotionDetail} from '../../selector/shopSelector'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import ChatroomShopPromotionCustomTopView from './ChatroomShopPromotionCustomTopView'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -58,6 +59,14 @@ class ShopPromotionDetail extends Component {
 
   }
 
+  customTopView() {
+    return (
+      <ChatroomShopPromotionCustomTopView
+        shopPromotionInfo={this.props.shopPromotionDetail}
+      />
+    )
+  }
+
   onIWantPress() {
     let shopPromotionDetail = this.props.shopPromotionDetail
     let targetShop = shopPromotionDetail.targetShop
@@ -65,7 +74,8 @@ class ShopPromotionDetail extends Component {
       name: targetShop.owner.nickname,
       members: [this.props.currentUser, targetShop.owner.id],
       conversationType: PERSONAL_CONVERSATION,
-      title: targetShop.shopName
+      title: targetShop.shopName,
+      customTopView: this.customTopView()
       // title: targetShop.owner.nickname,
     }
     Actions.CHATROOM(payload)
