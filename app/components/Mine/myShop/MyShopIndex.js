@@ -322,8 +322,9 @@ class MyShopIndex extends Component {
                       containerStyle={{flex:1}}
                       score={this.props.shopDetail.score}
                     />
-                    {this.props.shopDetail.pv &&
-                    <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
+                    {this.props.shopDetail.pv
+                      ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
+                      : null
                     }
                   </View>
                 </View>
