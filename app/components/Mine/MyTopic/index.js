@@ -40,7 +40,7 @@ export class MyTopic extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics({isRefresh: true, type: "myTopics"})
+      this.refreshTopic()
     })
   }
 
@@ -64,15 +64,18 @@ export class MyTopic extends Component {
     this.isQuering = true
 
     let lastUpdatedAt = undefined
+    let lastCreatedAt = undefined
     if(this.props.topics){
       let currentTopics = this.props.topics
       if(currentTopics && currentTopics.length) {
         lastUpdatedAt = currentTopics[currentTopics.length-1].updatedAt
+        lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
       }
     }
     let payload = {
       type: "myTopics",
       lastUpdatedAt: lastUpdatedAt,
+      lastCreatedAt: lastCreatedAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
         this.isQuering = false
