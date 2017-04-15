@@ -80,7 +80,7 @@ class AreaPromoterManager extends Component {
   renderAreaItem(areaAgent) {
     return (
       <View style={styles.areaItemView}>
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', alignItems: 'center'}} onPress={() => {}}>
+        <TouchableOpacity style={{flex: 1, flexDirection: 'row', alignItems: 'center'}} onPress={() => {Actions.AREA_DETAIL({area: areaAgent.area})}}>
           <View style={styles.areaNameStyle}>
             <Text style={styles.txtStyle} numberOfLines={1}>{areaAgent.area}</Text>
           </View>
