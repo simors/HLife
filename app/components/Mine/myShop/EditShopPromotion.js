@@ -632,10 +632,11 @@ class EditShopPromotion extends Component {
             this.props.handleDestroyShopPromotionDraft({id:this.draftId})
 
           }else{
+            this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+
             // Actions.SHOP_DETAIL({id: this.state.form.shopId})
             Actions.pop()
 
-            this.props.handleDestroyShopPromotionDraft({id:this.draftId})
 
           }
         },

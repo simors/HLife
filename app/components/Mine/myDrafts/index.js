@@ -32,6 +32,9 @@ import {SwipeListView,SwipeRow} from 'react-native-swipe-list-view'
 import {fetchTopicDraft, handleDestroyTopicDraft,handleDestroyShopPromotionDraft} from '../../../action/draftAction'
 import THEME from '../../../constants/themes/theme1'
 import ShopPromotionDraftShow from './shopPromotionDraftShow'
+import Popup from '@zzzkk2009/react-native-popup'
+import * as Toast from '../../../components/common/Toast'
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -51,6 +54,50 @@ export class MyTopic extends Component {
   componentDidMount() {
 
   }
+
+  clearTopic(rowId) {
+    Popup.confirm({
+      title: '提示',
+      content: '确认删除草稿？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=>{
+          this.delectDraft(rowId)
+          Toast.show('删除成功！')
+
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
+      }
+    })
+  }
+  clearShopPromotion(rowId) {
+    Popup.confirm({
+      title: '提示',
+      content: '确认删除草稿？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=>{
+          this.delectShopDraft(rowId)
+          Toast.show('删除成功！')
+
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
+      }
+    })
+  }
+
   delectDraft(rowId){
     this.props.handleDestroyTopicDraft({id:rowId})
   }
@@ -65,9 +112,9 @@ export class MyTopic extends Component {
                 leftOpenValue={20 + parseInt(rowId) * 5}
                 rightOpenValue={-normalizeW(75)}>
 
-        <TouchableHighlight onPress={()=>{this.delectShopDraft(rowId)}} style={{marginLeft:normalizeW(300)}}>
+        <TouchableHighlight onPress={()=>{this.clearShopPromotion(rowId)}} style={{ backgroundColor:THEME.base.mainColor,marginLeft:normalizeW(300),flex:1,alignItems:'center',justifyContent:'center'}}>
           <View >
-            <Text>删除</Text>
+            <Text style={{color:'#fff',fontSize:em(17)}}>删除</Text>
           </View>
         </TouchableHighlight>
         <View style={{flex:1}}>
@@ -91,7 +138,7 @@ export class MyTopic extends Component {
               leftOpenValue={20 + parseInt(rowId) * 5}
               rightOpenValue={-normalizeW(75)}>
 
-      <TouchableHighlight onPress={()=>{this.delectDraft(rowId)}} style={{marginLeft:normalizeW(300)}}>
+      <TouchableHighlight onPress={()=>{this.clearTopic(rowId)}} style={{marginLeft:normalizeW(300)}}>
         <View >
           <Text>删除</Text>
         </View>
