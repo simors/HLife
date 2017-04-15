@@ -7,6 +7,7 @@ import * as draftTypes from '../constants/draftActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as uiTypes from '../constants/uiActionTypes'
 import  {Record,Map,List}from 'immutable'
+import * as locSelector from '../selector/locSelector'
 
 export const updateTopicDraft = createAction(draftTypes.UPDATE_TOPIC_DRAFT)
 export const updateShopPomotionDraft = createAction(draftTypes.UPDATE_SHOP_PROMOTION_DRAFT)
@@ -29,8 +30,15 @@ export const fetchTopicDraft=(payload)=>{
       }
       formData = getInputFormData(getState(), payload.formKey)
     }
-
-    dispatch(updateTopicDraft({id:payload.draftId,topicDraft:formData,images:payload.images}))
+    let city = locSelector.getCity(getState())
+    console.log('data',formData.topicName.text,formData.topicContent.abstract,payload.imgGroup)
+    if(formData.topicContent.abstract!=undefined||payload.imgGroup!=undefined){
+      console.log('what wrong')
+      dispatch(updateTopicDraft({id:payload.draftId,imgGroup:payload.imgGroup,draftDay:payload.draftDay,draftMonth:payload.draftMonth,categoryId:payload.categoryId,city:city,title:formData.topicName.text,
+        content: JSON.stringify(formData.topicContent.text),
+        abstract: formData.topicContent.abstract,objectId: payload.topicId,
+      }))
+    }
   }
 }
 

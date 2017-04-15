@@ -122,7 +122,7 @@ export class MyTopic extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const topics = getMyTopics(state)
-  console.log('topics',topics)
+  // console.log('topics',topics)
   return {
     dataSrc: ds.cloneWithRows(topics),
     topics: topics,

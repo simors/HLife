@@ -1,4 +1,7 @@
 /**
+ * Created by lilu on 2017/4/15.
+ */
+/**
  * Created by wanpeng on 2017/3/24.
  */
 import React, {Component} from 'react'
@@ -17,20 +20,20 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Symbol from 'es6-symbol'
-import Header from '../common/Header'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
-import {fetchTopicDraft, handleDestroyTopicDraft} from '../../action/draftAction'
-
-import {getTopicCategories, getTopicCategoriesById} from '../../selector/configSelector'
-import CommonTextInput from '../common/Input/CommonTextInput'
+import Header from '../../common/Header'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../../action/topicActions'
+import {fetchTopicDraft, handleDestroyTopicDraft} from '../../../action/draftAction'
+import {getMyTopicDrafts,getMyShopPromotionDrafts} from '../../../selector/draftSelector'
+import {getTopicCategories, getTopicCategoriesById} from '../../../selector/configSelector'
+import CommonTextInput from '../../common/Input/CommonTextInput'
 import ModalBox from 'react-native-modalbox';
 import {Actions} from 'react-native-router-flux'
-import * as Toast from '../common/Toast'
-import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import ArticleEditor from '../common/Input/ArticleEditor'
+import * as Toast from '../../common/Toast'
+import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
+import ArticleEditor from '../../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
-import THEME from '../../constants/themes/theme1'
+import THEME from '../../../constants/themes/theme1'
 import uuid from 'react-native-uuid'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -62,7 +65,7 @@ const rteHeight = {
 
 const wrapHeight = normalizeH(118)
 
-class TopicEdit extends Component {
+class EditTopicDraft extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -75,17 +78,14 @@ class TopicEdit extends Component {
     };
     this.insertImages = []
     this.isPublishing = false
-    this.draftId=this.props.topic.id?this.props.topic.id:uuid.v1()
-    this.draftMonth=new Date().getMonth() + 1
-    this.draftDay = new Date().getDate()  }
+    this.draftId=uuid.v1()
+  }
 
   submitSuccessCallback = () => {
-    console.log('this.draftId',this.draftId)
+    this.props.handleDestroyTopicDraft({id:this.draftId})
 
     this.isPublishing = false
     Actions.pop({popNum: 2})
-    this.props.handleDestroyTopicDraft({id:this.draftId})
-
     Toast.show('恭喜您,更新成功!')
   }
 
@@ -117,46 +117,26 @@ class TopicEdit extends Component {
   }
 
   publishTopic() {
-    if(this.props.topic&&this.props.topic.objectId){
-      // console.log('asasasas')
-      this.props.publishTopicFormData({
-        formKey: updateTopicForm,
-        images: this.insertImages,
-        topicId: this.props.topic.objectId,
-        categoryId: this.state.selectedTopic.objectId,
-        submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
-        success: this.submitSuccessCallback,
-        error: this.submitErrorCallback
-      })
-    }else{
-      // console.log('hahahahah')
-      this.props.publishTopicFormData({
-        formKey: updateTopicForm,
-        images: this.insertImages,
-        categoryId: this.state.selectedTopic.objectId,
-         userId: this.props.userInfo.id,
-        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-        success: ()=> {
-          this.submitSuccessCallback(this)
-        },
-        error: this.submitErrorCallback
-      })
-    }
-
+    this.props.publishTopicFormData({
+      formKey: updateTopicForm,
+      images: this.insertImages,
+      topicId: this.props.topic.objectId,
+      categoryId: this.state.selectedTopic.objectId,
+      submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
   }
 
   componentDidMount() {
     if (this.props.topicId && this.props.topicId.objectId) {
       this.setState({selectedTopic: this.props.topicId});
     }
-    if(this.props.topic.objectId){
-      this.draftId=this.props.topic.objectId
-    }
     this.setInterval(()=>{
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,
       })
-      // console.log('here is uid ',this.draftId)
-    },5000)
+      console.log('here is uid ',this.draftId)
+    },1000)
   }
 
   openModal() {
@@ -248,9 +228,7 @@ class TopicEdit extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => {this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
-          abstract:this.props.topic.abstract})
-            Actions.pop()}}
+          leftPress={() => Actions.pop()}
           title="更新话题"
           rightType="text"
           rightText="更新"
@@ -304,7 +282,6 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const topicCategory = getTopicCategoriesById(state, ownProps.topic.categoryId)
-  console.log('userinfo',userInfo.id)
   return {
     topics: topics,
     topicCategory: topicCategory,
@@ -319,9 +296,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicDraft
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(TopicEdit)
+export default connect(mapStateToProps, mapDispatchToProps)(EditTopicDraft)
 
-Object.assign(TopicEdit.prototype, TimerMixin)
+Object.assign(EditTopicDraft.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {

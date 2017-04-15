@@ -29,50 +29,51 @@ export default class TopicDraftShow extends Component {
   constructor(props) {
     super(props)
     this.state = {}
-    // console.log('asasasassssss',this.props.topic)
+    console.log('asasasassssss',this.props.topic)
 
   }
 
   commentButtonPress() {
-    // Actions.TOPIC_DETAIL({topic: this.props.topic})
+     Actions.TOPIC_EDIT({topic: this.props.topic})
   }
 
   renderContentImage() {
     // console.log('asasasassssss',this.props.topic)
     //没有图片的显示规则
     if (this.props.topic) {
-      if ((!this.props.topic.images) || ((this.props.topic.images.length == 0))) {
-         console.log('asasasassssss',this.props.topic.topicContent.abstact)
+      if ((!this.props.topic.imgGroup) || ((this.props.topic.imgGroup.length == 0))) {
+        // console.log('this.props.topic.topicContent.abstract',this.props.topic.topicContent.abstract)
+        // console.log('this.props.topic.topicName.text',this.props.topic.topicName.text)
 
         return (
           <TouchableOpacity style={styles.contentWrapStyle} onPress={()=>this.commentButtonPress()}>
             <Text style={styles.contentTitleStyle} numberOfLines={1}>
-              {this.props.topic.topicName.text}
+              {this.props.topic.title}
             </Text>
             <Text style={styles.contentStyle} numberOfLines={2}>
-              {this.props.topic.topicContent.abstract}
+              {this.props.topic.abstract}
             </Text>
           </TouchableOpacity>
         )
       }
 
       //一张到2张图片的显示规则
-      else if (this.props.topic.images && (this.props.topic.images.length < 3)) {
-        console.log('asasasassssss',this.props.topic.images)
+      else if (this.props.topic.imgGroup && (this.props.topic.imgGroup.length < 3)) {
+        // console.log('asasasassssss',this.props.topic.images)
 
         let image = []
-        image.push(this.props.topic.images[0])
+        image.push(this.props.topic.imgGroup[0])
         return (
           <TouchableOpacity style={[styles.contentWrapStyle, {flexDirection: 'row'}]}
                             onPress={()=>this.commentButtonPress()}>
-            {/*<View style={{flex: 1}}>*/}
-              {/*<Text style={styles.contentTitleStyle} numberOfLines={2}>*/}
-                {/*{this.props.topic.topicName.text}*/}
-              {/*</Text>*/}
-              {/*<Text style={styles.contentStyle} numberOfLines={3}>*/}
-                {/*{this.props.topic.topicContent.abstract}*/}
-              {/*</Text>*/}
-            {/*</View>*/}
+            <View style={{flex: 1}}>
+              <Text style={styles.contentTitleStyle} numberOfLines={2}>
+                {this.props.topic.title}
+              </Text>
+              <Text style={styles.contentStyle} numberOfLines={3}>
+                {this.props.topic.abstract}
+              </Text>
+            </View>
             <ImageGroupViewer browse={false}
                               images={image}
                               imageLineCnt={1}
@@ -82,18 +83,18 @@ export default class TopicDraftShow extends Component {
       }
 
       //3张以上图片的显示规则
-      else if (this.props.topic.images && (this.props.topic.images.length >= 3)) {
+      else if (this.props.topic.imgGroup && (this.props.topic.imgGroup.length >= 3)) {
         let image = []
-        image.push(this.props.topic.images[0])
-        image.push(this.props.topic.images[1])
-        image.push(this.props.topic.images[2])
+        image.push(this.props.topic.imgGroup[0])
+        image.push(this.props.topic.imgGroup[1])
+        image.push(this.props.topic.imgGroup[2])
         return (
           <TouchableOpacity style={styles.contentWrapStyle} onPress={()=>this.commentButtonPress()}>
             <Text style={styles.contentTitleStyle} numberOfLines={1}>
-              {this.props.topic.topicName.text}
+              {this.props.topic.title}
             </Text>
             <Text style={styles.contentStyle} numberOfLines={2}>
-              {this.props.topic.topicContent.abstract}
+              {this.props.topic.abstract}
             </Text>
             <ImageGroupViewer browse={false}
                               images={image}
@@ -117,8 +118,8 @@ export default class TopicDraftShow extends Component {
         <View style={[styles.containerStyle, this.props.containerStyle]}>
           <View style={styles.timeWrapStyle}>
             <View style={{backgroundColor: THEME.base.mainColor, borderRadius: 5, padding: 5}}>
-              <Text style={styles.dayStyle}>12</Text>
-              <Text style={styles.monthStyle}>23</Text>
+              <Text style={styles.dayStyle}>{this.props.topic.draftDay}</Text>
+              <Text style={styles.monthStyle}>{this.props.topic.draftMonth}</Text>
             </View>
           </View>
           <View style={{flex: 1, paddingLeft: normalizeW(10)}}>
@@ -126,7 +127,7 @@ export default class TopicDraftShow extends Component {
             <View style={styles.locationCommentStyle}>
               <Image style={styles.positionPicStyle} resizeMode="contain"
                      source={require("../../../assets/images/writer_loaction.png")}/>
-              {/*<Text style={styles.positionTextStyle}>长沙</Text>*/}
+              <Text style={styles.positionTextStyle}>{this.props.topic.city}</Text>
               {/*<Text style={styles.likeTextStyle}>*/}
                 {/*{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}*/}
               {/*</Text>*/}
@@ -148,7 +149,6 @@ TopicDraftShow.defaultProps = {
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
-    alignItems: 'flex-start',
     backgroundColor: '#fff',
     flexDirection: 'row',
     paddingTop: normalizeH(20),

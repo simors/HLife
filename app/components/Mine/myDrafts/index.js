@@ -17,6 +17,7 @@ import {
   InteractionManager,
   ListView,
   StatusBar,
+  TouchableHighlight
 } from 'react-native'
 import Header from '../../common/Header'
 import {getMyTopicDrafts,getMyShopPromotionDrafts} from '../../../selector/draftSelector'
@@ -28,6 +29,7 @@ import TopicDraftShow from './topicDraftShow'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 import {SwipeListView,SwipeRow} from 'react-native-swipe-list-view'
+import {fetchTopicDraft, handleDestroyTopicDraft} from '../../../action/draftAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -45,14 +47,32 @@ export class MyTopic extends Component {
   componentDidMount() {
 
   }
-
+  delectDraft(rowId){
+    this.props.handleDestroyTopicDraft({id:rowId})
+  }
   renderTopicItem(value, key,rowId) {
-    console.log('valeu',value,rowId)
+    // console.log('valeu',value,rowId)
     return (
-      <TopicDraftShow key={rowId}
-                   containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
-                   topic={value}
-      />
+      <SwipeRow style = {{flex:1,width:PAGE_WIDTH}}
+                disableRightSwipe={true}
+                leftOpenValue={20 + parseInt(rowId) * 5}
+                rightOpenValue={-normalizeW(75)}>
+
+        <TouchableHighlight onPress={()=>{this.delectDraft(rowId)}} style={{marginLeft:normalizeW(300)}}>
+          <View >
+            <Text>删除</Text>
+          </View>
+        </TouchableHighlight>
+        <View style={{flex:1}}>
+          <TopicDraftShow key={rowId}
+                          containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
+                          topic={value}
+                          commentButtonPress={()=>{Actions.TOPIC_EDIT({topic: value})}}
+          />
+          {/*<Text>Row front | </Text>*/}
+        </View>
+
+        </SwipeRow>
     )
   }
 
@@ -125,19 +145,33 @@ const mapStateToProps = (state, ownProps) => {
 
   const topics = getMyTopicDrafts(state)
   let topicArr = []
-  for(let key in topics){
-    topicArr.push({key:key,data:topics[key]})
-  }
-  console.log('topicArr',topicArr)
-  return {
-    dataSrc: ds.cloneWithRows(topics),
-    // dataSrc: ds.cloneWithRows(topics),
-    topics: topics,
-  }
+  // for (let key in topics) {
+  //   topicArr.push({
+  //     key: key, data: {
+  //       content: topics[key].content, //话题内容
+  //       title: topics[key].title,
+  //       abstract: topics[key].abstract,
+  //       imgGroup: topics[key].imgGroup, //图片
+  //       objectId: topics[key].topicId,  //话题id
+  //       categoryId: topics[key].categoryId,
+  //       city: topics[key].city,
+  //       draftDay: topics[key].draftDay,
+  //       draftMonth: topics[key].draftMonth
+  //     }
+  //   })
+  //   console.log('topicArr', topicArr)
+  // }
+    return {
+      dataSrc: ds.cloneWithRows(topics),
+      // dataSrc: ds.cloneWithRows(topics),
+      topics: topics,
+    }
+
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   // fetchTopics,
+  handleDestroyTopicDraft,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyTopic)

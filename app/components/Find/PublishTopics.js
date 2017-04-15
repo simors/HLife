@@ -77,13 +77,17 @@ class PublishTopics extends Component {
     this.insertImages = []
     this.isPublishing = false
     this.draftId=uuid.v1()
+    this.draftMonth=new Date().getMonth() + 1
+    this.draftDay = new Date().getDate()
+
 
   }
 
   submitSuccessCallback(context) {
-    this.props.handleDestroyTopicDraft({id:this.draftId})
     this.isPublishing = false
     Toast.show('恭喜您,发布成功!')
+    this.props.handleDestroyTopicDraft({id:this.draftId})
+
     Actions.pop()
   }
 
@@ -137,9 +141,10 @@ class PublishTopics extends Component {
       this.setState({selectedTopic: this.props.topicId});
     }
     this.setInterval(()=>{
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,
+
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
       })
-      console.log('here is uid ',this.draftId)
+      // console.log('here is uid ',this.draftId)
     },1000)
 
   }
@@ -229,7 +234,10 @@ class PublishTopics extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop({type:'refresh'})}
+          leftPress={() => {
+            this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+            })
+            Actions.pop({type:'refresh'})}}
           title="发布话题"
           rightType="text"
           rightText="发布"

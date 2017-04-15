@@ -40,9 +40,12 @@ function updateTopicDraft(state,action){
   let payload = action.payload
   console.log('payload',payload)
   let id = payload.id
-  let topicDraft = payload.topicDraft
-  let images = payload.images
-  let data = {...topicDraft,images:images}
+  // let topicDraft = payload.topicDraft
+  // let draftD = payload.draftDate
+  // let images = payload.images
+  // let categoryId = payload.categoryId
+  // let city = payload.city
+  let data = {...payload}
   let _map = state.get('topics')
   _map = _map.set(id, data)
   state = state.set('topics', _map)
@@ -52,6 +55,7 @@ function updateTopicDraft(state,action){
 function destroyTopicDraft(state,action){
   let payload = action.payload
   let id = payload.id
+  console.log('id',id)
   let _map = state.get('topics')
   _map = _map.delete(id)
   state  = state.set('topics',_map)
