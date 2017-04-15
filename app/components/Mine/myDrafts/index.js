@@ -31,7 +31,7 @@ import {Actions} from 'react-native-router-flux'
 import {SwipeListView,SwipeRow} from 'react-native-swipe-list-view'
 import {fetchTopicDraft, handleDestroyTopicDraft,handleDestroyShopPromotionDraft} from '../../../action/draftAction'
 import THEME from '../../../constants/themes/theme1'
-
+import ShopPromotionDraftShow from './shopPromotionDraftShow'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -72,7 +72,11 @@ export class MyTopic extends Component {
         </TouchableHighlight>
         <View style={{flex:1}}>
 
-          <Text>{value.title}</Text>
+<ShopPromotionDraftShow key = {rowId}
+                        shopPromotion={value}
+>
+
+</ShopPromotionDraftShow>
         </View >
 
       </SwipeRow>
@@ -274,6 +278,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   // fetchTopics,
   handleDestroyTopicDraft,
+  handleDestroyShopPromotionDraft,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyTopic)

@@ -40,9 +40,10 @@ import ArticleEditor from '../../common/Input/ArticleEditor'
 import Popup from '@zzzkk2009/react-native-popup'
 import Loading from '../../common/Loading'
 import uuid from 'react-native-uuid'
+import TimerMixin from 'react-timer-mixin'
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-import TimerMixin from 'react-timer-mixin'
 
 let shopPromotionForm = Symbol('shopPromotionForm')
 const shopPromotion = {
@@ -155,7 +156,7 @@ class EditShopPromotion extends Component {
 
       this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
         abstract: this.state.form.abstract,
-        promotionDetailInfo:  this.state.form.promotionDetailInfo,
+        promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
         shopId: this.state.form.shopId
       })
       // console.log('here is uid ',this.draftId)
@@ -662,7 +663,7 @@ class EditShopPromotion extends Component {
           rightPress={() => {
               this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
                 abstract: this.state.form.abstract,
-                promotionDetailInfo:  this.state.form.promotionDetailInfo,
+                promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
                 shopId: this.state.form.shopId
               })
             this.publishPromotion()}}
