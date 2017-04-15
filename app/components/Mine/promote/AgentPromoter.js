@@ -63,7 +63,7 @@ class AgentPromoter extends Component {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity onPress={() => {Actions.AREA_MANAGER()}}>
+            <TouchableOpacity onPress={() => {Actions.AREA_MANAGER({promoter: this.props.promoter})}}>
               <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../../assets/images/region_manage.png')}/>
             </TouchableOpacity>
           </View>

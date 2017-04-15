@@ -123,3 +123,16 @@ export function getTotalPerformance(payload) {
     throw err
   })
 }
+
+export function getAreaAgents(payload) {
+  let params = {
+    identity: payload.identity,
+    province: payload.province,
+    city: payload.city,
+  }
+  return AV.Cloud.run('promoterGetAreaAgentManager', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
