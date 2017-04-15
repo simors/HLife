@@ -36,6 +36,10 @@ import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ImageInput from '../common/Input/ImageInput'
 import ArticleEditor from '../common/Input/ArticleEditor'
 import Loading from '../common/Loading'
+import TimerMixin from 'react-timer-mixin'
+import {fetchShopPromotionDraft,handleDestroyShopPromotionDraft} from '../../action/draftAction'
+import uuid from 'react-native-uuid'
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -70,6 +74,7 @@ class PublishShopPromotion extends Component {
     this.localCoverImgUri = ''
     this.localRichTextImagesUrls = []
     this.isPublishing = false
+    this.draftId = uuid.v1()
 
     this.state = {
 
@@ -135,6 +140,17 @@ class PublishShopPromotion extends Component {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchUserOwnedShopInfo()
     })
+    this.setInterval(()=>{
+
+      this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+        abstract: this.state.form.abstract,
+        promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
+        shopId: this.state.form.shopId,
+        localCoverImgUri: this.localCoverImgUri,
+        localRichTextImagesUrls: this.localRichTextImagesUrls,
+      })
+      // console.log('here is uid ',this.draftId)
+    },5000)
   }
 
   componentDidMount() {
@@ -538,6 +554,7 @@ class PublishShopPromotion extends Component {
         this.isPublishing = false
         Loading.hide(this.loading)
         Toast.show('活动发布成功')
+        this.props.handleDestroyShopPromotionDraft({id:this.draftId})
         if(this.props.isPop) {
           this.props.fetchUserOwnedShopInfo()
           Actions.pop()
@@ -600,7 +617,15 @@ class PublishShopPromotion extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+            this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+              abstract: this.state.form.abstract,
+              promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
+              shopId: this.state.form.shopId,
+              localCoverImgUri: this.localCoverImgUri,
+              localRichTextImagesUrls: this.localRichTextImagesUrls,
+            })
+            Actions.pop()}}
           title="发布活动"
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightType="text"
@@ -747,9 +772,12 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   submitShopPromotion,
+  handleDestroyShopPromotionDraft,
+  fetchShopPromotionDraft
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotion)
+Object.assign(PublishShopPromotion.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {
