@@ -508,8 +508,9 @@ class ShopDetail extends Component {
                     {this.props.shopDetail.distance &&
                     <Text style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
                     }
-                    {this.props.shopDetail.pv &&
-                    <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}看过</Text>
+                    {this.props.shopDetail.pv
+                      ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
+                      : null
                     }
                   </View>
                 </View>
