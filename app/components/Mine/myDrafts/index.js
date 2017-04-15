@@ -30,6 +30,7 @@ import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 import {SwipeListView,SwipeRow} from 'react-native-swipe-list-view'
 import {fetchTopicDraft, handleDestroyTopicDraft} from '../../../action/draftAction'
+import THEME from '../../../constants/themes/theme1'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -41,7 +42,10 @@ const ds = new ListView.DataSource({
 export class MyTopic extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      tabType: props.tabType ? 1 : 0
+
+    }
   }
 
   componentDidMount() {
@@ -75,7 +79,15 @@ export class MyTopic extends Component {
         </SwipeRow>
     )
   }
-
+  toggleTab(type) {
+    this.setState({tabType: type}, ()=>{
+      if(0 == type) {
+        this.renderTopicList()
+      } else if(1 == type) {
+        this.renderShopList()
+      }
+    })
+  }
   refreshTopic() {
     this.loadMoreData(true)
   }
@@ -108,7 +120,25 @@ export class MyTopic extends Component {
   //   }
   //   this.props.fetchTopics(payload)
   // }
+  renderTopicList(){
+    return(
 
+      <SwipeListView
+        dataSource={this.props.dataSrc}
+        renderRow={ (data,key,rowId) => ( this.renderTopicItem(data,key,rowId)
+        )
+          // console.log('data',data,key,rowId)
+
+        }
+
+        leftOpenValue={75}
+        rightOpenValue={-75}
+      />
+    )
+  }
+  renderShopList(){
+    return(<View></View>)
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -119,22 +149,56 @@ export class MyTopic extends Component {
           leftStyle={{color: '#FFFFFF'}}
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="我的话题"
+          title="我的草稿"
           titleStyle={{color: '#FFF'}}
           rightType="none"
         />
         <View style={styles.body}>
-          <SwipeListView
-            dataSource={this.props.dataSrc}
-            renderRow={ (data,key,rowId) => ( this.renderTopicItem(data,key,rowId)
-              )
-             // console.log('data',data,key,rowId)
+            <View style={styles.tabBar}>
+              <TouchableOpacity
+                style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                onPress={()=> {
+                  this.toggleTab(0)
+                }}>
+                <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+                  this.state.tabType == 0 ?
+                  {
+                    borderBottomWidth: 3,
+                    borderColor: THEME.base.mainColor
+                  } : {}]}>
+                  <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                    this.state.tabType == 0 ?
+                    {
+                      color: THEME.base.mainColor,
+                      fontWeight: 'bold',
+                    } : {color: '#4A4A4A'}]}
+                  >话题</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                onPress={()=> {
+                  this.toggleTab(1)
+                }}>
+                <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+                  this.state.tabType == 1 ?
+                  {
+                    borderBottomWidth: 3,
+                    borderColor: THEME.base.mainColor
+                  } : {}]}>
+                  <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                    this.state.tabType == 1 ?
+                    {
+                      color: THEME.base.mainColor,
+                      fontWeight: 'bold',
+                    } : {color: '#4A4A4A'}]}
+                  >活动</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            {this.state.tabType == 0?this.renderTopicList():this.renderShopList()}
 
-            }
 
-            leftOpenValue={75}
-            rightOpenValue={-75}
-          />
         </View>
       </View>
     )
@@ -195,5 +259,27 @@ const styles = StyleSheet.create({
   listViewStyle: {
     width: PAGE_WIDTH,
     backgroundColor: '#E5E5E5',
+  },
+  tabBar: {
+    height: normalizeH(44),
+    width: PAGE_WIDTH,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderColor: '#f5f5f5',
+  },
+  //用户、时间、地点信息
+  introWrapStyle: {
+    marginTop: normalizeH(12),
+    marginBottom: normalizeH(12),
+    backgroundColor: '#ffffff',
+  },
+
+  positionStyle: {
+    marginRight: normalizeW(4),
+    width: normalizeW(8),
+    height: normalizeH(12)
   },
 })

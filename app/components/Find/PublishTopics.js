@@ -86,9 +86,10 @@ class PublishTopics extends Component {
   submitSuccessCallback(context) {
     this.isPublishing = false
     Toast.show('恭喜您,发布成功!')
-    this.props.handleDestroyTopicDraft({id:this.draftId})
 
     Actions.pop()
+    this.props.handleDestroyTopicDraft({id:this.draftId})
+
   }
 
   submitErrorCallback(error) {
@@ -145,7 +146,7 @@ class PublishTopics extends Component {
       this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
       })
       // console.log('here is uid ',this.draftId)
-    },1000)
+    },5000)
 
   }
 
