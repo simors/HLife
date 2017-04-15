@@ -293,7 +293,7 @@ class Mine extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.MY_DRAFTS()}}>
             <View style={styles.menuIcon}>
-              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_wallet.png')} />
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/drafts_24.png')} />
             </View>
             <View>
               <Text style={styles.menuName}>草稿箱</Text>
