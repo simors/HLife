@@ -71,6 +71,7 @@ class Home extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
+      console.log('componentWillMount.refreshData')
       this.refreshData()
     })
   }
@@ -175,11 +176,13 @@ class Home extends Component {
   }
 
   loadMoreData(isRefresh) {
-    // console.log('this.state===', this.state)
+    // console.log('loadMoreData.isRefresh===', isRefresh)
     if(this.isQuering) {
       return
     }
     this.isQuering = true
+    // console.log('loadMoreData.isQuering=123==', this.isQuering)
+    // console.log('loadMoreData.isRefresh==12=', isRefresh)
 
     let payload = {
       ...this.state.searchForm,
@@ -198,6 +201,7 @@ class Home extends Component {
                 distance: ''
               }
             }, ()=>{
+              // console.log('isEmpty===', isEmpty)
               this.refreshData()
             })
           }
@@ -231,16 +235,17 @@ class Home extends Component {
         />
 
         <View style={styles.body}>
-          <View>
+          <View style={{flex:1}}>
             <CommonListView
               contentContainerStyle={{backgroundColor: '#F5F5F5'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
               loadNewData={()=> {
+                console.log('CommonListView.loadNewData')
                 this.refreshData()
               }}
               loadMoreData={()=> {
-                this.loadMoreData(false, true)
+                this.loadMoreData()
               }}
               ref={(listView) => this.listView = listView}
             />

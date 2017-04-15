@@ -143,10 +143,6 @@ export default class CommonListView extends Component {
    * LoadMore
    */
   onLoadMore = () => {
-    if (this.state.contentHeight < this.props.contentViewHeight) {
-      this.setState({hasMore: false})
-      return
-    }
     return this.props.loadMoreData()
   }
 }
