@@ -76,7 +76,10 @@ class ShopPromotionModule extends Component {
                       }
                     </View>
                     <View>
-                      <Text style={styles.itemText}>{item.pv}人看过</Text>
+                      {item.pv
+                        ? <Text style={styles.itemText}>{item.pv}人看过</Text>
+                        : null
+                      }
                     </View>
                   </View>
                 </View>

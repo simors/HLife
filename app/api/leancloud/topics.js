@@ -303,6 +303,7 @@ export function getLocalTopics(payload) {
   // if (!isRefresh && lastCreatedAt) { //分页查询
   //   query.lessThan('createdAt', new Date(lastCreatedAt))
   // }
+
   if (!isRefresh && lastUpdatedAt) { //分页查询
     query.lessThan('updatedAt', new Date(lastUpdatedAt))
   }
@@ -355,6 +356,7 @@ export function getTopics(payload) {
       query.equalTo('user', user)
     }
 
+    // console.log('getTopics.lastUpdatedAt====', payload.lastUpdatedAt)
     let isRefresh = payload.isRefresh
     // let lastCreatedAt = payload.lastCreatedAt
     let lastCreatedAt = ''
@@ -364,7 +366,7 @@ export function getTopics(payload) {
         query.lessThan('createdAt', new Date(lastCreatedAt))
         query.descending('createdAt')
       }else if(lastUpdatedAt) {
-        query.lessThan('updatedAt', new Date(lastCreatedAt))
+        query.lessThan('updatedAt', new Date(lastUpdatedAt))
         query.descending('updatedAt')
       }
     }

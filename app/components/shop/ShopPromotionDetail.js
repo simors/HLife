@@ -115,7 +115,10 @@ class ShopPromotionDetail extends Component {
                 <View style={styles.typeDescBox}>
                   <Text numberOfLines={1} style={styles.typeDescTxt}>{shopPromotionDetail.typeDesc}</Text>
                 </View>
-                <Text style={styles.pvTxt}>{shopPromotionDetail.pv}人看过</Text>
+                {shopPromotionDetail.pv
+                  ? <Text style={styles.pvTxt}>{shopPromotionDetail.pv}人看过</Text>
+                  : null
+                }
               </View>
             </View>
             <View style={styles.shopInfoWrap}>
