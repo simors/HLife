@@ -128,18 +128,23 @@ export function userLogOut(payload) {
 }
 
 export function submitInputData(payload) {
+  console.log("submitInputData ",payload)
   return (dispatch, getState) => {
+    let data = undefined
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
-    let isValid = isInputValid(getState(), payload.formKey, payload.stateKey)
-    if (!isValid.isValid) {
-      if (payload.error) {
-        payload.error({message: isValid.errMsg})
+    if(payload.stateKey) {
+      let isValid = isInputValid(getState(), payload.formKey, payload.stateKey)
+      if (!isValid.isValid) {
+        if (payload.error) {
+          payload.error({message: isValid.errMsg})
+        }
+        return
       }
-      return
+      data = getInputData(getState(), payload.formKey, payload.stateKey)
+
     }
 
-    const data = getInputData(getState(), payload.formKey, payload.stateKey)
     switch (payload.submitType) {
       case INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE:
         dispatch(handleGetSmsCode(payload, data))
@@ -148,7 +153,7 @@ export function submitInputData(payload) {
         dispatch(handleRequestResetPwdSmsCode(payload, data))
         break
       case INPUT_FORM_SUBMIT_TYPE.GET_PAYMENT_SMS_CODE:
-        dispatch(handlePaymentSmsAuth(payload, data))
+        dispatch(handlePaymentSmsAuth(payload))
         break
     }
   }
@@ -236,12 +241,13 @@ function handleGetSmsCode(payload, data) {
 }
 
 
-function handlePaymentSmsAuth(payload, data) {
+function handlePaymentSmsAuth(payload) {
+  console.log("handlePaymentSmsAuth ", payload)
   return (dispatch, getState) => {
     paymentSmsAuthPayload = {
       phone: payload.phone,
     }
-    lcAuth.requestResetPwdSmsCode(paymentSmsAuthPayload).then(() => {
+    lcAuth.requestSmsAuthCode(paymentSmsAuthPayload).then(() => {
       if (payload.success) {
         payload.success()
       }
