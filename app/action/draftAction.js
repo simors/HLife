@@ -31,9 +31,9 @@ export const fetchTopicDraft=(payload)=>{
       formData = getInputFormData(getState(), payload.formKey)
     }
     let city = locSelector.getCity(getState())
-    console.log('data',formData.topicName.text,formData.topicContent.abstract,payload.imgGroup)
+    // console.log('data',formData.topicName.text,formData.topicContent.abstract,payload.imgGroup)
     if(formData.topicContent.abstract!=undefined||payload.imgGroup!=undefined){
-      console.log('what wrong')
+      // console.log('what wrong')
       dispatch(updateTopicDraft({id:payload.draftId,imgGroup:payload.imgGroup,draftDay:payload.draftDay,draftMonth:payload.draftMonth,categoryId:payload.categoryId,city:city,title:formData.topicName.text,
         content: JSON.stringify(formData.topicContent.text),
         abstract: formData.topicContent.abstract,objectId: payload.topicId,
@@ -49,7 +49,9 @@ export const fetchShopPromotionDraft=(payload)=>{
 }
 
 export const handleDestroyTopicDraft=(payload)=>{
+  console.log('destroy',payload)
   return (dispatch)=>{
+
     dispatch(destroyTopicDraft(payload))
   }
 }
