@@ -331,3 +331,11 @@ export function setShopTenant(payload) {
     })
   }
 }
+
+export function getShopTenantByCity(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.getCityShopTenant(payload).then((tenant) => {
+      dispatch(updateShopTenant({city: payload.city, tenant: tenant.tenant}))
+    })
+  }
+}

@@ -23,7 +23,7 @@ import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
-import {getTotalPerformance, setShopTenant} from '../../../action/promoterAction'
+import {getTotalPerformance, setShopTenant, getShopTenantByCity} from '../../../action/promoterAction'
 import {selectPromoterStatistics, selectCityTenant} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
 
@@ -39,6 +39,13 @@ class AreaPromoterDetail extends Component {
         city: this.props.city,
         district: this.props.district,
       })
+
+      if (this.props.upPromoter.identity == 2) {
+        this.props.getShopTenantByCity({
+          province: this.props.province,
+          city: this.props.city,
+        })
+      }
     })
   }
 
@@ -62,39 +69,52 @@ class AreaPromoterDetail extends Component {
         Toast.show(err)
       }
     }
-    console.log(payload)
     this.props.setShopTenant(payload)
   }
 
   renderFeeView() {
+    if (this.props.upPromoter.identity == 1) {
+      return (
+        <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {this.openModal()}}>
+          <Text style={{fontSize: em(17), color: THEME.base.mainColor, fontWeight: 'bold'}}>{this.props.tenant}</Text>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{fontSize: em(17), color: THEME.base.mainColor, fontWeight: 'bold'}}>{this.props.tenant}</Text>
+        </View>
+      )
+    }
+  }
+
+  renderAgent() {
+    let promoter = this.props.promoter
     return (
-      <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {this.openModal()}}>
-        <Text style={{fontSize: em(17), color: THEME.base.mainColor, fontWeight: 'bold'}}>{this.props.tenant}</Text>
-      </TouchableOpacity>
+      <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
+        <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
+          <Image style={styles.avatarStyle} resizeMode='contain'
+                 source={this.props.avatar ? {uri: this.props.avatar} : require('../../../assets/images/default_portrait.png')}/>
+          <View style={{paddingLeft: normalizeW(10)}}>
+            <Text style={styles.titleText}>{this.props.nickname ? this.props.nickname : '未设置代理人'}</Text>
+            <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
+              个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.changeAgentBtn}>
+          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
+            <Text style={{fontSize: em(15), color: '#FFF'}}>更换代理</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
 
   renderBaseView() {
-    let promoter = this.props.promoter
     return (
       <View style={{backgroundColor: '#FFF'}}>
-        <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
-          <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
-            <Image style={styles.avatarStyle} resizeMode='contain'
-                   source={this.props.avatar ? {uri: this.props.avatar} : require('../../../assets/images/default_portrait.png')}/>
-            <View style={{paddingLeft: normalizeW(10)}}>
-              <Text style={styles.titleText}>{this.props.nickname ? this.props.nickname : '未设置代理人'}</Text>
-              <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
-                个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.changeAgentBtn}>
-            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
-              <Text style={{fontSize: em(15), color: '#FFF'}}>更换代理</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        {this.renderAgent()}
         <View style={styles.agentItemView}>
           <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
             <Image style={styles.avatarStyle} resizeMode='contain' source={require('../../../assets/images/Settlement_fee.png')}/>
@@ -118,7 +138,7 @@ class AreaPromoterDetail extends Component {
     return (
       <View style={{marginTop: normalizeH(8), backgroundColor: '#FFF'}}>
         <View style={styles.totalPerformView}>
-          <Text style={[styles.titleText, {paddingTop: normalizeH(15)}]}>全市总业绩（元）</Text>
+          <Text style={[styles.titleText, {paddingTop: normalizeH(15)}]}>区域总业绩（元）</Text>
           <Text style={[styles.totalPerformText, {paddingTop: normalizeH(15)}]}>{statistics.totalPerformance}</Text>
         </View>
         <View style={styles.perforItemView}>
@@ -177,7 +197,15 @@ const mapStateToProps = (state, ownProps) => {
   let district = ownProps.district
   let area = province + city + district
   let statistics = selectPromoterStatistics(state, area)
-  let tenant = selectCityTenant(state, ownProps.area)
+  let upPromoter = ownProps.upPromoter
+  let agentCity = ''
+  if (upPromoter.identity == 1) {
+    agentCity = ownProps.area
+  } else if (upPromoter.identity == 2) {
+    agentCity = city
+  }
+
+  let tenant = selectCityTenant(state, agentCity)
   return {
     statistics,
     tenant,
@@ -186,7 +214,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getTotalPerformance,
-  setShopTenant
+  setShopTenant,
+  getShopTenantByCity
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AreaPromoterDetail)

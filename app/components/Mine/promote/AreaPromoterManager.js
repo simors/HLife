@@ -28,6 +28,9 @@ import {selectAreaAgents} from '../../../selector/promoterSelector'
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
+/**
+ * 只有省、市级推广员可以看到这个界面
+ */
 class AreaPromoterManager extends Component {
   constructor(props) {
     super(props)
@@ -87,6 +90,7 @@ class AreaPromoterManager extends Component {
                             province: promoter.province,
                             city: promoter.identity == 1 ? areaAgent.area : promoter.city,
                             district: promoter.identity == 1 ? '' : (promoter.identity == 2 ? areaAgent.area : promoter.district),
+                            upPromoter: promoter,
                             promoter: areaAgent.promoter,
                             nickname: areaAgent.nickname,
                             avatar: areaAgent.avatar,
