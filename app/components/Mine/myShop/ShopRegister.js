@@ -328,8 +328,9 @@ class ShopRegister extends Component {
             <View style={styles.subTitleWrap}>
               <Text style={styles.subTitle}>欢迎加入{appConfig.APP_NAME}，给你的店铺带来更好的收入</Text>
             </View>
-            {/*
+            
             <View style={styles.inputsWrap}>
+              {/*
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>姓名</Text>
