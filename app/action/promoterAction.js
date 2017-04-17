@@ -33,6 +33,7 @@ let setPromoterShops = createAction(promoterActionTypes.SET_PROMOTER_SHOPS)
 let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
 let updateStatistics = createAction(promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE)
 let updateAreaAgent = createAction(promoterActionTypes.UPDATE_AREA_AGENTS)
+let updateShopTenant = createAction(promoterActionTypes.UPDATE_CITY_SHOP_TENANT)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -303,6 +304,7 @@ export function getAreaPromoterAgents(payload) {
         agentObj.area = agent.area
         agentObj.tenant = agent.tenant
         agentsSet.push(agentObj)
+        dispatch(updateShopTenant({city: agent.area, tenant: agent.tenant}))
       })
       dispatch(updateAreaAgent({agentsSet}))
     })

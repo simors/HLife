@@ -91,7 +91,6 @@ class AreaPromoterManager extends Component {
                             nickname: areaAgent.nickname,
                             avatar: areaAgent.avatar,
                             userId: areaAgent.userId,
-                            tenant: areaAgent.tenant,
                           })}}>
           <View style={styles.areaNameStyle}>
             <Text style={styles.txtStyle} numberOfLines={1}>{areaAgent.area}</Text>

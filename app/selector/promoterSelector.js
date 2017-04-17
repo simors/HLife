@@ -117,3 +117,11 @@ export function selectAreaAgents(state) {
   })
   return retAgents
 }
+
+export function selectCityTenant(state, city) {
+  let tenant = state.PROMOTER.getIn(['shopTenant', city])
+  if (tenant) {
+    return tenant
+  }
+  return undefined
+}

@@ -21,8 +21,10 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
+import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
+import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
 import {getTotalPerformance} from '../../../action/promoterAction'
-import {selectPromoterStatistics} from '../../../selector/promoterSelector'
+import {selectPromoterStatistics, selectCityTenant} from '../../../selector/promoterSelector'
 
 class AreaPromoterDetail extends Component {
   constructor(props) {
@@ -37,6 +39,24 @@ class AreaPromoterDetail extends Component {
         district: this.props.district,
       })
     })
+  }
+
+  openModal() {
+    if (this.feeInput) {
+      this.feeInput.focus()
+    }
+  }
+
+  setTenantFee() {
+
+  }
+
+  renderFeeView() {
+    return (
+      <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {this.openModal()}}>
+        <Text style={{fontSize: em(17), color: THEME.base.mainColor, fontWeight: 'bold'}}>{this.props.tenant}</Text>
+      </TouchableOpacity>
+    )
   }
 
   renderBaseView() {
@@ -68,9 +88,7 @@ class AreaPromoterDetail extends Component {
             </View>
           </View>
           <View style={[styles.changeAgentBtn, {backgroundColor: 'rgba(255, 157, 78, 0.2)'}]}>
-            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
-              <Text style={{fontSize: em(17), color: THEME.base.mainColor, fontWeight: 'bold'}}>{this.props.tenant}</Text>
-            </TouchableOpacity>
+            {this.renderFeeView()}
           </View>
         </View>
       </View>
@@ -116,6 +134,21 @@ class AreaPromoterDetail extends Component {
             {this.renderBaseView()}
             {this.renderStatView()}
           </ScrollView>
+
+          <KeyboardAwareToolBar
+            initKeyboardHeight={-normalizeH(50)}
+          >
+            <ToolBarContent
+              replyInputRefCallBack={(input)=> {
+                this.feeInput = input
+              }}
+              onSend={(content) => {
+                this.setTenantFee(content)
+              }}
+              placeholder='设置入驻费'
+              label="设置"
+            />
+          </KeyboardAwareToolBar>
         </View>
       </View>
     )
@@ -128,8 +161,10 @@ const mapStateToProps = (state, ownProps) => {
   let district = ownProps.district
   let area = province + city + district
   let statistics = selectPromoterStatistics(state, area)
+  let tenant = selectCityTenant(state, ownProps.area)
   return {
     statistics,
+    tenant,
   }
 }
 
