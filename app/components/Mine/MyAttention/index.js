@@ -30,6 +30,7 @@ import * as Toast from '../../common/Toast'
 import THEME from '../../../constants/themes/theme1'
 import UserFolloweesView from './UserFolloweesView'
 import ShopFolloweesView from './ShopFolloweesView'
+import * as AVUtils from '../../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -93,20 +94,37 @@ class MyAttention extends Component {
   }
 
   renderAttentionList() {
-    return (
-      <CommonListView
-        contentContainerStyle={styles.itemLayout}
-        dataSource={this.props.userFollowees}
-        renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
-        loadNewData={()=> {
-          this.refreshFollowees()
-        }}
-        loadMoreData={()=> {
-          this.loadMoreData()
-        }}
-        ref={(listView) => this.followeeListView = listView}
-      />
-    )
+    // if(false) {
+    if(this.props.userFollowees && this.props.userFollowees.length) {
+      return (
+        <CommonListView
+          contentContainerStyle={styles.itemLayout}
+          dataSource={this.props.userFollowees}
+          renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
+          loadNewData={()=> {
+            this.refreshFollowees()
+          }}
+          loadMoreData={()=> {
+            this.loadMoreData()
+          }}
+          ref={(listView) => this.followeeListView = listView}
+        />
+      )
+    }else{
+      return (
+        <View style={{flex:1,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
+          <Image style={{marginBottom:20}} source={require('../../../assets/images/sad.png')}/>
+          <Text style={{color:'#b2b2b2',fontSize:17,marginBottom:15}}>一个关注的人都没有</Text>
+          <Text style={{color:'#ff7819',fontSize:17,marginBottom:60}}>远亲不如近邻，找找附近的邻友吧</Text>
+          <TouchableOpacity style={{backgroundColor:'#ff7819',borderRadius:5,padding:12,paddingLeft:30,paddingRight:30}} 
+            onPress={()=>{
+              AVUtils.switchTab('FIND')
+            }}>
+              <Text style={{color:'white',fontSize:17}}>进入邻家话题</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
   }
 
   refreshShopList() {
