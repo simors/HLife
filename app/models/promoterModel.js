@@ -93,5 +93,6 @@ export const Promoter = Record({
   invitedShops: Map(),              // 记录邀请的店铺，键为推广员id，值为店铺的id列表
   statistics: Map(),                // 统计数据，键为城市名，值为PromoterStatisticsRecord结构
   areaAgents: List(),               // 存储地区代理信息，值为AreaAgent类型
+  shopTenant: Map(),                // 保存各地的店铺入驻费用，键为城市名，值为费用
 }, 'Promoter')
 

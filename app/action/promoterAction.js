@@ -33,6 +33,7 @@ let setPromoterShops = createAction(promoterActionTypes.SET_PROMOTER_SHOPS)
 let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
 let updateStatistics = createAction(promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE)
 let updateAreaAgent = createAction(promoterActionTypes.UPDATE_AREA_AGENTS)
+let updateShopTenant = createAction(promoterActionTypes.UPDATE_CITY_SHOP_TENANT)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -303,8 +304,38 @@ export function getAreaPromoterAgents(payload) {
         agentObj.area = agent.area
         agentObj.tenant = agent.tenant
         agentsSet.push(agentObj)
+        dispatch(updateShopTenant({city: agent.area, tenant: agent.tenant}))
       })
       dispatch(updateAreaAgent({agentsSet}))
+    })
+  }
+}
+
+export function setShopTenant(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.setCityShopTenant(payload).then((tenant) => {
+      if (0 == tenant.errcode) {
+        dispatch(updateShopTenant({city: payload.city, tenant: tenant.tenant.fee}))
+        if (payload.success) {
+          payload.success()
+        }
+      } else {
+        if (payload.error) {
+          payload.error(tenant.message)
+        }
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function getShopTenantByCity(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.getCityShopTenant(payload).then((tenant) => {
+      dispatch(updateShopTenant({city: payload.city, tenant: tenant.tenant}))
     })
   }
 }

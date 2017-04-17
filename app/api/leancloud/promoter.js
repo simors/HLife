@@ -135,3 +135,28 @@ export function getAreaAgents(payload) {
     throw err
   })
 }
+
+export function setCityShopTenant(payload) {
+  let params = {
+    province: payload.province,
+    city: payload.city,
+    fee: payload.fee,
+  }
+  return AV.Cloud.run('promoterSetShopTenant', params).then((tenant) => {
+    return tenant
+  }, (err) => {
+    throw err
+  })
+}
+
+export function getCityShopTenant(payload) {
+  let params = {
+    province: payload.province,
+    city: payload.city,
+  }
+  return AV.Cloud.run('promoterGetShopTenantByCity', params).then((tenant) => {
+    return tenant
+  }, (err) => {
+    throw err
+  })
+}

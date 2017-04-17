@@ -61,6 +61,7 @@ export default class ToolBarContent extends Component {
           value={this.props.initValue}
           enablesReturnKeyAutomatically={true}
           underlineColorAndroid="transparent"
+          keyboardType={this.props.keyboardType || 'default'}
           {...this.props.textInputProps}
         />
 
