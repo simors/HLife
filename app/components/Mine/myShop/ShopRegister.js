@@ -519,7 +519,7 @@ class ShopRegister extends Component {
 
             </View>
 
-            <View style={styles.footer}>
+            <View style={[styles.footer, {marginTop:8,paddingTop: 30}]}>
               <CommonButton
                 title="提交店铺"
                 onPress={this.onButtonPress}
