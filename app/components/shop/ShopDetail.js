@@ -41,6 +41,7 @@ import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
 import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
 import * as ShopDetailTestData from './ShopDetailTestData'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -470,6 +471,8 @@ class ShopDetail extends Component {
   render() {
     // console.log('this.props.shopDetail===', this.props.shopDetail)
 
+    let shopDetail = this.props.shopDetail
+
     let detailWrapStyle = {}
     if(!this.isSelfShop()) {
       detailWrapStyle = styles.detailWrap
@@ -527,7 +530,7 @@ class ShopDetail extends Component {
                     </TouchableOpacity>
                   </View>
                   <View style={styles.contactNumberWrap}>
-                    <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
+                    <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.handleServicePhoneCall()}}>
                       <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
                       <View style={styles.contactNumberTxtWrap}>
                         <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
@@ -588,9 +591,45 @@ class ShopDetail extends Component {
             closeModal={() => this.closeModal()}
             submitComment={this.submitComment.bind(this)}
           />
+
+          {this.renderServicePhoneAction()}
+          
         </View>
       </View>
     )
+  }
+
+  handleServicePhoneCall() {
+    if(this.ServicePhoneActionSheet) {
+      this.ServicePhoneActionSheet.show()
+    }else{
+      this.makePhoneCall(this.props.shopDetail.contactNumber)
+    }
+  }
+
+  renderServicePhoneAction() {
+    let shopDetail = this.props.shopDetail
+
+    if(shopDetail.contactNumber && shopDetail.contactNumber2) {
+      return (
+        <ActionSheet
+          ref={(o) => this.ServicePhoneActionSheet = o}
+          title="客服电话"
+          options={[shopDetail.contactNumber, shopDetail.contactNumber2,'取消']}
+          cancelButtonIndex={2}
+          onPress={this._handleActionSheetPress.bind(this)}
+        />
+      )
+    }
+    return null
+  }
+
+  _handleActionSheetPress(index) {
+    if(0 == index) { //分享
+      this.makePhoneCall(this.props.shopDetail.contactNumber)
+    }else if(1 == index) { //删除
+      this.makePhoneCall(this.props.shopDetail.contactNumber2)
+    }
   }
 
   isSelfShop() {
