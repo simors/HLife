@@ -14,16 +14,21 @@ import {
   InteractionManager,
   ListView,
   StatusBar,
+  TouchableHighlight,
 } from 'react-native'
 import Header from '../../common/Header'
 import {getMyTopics} from '../../../selector/topicSelector'
-import {fetchTopics} from '../../../action/topicActions'
+import {fetchTopics,disableTopic} from '../../../action/topicActions'
 import CommonListView from '../../common/CommonListView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import MyTopicShow from './MyTopicShow'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
+import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view'
+import THEME from '../../../constants/themes/theme1'
+import Popup from '@zzzkk2009/react-native-popup'
+import * as Toast from '../../../components/common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -43,13 +48,56 @@ export class MyTopic extends Component {
       this.refreshTopic()
     })
   }
+  clearTopic(id) {
+    Popup.confirm({
+      title: '提示',
+      content: '确认删除话题？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+          this.delectTopic(id)
+          Toast.show('删除成功！')
 
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=> {
+          // console.log('cancel')
+        }
+      }
+    })
+  }
+  delectTopic(id){
+    InteractionManager.runAfterInteractions(() => {
+      this.props.disableTopic({id:id,success:this.refreshTopic.bind(this)})
+    })
+  }
   renderTopicItem(value, key) {
+    // console.log('key and value ',key,value)
     return (
+      <SwipeRow style={{flex: 1, width: PAGE_WIDTH}}
+                disableRightSwipe={true}
+                rightOpenValue={-normalizeW(75)}>
+        <TouchableHighlight onPress={()=> {
+          this.clearTopic(value.objectId)
+        }} style={{
+          backgroundColor: THEME.base.mainColor,
+          marginLeft: normalizeW(300),
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <View >
+            <Text style={{color: '#fff', fontSize: em(17)}}>删除</Text>
+          </View>
+        </TouchableHighlight>
       <MyTopicShow key={key}
                    containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
                    topic={value}
       />
+        </SwipeRow>
     )
   }
 
@@ -59,6 +107,7 @@ export class MyTopic extends Component {
 
   loadMoreData(isRefresh) {
     if(this.isQuering) {
+      console.log('here is not fetch')
       return
     }
     this.isQuering = true
@@ -72,6 +121,7 @@ export class MyTopic extends Component {
         lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
       }
     }
+    console.log('here is fetch')
     let payload = {
       type: "myTopics",
       lastUpdatedAt: lastUpdatedAt,
@@ -141,6 +191,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopics,
+  disableTopic,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyTopic)

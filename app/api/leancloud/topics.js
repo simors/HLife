@@ -459,3 +459,9 @@ export function getMainPageTopics(payload) {
     throw err
   })
 }
+
+export function disableTopic(payload){
+  return AV.Cloud.run('disableTopicByUser',{id:payload}).then(()=>{
+    return {success:true}
+  })
+}
