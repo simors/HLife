@@ -30,7 +30,9 @@ export default function topicReducer(state = initialState, action) {
     case TopicTypes.UPDATE_MAINPAGE_TOPICS:
       return handleUpdateMainPageTopics(state, action)
     case TopicTypes.FETCH_USER_TOPICS_TOTAL_COUNT_SUCCESS:
-      return handleFetchUserTopicsTotalCountSuccess(state, action)  
+      return handleFetchUserTopicsTotalCountSuccess(state, action)
+    // case TopicTypes.DISABLE_TOPIC:
+    //   return handleDisableTopic(state,action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -229,7 +231,11 @@ function handleUpdateMainPageTopics(state, action) {
   state = state.set('mainPageTopics', topics)
   return state
 }
-
+function handleDisableTopic(state,action){
+  // state = state.set('myTopics', new List())
+  console.log('oayload',action.payload)
+  return state
+}
 function onRehydrate(state, action) {
   var incoming = action.payload.TOPIC
   if (incoming) {
@@ -277,3 +283,4 @@ function onRehydrate(state, action) {
   }
   return state
 }
+

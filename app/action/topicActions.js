@@ -415,3 +415,20 @@ export function fetchMainPageTopics(payload) {
     })
   }
 }
+
+export function disableTopic(payload){
+  return (dispatch,getState)=>{
+    lcTopics.disableTopic(payload.id).then(()=>{
+      if (payload.success) {
+        payload.success()
+      }
+      let disableTopic = createAction(topicActionTypes.DISABLE_TOPIC)
+      dispatch (disableTopic({success:true}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+
+}
