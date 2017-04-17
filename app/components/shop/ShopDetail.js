@@ -473,11 +473,6 @@ class ShopDetail extends Component {
 
     let shopDetail = this.props.shopDetail
 
-    let detailWrapStyle = {}
-    if(!this.isSelfShop()) {
-      detailWrapStyle = styles.detailWrap
-    }
-
     return (
       <View style={styles.container}>
         <Header
@@ -493,109 +488,155 @@ class ShopDetail extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <View style={detailWrapStyle}>
-            <ScrollView
-              contentContainerStyle={[styles.contentContainerStyle]}
-            >
-              <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
-                <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
-              </TouchableOpacity>
-              <View style={styles.shopHead}>
-                <View style={styles.shopHeadLeft}>
-                  <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
-                  <View style={styles.shopOtherInfo}>
-                    <ScoreShow
-                      containerStyle={{flex:1}}
-                      score={this.props.shopDetail.score}
-                    />
-                    {this.props.shopDetail.distance &&
-                    <Text style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
-                    }
-                    {this.props.shopDetail.pv
-                      ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
-                      : null
-                    }
-                  </View>
-                </View>
-              </View>
+          {this.renderDetailContent()}
+        </View>
+        {this.renderIllegal()}
+      </View>
+    )
+  }
 
-              <View style={styles.shopXYZWrap}>
-                <View style={styles.shopXYZLeft}>
-                  <View style={styles.locationWrap}>
-                    <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
-                      <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
-                      <View style={styles.locationTxtWrap}>
-                        <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.contactNumberWrap}>
-                    <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.handleServicePhoneCall()}}>
-                      <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
-                      <View style={styles.contactNumberTxtWrap}>
-                        <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                
-                <View style={styles.shopXYZRight}>
-                  {this.props.isFollowedShop
-                    ? <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
-                        <Image source={require('../../assets/images/followed.png')} />
-                      </TouchableOpacity>
-                    : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                        <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
-                      </TouchableOpacity>
-                  }
-                </View>
-              </View>
+  renderIllegal() {
+    return (
+      <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end'}}>
+        <View style={{height:PAGE_HEIGHT*0.487, backgroundColor: 'white',justifyContent:'center',alignItems:'center',padding:20}}>
+          <Image style={{marginBottom:30}} source={require('../../assets/images/sad_105.png')}/>
+          <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a'}}>此店铺涉嫌违规，被用户举报</Text>
+          <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a',textAlign:'center'}}>平台已禁止此店铺显示，如需申诉请联系客服：0731-740000000</Text>
 
-              <ShopPromotionModule
-                title="近期活动"
-                noDistance={true}
-                shopPromotionList={this.props.shopDetail.containedPromotions}
-              />
-
-              <View style={styles.shopAnnouncementWrap}>
-                <View style={styles.titleWrap}>
-                  <View style={styles.titleLine}/>
-                  <Text style={styles.titleTxt}>店铺公告</Text>
-                </View>
-                <View style={styles.serviceInfoContainer}>
-                  <View style={styles.openTime}>
-                    <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
-                    <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
-                  </View>
-                  <View style={styles.shopSpecial}>
-                    <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
-                    <View style={{flex:1, paddingRight:10}}>
-                      <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-
-              {this.renderComments()}
-
-              {this.renderGuessYouLike()}
-
-            </ScrollView>
-          </View>
-
-          {this.renderBottomView()}
-
-          <Comment
-            modalVisible={this.state.modalVisible}
-            modalTitle="写评论"
-            closeModal={() => this.closeModal()}
-            submitComment={this.submitComment.bind(this)}
-          />
-
-          {this.renderServicePhoneAction()}
+            <TouchableOpacity onPress={()=>{Actions.pop()}} style={{
+              position:'absolute',
+              left:0,
+              right:0,
+              bottom:0,
+              borderTopWidth:normalizeBorder(),
+              borderTopColor: THEME.colors.lighterA,
+              backgroundColor:'#fafafa',
+              flexDirection:'row',
+              justifyContent:'center',
+              alignItems:'center',
+              padding:12
+            }}>
+              <Image style={{marginRight:23}} source={require('../../assets/images/Shape.png')}/>
+              <Text style={{fontSize:17,color:'#ff7819'}}>退出</Text>
+            </TouchableOpacity>
           
         </View>
       </View>
+    )
+  }
+
+  renderDetailContent() {
+    let shopDetail = this.props.shopDetail
+
+    let detailWrapStyle = {}
+    if(!this.isSelfShop()) {
+      detailWrapStyle = styles.detailWrap
+    }
+
+    return (
+      <View style={{flex:1}}>
+        <View style={detailWrapStyle}>
+          <ScrollView
+            contentContainerStyle={[styles.contentContainerStyle]}
+          >
+            <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
+              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+            </TouchableOpacity>
+            <View style={styles.shopHead}>
+              <View style={styles.shopHeadLeft}>
+                <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
+                <View style={styles.shopOtherInfo}>
+                  <ScoreShow
+                    containerStyle={{flex:1}}
+                    score={this.props.shopDetail.score}
+                  />
+                  {this.props.shopDetail.distance &&
+                  <Text style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
+                  }
+                  {this.props.shopDetail.pv
+                    ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
+                    : null
+                  }
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.shopXYZWrap}>
+              <View style={styles.shopXYZLeft}>
+                <View style={styles.locationWrap}>
+                  <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
+                    <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
+                    <View style={styles.locationTxtWrap}>
+                      <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.contactNumberWrap}>
+                  <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.handleServicePhoneCall()}}>
+                    <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
+                    <View style={styles.contactNumberTxtWrap}>
+                      <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              
+              <View style={styles.shopXYZRight}>
+                {this.props.isFollowedShop
+                  ? <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
+                      <Image source={require('../../assets/images/followed.png')} />
+                    </TouchableOpacity>
+                  : <TouchableOpacity onPress={this.followShop.bind(this)}>
+                      <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
+                    </TouchableOpacity>
+                }
+              </View>
+            </View>
+
+            <ShopPromotionModule
+              title="近期活动"
+              noDistance={true}
+              shopPromotionList={this.props.shopDetail.containedPromotions}
+            />
+
+            <View style={styles.shopAnnouncementWrap}>
+              <View style={styles.titleWrap}>
+                <View style={styles.titleLine}/>
+                <Text style={styles.titleTxt}>店铺公告</Text>
+              </View>
+              <View style={styles.serviceInfoContainer}>
+                <View style={styles.openTime}>
+                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
+                  <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
+                </View>
+                <View style={styles.shopSpecial}>
+                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
+                  <View style={{flex:1, paddingRight:10}}>
+                    <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            {this.renderComments()}
+
+            {this.renderGuessYouLike()}
+
+          </ScrollView>
+        </View>
+
+        {this.renderBottomView()}
+
+        <Comment
+          modalVisible={this.state.modalVisible}
+          modalTitle="写评论"
+          closeModal={() => this.closeModal()}
+          submitComment={this.submitComment.bind(this)}
+        />
+
+        {this.renderServicePhoneAction()}
+      </View>
+      
     )
   }
 
