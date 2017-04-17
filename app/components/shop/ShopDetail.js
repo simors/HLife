@@ -29,10 +29,12 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
 
+import {fetchAppServicePhone} from '../../action/configAction'
 import {fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
+import * as configSelector from '../../selector/configSelector'
 import Comment from '../common/Comment'
 import ImageGallery from '../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
@@ -504,7 +506,7 @@ class ShopDetail extends Component {
           <View style={{height:PAGE_HEIGHT*0.487, backgroundColor: 'white',justifyContent:'center',alignItems:'center',padding:20}}>
             <Image style={{marginBottom:30}} source={require('../../assets/images/sad_105.png')}/>
             <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a'}}>此店铺涉嫌违规，被用户举报</Text>
-            <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a',textAlign:'center'}}>平台已禁止此店铺显示，如需申诉请联系客服：0731-740000000</Text>
+            <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a',textAlign:'center'}}>平台已禁止此店铺显示，如需申诉请联系客服：{this.props.appServicePhone}</Text>
 
               <TouchableOpacity onPress={()=>{Actions.pop()}} style={{
                 position:'absolute',
@@ -727,6 +729,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
 
+  const appServicePhone = configSelector.selectServicePhone(state)
+
   // let shopDetail = ShopDetailTestData.shopDetail
   // const shopComments = ShopDetailTestData.shopComments
   // const shopCommentsTotalCount = 1368
@@ -751,6 +755,7 @@ const mapStateToProps = (state, ownProps) => {
     userIsUpedShop: userIsUpedShop,
     currentUser: authSelector.activeUserId(state),
     userOwnedShopInfo: userOwnedShopInfo,
+    appServicePhone: appServicePhone
   }
 }
 
@@ -771,7 +776,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   userUpShop,
   userUnUpShop,
   fetchGuessYouLikeShopList,
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  fetchAppServicePhone
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

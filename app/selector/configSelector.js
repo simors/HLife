@@ -7,6 +7,10 @@ export function getConfig(state) {
   return state.CONFIG
 }
 
+export function selectServicePhone(state) {
+  return state.CONFIG.servicePhone
+}
+
 export function getBanners(state) {
   let config = getConfig(state)
   if (config) {

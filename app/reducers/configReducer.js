@@ -21,11 +21,20 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateGeolocation(state, action)
     case ConfigActionTypes.UPDATE_PROVINCES_AND_CITIES:
       return handleUpdateProvincesAndCities(state, action)
+    case ConfigActionTypes.FETCH_APP_SERVICE_PHONE_SUCCESS:
+      return handleFetchAppServicePhoneSuccess(state, action)  
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
       return state
   }
+}
+
+function handleFetchAppServicePhoneSuccess(state, action) {
+  let payload = action.payload
+  let servicePhone = payload.servicePhone
+  state = state.set('servicePhone', servicePhone)
+  return state
 }
 
 function handleUpdateConfigBanners(state, action) {
