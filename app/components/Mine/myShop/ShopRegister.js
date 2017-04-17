@@ -263,6 +263,18 @@ class ShopRegister extends Component {
     this.isSubmiting = false
     Loading.hide(this.loading)
     Toast.show(error.message || '店铺注册失败')
+
+    this.props.inputFormUpdate({
+      formKey: smsAuthCodeInput.formKey,
+      stateKey: smsAuthCodeInput.stateKey,
+      data: {text: ''}
+    })
+
+    this.props.inputFormUpdate({
+      formKey: invitationCodeInput.formKey,
+      stateKey: invitationCodeInput.stateKey,
+      data: {text: ''}
+    })
   }
 
   onButtonPress = () => {
@@ -363,7 +375,7 @@ class ShopRegister extends Component {
                     codeTextContainerDisable={{width: normalizeW(115), height: normalizeH(35)}}
                     codeText={{fontSize: 15}}
                     getSmsAuCode={() => this.smsCode()}
-                    reset={!this.props.phoneValid}
+                    reset={false}
                   />
                 </View>
               </View>
