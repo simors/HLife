@@ -78,9 +78,21 @@ class AreaPromoterManager extends Component {
   }
 
   renderAreaItem(areaAgent) {
+    let promoter = this.props.promoter
     return (
       <View style={styles.areaItemView}>
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', alignItems: 'center'}} onPress={() => {Actions.AREA_DETAIL({area: areaAgent.area})}}>
+        <TouchableOpacity style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}
+                          onPress={() => {Actions.AREA_DETAIL({
+                            area: areaAgent.area,
+                            province: promoter.province,
+                            city: promoter.identity == 1 ? areaAgent.area : promoter.city,
+                            district: promoter.identity == 1 ? '' : (promoter.identity == 2 ? areaAgent.area : promoter.district),
+                            promoter: areaAgent.promoter,
+                            nickname: areaAgent.nickname,
+                            avatar: areaAgent.avatar,
+                            userId: areaAgent.userId,
+                            tenant: areaAgent.tenant,
+                          })}}>
           <View style={styles.areaNameStyle}>
             <Text style={styles.txtStyle} numberOfLines={1}>{areaAgent.area}</Text>
           </View>

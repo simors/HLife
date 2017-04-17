@@ -112,7 +112,6 @@ export function getMyInvitedShops(payload) {
 
 export function getTotalPerformance(payload) {
   let params = {
-    identity: payload.identity,
     province: payload.province,
     city: payload.city,
     district: payload.district,

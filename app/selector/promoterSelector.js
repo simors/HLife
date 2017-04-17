@@ -87,8 +87,8 @@ export function selectPromoterIdentity(state, id) {
   return undefined
 }
 
-export function selectPromoterStatistics(state) {
-  let stat = state.PROMOTER.get('statistics')
+export function selectPromoterStatistics(state, area) {
+  let stat = state.PROMOTER.getIn(['statistics', area])
   if (stat) {
     return stat.toJS()
   }
@@ -108,6 +108,10 @@ export function selectAreaAgents(state) {
       tmpAgent.userId = userInfo.id
       tmpAgent.avatar = userInfo.avatar
       tmpAgent.nickname = userInfo.nickname
+    }
+    if (agent.promoterId) {
+      let promoter = getPromoterById(state, agent.promoterId)
+      tmpAgent.promoter= promoter
     }
     retAgents.push(tmpAgent)
   })

@@ -21,10 +21,83 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
+import {getTotalPerformance} from '../../../action/promoterAction'
+import {selectPromoterStatistics} from '../../../selector/promoterSelector'
 
 class AreaPromoterDetail extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.getTotalPerformance({
+        province: this.props.province,
+        city: this.props.city,
+        district: this.props.district,
+      })
+    })
+  }
+
+  renderBaseView() {
+    let promoter = this.props.promoter
+    return (
+      <View style={{backgroundColor: '#FFF'}}>
+        <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
+          <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
+            <Image style={styles.avatarStyle} resizeMode='contain'
+                   source={this.props.avatar ? {uri: this.props.avatar} : require('../../../assets/images/default_portrait.png')}/>
+            <View style={{paddingLeft: normalizeW(10)}}>
+              <Text style={styles.titleText}>{this.props.nickname ? this.props.nickname : '未设置代理人'}</Text>
+              <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
+                个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.changeAgentBtn}>
+            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
+              <Text style={{fontSize: em(15), color: '#FFF'}}>更换代理</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.agentItemView}>
+          <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
+            <Image style={styles.avatarStyle} resizeMode='contain' source={require('../../../assets/images/Settlement_fee.png')}/>
+            <View style={{paddingLeft: normalizeW(10)}}>
+              <Text style={styles.titleText}>当前店铺入驻费（元）</Text>
+            </View>
+          </View>
+          <View style={[styles.changeAgentBtn, {backgroundColor: 'rgba(255, 157, 78, 0.2)'}]}>
+            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
+              <Text style={{fontSize: em(17), color: THEME.base.mainColor, fontWeight: 'bold'}}>{this.props.tenant}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  renderStatView() {
+    let statistics = this.props.statistics
+    if (!statistics) {
+      return <View/>
+    }
+    return (
+      <View style={{marginTop: normalizeH(8), backgroundColor: '#FFF'}}>
+        <View style={styles.totalPerformView}>
+          <Text style={[styles.titleText, {paddingTop: normalizeH(15)}]}>全市总业绩（元）</Text>
+          <Text style={[styles.totalPerformText, {paddingTop: normalizeH(15)}]}>{statistics.totalPerformance}</Text>
+        </View>
+        <View style={styles.perforItemView}>
+          <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>入驻店铺数</Text>
+          <Text style={[styles.performItemValue, {paddingRight: normalizeW(15)}]}>{statistics.totalInvitedShops} 家</Text>
+        </View>
+        <View style={styles.perforItemView}>
+          <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>推广团队总人数</Text>
+          <Text style={[styles.performItemValue, {paddingRight: normalizeW(15)}]}>{statistics.totalTeamMems} 人</Text>
+        </View>
+      </View>
+    )
   }
 
   render() {
@@ -40,35 +113,8 @@ class AreaPromoterDetail extends Component {
         />
         <View style={styles.body}>
           <ScrollView style={{flex: 1}}>
-            <View style={{backgroundColor: '#FFF'}}>
-              <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
-                <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
-                  <Image style={styles.avatarStyle} resizeMode='contain' source={require('../../../assets/images/default_portrait.png')}/>
-                  <View style={{paddingLeft: normalizeW(10)}}>
-                    <Text style={{fontSize: em(15), color: '#5a5a5a'}}>白天不懂夜的黑</Text>
-                    <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>个人业绩： 999999.00</Text>
-                  </View>
-                </View>
-                <View style={styles.changeAgentBtn}>
-                  <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
-                    <Text style={{fontSize: em(15), color: '#FFF'}}>更换代理</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={styles.agentItemView}>
-                <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
-                  <Image style={styles.avatarStyle} resizeMode='contain' source={require('../../../assets/images/Settlement_fee.png')}/>
-                  <View style={{paddingLeft: normalizeW(10)}}>
-                    <Text style={{fontSize: em(15), color: '#5a5a5a'}}>当前店铺入驻费（元）</Text>
-                  </View>
-                </View>
-                <View style={[styles.changeAgentBtn, {backgroundColor: 'rgba(255, 157, 78, 0.2)'}]}>
-                  <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
-                    <Text style={{fontSize: em(17), color: THEME.base.mainColor, fontWeight: 'bold'}}>100.00</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
+            {this.renderBaseView()}
+            {this.renderStatView()}
           </ScrollView>
         </View>
       </View>
@@ -77,11 +123,18 @@ class AreaPromoterDetail extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let province = ownProps.province
+  let city = ownProps.city
+  let district = ownProps.district
+  let area = province + city + district
+  let statistics = selectPromoterStatistics(state, area)
   return {
+    statistics,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getTotalPerformance
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AreaPromoterDetail)
@@ -121,5 +174,36 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.base.mainColor,
     borderRadius: 2,
     marginRight: normalizeW(15),
+  },
+  titleText: {
+    fontSize: em(15),
+    color: '#5a5a5a',
+  },
+  totalPerformText: {
+    fontSize: em(36),
+    fontWeight: 'bold',
+    color: THEME.base.mainColor,
+  },
+  totalPerformView: {
+    height: normalizeH(99),
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#F5F5F5',
+  },
+  perforItemView: {
+    height: normalizeH(47),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderColor: '#F5F5F5',
+  },
+  performItemText: {
+    fontSize: em(17),
+    color: '#5A5A5A',
+  },
+  performItemValue: {
+    fontSize: em(17),
+    color: THEME.base.mainColor,
   },
 })

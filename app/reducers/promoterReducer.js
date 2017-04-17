@@ -117,8 +117,9 @@ function handleAddPromoterShops(state, action) {
 }
 
 function handleUpdateTotalPerformance(state, action) {
+  let area = action.payload.area
   let statistics = action.payload.statistics
-  state = state.set('statistics', statistics)
+  state = state.setIn(['statistics', area], statistics)
   return state
 }
 

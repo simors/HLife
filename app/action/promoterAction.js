@@ -275,7 +275,7 @@ export function getTotalPerformance(payload) {
   return (dispatch, getState) => {
     lcPromoter.getTotalPerformance(payload).then((performance) => {
       let performanceRecord = PromoterStatistics.fromLeancloudObject(performance)
-      dispatch(updateStatistics({statistics: performanceRecord}))
+      dispatch(updateStatistics({area: payload.province + payload.city + payload.district, statistics: performanceRecord}))
     })
   }
 }

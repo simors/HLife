@@ -38,7 +38,6 @@ class AgentPromoter extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.getTotalPerformance({
-        identity: this.props.promoter.identity,
         province: this.props.promoter.province,
         city: this.props.promoter.city,
         district: this.props.promoter.district,
@@ -143,7 +142,11 @@ class AgentPromoter extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let statistics = selectPromoterStatistics(state)
+  let province = ownProps.promoter.province
+  let city = ownProps.promoter.city
+  let district = ownProps.promoter.district
+  let area = province + city + district
+  let statistics = selectPromoterStatistics(state, area)
   return {
     statistics,
   }
