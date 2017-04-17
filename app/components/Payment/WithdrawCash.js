@@ -105,7 +105,7 @@ class WithdrawCash extends Component {
               placeholder="输入姓名"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
-              initValue=""
+              initValue={this.props.card_number.id_name}
             />
           </View>
           <View style={styles.itemContainer}>
@@ -115,7 +115,7 @@ class WithdrawCash extends Component {
               placeholder="请输入银行卡号"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
-              initValue=""
+              initValue={this.props.cardInfo.card_number}
               keyboardType="numeric"
             />
           </View>
@@ -171,6 +171,7 @@ const mapStateToProps = (state, ownProps) => {
   const currentUserId = authSelector.activeUserId(state)
   const cardInfo = getPaymentCard(state)
   return {
+    cardInfo: cardInfo,
     isUserLogined: isUserLogined,
     currentUserId: currentUserId,
   }
