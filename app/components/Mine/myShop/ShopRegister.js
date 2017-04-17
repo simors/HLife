@@ -45,17 +45,17 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
 
-const nameInput = {
-  formKey: commonForm,
-  stateKey: Symbol('nameInput'),
-  type: "nameInput",
-  checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '姓名为空'}
-  },
-}
+// const nameInput = {
+//   formKey: commonForm,
+//   stateKey: Symbol('nameInput'),
+//   type: "nameInput",
+//   checkValid: (data)=>{
+//     if (data && data.text && data.text.length > 0) {
+//       return {isVal: true, errMsg: '验证通过'}
+//     }
+//     return {isVal: false, errMsg: '姓名为空'}
+//   },
+// }
 const phoneInput = {
   formKey: commonForm,
   stateKey: Symbol('phoneInput'),
@@ -136,17 +136,17 @@ const invitationCodeInput = {
   initValue: {text: '-1'}
 }
 
-const certificationInput = {
-  formKey: commonForm,
-  stateKey: Symbol('certificationInput'),
-  type: "certificationInput",
-  checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '店铺认证图片为空'}
-  },
-}
+// const certificationInput = {
+//   formKey: commonForm,
+//   stateKey: Symbol('certificationInput'),
+//   type: "certificationInput",
+//   checkValid: (data)=>{
+//     if (data && data.text && data.text.length > 0) {
+//       return {isVal: true, errMsg: '验证通过'}
+//     }
+//     return {isVal: false, errMsg: '店铺认证图片为空'}
+//   },
+// }
 
 class ShopRegister extends Component {
   constructor(props) {
@@ -165,11 +165,11 @@ class ShopRegister extends Component {
 
     })
 
-    this.props.initInputForm(shopNameInput)
-    this.props.initInputForm(shopAddrInput)
-    this.props.initInputForm(shopGeoInput)
-    this.props.initInputForm(shopGeoCityInput)
-    this.props.initInputForm(shopGeoDistrictInput)
+    // this.props.initInputForm(shopNameInput)
+    // this.props.initInputForm(shopAddrInput)
+    // this.props.initInputForm(shopGeoInput)
+    // this.props.initInputForm(shopGeoCityInput)
+    // this.props.initInputForm(shopGeoDistrictInput)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -306,7 +306,6 @@ class ShopRegister extends Component {
     })
   }
 
-
   render() {
     return (
       <View style={styles.container}>
@@ -329,6 +328,7 @@ class ShopRegister extends Component {
             <View style={styles.subTitleWrap}>
               <Text style={styles.subTitle}>欢迎加入{appConfig.APP_NAME}，给你的店铺带来更好的收入</Text>
             </View>
+            {/*
             <View style={styles.inputsWrap}>
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
@@ -343,6 +343,7 @@ class ShopRegister extends Component {
                   />
                 </View>
               </View>
+              */}
 
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
@@ -401,6 +402,12 @@ class ShopRegister extends Component {
                     </ScrollView>
                   </View>
                 </TouchableOpacity>
+                <CommonTextInput
+                  {...shopNameInput}
+                  outerContainerStyle={{position:'absolute',height:0,width:0}}
+                  containerStyle={{height:0,width:0}}
+                  inputStyle={{height:0,width:0}}
+                />
               </View>
 
               <View style={styles.inputWrap}>
@@ -424,6 +431,30 @@ class ShopRegister extends Component {
                     </ScrollView>
                   </View>
                 </TouchableOpacity>
+                <CommonTextInput
+                  {...shopAddrInput}
+                  outerContainerStyle={{position:'absolute',height:0,width:0}}
+                  containerStyle={{height:0,width:0}}
+                  inputStyle={{height:0,width:0}}
+                />
+                <CommonTextInput
+                  {...shopGeoInput}
+                  outerContainerStyle={{position:'absolute',height:0,width:0}}
+                  containerStyle={{height:0,width:0}}
+                  inputStyle={{height:0,width:0}}
+                />
+                <CommonTextInput
+                  {...shopGeoCityInput}
+                  outerContainerStyle={{position:'absolute',height:0,width:0}}
+                  containerStyle={{height:0,width:0}}
+                  inputStyle={{height:0,width:0}}
+                />
+                <CommonTextInput
+                  {...shopGeoDistrictInput}
+                  outerContainerStyle={{position:'absolute',height:0,width:0}}
+                  containerStyle={{height:0,width:0}}
+                  inputStyle={{height:0,width:0}}
+                />
               </View>
 
               <View style={styles.inputWrap}>
@@ -469,6 +500,7 @@ class ShopRegister extends Component {
                 </TouchableOpacity>
               </View>
 
+              {/*
               <View style={[styles.inputWrap, {marginTop: normalizeH(8)}]}>
                 <View style={{flex: 1}}>
                   <Text style={[styles.inputLabel, {marginTop: normalizeH(33)}]}>店铺认证</Text>
@@ -482,6 +514,7 @@ class ShopRegister extends Component {
                   addImage={require('../../../assets/images/upload_certificate.png')}
                 />
               </View>
+              */}
 
             </View>
 
