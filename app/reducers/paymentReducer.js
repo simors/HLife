@@ -14,8 +14,8 @@ export default function paymentReducer(state = initialState, action) {
       return handleCreatePayment(state, action)
     case PaymentActionTypes.CREATE_TRANSFERS:
       return state
-    case PaymentActionTypes.IDENTIFY_INFO:
-      return state
+    case PaymentActionTypes.ADD_CARD:
+      return handleAddCard(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -27,9 +27,20 @@ function handleCreatePayment(state, action) {
   return state
 }
 
+function handleAddCard(state, action) {
+  let cardInfo = action.payload.cardInfo
+  if(cardInfo) {
+    state = state.set('card', cardInfo)
+  }
+
+  return state
+}
+
 function onRehydrate(state, action) {
-  var incoming = action.payload.CONFIG
-  if (!incoming) return state
+  var incoming = action.payload.PAYMENT
+  if(incoming) {
+    state = state.set('card', incoming.card)
+  }
 
   return state
 }

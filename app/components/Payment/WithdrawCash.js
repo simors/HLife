@@ -26,6 +26,9 @@ import THEME from '../../constants/themes/theme1'
 import Symbol from 'es6-symbol'
 import {createPingppTransfers} from '../../action/paymentActions'
 import CommonTextInput from '../common/Input/CommonTextInput'
+import {getPaymentCard} from '../../selector/paymentSelector'
+import uuid from 'react-native-uuid'
+
 
 let cashForm = Symbol('cashForm')
 
@@ -56,14 +59,24 @@ const passwordInput = {
 class WithdrawCash extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      boundCarded: false
-    }
+  }
+
+  submitSuccessCallback = () => {
+  }
+
+  submitErrorCallback = (error) => {
   }
 
   onWithdrawCash = () => {
-    this.props.createPingppTransfers({
+    let order_no = uuid.v4().replace(/-/g, '').substr(0, 16)
 
+    this.props.createPingppTransfers({
+      formKey: cashForm,
+      order_no: order_no,
+      card_number: undefined,
+      userId: this.props.currentUserId,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback,
     })
   }
 
@@ -126,12 +139,11 @@ class WithdrawCash extends Component {
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
               keyboardType="numeric"
-
             />
             <Text>元</Text>
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{fontSize: 17, color: '#AAAAAA'}}>登录密码</Text>
+            <Text style={{fontSize: 17, color: '#AAAAAA'}}>支付密码</Text>
             <CommonTextInput
               {...passwordInput}
               placeholder="请输入支付密码"
@@ -156,8 +168,11 @@ class WithdrawCash extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
+  const currentUserId = authSelector.activeUserId(state)
+  const cardInfo = getPaymentCard(state)
   return {
     isUserLogined: isUserLogined,
+    currentUserId: currentUserId,
   }
 }
 

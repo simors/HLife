@@ -25,17 +25,20 @@ import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import OpenBankPicker from '../common/Input/OpenBankPicker'
+import {getInputData} from '../../selector/inputFormSelector'
+import Symbol from 'es6-symbol'
 
-let cardForm = Symbol('cardForm')
+
+let addCardForm = Symbol('addCardForm')
 
 const cardNumberInput = {
-  formKey: cardForm,
+  formKey: addCardForm,
   stateKey: Symbol('cardNumberInput'),
   type: "cardNumberInput",
 }
 
 const bankCodeInput = {
-  formKey: cardForm,
+  formKey: addCardForm,
   stateKey: Symbol('bankCodeInput'),
   type: "bankCodeInput",
 }
@@ -50,7 +53,8 @@ class AddCard extends Component {
 
   onNext = () => {
     Actions.IDENTIFY_CARD({
-      formKey: cardForm,
+      cardNumber: this.props.cardNumber,
+      bankCode: this.props.bankCode,
     })
   }
 
@@ -100,8 +104,13 @@ class AddCard extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let cardNumber = getInputData(state, addCardForm, cardNumberInput.stateKey)
+  let bankCode = getInputData(state, addCardForm, bankCodeInput.stateKey)
+
   const isUserLogined = authSelector.isUserLogined(state)
   return {
+    cardNumber: cardNumber.text || undefined,
+    bankCode: (bankCode && bankCode.text)? bankCode.text.bank : undefined,
     isUserLogined: isUserLogined,
   }
 }

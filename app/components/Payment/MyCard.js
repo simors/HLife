@@ -22,6 +22,7 @@ import {normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import * as authSelector from '../../selector/authSelector'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
+import {getPaymentCard} from '../../selector/paymentSelector'
 
 
 
@@ -50,8 +51,8 @@ class MyCard extends Component {
         />
         <View style={styles.body}>
           <View style={styles.card}>
-            <Text style={{marginTop: normalizeH(42), fontFamily: 'PingFangSC-Semibold', fontSize: 18, color: '#4990E2'}}>交通银行储蓄卡</Text>
-            <Text style={{marginTop: normalizeH(20), fontSize: 18, color: '#4990E2'}}>**** **** **** 1234</Text>
+            <Text style={{marginTop: normalizeH(42), fontFamily: 'PingFangSC-Semibold', fontSize: 18, color: '#4990E2'}}>{this.props.cardInfo.bank_code}</Text>
+            <Text style={{marginTop: normalizeH(20), fontSize: 18, color: '#4990E2'}}>{this.props.cardInfo.card_number}</Text>
           </View>
           <CommonButton
             buttonStyle={{marginTop:normalizeH(47)}}
@@ -66,8 +67,10 @@ class MyCard extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
+  const cardInfo = getPaymentCard(state)
   return {
     isUserLogined: isUserLogined,
+    cardInfo: cardInfo,
   }
 }
 

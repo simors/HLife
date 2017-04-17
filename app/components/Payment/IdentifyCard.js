@@ -25,24 +25,29 @@ import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import {identifyCardInfo} from '../../action/paymentActions'
+import {getInputData} from '../../selector/inputFormSelector'
 import THEME from '../../constants/themes/theme1'
+import Symbol from 'es6-symbol'
+import * as Toast from '../common/Toast'
 
-let cardForm = Symbol('cardForm')
+
+
+const identifyCardForm = Symbol('identifyCardForm')
 
 const userNameInput = {
-  formKey: cardForm,
+  formKey: identifyCardForm,
   stateKey: Symbol('userNameInput'),
   type: "userNameInput",
 }
 
 const idNumberInput = {
-  formKey: cardForm,
+  formKey: identifyCardForm,
   stateKey: Symbol('idNumberInput'),
   type: "idNumberInput",
 }
 
 const phoneInput = {
-  formKey: cardForm,
+  formKey: identifyCardForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput",
 }
@@ -53,12 +58,22 @@ class IdentifyCard extends Component {
     this.state = {
       boundCarded: false
     }
+
   }
 
   onIdentify = () => {
     this.props.identifyCardInfo({
-      formKey: cardForm,
-
+      formKey: identifyCardForm,
+      cardNumber: this.props.cardNumber,
+      bankCode: this.props.bankCode,
+      userId: this.props.currentUserId,
+      success:() => {
+        Toast.show("绑定成功")
+        Actions.WALLET()
+      },
+      error: (error) => {
+        Toast.show(error.message)
+      }
     })
   }
 
@@ -78,11 +93,11 @@ class IdentifyCard extends Component {
           <View style={{justifyContent: 'center', height: normalizeH(104), borderBottomColor: '#AAAAAA', borderBottomWidth: 1}}>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginLeft: normalizeW(30), width: normalizeW(60), fontSize: 17, color: '#5A5A5A'}}>银行卡</Text>
-              <Text style={{fontSize: 17, color: '#5A5A5A'}}>交通银行储蓄卡</Text>
+              <Text style={{fontSize: 17, color: '#5A5A5A'}}>{this.props.bankCode}</Text>
             </View>
             <View style={{flexDirection: 'row', marginTop: normalizeH(20)}}>
               <Text style={{marginLeft: normalizeW(30), width: normalizeW(60),fontSize: 17, color: '#5A5A5A'}}>卡号</Text>
-              <Text style={{fontSize: 17, color: '#5A5A5A'}}>5222 8888 8888 8888</Text>
+              <Text style={{fontSize: 17, color: '#5A5A5A'}}>{this.props.cardNumber}</Text>
             </View>
           </View>
           <View style={styles.itemContainer}>
@@ -90,7 +105,7 @@ class IdentifyCard extends Component {
             <CommonTextInput
               {...userNameInput}
               placeholder="持卡人姓名"
-              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
+              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
             />
           </View>
@@ -99,7 +114,7 @@ class IdentifyCard extends Component {
             <CommonTextInput
               {...idNumberInput}
               placeholder="持卡人身份证号"
-              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
+              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
             />
           </View>
@@ -108,7 +123,7 @@ class IdentifyCard extends Component {
             <CommonTextInput
               {...phoneInput}
               placeholder="银行预留手机号"
-              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
+              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={16}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
               keyboardType="numeric"
             />
@@ -118,7 +133,6 @@ class IdentifyCard extends Component {
             <Text style={{fontSize: 14, color: '#5A5A5A'}}>同意</Text>
             <Text style={{fontSize: 14, color: THEME.base.mainColor}}>《银联用户服务协议》</Text>
           </View>
-
 
           <CommonButton
             buttonStyle={{marginTop:normalizeH(46)}}
@@ -134,7 +148,10 @@ class IdentifyCard extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
+  const currentUserId = authSelector.activeUserId(state)
+
   return {
+    currentUserId: currentUserId,
     isUserLogined: isUserLogined,
   }
 }

@@ -23,19 +23,17 @@ import * as authSelector from '../../selector/authSelector'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import THEME from '../../constants/themes/theme1'
+import {getPaymentCard} from '../../selector/paymentSelector'
 
 
 
 class Wallet extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      boundCarded: false
-    }
   }
 
   onBoundCard = () => {
-    if(this.state.boundCarded)
+    if(this.props.cardNumber)
       Actions.MY_CARD()
     else
       Actions.ADD_CARD()
@@ -75,7 +73,7 @@ class Wallet extends Component {
             <CommonButton
               buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5, backgroundColor: THEME.base.lightColor}}
               onPress={this.onBoundCard}
-              title={this.state.boundCarded? '我的银行卡': '绑定银行卡'}
+              title={this.props.cardNumber? '我的银行卡': '绑定银行卡'}
             />
             <CommonButton
               buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5}}
@@ -90,7 +88,9 @@ class Wallet extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
+  const cardInfo = getPaymentCard(state)
   return {
+    cardNumber: cardInfo.card_number || undefined,
     isUserLogined: isUserLogined,
   }
 }

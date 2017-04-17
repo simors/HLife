@@ -30,4 +30,5 @@ export class ChargeInfo extends ChargeRecord {
 
 export const Payment = Record({
   payment: List(),
+  card: {},
 }, 'Payment')

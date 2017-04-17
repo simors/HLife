@@ -40,12 +40,16 @@ export function createPingppTransfers(payload) {
 
 export function identifyCardInfo(payload) {
   let params = {
+    userId: payload.userId,
+    bankCode: payload.bankCode,
     cardNumber: payload.cardNumber,
     userName: payload.userName,
     idNumber: payload.idNumber,
+    phone: payload.phone,
   }
   return AV.Cloud.run('hLifeIdNameCardNumberIdentify', params).then((result) => {
-    return result
+    console.log(result.message)
+    return result.result
   }).catch((error) => {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw  error

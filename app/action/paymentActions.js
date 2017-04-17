@@ -3,7 +3,11 @@
  */
 import {createAction} from 'redux-actions'
 import * as lcPayment from '../api/leancloud/payment'
-import {CREATE_PAYMENT, CREATE_TRANSFERS, IDENTIFY_INFO} from '../constants/paymentActionTypes'
+import {CREATE_PAYMENT, CREATE_TRANSFERS, ADD_CARD} from '../constants/paymentActionTypes'
+import * as uiTypes from '../constants/uiActionTypes'
+import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
+
+
 
 let createPaymentAction = createAction(CREATE_PAYMENT)
 
@@ -51,17 +55,33 @@ export function createPingppTransfers(payload) {
 }
 
 export function identifyCardInfo(payload) {
+  console.log("identifyCardInfo payload", payload)
   return (dispatch, getState) => {
+    let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+    dispatch(formCheck({formKey: payload.formKey}))
+    let isFormValid = isInputFormValid(getState(), payload.formKey)
+    if (!isFormValid.isValid) {
+      if (payload.error) {
+        payload.error({message: isFormValid.errMsg})
+      }
+      return
+    }
+    const formData = getInputFormData(getState(), payload.formKey)
     identifyPayload = {
-
+      userId: payload.userId,
+      bankCode: payload.bankCode,
+      cardNumber: payload.cardNumber,
+      userName: formData.userNameInput.text,
+      idNumber: formData.idNumberInput.text,
+      phone: formData.phoneInput.text,
     }
     lcPayment.identifyCardInfo(identifyPayload).then((result) => {
       console.log("lcPayment.identifyCardInfo return", result)
       if(payload.success) {
-        payload.success(result.charge)
+        payload.success()
       }
-      let createIdentifyAction = createAction(IDENTIFY_INFO)
-      dispatch(createIdentifyAction({}))
+      let createAddCardAction = createAction(ADD_CARD)
+      dispatch(createAddCardAction({cardInfo: result.data}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
