@@ -406,7 +406,7 @@ class ShopDetail extends Component {
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
             <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评（{this.props.shopCommentsTotalCount}）</Text>
+            <Text style={styles.titleTxt}>邻友点评·{this.props.shopCommentsTotalCount}</Text>
           </View>
 
           {commentsView}
@@ -415,6 +415,20 @@ class ShopDetail extends Component {
             <TouchableOpacity onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
               <Text style={styles.allCommentsLink}>查看全部评价</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      )
+    }else{
+      return (
+        <View style={styles.commentWrap}>
+          <View style={styles.titleWrap}>
+            <View style={styles.titleLine}/>
+            <Text style={styles.titleTxt}>邻友点评·0</Text>
+          </View>
+
+          <View style={{backgroundColor:'white',padding:20,paddingTop:30,paddingBottom:30,justifyContent:'center',alignItems:'center'}}>
+            <Image style={{marginBottom:20}} source={require('../../assets/images/none_message.png')}/>
+            <Text style={{color:'#d8d8d8',fontSize:15}}>留言墙是空的，快来抢占沙发吧!</Text>
           </View>
         </View>
       )
