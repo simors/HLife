@@ -23,8 +23,9 @@ import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
-import {getTotalPerformance} from '../../../action/promoterAction'
+import {getTotalPerformance, setShopTenant} from '../../../action/promoterAction'
 import {selectPromoterStatistics, selectCityTenant} from '../../../selector/promoterSelector'
+import * as Toast from '../../common/Toast'
 
 class AreaPromoterDetail extends Component {
   constructor(props) {
@@ -47,8 +48,22 @@ class AreaPromoterDetail extends Component {
     }
   }
 
-  setTenantFee() {
-
+  setTenantFee(tenant) {
+    let payload = {
+      fee: parseFloat(tenant),
+      province: this.props.province,
+      city: this.props.area,
+      success: () => {
+        this.feeInput.blur()
+        Toast.show('设置入驻费成功')
+      },
+      error: (err) => {
+        this.feeInput.blur()
+        Toast.show(err)
+      }
+    }
+    console.log(payload)
+    this.props.setShopTenant(payload)
   }
 
   renderFeeView() {
@@ -142,11 +157,12 @@ class AreaPromoterDetail extends Component {
               replyInputRefCallBack={(input)=> {
                 this.feeInput = input
               }}
-              onSend={(content) => {
-                this.setTenantFee(content)
+              onSend={(tenant) => {
+                this.setTenantFee(tenant)
               }}
               placeholder='设置入驻费'
               label="设置"
+              keyboardType="numeric"
             />
           </KeyboardAwareToolBar>
         </View>
@@ -169,7 +185,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  getTotalPerformance
+  getTotalPerformance,
+  setShopTenant
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AreaPromoterDetail)

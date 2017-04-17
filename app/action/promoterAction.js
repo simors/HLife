@@ -310,3 +310,24 @@ export function getAreaPromoterAgents(payload) {
     })
   }
 }
+
+export function setShopTenant(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.setCityShopTenant(payload).then((tenant) => {
+      if (0 == tenant.errcode) {
+        dispatch(updateShopTenant({city: payload.city, tenant: tenant.tenant.fee}))
+        if (payload.success) {
+          payload.success()
+        }
+      } else {
+        if (payload.error) {
+          payload.error(tenant.message)
+        }
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
