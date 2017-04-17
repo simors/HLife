@@ -496,33 +496,39 @@ class ShopDetail extends Component {
   }
 
   renderIllegal() {
-    return (
-      <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end'}}>
-        <View style={{height:PAGE_HEIGHT*0.487, backgroundColor: 'white',justifyContent:'center',alignItems:'center',padding:20}}>
-          <Image style={{marginBottom:30}} source={require('../../assets/images/sad_105.png')}/>
-          <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a'}}>此店铺涉嫌违规，被用户举报</Text>
-          <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a',textAlign:'center'}}>平台已禁止此店铺显示，如需申诉请联系客服：0731-740000000</Text>
+    let shopDetail = this.props.shopDetail
 
-            <TouchableOpacity onPress={()=>{Actions.pop()}} style={{
-              position:'absolute',
-              left:0,
-              right:0,
-              bottom:0,
-              borderTopWidth:normalizeBorder(),
-              borderTopColor: THEME.colors.lighterA,
-              backgroundColor:'#fafafa',
-              flexDirection:'row',
-              justifyContent:'center',
-              alignItems:'center',
-              padding:12
-            }}>
-              <Image style={{marginRight:23}} source={require('../../assets/images/Shape.png')}/>
-              <Text style={{fontSize:17,color:'#ff7819'}}>退出</Text>
-            </TouchableOpacity>
-          
+    if(shopDetail && 1 != shopDetail.status) {
+      return (
+        <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end'}}>
+          <View style={{height:PAGE_HEIGHT*0.487, backgroundColor: 'white',justifyContent:'center',alignItems:'center',padding:20}}>
+            <Image style={{marginBottom:30}} source={require('../../assets/images/sad_105.png')}/>
+            <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a'}}>此店铺涉嫌违规，被用户举报</Text>
+            <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a',textAlign:'center'}}>平台已禁止此店铺显示，如需申诉请联系客服：0731-740000000</Text>
+
+              <TouchableOpacity onPress={()=>{Actions.pop()}} style={{
+                position:'absolute',
+                left:0,
+                right:0,
+                bottom:0,
+                borderTopWidth:normalizeBorder(),
+                borderTopColor: THEME.colors.lighterA,
+                backgroundColor:'#fafafa',
+                flexDirection:'row',
+                justifyContent:'center',
+                alignItems:'center',
+                padding:12
+              }}>
+                <Image style={{marginRight:23}} source={require('../../assets/images/Shape.png')}/>
+                <Text style={{fontSize:17,color:'#ff7819'}}>退出</Text>
+              </TouchableOpacity>
+            
+          </View>
         </View>
-      </View>
-    )
+      )
+    }
+
+    return null
   }
 
   renderDetailContent() {
