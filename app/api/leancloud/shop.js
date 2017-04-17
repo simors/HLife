@@ -1040,14 +1040,14 @@ export function shopCertification(payload) {
   // console.log('shopCertification.payload====', payload)
   let params = {
     inviteCode: payload.inviteCode,
-    name: payload.name,
+    // name: payload.name,
     phone: payload.phone,
     shopName: payload.shopName,
     shopAddress: payload.shopAddress,
     geo: payload.geo,
     geoCity: payload.geoCity,
     geoDistrict: payload.geoDistrict,
-    certification: payload.certification,
+    // certification: payload.certification,
   }
 
   let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())

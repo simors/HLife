@@ -8,10 +8,15 @@ import {
   Platform,
   TextInput,
   Keyboard,
-  Animated
+  Animated,
+  Dimensions,
+  TouchableWithoutFeedback
 } from 'react-native'
 
 import dismissKeyboard from 'react-native-dismiss-keyboard'
+
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class KeyboardAwareToolBar extends Component {
 
@@ -33,6 +38,11 @@ export default class KeyboardAwareToolBar extends Component {
     this.onKeyboardWillHide = this.onKeyboardWillHide.bind(this)
     this.onKeyboardDidShow = this.onKeyboardDidShow.bind(this)
     this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this)
+
+    this.state = {
+      showOverlay: false,
+      top: PAGE_HEIGHT
+    }
   }
 
   componentDidMount() {
@@ -102,12 +112,19 @@ export default class KeyboardAwareToolBar extends Component {
     }else{
       this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
     }
-
+    this.setState({
+      top: 0,
+      showOverlay: true
+    })
   }
 
   onKeyboardWillHide() {
     this.setIsTypingDisabled(true)
     this.setKeyboardHeight(this.props.initKeyboardHeight || 0)
+    this.setState({
+      top: PAGE_HEIGHT,
+      showOverlay: false
+    })
   }
 
   onKeyboardDidShow(e) {
@@ -142,9 +159,17 @@ export default class KeyboardAwareToolBar extends Component {
 
   render() {
     return (
-      <Animated.View style={[styles.container, {bottom: this.rePosition()}, this.props.containerStyle]}>
-        {this.props.children}
-      </Animated.View>
+      <View style={[{position:'absolute',left:0,height:PAGE_HEIGHT,width: PAGE_WIDTH}, {top:this.state.top}]}>
+        {this.state.showOverlay
+          ? <TouchableWithoutFeedback onPress={()=>{this.onKeyboardWillHide();dismissKeyboard()}}>
+              <View style={{flex:1,backgroundColor:'rgba(0,0,0,0.5)'}}/>
+            </TouchableWithoutFeedback>
+          : null
+        }
+        <Animated.View style={[styles.container, {bottom: this.rePosition()}, this.props.containerStyle]}>
+          {this.props.children}
+        </Animated.View>
+      </View>
     )
   }
 }

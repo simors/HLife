@@ -20,7 +20,7 @@ import {
   TouchableHighlight
 } from 'react-native'
 import Header from '../../common/Header'
-import {getMyTopicDrafts,getMyShopPromotionDrafts} from '../../../selector/draftSelector'
+import {getMyTopicDrafts, getMyShopPromotionDrafts} from '../../../selector/draftSelector'
 // import {fetchTopics} from '../../../action/topicActions'
 // import CommonListView from '../../common/CommonListView'
 import {connect} from 'react-redux'
@@ -28,8 +28,8 @@ import {bindActionCreators} from 'redux'
 import TopicDraftShow from './topicDraftShow'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
-import {SwipeListView,SwipeRow} from 'react-native-swipe-list-view'
-import {fetchTopicDraft, handleDestroyTopicDraft,handleDestroyShopPromotionDraft} from '../../../action/draftAction'
+import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view'
+import {fetchTopicDraft, handleDestroyTopicDraft, handleDestroyShopPromotionDraft} from '../../../action/draftAction'
 import THEME from '../../../constants/themes/theme1'
 import ShopPromotionDraftShow from './shopPromotionDraftShow'
 import Popup from '@zzzkk2009/react-native-popup'
@@ -62,7 +62,7 @@ export class MyTopic extends Component {
       ok: {
         text: '确定',
         style: {color: THEME.base.mainColor},
-        callback: ()=>{
+        callback: ()=> {
           this.delectDraft(rowId)
           Toast.show('删除成功！')
 
@@ -70,12 +70,13 @@ export class MyTopic extends Component {
       },
       cancel: {
         text: '取消',
-        callback: ()=>{
+        callback: ()=> {
           // console.log('cancel')
         }
       }
     })
   }
+
   clearShopPromotion(rowId) {
     Popup.confirm({
       title: '提示',
@@ -83,7 +84,7 @@ export class MyTopic extends Component {
       ok: {
         text: '确定',
         style: {color: THEME.base.mainColor},
-        callback: ()=>{
+        callback: ()=> {
           this.delectShopDraft(rowId)
           Toast.show('删除成功！')
 
@@ -91,79 +92,101 @@ export class MyTopic extends Component {
       },
       cancel: {
         text: '取消',
-        callback: ()=>{
+        callback: ()=> {
           // console.log('cancel')
         }
       }
     })
   }
 
-  delectDraft(rowId){
-    this.props.handleDestroyTopicDraft({id:rowId})
+  delectDraft(rowId) {
+    this.props.handleDestroyTopicDraft({id: rowId})
   }
-  delectShopDraft(rowId){
-    this.props.handleDestroyShopPromotionDraft({id:rowId})
+
+  delectShopDraft(rowId) {
+    this.props.handleDestroyShopPromotionDraft({id: rowId})
   }
-  renderShopPromotionItem(value, key,rowId) {
+
+  renderShopPromotionItem(value, key, rowId) {
     // console.log('valeu',value,rowId)
     return (
-      <SwipeRow style = {{flex:1,width:PAGE_WIDTH}}
+      <SwipeRow style={{flex: 1, width: PAGE_WIDTH}}
                 disableRightSwipe={true}
                 leftOpenValue={20 + parseInt(rowId) * 5}
                 rightOpenValue={-normalizeW(75)}>
 
-        <TouchableHighlight onPress={()=>{this.clearShopPromotion(rowId)}} style={{ backgroundColor:THEME.base.mainColor,marginLeft:normalizeW(300),flex:1,alignItems:'center',justifyContent:'center'}}>
+        <TouchableHighlight onPress={()=> {
+          this.clearShopPromotion(rowId)
+        }} style={{
+          backgroundColor: THEME.base.mainColor,
+          marginLeft: normalizeW(300),
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
           <View >
-            <Text style={{color:'#fff',fontSize:em(17)}}>删除</Text>
+            <Text style={{color: '#fff', fontSize: em(17)}}>删除</Text>
           </View>
         </TouchableHighlight>
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
 
-<ShopPromotionDraftShow key = {rowId}
-                        shopPromotion={value}
->
+          <ShopPromotionDraftShow key={rowId}
+                                  shopPromotion={value}
+          >
 
-</ShopPromotionDraftShow>
+          </ShopPromotionDraftShow>
         </View >
 
       </SwipeRow>
     )
   }
 
-  renderTopicItem(value, key,rowId) {
-  // console.log('valeu',value,rowId)
-  return (
-    <SwipeRow style = {{flex:1,width:PAGE_WIDTH}}
-              disableRightSwipe={true}
-              leftOpenValue={20 + parseInt(rowId) * 5}
-              rightOpenValue={-normalizeW(75)}>
+  renderTopicItem(value, key, rowId) {
+    // console.log('valeu',value,rowId)
+    return (
+      <SwipeRow style={{flex: 1, width: PAGE_WIDTH}}
+                disableRightSwipe={true}
+                leftOpenValue={20 + parseInt(rowId) * 5}
+                rightOpenValue={-normalizeW(75)}>
 
-      <TouchableHighlight onPress={()=>{this.clearTopic(rowId)}} style={{marginLeft:normalizeW(300)}}>
-        <View >
-          <Text>删除</Text>
+        <TouchableHighlight onPress={()=> {
+          this.clearTopic(rowId)
+        }} style={{
+          backgroundColor: THEME.base.mainColor,
+          marginLeft: normalizeW(300),
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <View >
+            <Text style={{color: '#fff', fontSize: em(17)}}>删除</Text>
+          </View>
+        </TouchableHighlight>
+        <View style={{flex: 1}}>
+          <TopicDraftShow key={rowId}
+                          containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
+                          topic={value}
+                          commentButtonPress={()=> {
+                            Actions.TOPIC_EDIT({topic: value})
+                          }}
+          />
+          {/*<Text>Row front | </Text>*/}
         </View>
-      </TouchableHighlight>
-      <View style={{flex:1}}>
-        <TopicDraftShow key={rowId}
-                        containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
-                        topic={value}
-                        commentButtonPress={()=>{Actions.TOPIC_EDIT({topic: value})}}
-        />
-        {/*<Text>Row front | </Text>*/}
-      </View>
 
-    </SwipeRow>
-  )
-}
+      </SwipeRow>
+    )
+  }
+
   toggleTab(type) {
-    this.setState({tabType: type}, ()=>{
-      if(0 == type) {
+    this.setState({tabType: type}, ()=> {
+      if (0 == type) {
         this.renderTopicList()
-      } else if(1 == type) {
+      } else if (1 == type) {
         this.renderShopList()
       }
     })
   }
+
   refreshTopic() {
     this.loadMoreData(true)
   }
@@ -196,12 +219,12 @@ export class MyTopic extends Component {
   //   }
   //   this.props.fetchTopics(payload)
   // }
-  renderTopicList(){
-    return(
+  renderTopicList() {
+    return (
 
       <SwipeListView
         dataSource={this.props.dataSrc}
-        renderRow={ (data,key,rowId) => ( this.renderTopicItem(data,key,rowId)
+        renderRow={ (data, key, rowId) => ( this.renderTopicItem(data, key, rowId)
         )
           // console.log('data',data,key,rowId)
 
@@ -212,10 +235,11 @@ export class MyTopic extends Component {
       />
     )
   }
-  renderShopList(){
-    return(<SwipeListView
+
+  renderShopList() {
+    return (<SwipeListView
       dataSource={this.props.shopDataSrc}
-      renderRow={ (data,key,rowId) => ( this.renderShopPromotionItem(data,key,rowId)
+      renderRow={ (data, key, rowId) => ( this.renderShopPromotionItem(data, key, rowId)
       )
         // console.log('data',data,key,rowId)
 
@@ -225,10 +249,11 @@ export class MyTopic extends Component {
       rightOpenValue={-75}
     />)
   }
+
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="light-content"/>
         <Header
           headerContainerStyle={{backgroundColor: THEME.base.mainColor}}
           leftType="icon"
@@ -240,49 +265,59 @@ export class MyTopic extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-            <View style={styles.tabBar}>
-              <TouchableOpacity
-                style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                onPress={()=> {
-                  this.toggleTab(0)
-                }}>
-                <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+          <View style={styles.tabBar}>
+            <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+              onPress={()=> {
+                this.toggleTab(0)
+              }}>
+              <View style={[{
+                width: normalizeW(100),
+                height: normalizeH(44),
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+              },
+                this.state.tabType == 0 ?
+                {
+                  borderBottomWidth: 3,
+                  borderColor: THEME.base.mainColor
+                } : {}]}>
+                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
                   this.state.tabType == 0 ?
                   {
-                    borderBottomWidth: 3,
-                    borderColor: THEME.base.mainColor
-                  } : {}]}>
-                  <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                    this.state.tabType == 0 ?
-                    {
-                      color: THEME.base.mainColor,
-                      fontWeight: 'bold',
-                    } : {color: '#4A4A4A'}]}
-                  >话题</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                onPress={()=> {
-                  this.toggleTab(1)
-                }}>
-                <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+                    color: THEME.base.mainColor,
+                    fontWeight: 'bold',
+                  } : {color: '#4A4A4A'}]}
+                >话题</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+              onPress={()=> {
+                this.toggleTab(1)
+              }}>
+              <View style={[{
+                width: normalizeW(100),
+                height: normalizeH(44),
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+              },
+                this.state.tabType == 1 ?
+                {
+                  borderBottomWidth: 3,
+                  borderColor: THEME.base.mainColor
+                } : {}]}>
+                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
                   this.state.tabType == 1 ?
                   {
-                    borderBottomWidth: 3,
-                    borderColor: THEME.base.mainColor
-                  } : {}]}>
-                  <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                    this.state.tabType == 1 ?
-                    {
-                      color: THEME.base.mainColor,
-                      fontWeight: 'bold',
-                    } : {color: '#4A4A4A'}]}
-                  >店铺活动</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-            {this.state.tabType == 0?this.renderTopicList():this.renderShopList()}
+                    color: THEME.base.mainColor,
+                    fontWeight: 'bold',
+                  } : {color: '#4A4A4A'}]}
+                >店铺活动</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          {this.state.tabType == 0 ? this.renderTopicList() : this.renderShopList()}
 
 
         </View>
@@ -313,12 +348,12 @@ const mapStateToProps = (state, ownProps) => {
   //   })
   //   console.log('topicArr', topicArr)
   // }
-    return {
-      shopDataSrc : ds.cloneWithRows(shopPromotions),
-      dataSrc: ds.cloneWithRows(topics),
-      // dataSrc: ds.cloneWithRows(topics),
-      topics: topics,
-    }
+  return {
+    shopDataSrc: ds.cloneWithRows(shopPromotions),
+    dataSrc: ds.cloneWithRows(topics),
+    // dataSrc: ds.cloneWithRows(topics),
+    topics: topics,
+  }
 
 }
 

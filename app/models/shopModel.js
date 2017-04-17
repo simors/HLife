@@ -55,14 +55,14 @@ export class ShopInfo extends ShopRecord {
       }
       return shopRecord.withMutations((record) => {
         record.set('id', lcObj.id)
-        record.set('name', attrs.name)
+        // record.set('name', attrs.name)
         record.set('phone', attrs.phone)
         record.set('shopName', attrs.shopName)
         record.set('shopAddress', attrs.shopAddress)
         record.set('coverUrl', attrs.coverUrl)
         record.set('contactNumber', attrs.contactNumber)
         record.set('contactNumber2', attrs.contactNumber2)
-        record.set('certification', attrs.certification)
+        // record.set('certification', attrs.certification)
         record.set('status', attrs.status && parseInt(attrs.status))
 
         let targetShopCategory = {}
@@ -166,14 +166,14 @@ export class ShopInfo extends ShopRecord {
       let shopRecord = new ShopRecord()
       return shopRecord.withMutations((record) => {
         record.set('id', lcObj.id)
-        record.set('name', lcObj.name)
+        // record.set('name', lcObj.name)
         record.set('phone', lcObj.phone)
         record.set('shopName', lcObj.shopName)
         record.set('shopAddress', lcObj.shopAddress)
         record.set('coverUrl', lcObj.coverUrl)
         record.set('contactNumber', lcObj.contactNumber)
         record.set('contactNumber2', lcObj.contactNumber2)
-        record.set('certification', lcObj.certification)
+        // record.set('certification', lcObj.certification)
         record.set('status', lcObj.status && parseInt(lcObj.status))
 
         let targetShopCategory = {}
