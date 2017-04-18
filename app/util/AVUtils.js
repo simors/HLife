@@ -22,6 +22,11 @@ import * as dateUtils from '../util/dateUtils'
 
 // const EE = new EventEmitter()
 
+export function switchTab(tabKey){
+  Actions.HOME({type:'reset'})
+  Actions[tabKey]()
+}
+
 export function pop(payload) {
   if(payload && payload.backSceneName) {
     Actions.pop({popNum:2})

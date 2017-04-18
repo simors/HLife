@@ -25,6 +25,7 @@ import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import * as authSelector from '../../../selector/authSelector'
 import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
+import * as AVUtils from '../../../util/AVUtils'
 
 class ShopRegisterSuccess extends Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class ShopRegisterSuccess extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.MINE()
+      AVUtils.switchTab('MINE')
     }
   }
 
