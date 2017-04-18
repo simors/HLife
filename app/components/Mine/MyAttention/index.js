@@ -131,7 +131,6 @@ class MyAttention extends Component {
     let userFolloweesDs = ds.cloneWithRows(this.props.userFollowees)
     return (
       <CommonListView
-        contentContainerStyle={{minHeight:PAGE_HEIGHT-108}}
         dataSource={userFolloweesDs}
         renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
         loadNewData={()=> {
@@ -217,7 +216,6 @@ class MyAttention extends Component {
   renderShopList() {
     return (
       <CommonListView
-        contentContainerStyle={{minHeight:PAGE_HEIGHT-108}}
         dataSource={this.props.userFollowedShopList}
         renderRow={(rowData, rowId) => this.renderShopItem(rowData, rowId)}
         loadNewData={()=> {
@@ -287,7 +285,7 @@ class MyAttention extends Component {
     return this.tabs.map((item, index)=>{
       return (
         <View key={index} tabLabel={item}
-              style={[{}]}>
+              style={[{flex:1}]}>
           {index == 0 ? this.renderAttentionList() : this.renderShopList()}
         </View>
       )
