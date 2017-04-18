@@ -160,3 +160,19 @@ export function getCityShopTenant(payload) {
     throw err
   })
 }
+
+export function fetchPromoterByArea(payload) {
+  let params = {
+    liveProvince: payload.liveProvince,
+    liveCity: payload.liveCity,
+    payment: 1,
+    identity: 0,
+    maxShopEarnings: payload.maxShopEarnings,
+    maxRoyaltyEarngings: payload.maxRoyaltyEarngings,
+  }
+  return AV.Cloud.run('promoterFetchPromoter', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

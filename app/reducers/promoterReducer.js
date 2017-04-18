@@ -38,6 +38,10 @@ export default function promoterReducer(state = initialState, action) {
       return handleUpdateAreaAgents(state, action)
     case promoterActionTypes.UPDATE_CITY_SHOP_TENANT:
       return handleUpdateShopTenant(state, action)
+    case promoterActionTypes.SET_AREA_PROMOTERS:
+      return handleSetAreaPromoters(state, action)
+    case promoterActionTypes.ADD_AREA_PROMOTERS:
+      return handleAddAreaPromoters(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -146,6 +150,19 @@ function handleUpdateShopTenant(state, action) {
   let city = action.payload.city
   let tenant = action.payload.tenant
   state = state.setIn(['shopTenant', city], tenant)
+  return state
+}
+
+function handleSetAreaPromoters(state, action) {
+  let promoters = action.payload.promoters
+  state = state.set('areaPromoters', new List(promoters))
+  return state
+}
+
+function handleAddAreaPromoters(state, action) {
+  let promoters = action.payload.promoters
+  let oldPros = state.get('areaPromoters')
+  state = state.set('areaPromoters', oldPros.concat(new List(promoters)))
   return state
 }
 

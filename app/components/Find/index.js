@@ -144,6 +144,8 @@ export class Find extends Component {
     }
     this.isQuering = true
 
+    console.log('refresh in topic')
+
     let lastCreatedAt = undefined
     let lastUpdatedAt = undefined
     let payload = undefined

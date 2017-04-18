@@ -125,3 +125,8 @@ export function selectCityTenant(state, city) {
   }
   return undefined
 }
+
+export function selectAreaPromoters(state) {
+  let promoters = state.PROMOTER.get('areaPromoters')
+  return promoters.toJS()
+}

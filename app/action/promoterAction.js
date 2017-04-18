@@ -34,6 +34,8 @@ let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
 let updateStatistics = createAction(promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE)
 let updateAreaAgent = createAction(promoterActionTypes.UPDATE_AREA_AGENTS)
 let updateShopTenant = createAction(promoterActionTypes.UPDATE_CITY_SHOP_TENANT)
+let setAreaPromoters = createAction(promoterActionTypes.SET_AREA_PROMOTERS)
+let addAreaPromoters = createAction(promoterActionTypes.ADD_AREA_PROMOTERS)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -336,6 +338,44 @@ export function getShopTenantByCity(payload) {
   return (dispatch, getState) => {
     lcPromoter.getCityShopTenant(payload).then((tenant) => {
       dispatch(updateShopTenant({city: payload.city, tenant: tenant.tenant}))
+    })
+  }
+}
+
+export function getPromotersByArea(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.fetchPromoterByArea(payload).then((result) => {
+      let promoters = result.promoters
+      let users = result.users
+      let promoterIds = []
+      promoters.forEach((promoter) => {
+        let promoterId = promoter.objectId
+        promoterIds.push(promoterId)
+        let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+      })
+      users.forEach((user) => {
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        dispatch(addUserProfile({userInfo}))
+      })
+      if (more) {
+        dispatch(addAreaPromoters({promoters: promoterIds}))
+      } else {
+        dispatch(setAreaPromoters({promoters: promoterIds}))
+      }
+
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
     })
   }
 }
