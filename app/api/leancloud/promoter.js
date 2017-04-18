@@ -165,12 +165,11 @@ export function fetchPromoterByArea(payload) {
   let params = {
     liveProvince: payload.liveProvince,
     liveCity: payload.liveCity,
-    payment: 1,
-    identity: 0,
     maxShopEarnings: payload.maxShopEarnings,
     maxRoyaltyEarngings: payload.maxRoyaltyEarngings,
+    lastTime: payload.lastTime,
   }
-  return AV.Cloud.run('promoterFetchPromoter', params).then((result) => {
+  return AV.Cloud.run('promoterFetchNonAgentPromoter', params).then((result) => {
     return result
   }, (err) => {
     throw err

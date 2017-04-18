@@ -34,6 +34,7 @@ class ChangeAgentView extends Component {
     }
     this.maxShopEarnings = 0
     this.maxRoyaltyEarnings = 0
+    this.lastTime = undefined
   }
 
   componentWillMount() {
@@ -57,6 +58,7 @@ class ChangeAgentView extends Component {
         liveCity: this.props.liveCity,
         maxShopEarnings: !!isRefresh ? undefined : this.maxShopEarnings,
         maxRoyaltyEarngings: !!isRefresh ? undefined : this.maxRoyaltyEarnings,
+        lastTime: !!isRefresh ? undefined : this.lastTime,
         success: () => {
           this.isQuering = false
         },
@@ -99,6 +101,7 @@ class ChangeAgentView extends Component {
   renderRow(promoter, rowId) {
     this.maxShopEarnings = promoter.shopEarnings
     this.maxRoyaltyEarnings = promoter.royaltyEarnings
+    this.lastTime = promoter.createdAt
     return (
       <AreaPromoterItem promoter={promoter}/>
     )
@@ -118,7 +121,6 @@ class ChangeAgentView extends Component {
               this.refreshData()
             }}
             loadMoreData={()=> {
-              console.log('loadMoreData')
               this.loadMoreData(false)
             }}
             ref={(listView) => this.listView = listView}
