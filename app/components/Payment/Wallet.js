@@ -24,12 +24,19 @@ import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import THEME from '../../constants/themes/theme1'
 import {getPaymentCard} from '../../selector/paymentSelector'
+import {fetchPaymentBalance} from '../../action/paymentActions'
 
 
 
 class Wallet extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchPaymentBalance({userId: this.props.currentUserId})
+    })
   }
 
   onBoundCard = () => {
@@ -88,15 +95,17 @@ class Wallet extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
+  const currentUserId = authSelector.activeUserId(state)
   const cardInfo = getPaymentCard(state)
   return {
     cardNumber: cardInfo.card_number || undefined,
     isUserLogined: isUserLogined,
+    currentUserId: currentUserId,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  fetchPaymentBalance,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet)

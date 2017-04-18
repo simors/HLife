@@ -16,6 +16,8 @@ export default function paymentReducer(state = initialState, action) {
       return state
     case PaymentActionTypes.ADD_CARD:
       return handleAddCard(state, action)
+    case PaymentActionTypes.GET_BALANCE:
+      return handleGetBalance(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -32,6 +34,11 @@ function handleAddCard(state, action) {
   if(cardInfo) {
     state = state.set('card', cardInfo)
   }
+
+  return state
+}
+
+function handleGetBalance(state, action) {
 
   return state
 }

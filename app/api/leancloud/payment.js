@@ -55,3 +55,17 @@ export function identifyCardInfo(payload) {
     throw  error
   })
 }
+
+export function getBalance(payload) {
+  let params = {
+    userId: payload.userId
+  }
+
+  return AV.Cloud.run('hLifeGetBalanceByUserId', params).then((result) => {
+    console.log(result.message)
+    return result
+  }).catch((error) => {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw  error
+  })
+}
