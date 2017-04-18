@@ -31,6 +31,7 @@ import THEME from '../../../constants/themes/theme1'
 import UserFolloweesView from './UserFolloweesView'
 import ShopFolloweesView from './ShopFolloweesView'
 import * as AVUtils from '../../../util/AVUtils'
+import ScrollableTabView, {ScrollableTabBar} from '../../common/ScrollableTableView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -43,18 +44,18 @@ class MyAttention extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tabType: props.tabType ? 1 : 0
+      tabType: props.tabType ? 1 : 0,
+      showNoUserFolloweesView: false,
+      showNoShopFolloweesView: false,
     }
+
+    this.tabs = ['邻友', '店铺']
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       //this.toggleTab(this.props.tabType ? 1 : 0)
-      if(0 == this.state.tabType) {
-        this.refreshFollowees()
-      } else if(1 == this.state.tabType) {
-        this.refreshShopList()
-      }
+      this.refresh()
     })
   }
 
@@ -62,26 +63,59 @@ class MyAttention extends Component {
 
   }
 
+  refresh() {
+    if(0 == this.state.tabType) {
+      this.refreshFollowees()
+    } else if(1 == this.state.tabType) {
+      this.refreshShopList()
+    }
+  }
+
   refreshFollowees() {
     this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh) {
+    // console.log('loadMoreData.isRefresh=', isRefresh)
+
+    const userFolloweesLastCreatedAt = this.props.userFolloweesLastCreatedAt
+
+    if(!isRefresh && !userFolloweesLastCreatedAt) {
+      return
+    }
+
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
     let payload = {
-      lastCreatedAt: this.props.userFolloweesLastCreatedAt,
+      lastCreatedAt: userFolloweesLastCreatedAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
+        // console.log('loadMoreData.isEmpty===', isEmpty)
+        // console.log('loadMoreData.this.followeeListView===', this.followeeListView)
+        this.isQuering = false
         if(!this.followeeListView) {
           return
         }
+
         if(isEmpty) {
           this.followeeListView.isLoadUp(false)
+
+          if(isRefresh) {
+            this.setState({
+              showNoUserFolloweesView: true
+            })
+          }
         }
       },
       error: (err)=>{
+        this.isQuering = false
+        console.log('loadMoreData.err===', err)
         Toast.show(err.message, {duration: 1000})
       }
     }
+    // console.log('loadMoreData.fetchUserFollowees.isRefresh=', isRefresh)
     this.props.fetchUserFollowees(payload)
   }
 
@@ -94,25 +128,27 @@ class MyAttention extends Component {
   }
 
   renderAttentionList() {
-    // if(false) {
-    if(this.props.userFollowees && this.props.userFollowees.length) {
+    let userFolloweesDs = ds.cloneWithRows(this.props.userFollowees)
+    return (
+      <CommonListView
+        contentContainerStyle={{minHeight:PAGE_HEIGHT-108}}
+        dataSource={userFolloweesDs}
+        renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
+        loadNewData={()=> {
+          this.refreshFollowees()
+        }}
+        loadMoreData={()=> {
+          this.loadMoreData()
+        }}
+        ref={(listView) => this.followeeListView = listView}
+      />
+    )
+  }
+
+  renderNoUserFolloweesView() {
+    if(this.state.showNoUserFolloweesView && this.state.tabType == 0) {
       return (
-        <CommonListView
-          contentContainerStyle={styles.itemLayout}
-          dataSource={this.props.userFollowees}
-          renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
-          loadNewData={()=> {
-            this.refreshFollowees()
-          }}
-          loadMoreData={()=> {
-            this.loadMoreData()
-          }}
-          ref={(listView) => this.followeeListView = listView}
-        />
-      )
-    }else{
-      return (
-        <View style={{flex:1,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
+        <View style={{position:'absolute',left:0,right:0,top:44,bottom:0,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
           <Image style={{marginBottom:20}} source={require('../../../assets/images/sad.png')}/>
           <Text style={{color:'#b2b2b2',fontSize:17,marginBottom:15}}>一个关注的人都没有</Text>
           <Text style={{color:'#ff7819',fontSize:17,marginBottom:60}}>远亲不如近邻，找找附近的邻友吧</Text>
@@ -125,6 +161,8 @@ class MyAttention extends Component {
         </View>
       )
     }
+
+    return null
   }
 
   refreshShopList() {
@@ -132,18 +170,38 @@ class MyAttention extends Component {
   }
 
   loadMoreShopListData(isRefresh) {
+
+    const lastCreatedAt = this.props.lastCreatedAt
+
+    if(!isRefresh && !lastCreatedAt) {
+      return
+    }
+
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     let payload = {
-      lastCreatedAt: this.props.lastCreatedAt,
+      lastCreatedAt: lastCreatedAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
+        this.isQuering = false
         if(!this.shopListView) {
           return
         }
         if(isEmpty) {
           this.shopListView.isLoadUp(false)
+
+          if(isRefresh) {
+            this.setState({
+              showNoShopFolloweesView: true
+            })
+          }
         }
       },
       error: (err)=>{
+        this.isQuering = false
         Toast.show(err.message, {duration: 1000})
       }
     }
@@ -159,7 +217,7 @@ class MyAttention extends Component {
   renderShopList() {
     return (
       <CommonListView
-        contentContainerStyle={styles.shopContentContainerStyle}
+        contentContainerStyle={{minHeight:PAGE_HEIGHT-108}}
         dataSource={this.props.userFollowedShopList}
         renderRow={(rowData, rowId) => this.renderShopItem(rowData, rowId)}
         loadNewData={()=> {
@@ -173,91 +231,173 @@ class MyAttention extends Component {
     )
   }
 
-  toggleTab(type) {
-    this.setState({tabType: type}, ()=>{
-      if(0 == type) {
-        this.refreshFollowees()
-      } else if(1 == type) {
-        this.refreshShopList()
-      }
+  renderNoShopFolloweesView() {
+    if(this.state.showNoShopFolloweesView && this.state.tabType == 1) {
+      return (
+        <View style={{position:'absolute',left:0,right:0,top:44,bottom:0,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
+          <Image style={{marginBottom:20}} source={require('../../../assets/images/sad.png')}/>
+          <Text style={{color:'#b2b2b2',fontSize:17,marginBottom:15}}>一个关注的店铺都没有</Text>
+          <Text style={{color:'#ff7819',fontSize:17,marginBottom:60}}>为了生活更方便，去看看周边的店铺吧</Text>
+          <TouchableOpacity style={{backgroundColor:'#ff7819',borderRadius:5,padding:12,paddingLeft:30,paddingRight:30}} 
+            onPress={()=>{
+              AVUtils.switchTab('LOCAL')
+            }}>
+              <Text style={{color:'white',fontSize:17}}>进入邻家店铺</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
+    return null
+  }
+
+  renderTabBar() {
+    return (
+      <ScrollableTabBar
+        activeTextColor={THEME.base.mainColor}
+        inactiveTextColor={'#686868'}
+        style={{height:44}}
+        underlineStyle={{height: 2, backgroundColor:THEME.base.mainColor}}
+        textStyle={{fontSize: em(16), paddingBottom: 11}}
+        tabStyle={{paddingBottom: 0, paddingLeft: 12, paddingRight: 12}}
+        backgroundColor={'white'}
+      />
+    )
+  }
+
+  // toggleTab(type) {
+  //   this.setState({tabType: type}, ()=>{
+  //     if(0 == type) {
+  //       this.refreshFollowees()
+  //     } else if(1 == type) {
+  //       this.refreshShopList()
+  //     }
+  //   })
+  // }
+
+  onChangeTab(payload) {
+    this.setState({
+      tabType: payload.i
+    }, ()=>{
+      this.refresh()
+    })
+  }
+
+  renderScrollTabsContent() {
+    return this.tabs.map((item, index)=>{
+      return (
+        <View key={index} tabLabel={item}
+              style={[{}]}>
+          {index == 0 ? this.renderAttentionList() : this.renderShopList()}
+        </View>
+      )
     })
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        <Header headerContainerStyle={styles.header}
-                leftType='icon'
-                leftStyle={{color: '#FFFFFF'}}
-                leftPress={() => {Actions.pop()}}
-                title="我的关注"
-                titleStyle={styles.title}>
-        </Header>
+        <Header 
+          headerContainerStyle={styles.header}
+          leftType='icon'
+          leftStyle={{color: '#FFFFFF'}}
+          leftPress={() => {Actions.pop()}}
+          title="我的关注"
+          titleStyle={styles.title}
+        />
         <View style={styles.body}>
-          <View style={styles.tabBar}>
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-              onPress={()=> {
-                this.toggleTab(0)
-              }}>
-              <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
-                this.state.tabType == 0 ?
-                {
-                  borderBottomWidth: 3,
-                  borderColor: THEME.base.mainColor
-                } : {}]}>
-                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                  this.state.tabType == 0 ?
-                  {
-                    color: THEME.base.mainColor,
-                    fontWeight: 'bold',
-                  } : {color: '#4A4A4A'}]}
-                >邻友</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-              onPress={()=> {
-              this.toggleTab(1)
-              }}>
-              <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
-                this.state.tabType == 1 ?
-                {
-                  borderBottomWidth: 3,
-                  borderColor: THEME.base.mainColor
-                } : {}]}>
-                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                  this.state.tabType == 1 ?
-                  {
-                    color: THEME.base.mainColor,
-                    fontWeight: 'bold',
-                  } : {color: '#4A4A4A'}]}
-                >店铺</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          {this.state.tabType == 0?this.renderAttentionList():this.renderShopList()}
+          <ScrollableTabView 
+            style={[{flex:1}]}
+            page={this.state.tabType}
+            initialPage={this.state.tabType}
+            scrollWithoutAnimation={true}
+            renderTabBar={()=> this.renderTabBar()}
+            onChangeTab={(payload) => this.onChangeTab(payload)}>
+            {this.renderScrollTabsContent()}
+          </ScrollableTabView>
+          {this.renderNoUserFolloweesView()}
+          {this.renderNoShopFolloweesView()}
         </View>
       </View>
     )
   }
+
+  // render() {
+  //   return (
+  //     <View style={styles.container}>
+  //       <StatusBar barStyle="light-content" />
+  //       <Header headerContainerStyle={styles.header}
+  //               leftType='icon'
+  //               leftStyle={{color: '#FFFFFF'}}
+  //               leftPress={() => {Actions.pop()}}
+  //               title="我的关注"
+  //               titleStyle={styles.title}>
+  //       </Header>
+  //       <View style={styles.body}>
+  //         <View style={styles.tabBar}>
+  //           <TouchableOpacity
+  //             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+  //             onPress={()=> {
+  //               this.toggleTab(0)
+  //             }}>
+  //             <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+  //               this.state.tabType == 0 ?
+  //               {
+  //                 borderBottomWidth: 3,
+  //                 borderColor: THEME.base.mainColor
+  //               } : {}]}>
+  //               <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+  //                 this.state.tabType == 0 ?
+  //                 {
+  //                   color: THEME.base.mainColor,
+  //                   fontWeight: 'bold',
+  //                 } : {color: '#4A4A4A'}]}
+  //               >邻友</Text>
+  //             </View>
+  //           </TouchableOpacity>
+  //           <TouchableOpacity
+  //             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+  //             onPress={()=> {
+  //             this.toggleTab(1)
+  //             }}>
+  //             <View style={[{width: normalizeW(100), height: normalizeH(44), justifyContent: 'flex-end', alignItems: 'center'},
+  //               this.state.tabType == 1 ?
+  //               {
+  //                 borderBottomWidth: 3,
+  //                 borderColor: THEME.base.mainColor
+  //               } : {}]}>
+  //               <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+  //                 this.state.tabType == 1 ?
+  //                 {
+  //                   color: THEME.base.mainColor,
+  //                   fontWeight: 'bold',
+  //                 } : {color: '#4A4A4A'}]}
+  //               >店铺</Text>
+  //             </View>
+  //           </TouchableOpacity>
+  //         </View>
+  //         {this.state.tabType == 0?this.renderAttentionList():this.renderShopList()}
+  //       </View>
+  //     </View>
+  //   )
+  // }
 }
 
 const mapStateToProps = (state, ownProps) => {
   let userFollowees = selectUserFollowees(state)
+  // userFollowees = []
   let userFolloweesLastCreatedAt = ''
   if(userFollowees && userFollowees.length) {
     userFolloweesLastCreatedAt = userFollowees[userFollowees.length-1].createdAt
   }
-  // console.log('userFollowees===', userFollowees)
+  // console.log('userFollowees===', ds.cloneWithRows(userFollowees))
   const userFollowedShopList = selectUserFollowedShopList(state, activeUserId(state))
   let lastCreatedAt = ''
   if(userFollowedShopList && userFollowedShopList.length) {
     lastCreatedAt = userFollowedShopList[userFollowedShopList.length-1].createdAt
   }
   return {
-    userFollowees: ds.cloneWithRows(userFollowees),
+    userFollowees: userFollowees,
     userFolloweesLastCreatedAt: userFolloweesLastCreatedAt,
     userFollowedShopList: ds.cloneWithRows(userFollowedShopList),
     lastCreatedAt: lastCreatedAt

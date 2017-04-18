@@ -783,7 +783,7 @@ export function fetchUserFollowees(payload) {
       let updateAction = createAction(actionType)
       dispatch(updateAction(result))
       if (payload.success) {
-        payload.success(result)
+        payload.success(result.followees.size <= 0)
       }
     }).catch((error) => {
       if (payload.error) {
