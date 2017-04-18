@@ -26,9 +26,9 @@ import THEME from '../../constants/themes/theme1'
 import Symbol from 'es6-symbol'
 import {createPingppTransfers} from '../../action/paymentActions'
 import CommonTextInput from '../common/Input/CommonTextInput'
-import {getPaymentCard} from '../../selector/paymentSelector'
+import {getPaymentInfo} from '../../selector/paymentSelector'
 import uuid from 'react-native-uuid'
-
+import * as Toast from '../common/Toast'
 
 
 let cashForm = Symbol('cashForm')
@@ -63,14 +63,15 @@ class WithdrawCash extends Component {
   }
 
   submitSuccessCallback = () => {
+    Actions.pop()
   }
 
   submitErrorCallback = (error) => {
+    Toast.show(error)
   }
 
   onWithdrawCash = () => {
     let order_no = uuid.v4().replace(/-/g, '').substr(0, 16)
-
     this.props.createPingppTransfers({
       formKey: cashForm,
       order_no: order_no,
@@ -138,7 +139,6 @@ class WithdrawCash extends Component {
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
               keyboardType="numeric"
             />
-            <Text>元</Text>
           </View>
           <View style={styles.itemContainer}>
             <Text style={{fontSize: 17, color: '#AAAAAA'}}>支付密码</Text>
@@ -168,7 +168,7 @@ class WithdrawCash extends Component {
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const currentUserId = authSelector.activeUserId(state)
-  const cardInfo = getPaymentCard(state)
+  const cardInfo = getPaymentInfo(state)
   return {
     cardInfo: cardInfo,
     isUserLogined: isUserLogined,

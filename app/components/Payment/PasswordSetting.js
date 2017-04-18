@@ -1,5 +1,5 @@
 /**
- * Created by wanpeng on 2017/4/11.
+ * Created by wanpeng on 2017/4/18.
  */
 import React, {Component} from 'react'
 import {
@@ -21,20 +21,11 @@ import {Actions} from 'react-native-router-flux'
 import {normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import * as authSelector from '../../selector/authSelector'
 import Header from '../common/Header'
-import CommonButton from '../common/CommonButton'
-import {getPaymentInfo} from '../../selector/paymentSelector'
+import THEME from '../../constants/themes/theme1'
 
-
-
-class MyCard extends Component {
+class PasswordSetting extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      boundCarded: false
-    }
-  }
-
-  onRelieveCard = () => {
   }
 
   render() {
@@ -44,21 +35,18 @@ class MyCard extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title='银行卡'
+          title='支付设置'
           headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
-          <View style={styles.card}>
-            <Text style={{marginTop: normalizeH(42), fontFamily: 'PingFangSC-Semibold', fontSize: 18, color: '#4990E2'}}>{this.props.cardInfo.bank_code}</Text>
-            <Text style={{marginTop: normalizeH(20), fontSize: 18, color: '#4990E2'}}>{this.props.cardInfo.card_number}</Text>
-          </View>
-          <CommonButton
-            buttonStyle={{marginTop:normalizeH(47)}}
-            onPress={this.onRelieveCard}
-            title="解除绑定"
-          />
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <Text style={styles.itemText}>修改支付密码</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <Text style={styles.itemText}>找回支付密码</Text>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -67,18 +55,15 @@ class MyCard extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
-  const cardInfo = getPaymentInfo(state)
   return {
     isUserLogined: isUserLogined,
-    cardInfo: cardInfo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyCard)
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordSetting)
 
 const styles = StyleSheet.create({
   container: {
@@ -108,13 +93,18 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
   },
-  card: {
-    width: normalizeW(345),
-    height: normalizeH(140),
-    borderRadius: 10,
-    paddingLeft: normalizeW(28),
-    backgroundColor: 'rgba(255,157,78,0.20)',
-    marginTop: normalizeH(20),
-    marginLeft: normalizeW(15)
+  item: {
+    paddingLeft: normalizeW(30),
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: normalizeH(63),
+    borderBottomWidth: 1,
+    borderColor: '#AAAAAA'
+  },
+  itemText: {
+    fontSize: 17,
+    color: '#5A5A5A'
   }
 })
+
+

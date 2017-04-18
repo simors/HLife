@@ -24,6 +24,7 @@ export function createPingppPayment(payload) {
 
 export function createPingppTransfers(payload) {
   let params = {
+    userId: payload.userId,
     order_no: payload.order_no,
     amount: payload.amount,
     cardNumber: payload.cardNumber,

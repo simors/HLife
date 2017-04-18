@@ -1,7 +1,7 @@
 /**
  * Created by wanpeng on 2017/3/28.
  */
-import {Map, List} from 'immutable'
+import {Map, List, Record} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as PaymentActionTypes from '../constants/paymentActionTypes'
 import {Payment} from '../models/paymentModel'
@@ -18,6 +18,8 @@ export default function paymentReducer(state = initialState, action) {
       return handleAddCard(state, action)
     case PaymentActionTypes.GET_BALANCE:
       return handleGetBalance(state, action)
+    case PaymentActionTypes.SET_PASSWORD:
+      return handleSetPassword(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -32,7 +34,7 @@ function handleCreatePayment(state, action) {
 function handleAddCard(state, action) {
   let cardInfo = action.payload.cardInfo
   if(cardInfo) {
-    state = state.set('card', cardInfo)
+    state = state.set('paymentInfo', cardInfo)
   }
 
   return state
@@ -43,10 +45,17 @@ function handleGetBalance(state, action) {
   return state
 }
 
+function handleSetPassword(state, action) {
+  let record = state.get('paymentInfo')
+  record = record.set('password', true)
+  state = state.set('paymentInfo', record)
+  return state
+}
+
 function onRehydrate(state, action) {
   var incoming = action.payload.PAYMENT
   if(incoming) {
-    state = state.set('card', incoming.card)
+    state = state.set('paymentInfo', Record(incoming.paymentInfo))
   }
 
   return state

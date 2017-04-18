@@ -4,13 +4,14 @@
 
 import {Record, Map, List} from 'immutable'
 
-export const cardRecord = Record({
+export const PaymentRecord = Record({
   id_name: undefined, //身份证姓名
   id_number: undefined, //身份证号码
   card_number: undefined, //银行卡号
   phone_number: undefined,  //手机号(11位)
-  balance: undefined, //余额
-}, 'cardRecord')
+  balance: 0, //余额
+  password: false, //支付密码是否设置
+}, 'PaymentRecord')
 
 export const ChargeRecord = Record({
   id: undefined,  //Ping++支付对象ID
@@ -38,5 +39,5 @@ export class ChargeInfo extends ChargeRecord {
 
 export const Payment = Record({
   payment: List(),
-  card: cardRecord(),
+  paymentInfo: PaymentRecord(),
 }, 'Payment')

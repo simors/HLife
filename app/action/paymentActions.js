@@ -3,7 +3,7 @@
  */
 import {createAction} from 'redux-actions'
 import * as lcPayment from '../api/leancloud/payment'
-import {CREATE_PAYMENT, CREATE_TRANSFERS, ADD_CARD, GET_BALANCE} from '../constants/paymentActionTypes'
+import {CREATE_PAYMENT, CREATE_TRANSFERS, ADD_CARD, GET_BALANCE, SET_PASSWORD} from '../constants/paymentActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 
@@ -46,6 +46,10 @@ export function createPingppTransfers(payload) {
       return
     }
     const formData = getInputFormData(getState(), payload.formKey)
+
+    console.log("createPingppTransfers payload", payload)
+    console.log("createPingppTransfers formData", formData)
+
     let authPayload = {
       userId: payload.userId,
       password: formData.passwordInput.text,
@@ -53,13 +57,17 @@ export function createPingppTransfers(payload) {
 
     lcPayment.paymentAuth(authPayload).then(() => {
       let transfersPayload = {
-
+        userId: payload.userId,
+        order_no: payload.order_no,
+        amount: formData.amountInput.text,
+        cardNumber: formData.cardInput.text,
+        userName: formData.nameInput.text,
       }
       return lcPayment.createPingppTransfers(transfersPayload)
     }).then((result) => {
       console.log("lcPayment.createPingppTransfers return", result)
       if(payload.success) {
-        payload.success(result.charge)
+        payload.success()
       }
       let createTransfersAction = createAction(CREATE_TRANSFERS)
       dispatch(createTransfersAction({transfers: result.transfers}))
@@ -132,6 +140,8 @@ export function setPaymentPassword(payload) {
       if (payload.success) {
         payload.success()
       }
+      let setPasswordAction =createAction(SET_PASSWORD)
+      dispatch(setPasswordAction({}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
