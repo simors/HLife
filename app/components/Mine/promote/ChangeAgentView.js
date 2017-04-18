@@ -13,6 +13,7 @@ import {
   Platform,
   StatusBar,
   TextInput,
+  ListView,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -20,6 +21,8 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import THEME from '../../../constants/themes/theme1'
 import Icon from 'react-native-vector-icons/Ionicons'
+import CommonListView from '../../common/CommonListView'
+import PromoterLevelIcon from './PromoterLevelIcon'
 
 class ChangeAgentView extends Component {
   constructor(props) {
@@ -27,6 +30,14 @@ class ChangeAgentView extends Component {
     this.state = {
       searchText: '',
     }
+  }
+
+  refreshData() {
+
+  }
+
+  loadMoreData() {
+
   }
 
   renderHeader() {
@@ -58,18 +69,69 @@ class ChangeAgentView extends Component {
     )
   }
 
+  renderRow(rowData, rowId) {
+    return (
+      <View style={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}>
+        <View style={styles.promoterBaseView}>
+          <TouchableOpacity style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(10)}} onPress={() => {}}>
+            <Image style={styles.avatarStyle} resizeMode='contain'
+                   source={require('../../../assets/images/default_portrait.png')}/>
+          </TouchableOpacity>
+          <View style={styles.baseInfoView}>
+            <View>
+              <View>
+                <Text style={styles.nicknameText}>白天不懂夜的黑</Text>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: normalizeH(10)}}>
+                <PromoterLevelIcon level={2} mode="tiny"/>
+                <Text style={[styles.tipsText, {paddingLeft: normalizeW(10), paddingRight: normalizeW(10)}]}>长沙</Text>
+                <Text style={styles.tipsText}>最新业绩：一天前</Text>
+              </View>
+            </View>
+            <TouchableOpacity style={{marginRight: normalizeW(15)}} onPress={() => {}}>
+              <Image source={require('../../../assets/images/selected.png')}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.performView}>
+          <Text style={styles.totalPerformText}>总业绩</Text>
+          <Text style={styles.performText}>9999.00</Text>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" />
         {this.renderHeader()}
+        <View style={styles.body}>
+          <CommonListView
+            contentContainerStyle={{backgroundColor: '#FFF'}}
+            dataSource={this.props.dataSource}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
+            ref={(listView) => this.listView = listView}
+          />
+        </View>
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let ds = new ListView.DataSource({
+    rowHasChanged: (r1, r2) => r1 != r2,
+  })
+
   return {
+    dataSource: ds.cloneWithRows(['adb', 'afd', 'fgasdf']),
   }
 }
 
@@ -145,5 +207,48 @@ const styles = StyleSheet.create({
   searchInputStyle: {
     flex: 1,
     padding: 0,
+  },
+  avatarStyle: {
+    width: normalizeW(44),
+    height: normalizeH(44),
+    borderRadius: normalizeW(22),
+    overflow: 'hidden',
+  },
+  promoterBaseView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nicknameText: {
+    fontSize: em(17),
+    fontWeight: 'bold',
+    color: '#5a5a5a',
+  },
+  baseInfoView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: normalizeH(69),
+    borderBottomWidth: 1,
+    borderColor: '#F5F5F5',
+  },
+  performView: {
+    height: normalizeH(43),
+    paddingLeft: normalizeW(70),
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tipsText: {
+    fontSize: em(12),
+    color: '#B6B6B6',
+  },
+  totalPerformText: {
+    fontSize: em(12),
+    color: '#5A5A5A',
+    paddingRight: normalizeW(10),
+  },
+  performText: {
+    fontSize: em(15),
+    color: THEME.base.mainColor,
   },
 })
