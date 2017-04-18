@@ -977,17 +977,3 @@ export function setUserNickname(payload) {
     throw err
   })
 }
-
-export function setPaymentPassword(payload) {
-  let params = {
-    userId: payload.userId,
-    password: payload.password,
-  }
-  return AV.Cloud.run('hLifeSetPaymentPassword', params).then((result) => {
-    return result
-  }, (err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-
-}

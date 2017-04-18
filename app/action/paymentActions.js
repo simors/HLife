@@ -36,10 +36,27 @@ export function createPingppPayment(payload) {
 
 export function createPingppTransfers(payload) {
   return (dispatch, getState) => {
-    transfersPayload = {
-
+    let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+    dispatch(formCheck({formKey: payload.formKey}))
+    let isFormValid = isInputFormValid(getState(), payload.formKey)
+    if (!isFormValid.isValid) {
+      if (payload.error) {
+        payload.error({message: isFormValid.errMsg})
+      }
+      return
     }
-    lcPayment.createPingppTransfers(transfersPayload).then((result) => {
+    const formData = getInputFormData(getState(), payload.formKey)
+    let authPayload = {
+      userId: payload.userId,
+      password: formData.passwordInput.text,
+    }
+
+    lcPayment.paymentAuth(authPayload).then(() => {
+      let transfersPayload = {
+
+      }
+      return lcPayment.createPingppTransfers(transfersPayload)
+    }).then((result) => {
       console.log("lcPayment.createPingppTransfers return", result)
       if(payload.success) {
         payload.success(result.charge)
@@ -51,6 +68,7 @@ export function createPingppTransfers(payload) {
         payload.error(error)
       }
     })
+
   }
 }
 
@@ -100,6 +118,22 @@ export function fetchPaymentBalance(payload) {
       dispatch(createGetBalanceAction({}))
     }).catch((error) => {
       if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+
+export function setPaymentPassword(payload) {
+  return (dispatch, getState) => {
+    lcPayment.setPaymentPassword(payload).then((result) => {
+      console.log("setPaymentPassword result", result)
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
         payload.error(error)
       }
     })

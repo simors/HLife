@@ -30,6 +30,7 @@ import {getPaymentCard} from '../../selector/paymentSelector'
 import uuid from 'react-native-uuid'
 
 
+
 let cashForm = Symbol('cashForm')
 
 const nameInput = {
@@ -73,7 +74,6 @@ class WithdrawCash extends Component {
     this.props.createPingppTransfers({
       formKey: cashForm,
       order_no: order_no,
-      card_number: undefined,
       userId: this.props.currentUserId,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
@@ -105,7 +105,6 @@ class WithdrawCash extends Component {
               placeholder="输入姓名"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
-              initValue={this.props.card_number.id_name}
             />
           </View>
           <View style={styles.itemContainer}>
@@ -115,7 +114,6 @@ class WithdrawCash extends Component {
               placeholder="请输入银行卡号"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
-              initValue={this.props.cardInfo.card_number}
               keyboardType="numeric"
             />
           </View>
@@ -149,6 +147,7 @@ class WithdrawCash extends Component {
               placeholder="请输入支付密码"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
+              secureTextEntry={true}
             />
           </View>
           <View style={{alignItems: 'flex-end', height: normalizeH(50), justifyContent: 'center'}}>

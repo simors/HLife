@@ -1021,19 +1021,5 @@ export function fetchFavoriteArticles(payload) {
   }
 }
 
-export function setPaymentPassword(payload) {
-  return (dispatch, getState) => {
-    lcAuth.setPaymentPassword(payload).then((result) => {
-      console.log("setPaymentPassword result", result)
-      if (payload.success) {
-        payload.success()
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
 
 

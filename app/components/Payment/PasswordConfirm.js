@@ -24,7 +24,7 @@ import Header from '../common/Header'
 import THEME from '../../constants/themes/theme1'
 import PaymentPasswordInput from '../common/Input/PaymentPasswordInput'
 import * as Toast from '../common/Toast'
-import {setPaymentPassword} from '../../action/authActions'
+import {setPaymentPassword} from '../../action/paymentActions'
 
 
 class PasswordConfirm extends Component {
