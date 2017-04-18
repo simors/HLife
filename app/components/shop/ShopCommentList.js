@@ -127,6 +127,10 @@ class ShopCommentList extends Component {
       Actions.LOGIN()
       return
     }
+    if(!content) {
+      Toast.show('请输入回复内容')
+      return
+    }
     const that = this
     this.props.reply({
       shopId: this.props.shopId,

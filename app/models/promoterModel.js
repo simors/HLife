@@ -33,6 +33,13 @@ export const PromoterStatisticsRecord = Record({
   totalPerformance: undefined,
 })
 
+export const AreaAgent = Record({
+  area: undefined,
+  tenant: undefined,
+  promoterId: undefined,
+  userId: undefined,
+})
+
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
@@ -84,6 +91,8 @@ export const Promoter = Record({
   promoters: Map(),                 // 推广员记录，键为推广员id，值为PromoterInfo
   team: Map(),                      // 记录团队列表信息，键为推广员id，值为其推广团队中所有推广员的id号，此列表按照推广员最后业绩时间排序
   invitedShops: Map(),              // 记录邀请的店铺，键为推广员id，值为店铺的id列表
-  statistics: undefined,            // 统计数据，为PromoterStatisticsRecord结构
+  statistics: Map(),                // 统计数据，键为城市名，值为PromoterStatisticsRecord结构
+  areaAgents: List(),               // 存储地区代理信息，值为AreaAgent类型
+  shopTenant: Map(),                // 保存各地的店铺入驻费用，键为城市名，值为费用
 }, 'Promoter')
 

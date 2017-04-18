@@ -124,6 +124,7 @@ class SmsAuthCodeInput extends Component {
             placeholder={this.props.placeholder}
             placeholderTextColor={this.props.placeholderTextColor}
             maxLength={this.props.maxLength}
+            value={this.props.data}
             keyboardType="numeric"
             underlineColorAndroid="transparent"
             onChangeText={(text) => this.inputChange(text)}
@@ -194,9 +195,10 @@ const smsStyles = StyleSheet.create({
 })
 
 const mapStateToProps = (state, ownProps) => {
-  let obj = getInputData(state, ownProps.formKey, ownProps.stateKey)
-  // console.log("obj", obj)
-  return {obj}
+  let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  return {
+    data: inputData.text
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

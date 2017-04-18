@@ -440,7 +440,7 @@ class EditShop extends Component {
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     clearBtnStyle={{top:6}}
-                    initValue={this.props.userOwnedShopInfo.contactNumber}
+                    initValue={this.props.userOwnedShopInfo.contactNumber2}
                   />
                 </View>
               </View>

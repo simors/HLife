@@ -593,7 +593,7 @@ class ShopCategoryList extends Component {
               </View>
             }
             <CommonListView
-              contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
+              contentContainerStyle={{backgroundColor: 'white',minHeight:PAGE_HEIGHT-104}}
               dataSource={this.props.ds}
               renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
               loadNewData={()=>{this.refreshData()}}

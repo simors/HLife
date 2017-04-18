@@ -300,19 +300,21 @@ export function getLocalTopics(payload) {
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
   let lastUpdatedAt = payload.lastUpdatedAt
-  // if (!isRefresh && lastCreatedAt) { //分页查询
-  //   query.lessThan('createdAt', new Date(lastCreatedAt))
-  // }
-  if (!isRefresh && lastUpdatedAt) { //分页查询
-    query.lessThan('updatedAt', new Date(lastUpdatedAt))
+  if (!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
   }
+
+  // if (!isRefresh && lastUpdatedAt) { //分页查询
+  //   query.lessThan('updatedAt', new Date(lastUpdatedAt))
+  // }
   query.equalTo('status',1)
   query.equalTo('city', city)
   query.equalTo('province', province)
 
   query.limit(10)
   query.include(['user'])
-  query.descending('updatedAt')
+  // query.descending('updatedAt')
+  query.descending('createdAt')
 
   return query.find().then(function (results) {
     let topics = []
@@ -355,23 +357,27 @@ export function getTopics(payload) {
       query.equalTo('user', user)
     }
 
+    // console.log('getTopics.lastUpdatedAt====', payload.lastUpdatedAt)
     let isRefresh = payload.isRefresh
-    // let lastCreatedAt = payload.lastCreatedAt
-    let lastCreatedAt = ''
+    let lastCreatedAt = payload.lastCreatedAt
+    // let lastCreatedAt = ''
     let lastUpdatedAt = payload.lastUpdatedAt
     if (!isRefresh) { //分页查询
       if(lastCreatedAt) {
         query.lessThan('createdAt', new Date(lastCreatedAt))
-        query.descending('createdAt')
-      }else if(lastUpdatedAt) {
-        query.lessThan('updatedAt', new Date(lastCreatedAt))
-        query.descending('updatedAt')
       }
+      // else if(lastUpdatedAt) {
+      //   query.lessThan('updatedAt', new Date(lastUpdatedAt))
+      //   query.descending('updatedAt')
+      // }
     }
 
     query.limit(10) // 最多返回 10 条结果
     query.include(['user'])
+    query.descending('createdAt')
 
+    // console.log('getTopics===isRefresh=', isRefresh)
+    // console.log('getTopics===query=', query)
     return query.find().then(function (results) {
       let topics = []
       results.forEach((result) => {
@@ -451,5 +457,11 @@ export function getMainPageTopics(payload) {
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
+  })
+}
+
+export function disableTopic(payload){
+  return AV.Cloud.run('disableTopicByUser',{id:payload}).then(()=>{
+    return {success:true}
   })
 }

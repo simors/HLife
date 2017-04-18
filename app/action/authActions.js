@@ -442,25 +442,27 @@ function handleShopCertification(payload, formData) {
 
 function shopCertification4UploadCertiImg(payload, formData) {
   return (dispatch, getState) =>{
-    let localImgs = []
-    if(formData.certificationInput.text) {
-      localImgs.push(formData.certificationInput.text)
-      return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
-        payload.certiImgLeanUris = leanUris
-        dispatch(shopCertification4Cloud(payload, formData))
-      }).catch((error) => {
-        if (payload.error) {
-          error.message = error.message || '上传营业执照异常'
-          payload.error(error)
-        }
-      })
-    }else{
-      if (payload.error) {
-        let error = {}
-        error.message = '请上传有效的营业执照'
-        payload.error(error)
-      }
-    }
+    dispatch(shopCertification4Cloud(payload, formData))
+    
+    // let localImgs = []
+    // if(formData.certificationInput.text) {
+    //   localImgs.push(formData.certificationInput.text)
+    //   return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
+    //     payload.certiImgLeanUris = leanUris
+    //     dispatch(shopCertification4Cloud(payload, formData))
+    //   }).catch((error) => {
+    //     if (payload.error) {
+    //       error.message = error.message || '上传营业执照异常'
+    //       payload.error(error)
+    //     }
+    //   })
+    // }else{
+    //   if (payload.error) {
+    //     let error = {}
+    //     error.message = '请上传有效的营业执照'
+    //     payload.error(error)
+    //   }
+    // }
   }
 }
 
@@ -468,14 +470,14 @@ function shopCertification4Cloud(payload, formData) {
   return (dispatch, getState) =>{
     let shopInfo = {
       inviteCode: formData.invitationCodeInput.text,
-      name: formData.nameInput.text,
+      // name: formData.nameInput.text,
       phone: formData.phoneInput.text,
       shopName: formData.shopNameInput.text,
       shopAddress:formData.shopAddrInput && formData.shopAddrInput.text,
       geo: formData.shopGeoInput && formData.shopGeoInput.text,
       geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
       geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
-      certification: payload.certiImgLeanUris[0],
+      // certification: payload.certiImgLeanUris[0],
     }
     lcShop.shopCertification(shopInfo).then((shop) => {
       let userId = activeUserId(getState())
@@ -831,7 +833,7 @@ export function fetchUserFollowees(payload) {
       let updateAction = createAction(actionType)
       dispatch(updateAction(result))
       if (payload.success) {
-        payload.success(result)
+        payload.success(result.followees.size <= 0)
       }
     }).catch((error) => {
       if (payload.error) {

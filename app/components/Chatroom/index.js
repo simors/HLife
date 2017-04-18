@@ -8,7 +8,8 @@ import {
   Dimensions,
   Image,
   InteractionManager,
-  Platform
+  Platform,
+  Text
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -93,6 +94,7 @@ class Chatroom extends Component {
           title={this.props.title}
         />
         <View style={styles.conversationView}>
+          {this.props.customTopView}
           <GiftedChat
             messages={this.props.messages}
             onSend={this.onSend}

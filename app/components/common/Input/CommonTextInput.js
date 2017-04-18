@@ -107,7 +107,7 @@ class CommonTextInput extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, this.props.outerContainerStyle]}>
         <FormInput
           textInputRef={this.props.textInputRef}
           editable={this.props.editable}

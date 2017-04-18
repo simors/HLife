@@ -45,52 +45,60 @@ export class Find extends Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      if (this.state.selectedTab == 0) {
-        this.props.fetchTopics({
-          type: "pickedTopics",
-          isRefresh: true
-        })
-      }
-      else if (this.state.selectedTab == 1) {
-        this.props.fetchTopics({
-          type: "localTopics",
-          isRefresh: true
-        })
-      } else {
-        this.props.fetchTopics({
-          type: "topics",
-          categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
-          isRefresh: true
-        })
-      }
+      this.refreshTopic()
     })
   }
 
+  componentDidMount() {
+    // InteractionManager.runAfterInteractions(() => {
+    //   if (this.state.selectedTab == 0) {
+    //     this.props.fetchTopics({
+    //       type: "pickedTopics",
+    //       isRefresh: true
+    //     })
+    //   }
+    //   else if (this.state.selectedTab == 1) {
+    //     this.props.fetchTopics({
+    //       type: "localTopics",
+    //       isRefresh: true
+    //     })
+    //   } else {
+    //     this.props.fetchTopics({
+    //       type: "topics",
+    //       categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
+    //       isRefresh: true
+    //     })
+    //   }
+    // })
+  }
+
   getSelectedTab(index) {
-    this.setState({selectedTab: index})
-    InteractionManager.runAfterInteractions(() => {
-      if (index == 0) {
-        this.props.fetchTopics({
-          type: "pickedTopics",
-          isRefresh: true
-        })
-      }
-      else if (index == 1) {
-        this.props.fetchTopics({
-          type: "localTopics",
-          isRefresh: true
-        })
-      }
-      else {
-        this.props.fetchTopics({
-          type: "topics",
-          categoryId: this.props.topicCategories[index].objectId,
-          isRefresh: true
-        })
-      }
+    this.setState({selectedTab: index}, ()=>{
+      this.refreshTopic()
     })
+    // InteractionManager.runAfterInteractions(() => {
+    //   if (index == 0) {
+    //     this.props.fetchTopics({
+    //       type: "pickedTopics",
+    //       isRefresh: true
+    //     })
+    //   }
+    //   else if (index == 1) {
+    //     this.props.fetchTopics({
+    //       type: "localTopics",
+    //       isRefresh: true
+    //     })
+    //   }
+    //   else {
+    //     this.props.fetchTopics({
+    //       type: "topics",
+    //       categoryId: this.props.topicCategories[index].objectId,
+    //       isRefresh: true
+    //     })
+    //   }
+    // })
   }
 
   onLikeButton(payload) {
@@ -131,6 +139,11 @@ export class Find extends Component {
   }
 
   loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     let lastCreatedAt = undefined
     let lastUpdatedAt = undefined
     let payload = undefined
@@ -145,6 +158,7 @@ export class Find extends Component {
         let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
         if (currentTopics && currentTopics.length) {
           lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
+          lastUpdatedAt = currentTopics[currentTopics.length - 1].updatedAt
         }
       }
     }
@@ -155,6 +169,7 @@ export class Find extends Component {
         lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
+          this.isQuering = false
           if (!this.listView) {
             return
           }
@@ -165,6 +180,7 @@ export class Find extends Component {
           }
         },
         error: (err)=> {
+          this.isQuering = false
           Toast.show(err.message, {duration: 1000})
         }
       }
@@ -175,6 +191,7 @@ export class Find extends Component {
         lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
+          this.isQuering = false
           if (!this.listView) {
             return
           }
@@ -185,6 +202,7 @@ export class Find extends Component {
           }
         },
         error: (err)=> {
+          this.isQuering = false
           Toast.show(err.message, {duration: 1000})
         }
       }
@@ -196,6 +214,7 @@ export class Find extends Component {
         lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
         success: (isEmpty) => {
+          this.isQuering = false
           if (!this.listView) {
             return
           }
@@ -206,6 +225,7 @@ export class Find extends Component {
           }
         },
         error: (err)=> {
+          this.isQuering = false
           Toast.show(err.message, {duration: 1000})
         }
       }

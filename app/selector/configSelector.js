@@ -7,6 +7,10 @@ export function getConfig(state) {
   return state.CONFIG
 }
 
+export function selectServicePhone(state) {
+  return state.CONFIG.servicePhone
+}
+
 export function getBanners(state) {
   let config = getConfig(state)
   if (config) {
@@ -106,4 +110,65 @@ export function selectProvincesAndCities(state) {
     return provinceListWithCityList || []
   }
   return []
+}
+
+export function selectSubArea(state, payload) {
+  let level = payload.sublevel
+  let province = payload.province
+  let city = payload.city
+  let retCity = []
+  let retDistrict = []
+
+  let config = getConfig(state)
+  if (!config) {
+    return undefined
+  }
+
+  let provinceListWithCityList = config.provinceListWithCityList.toJS()
+  if (!provinceListWithCityList) {
+    return undefined
+  }
+
+  // 获取省份底下的所有市
+  if (level == 1) {
+    let provinceData = provinceListWithCityList.find((subProvince) => {
+      if (subProvince.area_name == province) {
+        return true
+      }
+      return false
+    })
+    if (provinceData && provinceData.sub && provinceData.sub.length > 0) {
+      provinceData.sub.forEach((subCity) => {
+        retCity.push(subCity.area_name)
+      })
+    }
+    return retCity
+  }
+
+  // 获取市下面的所有区县
+  if (level == 2) {
+    let provinceData = provinceListWithCityList.find((subProvince) => {
+      if (subProvince.area_name == province) {
+        return true
+      }
+      return false
+    })
+    if (provinceData && provinceData.sub && provinceData.sub.length > 0) {
+      let cityData = provinceData.sub.find((subCity) => {
+        if (subCity.area_name == city) {
+          return true
+        }
+        return false
+      })
+
+      if (cityData && cityData.sub && cityData.sub.length > 0) {
+        cityData.sub.forEach((subDistrict) => {
+          retDistrict.push(subDistrict.area_name)
+        })
+      }
+      return retDistrict
+    }
+  }
+
+  return undefined
 }

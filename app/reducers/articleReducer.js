@@ -154,7 +154,7 @@ function handleUpdateUpCount(state,action){
 // }
 function onRehydrate(state, action) {
   var incoming = action.payload.ARTICLE
-   console.log("onRehydrate incoming========>", incoming)
+   // console.log("onRehydrate incoming========>", incoming)
   if(incoming){
     //state = state.set('articleList',incoming.articleList)
     const articleList = Map(incoming.articleList)

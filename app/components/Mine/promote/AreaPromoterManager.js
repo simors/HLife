@@ -22,13 +22,28 @@ import {connect} from 'react-redux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
+import {getAreaPromoterAgents} from '../../../action/promoterAction'
+import {selectAreaAgents} from '../../../selector/promoterSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
+/**
+ * 只有省、市级推广员可以看到这个界面
+ */
 class AreaPromoterManager extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.getAreaPromoterAgents({
+        identity: this.props.promoter.identity,
+        province: this.props.promoter.province,
+        city: this.props.promoter.city,
+      })
+    })
   }
 
   renderHeaderTitle() {
@@ -47,22 +62,48 @@ class AreaPromoterManager extends Component {
     )
   }
 
-  renderAreaItem(area) {
+  renderAgentIcon(areaAgent) {
+    if (areaAgent.userId) {
+      return (
+        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+          <Image style={styles.avatarStyle} resizeMode='contain'
+                 source={areaAgent.avatar ? {uri: areaAgent.avatar} : require('../../../assets/images/default_portrait.png')}/>
+          <Text style={styles.userNameText} numberOfLines={1}>{areaAgent.nickname}</Text>
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.addBtnStyle}>
+          <Text style={{fontSize: em(15), color: '#FFF'}}>添加</Text>
+        </View>
+      )
+    }
+  }
+
+  renderAreaItem(areaAgent) {
+    let promoter = this.props.promoter
     return (
       <View style={styles.areaItemView}>
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', alignItems: 'center'}} onPress={() => {}}>
+        <TouchableOpacity style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}
+                          onPress={() => {Actions.AREA_DETAIL({
+                            area: areaAgent.area,
+                            province: promoter.province,
+                            city: promoter.identity == 1 ? areaAgent.area : promoter.city,
+                            district: promoter.identity == 1 ? '' : (promoter.identity == 2 ? areaAgent.area : promoter.district),
+                            upPromoter: promoter,
+                            promoter: areaAgent.promoter,
+                            nickname: areaAgent.nickname,
+                            avatar: areaAgent.avatar,
+                            userId: areaAgent.userId,
+                          })}}>
           <View style={styles.areaNameStyle}>
-            <Text style={styles.txtStyle} numberOfLines={1}>{area}</Text>
+            <Text style={styles.txtStyle} numberOfLines={1}>{areaAgent.area}</Text>
           </View>
           <View style={styles.feeViewStyle}>
-            <Text style={styles.feeTxt} numberOfLines={1}>100.00</Text>
+            <Text style={styles.feeTxt} numberOfLines={1}>{areaAgent.tenant}</Text>
           </View>
           <View style={styles.agentItem}>
-            <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-              <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode='contain'
-                     source={require('../../../assets/images/default_portrait.png')}/>
-              <Text style={styles.userNameText} numberOfLines={1}>白天不懂夜的黑</Text>
-            </View>
+            {this.renderAgentIcon(areaAgent)}
             <View style={{paddingRight: normalizeW(15)}}>
               <Icon
                 name='ios-arrow-forward'
@@ -91,6 +132,7 @@ class AreaPromoterManager extends Component {
             style={{flex: 1}}
             dataSource={this.props.areaSource}
             renderRow={(area) => this.renderAreaItem(area)}
+            enableEmptySections={true}
           />
         </View>
       </View>
@@ -99,13 +141,18 @@ class AreaPromoterManager extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+  let ds = new ListView.DataSource({
+    rowHasChanged: (r1, r2) => r1 != r2,
+  })
+  let areaAgents = selectAreaAgents(state)
+
   return {
-    areaSource: ds.cloneWithRows(['长沙', '湘潭']),
+    areaSource: ds.cloneWithRows(areaAgents),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getAreaPromoterAgents,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AreaPromoterManager)
@@ -184,5 +231,19 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     color: '#5A5A5A',
     paddingLeft: normalizeW(5),
+  },
+  addBtnStyle: {
+    width: normalizeH(42),
+    height: normalizeH(25),
+    backgroundColor: THEME.base.mainColor,
+    borderRadius: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarStyle: {
+    width: normalizeW(20),
+    height: normalizeH(20),
+    borderRadius: normalizeW(10),
+    overflow: 'hidden',
   },
 })

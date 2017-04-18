@@ -25,6 +25,7 @@ import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import * as authSelector from '../../../selector/authSelector'
 import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
+import * as AVUtils from '../../../util/AVUtils'
 
 class ShopRegisterSuccess extends Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class ShopRegisterSuccess extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.MINE()
+      AVUtils.switchTab('MINE')
     }
   }
 
@@ -65,14 +66,16 @@ class ShopRegisterSuccess extends Component {
         />
         <View style={styles.body}>
           <ScrollView>
-            <Image style={styles.image} source={require("../../../assets/images/shop_congratuation.png")} />
-            <View style={styles.congratulationWrap}>
-              <Text style={styles.congratulationTxt}>恭喜您</Text>
-              <Text style={styles.congratulationTxt}>已成功入驻邻家店铺</Text>
+            <View style={{flexDirection: 'row'}}>
+              <Image style={styles.image} source={require('../../../assets/images/payment_success.png')}/>
+              <View>
+                <Text style={styles.success}>支付成功</Text>
+                <Text style={styles.successTrip}>恭喜您已成功入驻邻家优店</Text>
+              </View>
             </View>
-            <View style={styles.tipWrap}>
-              <Text style={[styles.tip, styles.red]}>我们通过线上推广和传播给您的线下店铺带来更多的生意</Text>
-              <Text style={styles.tip}>请确保店铺信息的真实合法性，平台将不定期对店铺信息进行排查，杜绝非法欺骗的行为</Text>
+            <View style={styles.trips}>
+              <Text style={{fontSize: 12, color: '#FF7819', marginBottom: 5}}>线上推广和互动将给您的线下店铺带来更多的生意</Text>
+              <Text style={{fontSize: 12, color: '#5A5A5A', textAlign: 'center', }}>请确保店铺信息的真实合法性，平台将不定期对店铺信息进行排查，杜绝非法欺骗的行为</Text>
             </View>
 
             <CommonButton
@@ -81,8 +84,8 @@ class ShopRegisterSuccess extends Component {
               onPress={()=>{this.onOk()}}
             />
             <CommonButton
-              buttonStyle={{marginTop:normalizeH(20), backgroundColor:'#d8d8d8'}}
-              title="取消"
+              buttonStyle={{marginTop:normalizeH(20), backgroundColor:'rgba(255,120,25,0.5)'}}
+              title="下次再说"
               onPress={()=>{this.onCancel()}}
             />
           </ScrollView>
@@ -133,7 +136,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    height:normalizeH(280)
+    marginLeft: normalizeW(46),
+    marginTop: normalizeH(60),
+    marginRight: normalizeW(20)
+  },
+  success: {
+    marginTop: normalizeH(88),
+    fontSize: 28,
+    color: '#FF7819'
+  },
+  successTrip: {
+    marginTop: normalizeH(15),
+    fontSize: 15,
+    color: '#5A5A5A',
+  },
+  trips: {
+    alignItems: 'center',
+    width: normalizeW(315),
+    height: normalizeH(66),
+    marginTop: normalizeH(193),
+    marginLeft: normalizeW(30),
+    marginRight: normalizeW(30)
   },
   congratulationWrap: {
     marginTop: normalizeH(20),

@@ -2,6 +2,7 @@
  * Created by yangyang on 2017/3/27.
  */
 import {selectShopDetail} from './shopSelector'
+import {selectUserInfoById} from './authSelector'
 
 export function inviteCode(state) {
   let code = state.PROMOTER.get('inviteCode')
@@ -86,10 +87,41 @@ export function selectPromoterIdentity(state, id) {
   return undefined
 }
 
-export function selectPromoterStatistics(state) {
-  let stat = state.PROMOTER.get('statistics')
+export function selectPromoterStatistics(state, area) {
+  let stat = state.PROMOTER.getIn(['statistics', area])
   if (stat) {
     return stat.toJS()
+  }
+  return undefined
+}
+
+export function selectAreaAgents(state) {
+  let agents = state.PROMOTER.get('areaAgents')
+  let retAgents = []
+  agents.forEach((agentRecord) => {
+    let tmpAgent = {}
+    let agent = agentRecord.toJS()
+    tmpAgent.area = agent.area
+    tmpAgent.tenant = agent.tenant
+    if (agent.userId) {
+      let userInfo = selectUserInfoById(state, agent.userId)
+      tmpAgent.userId = userInfo.id
+      tmpAgent.avatar = userInfo.avatar
+      tmpAgent.nickname = userInfo.nickname
+    }
+    if (agent.promoterId) {
+      let promoter = getPromoterById(state, agent.promoterId)
+      tmpAgent.promoter= promoter
+    }
+    retAgents.push(tmpAgent)
+  })
+  return retAgents
+}
+
+export function selectCityTenant(state, city) {
+  let tenant = state.PROMOTER.getIn(['shopTenant', city])
+  if (tenant) {
+    return tenant
   }
   return undefined
 }

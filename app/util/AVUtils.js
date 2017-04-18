@@ -12,7 +12,7 @@ import {store} from '../store/persistStore'
 import * as Toast from '../components/common/Toast'
 import {updateLocalDeviceToken, updateSystemNotice} from '../action/pushAction'
 import {fetchShopPromotionMaxNum, fetchUserOwnedShopInfo} from '../action/shopAction'
-import {fetchAllProvincesAndCities} from '../action/configAction'
+import {fetchAllProvincesAndCities, fetchAppServicePhone} from '../action/configAction'
 import * as lcPush from '../api/leancloud/push'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as pushSelect from '../selector/pushSelector'
@@ -21,6 +21,11 @@ import * as authSelector from '../selector/authSelector'
 import * as dateUtils from '../util/dateUtils'
 
 // const EE = new EventEmitter()
+
+export function switchTab(tabKey){
+  Actions.HOME({type:'reset'})
+  Actions[tabKey]()
+}
 
 export function pop(payload) {
   if(payload && payload.backSceneName) {
@@ -39,6 +44,8 @@ export function updateProvincesAndCities(payload) {
 
 export function appInit() {
   updateProvincesAndCities()
+
+  store.dispatch(fetchAppServicePhone())
   
   if(authSelector.isUserLogined(store.getState())) {
     store.dispatch(fetchShopPromotionMaxNum())

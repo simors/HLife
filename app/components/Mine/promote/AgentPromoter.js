@@ -38,7 +38,6 @@ class AgentPromoter extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.getTotalPerformance({
-        identity: this.props.promoter.identity,
         province: this.props.promoter.province,
         city: this.props.promoter.city,
         district: this.props.promoter.district,
@@ -46,7 +45,22 @@ class AgentPromoter extends Component {
     })
   }
 
+  renderRegionManageTool() {
+    let promoter = this.props.promoter
+    if (promoter.identity >= 3) {
+      return <View/>
+    }
+    return (
+      <View>
+        <TouchableOpacity onPress={() => {Actions.AREA_MANAGER({promoter: this.props.promoter})}}>
+          <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../../assets/images/region_manage.png')}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   renderToolView() {
+    let promoter = this.props.promoter
     return (
       <View style={styles.toolView}>
         <View style={{marginLeft: normalizeW(15)}}>
@@ -57,16 +71,12 @@ class AgentPromoter extends Component {
           </TouchableOpacity>
         </View>
         <View style={{flexDirection: 'row', alignItems: 'center', marginRight: normalizeW(15)}}>
-          <View style={{marginRight: normalizeW(20)}}>
+          <View style={{marginRight: promoter.identity >= 3 ? 0 : normalizeW(20)}}>
             <TouchableOpacity onPress={() => {Actions.PROMOTER_PERFORMANCE()}}>
               <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../../assets/images/diamond_20.png')}/>
             </TouchableOpacity>
           </View>
-          <View>
-            <TouchableOpacity onPress={() => {Actions.AREA_MANAGER()}}>
-              <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../../assets/images/region_manage.png')}/>
-            </TouchableOpacity>
-          </View>
+          {this.renderRegionManageTool()}
         </View>
       </View>
     )
@@ -117,7 +127,7 @@ class AgentPromoter extends Component {
           </View>
         </View>
         <View style={styles.totalPerView}>
-          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>全省总业绩（元）</Text>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>区域总业绩（元）</Text>
           <Text style={{fontSize: em(36), color: THEME.base.mainColor, fontWeight: 'bold', paddingTop: normalizeH(15)}}>
             {this.props.statistics.totalPerformance}
           </Text>
@@ -143,7 +153,11 @@ class AgentPromoter extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let statistics = selectPromoterStatistics(state)
+  let province = ownProps.promoter.province
+  let city = ownProps.promoter.city
+  let district = ownProps.promoter.district
+  let area = province + city + district
+  let statistics = selectPromoterStatistics(state, area)
   return {
     statistics,
   }

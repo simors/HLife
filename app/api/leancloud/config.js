@@ -13,6 +13,19 @@ import {
 import {ArticleItem, LikersItem} from '../../models/ArticleModel'
 import ERROR from '../../constants/errorCode'
 
+export function fetchAppServicePhone(payload) {
+  return AV.Cloud.run('hLifeFetchAppServicePhone', payload).then((result) => {
+    // console.log('hLifeFetchAppServicePhone.result=====>>>>>', result)
+    if('0' == result.errcode) {
+      return result.message
+    }
+    return ''
+  }, (error)=>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function getBanner(payload) {
   let type = payload.type
   let query = new AV.Query('Banners')

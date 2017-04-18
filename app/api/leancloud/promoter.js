@@ -112,13 +112,50 @@ export function getMyInvitedShops(payload) {
 
 export function getTotalPerformance(payload) {
   let params = {
-    identity: payload.identity,
     province: payload.province,
     city: payload.city,
     district: payload.district,
   }
   return AV.Cloud.run('promoterGetTotalPerformance', params).then((result) => {
     return result
+  }, (err) => {
+    throw err
+  })
+}
+
+export function getAreaAgents(payload) {
+  let params = {
+    identity: payload.identity,
+    province: payload.province,
+    city: payload.city,
+  }
+  return AV.Cloud.run('promoterGetAreaAgentManager', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
+
+export function setCityShopTenant(payload) {
+  let params = {
+    province: payload.province,
+    city: payload.city,
+    fee: payload.fee,
+  }
+  return AV.Cloud.run('promoterSetShopTenant', params).then((tenant) => {
+    return tenant
+  }, (err) => {
+    throw err
+  })
+}
+
+export function getCityShopTenant(payload) {
+  let params = {
+    province: payload.province,
+    city: payload.city,
+  }
+  return AV.Cloud.run('promoterGetShopTenantByCity', params).then((tenant) => {
+    return tenant
   }, (err) => {
     throw err
   })

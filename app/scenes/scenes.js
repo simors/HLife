@@ -98,6 +98,9 @@ import InvitedShops from '../components/Mine/promote/InvitedShops'
 import AgentPromoter from '../components/Mine/promote/AgentPromoter'
 import AreaPromoterManager from '../components/Mine/promote/AreaPromoterManager'
 import PasswordConfirm from '../components/Payment/PasswordConfirm'
+import Mydrafts from '../components/Mine/myDrafts/index'
+import AreaPromoterDetail from '../components/Mine/promote/AreaPromoterDetail'
+import ChangeAgentView from '../components/Mine/promote/ChangeAgentView'
 
 const styles = StyleSheet.create({
   container: {
@@ -205,6 +208,9 @@ export const scenes = Actions.create(
       <Scene key="AGENT_PROMOTER" component={AgentPromoter} />
       <Scene key="AREA_MANAGER" component={AreaPromoterManager}/>
       <Scene key="PASSWORD_CONFIRM" component={PasswordConfirm}/>
+      <Scene key="MY_DRAFTS" component={Mydrafts}/>
+      <Scene key="AREA_DETAIL" component={AreaPromoterDetail}/>
+      <Scene key="CHANGE_AGENT" component={ChangeAgentView}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
