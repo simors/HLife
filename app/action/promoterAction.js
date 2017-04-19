@@ -15,7 +15,7 @@ import * as AuthTypes from '../constants/authActionTypes'
 import {PromoterInfo, PromoterStatistics} from '../models/promoterModel'
 import {UserInfo} from '../models/userModels'
 import {ShopInfo} from '../models/shopModel'
-import {activePromoter} from '../selector/promoterSelector'
+import {activePromoter, getPromoterById} from '../selector/promoterSelector'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
@@ -36,6 +36,7 @@ let updateAreaAgent = createAction(promoterActionTypes.UPDATE_AREA_AGENTS)
 let updateShopTenant = createAction(promoterActionTypes.UPDATE_CITY_SHOP_TENANT)
 let setAreaPromoters = createAction(promoterActionTypes.SET_AREA_PROMOTERS)
 let addAreaPromoters = createAction(promoterActionTypes.ADD_AREA_PROMOTERS)
+let setAreaAgent = createAction(promoterActionTypes.SET_AREA_AGENT)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -392,6 +393,30 @@ export function getPromotersByArea(payload) {
 
       if (payload.success) {
         payload.success(promoterIds.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function setAreaAgent(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.setAreaAgent(payload).then((result) => {
+      console.log('result:', result)
+      if (0 != result.errcode) {
+        if (payload.error) {
+          payload.error(result.message)
+        }
+        return
+      }
+      let promoter = getPromoterById(getState(), result.promoter.objectId)
+      let area = payload.identity == 2 ? payload.city : payload.district
+      dispatch(setAreaAgent({area: area, promoter: promoter}))
+      if (payload.success) {
+        payload.success()
       }
     }).catch((err) => {
       if (payload.error) {

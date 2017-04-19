@@ -175,3 +175,18 @@ export function fetchPromoterByArea(payload) {
     throw err
   })
 }
+
+export function setAreaAgent(payload) {
+  let params = {
+    promoterId: payload.promoterId,
+    identity: payload.identity,
+    province: payload.province,
+    city: payload.city,
+    district: payload.district,
+  }
+  return AV.Cloud.run('promoterSetAgent', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

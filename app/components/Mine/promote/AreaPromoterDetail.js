@@ -106,8 +106,10 @@ class AreaPromoterDetail extends Component {
         <View style={styles.changeAgentBtn}>
           <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
                             onPress={() => {Actions.CHANGE_AGENT({
+                              upPromoter: this.props.upPromoter,
                               liveProvince: this.props.province,
                               liveCity: this.props.city,
+                              area: this.props.area,
                             })}}>
             <Text style={{fontSize: em(15), color: '#FFF'}}>更换代理</Text>
           </TouchableOpacity>

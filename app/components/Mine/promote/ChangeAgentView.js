@@ -23,7 +23,7 @@ import THEME from '../../../constants/themes/theme1'
 import Icon from 'react-native-vector-icons/Ionicons'
 import CommonListView from '../../common/CommonListView'
 import AreaPromoterItem from './AreaPromoterItem'
-import {getPromotersByArea} from '../../../action/promoterAction'
+import {getPromotersByArea, setAreaAgent} from '../../../action/promoterAction'
 import {selectAreaPromoters, getPromoterById} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
 
@@ -43,8 +43,23 @@ class ChangeAgentView extends Component {
   }
 
   setAreaAgent(agent) {
-    Actions.pop()
-    Toast.show('代理设置成功！')
+    let upPromoter = this.props.upPromoter
+    let payload = {
+      promoterId: agent.id,
+      identity: upPromoter.identity + 1, // 上级代理只能设置下级代理
+      province: upPromoter.province,
+      city: upPromoter.identity == 1 ? this.props.area : upPromoter.city,
+      district: upPromoter.identity == 1 ? undefined : (upPromoter.identity == 2 ? this.props.area : upPromoter.district),
+      success: () => {
+        Actions.pop()
+        Toast.show('代理设置成功！')
+      },
+      error: (message) => {
+        Actions.pop()
+        Toast.show(message)
+      }
+    }
+    this.props.setAreaAgent(payload)
   }
 
   refreshData() {
@@ -160,6 +175,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getPromotersByArea,
+  setAreaAgent,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChangeAgentView)
