@@ -11,6 +11,8 @@ export const PaymentRecord = Record({
   phone_number: undefined,  //手机号(11位)
   balance: 0, //余额
   password: false, //支付密码是否设置
+  alipay_account: undefined,  //支付宝账号
+  open_id: undefined, //微信open_id
 }, 'PaymentRecord')
 
 export const ChargeRecord = Record({

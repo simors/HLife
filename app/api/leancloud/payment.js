@@ -28,14 +28,17 @@ export function createPingppTransfers(payload) {
     userId: payload.userId,
     order_no: payload.order_no,
     amount: payload.amount,
-    cardNumber: payload.cardNumber,
+    account: payload.account,
     userName: payload.userName,
+    channel: payload.channel,
   }
 
   return AV.Cloud.run('hLifeCreateTransfers', params).then((transfersInfo) => {
     return transfersInfo
   }).catch((error) => {
-    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    console.log(error)
+    if(!error.message)
+      error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw  error
   })
 }
@@ -67,7 +70,8 @@ export function getPaymentInfo(payload) {
     let paymentInfoRecord = PaymentRecord(result)
     return paymentInfoRecord
   }).catch((error) => {
-    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    if(!error.message)
+      error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw  error
   })
 }

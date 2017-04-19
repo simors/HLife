@@ -29,7 +29,6 @@ import CommonTextInput from '../common/Input/CommonTextInput'
 import {getPaymentInfo} from '../../selector/paymentSelector'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
-import {getRandomInt} from '../../util/numberUtils'
 
 
 let cashForm = Symbol('cashForm')
@@ -40,10 +39,10 @@ const nameInput = {
   type: "nameInput",
 }
 
-const cardInput = {
+const accountInput = {
   formKey: cashForm,
-  stateKey: Symbol('cardInput'),
-  type: "cardInput",
+  stateKey: Symbol('accountInput'),
+  type: "accountInput",
 }
 
 const amountInput = {
@@ -58,7 +57,7 @@ const passwordInput = {
   type: "passwordInput",
 }
 
-class WithdrawCash extends Component {
+class AlipayCash extends Component {
   constructor(props) {
     super(props)
   }
@@ -79,10 +78,11 @@ class WithdrawCash extends Component {
   }
 
   onWithdrawCash = () => {
-    let order_no = uuid.v4().replace(/-/g, '').replace(/[a-z]/g, getRandomInt(0, 9)).substr(0, 16) //unionpay 为1~16位的纯数字
+    let order_no = uuid.v4().replace(/-/g, '').substr(0, 16) //unionpay 为1~16位的纯数字
     this.props.createPingppTransfers({
       formKey: cashForm,
       order_no: order_no,
+      channel: 'alipay',
       userId: this.props.currentUserId,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
@@ -102,32 +102,32 @@ class WithdrawCash extends Component {
           titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
+          {/*<View style={styles.itemContainer}>*/}
+            {/*<Text style={{fontSize: 15, color: '#AAAAAA'}}>保障财产，您只能使用</Text>*/}
+            {/*<Text style={{fontSize: 15, color: 'red'}}>本人银行</Text>*/}
+            {/*<Text style={{fontSize: 15, color: '#AAAAAA'}}>卡！</Text>*/}
+          {/*</View>*/}
           <View style={styles.itemContainer}>
-            <Text style={{fontSize: 15, color: '#AAAAAA'}}>保障财产，您只能使用</Text>
-            <Text style={{fontSize: 15, color: 'red'}}>本人银行</Text>
-            <Text style={{fontSize: 15, color: '#AAAAAA'}}>卡！</Text>
+            <Text style={{fontSize: 17, color: '#AAAAAA'}}>账户</Text>
+            <CommonTextInput
+              {...accountInput}
+              placeholder="请输入支付宝账户"
+              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={30}
+              inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
+              initValue={this.props.paymentInfo.alipay_account}
+            />
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{fontSize: 17, color: '#AAAAAA'}}>账户姓名</Text>
+            <Text style={{fontSize: 17, color: '#AAAAAA'}}>姓名</Text>
             <CommonTextInput
               {...nameInput}
-              placeholder="输入姓名"
+              placeholder="输入账号姓名"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
               initValue={this.props.paymentInfo.id_name}
             />
           </View>
-          <View style={styles.itemContainer}>
-            <Text style={{fontSize: 17, color: '#AAAAAA'}}>提现账户</Text>
-            <CommonTextInput
-              {...cardInput}
-              placeholder="请输入银行卡号"
-              containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
-              inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
-              keyboardType="numeric"
-              initValue={this.props.paymentInfo.card_number}
-            />
-          </View>
+
           <View style={{paddingLeft: normalizeW(15), height: normalizeH(80),justifyContent: 'center', borderBottomColor: '#F5F5F5', borderBottomWidth: 1}}>
             <View style={{flexDirection: 'row', marginBottom: normalizeH(15)}}>
               <Text style={{fontSize: 15, color: '#AAAAAA'}}>保障财产，每日提现上限</Text>
@@ -191,7 +191,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   createPingppTransfers,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithdrawCash)
+export default connect(mapStateToProps, mapDispatchToProps)(AlipayCash)
 
 const styles = StyleSheet.create({
   container: {

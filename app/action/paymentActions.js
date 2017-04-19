@@ -60,8 +60,9 @@ export function createPingppTransfers(payload) {
         userId: payload.userId,
         order_no: payload.order_no,
         amount: formData.amountInput.text,
-        cardNumber: formData.cardInput.text,
+        account:formData.accountInput.text,
         userName: formData.nameInput.text,
+        channel: payload.channel,
       }
       return lcPayment.createPingppTransfers(transfersPayload)
     }).then((result) => {
@@ -125,6 +126,7 @@ export function fetchPaymentInfo(payload) {
       let getPaymentInfoAction = createAction(GET_PAYMENTINFO)
       dispatch(getPaymentInfoAction({paymentInfo: result}))
     }).catch((error) => {
+      console.log("fetchPaymentInfo error", error)
       if(payload.error) {
         payload.error(error)
       }

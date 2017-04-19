@@ -39,15 +39,12 @@ class Wallet extends Component {
     })
   }
 
-  onBoundCard = () => {
-    if(this.props.cardNumber)
-      Actions.MY_CARD()
-    else
-      Actions.ADD_CARD()
+  onWxCash = () => {
+
   }
 
-  onWithdrawCash = () => {
-    Actions.WITHDRAW_CASH()
+  onAlipayCash = () => {
+    Actions.ALIPAY_CASH()
   }
 
   onPaymentSetting = () => {
@@ -84,15 +81,20 @@ class Wallet extends Component {
             </View>
           </View>
           <View style={styles.cash}>
+            {/*<CommonButton*/}
+              {/*buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5, backgroundColor: THEME.base.lightColor}}*/}
+              {/*onPress={this.onBoundCard}*/}
+              {/*title={this.props.cardNumber? '我的银行卡': '绑定银行卡'}*/}
+            {/*/>*/}
             <CommonButton
-              buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5, backgroundColor: THEME.base.lightColor}}
-              onPress={this.onBoundCard}
-              title={this.props.cardNumber? '我的银行卡': '绑定银行卡'}
+              buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5, backgroundColor: 'green'}}
+              onPress={this.onWxCash}
+              title="微信提现"
             />
             <CommonButton
               buttonStyle={{width: normalizeW(165), height: normalizeH(40), borderRadius: 5}}
-              onPress={this.onWithdrawCash}
-              title="提现"/>
+              onPress={this.onAlipayCash}
+              title="支付宝提现"/>
           </View>
         </View>
       </View>
