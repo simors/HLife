@@ -37,6 +37,7 @@ let updateShopTenant = createAction(promoterActionTypes.UPDATE_CITY_SHOP_TENANT)
 let setAreaPromoters = createAction(promoterActionTypes.SET_AREA_PROMOTERS)
 let addAreaPromoters = createAction(promoterActionTypes.ADD_AREA_PROMOTERS)
 let setAreaAgent = createAction(promoterActionTypes.SET_AREA_AGENT)
+let cancelAreaAgent = createAction(promoterActionTypes.CANCEL_AREA_AGENT)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -405,7 +406,6 @@ export function getPromotersByArea(payload) {
 export function setAreaAgent(payload) {
   return (dispatch, getState) => {
     lcPromoter.setAreaAgent(payload).then((result) => {
-      console.log('result:', result)
       if (0 != result.errcode) {
         if (payload.error) {
           payload.error(result.message)
@@ -415,6 +415,28 @@ export function setAreaAgent(payload) {
       let promoter = getPromoterById(getState(), result.promoter.objectId)
       let area = payload.identity == 2 ? payload.city : payload.district
       dispatch(setAreaAgent({area: area, promoter: promoter}))
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function cancelAreaAgent(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.cancelAreaAgent(payload).then((result) => {
+      if (0 != result.errcode) {
+        if (payload.error) {
+          payload.error(result.message)
+        }
+        return
+      }
+      let area = payload.identity == 2 ? payload.city : payload.district
+      dispatch(cancelAreaAgent({area}))
       if (payload.success) {
         payload.success()
       }

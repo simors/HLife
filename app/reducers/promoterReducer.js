@@ -38,6 +38,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleUpdateAreaAgents(state, action)
     case promoterActionTypes.SET_AREA_AGENT:
       return handleSetAreaAgent(state, action)
+    case promoterActionTypes.CANCEL_AREA_AGENT:
+      return handleCancelAreaAgent(state, action)
     case promoterActionTypes.UPDATE_CITY_SHOP_TENANT:
       return handleUpdateShopTenant(state, action)
     case promoterActionTypes.SET_AREA_PROMOTERS:
@@ -160,6 +162,24 @@ function handleSetAreaAgent(state, action) {
   areaAgents = areaAgents.update(index, (value) => {
     value = value.set('promoterId', promoter.id)
     value = value.set('userId', promoter.userId)
+    return value
+  })
+  state = state.set('areaAgents', areaAgents)
+  return state
+}
+
+function handleCancelAreaAgent(state, action) {
+  let area = action.payload.area
+  let areaAgents = state.get('areaAgents')
+  let index = areaAgents.findIndex((value) => {
+    return area == value.get('area')
+  })
+  if (index == -1) {
+    return state
+  }
+  areaAgents = areaAgents.update(index, (value) => {
+    value = value.set('promoterId', undefined)
+    value = value.set('userId', undefined)
     return value
   })
   state = state.set('areaAgents', areaAgents)

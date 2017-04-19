@@ -190,3 +190,14 @@ export function setAreaAgent(payload) {
     throw err
   })
 }
+
+export function cancelAreaAgent(payload) {
+  let params = {
+    promoterId: payload.promoterId,
+  }
+  return AV.Cloud.run('promoterCancelAgent', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
