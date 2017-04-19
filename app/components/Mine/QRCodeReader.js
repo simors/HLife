@@ -20,6 +20,7 @@ import Camera from 'react-native-camera'
 class QRCodeReader extends Component {
 
   _onBarCodeRead(result){
+    // console.log('_onBarCodeRead.result===', result)
     if (this.barCodeFlag) {
       this.barCodeFlag = false;
       if (this.props.readQRSuccess) {

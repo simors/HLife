@@ -84,7 +84,7 @@ export class LikeUserList extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="点赞的吾友"
+          title="点赞的邻友"
           rightType="none"
         />
         <View style={styles.body}>

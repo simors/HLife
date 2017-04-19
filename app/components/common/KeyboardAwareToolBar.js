@@ -113,7 +113,7 @@ export default class KeyboardAwareToolBar extends Component {
       this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
     }
     this.setState({
-      top: 0,
+      top: this.props.top || 0,
       showOverlay: true
     })
   }

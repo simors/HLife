@@ -395,23 +395,23 @@ export class TopicDetail extends Component {
           </ScrollView>
 
           {this.renderBottomView()}
-
-          <KeyboardAwareToolBar
-            initKeyboardHeight={-normalizeH(50)}
-          >
-            <ToolBarContent
-              replyInputRefCallBack={(input)=> {
-                this.replyInput = input
-              }}
-              onSend={(content) => {
-                this.sendReply(content)
-              }}
-              placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
-            />
-          </KeyboardAwareToolBar>
-
-          {this.renderActionSheet()}
         </View>
+
+        <KeyboardAwareToolBar
+          initKeyboardHeight={-normalizeH(50)}
+        >
+          <ToolBarContent
+            replyInputRefCallBack={(input)=> {
+              this.replyInput = input
+            }}
+            onSend={(content) => {
+              this.sendReply(content)
+            }}
+            placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
+          />
+        </KeyboardAwareToolBar>
+
+        {this.renderActionSheet()}
       </View>
     )
   }
