@@ -230,7 +230,7 @@ class ShopManageIndex extends Component {
       return (
         <View style={styles.commentWrap}>
           <View style={styles.commentHead}>
-            <Text style={styles.commentTitle}>吾友点评（{this.props.shopCommentsTotalCount}）</Text>
+            <Text style={styles.commentTitle}>邻友点评（{this.props.shopCommentsTotalCount}）</Text>
           </View>
           {commentsView}
           <View style={styles.commentFoot}>
