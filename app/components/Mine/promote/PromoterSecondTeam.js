@@ -38,24 +38,35 @@ class PromoterSecondTeam extends Component {
   }
 
   componentWillMount() {
-    InteractionManager.runAfterInteractions(()=>{
-      this.props.getPromoterTeamById({limit: 10, promoterId: this.props.promoter.id})
-    })
+    this.refreshData()
   }
 
   refreshData() {
-    InteractionManager.runAfterInteractions(()=>{
-      this.props.getPromoterTeamById({limit: 10, promoterId: this.props.promoter.id})
-    })
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
+  loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     InteractionManager.runAfterInteractions(()=>{
       this.props.getPromoterTeamById({
         limit: 10,
-        more: true,
+        more: !isRefresh,
         promoterId: this.props.promoter.id,
-        lastUpdatedAt: this.lastUpdatedAt,
+        lastUpdatedAt: !!isRefresh ? undefined : this.lastUpdatedAt,
+        success: (isEmpty) => {
+          this.isQuering = false
+          if(!this.listView) {
+            return
+          }
+          this.listView.isLoadUp(!isEmpty)
+        },
+        error: (message) => {
+          this.isQuering = false
+        }
       })
     })
   }
@@ -146,7 +157,7 @@ class PromoterSecondTeam extends Component {
               this.refreshData()
             }}
             loadMoreData={()=> {
-              this.loadMoreData()
+              this.loadMoreData(false)
             }}
             ref={(listView) => this.listView = listView}
           />

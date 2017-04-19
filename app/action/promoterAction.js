@@ -218,6 +218,13 @@ export function getMyPromoterTeam(payload) {
       } else {
         dispatch(setPromoterTeam({promoterId: activePromoter(getState()), team: team}))
       }
+      if (payload.success) {
+        payload.success(team.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
     })
   }
 }
@@ -248,6 +255,13 @@ export function getPromoterTeamById(payload) {
       } else {
         dispatch(setPromoterTeam({promoterId: payload.promoterId, team: team}))
       }
+      if (payload.success) {
+        payload.success(team.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
     })
   }
 }
@@ -269,6 +283,13 @@ export function getMyInvitedShops(payload) {
         dispatch(addPromoterShops({promoterId: activePromoter(getState()), newShops: shopIds}))
       } else {
         dispatch(setPromoterShops({promoterId: activePromoter(getState()), shops: shopIds}))
+      }
+      if (payload.success) {
+        payload.success(shopIds.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
       }
     })
   }
@@ -370,7 +391,7 @@ export function getPromotersByArea(payload) {
       }
 
       if (payload.success) {
-        payload.success()
+        payload.success(promoterIds.length == 0)
       }
     }).catch((err) => {
       if (payload.error) {
