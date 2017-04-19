@@ -25,6 +25,7 @@ import CommonListView from '../../common/CommonListView'
 import AreaPromoterItem from './AreaPromoterItem'
 import {getPromotersByArea} from '../../../action/promoterAction'
 import {selectAreaPromoters, getPromoterById} from '../../../selector/promoterSelector'
+import * as Toast from '../../common/Toast'
 
 class ChangeAgentView extends Component {
   constructor(props) {
@@ -39,6 +40,11 @@ class ChangeAgentView extends Component {
 
   componentWillMount() {
     this.refreshData()
+  }
+
+  setAreaAgent(agent) {
+    Actions.pop()
+    Toast.show('代理设置成功！')
   }
 
   refreshData() {
@@ -107,7 +113,7 @@ class ChangeAgentView extends Component {
     this.maxRoyaltyEarnings = promoter.royaltyEarnings
     this.lastTime = promoter.createdAt
     return (
-      <AreaPromoterItem promoter={promoter}/>
+      <AreaPromoterItem promoter={promoter} setAreaAgent={(agent) => this.setAreaAgent(agent)}/>
     )
   }
 
@@ -186,7 +192,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF',
     ...Platform.select({
       ios: {
         marginTop: normalizeH(64),
