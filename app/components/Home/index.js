@@ -71,7 +71,6 @@ class Home extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
-      console.log('componentWillMount.refreshData')
       this.refreshData()
     })
   }

@@ -59,8 +59,12 @@ class ChangeAgentView extends Component {
         maxShopEarnings: !!isRefresh ? undefined : this.maxShopEarnings,
         maxRoyaltyEarngings: !!isRefresh ? undefined : this.maxRoyaltyEarnings,
         lastTime: !!isRefresh ? undefined : this.lastTime,
-        success: () => {
+        success: (isEmpty) => {
           this.isQuering = false
+          if(!this.listView) {
+            return
+          }
+          this.listView.isLoadUp(!isEmpty)
         },
         error: (message) => {
           this.isQuering = false
@@ -72,11 +76,11 @@ class ChangeAgentView extends Component {
   renderHeader() {
     return (
       <View style={styles.header}>
-        <View style={{paddingLeft: normalizeW(15)}}>
+        <TouchableOpacity style={{paddingLeft: normalizeW(15)}} onPress={() => Actions.pop()}>
           <Icon
             name='ios-arrow-back'
             style={styles.goBack}/>
-        </View>
+        </TouchableOpacity>
         <View style={styles.searchView}>
           <View style={{paddingLeft: normalizeW(10), paddingRight: normalizeW(10)}}>
             <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode='contain'
