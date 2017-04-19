@@ -1,68 +1,70 @@
-/**
- * Created by yangyang on 2017/1/10.
- */
 import React, {Component} from 'react'
 import {
   View,
   StyleSheet,
-  Dimensions,
-  Image,
-  Text,
-  Platform,
-  TouchableOpacity,
   InteractionManager,
+  TouchableOpacity,
+  Text,
+  Image
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
-import {getUserInfoById} from '../../action/authActions'
-import {fetchChatMessages} from '../../action/messageAction'
-import {userInfoById, activeUserId, isUserLogined} from '../../selector/authSelector'
-import {hasNewMessageById, getNewestMessageById, getConversationById} from '../../selector/messageSelector'
-import {WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import {fetchUsers} from '../../action/authActions'
+import {activeUserId, userInfoByIds, isUserLogined} from '../../selector/authSelector'
+import MessageBoxCell from './MessageBoxCell'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 const ICON_SIZE = 50
 
-class MessageBoxCell extends Component {
+class ConversationItem extends Component {
   constructor(props) {
     super(props)
   }
 
+  componentWillMount() {
+    // console.log('ConversationItem************componentWillMount-----------')
+  }
+
   componentDidMount() {
-    let memberId = this.props.members.find((member) => {
-      if (member === WUAI_SYSTEM_DOCTOR) {
-        return false
-      }
+  	let conversation = this.props.conversation
+    let members = conversation.members
+    let otherMem = members.filter((member) => {
       if (member === this.props.currentUser) {
         return false
       }
       return true
     })
     InteractionManager.runAfterInteractions(() => {
-      this.props.getUserInfoById({userId: memberId})
-      this.props.fetchChatMessages({conversationId: this.props.conversation})
+      this.props.fetchUsers({userIds: otherMem})
     })
   }
 
   enterChatroom() {
+  	let conversation = this.props.conversation
+    let members = conversation.members
+    let type =conversation.type
+
     if (!this.props.isLogin) {
       Actions.LOGIN()
-    } else if (!this.props.status) {
-      Actions.COMMENT_DOCTOR()
     } else  {
       let payload = {
         name: this.props.title,
-        members: this.props.members,
-        conversationType: this.props.type,
+        members: members,
+        conversationType: type,
         title: this.props.title,
+        backSceneName: 'MESSAGE_BOX',
+        backSceneParams: {}
       }
       Actions.CHATROOM(payload)
     }
   }
 
   renderNoticeTip() {
-    if (this.props.newMessage) {
+  	let conversation = this.props.conversation
+  	let unreadCount = conversation.unreadCount
+    if (unreadCount) {
       return (
         <View style={styles.noticeTip}></View>
       )
@@ -80,7 +82,7 @@ class MessageBoxCell extends Component {
           return <View/>
         }
         return (
-          <View key={'msg-box-cell-img-icon-', + index}>
+          <View key={'conversation-item-img-icon-', + index}>
             <Image style={{width: size, height: size}}
                    source={this.props.users[index].avatar? {uri: this.props.users[index].avatar} : require("../../assets/images/default_portrait.png")}>
             </Image>
@@ -118,6 +120,11 @@ class MessageBoxCell extends Component {
   }
 
   render() {
+
+    let conversation = this.props.conversation
+    let lastMessageTime = conversation.lastMessageTime || ''
+    let lastMessage = conversation.lastMessage || {}
+
     return (
       <View style={styles.itemView}>
         <TouchableOpacity style={styles.selectItem} onPress={() => this.enterChatroom()}>
@@ -130,10 +137,10 @@ class MessageBoxCell extends Component {
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.titleStyle}>{this.props.title}</Text>
                 <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>{this.props.lastMessage.lastMessageAt}</Text>
+                <Text style={styles.timeTip}>{lastMessageTime}</Text>
               </View>
               <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastMessage.lastMessage}</Text>
+                <Text numberOfLines={1} style={styles.msgTip}>{lastMessage.text}</Text>
               </View>
             </View>
           </View>
@@ -144,41 +151,55 @@ class MessageBoxCell extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let newProps = {}
-  let users = []
-  ownProps.members.forEach((member) => {
-    if (member !== activeUserId(state) && member !== WUAI_SYSTEM_DOCTOR) {
-      let userInfoRecord = userInfoById(state, member)
-      let userInfo
-      if (userInfoRecord) {
-        userInfo = userInfoRecord.toJS()
-        users.push(userInfo)
-      }
-    }
-  })
+  let currentUser = activeUserId(state)
+  let conversation = ownProps.conversation
+  let members = conversation.members
 
-  let newMessage = hasNewMessageById(state, ownProps.conversation)
-  let lastMessage = getNewestMessageById(state, ownProps.conversation)
-  let conversation = getConversationById(state, ownProps.conversation)
-  newProps.newMessage = newMessage
-  newProps.lastMessage = lastMessage
-  newProps.currentUser = activeUserId(state)
-  newProps.isLogin = isUserLogined(state)
-  newProps.users = users
-  newProps.status =conversation.status
-  return newProps
+  let otherMem = members.filter((member) => {
+    if (member === currentUser) {
+      return false
+    }
+    return true
+  })
+  let users = userInfoByIds(state, otherMem)
+
+  let title = ""
+  if(users && users.length) {
+  	let usernames = []
+    users.map((user) => {
+      if (!user.nickname || user.nickname.length === 0) {
+        usernames.push(user.phone)
+      } else {
+        usernames.push(user.nickname)
+      }
+    })
+    if(usernames.length > 2) {
+    	title = usernames.slice(0, 2).join(',') + ",..."
+    }else{
+    	title = usernames.join(',')
+    }
+  }
+
+  let isLogin = isUserLogined(state)
+
+  return {
+    currentUser: currentUser,
+    users: users,
+    isLogin: isLogin,
+    title: title,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  getUserInfoById,
-  fetchChatMessages,
+  fetchUsers,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(MessageBoxCell)
+export default connect(mapStateToProps, mapDispatchToProps)(ConversationItem)
+
 
 const styles = StyleSheet.create({
   itemView: {
-    borderBottomWidth: 1,
+    borderBottomWidth: normalizeBorder(),
     borderColor: '#E6E6E6',
     alignItems: 'center',
   },
@@ -224,3 +245,6 @@ const styles = StyleSheet.create({
     right: 0,
   },
 })
+
+
+

@@ -30,9 +30,10 @@ export function switchTab(tabKey){
 export function pop(payload) {
   if(payload && payload.backSceneName) {
     Actions.pop({popNum:2})
-    setTimeout(()=>{
-      Actions[payload.backSceneName](payload.backSceneParams)
-    }, 10)
+    Actions[payload.backSceneName](payload.backSceneParams)
+    // setTimeout(()=>{
+    //   Actions[payload.backSceneName](payload.backSceneParams)
+    // }, 10)
   }else{
     Actions.pop()
   }
