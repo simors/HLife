@@ -24,7 +24,7 @@ import Header from '../../common/Header'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
 import {getTotalPerformance, setShopTenant, getShopTenantByCity} from '../../../action/promoterAction'
-import {selectPromoterStatistics, selectCityTenant} from '../../../selector/promoterSelector'
+import {selectPromoterStatistics, selectCityTenant, selectAgentByArea} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
 
 class AreaPromoterDetail extends Component {
@@ -89,14 +89,15 @@ class AreaPromoterDetail extends Component {
   }
 
   renderAgent() {
+    let agent = this.props.agent
     let promoter = this.props.promoter
     return (
       <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
         <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
           <Image style={styles.avatarStyle} resizeMode='contain'
-                 source={this.props.avatar ? {uri: this.props.avatar} : require('../../../assets/images/default_portrait.png')}/>
+                 source={agent.avatar ? {uri: agent.avatar} : require('../../../assets/images/default_portrait.png')}/>
           <View style={{paddingLeft: normalizeW(10)}}>
-            <Text style={styles.titleText}>{this.props.nickname ? this.props.nickname : '未设置代理人'}</Text>
+            <Text style={styles.titleText}>{agent.nickname ? agent.nickname : '未设置代理人'}</Text>
             <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
               个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
             </Text>
@@ -210,9 +211,13 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   let tenant = selectCityTenant(state, agentCity)
+  let agent = selectAgentByArea(state, ownProps.area)
+  let promoter = agent.promoter
   return {
     statistics,
     tenant,
+    agent,
+    promoter,
   }
 }
 

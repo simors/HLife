@@ -91,10 +91,6 @@ class AreaPromoterManager extends Component {
                             city: promoter.identity == 1 ? areaAgent.area : promoter.city,
                             district: promoter.identity == 1 ? '' : (promoter.identity == 2 ? areaAgent.area : promoter.district),
                             upPromoter: promoter,
-                            promoter: areaAgent.promoter,
-                            nickname: areaAgent.nickname,
-                            avatar: areaAgent.avatar,
-                            userId: areaAgent.userId,
                           })}}>
           <View style={styles.areaNameStyle}>
             <Text style={styles.txtStyle} numberOfLines={1}>{areaAgent.area}</Text>
