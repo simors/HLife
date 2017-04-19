@@ -243,10 +243,10 @@ export class ShopInfo extends ShopRecord {
         record.set('geoName', lcObj.geoName)
         record.set('geoCity', lcObj.geoCity)
         record.set('geoDistrict', lcObj.geoDistrict)
-        record.set('geoDistrictCode', attrs.geoDistrictCode)
-        record.set('geoCityCode', attrs.geoCityCode)
-        record.set('geoProvince', attrs.geoProvince)
-        record.set('geoProvinceCode', attrs.geoProvinceCode)
+        record.set('geoDistrictCode', lcObj.geoDistrictCode)
+        record.set('geoCityCode', lcObj.geoCityCode)
+        record.set('geoProvince', lcObj.geoProvince)
+        record.set('geoProvinceCode', lcObj.geoProvinceCode)
         // record.set('pv', numberUtils.formatNum(lcObj.pv))
         record.set('score', lcObj.score)
         record.set('ourSpecial', lcObj.ourSpecial)
@@ -258,6 +258,7 @@ export class ShopInfo extends ShopRecord {
         record.set('updatedAt', lcObj.updatedAt.valueOf())
       })
     } catch(err) {
+      console.log(err)
       throw err
     }
   }
