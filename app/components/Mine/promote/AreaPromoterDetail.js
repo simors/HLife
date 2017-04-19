@@ -123,21 +123,11 @@ class AreaPromoterDetail extends Component {
     }
   }
 
-  renderAgent() {
+  renderManageBtn() {
     let agent = this.props.agent
     let promoter = this.props.promoter
-    return (
-      <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
-        <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
-          <Image style={styles.avatarStyle} resizeMode='contain'
-                 source={agent.avatar ? {uri: agent.avatar} : require('../../../assets/images/default_portrait.png')}/>
-          <View style={{paddingLeft: normalizeW(10)}}>
-            <Text style={styles.titleText}>{agent.nickname ? agent.nickname : '未设置代理人'}</Text>
-            <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
-              个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
-            </Text>
-          </View>
-        </View>
+    if (agent.nickname) {
+      return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View style={styles.changeAgentBtn}>
             <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
@@ -157,6 +147,42 @@ class AreaPromoterDetail extends Component {
             </TouchableOpacity>
           </View>
         </View>
+      )
+    } else {
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={styles.changeAgentBtn}>
+            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                              onPress={() => {Actions.CHANGE_AGENT({
+                                upPromoter: this.props.upPromoter,
+                                liveProvince: this.props.province,
+                                liveCity: this.props.city,
+                                area: this.props.area,
+                              })}}>
+              <Text style={{fontSize: em(15), color: '#FFF'}}>添加</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
+    }
+  }
+
+  renderAgent() {
+    let agent = this.props.agent
+    let promoter = this.props.promoter
+    return (
+      <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
+        <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
+          <Image style={styles.avatarStyle} resizeMode='contain'
+                 source={agent.avatar ? {uri: agent.avatar} : require('../../../assets/images/default_portrait.png')}/>
+          <View style={{paddingLeft: normalizeW(10)}}>
+            <Text style={styles.titleText}>{agent.nickname ? agent.nickname : '未设置代理人'}</Text>
+            <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
+              个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
+            </Text>
+          </View>
+        </View>
+        {this.renderManageBtn()}
       </View>
     )
   }
