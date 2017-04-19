@@ -3,6 +3,7 @@
  */
 import {Map, List, Record} from 'immutable'
 import * as msgTypes from '../constants/messageActionTypes'
+import * as numberUtils from '../util/numberUtils'
 
 export const MessengerRecord = Record({
   client: undefined,                        // 客户端id
@@ -19,7 +20,9 @@ export const ConversationRecord = Record({
   name: undefined,
   type: undefined,            // 会话的类型，可以是问诊（INQUIRY_CONVERSATION），或私信（PERSONAL_CONVERSATION）
   unreadCount: 0,
-  lastMessageAt: undefined,   // 会话最后更新时间
+  lastMessageAt: undefined,   // 会话最后更新时间(最后一条消息发送时间，也可以理解为最后一次活跃时间)
+  lastMessage: undefined,
+  lastMessageTime: undefined,
   updatedAt: undefined,
   createdAt: undefined,
   messages: List(),           // 消息列表
@@ -35,6 +38,7 @@ export const MessageRecord = Record({
   contentURI: undefined,
   conversation: undefined,    // 对应的会话id
   timestamp: undefined,
+  messageTime: undefined,
   attributes: Map(),          // 消息属性，用于记录图片、语音等富媒体消息
 }, 'MessageRecord')
 
@@ -57,6 +61,9 @@ export class Message extends MessageRecord {
       record.set('text', text)
       record.set('conversation', lcMsg.cid)
       record.set('timestamp', lcMsg.timestamp)
+      if(lcMsg.timestamp) {
+        record.set('messageTime', numberUtils.getConversationTime(lcMsg.timestamp.getTime()))
+      }
       record.set('status', 'complete')
 
       let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
@@ -81,11 +88,24 @@ export class Conversation extends ConversationRecord {
       record.set('name', lcConv.name)
       record.set('members', List(lcConv.members))
       record.set('type', lcConv.get('type'))
-      record.set('lastMessageAt', lcConv.lastMessageAt)
+      let lastMessageAt = lcConv.lastMessageAt
+      if(lastMessageAt) {
+        record.set('lastMessageAt', lastMessageAt.getTime())
+        record.set('lastMessageTime', numberUtils.getConversationTime(lastMessageAt.getTime()))
+      }
       record.set('createdAt', lcConv.createdAt)
       record.set('updatedAt', lcConv.updatedAt)
       record.set('unreadCount', lcConv.unreadMessagesCount)
       record.set('status', lcConv.get('status'))
+
+      let lastMessage = {}
+      if(lcConv.lastMessage) {
+        lastMessage = Message.fromLeancloudMessage(lcConv.lastMessage)
+        record.set('lastMessage', lastMessage)
+        if(!lcConv.lastMessageAt) {
+          record.set('lastMessageAt', lastMessage.get('timestamp'))
+        }
+      }
     })
   }
 }

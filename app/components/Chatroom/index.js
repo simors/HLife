@@ -23,6 +23,7 @@ import {getUserInfoById} from '../../action/authActions'
 import {activeUserInfo, userInfoById} from '../../selector/authSelector'
 import {activeConversation, getMessages} from '../../selector/messageSelector'
 import * as msgTypes from '../../constants/messageActionTypes'
+import * as AVUtils from '../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -90,7 +91,13 @@ class Chatroom extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+            // console.log('this.props.backSceneName===', this.props.backSceneName)
+            AVUtils.pop({
+              backSceneName: this.props.backSceneName,
+              backSceneParams: this.props.backSceneParams
+            })
+          }}
           title={this.props.title}
         />
         <View style={styles.conversationView}>

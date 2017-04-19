@@ -250,13 +250,20 @@ export function leaveConversation(payload) {
 export function fetchConversation(payload) {
   return (dispatch, getState) => {
     let userId = activeUserId(getState())
-    let params = {
-      userId: userId,
-      type: payload.type,
-    }
-    dispatch(fetchLcConversation(params)).then((convs) => {
+    payload.userId = userId
+    
+    dispatch(fetchLcConversation(payload)).then((convs) => {
+      // console.log('fetchConversation.convs===', convs)
+      // console.log('fetchConversation.payload===', payload)
       let initConversations = createAction(msgTypes.INIT_CONVERSATION)
       dispatch(initConversations({conversations: convs}))
+      if(payload.success) {
+        payload.success(convs.length <= 0)
+      }
+    }, (error)=>{
+      if(payload.error) {
+        payload.error(error)
+      }
     })
   }
 }
@@ -283,17 +290,40 @@ function fetchLcConversation(payload) {
         payload.error()
       }
       console.log('leancloud Messenger init failed, can\'t get client')
-      return undefined
+      return []
     }
 
-    return client.getQuery().containsMembers([payload.userId]).contains('type', payload.type).find()
-      .then((lcConvs) => {
-        let convs = []
-        lcConvs.map((conv) => {
-          convs.unshift(Conversation.fromLeancloudConversation(conv))
-        })
-        return convs
+    let isRefresh = payload.isRefresh
+    let lastUpdatedAt = payload.lastUpdatedAt
+    let type = payload.type
+    let userId = payload.userId
+
+    let query = client.getQuery()
+    query.containsMembers([userId])
+    query.equalTo('type', type)
+
+    query.withLastMessagesRefreshed(true) //对话的最后一条消息
+
+    // console.log('fetchLcConversation**isRefresh********', isRefresh)
+    // console.log('fetchLcConversation**lastUpdatedAt********', lastUpdatedAt)
+    if(!isRefresh && lastUpdatedAt) {
+      query.lessThan('updatedAt', new Date(lastUpdatedAt))
+    }
+
+    query.limit(10)
+    query.addDescending('updatedAt')
+
+    // console.log('fetchLcConversation.query====', query)
+    return query.find().then((lcConvs) => {
+      // console.log('fetchLcConversation.lcConvs====', lcConvs)
+      let convs = []
+      lcConvs.map((conv) => {
+        convs.unshift(Conversation.fromLeancloudConversation(conv))
       })
+      return convs
+    }, (error)=>{
+      return error
+    })
   }
 }
 
