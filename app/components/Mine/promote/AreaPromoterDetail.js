@@ -245,23 +245,22 @@ class AreaPromoterDetail extends Component {
             {this.renderBaseView()}
             {this.renderStatView()}
           </ScrollView>
-
-          <KeyboardAwareToolBar
-            initKeyboardHeight={-normalizeH(50)}
-          >
-            <ToolBarContent
-              replyInputRefCallBack={(input)=> {
-                this.feeInput = input
-              }}
-              onSend={(tenant) => {
-                this.setTenantFee(tenant)
-              }}
-              placeholder='设置入驻费'
-              label="设置"
-              keyboardType="numeric"
-            />
-          </KeyboardAwareToolBar>
         </View>
+        <KeyboardAwareToolBar
+          initKeyboardHeight={-normalizeH(50)}
+        >
+          <ToolBarContent
+            replyInputRefCallBack={(input)=> {
+              this.feeInput = input
+            }}
+            onSend={(tenant) => {
+              this.setTenantFee(tenant)
+            }}
+            placeholder='设置入驻费'
+            label="设置"
+            keyboardType="numeric"
+          />
+        </KeyboardAwareToolBar>
       </View>
     )
   }
