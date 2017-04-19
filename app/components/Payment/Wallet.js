@@ -24,7 +24,7 @@ import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import THEME from '../../constants/themes/theme1'
 import {getPaymentInfo} from '../../selector/paymentSelector'
-import {fetchPaymentBalance} from '../../action/paymentActions'
+import {fetchPaymentInfo} from '../../action/paymentActions'
 
 
 
@@ -35,7 +35,7 @@ class Wallet extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchPaymentBalance({userId: this.props.currentUserId})
+      this.props.fetchPaymentInfo({userId: this.props.currentUserId})
     })
   }
 
@@ -113,7 +113,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchPaymentBalance,
+  fetchPaymentInfo,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet)

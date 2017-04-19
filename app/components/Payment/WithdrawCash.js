@@ -29,6 +29,7 @@ import CommonTextInput from '../common/Input/CommonTextInput'
 import {getPaymentInfo} from '../../selector/paymentSelector'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
+import {getRandomInt} from '../../util/numberUtils'
 
 
 let cashForm = Symbol('cashForm')
@@ -62,16 +63,23 @@ class WithdrawCash extends Component {
     super(props)
   }
 
+  amountValidCheck = (data)=> {
+    if (data && data.text && (parseInt(data.text) <= this.props.paymentInfo.balance) && (parseInt(data.text) > 0)) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '提现金额输入有误'}
+  }
+
   submitSuccessCallback = () => {
     Actions.pop()
   }
 
   submitErrorCallback = (error) => {
-    Toast.show(error)
+    Toast.show(error.message)
   }
 
   onWithdrawCash = () => {
-    let order_no = uuid.v4().replace(/-/g, '').substr(0, 16)
+    let order_no = uuid.v4().replace(/-/g, '').replace(/[a-z]/g, getRandomInt(0, 9)).substr(0, 16) //unionpay 为1~16位的纯数字
     this.props.createPingppTransfers({
       formKey: cashForm,
       order_no: order_no,
@@ -106,6 +114,7 @@ class WithdrawCash extends Component {
               placeholder="输入姓名"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
+              initValue={this.props.paymentInfo.id_name}
             />
           </View>
           <View style={styles.itemContainer}>
@@ -116,6 +125,7 @@ class WithdrawCash extends Component {
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
               keyboardType="numeric"
+              initValue={this.props.paymentInfo.card_number}
             />
           </View>
           <View style={{paddingLeft: normalizeW(15), height: normalizeH(80),justifyContent: 'center', borderBottomColor: '#F5F5F5', borderBottomWidth: 1}}>
@@ -126,7 +136,7 @@ class WithdrawCash extends Component {
             </View>
             <View style={{flexDirection: 'row'}}>
               <Text style={{fontSize: 15, color: '#AAAAAA'}}>可提现金额</Text>
-              <Text style={{fontSize: 15, color: 'red'}}>13.6</Text>
+              <Text style={{fontSize: 15, color: 'red'}}>{this.props.paymentInfo.balance}</Text>
               <Text style={{fontSize: 15, color: '#AAAAAA'}}>元！</Text>
             </View>
           </View>
@@ -138,6 +148,7 @@ class WithdrawCash extends Component {
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
               keyboardType="numeric"
+              checkValid= {this.amountValidCheck}
             />
           </View>
           <View style={styles.itemContainer}>
@@ -168,9 +179,9 @@ class WithdrawCash extends Component {
 const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const currentUserId = authSelector.activeUserId(state)
-  const cardInfo = getPaymentInfo(state)
+  const paymentInfo = getPaymentInfo(state)
   return {
-    cardInfo: cardInfo,
+    paymentInfo: paymentInfo,
     isUserLogined: isUserLogined,
     currentUserId: currentUserId,
   }

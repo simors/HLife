@@ -4,7 +4,7 @@
 import {Map, List, Record} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as PaymentActionTypes from '../constants/paymentActionTypes'
-import {Payment} from '../models/paymentModel'
+import {Payment, PaymentRecord} from '../models/paymentModel'
 
 const initialState = Payment()
 
@@ -16,7 +16,7 @@ export default function paymentReducer(state = initialState, action) {
       return state
     case PaymentActionTypes.ADD_CARD:
       return handleAddCard(state, action)
-    case PaymentActionTypes.GET_BALANCE:
+    case PaymentActionTypes.GET_PAYMENTINFO:
       return handleGetBalance(state, action)
     case PaymentActionTypes.SET_PASSWORD:
       return handleSetPassword(state, action)
@@ -41,7 +41,9 @@ function handleAddCard(state, action) {
 }
 
 function handleGetBalance(state, action) {
-
+  record = action.payload.paymentInfo
+  if(record)
+    state = state.set('paymentInfo', record)
   return state
 }
 
@@ -54,8 +56,9 @@ function handleSetPassword(state, action) {
 
 function onRehydrate(state, action) {
   var incoming = action.payload.PAYMENT
-  if(incoming) {
-    state = state.set('paymentInfo', Record(incoming.paymentInfo))
+  if(incoming && incoming.paymentInfo) {
+    let paymentInfo = incoming.paymentInfo
+    state = state.set('paymentInfo', PaymentRecord(paymentInfo))
   }
 
   return state

@@ -4,6 +4,7 @@
 import AV from 'leancloud-storage'
 import ERROR from '../../constants/errorCode'
 import * as AVUtils from '../../util/AVUtils'
+import {PaymentRecord} from '../../models/paymentModel'
 
 export function createPingppPayment(payload) {
   let params = {
@@ -57,14 +58,14 @@ export function identifyCardInfo(payload) {
   })
 }
 
-export function getBalance(payload) {
+export function getPaymentInfo(payload) {
   let params = {
     userId: payload.userId
   }
 
-  return AV.Cloud.run('hLifeGetBalanceByUserId', params).then((result) => {
-    console.log(result.message)
-    return result
+  return AV.Cloud.run('hLifeGetPaymentInfoByUserId', params).then((result) => {
+    let paymentInfoRecord = PaymentRecord(result)
+    return paymentInfoRecord
   }).catch((error) => {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw  error

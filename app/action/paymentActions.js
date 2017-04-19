@@ -3,7 +3,7 @@
  */
 import {createAction} from 'redux-actions'
 import * as lcPayment from '../api/leancloud/payment'
-import {CREATE_PAYMENT, CREATE_TRANSFERS, ADD_CARD, GET_BALANCE, SET_PASSWORD} from '../constants/paymentActionTypes'
+import {CREATE_PAYMENT, CREATE_TRANSFERS, ADD_CARD, GET_PAYMENTINFO, SET_PASSWORD} from '../constants/paymentActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 
@@ -116,14 +116,14 @@ export function identifyCardInfo(payload) {
   }
 }
 
-export function fetchPaymentBalance(payload) {
+export function fetchPaymentInfo(payload) {
   return (dispatch, getState) => {
-    lcPayment.getBalance(payload).then((result) => {
+    lcPayment.getPaymentInfo(payload).then((result) => {
       if(payload.success) {
         payload.success()
       }
-      let createGetBalanceAction = createAction(GET_BALANCE)
-      dispatch(createGetBalanceAction({}))
+      let getPaymentInfoAction = createAction(GET_PAYMENTINFO)
+      dispatch(getPaymentInfoAction({paymentInfo: result}))
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
