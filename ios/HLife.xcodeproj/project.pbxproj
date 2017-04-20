@@ -21,6 +21,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1A4791078863403F97272F63 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F66B9CB97E874077B48688EE /* Entypo.ttf */; };
 		27CD059BF80E455D9A8ED127 /* libAutoGrowTextInput.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DEA029E5DD4B2C9F5F22FB /* libAutoGrowTextInput.a */; };
+		2C0346CB1EA8F6FF00AC1C48 /* jsVersionUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C0346CA1EA8F6FF00AC1C48 /* jsVersionUpdate.m */; };
 		3281026B7F0A46FEAAEEC070 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6481AB4090240EDA663BB5C /* libRNImagePicker.a */; };
 		373634DB2FA5B55BCDD62509 /* libPods-HLife.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4508DF7717BD0270E31CF83 /* libPods-HLife.a */; };
 		3E8A097182AC4E3AB6FA68ED /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5616E2920612420B90CDC160 /* libRCTCamera.a */; };
@@ -355,6 +356,8 @@
 		1E10C6F4B35C4E1982F7B53C /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		1E339AC295A5428D930C3AF0 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		24F9A086D4D041EB9E0F934D /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		2C0346C91EA8F6D300AC1C48 /* jsVersionUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsVersionUpdate.h; sourceTree = "<group>"; };
+		2C0346CA1EA8F6FF00AC1C48 /* jsVersionUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = jsVersionUpdate.m; sourceTree = "<group>"; };
 		3C64BD212D8A4A58838EA436 /* imageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = imageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/imageCropPicker.xcodeproj"; sourceTree = "<group>"; };
 		3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AutoGrowTextInput.xcodeproj; path = "../node_modules/react-native-autogrow-textinput/ios/AutoGrowTextInput.xcodeproj"; sourceTree = "<group>"; };
 		3FFC8626CB984754B04F9CF8 /* React-Native-Webview-Bridge.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = "React-Native-Webview-Bridge.xcodeproj"; path = "../node_modules/react-native-webview-bridge/ios/React-Native-Webview-Bridge.xcodeproj"; sourceTree = "<group>"; };
@@ -566,6 +569,7 @@
 		13B07FAE1A68108700A75B9A /* HLife */ = {
 			isa = PBXGroup;
 			children = (
+				2C0346A61EA8F4ED00AC1C48 /* update */,
 				7E240EC41E8B504F00D92457 /* RCTPingPP */,
 				B66C85C41E68619400C157EA /* HLife.entitlements */,
 				DD10ADF51E10ED9C00A462BD /* rn */,
@@ -597,6 +601,15 @@
 				2C0346191EA8CB8200AC1C48 /* libCodePush.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2C0346A61EA8F4ED00AC1C48 /* update */ = {
+			isa = PBXGroup;
+			children = (
+				2C0346C91EA8F6D300AC1C48 /* jsVersionUpdate.h */,
+				2C0346CA1EA8F6FF00AC1C48 /* jsVersionUpdate.m */,
+			);
+			name = update;
 			sourceTree = "<group>";
 		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
@@ -1406,6 +1419,7 @@
 				B6FB9ACD1E4EF33700E316C8 /* RCTBaiduMapView.m in Sources */,
 				B6FB9ACE1E4EF33700E316C8 /* RCTBaiduMapViewManager.m in Sources */,
 				DD10AE101E10EF1200A462BD /* RnBridge.m in Sources */,
+				2C0346CB1EA8F6FF00AC1C48 /* jsVersionUpdate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				7E240EE91E8B51B300D92457 /* RCTPingPP.m in Sources */,
 			);

@@ -48,7 +48,7 @@ class MessageBox extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      console.log('MessageBox=========componentWillMount-----------')
+      // console.log('MessageBox=========componentWillMount-----------')
       this.refreshData()
     })
   }
@@ -206,7 +206,7 @@ class MessageBox extends Component {
         {this.renderTopicMessage()}
         {this.renderShopMessage()}
         {this.renderSystemMessage()}
-        {this.renderPromoteMessage()}
+        {/*this.renderPromoteMessage()*/}
       </View>
     )
   }
