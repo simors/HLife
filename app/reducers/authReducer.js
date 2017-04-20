@@ -162,7 +162,9 @@ function handleAddPersonalIdentity(state, action) {
   let newIdentity = action.payload.identity
   let activeUser = state.get('activeUser')
   let identity = state.getIn(['profiles', activeUser, 'identity'])
-  if (-1 == identity.indexOf(newIdentity)) {
+  if (!identity) {
+    state = state.setIn(['profiles', activeUser, 'identity'], new List([newIdentity]))
+  } else if (-1 == identity.indexOf(newIdentity)) {
     identity = identity.push(newIdentity)
     state = state.setIn(['profiles', activeUser, 'identity'], identity)
   }

@@ -106,8 +106,17 @@ class PromoterAuth extends Component {
   onButtonPress() {
     this.props.promoterCertification({
       formKey: commonForm,
-      success: () => {
-        Actions.PAYMENT({title: '支付推广员注册费', price: this.props.fee})
+      success: (promoterId) => {
+        Actions.PAYMENT({
+          title: '支付推广员注册费',
+          price: this.props.fee,
+          metadata: {promoterId: promoterId},
+          popNum: 2,
+          paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
+          paySuccessJumpSceneParams: {},
+          payErrorJumpScene: 'MINE',
+          payErrorJumpSceneParams: {}
+        })
         Toast.show('注册为推广员成功')
       },
       error: (err) => {
