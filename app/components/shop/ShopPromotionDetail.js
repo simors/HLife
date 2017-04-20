@@ -96,7 +96,7 @@ class ShopPromotionDetail extends Component {
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightComponent={()=>{
             return (
-              <TouchableOpacity onPress={()=>{}} style={{marginRight:10}}>
+              <TouchableOpacity onPress={()=>{Actions.SHARE()}} style={{marginRight:10}}>
                 <Image source={require('../../assets/images/active_share.png')}/>
               </TouchableOpacity>
             )
