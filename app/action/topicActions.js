@@ -239,7 +239,7 @@ function handlePublishTopicComment(payload, formData) {
       return
     }
     lcTopics.publishTopicComments(publishTopicCommentPayload).then((result) => {
-      console.log('result===', result)
+      // console.log('result===', result)
       if (payload.success) {
         payload.success()
       }
@@ -250,7 +250,7 @@ function handlePublishTopicComment(payload, formData) {
         replyTo: payload.replyTo,
         commentId: result.objectId,
         content: payload.content,
-        commentTime:result.createdDate
+        commentTime:result.createdDate,
       }))
       dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
     }).catch((error) => {

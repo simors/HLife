@@ -597,6 +597,12 @@ export function notifyTopicComment(payload) {
     let topicInfo = getTopicById(getState(), payload.topicId)
     console.log('topicInfo:', topicInfo)
 
+    let topicCover = ''
+    let imgGroup = topicInfo.imgGroup
+    if(imgGroup && imgGroup.length) {
+      topicCover = imgGroup[0]
+    }
+
     if (payload.replyTo) {
       toPeers.push(payload.replyTo)
     } else {
@@ -617,6 +623,8 @@ export function notifyTopicComment(payload) {
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         topicId: payload.topicId,
+        topicCover: topicCover,
+        topicAbstract: topicInfo.abstract,
         title: topicInfo.title,
         commentId: payload.commentId,
         commentContent: payload.content,
