@@ -50,7 +50,9 @@ import {selectShopPromotionList} from '../../selector/shopSelector'
 import {fetchShopPromotionList, clearShopPromotionList} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
 import codePush from 'react-native-code-push'
+// require("NSBundle");
 
+// const version = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString");
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -58,7 +60,7 @@ class Home extends Component {
 
   constructor(props) {
     super(props)
-
+    // console.log('my version',version)
     this.state = {
       searchForm: {
         distance: 5,

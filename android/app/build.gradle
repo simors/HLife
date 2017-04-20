@@ -93,7 +93,7 @@ android {
         targetSdkVersion 22
         multiDexEnabled true
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -110,7 +110,19 @@ android {
         }
     }
     buildTypes {
+        debug {
+
+            // CodePush updates should not be tested in Debug mode
+
+        }
+
+        releaseStaging {
+
+            buildConfigField "String", "CODEPUSH_KEY", '"'+properties.getProperty("code_push_key_production")+'"'
+
+        }
         release {
+            buildConfigField "String", "CODEPUSH_KEY", '"'+properties.getProperty("code_push_key_staging")+'"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
