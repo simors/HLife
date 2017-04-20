@@ -28,6 +28,7 @@
     "react-native-button": "^1.7.1",
     "react-native-camera": "0.4.1",
     "react-native-camera-android": "^1.0.7",
+    "react-native-code-push": "^2.0.2-beta",
     "react-native-communications": "^2.1.4",
     "react-native-datepicker": "^1.4.2",
     "react-native-device-info": "^0.9.9",
