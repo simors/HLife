@@ -639,7 +639,7 @@ export function notifyTopicComment(payload) {
     }
 
     let currentUser = activeUserInfo(getState())
-    console.log('currentUser===', currentUser)
+    // console.log('currentUser===', currentUser)
     let notifyConv = {
       members: toPeers,   // 可以是一个数组
       unique: true
@@ -681,7 +681,7 @@ export function notifyPublishShopPromotion(payload) {
     }
 
     lcShop.fetchAllShopFollowerIds({id: shopId}).then((shopFollowerIds) => {
-      console.log('shopFollowerIds===', shopFollowerIds)
+      // console.log('shopFollowerIds===', shopFollowerIds)
       toPeers = shopFollowerIds
 
       let currentUser = activeUserInfo(getState())
@@ -704,7 +704,7 @@ export function notifyPublishShopPromotion(payload) {
           shopPromotionType: payload.shopPromotionType,
           shopPromotionTypeDesc: payload.shopPromotionTypeDesc,
         }
-        console.log('attrs--------', attrs)
+        // console.log('attrs--------', attrs)
         message.setText('发布了新活动')
         message.setAttributes(attrs)
         conversation.send(message)

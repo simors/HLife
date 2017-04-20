@@ -12,6 +12,7 @@ import {
   ShopLikeMsg,
   UserFollowMsg,
   ShopFollowMsg,
+  PublishShopPromotionMsg
 } from '../models/notifyModel'
 import {REHYDRATE} from 'redux-persist/constants'
 

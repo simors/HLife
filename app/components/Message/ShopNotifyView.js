@@ -164,6 +164,14 @@ class ShopNotifyView extends Component {
           </View>
         )
       }
+    }else if(notice.msgType === msgActionTypes.MSG_PUBLISH_SHOP_PROMOTION) {//店铺活动
+      return (
+        <View style={styles.msgViewStyle}>
+          <Text style={{fontSize:17,color:'#ff7819'}}>
+            发布了新的活动
+          </Text>
+        </View>
+      )
     } else {
       if(isShopKeeper) {
         return (
@@ -175,6 +183,27 @@ class ShopNotifyView extends Component {
         )
       }
     }
+  }
+
+  renderShopPromotionCell(notice) {
+    return (
+      <TouchableOpacity onPress={() => Actions.SHOP_PROMOTION_DETAIL({id:notice.shopPromotionId})}>
+        <View style={{padding:12,paddingTop:0,flex:1}}>
+          <View style={{flex:1,flexDirection: 'row', backgroundColor:'#f5f5f5'}}>
+            <Image style={{width:80,height:80}} source={{uri: notice.shopPromotionCoverUrl}} />
+            <View style={{flex:1,marginLeft:22,paddingTop:15,paddingBottom:20}}>
+              <Text numberOfLines={1} style={{marginBottom:17,color:'#5a5a5a',fontSize:17,fontWeight:'bold'}}>{notice.shopPromotionTitle}</Text>
+              <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                <View style={{padding:3,paddingLeft:6,paddingRight:6,backgroundColor:'#f6a623',marginRight:10,borderRadius:2}}>
+                  <Text style={{color:'white',fontSize:12}}>{notice.shopPromotionType}</Text>
+                </View>
+                <Text numberOfLines={1} style={{color:'#aaa',fontSize:12}}>{notice.shopPromotionTypeDesc}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   renderNoticeItem(notice) {
@@ -201,7 +230,10 @@ class ShopNotifyView extends Component {
         </View>
         {this.renderMsgContent(notice)}
         <View style={{marginTop:15}}>
-          <ShopInfoCell shopId={notice.shopId}/>
+          {notice.msgType === msgActionTypes.MSG_PUBLISH_SHOP_PROMOTION
+            ? this.renderShopPromotionCell(notice)
+            : <ShopInfoCell shopId={notice.shopId}/>
+          }
         </View>
       </View>
     )
