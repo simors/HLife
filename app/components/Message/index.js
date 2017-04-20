@@ -91,7 +91,7 @@ class MessageBox extends Component {
   renderTopicMessage() {
     return (
       <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.NOTIFY_TOPIC_LIST()}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.TOPIC_NOTIFY()}>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={styles.noticeIconView}>
               <Image style={styles.noticeIcon} source={require('../../assets/images/notice_topic.png')}></Image>

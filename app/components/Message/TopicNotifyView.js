@@ -86,15 +86,15 @@ class TopicNotifyView extends Component {
             this.openReplyBox(notice)
           }}>
             <View style={{
-              borderWidth: 1,
-              width: 54,
-              height: 25,
-              borderColor: '#E9E9E9',
               borderRadius: 3,
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              padding: 6,
+              paddingLeft: 12,
+              paddingRight:12,
+              backgroundColor: '#f5f5f5'
             }}>
-              <Text style={{fontSize: em(14), color: '#50E3C2'}}>回 复</Text>
+              <Text style={{fontSize: em(15), color: '#5a5a5a'}}>回 复</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -107,14 +107,37 @@ class TopicNotifyView extends Component {
     if (notice.msgType === msgActionTypes.MSG_TOPIC_COMMENT) {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}}
-                    content={notice.commentContent}/>
+          <Expander 
+            showLines={3} 
+            showLinesHeight={50} 
+            textStyle={{fontSize: em(17), color: '#030303', lineHeight: em(24)}}
+            expanderTextStyle={{fontSize: em(17),marginTop:10}}
+            content={notice.commentContent}
+          />
+        </View>
+      )
+    }else if (notice.msgType === msgActionTypes.MSG_TOPIC_LIKE) {
+      return (
+        <View style={styles.msgViewStyle}>
+          <Expander 
+            showLines={3} 
+            showLinesHeight={50} 
+            textStyle={{fontSize: em(17), color: '#030303', lineHeight: em(24)}}
+            expanderTextStyle={{fontSize: em(17),marginTop:10}}
+            content='赞了这篇文章'
+          />
         </View>
       )
     } else {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}} content={notice.text}/>
+          <Expander 
+            showLines={3} 
+            showLinesHeight={50} 
+            textStyle={{fontSize: em(17), color: '#030303', lineHeight: em(24)}}
+            expanderTextStyle={{fontSize: em(17),marginTop:10}}
+            content={notice.text}
+          />
         </View>
       )
     }
@@ -135,11 +158,8 @@ class TopicNotifyView extends Component {
             <View>
               <Text style={styles.userNameStyle}>{notice.nickname ? notice.nickname : '未命名'}</Text>
             </View>
-            <View style={{flexDirection: 'row', paddingTop: 2}}>
+            <View style={{flexDirection: 'row', paddingTop: 10}}>
               <Text style={{fontSize: em(12), color: '#B6B6B6', width: 76}}>{notice.timestamp}</Text>
-              <Image style={{width: 10, height: 13, marginLeft: 18}}
-                     source={require("../../assets/images/writer_loaction.png")}/>
-              <Text style={{fontSize: em(12), color: '#B6B6B6', paddingLeft: 2}}>长沙</Text>
             </View>
           </View>
           <View style={{flex: 1}}/>
@@ -158,15 +178,13 @@ class TopicNotifyView extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="话题消息"
+          title="话题互动"
         />
         <View style={styles.itemContainer}>
-          <ScrollView style={{height: PAGE_HEIGHT}}>
-            <ListView
-              dataSource={this.props.dataSource}
-              renderRow={(notice) => this.renderNoticeItem(notice)}
-            />
-          </ScrollView>
+          <ListView
+            dataSource={this.props.dataSource}
+            renderRow={(notice) => this.renderNoticeItem(notice)}
+          />
         </View>
         <KeyboardAwareToolBar
           initKeyboardHeight={-50}
@@ -208,6 +226,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
   itemContainer: {
+    flex: 1,
     width: PAGE_WIDTH,
     ...Platform.select({
       ios: {
@@ -242,7 +261,7 @@ const styles = StyleSheet.create({
   },
   userNameStyle: {
     fontSize: em(15),
-    color: '#50E3C2'
+    color: '#5a5a5a'
   },
   msgViewStyle: {
     marginTop: 21,

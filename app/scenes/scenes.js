@@ -93,7 +93,6 @@ import AreaPromoterManager from '../components/Mine/promote/AreaPromoterManager'
 import Mydrafts from '../components/Mine/myDrafts/index'
 import AreaPromoterDetail from '../components/Mine/promote/AreaPromoterDetail'
 import ChangeAgentView from '../components/Mine/promote/ChangeAgentView'
-import NotifyTopicList from '../components/Message/NotifyTopicList'
 
 const styles = StyleSheet.create({
   container: {
@@ -196,7 +195,6 @@ export const scenes = Actions.create(
       <Scene key="MY_DRAFTS" component={Mydrafts}/>
       <Scene key="AREA_DETAIL" component={AreaPromoterDetail}/>
       <Scene key="CHANGE_AGENT" component={ChangeAgentView}/>
-      <Scene key="NOTIFY_TOPIC_LIST" component={NotifyTopicList}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
