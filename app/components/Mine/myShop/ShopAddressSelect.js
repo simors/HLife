@@ -555,6 +555,8 @@ class ShopAddressSelect extends Component {
     return (
       <KeyboardAwareToolBar
         initKeyboardHeight={0}
+        notListenKeyboardEvent={false}
+        hideOverlay={true}
       >
         {this.renderToolBarContent()}
       </KeyboardAwareToolBar>
