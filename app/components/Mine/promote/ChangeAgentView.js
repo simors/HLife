@@ -23,8 +23,9 @@ import THEME from '../../../constants/themes/theme1'
 import Icon from 'react-native-vector-icons/Ionicons'
 import CommonListView from '../../common/CommonListView'
 import AreaPromoterItem from './AreaPromoterItem'
-import {getPromotersByArea} from '../../../action/promoterAction'
+import {getPromotersByArea, setAreaAgent, getPromoterByNameOrId} from '../../../action/promoterAction'
 import {selectAreaPromoters, getPromoterById} from '../../../selector/promoterSelector'
+import * as Toast from '../../common/Toast'
 
 class ChangeAgentView extends Component {
   constructor(props) {
@@ -39,6 +40,36 @@ class ChangeAgentView extends Component {
 
   componentWillMount() {
     this.refreshData()
+  }
+
+  searchPromoter() {
+    if (this.state.searchText.length == 0) {
+      this.refreshData()
+    } else {
+      this.props.getPromoterByNameOrId({
+        keyword: this.state.searchText,
+      })
+    }
+  }
+
+  setAreaAgent(agent) {
+    let upPromoter = this.props.upPromoter
+    let payload = {
+      promoterId: agent.id,
+      identity: upPromoter.identity + 1, // 上级代理只能设置下级代理
+      province: upPromoter.province,
+      city: upPromoter.identity == 1 ? this.props.area : upPromoter.city,
+      district: upPromoter.identity == 1 ? undefined : (upPromoter.identity == 2 ? this.props.area : upPromoter.district),
+      success: () => {
+        Actions.pop()
+        Toast.show('代理设置成功！')
+      },
+      error: (message) => {
+        Actions.pop()
+        Toast.show(message)
+      }
+    }
+    this.props.setAreaAgent(payload)
   }
 
   refreshData() {
@@ -88,13 +119,14 @@ class ChangeAgentView extends Component {
           </View>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <TextInput style={styles.searchInputStyle}
-                       placeholder='输入昵称或手机号完成搜索'
+                       placeholder='输入昵称或手机号搜索'
                        underlineColorAndroid="transparent"
                        onChangeText={(text) => this.setState({searchText: text})}/>
           </View>
         </View>
         <View style={styles.searchBtn}>
-          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                            onPress={() => {this.searchPromoter()}}>
             <Text style={styles.searchBtnText}>搜索</Text>
           </TouchableOpacity>
         </View>
@@ -107,7 +139,7 @@ class ChangeAgentView extends Component {
     this.maxRoyaltyEarnings = promoter.royaltyEarnings
     this.lastTime = promoter.createdAt
     return (
-      <AreaPromoterItem promoter={promoter}/>
+      <AreaPromoterItem promoter={promoter} setAreaAgent={(agent) => this.setAreaAgent(agent)}/>
     )
   }
 
@@ -154,6 +186,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getPromotersByArea,
+  setAreaAgent,
+  getPromoterByNameOrId,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChangeAgentView)
@@ -186,7 +220,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF',
     ...Platform.select({
       ios: {
         marginTop: normalizeH(64),

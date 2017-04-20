@@ -168,6 +168,7 @@ export function followShop(payload) {
         let params = {
           shopId: payload.id
         }
+        // console.log('followShop==params==', params)
         dispatch(msgAction.notifyShopFollow(params))
         if(payload.success){
           payload.success(result)

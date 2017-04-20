@@ -23,9 +23,10 @@ import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
-import {getTotalPerformance, setShopTenant, getShopTenantByCity} from '../../../action/promoterAction'
-import {selectPromoterStatistics, selectCityTenant} from '../../../selector/promoterSelector'
+import {getTotalPerformance, setShopTenant, getShopTenantByCity, cancelAreaAgent} from '../../../action/promoterAction'
+import {selectPromoterStatistics, selectCityTenant, selectAgentByArea} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
+import Popup from '@zzzkk2009/react-native-popup'
 
 class AreaPromoterDetail extends Component {
   constructor(props) {
@@ -72,6 +73,40 @@ class AreaPromoterDetail extends Component {
     this.props.setShopTenant(payload)
   }
 
+  cancelAreaAgent(agent) {
+    let upPromoter = this.props.upPromoter
+    let payload = {
+      promoterId: agent.id,
+      identity: upPromoter.identity + 1, // 上级代理只能设置下级代理
+      province: upPromoter.province,
+      city: upPromoter.identity == 1 ? this.props.area : upPromoter.city,
+      district: upPromoter.identity == 1 ? undefined : (upPromoter.identity == 2 ? this.props.area : upPromoter.district),
+      success: () => {
+        Toast.show('取消代理成功！')
+      },
+      error: (message) => {
+        Toast.show(message)
+      }
+    }
+
+    Popup.confirm({
+      title: '提示',
+      content: '确认取消' + this.props.agent.nickname + '的代理？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=>{
+          this.props.cancelAreaAgent(payload)
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+        }
+      }
+    })
+  }
+
   renderFeeView() {
     if (this.props.upPromoter.identity == 1) {
       return (
@@ -88,29 +123,66 @@ class AreaPromoterDetail extends Component {
     }
   }
 
+  renderManageBtn() {
+    let agent = this.props.agent
+    let promoter = this.props.promoter
+    if (agent.nickname) {
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={styles.changeAgentBtn}>
+            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                              onPress={() => {Actions.CHANGE_AGENT({
+                                upPromoter: this.props.upPromoter,
+                                liveProvince: this.props.province,
+                                liveCity: this.props.city,
+                                area: this.props.area,
+                              })}}>
+              <Text style={{fontSize: em(15), color: '#FFF'}}>更换</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.changeAgentBtn, {backgroundColor: '#aaaaaa'}]}>
+            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                              onPress={() => {this.cancelAreaAgent(promoter)}}>
+              <Text style={{fontSize: em(15), color: '#FFF'}}>撤销</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
+    } else {
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={styles.changeAgentBtn}>
+            <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                              onPress={() => {Actions.CHANGE_AGENT({
+                                upPromoter: this.props.upPromoter,
+                                liveProvince: this.props.province,
+                                liveCity: this.props.city,
+                                area: this.props.area,
+                              })}}>
+              <Text style={{fontSize: em(15), color: '#FFF'}}>添加</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
+    }
+  }
+
   renderAgent() {
+    let agent = this.props.agent
     let promoter = this.props.promoter
     return (
       <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
         <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
           <Image style={styles.avatarStyle} resizeMode='contain'
-                 source={this.props.avatar ? {uri: this.props.avatar} : require('../../../assets/images/default_portrait.png')}/>
+                 source={agent.avatar ? {uri: agent.avatar} : require('../../../assets/images/default_portrait.png')}/>
           <View style={{paddingLeft: normalizeW(10)}}>
-            <Text style={styles.titleText}>{this.props.nickname ? this.props.nickname : '未设置代理人'}</Text>
+            <Text style={styles.titleText}>{agent.nickname ? agent.nickname : '未设置代理人'}</Text>
             <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
               个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
             </Text>
           </View>
         </View>
-        <View style={styles.changeAgentBtn}>
-          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                            onPress={() => {Actions.CHANGE_AGENT({
-                              liveProvince: this.props.province,
-                              liveCity: this.props.city,
-                            })}}>
-            <Text style={{fontSize: em(15), color: '#FFF'}}>更换代理</Text>
-          </TouchableOpacity>
-        </View>
+        {this.renderManageBtn()}
       </View>
     )
   }
@@ -126,7 +198,7 @@ class AreaPromoterDetail extends Component {
               <Text style={styles.titleText}>当前店铺入驻费（元）</Text>
             </View>
           </View>
-          <View style={[styles.changeAgentBtn, {backgroundColor: 'rgba(255, 157, 78, 0.2)'}]}>
+          <View style={[styles.changeAgentBtn, {backgroundColor: 'rgba(255, 157, 78, 0.2)', width: normalizeW(115)}]}>
             {this.renderFeeView()}
           </View>
         </View>
@@ -173,23 +245,22 @@ class AreaPromoterDetail extends Component {
             {this.renderBaseView()}
             {this.renderStatView()}
           </ScrollView>
-
-          <KeyboardAwareToolBar
-            initKeyboardHeight={-normalizeH(50)}
-          >
-            <ToolBarContent
-              replyInputRefCallBack={(input)=> {
-                this.feeInput = input
-              }}
-              onSend={(tenant) => {
-                this.setTenantFee(tenant)
-              }}
-              placeholder='设置入驻费'
-              label="设置"
-              keyboardType="numeric"
-            />
-          </KeyboardAwareToolBar>
         </View>
+        <KeyboardAwareToolBar
+          initKeyboardHeight={-normalizeH(50)}
+        >
+          <ToolBarContent
+            replyInputRefCallBack={(input)=> {
+              this.feeInput = input
+            }}
+            onSend={(tenant) => {
+              this.setTenantFee(tenant)
+            }}
+            placeholder='设置入驻费'
+            label="设置"
+            keyboardType="numeric"
+          />
+        </KeyboardAwareToolBar>
       </View>
     )
   }
@@ -210,16 +281,21 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   let tenant = selectCityTenant(state, agentCity)
+  let agent = selectAgentByArea(state, ownProps.area)
+  let promoter = agent.promoter
   return {
     statistics,
     tenant,
+    agent,
+    promoter,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getTotalPerformance,
   setShopTenant,
-  getShopTenantByCity
+  getShopTenantByCity,
+  cancelAreaAgent,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AreaPromoterDetail)
@@ -254,7 +330,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   changeAgentBtn: {
-    width: normalizeW(76),
+    width: normalizeW(50),
     height: normalizeH(25),
     backgroundColor: THEME.base.mainColor,
     borderRadius: 2,

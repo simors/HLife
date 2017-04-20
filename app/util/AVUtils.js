@@ -27,7 +27,11 @@ export function switchTab(tabKey){
   Actions[tabKey]()
 }
 
+this.isPoping = false
 export function pop(payload) {
+  if(this.isPoping) return
+
+  this.isPoping = true  
   if(payload && payload.backSceneName) {
     Actions.pop({popNum:2})
     Actions[payload.backSceneName](payload.backSceneParams)
@@ -37,6 +41,9 @@ export function pop(payload) {
   }else{
     Actions.pop()
   }
+  setTimeout(()=>{
+    this.isPoping = false
+  }, 1000)
 }
 
 export function updateProvincesAndCities(payload) {

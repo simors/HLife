@@ -82,6 +82,7 @@ export const TopicCommentsConfig = Record({
   objectId: undefined,  //评论对象id
   nickname: undefined,  //评论用户昵称
   createdAt: undefined, //评论创建时间
+  createdDate: undefined,
   avatar: undefined,    //评论用户头像
   userId:undefined, //评论用户id
   likeCount:undefined,
@@ -127,7 +128,11 @@ export class TopicCommentsItem extends TopicCommentsConfig {
     return topicCommentsConfig.withMutations((record)=> {
       record.set('content', attrs.content)
       record.set('likeCount', attrs.likeCount?attrs.likeCount:0)
-      record.set('createdAt', lcObj.createdAt.valueOf())
+      // record.set('createdAt', lcObj.createdAt.valueOf())
+      if(lcObj.createdAt){
+        record.set('createdAt', lcObj.createdAt.valueOf())
+        record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      }
       record.set('nickname', nickname)
       record.set('avatar', avatar)
       record.set('objectId', lcObj.id)

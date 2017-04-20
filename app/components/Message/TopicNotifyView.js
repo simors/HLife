@@ -22,13 +22,15 @@ import Expander from '../common/Expander'
 import TopicInfoCell from './TopicInfoCell'
 import * as msgActionTypes from '../../constants/messageActionTypes'
 import {getNoticeListByType} from '../../selector/notifySelector'
-import {enterTypedNotify} from '../../action/messageAction'
+import {enterTypedNotify, clearNotifyMsg} from '../../action/messageAction'
 import {activeUserInfo} from '../../selector/authSelector'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import * as Toast from '../common/Toast'
+import Popup from '@zzzkk2009/react-native-popup'
+import * as AVUtils from '../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -86,15 +88,15 @@ class TopicNotifyView extends Component {
             this.openReplyBox(notice)
           }}>
             <View style={{
-              borderWidth: 1,
-              width: 54,
-              height: 25,
-              borderColor: '#E9E9E9',
               borderRadius: 3,
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              padding: 6,
+              paddingLeft: 12,
+              paddingRight:12,
+              backgroundColor: '#f5f5f5'
             }}>
-              <Text style={{fontSize: em(14), color: '#50E3C2'}}>回 复</Text>
+              <Text style={{fontSize: em(15), color: '#5a5a5a'}}>回 复</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -107,14 +109,37 @@ class TopicNotifyView extends Component {
     if (notice.msgType === msgActionTypes.MSG_TOPIC_COMMENT) {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}}
-                    content={notice.commentContent}/>
+          <Expander 
+            showLines={3} 
+            showLinesHeight={50} 
+            textStyle={{fontSize: em(17), color: '#030303', lineHeight: em(24)}}
+            expanderTextStyle={{fontSize: em(17),marginTop:10}}
+            content={notice.commentContent}
+          />
+        </View>
+      )
+    }else if (notice.msgType === msgActionTypes.MSG_TOPIC_LIKE) {
+      return (
+        <View style={styles.msgViewStyle}>
+          <Expander 
+            showLines={3} 
+            showLinesHeight={50} 
+            textStyle={{fontSize: em(17), color: '#030303', lineHeight: em(24)}}
+            expanderTextStyle={{fontSize: em(17),marginTop:10}}
+            content='赞了这篇文章'
+          />
         </View>
       )
     } else {
       return (
         <View style={styles.msgViewStyle}>
-          <Expander showLines={3} textStyle={{fontSize: em(17), color: '#4a4a4a', lineHeight: em(24),}} content={notice.text}/>
+          <Expander 
+            showLines={3} 
+            showLinesHeight={50} 
+            textStyle={{fontSize: em(17), color: '#030303', lineHeight: em(24)}}
+            expanderTextStyle={{fontSize: em(17),marginTop:10}}
+            content={notice.text}
+          />
         </View>
       )
     }
@@ -135,11 +160,8 @@ class TopicNotifyView extends Component {
             <View>
               <Text style={styles.userNameStyle}>{notice.nickname ? notice.nickname : '未命名'}</Text>
             </View>
-            <View style={{flexDirection: 'row', paddingTop: 2}}>
+            <View style={{flexDirection: 'row', paddingTop: 10}}>
               <Text style={{fontSize: em(12), color: '#B6B6B6', width: 76}}>{notice.timestamp}</Text>
-              <Image style={{width: 10, height: 13, marginLeft: 18}}
-                     source={require("../../assets/images/writer_loaction.png")}/>
-              <Text style={{fontSize: em(12), color: '#B6B6B6', paddingLeft: 2}}>长沙</Text>
             </View>
           </View>
           <View style={{flex: 1}}/>
@@ -151,6 +173,55 @@ class TopicNotifyView extends Component {
     )
   }
 
+  clear(){
+    Popup.confirm({
+      title: '话题互动',
+      content: '删除后无法恢复，确认删除？',
+      ok: {
+        text: '确认',
+        style: {color: '#FF7819'},
+        callback: ()=>{
+          this.props.clearNotifyMsg({
+            noticeType: msgActionTypes.TOPIC_TYPE,
+            success: ()=>{
+              Toast.show('清空成功')
+            }
+          })
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+        }
+      }
+    })
+  }
+
+  renderContent() {
+    if(this.props.hasData) {
+      return (
+        <ListView
+          dataSource={this.props.dataSource}
+          renderRow={(notice) => this.renderNoticeItem(notice)}
+        />
+      )
+    }else{
+      return (
+        <View style={[{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'white',justifyContent:'center',alignItems:'center'}]}>
+          <Image style={{marginBottom:20}} source={require('../../assets/images/none_message_140.png')}/>
+          <Text style={{color:'#b2b2b2',fontSize:17,marginBottom:15}}>一个互动话题都没有</Text>
+          <Text style={{color:'#b2b2b2',fontSize:17,marginBottom:60}}>好吃的、好玩的、新鲜的要和邻居分享噢</Text>
+          <TouchableOpacity style={{backgroundColor:'#ff7819',borderRadius:5,padding:12,paddingLeft:30,paddingRight:30}} 
+            onPress={()=>{
+              AVUtils.switchTab('FIND')
+            }}>
+              <Text style={{color:'white',fontSize:17}}>进入邻家话题</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -158,15 +229,14 @@ class TopicNotifyView extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="话题消息"
+          title="话题互动"
+          rightType={this.props.hasData ? 'text' : 'none'}
+          rightPress={()=>{this.clear()}}
+          rightText='清空'
+          rightStyle={{color:'#ff7819'}}
         />
         <View style={styles.itemContainer}>
-          <ScrollView style={{height: PAGE_HEIGHT}}>
-            <ListView
-              dataSource={this.props.dataSource}
-              renderRow={(notice) => this.renderNoticeItem(notice)}
-            />
-          </ScrollView>
+          {this.renderContent()}
         </View>
         <KeyboardAwareToolBar
           initKeyboardHeight={-50}
@@ -191,13 +261,20 @@ const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let noticeList = getNoticeListByType(state, msgActionTypes.TOPIC_TYPE)
   const userInfo = activeUserInfo(state)
+  newProps.noticeList = noticeList
+  let hasData = false
+  if(noticeList && noticeList.length) {
+    hasData = true
+  }
+  newProps.hasData = hasData
   newProps.dataSource = ds.cloneWithRows(noticeList)
   newProps.userInfo = userInfo
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   enterTypedNotify,
-  publishTopicFormData
+  publishTopicFormData,
+  clearNotifyMsg
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicNotifyView)
@@ -208,6 +285,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
   itemContainer: {
+    flex: 1,
     width: PAGE_WIDTH,
     ...Platform.select({
       ios: {
@@ -242,7 +320,7 @@ const styles = StyleSheet.create({
   },
   userNameStyle: {
     fontSize: em(15),
-    color: '#50E3C2'
+    color: '#5a5a5a'
   },
   msgViewStyle: {
     marginTop: 21,

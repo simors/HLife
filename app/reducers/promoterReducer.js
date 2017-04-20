@@ -36,6 +36,10 @@ export default function promoterReducer(state = initialState, action) {
       return handleUpdateTotalPerformance(state, action)
     case promoterActionTypes.UPDATE_AREA_AGENTS:
       return handleUpdateAreaAgents(state, action)
+    case promoterActionTypes.SET_AREA_AGENT:
+      return handleSetAreaAgent(state, action)
+    case promoterActionTypes.CANCEL_AREA_AGENT:
+      return handleCancelAreaAgent(state, action)
     case promoterActionTypes.UPDATE_CITY_SHOP_TENANT:
       return handleUpdateShopTenant(state, action)
     case promoterActionTypes.SET_AREA_PROMOTERS:
@@ -131,7 +135,6 @@ function handleUpdateTotalPerformance(state, action) {
 
 function handleUpdateAreaAgents(state, action) {
   let agentsSet = action.payload.agentsSet
-  let key = undefined
   let mapArray = []
   agentsSet.forEach((agent) => {
     let agentRecord = new AreaAgent({
@@ -143,6 +146,43 @@ function handleUpdateAreaAgents(state, action) {
     mapArray.push(agentRecord)
   })
   state = state.set('areaAgents', List(mapArray))
+  return state
+}
+
+function handleSetAreaAgent(state, action) {
+  let area = action.payload.area
+  let promoter = action.payload.promoter
+  let areaAgents = state.get('areaAgents')
+  let index = areaAgents.findIndex((value) => {
+    return area == value.get('area')
+  })
+  if (index == -1) {
+    return state
+  }
+  areaAgents = areaAgents.update(index, (value) => {
+    value = value.set('promoterId', promoter.id)
+    value = value.set('userId', promoter.userId)
+    return value
+  })
+  state = state.set('areaAgents', areaAgents)
+  return state
+}
+
+function handleCancelAreaAgent(state, action) {
+  let area = action.payload.area
+  let areaAgents = state.get('areaAgents')
+  let index = areaAgents.findIndex((value) => {
+    return area == value.get('area')
+  })
+  if (index == -1) {
+    return state
+  }
+  areaAgents = areaAgents.update(index, (value) => {
+    value = value.set('promoterId', undefined)
+    value = value.set('userId', undefined)
+    return value
+  })
+  state = state.set('areaAgents', areaAgents)
   return state
 }
 

@@ -13,14 +13,45 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import Popup from '@zzzkk2009/react-native-popup'
 import THEME from '../../../constants/themes/theme1'
 import PromoterLevelIcon from './PromoterLevelIcon'
 import {getConversationTime} from '../../../util/numberUtils'
 import {userInfoById} from '../../../selector/authSelector'
+import * as Toast from '../../common/Toast'
 
 class AreaPromoterItem extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      selected: false,
+    }
+  }
+
+  setAsAreaAgent(userInfo, promoter) {
+    if (promoter.identity != 0) {
+      Toast.show('此推广员已经是区域代理')
+      return
+    }
+    this.setState({selected: true})
+    let that = this
+    Popup.confirm({
+      title: '提示',
+      content: '确认将' + userInfo.nickname + '设置为代理？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=>{
+          that.props.setAreaAgent(promoter)
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          that.setState({selected: false})
+        }
+      }
+    })
   }
 
   render() {
@@ -31,7 +62,8 @@ class AreaPromoterItem extends Component {
     return (
       <View style={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}>
         <View style={styles.promoterBaseView}>
-          <TouchableOpacity style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(10)}} onPress={() => {}}>
+          <TouchableOpacity style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(10)}}
+                            onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: this.props.userInfo.id})}}>
             <Image style={styles.avatarStyle} resizeMode='contain'
                    source={this.props.userInfo.avatar ? {uri: this.props.userInfo.avatar} : require('../../../assets/images/default_portrait.png')}/>
           </TouchableOpacity>
@@ -46,8 +78,8 @@ class AreaPromoterItem extends Component {
                 <Text style={styles.tipsText}>最新业绩：{getConversationTime(new Date(promoter.updatedAt))}</Text>
               </View>
             </View>
-            <TouchableOpacity style={{marginRight: normalizeW(15)}} onPress={() => {}}>
-              <Image source={require('../../../assets/images/unselect.png')}/>
+            <TouchableOpacity style={{marginRight: normalizeW(15)}} onPress={() => {this.setAsAreaAgent(this.props.userInfo, promoter)}}>
+              <Image source={this.state.selected ? require('../../../assets/images/selected.png') : require('../../../assets/images/unselect.png')}/>
             </TouchableOpacity>
           </View>
         </View>

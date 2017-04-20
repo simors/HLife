@@ -118,6 +118,35 @@ export function selectAreaAgents(state) {
   return retAgents
 }
 
+export function selectAgentByArea(state, area) {
+  let agents = state.PROMOTER.get('areaAgents')
+  let retAgent = {}
+  let agentRecord = agents.find((agentRecord) => {
+    let agent = agentRecord.toJS()
+    if (area == agent.area) {
+      return true
+    }
+    return false
+  })
+  if (!agentRecord) {
+    return undefined
+  }
+  let agent = agentRecord.toJS()
+  retAgent.area = agent.area
+  retAgent.tenant = agent.tenant
+  if (agent.userId) {
+    let userInfo = selectUserInfoById(state, agent.userId)
+    retAgent.userId = userInfo.id
+    retAgent.avatar = userInfo.avatar
+    retAgent.nickname = userInfo.nickname
+  }
+  if (agent.promoterId) {
+    let promoter = getPromoterById(state, agent.promoterId)
+    retAgent.promoter= promoter
+  }
+  return retAgent
+}
+
 export function selectCityTenant(state, city) {
   let tenant = state.PROMOTER.getIn(['shopTenant', city])
   if (tenant) {
