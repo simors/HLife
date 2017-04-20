@@ -29,7 +29,10 @@ public class MainApplication extends Application implements ReactApplication {
 
     {
         mReactNativeHost = new ReactNativeHost(this) {
-
+            @Override
+            protected boolean getUseDeveloperSupport() {
+                return BuildConfig.DEBUG;
+            }
     @Override
     protected String getJSBundleFile() {
       return CodePush.getJSBundleFile();
@@ -56,7 +59,10 @@ public class MainApplication extends Application implements ReactApplication {
                         new ImagePickerPackage(),
                         new BaiduMapPackage(getApplicationContext()),
                         new LinearGradientPackage(),
-                        new RCTPingPPPackage()
+                        new RCTPingPPPackage(),
+                        new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG)
+                        // Add/change this line.
+
                 );
             }
         };

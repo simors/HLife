@@ -44,7 +44,7 @@
   return YES;
 }
 
-// Required to register for notifications
+// Required to register for notification
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
   [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings];
