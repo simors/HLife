@@ -83,6 +83,9 @@ function handleAddNotifyMsg(state, action) {
     unReadCnt = msg.get('unReadCount')
     msg = msg.set('unReadCount', unReadCnt+1)
     let msgList = msg.get('messageList')
+    if(msgList.size >= 20) {//只保留最近的20条
+      msgList = msgList.pop()
+    }
     msgList = msgList.unshift(message.msgId)
     msg = msg.set('messageList', msgList)
     state = state.setIn(['notifyMsgByType', type], msg)
