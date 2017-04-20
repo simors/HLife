@@ -23,7 +23,7 @@ import THEME from '../../../constants/themes/theme1'
 import Icon from 'react-native-vector-icons/Ionicons'
 import CommonListView from '../../common/CommonListView'
 import AreaPromoterItem from './AreaPromoterItem'
-import {getPromotersByArea, setAreaAgent} from '../../../action/promoterAction'
+import {getPromotersByArea, setAreaAgent, getPromoterByNameOrId} from '../../../action/promoterAction'
 import {selectAreaPromoters, getPromoterById} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
 
@@ -40,6 +40,16 @@ class ChangeAgentView extends Component {
 
   componentWillMount() {
     this.refreshData()
+  }
+
+  searchPromoter() {
+    if (this.state.searchText.length == 0) {
+      this.refreshData()
+    } else {
+      this.props.getPromoterByNameOrId({
+        keyword: this.state.searchText,
+      })
+    }
   }
 
   setAreaAgent(agent) {
@@ -109,13 +119,14 @@ class ChangeAgentView extends Component {
           </View>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <TextInput style={styles.searchInputStyle}
-                       placeholder='输入昵称或手机号完成搜索'
+                       placeholder='输入昵称或手机号搜索'
                        underlineColorAndroid="transparent"
                        onChangeText={(text) => this.setState({searchText: text})}/>
           </View>
         </View>
         <View style={styles.searchBtn}>
-          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                            onPress={() => {this.searchPromoter()}}>
             <Text style={styles.searchBtnText}>搜索</Text>
           </TouchableOpacity>
         </View>
@@ -176,6 +187,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getPromotersByArea,
   setAreaAgent,
+  getPromoterByNameOrId,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChangeAgentView)

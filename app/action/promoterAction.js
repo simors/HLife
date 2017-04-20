@@ -447,3 +447,33 @@ export function cancelAreaAgent(payload) {
     })
   }
 }
+
+export function getPromoterByNameOrId(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.fetchPromoterByNameOrId(payload).then((result) => {
+      let promoters = result.promoters
+      let users = result.users
+      let promoterIds = []
+      promoters.forEach((promoter) => {
+        let promoterId = promoter.objectId
+        promoterIds.push(promoterId)
+        let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+      })
+      users.forEach((user) => {
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        dispatch(addUserProfile({userInfo}))
+      })
+      dispatch(setAreaPromoters({promoters: promoterIds}))
+
+      if (payload.success) {
+        payload.success(promoterIds.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
