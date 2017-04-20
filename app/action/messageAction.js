@@ -493,6 +493,20 @@ function onRecvNormalMessage(message, conversation) {
   }
 }
 
+export function clearNotifyMsg(payload) {
+  return (dispatch, getState) => {
+    let noticeType = payload.noticeType
+    let action = createAction(msgTypes.CLEAR_NOTIFY_MSG)
+    dispatch(action({
+      noticeType: noticeType
+    }))
+
+    if(payload.success) {
+      payload.success()
+    }
+  }
+}
+
 function onRecvNotifyMessage(message, conversation) {
   return (dispatch, getState) => {
     let msgType = message.type
