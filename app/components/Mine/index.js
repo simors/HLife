@@ -267,6 +267,14 @@ class Mine extends Component {
     return (
       <View style={{marginTop: normalizeH(15)}}>
         <View style={styles.memuItemView}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.MESSAGE_BOX()}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/message_24.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>消息中心</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {this.shopManage()}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_shop.png')} />
