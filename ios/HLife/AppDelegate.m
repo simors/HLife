@@ -14,6 +14,7 @@
 #import "RCTBaiduMapViewManager.h"
 #import "RCTPushNotificationManager.h"
 #import <Pingpp/Pingpp.h>
+#import <UMSocialCore/UMSocialCore.h>
 
 @implementation AppDelegate
 

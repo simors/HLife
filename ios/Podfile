@@ -8,4 +8,8 @@ target "HLife" do
     pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
     pod 'Pingpp/Alipay'
     pod 'Pingpp/Wx'
+    pod 'UMengUShare/UI'
+    pod 'UMengUShare/Social/ReducedWeChat'
+    pod 'UMengUShare/Social/ReducedQQ'
+    pod 'UMengUShare/Social/ReducedSina'
 end
