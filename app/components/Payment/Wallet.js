@@ -106,6 +106,7 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const currentUserId = authSelector.activeUserId(state)
   const paymentInfo = getPaymentInfo(state)
+  console.log("paymentInfo:", paymentInfo)
   return {
     cardNumber: paymentInfo.card_number || undefined,
     isUserLogined: isUserLogined,

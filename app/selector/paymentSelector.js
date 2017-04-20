@@ -3,6 +3,6 @@
  */
 
 export function getPaymentInfo(state) {
-  let cardInfo = state.PAYMENT.get('paymentInfo')
-  return cardInfo
+  let paymentInfo = state.PAYMENT.get('paymentInfo')
+  return paymentInfo
 }
