@@ -170,8 +170,9 @@ class ShopNotifyView extends Component {
               renderRow={(notice) => this.renderNoticeItem(notice)}
             />
           </ScrollView>
+        </View>
 
-          <KeyboardAwareToolBar
+        <KeyboardAwareToolBar
             initKeyboardHeight={-50}
           >
             <ToolBarContent
@@ -180,7 +181,6 @@ class ShopNotifyView extends Component {
               placeholder={this.state.replyUserNickName ? '回复' + this.state.replyUserNickName + ':' : '回复:'}
             />
           </KeyboardAwareToolBar>
-        </View>
       </View>
     )
   }

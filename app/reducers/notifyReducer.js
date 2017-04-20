@@ -21,6 +21,8 @@ export default function notifyReducer(state = initialState, action) {
   switch (action.type) {
     case msgActionTypes.ADD_NOTIFY_MSG:
       return handleAddNotifyMsg(state, action)
+    case msgActionTypes.CLEAR_NOTIFY_MSG:
+      return handleClearNotifyMsg(state, action)  
     case msgActionTypes.ON_ENTER_TYPED_NOTIFY:
       return handleEnterTypedNotify(state, action)
     case REHYDRATE:
@@ -28,6 +30,20 @@ export default function notifyReducer(state = initialState, action) {
     default:
       return state
   }
+}
+
+function handleClearNotifyMsg(state, action) {
+  let payload = action.payload
+  let noticeType = payload.noticeType
+
+  let msgLst = new List([])
+  let typedNotifyMsg = new TypedNotifyMsgRecord({
+    type: noticeType,
+    unReadCount: 0,
+    messageList: msgLst,
+  })
+  state = state.setIn(['notifyMsgByType', noticeType], typedNotifyMsg)
+  return state
 }
 
 function handleAddNotifyMsg(state, action) {

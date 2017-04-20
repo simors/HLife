@@ -251,7 +251,7 @@ export function fetchConversation(payload) {
   return (dispatch, getState) => {
     let userId = activeUserId(getState())
     payload.userId = userId
-    
+
     dispatch(fetchLcConversation(payload)).then((convs) => {
       // console.log('fetchConversation.convs===', convs)
       // console.log('fetchConversation.payload===', payload)
@@ -493,6 +493,20 @@ function onRecvNormalMessage(message, conversation) {
   }
 }
 
+export function clearNotifyMsg(payload) {
+  return (dispatch, getState) => {
+    let noticeType = payload.noticeType
+    let action = createAction(msgTypes.CLEAR_NOTIFY_MSG)
+    dispatch(action({
+      noticeType: noticeType
+    }))
+
+    if(payload.success) {
+      payload.success()
+    }
+  }
+}
+
 function onRecvNotifyMessage(message, conversation) {
   return (dispatch, getState) => {
     let msgType = message.type
@@ -597,6 +611,12 @@ export function notifyTopicComment(payload) {
     let topicInfo = getTopicById(getState(), payload.topicId)
     console.log('topicInfo:', topicInfo)
 
+    let topicCover = ''
+    let imgGroup = topicInfo.imgGroup
+    if(imgGroup && imgGroup.length) {
+      topicCover = imgGroup[0]
+    }
+
     if (payload.replyTo) {
       toPeers.push(payload.replyTo)
     } else {
@@ -604,6 +624,7 @@ export function notifyTopicComment(payload) {
     }
 
     let currentUser = activeUserInfo(getState())
+    console.log('currentUser===', currentUser)
     let notifyConv = {
       members: toPeers,   // 可以是一个数组
       unique: true
@@ -616,9 +637,12 @@ export function notifyTopicComment(payload) {
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         topicId: payload.topicId,
+        topicCover: topicCover,
+        topicAbstract: topicInfo.abstract,
         title: topicInfo.title,
         commentId: payload.commentId,
         commentContent: payload.content,
+        commentTime: payload.commentTime
       }
       console.log("topic attrs:", attrs)
       let text = currentUser.nickname + '在您的话题《' + topicInfo.title + '》中发表了评论'

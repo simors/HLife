@@ -414,7 +414,10 @@ class Article extends Component {
                 require("../../assets/images/artical_favorite_unselect.png")}/>
             </TouchableOpacity>
           </View>
-          <KeyboardAwareToolBar
+          
+        </View>
+
+        <KeyboardAwareToolBar
             initKeyboardHeight={-normalizeH(100)}
           >
             {/*<CommentV2*/}
@@ -436,7 +439,6 @@ class Article extends Component {
               label={'回复'}
             />
           </KeyboardAwareToolBar>
-        </View>
       </View>
 
     )
