@@ -579,48 +579,50 @@ class ShopAddressSelect extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          onMapStatusChangeFinish={this._onMapStatusChangeFinish4Android.bind(this)}
-          onRegionDidChangeAnimated={this._onRegionDidChangeAnimated4Ios.bind(this)}
-          center={this.state.center}
-          marker={this.state.marker}
-          zoom={this.state.zoom}
-        />
+        <View style={styles.body}>
+          <MapView
+            style={styles.map}
+            onMapStatusChangeFinish={this._onMapStatusChangeFinish4Android.bind(this)}
+            onRegionDidChangeAnimated={this._onRegionDidChangeAnimated4Ios.bind(this)}
+            center={this.state.center}
+            marker={this.state.marker}
+            zoom={this.state.zoom}
+          />
 
-        <Image
-          style={[styles.mapMarker, this.state.mapMarkerPos]}
-          source={require("../../../assets/images/icon_gcoding.png")}
-          onLayout={this.onMapMarkerImageLayout.bind(this)}
-        />
+          <Image
+            style={[styles.mapMarker, this.state.mapMarkerPos]}
+            source={require("../../../assets/images/icon_gcoding.png")}
+            onLayout={this.onMapMarkerImageLayout.bind(this)}
+          />
 
-        <View style={styles.searchContainer}>
-          <View style={styles.searchInputContainer}>
-            <TouchableOpacity onPress={()=>{Actions.pop()}}>
-              <Text style={styles.searchInputLeftTxt}>取消</Text>
-            </TouchableOpacity>
+          <View style={styles.searchContainer}>
+            <View style={styles.searchInputContainer}>
+              <TouchableOpacity onPress={()=>{Actions.pop()}}>
+                <Text style={styles.searchInputLeftTxt}>取消</Text>
+              </TouchableOpacity>
 
-            <FormInput
-              onChangeText={(text) => this._searchTextChange(text)}
-              placeholder="输入店铺的位置名称"
-              underlineColorAndroid="transparent"
-              containerStyle={[styles.inputContainerStyle]}
-              inputStyle={[styles.inputStyle]}
-              value={this.state.searchText}
-              onBlur={this._onSearchInputBlur.bind(this)}
-              onFocus={this._onSearchInputFocus.bind(this)}
-            />
+              <FormInput
+                onChangeText={(text) => this._searchTextChange(text)}
+                placeholder="输入店铺的位置名称"
+                underlineColorAndroid="transparent"
+                containerStyle={[styles.inputContainerStyle]}
+                inputStyle={[styles.inputStyle]}
+                value={this.state.searchText}
+                onBlur={this._onSearchInputBlur.bind(this)}
+                onFocus={this._onSearchInputFocus.bind(this)}
+              />
 
-            {this.state.showClearBtn &&
-              <View style={[styles.clearBtnStyle]}>
-                <TouchableOpacity onPress={() => this.clearSearchInput()}>
-                  <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
-                </TouchableOpacity>
-              </View>
-            }
+              {this.state.showClearBtn &&
+                <View style={[styles.clearBtnStyle]}>
+                  <TouchableOpacity onPress={() => this.clearSearchInput()}>
+                    <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
+                  </TouchableOpacity>
+                </View>
+              }
 
+            </View>
+            {this.renderSearchResult()}
           </View>
-          {this.renderSearchResult()}
         </View>
 
         {this.renderShopInfoArea()}
@@ -647,6 +649,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopAddressSelect)
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  body: {
     flex: 1,
     ...Platform.select({
       ios: {
