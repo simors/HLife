@@ -116,7 +116,7 @@ export default class KeyboardAwareToolBar extends Component {
       top: this.props.top || 0,
     })
 
-    if(this.props.showOverlay) {
+    if(!this.props.hideOverlay) {
       this.setState({
         showOverlay: true
       })

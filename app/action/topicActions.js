@@ -8,6 +8,7 @@ import * as locSelector from '../selector/locSelector'
 import AV from 'leancloud-storage'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
+import * as numberUtils from '../util/numberUtils'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -238,6 +239,7 @@ function handlePublishTopicComment(payload, formData) {
       return
     }
     lcTopics.publishTopicComments(publishTopicCommentPayload).then((result) => {
+      console.log('result===', result)
       if (payload.success) {
         payload.success()
       }
@@ -247,7 +249,8 @@ function handlePublishTopicComment(payload, formData) {
         topicId: payload.topicId,
         replyTo: payload.replyTo,
         commentId: result.objectId,
-        content: payload.content
+        content: payload.content,
+        commentTime:result.createdDate
       }))
       dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
     }).catch((error) => {

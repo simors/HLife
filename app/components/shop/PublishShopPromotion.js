@@ -747,7 +747,7 @@ class PublishShopPromotion extends Component {
 
         <KeyboardAwareToolBar
           initKeyboardHeight={-100}
-          showOverlay={false}
+          hideOverlay={true}
         >
           {this.renderToolBarContent()}
         </KeyboardAwareToolBar>

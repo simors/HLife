@@ -831,6 +831,7 @@ class EditShopPromotion extends Component {
 
         <KeyboardAwareToolBar
           initKeyboardHeight={-100}
+          hideOverlay={true}
         >
           {this.renderToolBarContent()}
         </KeyboardAwareToolBar>

@@ -251,7 +251,7 @@ export function fetchConversation(payload) {
   return (dispatch, getState) => {
     let userId = activeUserId(getState())
     payload.userId = userId
-    
+
     dispatch(fetchLcConversation(payload)).then((convs) => {
       // console.log('fetchConversation.convs===', convs)
       // console.log('fetchConversation.payload===', payload)
@@ -604,6 +604,7 @@ export function notifyTopicComment(payload) {
     }
 
     let currentUser = activeUserInfo(getState())
+    console.log('currentUser===', currentUser)
     let notifyConv = {
       members: toPeers,   // 可以是一个数组
       unique: true
@@ -619,6 +620,7 @@ export function notifyTopicComment(payload) {
         title: topicInfo.title,
         commentId: payload.commentId,
         commentContent: payload.content,
+        commentTime: payload.commentTime
       }
       console.log("topic attrs:", attrs)
       let text = currentUser.nickname + '在您的话题《' + topicInfo.title + '》中发表了评论'
