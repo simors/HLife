@@ -168,6 +168,7 @@ export function followShop(payload) {
         let params = {
           shopId: payload.id
         }
+        // console.log('followShop==params==', params)
         dispatch(msgAction.notifyShopFollow(params))
         if(payload.success){
           payload.success(result)
@@ -645,6 +646,15 @@ export function submitShopPromotion(payload) {
         if(payload.success){
           payload.success(result)
         }
+        let params = {
+          shopId: payload.shopId,
+          shopPromotionId: payload.shopPromotionId,
+          shopPromotionCoverUrl: results.coverUrl,
+          shopPromotionTitle: payload.title,
+          shopPromotionType: payload.type,
+          shopPromotionTypeDesc: payload.typeDesc,
+        }
+        dispatch(msgAction.notifyPublishShopPromotion(params))
       }).catch((error) => {
         // console.log('submitShopPromotion==error==>>>', error)
         if(payload.error){

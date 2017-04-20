@@ -18,11 +18,13 @@ import {
   UserFollowMsg,
   ShopFollowMsg,
   NotifyMessage,
+  PublishShopPromotionMsg
 } from '../models/notifyModel'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
 import {selectShopDetail} from '../selector/shopSelector'
 import {getTopicById} from '../selector/topicSelector'
+import * as lcShop from '../api/leancloud/shop'
 
 class TextMessage extends TypedMessage {
 }
@@ -68,6 +70,10 @@ class ShopFollowMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_SHOP_FOLLOW)(ShopFollowMessage)
 
+class PublishShopPromotioMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_PUBLISH_SHOP_PROMOTION)(PublishShopPromotioMessage)
+
 
 //we should move this to the server to avoid reverse-engineering
 
@@ -94,6 +100,7 @@ realtime.register(TopicLikeMessage)
 realtime.register(ShopLikeMessage)
 realtime.register(UserFollowMessage)
 realtime.register(ShopFollowMessage)
+realtime.register(PublishShopPromotioMessage)
 
 const initMessenger = createAction(msgTypes.INIT_MESSENGER_CLIENT)
 const onCreateConversation = createAction(msgTypes.ON_CONVERSATION_CREATED)
@@ -478,6 +485,7 @@ function onReceiveMsg(message, conversation) {
       || msgType === msgTypes.MSG_SHOP_LIKE
       || msgType === msgTypes.MSG_USER_FOLLOW
       || msgType === msgTypes.MSG_SHOP_FOLLOW
+      || msgType === msgTypes.MSG_PUBLISH_SHOP_PROMOTION
       || msgType === msgTypes.MSG_SYSTEM) {
       dispatch(onRecvNotifyMessage(message, conversation))
     }
@@ -541,6 +549,11 @@ function onRecvNotifyMessage(message, conversation) {
         message: ShopFollowMsg.fromLeancloudMessage(message),
         conversation: Conversation.fromLeancloudConversation(conversation)
       }))
+    } else if(msgType === msgTypes.MSG_PUBLISH_SHOP_PROMOTION) {
+      dispatch(addNotifyMsg({
+        message: PublishShopPromotionMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
     }
   }
 }
@@ -600,6 +613,8 @@ function createTypedMessage(msgType) {
       return new UserFollowMessage()
     case msgTypes.MSG_SHOP_FOLLOW:
       return new ShopFollowMessage()
+    case msgTypes.MSG_PUBLISH_SHOP_PROMOTION:
+      return new PublishShopPromotioMessage()  
     default:
       return new TextMessage()
   }
@@ -651,6 +666,53 @@ export function notifyTopicComment(payload) {
       conversation.send(message)
     }, (err) => {
       console.log(err)
+    })
+  }
+}
+
+export function notifyPublishShopPromotion(payload) {
+  return (dispatch, getState) => {
+    let toPeers = []
+    let shopId = payload.shopId
+    let shopDetail = selectShopDetail(getState(), shopId)
+    if (!shopDetail) {
+      console.log('can\'t find shop by shop id ' + shopId)
+      return
+    }
+
+    lcShop.fetchAllShopFollowerIds({id: shopId}).then((shopFollowerIds) => {
+      console.log('shopFollowerIds===', shopFollowerIds)
+      toPeers = shopFollowerIds
+
+      let currentUser = activeUserInfo(getState())
+      let notifyConv = {
+        members: toPeers, // 可以是一个数组
+        unique: true
+      }
+      dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
+        let message = createTypedMessage(msgTypes.MSG_PUBLISH_SHOP_PROMOTION)
+        let attrs = {
+          msgType: msgTypes.MSG_PUBLISH_SHOP_PROMOTION,
+          userId: currentUser.id,
+          nickname: currentUser.nickname,
+          avatar: currentUser.avatar,
+          shopId: shopId,
+          shopName: shopDetail.shopName,
+          shopPromotionId: payload.shopPromotionId,
+          shopPromotionCoverUrl: payload.shopPromotionCoverUrl,
+          shopPromotionTitle: payload.shopPromotionTitle,
+          shopPromotionType: payload.shopPromotionType,
+          shopPromotionTypeDesc: payload.shopPromotionTypeDesc,
+        }
+        console.log('attrs--------', attrs)
+        message.setText('发布了新活动')
+        message.setAttributes(attrs)
+        conversation.send(message)
+      }, (err) => {
+        console.log('createOriginalConversation==err===', err)
+      })
+    }, (error) => {
+      console.log('fetchAllShopFollowerIds=error===', error)
     })
   }
 }

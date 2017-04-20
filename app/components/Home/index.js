@@ -49,6 +49,7 @@ import * as Toast from '../common/Toast'
 import {selectShopPromotionList} from '../../selector/shopSelector'
 import {fetchShopPromotionList, clearShopPromotionList} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
+import codePush from 'react-native-code-push'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -87,6 +88,8 @@ class Home extends Component {
         }
       })
     }
+    codePush.sync()
+
   }
   
   componentWillReceiveProps(nextProps) {
@@ -235,6 +238,7 @@ class Home extends Component {
 
         <View style={styles.body}>
           <View style={{flex:1}}>
+            {/*<Text style={{fontSize:em(20)}}>看看能不能更新</Text>*/}
             <CommonListView
               contentContainerStyle={{backgroundColor: '#F5F5F5'}}
               dataSource={this.props.ds}
