@@ -8,10 +8,14 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  NativeModules,
   Platform
 } from 'react-native'
 
 import {Actions} from 'react-native-router-flux'
+
+const shareNative = NativeModules.shareComponent
+
 
 export default class Share extends Component {
   constructor(props) {
@@ -20,6 +24,14 @@ export default class Share extends Component {
 
   renderShareCell = () => {
 
+  }
+
+  shareUrl(plateform, url, title, description, thumbURL) {
+    shareNative.shareURLWithPlate(plateform, {title: title, thumbURL: thumbURL, URL: url, descr: description})
+  }
+
+  shareUrlToWx = () => {
+    this.shareUrl()
   }
 
   render() {

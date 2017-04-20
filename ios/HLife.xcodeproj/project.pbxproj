@@ -34,6 +34,7 @@
 		730332F0DAB040B3BE49C9F8 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */; };
 		7E240EE91E8B51B300D92457 /* RCTPingPP.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E240EE81E8B51B300D92457 /* RCTPingPP.m */; };
 		7E4710471E98F9500094705A /* Default-568.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E4710461E98F9500094705A /* Default-568.png */; };
+		7E4CF5B31EA8B1170061C2E8 /* shareComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4CF5B21EA8B1170061C2E8 /* shareComponent.m */; };
 		80598CC119704C77968765E7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AB072ABED6D40D3AB87C366 /* FontAwesome.ttf */; };
 		80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -362,6 +363,8 @@
 		7E240EEA1E8B51D300D92457 /* RCTPingPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTPingPP.h; sourceTree = "<group>"; };
 		7E240EEB1E8BA3CA00D92457 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		7E4710461E98F9500094705A /* Default-568.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568.png"; path = "HLife/Default-568.png"; sourceTree = "<group>"; };
+		7E4CF5B11EA8B0AE0061C2E8 /* shareComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shareComponent.h; sourceTree = "<group>"; };
+		7E4CF5B21EA8B1170061C2E8 /* shareComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = shareComponent.m; sourceTree = "<group>"; };
 		814F548B871447AE9DF6C561 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		833EA273CD1B4F39BA400B7B /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -551,6 +554,7 @@
 		13B07FAE1A68108700A75B9A /* HLife */ = {
 			isa = PBXGroup;
 			children = (
+				7E4CF58F1EA8B0500061C2E8 /* UShare */,
 				7E240EC41E8B504F00D92457 /* RCTPingPP */,
 				B66C85C41E68619400C157EA /* HLife.entitlements */,
 				DD10ADF51E10ED9C00A462BD /* rn */,
@@ -601,6 +605,15 @@
 				7E240EF31E8BA3CA00D92457 /* libRCTPushNotification-tvOS.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7E4CF58F1EA8B0500061C2E8 /* UShare */ = {
+			isa = PBXGroup;
+			children = (
+				7E4CF5B11EA8B0AE0061C2E8 /* shareComponent.h */,
+				7E4CF5B21EA8B1170061C2E8 /* shareComponent.m */,
+			);
+			name = UShare;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -1366,6 +1379,7 @@
 				B6FB9ACA1E4EF33700E316C8 /* BaiduMapModule.m in Sources */,
 				B6FB9ACB1E4EF33700E316C8 /* BaseModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				7E4CF5B31EA8B1170061C2E8 /* shareComponent.m in Sources */,
 				B6FB9ACD1E4EF33700E316C8 /* RCTBaiduMapView.m in Sources */,
 				B6FB9ACE1E4EF33700E316C8 /* RCTBaiduMapViewManager.m in Sources */,
 				DD10AE101E10EF1200A462BD /* RnBridge.m in Sources */,
