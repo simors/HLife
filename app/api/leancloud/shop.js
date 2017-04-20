@@ -859,27 +859,27 @@ export function fetchUserOwnedShopInfo(payload) {
   })
 }
 
-// export function fetchShopFollowers(payload) {
-//   let shopId = payload.id
-//   let query = new AV.Query('ShopFollower')
-//   let shop = AV.Object.createWithoutData('Shop', shopId)
-//   query.equalTo('shop', shop)
-//   query.include('follower')
-//   return query.find().then((results)=> {
-//     // console.log('fetchShopFollowers.results===', results)
-//     let shopFollowers = []
-//     if(results && results.length) {
-//       results.forEach((result)=>{
-//         shopFollowers.push(UserInfo.fromShopFollowersLeancloudObject(result))
-//       })
-//     }
-//     // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
-//     return new List(shopFollowers)
-//   }, (err) => {
-//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-//     throw err
-//   })
-// }
+export function fetchAllShopFollowerIds(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopFollower')
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  query.equalTo('shop', shop)
+  query.limit(500)
+  return query.find().then((results)=> {
+    // console.log('fetchShopFollowers.results===', results)
+    let shopFollowerIds = []
+    if(results && results.length) {
+      results.forEach((result)=>{
+        shopFollowerIds.push(result.attributes.follower.id)
+      })
+    }
+    // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
+    return shopFollowerIds
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
 
 export function fetchShopFollowers(payload) {
   let shopId = payload.id
@@ -892,7 +892,7 @@ export function fetchShopFollowers(payload) {
   }
   // console.log('hLifeFetchShopFollowers===params=====', params)
   return AV.Cloud.run('hLifeFetchShopFollowers', params).then((result) => {
-    console.log('hLifeFetchShopFollowers===result===', result)
+    // console.log('hLifeFetchShopFollowers===result===', result)
     if(result.code == 0) {
       return new List(result.shopFollowers)
     }else{

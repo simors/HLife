@@ -32,6 +32,8 @@ export const MSG_SHOP_LIKE        = 32      // 店铺点赞
 export const MSG_USER_FOLLOW      = 40      // 关注用户
 export const MSG_SHOP_FOLLOW      = 41      // 关注店铺
 
+export const MSG_PUBLISH_SHOP_PROMOTION      = 50      // 店铺发布活动
+
 export const INIT_MESSENGER_CLIENT = 'INIT_MESSENGER_CLIENT'
 export const INIT_CONVERSATION = 'INIT_CONVERSATION'
 export const CLOSE_MESSENGER_CLIENT = 'CLOSE_MESSENGER_CLIENT'

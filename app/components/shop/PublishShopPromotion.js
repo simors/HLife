@@ -39,6 +39,7 @@ import Loading from '../common/Loading'
 import TimerMixin from 'react-timer-mixin'
 import {fetchShopPromotionDraft,handleDestroyShopPromotionDraft} from '../../action/draftAction'
 import uuid from 'react-native-uuid'
+import * as AVUtils from '../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -294,6 +295,7 @@ class PublishShopPromotion extends Component {
   }
 
   onDefaultTypeBtnPress() {
+    console.log('onDefaultTypeBtnPress')
     if(!this.checkTypeDesc()) {
       return
     }
@@ -555,15 +557,14 @@ class PublishShopPromotion extends Component {
         this.isPublishing = false
         Loading.hide(this.loading)
         Toast.show('活动发布成功')
-        if(this.props.isPop) {
-          this.props.fetchUserOwnedShopInfo()
-          Actions.pop()
-          this.props.handleDestroyShopPromotionDraft({id:this.draftId})
+        
+        this.props.handleDestroyShopPromotionDraft({id:this.draftId})
 
+        Actions.HOME({type:'reset'})
+        if(this.props.isPop) {
+          Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
         }else{
           Actions.SHOP_DETAIL({id: this.state.form.shopId})
-          this.props.handleDestroyShopPromotionDraft({id:this.draftId})
-
         }
       },
       error: ()=>{
@@ -748,6 +749,7 @@ class PublishShopPromotion extends Component {
         <KeyboardAwareToolBar
           initKeyboardHeight={-100}
           hideOverlay={true}
+          notListenKeyboardEvent={!this.state.toolBarInputFocusNum}
         >
           {this.renderToolBarContent()}
         </KeyboardAwareToolBar>
