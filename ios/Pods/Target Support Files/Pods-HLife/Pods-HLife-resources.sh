@@ -18,6 +18,9 @@ case "${TARGETED_DEVICE_FAMILY}" in
   2)
     TARGET_DEVICE_ARGS="--target-device ipad"
     ;;
+  3)
+    TARGET_DEVICE_ARGS="--target-device tv"
+    ;;
   *)
     TARGET_DEVICE_ARGS="--target-device mac"
     ;;
@@ -80,6 +83,12 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "RSKImageCropper/RSKImageCropper/RSKImageCropperStrings.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_resource "Pingpp/lib/Channels/Alipay/AlipaySDK.bundle"
+  install_resource "Pingpp/lib/Pingpp.bundle"
+  install_resource "$PODS_CONFIGURATION_BUILD_DIR/QBImagePickerController/QBImagePicker.bundle"
+  install_resource "RSKImageCropper/RSKImageCropper/RSKImageCropperStrings.bundle"
+fi
+if [[ "$CONFIGURATION" == "Staging" ]]; then
   install_resource "Pingpp/lib/Channels/Alipay/AlipaySDK.bundle"
   install_resource "Pingpp/lib/Pingpp.bundle"
   install_resource "$PODS_CONFIGURATION_BUILD_DIR/QBImagePickerController/QBImagePicker.bundle"

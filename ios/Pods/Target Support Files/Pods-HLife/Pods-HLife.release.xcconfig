@@ -1,4 +1,3 @@
-ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO
 FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Pingpp/lib/Channels/Alipay"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/BVLinearGradient" "${PODS_ROOT}/Headers/Public/Pingpp" "${PODS_ROOT}/Headers/Public/QBImagePickerController" "${PODS_ROOT}/Headers/Public/RNDeviceInfo" "${PODS_ROOT}/Headers/Public/RSKImageCropper" "${PODS_ROOT}/Headers/Public/React"
