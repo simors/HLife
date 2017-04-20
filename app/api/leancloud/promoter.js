@@ -201,3 +201,14 @@ export function cancelAreaAgent(payload) {
     throw err
   })
 }
+
+export function fetchPromoterByNameOrId(payload) {
+  let params = {
+    keyword: payload.keyword,
+  }
+  return AV.Cloud.run('promoterGetPromoterByNameOrId', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

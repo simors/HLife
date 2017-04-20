@@ -18,6 +18,7 @@ import THEME from '../../../constants/themes/theme1'
 import PromoterLevelIcon from './PromoterLevelIcon'
 import {getConversationTime} from '../../../util/numberUtils'
 import {userInfoById} from '../../../selector/authSelector'
+import * as Toast from '../../common/Toast'
 
 class AreaPromoterItem extends Component {
   constructor(props) {
@@ -28,6 +29,10 @@ class AreaPromoterItem extends Component {
   }
 
   setAsAreaAgent(userInfo, promoter) {
+    if (promoter.identity != 0) {
+      Toast.show('此推广员已经是区域代理')
+      return
+    }
     this.setState({selected: true})
     let that = this
     Popup.confirm({
