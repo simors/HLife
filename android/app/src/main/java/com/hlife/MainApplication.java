@@ -17,26 +17,24 @@ import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.hlife.baidumap.BaiduMapPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.rnfs.RNFSPackage;
+
 import java.util.Arrays;
 import java.util.List;
+
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.hlife.RCTPingPP.RCTPingPPPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost;
+    private final ReactNativeHost mReactNativeHost;
 
     {
         mReactNativeHost = new ReactNativeHost(this) {
-            @Override
-            protected boolean getUseDeveloperSupport() {
-                return BuildConfig.DEBUG;
-            }
-    @Override
-    protected String getJSBundleFile() {
-      return CodePush.getJSBundleFile();
-    }
+//    @Override
+//    protected String getJSBundleFile() {
+//      return CodePush.getJSBundleFile();
+//    }
 
             @Override
             protected boolean getUseDeveloperSupport() {
@@ -59,8 +57,8 @@ public class MainApplication extends Application implements ReactApplication {
                         new ImagePickerPackage(),
                         new BaiduMapPackage(getApplicationContext()),
                         new LinearGradientPackage(),
-                        new RCTPingPPPackage(),
-                        new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG)
+                        new RCTPingPPPackage()
+                        //new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG)
                         // Add/change this line.
 
                 );
@@ -69,13 +67,13 @@ public class MainApplication extends Application implements ReactApplication {
     }
 
     @Override
-  public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
-  }
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
+    }
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-  }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, /* native exopackage */ false);
+    }
 }

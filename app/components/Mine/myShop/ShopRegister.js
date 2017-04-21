@@ -173,7 +173,7 @@ class ShopRegister extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('componentWillReceiveProps.nextProps===', nextProps)
+    console.log('componentWillReceiveProps.nextProps===', nextProps)
     if(nextProps.shopName) {
       this.setState({
         shopName: nextProps.shopName
@@ -198,7 +198,7 @@ class ShopRegister extends Component {
       nextProps.inputFormUpdate({
         formKey: shopGeoInput.formKey,
         stateKey: shopGeoInput.stateKey,
-        data: {text:[nextProps.latitude, nextProps.longitude]},
+        data: {text:[nextProps.latitude, nextProps.longitude].join(',')},
       })
     }
     if(nextProps.currentCity) {

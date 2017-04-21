@@ -13,7 +13,9 @@ import {
   TouchableOpacity,
   InteractionManager,
   ScrollView,
-  StatusBar
+  StatusBar,
+  Keyboard,
+  BackAndroid
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -53,7 +55,8 @@ export class TopicDetail extends Component {
     super(props)
     this.state = {
       commentY: 0,
-      comment: undefined
+      comment: undefined,
+      hideBottomView: false,
     }
     this.replyInput = null
   }
@@ -71,10 +74,29 @@ export class TopicDetail extends Component {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
       }
     })
+
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
   }
   componentWillUnmount(){
-    console.log('unmount component')
+    // console.log('unmount component')
+
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
   }
+
   onRightPress = () => {
     this.ActionSheet.show()
   }
@@ -93,12 +115,18 @@ export class TopicDetail extends Component {
       Actions.LOGIN()
     }
     else {
-      if (this.replyInput) {
-        this.replyInput.focus()
-      }
-      if (callback && typeof callback == 'function') {
-        callback()
-      }
+      this.setState({
+        hideBottomView: true
+      }, ()=>{
+        // console.log('openModel===', this.replyInput)
+        if (this.replyInput) {
+          this.replyInput.focus()
+        }
+        if (callback && typeof callback == 'function') {
+          callback()
+        }
+      })
+      
     }
   }
 
@@ -366,6 +394,31 @@ export class TopicDetail extends Component {
     )
   }
 
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   hideBottomView: true
+    // })
+  }
+
+  onKeyboardWillHide = (e) => {
+    // console.log('onKeyboardWillHide')
+    this.setState({
+      hideBottomView: false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
+  }
+
   render() {
     return (
       <View style={styles.containerStyle}>
@@ -394,21 +447,35 @@ export class TopicDetail extends Component {
             {this.renderTopicCommentPage()}
           </ScrollView>
 
-          {this.renderBottomView()}
+          {this.state.hideBottomView
+            ? null
+            : this.renderBottomView()
+          }
         </View>
+
+        {this.state.hideBottomView
+          ? <TouchableOpacity style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} onPress={()=>{dismissKeyboard()}}>
+              <View style={{flex: 1}}/>
+            </TouchableOpacity>
+          : null
+        }
 
         <KeyboardAwareToolBar
           initKeyboardHeight={-normalizeH(50)}
+          hideOverlay={true}
         >
-          <ToolBarContent
-            replyInputRefCallBack={(input)=> {
-              this.replyInput = input
-            }}
-            onSend={(content) => {
-              this.sendReply(content)
-            }}
-            placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
-          />
+          {this.state.hideBottomView
+            ? <ToolBarContent
+                replyInputRefCallBack={(input)=> {
+                  this.replyInput = input
+                }}
+                onSend={(content) => {
+                  this.sendReply(content)
+                }}
+                placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
+              />
+            : null
+          }
         </KeyboardAwareToolBar>
 
         {this.renderActionSheet()}
@@ -424,7 +491,7 @@ export class TopicDetail extends Component {
             height:50,
             borderTopWidth: normalizeBorder(),
             borderTopColor: THEME.colors.lighterA,
-            backgroundColor: 'rgba(250,250,250, 0.9)',
+            backgroundColor: '#f5f5f5',
             justifyContent: 'center',
             alignItems:'center',
             flexDirection:'row'
@@ -443,7 +510,7 @@ export class TopicDetail extends Component {
       }
 
       return (
-        <View style={styles.shopCommentWrap}>
+        <View style={[styles.shopCommentWrap, {position:'absolute',bottom:0,left:0,right:0}]}>
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
             <View style={[styles.vItem]}>
               <Image style={{width:24,height:24}} source={likeImgSource}/>
@@ -575,7 +642,7 @@ const styles = StyleSheet.create({
   shopCommentWrap: {
     borderTopWidth: normalizeBorder(),
     borderTopColor: THEME.colors.lighterA,
-    backgroundColor: 'rgba(250,250,250, 0.9)',
+    backgroundColor: '#f5f5f5',
     flexDirection: 'row',
     height:50
   },

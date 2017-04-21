@@ -13,7 +13,8 @@ import {
   TouchableWithoutFeedback,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  Keyboard
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -49,6 +50,7 @@ class ShopCommentList extends Component {
       replyUserNickName : '',
       replyShopCommentId: '',
       replyShopCommentUserId: '',
+      showOverlay: false
     }
   }
 
@@ -56,6 +58,30 @@ class ShopCommentList extends Component {
     InteractionManager.runAfterInteractions(()=>{
       this.refreshData()
     })
+  }
+
+  componentDidMount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+
+      // BackAndroid.addEventListener('hardwareBackPress', this.onAndroidHardwareBackPress)
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+      // BackAndroid.removeListener('hardwareBackPress', this.onAndroidHardwareBackPress)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,7 +144,7 @@ class ShopCommentList extends Component {
       replyShopCommentUserId: replyShopCommentUserId,
       replyUserNickName: replyUserNickName,
       replyUserId: replyUserId,
-      replyId: replyId
+      replyId: replyId,
     })
   }
 
@@ -153,6 +179,35 @@ class ShopCommentList extends Component {
     })
   }
 
+  overlayPress() {
+    dismissKeyboard()
+  }
+
+  onKeyboardWillShow = (e) => {
+    this.setState({
+      showOverlay: true
+    })
+  }
+
+  onKeyboardWillHide = (e) => {
+    dismissKeyboard()
+    this.setState({
+      showOverlay: false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -179,6 +234,14 @@ class ShopCommentList extends Component {
           }
 
         </View>
+
+        {this.state.showOverlay
+          ? <TouchableOpacity style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} onPress={()=>{this.overlayPress()}}>
+              <View style={{flex: 1}}/>
+            </TouchableOpacity>
+          : null
+        }
+
         <KeyboardAwareToolBar
           initKeyboardHeight={-50}
         >

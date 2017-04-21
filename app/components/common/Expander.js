@@ -34,8 +34,8 @@ export default class Expander extends Component {
 
   _onCommentTextLayout(event) {
     const evtHeight = event.nativeEvent.layout.height
-    console.log('this.showLinesHeight===', this.showLinesHeight)
-    console.log('evtHeight===', evtHeight)
+    // console.log('this.showLinesHeight===', this.showLinesHeight)
+    // console.log('evtHeight===', evtHeight)
     if(evtHeight > this.showLinesHeight) {
       this.setState({
         showExpander: true,

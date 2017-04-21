@@ -49,7 +49,6 @@ import * as Toast from '../common/Toast'
 import {selectShopPromotionList} from '../../selector/shopSelector'
 import {fetchShopPromotionList, clearShopPromotionList} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
-import codePush from 'react-native-code-push'
 // require("NSBundle");
 
 // const version = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString");
@@ -90,8 +89,6 @@ class Home extends Component {
         }
       })
     }
-    codePush.sync()
-
   }
   
   componentWillReceiveProps(nextProps) {

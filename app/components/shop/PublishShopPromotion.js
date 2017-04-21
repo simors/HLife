@@ -157,6 +157,52 @@ class PublishShopPromotion extends Component {
       })
       // console.log('here is uid ',this.draftId)
     },5000)
+
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
+  }
+
+  componentWillUnmount(){
+    // console.log('unmount component')
+
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
+  }
+
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   showOverlay:true
+    // })
+  }
+
+  onKeyboardWillHide = (e) => {
+    this.setState({
+      showOverlay:false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -295,13 +341,13 @@ class PublishShopPromotion extends Component {
   }
 
   onDefaultTypeBtnPress() {
-    console.log('onDefaultTypeBtnPress')
+    // console.log('onDefaultTypeBtnPress')
     if(!this.checkTypeDesc()) {
       return
     }
-    this.setState({
-      showOverlay:false
-    })
+    // this.setState({
+    //   showOverlay:false
+    // })
     dismissKeyboard()
   }
 
@@ -319,17 +365,18 @@ class PublishShopPromotion extends Component {
 
     this.setState({
       type: newTypes,
-      showOverlay:false
+      // showOverlay:false
     })
     dismissKeyboard()
   }
 
   onOverlayPress() {
-    if(this.state.form.typeId != 3) {
-      this.onDefaultTypeBtnPress()
-    }else {
-      this.onCustomTypeBtnPress()
-    }
+    dismissKeyboard()
+    // if(this.state.form.typeId != 3) {
+    //   this.onDefaultTypeBtnPress()
+    // }else {
+    //   this.onCustomTypeBtnPress()
+    // }
   }
 
   checkForm() {
@@ -397,16 +444,19 @@ class PublishShopPromotion extends Component {
 
   renderToolBarContent() {
     // console.log('renderToolBarContent===', this.state.toolBarInputFocusNum)
-    if(this.state.toolBarInputFocusNum) {
-      switch(this.state.toolBarContentType) {
-        case 'DEFAULT_TYPE_INPUT':
-          return this.renderToolBarDefaultTypeInput()
-        case 'CUSTOM_TYPE_INPUT':
-          return this.renderToolBarCustomTypeInput()
-        default:
-          return null
+    if(this.state.showOverlay) {
+      if(this.state.toolBarInputFocusNum) {
+        switch(this.state.toolBarContentType) {
+          case 'DEFAULT_TYPE_INPUT':
+            return this.renderToolBarDefaultTypeInput()
+          case 'CUSTOM_TYPE_INPUT':
+            return this.renderToolBarCustomTypeInput()
+          default:
+            return null
+        }
       }
     }
+    
     return null
   }
 
@@ -739,11 +789,13 @@ class PublishShopPromotion extends Component {
         </View>
 
         {this.state.showOverlay &&
-          <TouchableWithoutFeedback onPress={()=>{
-            this.onOverlayPress()
-          }}>
-            <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} />
-          </TouchableWithoutFeedback>
+          <TouchableOpacity
+            style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}}
+            onPress={()=>{
+              this.onOverlayPress()
+            }}>
+            <View style={{flex:1}} />
+          </TouchableOpacity>
         }
 
         <KeyboardAwareToolBar
