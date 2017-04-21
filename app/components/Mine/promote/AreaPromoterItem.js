@@ -19,12 +19,14 @@ import PromoterLevelIcon from './PromoterLevelIcon'
 import {getConversationTime} from '../../../util/numberUtils'
 import {userInfoById} from '../../../selector/authSelector'
 import * as Toast from '../../common/Toast'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 class AreaPromoterItem extends Component {
   constructor(props) {
     super(props)
     this.state = {
       selected: false,
+      expand: false,
     }
   }
 
@@ -52,6 +54,10 @@ class AreaPromoterItem extends Component {
         }
       }
     })
+  }
+
+  toggleDetail() {
+    this.setState({expand: !this.state.expand})
   }
 
   render() {
@@ -83,13 +89,34 @@ class AreaPromoterItem extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.performView}>
-          <Text style={styles.totalPerformText}>总业绩</Text>
-          <Text style={styles.performText}>{promoter.shopEarnings + promoter.royaltyEarnings}</Text>
+        <TouchableOpacity style={styles.performView} onPress={() => {this.toggleDetail()}}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.totalPerformText}>总业绩</Text>
+            <Text style={styles.performText}>{promoter.shopEarnings + promoter.royaltyEarnings}</Text>
+          </View>
+          <View style={{marginRight: normalizeW(15)}}>
+            <Icon
+              name={this.state.expand ? 'ios-arrow-down' : 'ios-arrow-forward'}
+              style={{color: '#F5F5F5', fontSize: em(28)}}/>
+          </View>
+        </TouchableOpacity>
+        <View style={[styles.detailView, {height:  this.state.expand ? normalizeH(115) : 0, overflow: 'hidden'}]}>
+          <View style={[styles.detailItem, {borderBottomWidth: 1, borderColor: '#FFF'}]}>
+            <Text style={styles.detailTitle}>入驻店铺数</Text>
+            <Text style={styles.detailValue}>{promoter.inviteShopNum}家</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailTitle}>推广团队人数</Text>
+            <Text style={styles.detailValue}>{promoter.teamMemNum}人</Text>
+          </View>
         </View>
       </View>
     )
   }
+}
+
+AreaPromoterItem.defaultProps = {
+  showDetail: false,
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -140,6 +167,7 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(70),
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   totalPerformText: {
     fontSize: em(12),
@@ -148,6 +176,26 @@ const styles = StyleSheet.create({
   },
   performText: {
     fontSize: em(15),
+    color: THEME.base.mainColor,
+  },
+  detailView: {
+    backgroundColor: '#F5F5F5',
+  },
+  detailItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
+    backgroundColor: '#F5F5F5',
+  },
+  detailTitle: {
+    fontSize: em(17),
+    color: '#5A5A5A',
+  },
+  detailValue: {
+    fontSize: em(17),
     color: THEME.base.mainColor,
   },
 })
