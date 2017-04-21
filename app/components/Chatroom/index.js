@@ -113,10 +113,10 @@ class Chatroom extends Component {
       conversationId: this.conversation.id,
       messageIterator: this.messageIterator,
       success: (result) => {
-        console.log('result====', result)
+        // console.log('result====', result)
         let hasMore = result.hasMore
         let messages = result.messages
-        console.log('hasMore===', hasMore)
+        // console.log('hasMore===', hasMore)
 
         this.setState({ hasMore })
 
