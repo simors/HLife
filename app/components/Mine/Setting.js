@@ -10,7 +10,6 @@ import {
   Text,
   Platform,
   TouchableOpacity,
-  NativeModules
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {connect} from 'react-redux'
@@ -25,14 +24,18 @@ import * as Toast from '../../components/common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
 import THEME from '../../constants/themes/theme1'
 import {userLogOut} from '../../action/authActions'
+import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
-const CommonNative = NativeModules.jsVersionUpdate
+const Emitter = (Platform.OS == 'ios' ? NativeEventEmitter : DeviceEventEmitter)
+// const CommonNative = NativeModules.jsVersionUpdate
+const RNDeviceInfo = NativeModules.RNDeviceInfo
 
 class Setting extends Component {
   constructor(props) {
     super(props)
+
   }
 
   clearApplication() {
@@ -81,10 +84,9 @@ class Setting extends Component {
   }
 
   checkUpdate(){
-    console.log('jhahahah',CommonNative)
-    CommonNative.getVersion((data)=> {
-     console.log('data',data)
-    })
+    // console.log('jhahahah',CommonNative)
+
+     console.log('data',RNDeviceInfo.appversion)
   }
   toUserGuide(){
     let payload = {
