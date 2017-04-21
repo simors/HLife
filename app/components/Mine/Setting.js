@@ -141,14 +141,14 @@ class Setting extends Component {
         />
         <View style={styles.itemContainer}>
 
-          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => this.checkUpdate()}>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>
-              <View style={styles.rightWrap}>
-                <Image source={require("../../assets/images/arrow_left.png")}/>
-              </View>
-            </TouchableOpacity>
-          </View>
+          {/*<View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>*/}
+            {/*<TouchableOpacity style={styles.selectItem} onPress={() => this.checkUpdate()}>*/}
+              {/*<Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>*/}
+              {/*<View style={styles.rightWrap}>*/}
+                {/*<Image source={require("../../assets/images/arrow_left.png")}/>*/}
+              {/*</View>*/}
+            {/*</TouchableOpacity>*/}
+          {/*</View>*/}
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.toAbout()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>关于邻家优店</Text>
