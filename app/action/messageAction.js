@@ -177,15 +177,21 @@ export function createConversation(payload) {
     dispatch(createLcConversation(payload)).then((conversation) => {
       if (!conversation) {
         console.log('create conversation failed.')
+        if (payload.error) {
+          payload.error()
+        }
         return
       }
       dispatch(onCreateConversation(conversation))
       dispatch(enterConversation({conversationId: conversation.id}))
       if (payload.success) {
-        payload.success({meesage: '创建对话成功'})
+        payload.success({meesage: '创建对话成功', conversation: conversation})
       }
     }).catch((error) => {
       console.log('failed to create conversation: ', error)
+      if (payload.error) {
+        payload.error(error)
+      }
     })
   }
 }
@@ -218,6 +224,7 @@ export function sendMessage(payload) {
     dispatch(onCreateMessage({createdMsgId: payload.msgId, message: msg}))
 
     dispatch(sendLcTypedMessage(payload)).then((message) => {
+      // console.log('sendLcTypedMessage.message===', message)
       dispatch(onSendMessage({createdMsgId: payload.msgId, message: message}))
     }).catch((error) => {
       console.log(error)
@@ -262,8 +269,13 @@ export function fetchConversation(payload) {
     dispatch(fetchLcConversation(payload)).then((convs) => {
       // console.log('fetchConversation.convs===', convs)
       // console.log('fetchConversation.payload===', payload)
-      let initConversations = createAction(msgTypes.INIT_CONVERSATION)
-      dispatch(initConversations({conversations: convs}))
+      let isRefresh = payload.isRefresh
+      let actionType = msgTypes.FETCH_CONVERSATION
+      if(!isRefresh) {
+        actionType = msgTypes.FETCH_CONVERSATION_PAGING
+      }
+      let action = createAction(actionType)
+      dispatch(action({conversations: new List(convs)}))
       if(payload.success) {
         payload.success(convs.length <= 0)
       }
@@ -272,6 +284,43 @@ export function fetchConversation(payload) {
         payload.error(error)
       }
     })
+  }
+}
+
+export function fetchHistoryChatMessagesByPaging(payload) {
+  return (dispatch, getState) => {
+    let conversationId = payload.conversationId
+    let messageIterator = payload.messageIterator
+
+    messageIterator.next().then(function(result) {
+
+      let lcMsgs = result.value
+      let hasMore = !result.done
+
+      let messages = []
+      lcMsgs.map((msg) => {
+        messages.unshift(Message.fromLeancloudMessage(msg))
+      })
+
+      let action = createAction(msgTypes.FETCH_HISTORY_CHAT_MESSAGES_BY_PAGING_SUCCESS)
+      dispatch(action({
+        conversationId,
+        messages,
+      }))
+
+      if(payload.success) {
+        payload.success({
+          messages,
+          hasMore
+        })
+      }
+      
+    }).catch((err) => {
+      console.log('fetchHistoryChatMessagesByPaging.err===', err)
+      if(payload.error) {
+        payload.error(err)
+      }
+    });
   }
 }
 
@@ -317,7 +366,7 @@ function fetchLcConversation(payload) {
       query.lessThan('updatedAt', new Date(lastUpdatedAt))
     }
 
-    query.limit(10)
+    query.limit(8)
     query.addDescending('updatedAt')
 
     // console.log('fetchLcConversation.query====', query)
@@ -325,7 +374,7 @@ function fetchLcConversation(payload) {
       // console.log('fetchLcConversation.lcConvs====', lcConvs)
       let convs = []
       lcConvs.map((conv) => {
-        convs.unshift(Conversation.fromLeancloudConversation(conv))
+        convs.push(Conversation.fromLeancloudConversation(conv))
       })
       return convs
     }, (error)=>{
@@ -355,6 +404,27 @@ function fetchLcChatMessages(payload) {
       return msgs
     }).catch((err) => {
       console.log(err)
+    })
+  }
+}
+
+export function getLcConversation(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+    }
+
+    return client.getConversation(payload.conversationId).then((conversation)=> {
+      if (payload.success) {
+        payload.success(conversation)
+      }
+    }, (error) =>{
+      if (payload.error) {
+        payload.error()
+      }
     })
   }
 }
