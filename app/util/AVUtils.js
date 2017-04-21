@@ -34,10 +34,13 @@ export function pop(payload) {
   this.isPoping = true  
   if(payload && payload.backSceneName) {
     Actions.pop({popNum:2})
-    Actions[payload.backSceneName](payload.backSceneParams)
-    // setTimeout(()=>{
-    //   Actions[payload.backSceneName](payload.backSceneParams)
-    // }, 10)
+    if(payload.timeout) {
+      setTimeout(()=>{
+        Actions[payload.backSceneName](payload.backSceneParams)
+      }, payload.timeout || 10)
+    }else {
+      Actions[payload.backSceneName](payload.backSceneParams)
+    }
   }else{
     Actions.pop()
   }

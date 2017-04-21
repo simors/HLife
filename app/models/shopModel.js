@@ -291,7 +291,7 @@ export class ShopPromotion extends ShopPromotionRecord {
     let shopPromotion = new ShopPromotionRecord()
     let attrs = lcObj.attributes
     return shopPromotion.withMutations((record)=>{
-      console.log('shopPromotion.lcObj=', lcObj)
+      // console.log('shopPromotion.lcObj=', lcObj)
       record.set('id', lcObj.id)
       record.set('coverUrl', attrs.coverUrl)
       record.set('typeId', attrs.typeId)
