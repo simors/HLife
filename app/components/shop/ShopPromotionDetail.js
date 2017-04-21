@@ -81,6 +81,14 @@ class ShopPromotionDetail extends Component {
     Actions.CHATROOM(payload)
   }
 
+  onShare = () => {
+    Actions.SHARE({
+      title: '活动详情',
+      abstract: '摘要',
+      author: '老王',
+      cover: 'http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png',
+    })
+  }
 
   render() {
     let shopPromotionDetail = this.props.shopPromotionDetail
@@ -96,7 +104,7 @@ class ShopPromotionDetail extends Component {
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightComponent={()=>{
             return (
-              <TouchableOpacity onPress={()=>{Actions.SHARE()}} style={{marginRight:10}}>
+              <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
                 <Image source={require('../../assets/images/active_share.png')}/>
               </TouchableOpacity>
             )
