@@ -362,7 +362,7 @@ export class TopicDetail extends Component {
     // topicLikeUsers = [{},{},{},{},{}]
     // console.log('likesCount====', likesCount)
     // console.log('topicLikeUsers====', topicLikeUsers)
-    if(likesCount) {
+    if(likesCount && topicLikeUsers && topicLikeUsers.length) {
       let topicLikeUsersView = topicLikeUsers.map((item, index)=>{
         if(index > 2) {
           return null
@@ -488,6 +488,7 @@ export class TopicDetail extends Component {
       return (
         <TouchableOpacity 
           style={{
+            position:'absolute',bottom:0,left:0,right:0,
             height:50,
             borderTopWidth: normalizeBorder(),
             borderTopColor: THEME.colors.lighterA,
@@ -591,6 +592,7 @@ const styles = StyleSheet.create({
     }),
     flex: 1,
     backgroundColor: '#E5E5E5',
+    paddingBottom: 50
   },
   topicLikesWrap: {
     flex:1,
