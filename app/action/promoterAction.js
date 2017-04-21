@@ -38,6 +38,8 @@ let setAreaPromoters = createAction(promoterActionTypes.SET_AREA_PROMOTERS)
 let addAreaPromoters = createAction(promoterActionTypes.ADD_AREA_PROMOTERS)
 let setAreaAgent = createAction(promoterActionTypes.SET_AREA_AGENT)
 let cancelAreaAgent = createAction(promoterActionTypes.CANCEL_AREA_AGENT)
+let setEarnRecords = createAction(promoterActionTypes.SET_PROMOTER_EARN_RECORDS)
+let addEarnRecords = createAction(promoterActionTypes.ADD_PROMOTER_EARN_RECORDS)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -470,6 +472,55 @@ export function getPromoterByNameOrId(payload) {
 
       if (payload.success) {
         payload.success(promoterIds.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function getPromoterDealRecords(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.fetchPromoterDealRecords(payload).then((result) => {
+      let deals = result.dealRecords
+      let dealRecords = []
+      deals.forEach((record) => {
+        let dealRecord = {}
+        dealRecord.cost = record.cost
+        dealRecord.promoterId = record.promoterId
+        dealRecord.dealType = record.dealType
+        dealRecord.dealTime = record.dealTime
+        if (record.dealType == 2) {
+          dealRecord.shopId = record.shop.objectId
+          let shop = record.shop
+          let shopRecord = ShopInfo.fromLeancloudApi(shop)
+          dispatch(addShopDetail({id: shop.objectId, shopInfo: shopRecord}))
+        } else if (record.dealType == 1) {
+          dealRecord.invitedPromoterId = record.promoter.objectId
+          dealRecord.userId = record.user.id
+          let promoter = record.promoter
+          let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+          dispatch(updatePromoter({promoterId: record.promoter.objectId, promoter: promoterRecord}))
+          dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId: record.promoter.objectId}))
+          let user = record.user
+          let userInfo = UserInfo.fromLeancloudApi(user)
+          dispatch(addUserProfile({userInfo}))
+        }
+        dealRecords.push(dealRecord)
+      })
+      if (more) {
+        dispatch(addEarnRecords({activePromoterId: activePromoter(getState()), dealRecords: dealRecords}))
+      } else {
+        dispatch(setEarnRecords({activePromoterId: activePromoter(getState()), dealRecords: dealRecords}))
+      }
+      if (payload.success) {
+        payload.success(dealRecords.length == 0)
       }
     }).catch((err) => {
       if (payload.error) {

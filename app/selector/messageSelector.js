@@ -53,6 +53,8 @@ export function getMessages(state, cid) {
     return retMsg
   }
   let messages = conversation.get('messages')
+  // console.log('getMessages. cid====', cid)
+  // console.log('getMessages. messages====', messages)
   if (messages) {
     messages.forEach((msgId) => {
       let mess = getMessageById(state, msgId)
