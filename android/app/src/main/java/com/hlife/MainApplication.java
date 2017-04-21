@@ -22,6 +22,10 @@ import java.util.List;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.hlife.RCTPingPP.RCTPingPPPackage;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
+
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -65,5 +69,13 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    UMShareAPI.get(this); /* 友盟U-Share初始化 */
   }
+    //友盟各个平台的配置，建议放在全局Application或者程序入口
+    {
+        PlatformConfig.setWeixin("wxdcaaa68c51754994", "4adb3299b4f1917d1b3e79949a61cae6");
+        PlatformConfig.setSinaWeibo("3518147218", "92f09fd6160d4a9bf48d741b5643dd6e","http://xiaojee.cn/sns");
+        PlatformConfig.setQQZone("1105990907", "uCDdYxKFG6P8PDQF");
+    }
+
 }
