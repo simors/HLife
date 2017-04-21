@@ -40,6 +40,16 @@ export const AreaAgent = Record({
   userId: undefined,
 })
 
+export const EarnRecord = Record({
+  cost: undefined,              // 收益金额
+  dealType: undefined,          // 收益的类型，1表示邀请推广员，2表示邀请店铺
+  promoterId: undefined,        // 此收益由哪个推广员完成的推广
+  shopId: undefined,            // 如果收益类型为邀请店铺，那么这个字段记录被邀请的店铺id
+  invitedPromoterId: undefined, // 如果收益类型为邀请推广员，那么这个字段记录被邀请推广员的id
+  userId: undefined,            // 如果收益类型为邀请推广员，那么这个字段记录被邀请推广员的用户id
+  dealTime: undefined,          // 记录收益时间
+})
+
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
@@ -95,5 +105,6 @@ export const Promoter = Record({
   areaAgents: List(),               // 存储地区代理信息，值为AreaAgent类型
   shopTenant: Map(),                // 保存各地的店铺入驻费用，键为城市名，值为费用
   areaPromoters: List(),            // 某地区的推广员列表，按照业绩排序
+  dealRecords: Map(),               // 保存推广员的收益记录，键为推广员id，值为记录列表，类型为EarnRecord
 }, 'Promoter')
 

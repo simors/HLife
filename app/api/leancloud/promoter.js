@@ -212,3 +212,16 @@ export function fetchPromoterByNameOrId(payload) {
     throw err
   })
 }
+
+export function fetchPromoterDealRecords(payload) {
+  let params = {
+    promoterId: payload.promoterId,
+    limit: payload.limit,
+    lastTime: payload.lastTime,
+  }
+  return AV.Cloud.run('promoterGetEarningRecords', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

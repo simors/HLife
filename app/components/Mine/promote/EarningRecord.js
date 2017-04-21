@@ -21,6 +21,9 @@ import Header from '../../common/Header'
 import THEME from '../../../constants/themes/theme1'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import CommonListView from '../../common/CommonListView'
+import {getPromoterDealRecords} from '../../../action/promoterAction'
+import {selectEarnRecords} from '../../../selector/promoterSelector'
+import {formatLeancloudTime} from '../../../util/numberUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -28,6 +31,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class EarningRecord extends Component {
   constructor(props) {
     super(props)
+    this.lastTime = undefined
   }
 
   componentWillMount() {
@@ -39,32 +43,83 @@ class EarningRecord extends Component {
   }
 
   loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
 
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.getPromoterDealRecords({
+        promoterId: this.props.promoterId,
+        limit: 10,
+        more: !isRefresh,
+        lastTime: !!isRefresh ? undefined : this.lastTime,
+        success: (isEmpty) => {
+          this.isQuering = false
+          if(!this.listView) {
+            return
+          }
+          this.listView.isLoadUp(!isEmpty)
+        },
+        error: (message) => {
+          this.isQuering = false
+        }
+      })
+    })
   }
 
   renderRow(rowData) {
-    return (
-      <View style={styles.recordItemView}>
-        <View style={styles.itemView}>
-          <View>
-            <Text style={styles.earnTitle}>推广店铺收益</Text>
+    let deal = rowData
+    this.lastTime = deal.dealTime
+    if (deal.dealType == 1) {
+      return (
+        <View style={styles.recordItemView}>
+          <View style={styles.itemView}>
+            <View>
+              <Text style={styles.earnTitle}>提成收益</Text>
+            </View>
+            <View>
+              <Text style={styles.earnValue}>+{deal.cost}</Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.earnValue}>+120.00</Text>
+          <View style={[styles.itemView, {paddingTop: normalizeH(15)}]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image style={styles.iconStyle} resizeMode='contain'
+                     source={require('../../../assets/images/member_commission.png')}/>
+              <Text style={[styles.nameText, {paddingLeft: normalizeW(10)}]}>{deal.user.nickname}</Text>
+            </View>
+            <View>
+              <Text style={styles.dateText}>{formatLeancloudTime(new Date(deal.dealTime), 'YYYY-MM-DD')}</Text>
+            </View>
           </View>
         </View>
-        <View style={[styles.itemView, {paddingTop: normalizeH(15)}]}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image style={styles.iconStyle} resizeMode='contain'
-                   source={require('../../../assets/images/shop_commission.png')}/>
-            <Text style={[styles.nameText, {paddingLeft: normalizeW(10)}]}>乐惠电器电子</Text>
+      )
+    } else if (deal.dealType == 2) {
+      return (
+        <View style={styles.recordItemView}>
+          <View style={styles.itemView}>
+            <View>
+              <Text style={styles.earnTitle}>推广店铺收益</Text>
+            </View>
+            <View>
+              <Text style={styles.earnValue}>+{deal.cost}</Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.dateText}>2017-03-12</Text>
+          <View style={[styles.itemView, {paddingTop: normalizeH(15)}]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image style={styles.iconStyle} resizeMode='contain'
+                     source={require('../../../assets/images/shop_commission.png')}/>
+              <Text style={[styles.nameText, {paddingLeft: normalizeW(10)}]}>{deal.shop.shopName}</Text>
+            </View>
+            <View>
+              <Text style={styles.dateText}>{formatLeancloudTime(new Date(deal.dealTime), 'YYYY-MM-DD')}</Text>
+            </View>
           </View>
         </View>
-      </View>
-    )
+      )
+    } else {
+      return <View/>
+    }
   }
 
   render() {
@@ -99,13 +154,16 @@ class EarningRecord extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2,})
+  let records = selectEarnRecords(state, ownProps.promoterId)
+  console.log('records', records)
 
   return {
-    dataSource: ds.cloneWithRows(['aa', 'bb', 'cc']),
+    dataSource: ds.cloneWithRows(records),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getPromoterDealRecords,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EarningRecord)
