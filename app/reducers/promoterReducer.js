@@ -3,7 +3,7 @@
  */
 import {Record, Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Promoter, AreaAgent} from '../models/promoterModel'
+import {Promoter, AreaAgent, EarnRecord} from '../models/promoterModel'
 import * as promoterActionTypes from '../constants/promoterActionTypes'
 
 const initialState = Promoter()
@@ -46,6 +46,10 @@ export default function promoterReducer(state = initialState, action) {
       return handleSetAreaPromoters(state, action)
     case promoterActionTypes.ADD_AREA_PROMOTERS:
       return handleAddAreaPromoters(state, action)
+    case promoterActionTypes.SET_PROMOTER_EARN_RECORDS:
+      return handleSetEarnRecords(state, action)
+    case promoterActionTypes.ADD_PROMOTER_EARN_RECORDS:
+      return handleAddEarnRecords(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -203,6 +207,49 @@ function handleAddAreaPromoters(state, action) {
   let promoters = action.payload.promoters
   let oldPros = state.get('areaPromoters')
   state = state.set('areaPromoters', oldPros.concat(new List(promoters)))
+  return state
+}
+
+function handleSetEarnRecords(state, action) {
+  let payload = action.payload
+  let activePromoterId = payload.activePromoterId
+  let dealRecords = payload.dealRecords
+  let recordList = []
+  dealRecords.forEach((deal) => {
+    let record = new EarnRecord({
+      cost: deal.cost,
+      dealType: deal.dealType,
+      promoterId: deal.promoterId,
+      shopId: deal.shopId,
+      invitedPromoterId: deal.invitedPromoterId,
+      userId: deal.userId,
+      dealTime: deal.dealTime,
+    })
+    recordList.push(record)
+  })
+  state = state.setIn(['dealRecords', activePromoterId], new List(recordList))
+  return state
+}
+
+function handleAddEarnRecords(state, action) {
+  let payload = action.payload
+  let activePromoterId = payload.activePromoterId
+  let dealRecords = payload.dealRecords
+  let recordList = []
+  let oldRecords = state.getIn(['dealRecords', activePromoterId])
+  dealRecords.forEach((deal) => {
+    let record = new EarnRecord({
+      cost: deal.cost,
+      dealType: deal.dealType,
+      promoterId: deal.promoterId,
+      shopId: deal.shopId,
+      invitedPromoterId: deal.invitedPromoterId,
+      userId: deal.userId,
+      dealTime: deal.dealTime,
+    })
+    recordList.push(record)
+  })
+  state = state.setIn(['dealRecords', activePromoterId], oldRecords.concat(new List(recordList)))
   return state
 }
 
