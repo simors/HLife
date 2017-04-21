@@ -134,7 +134,7 @@ class ChangeAgentView extends Component {
     )
   }
 
-  renderRow(promoter, rowId) {
+  renderRow(promoter, sectionId, rowId) {
     this.maxShopEarnings = promoter.shopEarnings
     this.maxRoyaltyEarnings = promoter.royaltyEarnings
     this.lastTime = promoter.createdAt
@@ -152,7 +152,7 @@ class ChangeAgentView extends Component {
           <CommonListView
             contentContainerStyle={{backgroundColor: '#FFF'}}
             dataSource={this.props.dataSource}
-            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            renderRow={(rowData, sectionId, rowId) => this.renderRow(rowData, sectionId, rowId)}
             loadNewData={()=> {
               this.refreshData()
             }}
