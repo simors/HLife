@@ -105,8 +105,10 @@ class Setting extends Component {
 
       })
     }else if (platform==='android'){
-      console.log('android version')
       checkUpdate().then((result)=>{
+        // console.log('result',result)
+        // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
+
         if(result.version>RNDeviceInfo.appVersion){
           this.isUpdate({trackViewUrl:result.fileUrl})
         }
@@ -124,7 +126,7 @@ class Setting extends Component {
         style: {color: THEME.base.mainColor},
         callback: ()=> {
           // url='https://itunes.apple.com/app/id=1224852246'
-          console.log('result',result)
+          // console.log('result.trackViewUrl',result.trackViewUrl)
           let url= result.trackViewUrl
           Linking.openURL(url).catch(err => console.error('An error occurred', err));
         }
