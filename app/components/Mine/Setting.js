@@ -130,6 +130,15 @@ class Setting extends Component {
     })
   }
 
+  onShare = () => {
+    Actions.SHARE({
+      title: '活动详情',
+      abstract: '摘要',
+      author: '老王',
+      cover: 'http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png',
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -181,6 +190,15 @@ class Setting extends Component {
               </View>
             </TouchableOpacity>
           </View>
+          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
+            <TouchableOpacity style={styles.selectItem} onPress={this.onShare}>
+              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>分享测试</Text>
+              <View style={styles.rightWrap}>
+                <Image source={require("../../assets/images/arrow_left.png")}/>
+              </View>
+            </TouchableOpacity>
+          </View>
+
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1,marginTop:normalizeH(30),backgroundColor:'#F5F5F5', borderColor: '#F7F7F7',width:normalizeW(345),height:normalizeH(50) }}>
             <TouchableOpacity style={{alignItems:'center',justifyContent:'center'}} onPress={() => this.clearUserInfo()}>
               <Text style={[styles.textStyle,{color:'#FF7819',marginTop:normalizeH(16)}]}>退出登录</Text>

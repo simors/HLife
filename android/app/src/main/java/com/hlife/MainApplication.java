@@ -24,6 +24,8 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.hlife.RCTPingPP.RCTPingPPPackage;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
+import com.hlife.RCTShare.RCTSharePackage;
+import com.umeng.socialize.Config;
 
 
 
@@ -54,7 +56,8 @@ public class MainApplication extends Application implements ReactApplication {
                         new ImagePickerPackage(),
                         new BaiduMapPackage(getApplicationContext()),
                         new LinearGradientPackage(),
-                        new RCTPingPPPackage()
+                        new RCTPingPPPackage(),
+                        new RCTSharePackage()
                 );
             }
         };
@@ -69,6 +72,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    Config.DEBUG = true;
     UMShareAPI.get(this); /* 友盟U-Share初始化 */
   }
     //友盟各个平台的配置，建议放在全局Application或者程序入口

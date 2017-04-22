@@ -15,7 +15,6 @@ import {
 import {Actions} from 'react-native-router-flux'
 
 const shareNative = NativeModules.shareComponent
-const PingPP = NativeModules.PingPPModule
 
 
 let icons = [
@@ -41,9 +40,7 @@ export default class Share extends Component {
 
   shareToChannel(shareChannel, targetUrl, title, content, imtUrl) {
     // ShareForAndroid.ShareToChannel(shareChannel, targetUrl, title, content, imtUrl)
-    console.log("shareNative:", shareNative)
-    console.log("PingPP:", PingPP)
-    shareNative.openShareAction("分享内容", "分享标题", "http://www.baidu.com", require('../../assets/images/share_qq.png'))
+    shareNative.openShareAction("分享内容", "分享标题", "http://www.baidu.com", {uri: "http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png"})
   }
 
   componentWillMount() {
