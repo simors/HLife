@@ -1,5 +1,6 @@
 <resources>
-    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">ZWOpNrTdmdA-tJjVt0ZjlrLIYaW8EynCO--RM</string>
+    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">tMm4FpMvRLheM-NTKPwn63qgL9qSEk1T6J40f</string>
+    <!--<string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">ZWOpNrTdmdA-tJjVt0ZjlrLIYaW8EynCO&#45;&#45;RM</string>-->
 
 
 
