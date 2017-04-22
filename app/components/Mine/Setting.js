@@ -26,13 +26,13 @@ import Popup from '@zzzkk2009/react-native-popup'
 import THEME from '../../constants/themes/theme1'
 import {userLogOut} from '../../action/authActions'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
-
+import {checkUpdate} from '../../api/leancloud/update'
+const RNDeviceInfo = NativeModules.RNDeviceInfo
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 const Emitter = (Platform.OS == 'ios' ? NativeEventEmitter : DeviceEventEmitter)
 // const CommonNative = NativeModules.jsVersionUpdate
-const RNDeviceInfo = NativeModules.RNDeviceInfo
 
 class Setting extends Component {
   constructor(props) {
@@ -85,24 +85,34 @@ class Setting extends Component {
       Actions[action]()
     }
   }
-
   checkIosUpdate(){
     // console.log('jhahahah',CommonNative)
-    fetch('https://itunes.apple.com/lookup?id=1224852246',{
-      method:'POST'
-    }).then((data)=>{
-       data.json().then((result)=>{
-         // console.log('data',data)
-         // console.log('result',result.results[0].version)
-         // console.log('data',RNDeviceInfo.appVersion)
-         let version = result.results[0].version
-         if(version>RNDeviceInfo.appVersion){
-           this.isUpdate(result.results[0])
-         }
-       })
+    let platform = Platform.OS
+    if(platform==='ios'){
+      fetch('https://itunes.apple.com/lookup?id=1224852246',{
+        method:'POST'
+      }).then((data)=>{
+        data.json().then((result)=>{
+          // console.log('data',data)
+          // console.log('result',result.results[0].version)
+          // console.log('data',RNDeviceInfo.appVersion)
+          let version = result.results[0].version
+          if(version>RNDeviceInfo.appVersion){
+            this.isUpdate(result.results[0])
+          }
+        })
 
 
-    })
+      })
+    }else if (platform==='android'){
+      console.log('android version')
+      checkUpdate().then((result)=>{
+        if(result.version>RNDeviceInfo.appVersion){
+          this.isUpdate({trackViewUrl:result.fileUrl})
+        }
+      })
+    }
+
   }
 
   isUpdate(result) {
@@ -187,7 +197,7 @@ class Setting extends Component {
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.checkIosUpdate()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>
-              <View style={styles.rightWrap}>
+              <View style={styles.rightWrap}><Text style={{color:'#AAAAAA',fontSize:em(15),marginRight:normalizeW(6)}}>{'V'+RNDeviceInfo.appVersion}</Text>
                 <Image source={require("../../assets/images/arrow_left.png")}/>
               </View>
             </TouchableOpacity>

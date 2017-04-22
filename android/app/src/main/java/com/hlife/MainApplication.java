@@ -52,7 +52,7 @@ public class MainApplication extends Application implements ReactApplication {
             protected List<ReactPackage> getPackages() {
                 return Arrays.<ReactPackage>asList(
                         new MainReactPackage(),
-                        new CodePush("UVaI1g4ok9gon0zc2K4qlYF5hEBfEynCO--RM", MainApplication.this, BuildConfig.DEBUG),
+                        new CodePush("tMm4FpMvRLheM-NTKPwn63qgL9qSEk1T6J40f", MainApplication.this, BuildConfig.DEBUG),
                         new AvOsCloudPackage(),
                         new PickerPackage(),
                         new RNDeviceInfo(),

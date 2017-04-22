@@ -61,7 +61,8 @@ export function publishTopicFormData(payload) {
   }
 }
 
-function handlePublishTopic(payload, formData) {
+function
+handlePublishTopic(payload, formData) {
   return (dispatch, getState) => {
     let position = locSelector.getLocation(getState())
     let province = locSelector.getProvince(getState())

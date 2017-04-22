@@ -21,7 +21,8 @@ import {
   Image,
   Platform,
   InteractionManager,
-  StatusBar
+  StatusBar,
+  Linking
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -50,6 +51,12 @@ import {selectShopPromotionList} from '../../selector/shopSelector'
 import {fetchShopPromotionList, clearShopPromotionList} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
 import codePush from 'react-native-code-push'
+import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
+import {checkUpdate} from '../../api/leancloud/update'
+import Popup from '@zzzkk2009/react-native-popup'
+
+
+const RNDeviceInfo = NativeModules.RNDeviceInfo
 
 // require("NSBundle");
 
@@ -71,7 +78,60 @@ class Home extends Component {
       },
     }
   }
+  checkIosUpdate(){
+    // console.log('jhahahah',CommonNative)
+    let platform = Platform.OS
+    if(platform==='ios'){
+      fetch('https://itunes.apple.com/lookup?id=1224852246',{
+        method:'POST'
+      }).then((data)=>{
+        data.json().then((result)=>{
+          // console.log('data',data)
+          // console.log('result',result.results[0].version)
+          // console.log('data',RNDeviceInfo.appVersion)
+          let version = result.results[0].version
+          if(version>RNDeviceInfo.appVersion){
+            this.isUpdate(result.results[0])
+          }
+        })
 
+
+      })
+    }else if (platform==='android'){
+      checkUpdate().then((result)=>{
+        // console.log('result',result)
+        // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
+
+        if(result.version>RNDeviceInfo.appVersion){
+        this.isUpdate({trackViewUrl:result.fileUrl})
+       }
+      })
+    }
+
+  }
+
+  isUpdate(result) {
+    Popup.confirm({
+      title: '版本更新',
+      content: '是否更新？',
+      ok: {
+        text: '更新',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+          // url='https://itunes.apple.com/app/id=1224852246'
+          // console.log('result.trackViewUrl',result.trackViewUrl)
+          let url= result.trackViewUrl
+          Linking.openURL(url).catch(err => console.error('An error occurred', err));
+        }
+      },
+      cancel: {
+        text: '以后',
+        callback: ()=> {
+          // console.log('cancel')
+        }
+      }
+    })
+  }
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
@@ -91,7 +151,8 @@ class Home extends Component {
         }
       })
     }
-    codePush.sync();
+    this.checkIosUpdate()
+    codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
 
   }
   
