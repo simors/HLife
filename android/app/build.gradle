@@ -118,11 +118,11 @@ android {
 
         releaseStaging {
 
-            //buildConfigField "String", "CODEPUSH_KEY", '"'+properties.getProperty("code_push_key_production")+'"'
+            buildConfigField "String", "CODEPUSH_KEY", "UVaI1g4ok9gon0zc2K4qlYF5hEBfEynCO--RM"
 
         }
         release {
-            //buildConfigField "String", "CODEPUSH_KEY", '"'+properties.getProperty("code_push_key_staging")+'"'
+            buildConfigField "String", "CODEPUSH_KEY", "ISkrN6R56_3sY07P2eMwqEtg-lXNEynCO--RM"
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -147,7 +147,8 @@ android {
 }
 
 dependencies {
-    //compile project(':react-native-code-push')
+    compile project(':react-native-code-push')
+//    compile project(':react-native-code-push')
     compile project(':react-native-linear-gradient')
     compile project(':zzzkk2009-react-native-leancloud-sdk')
     compile project(':react-native-image-crop-picker')

@@ -1,6 +1,7 @@
 package com.hlife;
 
 import android.app.Application;
+import com.microsoft.codepush.react.CodePush;
 
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.beefe.picker.PickerViewPackage;
@@ -31,6 +32,12 @@ public class MainApplication extends Application implements ReactApplication {
 
     {
         mReactNativeHost = new ReactNativeHost(this) {
+
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
+
 //    @Override
 //    protected String getJSBundleFile() {
 //      return CodePush.getJSBundleFile();
@@ -45,6 +52,7 @@ public class MainApplication extends Application implements ReactApplication {
             protected List<ReactPackage> getPackages() {
                 return Arrays.<ReactPackage>asList(
                         new MainReactPackage(),
+                        new CodePush("UVaI1g4ok9gon0zc2K4qlYF5hEBfEynCO--RM", MainApplication.this, BuildConfig.DEBUG),
                         new AvOsCloudPackage(),
                         new PickerPackage(),
                         new RNDeviceInfo(),
