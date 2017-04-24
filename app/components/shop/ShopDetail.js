@@ -436,10 +436,11 @@ class ShopDetail extends Component {
   }
 
   showShopAlbum() {
-    this.props.shopDetail.album.unshift(this.props.shopDetail.coverUrl)
+    let album = this.props.shopDetail.album || []
+    let allAlbum = [this.props.shopDetail.coverUrl].concat(album)
     // console.log('this.props.shopDetail.album==', this.props.shopDetail.album)
     ImageGallery.show({
-      images: this.props.shopDetail.album
+      images: allAlbum
     })
   }
 
@@ -555,6 +556,8 @@ class ShopDetail extends Component {
       detailWrapStyle = styles.detailWrap
     }
 
+    let albumLen = (shopDetail.album.length || 0) + 1
+
     return (
       <View style={{flex:1}}>
         <View style={detailWrapStyle}>
@@ -562,7 +565,11 @@ class ShopDetail extends Component {
             contentContainerStyle={[styles.contentContainerStyle]}
           >
             <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
-              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}>
+                <View style={{position:'absolute',right:15,bottom:15,padding:3,paddingLeft:6,paddingRight:6,backgroundColor:'gray',borderRadius:2,}}>
+                  <Text style={{color:'white',fontSize:15}}>{albumLen}</Text>
+                </View>
+              </Image>
             </TouchableOpacity>
             <View style={styles.shopHead}>
               <View style={styles.shopHeadLeft}>
