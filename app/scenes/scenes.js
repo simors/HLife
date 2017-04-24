@@ -196,7 +196,7 @@ export const scenes = Actions.create(
       <Scene key="MY_DRAFTS" component={Mydrafts}/>
       <Scene key="AREA_DETAIL" component={AreaPromoterDetail}/>
       <Scene key="CHANGE_AGENT" component={ChangeAgentView}/>
-      <Scene key="SHARE" component={Share}/>
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -221,6 +221,7 @@ export const scenes = Actions.create(
 
       <Scene key="POPUP" component={Popup} />
     </Scene>
+    <Scene key="SHARE" component={Share}/>
   </Scene>
 )
 

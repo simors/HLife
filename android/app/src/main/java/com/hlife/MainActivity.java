@@ -10,6 +10,8 @@ import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+import android.os.Bundle;
+import com.hlife.RCTShare.RCTShareModule;
 
 public class MainActivity extends ReactActivity {
 
@@ -20,5 +22,11 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "HLife";
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        RCTShareModule.initSocialSDK(this);
     }
 }

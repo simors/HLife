@@ -40,7 +40,8 @@ export default class Share extends Component {
 
   shareToChannel(shareChannel, targetUrl, title, content, imtUrl) {
     // ShareForAndroid.ShareToChannel(shareChannel, targetUrl, title, content, imtUrl)
-    shareNative.openShareAction("分享内容", "分享标题", "http://www.baidu.com", {uri: "http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png"})
+    // shareNative.openShareAction("分享内容", "分享标题", "http://www.baidu.com", {uri: "http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png"})
+    shareNative.share()
   }
 
   componentWillMount() {

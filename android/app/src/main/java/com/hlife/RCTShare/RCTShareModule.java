@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 public class RCTShareModule extends ReactContextBaseJavaModule {
     private Context context;
+    private static Activity ma;
 
     public RCTShareModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -47,133 +48,43 @@ public class RCTShareModule extends ReactContextBaseJavaModule {
         return "RCTshareComponent";
     }
 
-    @ReactMethod
-    public void openShareAction(String content,String title,String url,ReadableMap imageSource)
-    {
-        Intent intent = new Intent(getCurrentActivity(), RCTShareActivity.class);
-//        intent.putExtra();
-        getCurrentActivity().startActivity(intent);
+    public static void initSocialSDK(Activity activity){
+        ma = activity;
     }
 
-//    @ReactMethod
-//    public void openShareAction(String content,String title,String url,ReadableMap imageSource)
-//    {
-//        final SHARE_MEDIA[] displaylist = new SHARE_MEDIA[]
-//                {
-//                        SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QQ,SHARE_MEDIA.QZONE
-//                };
-//        final Activity tempActivity = this.getCurrentActivity();
-//        final Context tempContext = this.getReactApplicationContext();
-//        final String finalContent = content;
-//        final String finaltitle = title;
-//        final RCTShareModule finalThis = this;
-//        try{
-//            final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
-//
-//            final String finalurl = Uri.encode(url,ALLOWED_URI_CHARS) ;
-//            final String imageUrl = imageSource.getString("uri");
-//
-//            this.getCurrentActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    // TODO Auto-generated method stub
-//                    try{
-//                        UMImage image;
-//                        if(imageUrl.contains("http://")||imageUrl.contains("https://"))
-//                        {
-//                            image = new UMImage(tempActivity, Uri.encode(imageUrl,ALLOWED_URI_CHARS));
-//
-//                        }
-//                        else{
-//                            Uri uri = Uri.parse(imageUrl);
-//                            Bitmap bitmap;
-//                            if(uri.getScheme() == null)
-//                            {
-//                                int resId = finalThis.getResourceDrawableId(tempContext,imageUrl);
-//                                bitmap = BitmapFactory.decodeResource(tempActivity.getResources(),resId);
-//                            }
-//                            else{
-//                                String tempUrlString = "";
-//                                tempUrlString = imageUrl.replace("file://","");
-//                                bitmap = BitmapFactory.decodeFile(tempUrlString);
-//                            }
-//                            image = new UMImage(tempActivity,bitmap);
-//                        }
-////                        new ShareAction(tempActivity).setDisplayList(displaylist)
-////                                .withText(finalContent)
-////                                .withTitle(finaltitle)
-////                                .withTargetUrl(finalurl)
-////                                .withMedia(image)
-////                                .open();
-//                        UMWeb web = new UMWeb("https://baidu.com");
-//                        web.setTitle(finaltitle);
-//                        web.setThumb(image);
-//                        web.setDescription("邻家优店分享测试");
-//
-////                        new ShareAction(tempActivity).setDisplayList(displaylist)
-////                                .withMedia(web).setCallback(umShareListener)
-////                                .open();
-//                        PlatformConfig.setWeixin("wxdcaaa68c51754994", "4adb3299b4f1917d1b3e79949a61cae6");
-//
-//                        new ShareAction(tempActivity).setPlatform(SHARE_MEDIA.WEIXIN_FAVORITE)
-//                                .withMedia(web)
-//                                .setCallback(umShareListener)
-//                                .share();
-//
-//                    }
-//                    catch (Exception e)
-//                    {
-//                        Log.e("友盟分享错误",e.toString());
-//                    }
-//
-//                }
-//            });
-//        }
-//        catch (Exception e) {
-//            Log.e("友盟分享错误", e.toString());
-//        }
-//    }
-//
-//    private int getResourceDrawableId(Context context, @Nullable String name) {
-//        if (name == null || name.isEmpty()) {
-//            return 0;
-//        }
-//        name = name.toLowerCase().replace("-", "_");
-//
-//        int id = context.getResources().getIdentifier(
-//                name,
-//                "drawable",
-//                context.getPackageName());
-//        return id;
-//    }
-//
-//    private UMShareListener umShareListener = new UMShareListener() {
-//
-//        @Override
-//        public void onStart(SHARE_MEDIA platform) {
-//            //分享开始的回调
-//        }
-//        @Override
-//        public void onResult(SHARE_MEDIA platform) {
-//            Log.d("plat","platform"+platform);
-//
-////            Toast.makeText(MainActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
-//
-//        }
-//
-//        @Override
-//        public void onError(SHARE_MEDIA platform, Throwable t) {
-////            Toast.makeText(MainActivity.this,platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
-//            if(t!=null){
-//                Log.d("throw","throw:"+t.getMessage());
-//            }
-//        }
-//
-//        @Override
-//        public void onCancel(SHARE_MEDIA platform) {
-////            Toast.makeText(MainActivity.this,platform + " 分享取消了", Toast.LENGTH_SHORT).show();
-//        }
-//    };
-//
+    @ReactMethod
+    public void share() {
+        UMImage image = new UMImage(ma, "https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/holiday/habo/res/doodle/4.png");
 
+        UMWeb  web = new UMWeb("http://www.baidu.com");
+        web.setTitle("baidu");//标题
+        web.setThumb(image);
+        web.setDescription("百度");
+
+        new ShareAction(ma).setPlatform(SHARE_MEDIA.WEIXIN)
+                .withMedia(web)
+                .setCallback(new UMShareListener() {
+                                 @Override
+                                 public void onStart(SHARE_MEDIA share_media) {
+
+                                 }
+
+                                 @Override
+                                 public void onResult(SHARE_MEDIA share_media) {
+
+                                 }
+
+                                 @Override
+                                 public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+
+                                 }
+
+                                 @Override
+                                 public void onCancel(SHARE_MEDIA share_media) {
+
+                                 }
+                             }
+                )
+                .share();
+    }
 }
