@@ -58,7 +58,8 @@ class ShopDetail extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchShopAnnouncements({id: this.props.id})
+      this.props.fetchShopDetail({id: this.props.id})
+      // this.props.fetchShopAnnouncements({id: this.props.id})
       this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
       this.props.fetchShopCommentTotalCount({id: this.props.id})
       this.props.fetchGuessYouLikeShopList({id: this.props.id})
@@ -73,11 +74,11 @@ class ShopDetail extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(()=>{
-      if(!this.props.shopDetail.id) {
-        this.props.fetchShopDetail({id: this.props.id})
-      }
-    })
+    // InteractionManager.runAfterInteractions(()=>{
+    //   if(!this.props.shopDetail.id) {
+    //     this.props.fetchShopDetail({id: this.props.id})
+    //   }
+    // })
   }
 
   componentWillReceiveProps(nextProps) {

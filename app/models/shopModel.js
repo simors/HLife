@@ -51,9 +51,15 @@ export class ShopInfo extends ShopRecord {
       let attrs = lcObj.attributes
       if(type) {
         lcObj = attrs[type]
-        attrs = attrs[type].attributes
+        if(lcObj) {
+          attrs = lcObj.attributes
+        }else{
+          return shopRecord
+        }
       }
       return shopRecord.withMutations((record) => {
+        // console.log('lcObj======', lcObj)
+        // console.log('attrs======', attrs)
         record.set('id', lcObj.id)
         // record.set('name', attrs.name)
         record.set('phone', attrs.phone)
