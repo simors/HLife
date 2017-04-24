@@ -320,6 +320,27 @@ export function fetchTopicById(payload) {
 
 export function fetchTopicCommentsByTopicId(payload) {
   return (dispatch, getState) => {
+    lcTopics.fetchTopicComments(payload).then((topicComments) => {
+      let actionType = topicActionTypes.FETCH_TOPIC_COMMENTS_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = topicActionTypes.FETCH_TOPIC_COMMENTS_SUCCESS_PAGING
+      }
+      let action = createAction(actionType)
+      dispatch(action({topicId:payload.topicId, topicComments: topicComments}))
+      if(payload.success) {
+        payload.success(topicComments.size == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+/*
+export function fetchTopicCommentsByTopicId(payload) {
+  return (dispatch, getState) => {
     lcTopics.getTopicComments(payload).then((topicComments) => {
       let updateTopicCommentsAction = createAction(topicActionTypes.UPDATE_TOPIC_COMMENTS)
       dispatch(updateTopicCommentsAction({topicId:payload.topicId, topicComments: topicComments}))
@@ -330,6 +351,7 @@ export function fetchTopicCommentsByTopicId(payload) {
     })
   }
 }
+*/
 
 export function likeTopic(payload) {
   return (dispatch, getState) => {

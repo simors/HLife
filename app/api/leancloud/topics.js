@@ -424,6 +424,47 @@ export function getTopicById(payload) {
   })
 }
 
+export function fetchTopicComments(payload) {
+  let topicId = payload.topicId
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  let query = new AV.Query('TopicComments')
+
+  var topic = AV.Object.createWithoutData('Topics', topicId)
+  query.equalTo('topic', topic)
+
+  // console.log('isRefresh====', isRefresh)
+  // console.log('lastCreatedAt====', lastCreatedAt)
+  if(!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
+
+  query.limit(5)
+  
+  query.include(['user']);
+  query.include(['parentComment']);
+  query.include(['parentComment.user']);
+  query.descending('createdAt')
+  // console.log('fetchTopicComments.query====', query)
+  return query.find().then(function (results) {
+    // console.log('fetchTopicComments.results====', results)
+      let topicComments = []
+      if (results) {
+        results.forEach((result) => {
+          topicComments.push(TopicCommentsItem.fromLeancloudObject(result))
+        })
+      }
+      return new List(topicComments)
+    }
+    , function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+}
+
+/**
+* deprecated
+*/
 export function getTopicComments(payload) {
   let topicId = payload.topicId
   let topic = AV.Object.createWithoutData('Topics', topicId);

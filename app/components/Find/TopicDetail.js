@@ -15,7 +15,8 @@ import {
   ScrollView,
   StatusBar,
   Keyboard,
-  BackAndroid
+  BackAndroid,
+  ListView,
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -42,6 +43,7 @@ import {
   fetchTopicLikeUsers
 } from '../../action/topicActions'
 import ActionSheet from 'react-native-actionsheet'
+import CommonListView from '../common/CommonListView'
 
 
 import * as Toast from '../common/Toast'
@@ -63,7 +65,7 @@ export class TopicDetail extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
+      this.refreshData()
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
       if (this.props.isLogin) {
@@ -419,33 +421,108 @@ export class TopicDetail extends Component {
     }
   }
 
+  renderRow(rowData, rowId) {
+    switch (rowData.type) {
+      case 'COLUMN_1':
+        return this.renderTopicContentColumn()
+      case 'COLUMN_2':
+        return this.renderTopicCommentsColumn()
+      default:
+        return <View />
+    }
+  }
+
+  renderTopicContentColumn() {
+    return (
+      <View style={{flex:1}}>
+        <TopicContent 
+          topic={this.props.topic}
+          userFollowersTotalCount={this.props.userFollowersTotalCount}
+          isSelfTopic={this.isSelfTopic()}
+        />
+        <TouchableOpacity style={styles.likeStyle}
+                          onLayout={this.measureMyComponent.bind(this)}
+                          onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers: this.props.topicLikeUsers})}>
+          <View style={styles.topicLikesWrap}>
+            <View style={{flexDirection:'row'}}>
+              <View style={styles.titleLine}/>
+              <Text style={styles.titleTxt}>点赞·{this.props.likesCount}</Text>
+            </View>
+            <View style={{flexDirection:'row'}}>
+              {this.renderTopicLikeUsersView()}
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderTopicCommentsColumn() {
+    return (
+      <View style={{flex:1}}>
+        {this.renderTopicCommentPage()}
+      </View>
+    )
+  }
+
+  refreshData() {
+    this.loadMoreData(true)
+  }
+
+  loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
+    let topic = this.props.topic
+    let lastTopicCommentsCreatedAt = this.props.lastTopicCommentsCreatedAt
+    // console.log('lastTopicCommentsCreatedAt------>', lastTopicCommentsCreatedAt)
+
+    let payload = {
+      topicId: topic.objectId,
+      isRefresh: !!isRefresh,
+      lastCreatedAt: lastTopicCommentsCreatedAt,
+      upType: 'topic',
+      success: (isEmpty) => {
+        this.isQuering = false
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+
+    this.props.fetchTopicCommentsByTopicId(payload)
+  }
+
   render() {
     return (
       <View style={styles.containerStyle}>
         <StatusBar barStyle="dark-content"/>
         {this.renderHeaderView()}
         <View style={styles.body}>
-          <ScrollView style={{}} ref={"scrollView"}>
-            <TopicContent 
-              topic={this.props.topic}
-              userFollowersTotalCount={this.props.userFollowersTotalCount}
-              isSelfTopic={this.isSelfTopic()}
-            />
-            <TouchableOpacity style={styles.likeStyle}
-                              onLayout={this.measureMyComponent.bind(this)}
-                              onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers: this.props.topicLikeUsers})}>
-              <View style={styles.topicLikesWrap}>
-                <View style={{flexDirection:'row'}}>
-                  <View style={styles.titleLine}/>
-                  <Text style={styles.titleTxt}>点赞·{this.props.likesCount}</Text>
-                </View>
-                <View style={{flexDirection:'row'}}>
-                  {this.renderTopicLikeUsersView()}
-                </View>
-              </View>
-            </TouchableOpacity>
-            {this.renderTopicCommentPage()}
-          </ScrollView>
+
+          <CommonListView
+            contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
+            ref={(listView) => this.listView = listView}
+          />  
 
           {this.state.hideBottomView
             ? null
@@ -536,13 +613,32 @@ export class TopicDetail extends Component {
 TopicDetail.defaultProps = {}
 
 const mapStateToProps = (state, ownProps) => {
+
+  let ds = undefined
+  if (ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+
+  let dataArray = []
+  dataArray.push({type: 'COLUMN_1'})
+  dataArray.push({type: 'COLUMN_2'})
+
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
-  const topicComments = getTopicComments(state)
+  const allTopicComments = getTopicComments(state)
+  const topicComments = allTopicComments[ownProps.topic.objectId]
+  let lastTopicCommentsCreatedAt = ''
+  if(topicComments && topicComments.length) {
+    lastTopicCommentsCreatedAt = topicComments[topicComments.length-1].createdAt
+  }
   const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
-  const commentsTotalCount = topicComments[ownProps.topic.objectId] ? topicComments[ownProps.topic.objectId].length : undefined
+  const commentsTotalCount = topicComments ? topicComments.length : undefined
 
 
   let userFollowersTotalCount = 0
@@ -551,14 +647,16 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
-    topicComments: topicComments[ownProps.topic.objectId],
+    ds: ds.cloneWithRows(dataArray),
+    topicComments: topicComments,
     topicLikeUsers: topicLikeUsers,
     likesCount: likesCount,
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
     commentsTotalCount: commentsTotalCount,
-    userFollowersTotalCount: userFollowersTotalCount
+    userFollowersTotalCount: userFollowersTotalCount,
+    lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt
   }
 }
 
