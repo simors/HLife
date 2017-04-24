@@ -53,15 +53,36 @@ public class RCTShareModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void share() {
-        UMImage image = new UMImage(ma, "https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/holiday/habo/res/doodle/4.png");
-
-        UMWeb  web = new UMWeb("http://www.baidu.com");
-        web.setTitle("baidu");//标题
+    public void share(String platform, String url, String title, String thumbnail, String description) {
+        SHARE_MEDIA shareMedia = SHARE_MEDIA.SINA;
+        UMImage image = new UMImage(ma, thumbnail);
+        UMWeb  web = new UMWeb(url);
+        web.setTitle(title);//标题
         web.setThumb(image);
-        web.setDescription("百度");
+        web.setDescription(description);
 
-        new ShareAction(ma).setPlatform(SHARE_MEDIA.WEIXIN)
+        switch (platform)
+        {
+            case "WEIXIN":
+                shareMedia = SHARE_MEDIA.WEIXIN;
+                break;
+            case "WEIXIN_CIRCLE":
+                shareMedia = SHARE_MEDIA.WEIXIN_CIRCLE;
+                break;
+            case "QQ":
+                shareMedia = SHARE_MEDIA.QQ;
+                break;
+            case "QZONE":
+                shareMedia = SHARE_MEDIA.QZONE;
+                break;
+            case "SINA":
+                shareMedia = SHARE_MEDIA.SINA;
+                break;
+            default:
+                break;
+        }
+
+        new ShareAction(ma).setPlatform(shareMedia)
                 .withMedia(web)
                 .setCallback(new UMShareListener() {
                                  @Override

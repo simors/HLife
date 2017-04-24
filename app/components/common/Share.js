@@ -1,6 +1,3 @@
-/**
- * Created by poi_shifeng on 2016/12/21.
- */
 import React, {Component} from 'react'
 import {
   View,
@@ -36,12 +33,6 @@ export default class Share extends Component {
 
   shareUrl(plateform, url, title, description, thumbURL) {
     shareNative.shareURLWithPlate(plateform, {title: title, thumbURL: thumbURL, URL: url, descr: description})
-  }
-
-  shareToChannel(shareChannel, targetUrl, title, content, imtUrl) {
-    // ShareForAndroid.ShareToChannel(shareChannel, targetUrl, title, content, imtUrl)
-    // shareNative.openShareAction("分享内容", "分享标题", "http://www.baidu.com", {uri: "http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png"})
-    shareNative.share()
   }
 
   componentWillMount() {
@@ -115,31 +106,31 @@ export default class Share extends Component {
     switch (index) {
       case 0://QQ
         Platform.OS == 'android' ?
-          this.shareToChannel('qq', targetUri, title, content, imgUri)
+          shareNative.share('QQ', targetUri, title, imgUri, content)
           :
           this.shareUrl(4, targetUri, title, content, imgUri)
         break
       case 1://QZone
         Platform.OS == 'android' ?
-          this.shareToChannel('qzone', targetUri, title, content, imgUri)
+          shareNative.share('QZONE', targetUri, title, imgUri, content)
           :
           this.shareUrl(5, targetUri, title, content, imgUri)
         break
       case 2://WX
         Platform.OS == 'android' ?
-          this.shareToChannel('wx', targetUri, title, content, imgUri)
+          shareNative.share('WEIXIN', targetUri, title, imgUri, content)
           :
           this.shareUrl(1, targetUri, title, content, imgUri)
         break
       case 3://WX_Circle
         Platform.OS == 'android' ?
-          this.shareToChannel('circle', targetUri, title, content, imgUri)
+          shareNative.share('WEIXIN_CIRCLE', targetUri, title, imgUri, content)
           :
           this.shareUrl(2, targetUri, title, content, imgUri)
         break
       case 4://Weibo
         Platform.OS == 'android' ?
-          this.shareToChannel('wb', targetUri, title, content, imgUri)
+          shareNative.share('SINA', targetUri, title, imgUri, content)
           :
           this.shareUrl(0, targetUri, title, content, imgUri)
         break
