@@ -308,8 +308,10 @@ export function getLocalTopics(payload) {
   //   query.lessThan('updatedAt', new Date(lastUpdatedAt))
   // }
   query.equalTo('status',1)
-  query.equalTo('city', city)
-  query.equalTo('province', province)
+  if(city && city != '全国') {
+    query.equalTo('city', city)
+    query.equalTo('province', province)
+  }
 
   query.limit(10)
   query.include(['user'])

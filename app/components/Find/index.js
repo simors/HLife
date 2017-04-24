@@ -144,7 +144,7 @@ export class Find extends Component {
     }
     this.isQuering = true
 
-    console.log('refresh in topic')
+    // console.log('refresh in topic')
 
     let lastCreatedAt = undefined
     let lastUpdatedAt = undefined
@@ -250,7 +250,7 @@ export class Find extends Component {
     }
     return (
       this.props.topicCategories.map((value, key)=> {
-        if (key == 1 && !this.props.localCity) {
+        if (key == 1 && (!this.props.localCity || this.props.localCity == '全国')) {
           return (
             <View key={key} tabLabel={value.title}
                   style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
