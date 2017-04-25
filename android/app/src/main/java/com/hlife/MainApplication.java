@@ -7,7 +7,6 @@ import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.beefe.picker.PickerViewPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactApplication;
-import com.github.wuxudong.rncharts.MPAndroidChartPackage;
 import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -53,7 +52,6 @@ public class MainApplication extends Application implements ReactApplication {
             protected List<ReactPackage> getPackages() {
                 return Arrays.<ReactPackage>asList(
                         new MainReactPackage(),
-            new MPAndroidChartPackage(),
                         new CodePush("tMm4FpMvRLheM-NTKPwn63qgL9qSEk1T6J40f", MainApplication.this, BuildConfig.DEBUG),
                         new AvOsCloudPackage(),
                         new PickerPackage(),
