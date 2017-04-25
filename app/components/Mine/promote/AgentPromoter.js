@@ -135,7 +135,7 @@ class AgentPromoter extends Component {
     lastDaysData.forEach((data) => {
       dataSet.add(data[1])
     })
-    step = dataSet.size - 1
+    step = dataSet.size - 1 > 0 ? dataSet.size - 1 : 1
     return (
       <View style={styles.chartContainer}>
         <Chart
