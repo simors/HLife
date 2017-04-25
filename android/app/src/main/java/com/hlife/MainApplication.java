@@ -7,6 +7,7 @@ import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.beefe.picker.PickerViewPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactApplication;
+import com.zmxv.RNSound.RNSoundPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -51,6 +52,7 @@ public class MainApplication extends Application implements ReactApplication {
             protected List<ReactPackage> getPackages() {
                 return Arrays.<ReactPackage>asList(
                         new MainReactPackage(),
+                        new RNSoundPackage(),
                         new CodePush("LRFxUILuHnlMKRCW_JBlR6hpihP9Ek1T6J40f", MainApplication.this, BuildConfig.DEBUG),
                         new AvOsCloudPackage(),
                         new PickerPackage(),
