@@ -45,8 +45,8 @@ class AgentPromoter extends Component {
 
   componentWillMount() {
     let promoter = this.props.promoter
-    // var date = new Date('2017-04-09')
-    var date = new Date()
+    var date = new Date('2017-04-09')
+    // var date = new Date()
     date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
 
     InteractionManager.runAfterInteractions(()=>{
@@ -84,13 +84,11 @@ class AgentPromoter extends Component {
     let promoter = this.props.promoter
     return (
       <View style={styles.toolView}>
-        <View style={{marginLeft: normalizeW(15)}}>
-          <TouchableOpacity style={{flex: 1}} onPress={() => Actions.pop()}>
-            <Icon
-              name='ios-arrow-back'
-              style={styles.goBack}/>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={{flex: 1, marginLeft: normalizeW(15)}} onPress={() => Actions.pop()}>
+          <Icon
+            name='ios-arrow-back'
+            style={styles.goBack}/>
+        </TouchableOpacity>
         <View style={{flexDirection: 'row', alignItems: 'center', marginRight: normalizeW(15)}}>
           <View style={{marginRight: promoter.identity >= 3 ? 0 : normalizeW(20)}}>
             <TouchableOpacity onPress={() => {Actions.PROMOTER_PERFORMANCE()}}>
@@ -106,7 +104,7 @@ class AgentPromoter extends Component {
   renderAgentIconView() {
     let promoter = this.props.promoter
     return (
-      <View style={{alignSelf: 'center'}}>
+      <View style={{alignSelf: 'center', paddingTop: normalizeH(15)}}>
         <TouchableOpacity>
           <PromoterAgentIcon identity={promoter.identity} province={promoter.province} city={promoter.city} district={promoter.district} />
         </TouchableOpacity>
