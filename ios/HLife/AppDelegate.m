@@ -40,7 +40,7 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [RCTBaiduMapViewManager initSDK:@"veyQHPX4y1dP7rGVPy5f4yxsLGWA6x19"];
+  [RCTBaiduMapViewManager initSDK:@"lM541vkXQcRP8poGBgi065mxEZjrVFQB"];
   return YES;
 }
 
