@@ -51,7 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
             protected List<ReactPackage> getPackages() {
                 return Arrays.<ReactPackage>asList(
                         new MainReactPackage(),
-                        new CodePush("tMm4FpMvRLheM-NTKPwn63qgL9qSEk1T6J40f", MainApplication.this, BuildConfig.DEBUG),
+                        new CodePush("LRFxUILuHnlMKRCW_JBlR6hpihP9Ek1T6J40f", MainApplication.this, BuildConfig.DEBUG),
                         new AvOsCloudPackage(),
                         new PickerPackage(),
                         new RNDeviceInfo(),
@@ -65,7 +65,7 @@ public class MainApplication extends Application implements ReactApplication {
                         new BaiduMapPackage(getApplicationContext()),
                         new LinearGradientPackage(),
                         new RCTPingPPPackage()
-                        //new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG)
+//                        new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG)
                         // Add/change this line.
 
                 );

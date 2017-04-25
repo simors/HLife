@@ -76,6 +76,7 @@
 		DD10AE101E10EF1200A462BD /* RnBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = DD10AE0F1E10EF1200A462BD /* RnBridge.m */; };
 		DDC829ED1E02305700F15C42 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDC829D61E02300E00F15C42 /* libRCTAnimation.a */; };
 		DDE03D971E8BB2D3005FE8F8 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDE03D941E8BAE52005FE8F8 /* libRNDeviceInfo.a */; };
+		DDF5E1951EAF408000DBCC99 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDF5E1721EAF406D00DBCC99 /* libART.a */; };
 		F60FD21424D94BECB5C98C02 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C6A68F38C16488FA39D2939 /* Foundation.ttf */; };
 /* End PBXBuildFile section */
 
@@ -311,6 +312,13 @@
 			remoteGlobalIDString = 3245CDED1BFEE35C00EABF68;
 			remoteInfo = RCTRestart;
 		};
+		DDF5E1711EAF406D00DBCC99 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDF5E16D1EAF406D00DBCC99 /* ART.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0CF68AC11AF0540F00FF9E5C;
+			remoteInfo = ART;
+		};
 		DDF8A7A41E0590DB00D43B3F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */;
@@ -431,6 +439,7 @@
 		DD60CB735C6841798DDA8C44 /* ImageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ImageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/ImageCropPicker.xcodeproj"; sourceTree = "<group>"; };
 		DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		DDE03D941E8BAE52005FE8F8 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRNDeviceInfo.a; path = "../../../../Library/Developer/Xcode/DerivedData/HLife-asiksqtlttydeuftlvcwlkcvotos/Build/Products/Debug-iphoneos/RNDeviceInfo/libRNDeviceInfo.a"; sourceTree = "<group>"; };
+		DDF5E16D1EAF406D00DBCC99 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		DF4DA5D414684B318523496F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBEEPickerManager.a; sourceTree = "<group>"; };
 		F4508DF7717BD0270E31CF83 /* libPods-HLife.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HLife.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -445,6 +454,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDF5E1951EAF408000DBCC99 /* libART.a in Frameworks */,
 				DDE03D971E8BB2D3005FE8F8 /* libRNDeviceInfo.a in Frameworks */,
 				B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */,
 				B66C85C31E68582500C157EA /* libRCTPushNotification.a in Frameworks */,
@@ -642,6 +652,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				DDF5E16D1EAF406D00DBCC99 /* ART.xcodeproj */,
 				7E240EEB1E8BA3CA00D92457 /* RCTPushNotification.xcodeproj */,
 				DDC829CE1E02300E00F15C42 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -880,6 +891,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		DDF5E16E1EAF406D00DBCC99 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDF5E1721EAF406D00DBCC99 /* libART.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DDF8A79E1E0590D900D43B3F /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -964,6 +983,10 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = DDF5E16E1EAF406D00DBCC99 /* Products */;
+					ProjectRef = DDF5E16D1EAF406D00DBCC99 /* ART.xcodeproj */;
+				},
 				{
 					ProductGroup = DDDC40311E28D7A700291C1B /* Products */;
 					ProjectRef = 3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */;
@@ -1304,6 +1327,13 @@
 			remoteRef = DDDC40441E28D7AA00291C1B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		DDF5E1721EAF406D00DBCC99 /* libART.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libART.a;
+			remoteRef = DDF5E1711EAF406D00DBCC99 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DDF8A7A51E0590DB00D43B3F /* libRCTBEEPickerManager.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1581,7 +1611,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = yhQUcQt9cunQ0fWU0L6tb7ugFm5NEk1T6J40f;
+				CODEPUSH_KEY = _h6fAdetZ3OCA6xsQA2PWUGEtBF6Ek1T6J40f;
 				CODE_SIGN_IDENTITY = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				COPY_PHASE_STRIP = YES;
@@ -1760,7 +1790,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = "tMm4FpMvRLheM-NTKPwn63qgL9qSEk1T6J40f";
+				CODEPUSH_KEY = LdCf6ZfVE49Yi5k3GSBOHiy7pxQNEk1T6J40f;
 				CODE_SIGN_IDENTITY = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				COPY_PHASE_STRIP = YES;
