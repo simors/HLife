@@ -32,6 +32,7 @@ android/app/gradlew
 android/app/gradlew.bat
 android/build.gradle
 android/app/src/main/res
+!android/app/src/main/res/raw
 android/app/src/main/assets/index.android.bundle
 android/app/src/main/assets/index.android.bundle.meta
 android/app/app-release.apk
