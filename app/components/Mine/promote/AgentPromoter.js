@@ -26,9 +26,17 @@ import LinearGradient from 'react-native-linear-gradient'
 import PromoterAgentIcon from './PromoterAgentIcon'
 import {selectPromoterStatistics, selectLastDaysPerformance} from '../../../selector/promoterSelector'
 import {getTotalPerformance, getLastDaysPerformance} from '../../../action/promoterAction'
+import Chart from 'react-native-chart'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
+
+const data = [
+  [0, 1],
+  [1, 4],
+  [2, 7],
+  [3, 3],
+];
 
 class AgentPromoter extends Component {
   constructor(props) {
@@ -37,8 +45,9 @@ class AgentPromoter extends Component {
 
   componentWillMount() {
     let promoter = this.props.promoter
-    var date = new Date('2017-04-09')
-    //date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
+    // var date = new Date('2017-04-09')
+    var date = new Date()
+    date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
 
     InteractionManager.runAfterInteractions(()=>{
       this.props.getTotalPerformance({
@@ -116,6 +125,34 @@ class AgentPromoter extends Component {
     )
   }
 
+  renderLastDaysChart() {
+    let step = 0
+    let lastDaysData = this.props.sevenDaysPerf
+    if (!lastDaysData) {
+      return <View/>
+    }
+    let dataSet = new Set()
+    lastDaysData.forEach((data) => {
+      dataSet.add(data[1])
+    })
+    step = dataSet.size - 1
+    return (
+      <View style={styles.chartContainer}>
+        <Chart
+          style={styles.chart}
+          data={lastDaysData}
+          verticalGridStep={step}
+          type="line"
+          showDataPoint={true}
+          lineWidth={3}
+          tightBounds={true}
+          yAxisUseDecimal={true}
+          dataPointFillColor={THEME.base.mainColor}
+        />
+      </View>
+    )
+  }
+
   renderBodyView() {
     if (!this.props.statistics) {
       return <View/>
@@ -145,9 +182,23 @@ class AgentPromoter extends Component {
           </Text>
         </View>
         <View style={styles.sevenTitleView}>
-          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>近七日业绩（万元）</Text>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>近七日业绩（元）</Text>
         </View>
-        {console.log(this.props.lastDaysPerf)}
+        {this.renderLastDaysChart()}
+        <View style={[styles.sevenTitleView, {marginTop: normalizeH(8)}]}>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>六月下辖区域业绩（元)</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <Chart
+            style={styles.chart}
+            data={data}
+            type="bar"
+            showDataPoint={true}
+            verticalGridStep={data.length - 1}
+            tightBounds={true}
+            yAxisUseDecimal={true}
+          />
+        </View>
       </View>
     )
   }
@@ -156,7 +207,7 @@ class AgentPromoter extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
+        <ScrollView style={{flex: 1}}>
           {this.renderHeaderView()}
           {this.renderBodyView()}
         </ScrollView>
@@ -180,9 +231,17 @@ const mapStateToProps = (state, ownProps) => {
     daysKey = province + city + district
   }
   let lastDaysPerf = selectLastDaysPerformance(state, daysKey)
+  let sevenDaysPerf = []
+  lastDaysPerf.forEach((value) => {
+    let data = []
+    let statDate = new Date(value.statDate)
+    data[0] = (statDate.getMonth()+1) + '-' + statDate.getDate()
+    data[1] = value.earning
+    sevenDaysPerf.push(data)
+  })
   return {
     statistics,
-    lastDaysPerf,
+    sevenDaysPerf,
   }
 }
 
@@ -197,8 +256,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: THEME.base.backgroundColor,
-    width: PAGE_WIDTH,
-    height: PAGE_HEIGHT,
   },
   header: {
     width: PAGE_WIDTH,
@@ -262,5 +319,18 @@ const styles = StyleSheet.create({
     height: normalizeH(53),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  chartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingBottom: normalizeH(15),
+    paddingRight: normalizeW(15),
+    height: 200,
+  },
+  chart: {
+    flex: 1,
+    width: PAGE_WIDTH - normalizeW(15),
   },
 })
