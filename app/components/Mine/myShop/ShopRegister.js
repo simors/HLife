@@ -39,6 +39,7 @@ import Loading from '../../common/Loading'
 import * as Utils from '../../../util/Utils'
 import * as configSelector from '../../../selector/configSelector'
 import {store} from '../../../store/persistStore'
+import * as AVUtils from '../../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -254,7 +255,8 @@ class ShopRegister extends Component {
         })
       },
       error: (error)=>{
-        Actions.MINE()
+        AVUtils.switchTab('MINE')
+        // Actions.MINE()
       }
     })
   }

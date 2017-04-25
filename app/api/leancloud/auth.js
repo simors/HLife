@@ -344,7 +344,7 @@ export function _submitCompleteShopInfo(shop, payload) {
   let coverUrl = payload.coverUrl
   let tagIds = payload.tagIds
   let targetShopCategory = null
-  console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
+  // console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
   if(shopCategoryObjectId) {
     targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
     shop.set('targetShopCategory', targetShopCategory)
