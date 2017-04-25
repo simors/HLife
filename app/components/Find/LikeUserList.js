@@ -19,62 +19,135 @@ import Header from '../common/Header'
 import CommonListView from '../common/CommonListView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {em, normalizeW, normalizeH} from '../../util/Responsive'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 import {getConversationTime} from '../../util/numberUtils'
 import FollowUser from '../../components/common/FollowUser'
+import {
+  fetchTopicLikeUsers,
+  fetchTopicLikesCount
+} from '../../action/topicActions'
+import {getTopicLikeUsers, getTopicLikedTotalCount} from '../../selector/topicSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-
-const ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 != r2,
-})
 
 export class LikeUserList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      dataSrc: ds.cloneWithRows(props.topicLikeUsers),
+      
     }
+
+    this.topicLikeUsersCount = props.topicLikeUsersCount
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicLikesCount({
+        topicId: this.props.topicId,
+        success: (likesTotalCount) => {
+          this.topicLikeUsersCount = likesTotalCount
+        }
+      })
+      this.refreshData()
+    })
   }
 
   renderTopicItem(value, key) {
     return (
-      <View key={key} style={{borderBottomWidth: 2,borderColor: '#e5e5e5',}}>
+      <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})} key={key} style={{borderBottomWidth: normalizeBorder(), borderColor: '#e5e5e5',}}>
         <View style={styles.introWrapStyle}>
-          <View style={{flexDirection: 'row'}} onPress={()=> {
-          }}>
-            <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})}>
-              <Image style={styles.avatarStyle}
-                     source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
-            </TouchableOpacity>
+          <View style={{flexDirection: 'row', alignItems:'center'}}>
             <View>
-              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})}>
+              <Image style={styles.avatarStyle}
+                     source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait.png")}/>
+            </View>
+            <View style={{flex:1, marginLeft:10}}>
+              <View>
                 <Text style={styles.userNameStyle}>{value.nickname}</Text>
-              </TouchableOpacity>
+              </View>
               <View style={styles.timeLocationStyle}>
                 <Text style={styles.timeTextStyle}>
                   {getConversationTime(value.createdAt.valueOf())}
                 </Text>
               </View>
             </View>
-
-            <View style={styles.attentionStyle}>
-              <FollowUser
-                userId={value.userId}
-              />
-            </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
-  refreshTopic() {
+  refreshData() {
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
+  loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
+    let lastCreatedAt = this.props.lastCreatedAt
+
+    let payload = {
+      topicId: this.props.topicId,
+      isRefresh: !!isRefresh,
+      lastCreatedAt: lastCreatedAt,
+      success: (resLen) => {
+        this.isQuering = false
+        if(!this.listView) {
+          return
+        }
+
+        // if(isEmpty) {
+        //   this.listView.isLoadUp(false)
+        // }else{
+        //   this.listView.isLoadUp(true)
+        // }
+
+        let topicLikeUsers = this.props.topicLikeUsers
+        let topicLikeUsersLen = topicLikeUsers ? topicLikeUsers.length : 0
+        let totalFetchedLen = resLen + topicLikeUsersLen
+
+        // console.log('resLen===', resLen)
+
+        if(resLen) {
+          if(this.topicLikeUsersCount) {
+            if(this.topicLikeUsersCount <= totalFetchedLen) {
+              this.listView.isLoadUp(false)
+            }else {
+              if(isRefresh) {
+                this.loadMoreData()
+              }
+            }
+          }else {
+            this.props.fetchTopicLikesCount({
+              topicId: this.props.topicId,
+              success: (likesTotalCount) => {
+                this.topicLikeUsersCount = likesTotalCount
+                if(this.topicLikeUsersCount <= totalFetchedLen) {
+                  this.listView.isLoadUp(false)
+                }else {
+                  if(isRefresh) {
+                    this.loadMoreData()
+                  }
+                }
+              }
+            })
+          }
+        }else{
+          this.listView.isLoadUp(false)
+        }
+      },
+      error: (err)=>{
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+
+    this.props.fetchTopicLikeUsers(payload)
   }
 
   render() {
@@ -90,14 +163,15 @@ export class LikeUserList extends Component {
         <View style={styles.body}>
           <CommonListView
             contentContainerStyle={styles.itemLayout}
-            dataSource={this.state.dataSrc}
+            dataSource={this.props.ds}
             renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
             loadNewData={()=> {
-              this.refreshTopic()
+              this.refreshData()
             }}
             loadMoreData={()=> {
               this.loadMoreData()
             }}
+            ref={(listView) => this.listView = listView}
           />
         </View>
       </View>
@@ -106,10 +180,38 @@ export class LikeUserList extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+
+  let ds = undefined
+  if (ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+
+  const topicLikeUsers = getTopicLikeUsers(state, ownProps.topicId)
+
+  const topicLikeUsersLen = topicLikeUsers ? topicLikeUsers.length : 0
+  const topicLikeUsersCount = getTopicLikedTotalCount(state, ownProps.topicId)
+
+  let lastCreatedAt = ''
+  if(topicLikeUsers && topicLikeUsers.length) {
+    lastCreatedAt = topicLikeUsers[topicLikeUsers.length-1].createdAt
+  }
+
+  return {
+    ds: ds.cloneWithRows(topicLikeUsers),
+    topicLikeUsers: topicLikeUsers,
+    lastCreatedAt: lastCreatedAt,
+    topicLikeUsersCount: topicLikeUsersCount,
+  }
 }
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchTopicLikeUsers,
+  fetchTopicLikesCount
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(LikeUserList)
 
@@ -153,18 +255,14 @@ const styles = StyleSheet.create({
   userNameStyle: {
     fontSize: em(15),
     marginTop: 1,
-    marginLeft: 10,
     color: "#4a4a4a"
   },
   attentionStyle: {
     position: "absolute",
     right: normalizeW(10),
     top: normalizeH(6),
-    width: normalizeW(56),
-    height: normalizeH(25)
   },
   timeLocationStyle: {
-    marginLeft: normalizeW(11),
     marginTop: normalizeH(9),
     flexDirection: 'row'
   },

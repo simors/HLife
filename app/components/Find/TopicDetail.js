@@ -67,7 +67,7 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.refreshData()
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
       if (this.props.isLogin) {
         this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       }
@@ -274,7 +274,7 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
     })
   }
 
@@ -433,6 +433,8 @@ export class TopicDetail extends Component {
   }
 
   renderTopicContentColumn() {
+    let topic = this.props.topic
+    topic.objectId
     return (
       <View style={{flex:1}}>
         <TopicContent 
@@ -442,7 +444,7 @@ export class TopicDetail extends Component {
         />
         <TouchableOpacity style={styles.likeStyle}
                           onLayout={this.measureMyComponent.bind(this)}
-                          onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers: this.props.topicLikeUsers})}>
+                          onPress={()=>Actions.LIKE_USER_LIST({topicId: topic.objectId})}>
           <View style={styles.topicLikesWrap}>
             <View style={{flexDirection:'row'}}>
               <View style={styles.titleLine}/>
