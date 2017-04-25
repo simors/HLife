@@ -180,3 +180,11 @@ export function selectEarnRecords(state, promoterId) {
   })
   return earnRecords
 }
+
+export function selectLastDaysPerformance(state, area) {
+  let stat = state.PROMOTER.getIn(['lastDaysPerformance', area])
+  if (!stat) {
+    return []
+  }
+  return stat.toJS()
+}

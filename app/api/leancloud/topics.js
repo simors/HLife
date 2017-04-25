@@ -72,7 +72,8 @@ export function fetchTopicLikesCount(payload) {
   let upType = payload.upType
   let query = new AV.Query('Up')
   query.equalTo('targetId', topicId)
-  query.equalTo('upType', upType)
+  // query.equalTo('upType', upType)
+  query.equalTo('upType', "topic")
   query.equalTo('status', true)
   return query.count().then((results)=> {
     return results
@@ -84,11 +85,23 @@ export function fetchTopicLikesCount(payload) {
 
 export function fetchTopicLikeUsers(payload) {
   let topicId = payload.topicId
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+
   let query = new AV.Query('Up')
+
+  if(!isRefresh && lastCreatedAt) {
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
+
   query.include(['user']);
   query.equalTo('targetId', topicId)
   query.equalTo('upType', "topic")
   query.equalTo('status', true)
+  query.limit(5)
+  query.addDescending('createdAt')
+  
+  // console.log('fetchTopicLikeUsers.query===', query)
   return query.find().then((results)=> {
     let topicLikeUsers = []
     if (results) {

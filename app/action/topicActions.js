@@ -423,8 +423,21 @@ export function fetchTopicIsLiked(payload) {
 export function fetchTopicLikeUsers(payload) {
   return (dispatch, getState) => {
     lcTopics.fetchTopicLikeUsers(payload).then((topicLikeUsers) => {
-      let updateTopicLikeUsersAction = createAction(topicActionTypes.UPDATE_TOPIC_LIKE_USERS)
-      dispatch(updateTopicLikeUsersAction({topicId: payload.topicId, topicLikeUsers: topicLikeUsers}))
+      let actionType = topicActionTypes.FETCH_TOPIC_LIKE_USERS_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = topicActionTypes.FETCH_TOPIC_LIKE_USERS_SUCCESS_PAGING
+      }
+
+      let action = createAction(actionType)
+      dispatch(action({topicId: payload.topicId, topicLikeUsers: topicLikeUsers}))
+
+      if (payload.success) {
+        payload.success(topicLikeUsers.size)
+        // payload.success(topicLikeUsers.size <= 0)
+      }
+
+      // let updateTopicLikeUsersAction = createAction(topicActionTypes.UPDATE_TOPIC_LIKE_USERS)
+      // dispatch(updateTopicLikeUsersAction({topicId: payload.topicId, topicLikeUsers: topicLikeUsers}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

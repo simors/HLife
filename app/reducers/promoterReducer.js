@@ -3,7 +3,7 @@
  */
 import {Record, Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Promoter, AreaAgent, EarnRecord} from '../models/promoterModel'
+import {Promoter, AreaAgent, EarnRecord, DailyPerformance} from '../models/promoterModel'
 import * as promoterActionTypes from '../constants/promoterActionTypes'
 
 const initialState = Promoter()
@@ -50,6 +50,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleSetEarnRecords(state, action)
     case promoterActionTypes.ADD_PROMOTER_EARN_RECORDS:
       return handleAddEarnRecords(state, action)
+    case promoterActionTypes.UPDATE_LAST_DAYS_PERFORMANCE:
+      return handleLastDaysPerformance(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -250,6 +252,42 @@ function handleAddEarnRecords(state, action) {
     recordList.push(record)
   })
   state = state.setIn(['dealRecords', activePromoterId], oldRecords.concat(new List(recordList)))
+  return state
+}
+
+function handleLastDaysPerformance(state, action) {
+  let payload = action.payload
+  let lastDaysPerf = payload.lastDaysPerf
+  let level = payload.level
+  let province = payload.province
+  let city = payload.city
+  let district = payload.district
+
+  let perfs = []
+  lastDaysPerf.forEach((stat) => {
+    let value = new DailyPerformance({
+      level: stat.level,
+      province: stat.province,
+      city: stat.city,
+      district: stat.district,
+      earning: stat.earning,
+      promoterNum: stat.promoterNum,
+      shopNum: stat.shopNum,
+      statDate: stat.statDate,
+    })
+    perfs.push(value)
+  })
+
+  let key = ''
+  if (level == 3) {
+    key = province
+  } else if (level == 2) {
+    key = province + city
+  } else if (level == 1) {
+    key = province + city + district
+  }
+
+  state = state.setIn(['lastDaysPerformance', key], new List(perfs))
   return state
 }
 

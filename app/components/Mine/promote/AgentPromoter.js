@@ -24,8 +24,8 @@ import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import LinearGradient from 'react-native-linear-gradient'
 import PromoterAgentIcon from './PromoterAgentIcon'
-import {selectPromoterStatistics} from '../../../selector/promoterSelector'
-import {getTotalPerformance} from '../../../action/promoterAction'
+import {selectPromoterStatistics, selectLastDaysPerformance} from '../../../selector/promoterSelector'
+import {getTotalPerformance, getLastDaysPerformance} from '../../../action/promoterAction'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -36,11 +36,23 @@ class AgentPromoter extends Component {
   }
 
   componentWillMount() {
+    let promoter = this.props.promoter
+    var date = new Date('2017-04-09')
+    //date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
+
     InteractionManager.runAfterInteractions(()=>{
       this.props.getTotalPerformance({
-        province: this.props.promoter.province,
-        city: this.props.promoter.city,
-        district: this.props.promoter.district,
+        province: promoter.province,
+        city: promoter.city,
+        district: promoter.district,
+      })
+      this.props.getLastDaysPerformance({
+        level: promoter.identity == 1 ? 3 : promoter.identity == 2 ? 2 : 1,
+        province: promoter.province,
+        city: promoter.city,
+        district: promoter.district,
+        days: 7,
+        lastDate: date.toLocaleDateString(),
       })
     })
   }
@@ -135,6 +147,7 @@ class AgentPromoter extends Component {
         <View style={styles.sevenTitleView}>
           <Text style={{fontSize: em(15), color: '#5a5a5a'}}>近七日业绩（万元）</Text>
         </View>
+        {console.log(this.props.lastDaysPerf)}
       </View>
     )
   }
@@ -158,13 +171,24 @@ const mapStateToProps = (state, ownProps) => {
   let district = ownProps.promoter.district
   let area = province + city + district
   let statistics = selectPromoterStatistics(state, area)
+  let daysKey = ''
+  if (ownProps.promoter.identity == 1) {
+    daysKey = province
+  } else if (ownProps.promoter.identity == 2) {
+    daysKey = province + city
+  } else if (ownProps.promoter.identity == 3) {
+    daysKey = province + city + district
+  }
+  let lastDaysPerf = selectLastDaysPerformance(state, daysKey)
   return {
     statistics,
+    lastDaysPerf,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getTotalPerformance,
+  getLastDaysPerformance,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgentPromoter)
