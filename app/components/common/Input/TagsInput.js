@@ -71,10 +71,14 @@ class TagsInput extends Component {
   }
 
   validInput(data) {
-    if (data && data.text && data.text.length > 0) {
+    if(this.props.noCheckInput) {
       return {isVal: true, errMsg: '验证通过'}
+    }else {
+      if (data && data.text && data.text.length > 0) {
+        return {isVal: true, errMsg: '验证通过'}
+      }
+      return {isVal: false, errMsg: '输入有误'}
     }
-    return {isVal: false, errMsg: '输入有误'}
   }
 
   inputChange(text) {

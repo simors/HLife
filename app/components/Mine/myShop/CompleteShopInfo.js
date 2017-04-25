@@ -357,7 +357,7 @@ class CompleteShopInfo extends Component {
     //   Actions.pop()
     // }
     // Actions.MINE()
-    
+
     AVUtils.switchTab('MINE')
   }
 
@@ -492,6 +492,7 @@ class CompleteShopInfo extends Component {
                     onPress={()=>{this.toggleShopTagsSelectShow()}}
                     tags={this.state.selectedShopTags}
                     containerStyle={{height:50}}
+                    noCheckInput={true}
                   />
                 </View>
               </View>
