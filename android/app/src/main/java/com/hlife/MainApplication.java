@@ -1,30 +1,29 @@
 package com.hlife;
 
 import android.app.Application;
-import com.microsoft.codepush.react.CodePush;
 
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.beefe.picker.PickerViewPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactApplication;
-import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;
-import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
+import com.hlife.RCTPingPP.RCTPingPPPackage;
 import com.hlife.baidumap.BaiduMapPackage;
 import com.imagepicker.ImagePickerPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
+import com.microsoft.codepush.react.CodePush;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.rnfs.RNFSPackage;
+import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.lwansbrough.RCTCamera.RCTCameraPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.hlife.RCTPingPP.RCTPingPPPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
