@@ -70,7 +70,7 @@ class TagsInput extends Component {
     }
   }
 
-  validInput(data) {
+  validInput = (data) => {
     if(this.props.noCheckInput) {
       return {isVal: true, errMsg: '验证通过'}
     }else {
