@@ -17,6 +17,7 @@ import AV from 'leancloud-storage'
 import * as LC_CONFIG from './app/constants/appConfig'
 import * as AVUtils from './app/util/AVUtils'
 import {handleAppStateChange} from './app/util/AppStateUtils'
+import codePush from "react-native-code-push";
 
 const RouterWithRedux = connect()(Router)
 
@@ -36,7 +37,7 @@ AV.init(
 )
 
 
-export default class HLifeEntry extends Component {
+ class HLifeEntry extends Component {
   constructor(props) {
     super(props)
   }
@@ -83,3 +84,5 @@ const getSceneStyle = (props, computedProps) => {
   }
   return style
 }
+
+export default HLifeEntry = codePush(HLifeEntry);

@@ -106,13 +106,13 @@ class Home extends Component {
         // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
 
         if(result.version>RNDeviceInfo.appVersion){
-          console.log('what wronghahahahahhaha',result.version,this.props.noUpdateVersion)
+          // console.log('what wronghahahahahhaha',result.version,this.props.noUpdateVersion)
 
           if(result.version>this.props.noUpdateVersion){
-            console.log('what wrong',result.version,this.props.noUpdateVersion)
+            // console.log('what wrong',result.version,this.props.noUpdateVersion)
             this.isUpdate({trackViewUrl:result.fileUrl})
           }else {
-            console.log('here is right',result.version,this.props.noUpdateVersion)
+            // console.log('here is right',result.version,this.props.noUpdateVersion)
 
           }
 
@@ -164,8 +164,9 @@ class Home extends Component {
         }
       })
     }
+    // codePush.sync()
     this.checkIosUpdate()
-    codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
+    // codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
 
   }
   
