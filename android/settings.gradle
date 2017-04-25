@@ -35,5 +35,3 @@ include ':RNSendIntentModule'
 project (':RNSendIntentModule').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-send-intent/android')
 include ':app', ':react-native-code-push'
 project(':react-native-code-push').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-code-push/android/app')
-include ':react-native-charts-wrapper'
-project(':react-native-charts-wrapper').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-charts-wrapper/android')
