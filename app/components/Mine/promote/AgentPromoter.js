@@ -24,8 +24,16 @@ import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import LinearGradient from 'react-native-linear-gradient'
 import PromoterAgentIcon from './PromoterAgentIcon'
-import {selectPromoterStatistics, selectLastDaysPerformance} from '../../../selector/promoterSelector'
-import {getTotalPerformance, getLastDaysPerformance} from '../../../action/promoterAction'
+import {
+  selectPromoterStatistics,
+  selectLastDaysPerformance,
+  selectAreaMonthsPerformance,
+} from '../../../selector/promoterSelector'
+import {
+  getTotalPerformance,
+  getLastDaysPerformance,
+  getAreaMonthsPerformance,
+} from '../../../action/promoterAction'
 import Chart from 'react-native-chart'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -45,9 +53,16 @@ class AgentPromoter extends Component {
 
   componentWillMount() {
     let promoter = this.props.promoter
-    var date = new Date('2017-04-09')
+    var date = new Date('2017-05-09')
     // var date = new Date()
     date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
+
+    var lastYear = date.getFullYear()
+    var lastMonth = date.getMonth()
+    if (lastMonth == 0) {
+      lastMonth = 12
+      lastYear = lastYear - 1
+    }
 
     InteractionManager.runAfterInteractions(()=>{
       this.props.getTotalPerformance({
@@ -62,7 +77,23 @@ class AgentPromoter extends Component {
         district: promoter.district,
         days: 7,
         lastDate: date.toLocaleDateString(),
+        error: (message) => {
+          Toast.show(message)
+        }
       })
+      if (promoter.identity != 3 && promoter.identity != 0) {
+        this.props.getAreaMonthsPerformance({
+          level: promoter.identity == 1 ? 3 : 2,
+          province: promoter.province,
+          city: promoter.city,
+          lastYear: lastYear,
+          lastMonth: lastMonth,
+          months: 6,
+          error: (message) => {
+            Toast.show(message)
+          }
+        })
+      }
     })
   }
 
@@ -135,18 +166,44 @@ class AgentPromoter extends Component {
     })
     step = dataSet.size - 1 > 0 ? dataSet.size - 1 : 1
     return (
-      <View style={styles.chartContainer}>
-        <Chart
-          style={styles.chart}
-          data={lastDaysData}
-          verticalGridStep={step}
-          type="line"
-          showDataPoint={true}
-          lineWidth={3}
-          tightBounds={true}
-          yAxisUseDecimal={true}
-          dataPointFillColor={THEME.base.mainColor}
-        />
+      <View>
+        <View style={styles.sevenTitleView}>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>近七日业绩（元）</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <Chart
+            style={styles.chart}
+            data={lastDaysData}
+            verticalGridStep={step}
+            type="line"
+            showDataPoint={true}
+            lineWidth={3}
+            tightBounds={true}
+            yAxisUseDecimal={true}
+            dataPointFillColor={THEME.base.mainColor}
+          />
+        </View>
+      </View>
+    )
+  }
+
+  renderLastMonthsChart() {
+    return (
+      <View>
+        <View style={[styles.sevenTitleView, {marginTop: normalizeH(8)}]}>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>六月下辖区域业绩（元)</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <Chart
+            style={styles.chart}
+            data={data}
+            type="bar"
+            showDataPoint={true}
+            verticalGridStep={data.length - 1}
+            tightBounds={true}
+            yAxisUseDecimal={true}
+          />
+        </View>
       </View>
     )
   }
@@ -179,24 +236,8 @@ class AgentPromoter extends Component {
             {this.props.statistics.totalPerformance}
           </Text>
         </View>
-        <View style={styles.sevenTitleView}>
-          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>近七日业绩（元）</Text>
-        </View>
         {this.renderLastDaysChart()}
-        <View style={[styles.sevenTitleView, {marginTop: normalizeH(8)}]}>
-          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>六月下辖区域业绩（元)</Text>
-        </View>
-        <View style={styles.chartContainer}>
-          <Chart
-            style={styles.chart}
-            data={data}
-            type="bar"
-            showDataPoint={true}
-            verticalGridStep={data.length - 1}
-            tightBounds={true}
-            yAxisUseDecimal={true}
-          />
-        </View>
+        {this.renderLastMonthsChart()}
       </View>
     )
   }
@@ -220,15 +261,15 @@ const mapStateToProps = (state, ownProps) => {
   let district = ownProps.promoter.district
   let area = province + city + district
   let statistics = selectPromoterStatistics(state, area)
-  let daysKey = ''
+  let areaKey = ''
   if (ownProps.promoter.identity == 1) {
-    daysKey = province
+    areaKey = province
   } else if (ownProps.promoter.identity == 2) {
-    daysKey = province + city
+    areaKey = province + city
   } else if (ownProps.promoter.identity == 3) {
-    daysKey = province + city + district
+    areaKey = province + city + district
   }
-  let lastDaysPerf = selectLastDaysPerformance(state, daysKey)
+  let lastDaysPerf = selectLastDaysPerformance(state, areaKey)
   let sevenDaysPerf = []
   lastDaysPerf.forEach((value) => {
     let data = []
@@ -237,6 +278,9 @@ const mapStateToProps = (state, ownProps) => {
     data[1] = value.earning
     sevenDaysPerf.push(data)
   })
+
+  let areaMonthsPerf = selectAreaMonthsPerformance(state, areaKey)
+  console.log('areaMonthsPerf', areaMonthsPerf)
   return {
     statistics,
     sevenDaysPerf,
@@ -246,6 +290,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getTotalPerformance,
   getLastDaysPerformance,
+  getAreaMonthsPerformance,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgentPromoter)

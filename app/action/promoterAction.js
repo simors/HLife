@@ -41,6 +41,7 @@ let cancelAreaAgent = createAction(promoterActionTypes.CANCEL_AREA_AGENT)
 let setEarnRecords = createAction(promoterActionTypes.SET_PROMOTER_EARN_RECORDS)
 let addEarnRecords = createAction(promoterActionTypes.ADD_PROMOTER_EARN_RECORDS)
 let updateLastDaysPerformance = createAction(promoterActionTypes.UPDATE_LAST_DAYS_PERFORMANCE)
+let updateAreaMonthsPerformance = createAction(promoterActionTypes.UPDATE_AREA_MONTHS_PERFORMANCE)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -541,6 +542,24 @@ export function getLastDaysPerformance(payload) {
         city: payload.city,
         district: payload.district,
         lastDaysPerf: statistics,
+      }))
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function getAreaMonthsPerformance(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.fetchAreaMonthsPerformance(payload).then((stat) => {
+      let statistics = stat.statistics
+      dispatch(updateAreaMonthsPerformance({
+        level: payload.level,
+        province: payload.province,
+        city: payload.city,
+        lastMonthsPerf: statistics,
       }))
     }).catch((err) => {
       if (payload.error) {

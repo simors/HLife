@@ -188,3 +188,11 @@ export function selectLastDaysPerformance(state, area) {
   }
   return stat.toJS()
 }
+
+export function selectAreaMonthsPerformance(state, area) {
+  let stat = state.PROMOTER.getIn(['areaLastMonthsPerformance', area])
+  if (!stat) {
+    return []
+  }
+  return stat.toJS()
+}
