@@ -27,8 +27,8 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {getBanner, selectShopCategories, getTopicCategories} from '../../selector/configSelector'
-import {fetchBanner, fetchShopCategories, getAllTopicCategories} from '../../action/configAction'
+import {getBanner, selectShopCategories, getTopicCategories,getNoUpdateVersion} from '../../selector/configSelector'
+import {fetchBanner, fetchShopCategories, getAllTopicCategories,fetchAppNoUpdate} from '../../action/configAction'
 import {getCurrentLocation} from '../../action/locAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -91,7 +91,10 @@ class Home extends Component {
           // console.log('data',RNDeviceInfo.appVersion)
           let version = result.results[0].version
           if(version>RNDeviceInfo.appVersion){
-            this.isUpdate(result.results[0])
+            if(result.version>this.props.noUpdateVersion) {
+
+              this.isUpdate(result.results[0])
+            }
           }
         })
 
@@ -103,7 +106,16 @@ class Home extends Component {
         // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
 
         if(result.version>RNDeviceInfo.appVersion){
-        this.isUpdate({trackViewUrl:result.fileUrl})
+          // console.log('what wronghahahahahhaha',result.version,this.props.noUpdateVersion)
+
+          if(result.version>this.props.noUpdateVersion){
+            // console.log('what wrong',result.version,this.props.noUpdateVersion)
+            this.isUpdate({trackViewUrl:result.fileUrl})
+          }else {
+            // console.log('here is right',result.version,this.props.noUpdateVersion)
+
+          }
+
        }
       })
     }
@@ -127,7 +139,8 @@ class Home extends Component {
       cancel: {
         text: '以后',
         callback: ()=> {
-          // console.log('cancel')
+          // console.log('cancel',result.version)
+          this.props.fetchAppNoUpdate({noUpdateVersion:result.version})
         }
       }
     })
@@ -151,8 +164,9 @@ class Home extends Component {
         }
       })
     }
+    // codePush.sync()
     this.checkIosUpdate()
-    codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
+    // codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
 
   }
   
@@ -362,8 +376,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const allShopCategories = selectShopCategories(state)
-  // console.log('Home.allShopCategories*********>>>>>>>>>>>', allShopCategories)
-  
+  const noUpdateVersion = getNoUpdateVersion(state)
+  // console.log('Home.allShopCategories*********>>>>>>>>>>>', noUpdateVersion)
+
   return {
     // announcement: announcement,
     banner: banner,
@@ -374,6 +389,7 @@ const mapStateToProps = (state, ownProps) => {
     nextSkipNum: nextSkipNum,
     shopPromotionList: shopPromotionList,
     allShopCategories: allShopCategories,
+    noUpdateVersion:noUpdateVersion,
   }
 }
 
@@ -384,6 +400,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionList,
   clearShopPromotionList,
   fetchShopCategories,
+  fetchAppNoUpdate
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
