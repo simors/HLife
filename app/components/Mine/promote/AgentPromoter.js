@@ -35,6 +35,7 @@ import {
   getAreaMonthsPerformance,
 } from '../../../action/promoterAction'
 import Chart from 'react-native-chart'
+import ViewPager from '../../common/ViewPager'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -49,19 +50,22 @@ const data = [
 class AgentPromoter extends Component {
   constructor(props) {
     super(props)
+    this.lastYear = 0
+    this.lastMonth = 0
+    this.months = 3
   }
 
   componentWillMount() {
     let promoter = this.props.promoter
-    var date = new Date('2017-05-09')
-    // var date = new Date()
+    // var date = new Date('2017-05-09')
+    var date = new Date()
     date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
 
-    var lastYear = date.getFullYear()
-    var lastMonth = date.getMonth()
-    if (lastMonth == 0) {
-      lastMonth = 12
-      lastYear = lastYear - 1
+    this.lastYear = date.getFullYear()
+    this.lastMonth = date.getMonth()
+    if (this.lastMonth == 0) {
+      this.lastMonth = 12
+      this.lastYear = this.lastYear - 1
     }
 
     InteractionManager.runAfterInteractions(()=>{
@@ -86,9 +90,9 @@ class AgentPromoter extends Component {
           level: promoter.identity == 1 ? 3 : 2,
           province: promoter.province,
           city: promoter.city,
-          lastYear: lastYear,
-          lastMonth: lastMonth,
-          months: 6,
+          lastYear: this.lastYear,
+          lastMonth: this.lastMonth,
+          months: this.months,
           error: (message) => {
             Toast.show(message)
           }
@@ -187,19 +191,68 @@ class AgentPromoter extends Component {
     )
   }
 
-  renderLastMonthsChart() {
+  renderLastMonthsChart(data, sec, index) {
+    return (
+      <View>
+        {data}
+      </View>
+    )
+  }
+
+  renderAreaMonthsPager() {
+    if (!this.props.areaMonthsPerf || this.props.areaMonthsPerf.length == 0) {
+      return <View/>
+    }
+    let pages = []
+    let ds = new ViewPager.DataSource({
+      pageHasChanged: (p1, p2) => p1 !== p2,
+    })
+    this.props.areaMonthsPerf.forEach((value) => {
+      if (value.length > 0) {
+        pages.push(this.renderAreaMonthsBarChart(value))
+      }
+    })
+    if (pages.length == 0) {
+      return (
+        <View style={styles.emptyView}>
+          <Text style={{fontSize: em(15), color: '#5A5A5A'}}>暂无月度统计数据</Text>
+        </View>
+      )
+    }
+    return (
+      <ViewPager
+        style={{flex:1}}
+        dataSource={ds.cloneWithPages(pages)}
+        renderPage={(data, sec, index) => this.renderLastMonthsChart(data, sec, index)}
+        isLoop={false}
+        autoPlay={false}
+        initialPage={pages.length > 0 ? pages.length - 1 : 0}
+      />
+    )
+  }
+
+  renderAreaMonthsBarChart(stat) {
+    let barData = []
+    let month = 0
+    stat.forEach((value) => {
+      let subData = []
+      subData[0] = value.city
+      subData[1] = value.earning
+      month = value.month
+      barData.push(subData)
+    })
     return (
       <View>
         <View style={[styles.sevenTitleView, {marginTop: normalizeH(8)}]}>
-          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>六月下辖区域业绩（元)</Text>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>{month}月下辖区域业绩（元)</Text>
         </View>
         <View style={styles.chartContainer}>
           <Chart
             style={styles.chart}
-            data={data}
+            data={barData}
             type="bar"
             showDataPoint={true}
-            verticalGridStep={data.length - 1}
+            verticalGridStep={barData.length - 1}
             tightBounds={true}
             yAxisUseDecimal={true}
           />
@@ -237,7 +290,7 @@ class AgentPromoter extends Component {
           </Text>
         </View>
         {this.renderLastDaysChart()}
-        {this.renderLastMonthsChart()}
+        {this.renderAreaMonthsPager()}
       </View>
     )
   }
@@ -256,6 +309,8 @@ class AgentPromoter extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+
+
   let province = ownProps.promoter.province
   let city = ownProps.promoter.city
   let district = ownProps.promoter.district
@@ -280,10 +335,10 @@ const mapStateToProps = (state, ownProps) => {
   })
 
   let areaMonthsPerf = selectAreaMonthsPerformance(state, areaKey)
-  console.log('areaMonthsPerf', areaMonthsPerf)
   return {
     statistics,
     sevenDaysPerf,
+    areaMonthsPerf,
   }
 }
 
@@ -375,5 +430,13 @@ const styles = StyleSheet.create({
   chart: {
     flex: 1,
     width: PAGE_WIDTH - normalizeW(15),
+  },
+  emptyView: {
+    width: PAGE_WIDTH,
+    height: normalizeH(100),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF',
+    marginTop: normalizeH(8),
   },
 })
