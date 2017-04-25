@@ -15,6 +15,10 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopics(state, action)
     case TopicTypes.UPDATE_TOPIC_COMMENTS:
       return handleUpdateTopicComments(state, action)
+    case TopicTypes.FETCH_TOPIC_COMMENTS_SUCCESS:
+      return handleFetchTopicCommentsSuccess(state, action)
+    case TopicTypes.FETCH_TOPIC_COMMENTS_SUCCESS_PAGING:
+      return handleFetchTopicCommentsSuccessPaging(state, action)  
     case TopicTypes.FETCH_TOPIC_LIKES_TOTAL_COUNT_SUCCESS:
       return handleUpdateTopicLikesTotalCount(state, action)
     case TopicTypes.FETCH_TOPIC_IS_LIKED_SUCCESS:
@@ -38,6 +42,29 @@ export default function topicReducer(state = initialState, action) {
     default:
       return state
   }
+}
+
+function handleFetchTopicCommentsSuccess(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let topicComments = payload.topicComments
+  state = state.setIn(['topicComments', topicId], topicComments)
+  return state
+}
+
+function handleFetchTopicCommentsSuccessPaging(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let topicComments = payload.topicComments
+  let oldTopicComments = state.getIn(['topicComments', topicId])
+  let newTopicComments = new List([])
+  if(oldTopicComments && oldTopicComments.size) {
+    newTopicComments = oldTopicComments.concat(topicComments)
+  }else{
+    newTopicComments = oldTopicComments
+  }
+  state = state.setIn(['topicComments', topicId], newTopicComments)
+  return state
 }
 
 function handleFetchUserTopicsTotalCountSuccess(state, action) {

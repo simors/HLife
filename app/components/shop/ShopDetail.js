@@ -557,7 +557,7 @@ class ShopDetail extends Component {
       detailWrapStyle = styles.detailWrap
     }
 
-    let albumLen = (shopDetail.album.length || 0) + 1
+    let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
 
     return (
       <View style={{flex:1}}>

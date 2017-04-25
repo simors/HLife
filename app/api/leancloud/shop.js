@@ -75,6 +75,7 @@ export function getShopList(payload) {
     // query.addDescending('geo')
   }
   query.limit(5) // 最多返回 5 条结果
+
   if(distance) {
     // console.log('getShopList.geo===', geo)
     // console.log('getShopList.Array.isArray(geo)===', Array.isArray(geo))
@@ -85,13 +86,15 @@ export function getShopList(payload) {
   }else {
     // console.log('getShopList.geoCity===', geoCity)
     // console.log('getShopList.typeof geoCity===', typeof geoCity)
-    if(geoCity) {
+    if(geoCity && geoCity != '全国') {
       query.contains('geoCity', geoCity)
     }
+
     if (Array.isArray(geo)) {
       let point = new AV.GeoPoint(geo)
       query.withinKilometers('geo', point, 100)
     }
+    
   }
   if(shopTagId) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)

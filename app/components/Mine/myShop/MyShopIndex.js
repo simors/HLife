@@ -285,15 +285,21 @@ class MyShopIndex extends Component {
   }
 
   showShopAlbum() {
-    this.props.shopDetail.album.unshift(this.props.shopDetail.coverUrl)
+    let album = this.props.shopDetail.album || []
+    let allAlbum = [this.props.shopDetail.coverUrl].concat(album)
+    // this.props.shopDetail.album.unshift(this.props.shopDetail.coverUrl)
     // console.log('this.props.shopDetail.album==', this.props.shopDetail.album)
     ImageGallery.show({
-      images: this.props.shopDetail.album
+      images: allAlbum
     })
   }
 
   render() {
     // console.log('this.props.shopDetail===', this.props.shopDetail)
+
+    let shopDetail = this.props.shopDetail
+    let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
+
     return (
       <View style={styles.container}>
         <Header
@@ -310,7 +316,11 @@ class MyShopIndex extends Component {
             >
               <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
                 {this.props.shopDetail.coverUrl
-                  ? <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+                  ? <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}>
+                      <View style={{position:'absolute',right:15,bottom:15,paddingLeft:6,paddingRight:6,backgroundColor:'gray',borderRadius:2,}}>
+                        <Text style={{color:'white',fontSize:15}}>{albumLen}</Text>
+                      </View>
+                    </Image>
                   : <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={require('../../../assets/images/background_shop.png')}/>
                 }
               </TouchableOpacity>

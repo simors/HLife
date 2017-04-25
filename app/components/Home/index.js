@@ -308,7 +308,6 @@ class Home extends Component {
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
               loadNewData={()=> {
-                console.log('CommonListView.loadNewData')
                 this.refreshData()
               }}
               loadMoreData={()=> {
