@@ -29,6 +29,7 @@ import PhoneInput from '../../common/Input/PhoneInput'
 import CommonTextInput from '../../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
 import {getShopTenant} from '../../../action/promoterAction'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
@@ -174,7 +175,7 @@ class ShopRegister extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps.nextProps===', nextProps)
+    // console.log('componentWillReceiveProps.nextProps===', nextProps)
     if(nextProps.shopName) {
       this.setState({
         shopName: nextProps.shopName
@@ -241,6 +242,7 @@ class ShopRegister extends Component {
       province: shopInfo.geoProvince,
       city: shopInfo.geoCity,
       success: (tenant) =>{
+        this.props.fetchUserOwnedShopInfo()
         Actions.PAYMENT({
           metadata: {shopId:shopInfo.id, tenant: tenant},
           price: tenant,
@@ -557,7 +559,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
   inputFormUpdate,
   initInputForm,
-  getShopTenant
+  getShopTenant,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopRegister)

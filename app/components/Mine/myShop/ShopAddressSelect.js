@@ -154,14 +154,14 @@ class ShopAddressSelect extends Component {
   }
 
   onKeyboardDidShow = (e) => {
-    console.log('onKeyboardDidShow')
+    // console.log('onKeyboardDidShow')
     if (Platform.OS === 'android') {
       this.onKeyboardWillShow(e)
     }
   }
 
   onKeyboardDidHide = (e) => {
-    console.log('onKeyboardDidHide')
+    // console.log('onKeyboardDidHide')
     if (Platform.OS === 'android') {
       this.onKeyboardWillHide(e)
     }
@@ -181,6 +181,7 @@ class ShopAddressSelect extends Component {
   }
 
   updateInfoByLatLng(latitude, longitude) {
+    // console.log('reverseGeoCode.latitude===', latitude)
     Geolocation.reverseGeoCode(latitude, longitude)
       .then(data => {
         // console.log('reverseGeoCode.data===', data)
