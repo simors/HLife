@@ -12,6 +12,7 @@ export function createPingppPayment(payload) {
     order_no: payload.order_no,
     amount: payload.amount,
     channel: payload.channel,
+    metadata: payload.metadata
   }
 
   return AV.Cloud.run('hLifeCreatePayment', params).then((chargeInfo) => {

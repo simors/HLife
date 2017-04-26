@@ -15,6 +15,7 @@ export function createPingppPayment(payload) {
       order_no: payload.order_no,
       amount: payload.amount,
       channel: payload.channel,
+      metadata: payload.metadata
     }
     lcPayment.createPingppPayment(paymentPayload).then((result) => {
       console.log("lcPayment.createPingppPayment return", result)
