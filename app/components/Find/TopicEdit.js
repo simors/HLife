@@ -154,7 +154,7 @@ class TopicEdit extends Component {
       this.draftId=this.props.topic.objectId
     }
     this.setInterval(()=>{
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
       })
       // console.log('here is uid ',this.draftId)
     },5000)
@@ -249,7 +249,7 @@ class TopicEdit extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => {this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+          leftPress={() => {this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
           abstract:this.props.topic.abstract})
             Actions.pop()}}
           title="更新话题"

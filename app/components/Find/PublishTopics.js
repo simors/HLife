@@ -143,7 +143,7 @@ class PublishTopics extends Component {
     }
     this.setInterval(()=>{
 
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
       })
       // console.log('here is uid ',this.draftId)
     },5000)
@@ -236,7 +236,7 @@ class PublishTopics extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => {
-            this.props.fetchTopicDraft({draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+            this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
             })
             Actions.pop({type:'refresh'})}}
           title="发布话题"

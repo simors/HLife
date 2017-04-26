@@ -29,6 +29,7 @@ function updateShopPromotionDraft(state,action){
   let payload = action.payload
   console.log('payload======>',payload)
   let id = payload.draftId
+  let userId = payload.userId
   let data = {...payload}
   let _map = state.get('shopPromotions')
   _map = _map.set(id, data)
@@ -41,6 +42,8 @@ function updateTopicDraft(state,action){
   let payload = action.payload
   console.log('payload',payload)
   let id = payload.id
+  let userId = payload.userId
+
   // let topicDraft = payload.topicDraft
   // let draftD = payload.draftDate
   // let images = payload.images
@@ -48,6 +51,7 @@ function updateTopicDraft(state,action){
   // let city = payload.city
   let data = {...payload}
   let _map = state.get('topics')
+  // _map = _map.set(userId,_map)
   _map = _map.set(id, data)
   state = state.set('topics', _map)
   return state

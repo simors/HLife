@@ -34,6 +34,7 @@ import THEME from '../../../constants/themes/theme1'
 import ShopPromotionDraftShow from './shopPromotionDraftShow'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as Toast from '../../../components/common/Toast'
+import * as authSelector from '../../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -327,27 +328,52 @@ export class MyTopic extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
+  const userId = authSelector.activeUserId(state)
   const topics = getMyTopicDrafts(state)
   const shopPromotions = getMyShopPromotionDrafts(state)
-  // console.log('shopPromotions',shopPromotions)
-  let topicArr = []
-  // for (let key in topics) {
-  //   topicArr.push({
-  //     key: key, data: {
-  //       content: topics[key].content, //话题内容
-  //       title: topics[key].title,
-  //       abstract: topics[key].abstract,
-  //       imgGroup: topics[key].imgGroup, //图片
-  //       objectId: topics[key].topicId,  //话题id
-  //       categoryId: topics[key].categoryId,
-  //       city: topics[key].city,
-  //       draftDay: topics[key].draftDay,
-  //       draftMonth: topics[key].draftMonth
-  //     }
-  //   })
-  //   console.log('topicArr', topicArr)
-  // }
+
+  // let topicArr = []
+  for (let key in topics) {
+    // topicArr.push({
+    //   key: key, data: {
+    //     content: topics[key].content, //话题内容
+    //     title: topics[key].title,
+    //     abstract: topics[key].abstract,
+    //     imgGroup: topics[key].imgGroup, //图片
+    //     objectId: topics[key].topicId,  //话题id
+    //     categoryId: topics[key].categoryId,
+    //     city: topics[key].city,
+    //     draftDay: topics[key].draftDay,
+    //     draftMonth: topics[key].draftMonth
+    //   }
+    // })  console.log('topics',topics)
+    // console.log('key',key)
+
+    if(topics[key].userId!=userId){
+      console.log('userId',userId)
+      delete topics[key]
+    }
+  }
+  for (let key in shopPromotions) {
+    // topicArr.push({
+    //   key: key, data: {
+    //     content: topics[key].content, //话题内容
+    //     title: topics[key].title,
+    //     abstract: topics[key].abstract,
+    //     imgGroup: topics[key].imgGroup, //图片
+    //     objectId: topics[key].topicId,  //话题id
+    //     categoryId: topics[key].categoryId,
+    //     city: topics[key].city,
+    //     draftDay: topics[key].draftDay,
+    //     draftMonth: topics[key].draftMonth
+    //   }
+    // })
+    if(shopPromotions[key].userId!=userId){
+      delete shopPromotions[key]
+    }
+  }
+  // console.log('topics',topics)
+
   return {
     shopDataSrc: ds.cloneWithRows(shopPromotions),
     dataSrc: ds.cloneWithRows(topics),
