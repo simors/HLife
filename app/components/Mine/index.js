@@ -129,7 +129,11 @@ class Mine extends Component {
           Actions.PROMOTER_PERFORMANCE()
         }
       } else {
-        Actions.PAYMENT({title: '支付推广员注册费', price: this.props.fee})
+        Actions.PAYMENT({
+          title: '支付推广员注册费',
+          price: this.props.fee,
+          metadata: {'promoterId': this.props.promoter.id},
+        })
       }
     } else {
       Actions.PROMOTER_AUTH()

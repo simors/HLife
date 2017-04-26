@@ -110,7 +110,7 @@ class PromoterAuth extends Component {
         Actions.PAYMENT({
           title: '支付推广员注册费',
           price: this.props.fee,
-          metadata: {promoterId: promoterId},
+          metadata: {'promoterId': promoterId},
           popNum: 2,
           paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
           paySuccessJumpSceneParams: {},
