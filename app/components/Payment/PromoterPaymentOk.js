@@ -61,7 +61,7 @@ class PaymentSuccess extends Component {
             </View>
             <View style={styles.trips}>
               <Text style={{fontSize: 12, color: '#FF7819', marginBottom: 5}}>向朋友推荐成为你的推广好友可以让你获取更多收益哦！</Text>
-              <Text style={{fontSize: 12, color: '#5A5A5A', textAlign: 'center', }}>请确保店铺信息的真实合法性，平台将不定期对店铺信息进行排查，杜绝非法欺骗的行为</Text>
+              <Text style={{fontSize: 12, color: '#5A5A5A', textAlign: 'center', }}>请确保推广员信息的真实合法性，平台将不定期对推广员信息进行排查，杜绝非法欺骗的行为</Text>
             </View>
 
             <CommonButton
