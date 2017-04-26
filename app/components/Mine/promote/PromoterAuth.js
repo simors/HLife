@@ -106,11 +106,11 @@ class PromoterAuth extends Component {
   onButtonPress() {
     this.props.promoterCertification({
       formKey: commonForm,
-      success: (promoterId) => {
+      success: (payload) => {
         Actions.PAYMENT({
           title: '支付推广员注册费',
           price: this.props.fee,
-          metadata: {'promoterId': promoterId},
+          metadata: {'promoterId': payload.promoterId},
           popNum: 2,
           paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
           paySuccessJumpSceneParams: {},

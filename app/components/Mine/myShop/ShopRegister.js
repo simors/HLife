@@ -244,7 +244,7 @@ class ShopRegister extends Component {
       success: (tenant) =>{
         this.props.fetchUserOwnedShopInfo()
         Actions.PAYMENT({
-          metadata: {shopId:shopInfo.id, tenant: tenant},
+          metadata: {'shopId':shopInfo.id, 'tenant': tenant},
           price: tenant,
           popNum: 2,
           paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
