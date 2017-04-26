@@ -45,7 +45,7 @@ class AgentPromoter extends Component {
     super(props)
     this.lastYear = 0
     this.lastMonth = 0
-    this.months = 3
+    this.months = 6
   }
 
   componentWillMount() {
