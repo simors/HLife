@@ -27,6 +27,7 @@
 		3E8A097182AC4E3AB6FA68ED /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5616E2920612420B90CDC160 /* libRCTCamera.a */; };
 		40C3F6E5D4274A2D862E9C6A /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B01BCA03472F4A6180024FAC /* libRNFS.a */; };
 		43D1E8FF32A6475199A48F4E /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A34A0BD71046149AB2DABA /* libCodePush.a */; };
+		4BD4CD33C71C4F2387CC6809 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B1C4971F0E4ECF85515A54 /* libRNSound.a */; };
 		5A313ABB12AF49588B369AFC /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9B50AAF3C82549A7A9B12DC9 /* Octicons.ttf */; };
 		5A6A280C24E740B89E8644AE /* libRCTRestart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6BCDC1829644C4BAFACD010 /* libRCTRestart.a */; };
 		5EDD4532D22D449181A36545 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5411B72DE67B4E9281A6AA8E /* EvilIcons.ttf */; };
@@ -43,6 +44,8 @@
 		9177708741A94F1DB692C8AD /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B583B289C0C4B9BA40FB764 /* libBVLinearGradient.a */; };
 		A329ADAC0A274094BE8DE0B6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 833EA273CD1B4F39BA400B7B /* Zocial.ttf */; };
 		ADD8FAE5242B47F887D10EA2 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED0C6526B00469597D114E8 /* libimageCropPicker.a */; };
+		B62B79C61EAF7BA500569076 /* facebook.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B62B79C41EAF7BA500569076 /* facebook.mp3 */; };
+		B62B79C71EAF7BA500569076 /* twitter.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B62B79C51EAF7BA500569076 /* twitter.mp3 */; };
 		B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B652CD8A1E696FEF00EE1246 /* libReact.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		B66C85C31E68582500C157EA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B66C85C21E68582500C157EA /* libRCTPushNotification.a */; };
 		B687CD9D1E4EEB2000F47585 /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B687CD9C1E4EEB2000F47585 /* BaiduMapAPI_Base.framework */; };
@@ -178,6 +181,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
 			remoteInfo = RCTCamera;
+		};
+		B62B79C11EAF785F00569076 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 530E8403591C427DB9B35BAE /* RNSound.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 19825A1E1BD4A89800EE0337;
+			remoteInfo = RNSound;
 		};
 		B62C22641E5D84F20034DCD2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -370,6 +380,7 @@
 		3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AutoGrowTextInput.xcodeproj; path = "../node_modules/react-native-autogrow-textinput/ios/AutoGrowTextInput.xcodeproj"; sourceTree = "<group>"; };
 		3FFC8626CB984754B04F9CF8 /* React-Native-Webview-Bridge.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = "React-Native-Webview-Bridge.xcodeproj"; path = "../node_modules/react-native-webview-bridge/ios/React-Native-Webview-Bridge.xcodeproj"; sourceTree = "<group>"; };
 		50343225606A4D92A8CCFC4A /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		530E8403591C427DB9B35BAE /* RNSound.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSound.xcodeproj; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; };
 		5411B72DE67B4E9281A6AA8E /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		5616E2920612420B90CDC160 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
 		6B583B289C0C4B9BA40FB764 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
@@ -394,6 +405,8 @@
 		A48FA6AB04E54B1AB2B1BC66 /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		B01BCA03472F4A6180024FAC /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		B453DC967858B3F46587C183 /* Pods-HLife.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLife.release.xcconfig"; path = "Pods/Target Support Files/Pods-HLife/Pods-HLife.release.xcconfig"; sourceTree = "<group>"; };
+		B62B79C41EAF7BA500569076 /* facebook.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = facebook.mp3; sourceTree = "<group>"; };
+		B62B79C51EAF7BA500569076 /* twitter.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = twitter.mp3; sourceTree = "<group>"; };
 		B652CD8A1E696FEF00EE1246 /* libReact.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libReact.a; path = "../../../Library/Developer/Xcode/DerivedData/HLife-dhjcwxrmuknsmqblfklezeggfgmv/Build/Products/Debug-iphonesimulator/React/libReact.a"; sourceTree = "<group>"; };
 		B66C85C21E68582500C157EA /* libRCTPushNotification.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRCTPushNotification.a; path = "../node_modules/react-native/Libraries/PushNotificationIOS/build/Debug-iphoneos/libRCTPushNotification.a"; sourceTree = "<group>"; };
 		B66C85C41E68619400C157EA /* HLife.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = HLife.entitlements; path = HLife/HLife.entitlements; sourceTree = "<group>"; };
@@ -444,6 +457,7 @@
 		EFC1CBD5560945B197171BA6 /* libRCTBEEPickerManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBEEPickerManager.a; sourceTree = "<group>"; };
 		F4508DF7717BD0270E31CF83 /* libPods-HLife.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HLife.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F66B9CB97E874077B48688EE /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		F8B1C4971F0E4ECF85515A54 /* libRNSound.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSound.a; sourceTree = "<group>"; };
 		F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBEEPickerManager.xcodeproj; path = "../node_modules/react-native-picker/ios/RCTBEEPickerManager.xcodeproj"; sourceTree = "<group>"; };
 		FCCBD9DF630046469F721237 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		FED0C6526B00469597D114E8 /* libimageCropPicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libimageCropPicker.a; sourceTree = "<group>"; };
@@ -493,6 +507,7 @@
 				9177708741A94F1DB692C8AD /* libBVLinearGradient.a in Frameworks */,
 				43D1E8FF32A6475199A48F4E /* libCodePush.a in Frameworks */,
 				869A160D390F4F709BCFA3C4 /* libz.tbd in Frameworks */,
+				4BD4CD33C71C4F2387CC6809 /* libRNSound.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,6 +693,7 @@
 				DD60CB735C6841798DDA8C44 /* ImageCropPicker.xcodeproj */,
 				74A5F585ED1A4331B76B7A8C /* BVLinearGradient.xcodeproj */,
 				A48FA6AB04E54B1AB2B1BC66 /* CodePush.xcodeproj */,
+				530E8403591C427DB9B35BAE /* RNSound.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -694,6 +710,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				B62B79C41EAF7BA500569076 /* facebook.mp3 */,
+				B62B79C51EAF7BA500569076 /* twitter.mp3 */,
 				B6FB9ABF1E4EF33700E316C8 /* RCTBaiduMap */,
 				B6FB9ABA1E4EF00B00E316C8 /* mapapi.bundle */,
 				13B07FAE1A68108700A75B9A /* HLife */,
@@ -730,6 +748,14 @@
 			isa = PBXGroup;
 			children = (
 				B61B5F641E5470F600D71E1B /* libRCTCamera.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B62B799C1EAF785F00569076 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B62B79C21EAF785F00569076 /* libRNSound.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1084,6 +1110,10 @@
 					ProjectRef = C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */;
 				},
 				{
+					ProductGroup = B62B799C1EAF785F00569076 /* Products */;
+					ProjectRef = 530E8403591C427DB9B35BAE /* RNSound.xcodeproj */;
+				},
+				{
 					ProductGroup = DD0B3A671DF9B72200AE8D91 /* Products */;
 					ProjectRef = 814F548B871447AE9DF6C561 /* RNVectorIcons.xcodeproj */;
 				},
@@ -1192,6 +1222,13 @@
 			fileType = archive.ar;
 			path = libRCTCamera.a;
 			remoteRef = B61B5F631E5470F600D71E1B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B62B79C21EAF785F00569076 /* libRNSound.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSound.a;
+			remoteRef = B62B79C11EAF785F00569076 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B62C22651E5D84F20034DCD2 /* libRNDeviceInfo.a */ = {
@@ -1348,6 +1385,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B62B79C71EAF7BA500569076 /* twitter.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				7E4710471E98F9500094705A /* Default-568.png in Resources */,
 				B6FB9ABB1E4EF00B00E316C8 /* mapapi.bundle in Resources */,
@@ -1364,6 +1402,7 @@
 				DD0B3AC81DF9C2A200AE8D91 /* simditor.css in Resources */,
 				6328222657C84EDDAA8C4E4A /* Ionicons.ttf in Resources */,
 				DD0B3AC61DF9C2A200AE8D91 /* module.js in Resources */,
+				B62B79C61EAF7BA500569076 /* facebook.mp3 in Resources */,
 				6545956C9A7D4CFDA6C3AB7C /* MaterialIcons.ttf in Resources */,
 				5A313ABB12AF49588B369AFC /* Octicons.ttf in Resources */,
 				DD0B3AC31DF9C2A200AE8D91 /* font-awesome.min.css in Resources */,
@@ -1508,6 +1547,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1516,6 +1556,7 @@
 					"$(PROJECT_DIR)/lib/thirdlibs",
 					"$(SRCROOT)/HLife",
 					"$(SRCROOT)/HLife",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1569,6 +1610,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1577,6 +1619,7 @@
 					"$(PROJECT_DIR)/lib/thirdlibs",
 					"$(SRCROOT)/HLife",
 					"$(SRCROOT)/HLife",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
@@ -1641,6 +1684,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1687,6 +1731,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1695,6 +1740,7 @@
 					"$(PROJECT_DIR)/lib/thirdlibs",
 					"$(SRCROOT)/HLife",
 					"$(SRCROOT)/HLife",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
@@ -1765,6 +1811,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1820,6 +1867,7 @@
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
+					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

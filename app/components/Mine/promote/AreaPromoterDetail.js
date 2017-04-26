@@ -23,17 +23,50 @@ import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
-import {getTotalPerformance, setShopTenant, getShopTenantByCity, cancelAreaAgent} from '../../../action/promoterAction'
-import {selectPromoterStatistics, selectCityTenant, selectAgentByArea} from '../../../selector/promoterSelector'
+import {
+  getTotalPerformance,
+  setShopTenant,
+  getShopTenantByCity,
+  cancelAreaAgent,
+  getLastDaysPerformance,
+  getAreaMonthsPerformance,
+} from '../../../action/promoterAction'
+import {
+  selectPromoterStatistics,
+  selectCityTenant,
+  selectAgentByArea,
+  selectLastDaysPerformance,
+  selectAreaMonthsPerformance,
+} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
+import Chart from 'react-native-chart'
+import ViewPager from '../../common/ViewPager'
+
+const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_HEIGHT=Dimensions.get('window').height
 
 class AreaPromoterDetail extends Component {
   constructor(props) {
     super(props)
+    this.lastYear = 0
+    this.lastMonth = 0
+    this.months = 6
   }
 
   componentWillMount() {
+    let upPromoter = this.props.upPromoter
+    // let date = new Date('2017-05-09')
+    let date = new Date()
+    date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
+
+    this.lastYear = date.getFullYear()
+    this.lastMonth = date.getMonth()
+    if (this.lastMonth == 0) {
+      this.lastMonth = 12
+      this.lastYear = this.lastYear - 1
+    }
+
     InteractionManager.runAfterInteractions(()=>{
       this.props.getTotalPerformance({
         province: this.props.province,
@@ -45,6 +78,31 @@ class AreaPromoterDetail extends Component {
         this.props.getShopTenantByCity({
           province: this.props.province,
           city: this.props.city,
+        })
+      }
+
+      this.props.getLastDaysPerformance({
+        level: upPromoter.identity == 1 ? 2 : 1,    // 上级是省级代理，则查询市级业绩，上级是市级代理，则查询区县业绩
+        province: this.props.province,
+        city: this.props.city,
+        district: this.props.district,
+        days: 7,
+        lastDate: date.toLocaleDateString(),
+        error: (message) => {
+          Toast.show(message)
+        }
+      })
+      if (upPromoter.identity == 1) {   // 上级只能是省级
+        this.props.getAreaMonthsPerformance({
+          level: upPromoter.identity == 1 ? 2 : 1,
+          province: this.props.province,
+          city: this.props.city,
+          lastYear: this.lastYear,
+          lastMonth: this.lastMonth,
+          months: this.months,
+          error: (message) => {
+            Toast.show(message)
+          }
         })
       }
     })
@@ -229,6 +287,109 @@ class AreaPromoterDetail extends Component {
     )
   }
 
+  renderLastDaysChart() {
+    let step = 0
+    let lastDaysData = this.props.sevenDaysPerf
+    if (!lastDaysData || lastDaysData.length == 0) {
+      return <View/>
+    }
+    let dataSet = new Set()
+    lastDaysData.forEach((data) => {
+      dataSet.add(data[1])
+    })
+    step = dataSet.size - 1 > 0 ? dataSet.size - 1 : 1
+    return (
+      <View style={{marginTop: normalizeH(8)}}>
+        <View style={styles.sevenTitleView}>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>近七日业绩（元）</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <Chart
+            style={styles.chart}
+            data={lastDaysData}
+            verticalGridStep={step}
+            type="line"
+            showDataPoint={true}
+            lineWidth={3}
+            tightBounds={true}
+            yAxisUseDecimal={true}
+            dataPointFillColor={THEME.base.mainColor}
+          />
+        </View>
+      </View>
+    )
+  }
+
+  renderLastMonthsChart(data, sec, index) {
+    return (
+      <View>
+        {data}
+      </View>
+    )
+  }
+
+  renderAreaMonthsPager() {
+    if (!this.props.areaMonthsPerf || this.props.areaMonthsPerf.length == 0) {
+      return <View/>
+    }
+    let pages = []
+    let ds = new ViewPager.DataSource({
+      pageHasChanged: (p1, p2) => p1 !== p2,
+    })
+    this.props.areaMonthsPerf.forEach((value) => {
+      if (value.length > 0) {
+        pages.push(this.renderAreaMonthsBarChart(value))
+      }
+    })
+    if (pages.length == 0) {
+      return (
+        <View style={styles.emptyView}>
+          <Text style={{fontSize: em(15), color: '#5A5A5A'}}>暂无月度统计数据</Text>
+        </View>
+      )
+    }
+    return (
+      <ViewPager
+        style={{flex:1}}
+        dataSource={ds.cloneWithPages(pages)}
+        renderPage={(data, sec, index) => this.renderLastMonthsChart(data, sec, index)}
+        isLoop={false}
+        autoPlay={false}
+        initialPage={pages.length > 0 ? pages.length - 1 : 0}
+      />
+    )
+  }
+
+  renderAreaMonthsBarChart(stat) {
+    let barData = []
+    let month = 0
+    stat.forEach((value) => {
+      let subData = []
+      subData[0] = value.district     // 只可能看到区县级数据
+      subData[1] = value.earning
+      month = value.month
+      barData.push(subData)
+    })
+    return (
+      <View>
+        <View style={[styles.sevenTitleView, {marginTop: normalizeH(8)}]}>
+          <Text style={{fontSize: em(15), color: '#5a5a5a'}}>{month}月下辖区域业绩（元)</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <Chart
+            style={styles.chart}
+            data={barData}
+            type="bar"
+            showDataPoint={true}
+            verticalGridStep={barData.length - 1}
+            tightBounds={true}
+            yAxisUseDecimal={true}
+          />
+        </View>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -244,6 +405,8 @@ class AreaPromoterDetail extends Component {
           <ScrollView style={{flex: 1}}>
             {this.renderBaseView()}
             {this.renderStatView()}
+            {this.renderLastDaysChart()}
+            {this.renderAreaMonthsPager()}
           </ScrollView>
         </View>
         <KeyboardAwareToolBar
@@ -283,11 +446,33 @@ const mapStateToProps = (state, ownProps) => {
   let tenant = selectCityTenant(state, agentCity)
   let agent = selectAgentByArea(state, ownProps.area)
   let promoter = agent.promoter
+
+  let areaKey = ''
+  if (ownProps.upPromoter.identity == 1) {
+    areaKey = province + city
+  } else if (ownProps.upPromoter.identity == 2) {
+    areaKey = province + city + district
+  }
+
+  let lastDaysPerf = selectLastDaysPerformance(state, areaKey)
+  let sevenDaysPerf = []
+  lastDaysPerf.forEach((value) => {
+    let data = []
+    let statDate = new Date(value.statDate)
+    data[0] = (statDate.getMonth()+1) + '-' + statDate.getDate()
+    data[1] = value.earning
+    sevenDaysPerf.push(data)
+  })
+
+  let areaMonthsPerf = selectAreaMonthsPerformance(state, areaKey)
+
   return {
     statistics,
     tenant,
     agent,
     promoter,
+    sevenDaysPerf,
+    areaMonthsPerf,
   }
 }
 
@@ -296,6 +481,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   setShopTenant,
   getShopTenantByCity,
   cancelAreaAgent,
+  getLastDaysPerformance,
+  getAreaMonthsPerformance,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AreaPromoterDetail)
@@ -366,5 +553,32 @@ const styles = StyleSheet.create({
   performItemValue: {
     fontSize: em(17),
     color: THEME.base.mainColor,
+  },
+  sevenTitleView: {
+    backgroundColor: '#FFF',
+    height: normalizeH(53),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingBottom: normalizeH(15),
+    paddingRight: normalizeW(15),
+    height: 200,
+  },
+  chart: {
+    flex: 1,
+    width: PAGE_WIDTH - normalizeW(15),
+  },
+  emptyView: {
+    width: PAGE_WIDTH,
+    height: normalizeH(100),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF',
+    marginTop: normalizeH(8),
   },
 })

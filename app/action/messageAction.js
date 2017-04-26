@@ -25,6 +25,7 @@ import {messengerClient} from '../selector/messageSelector'
 import {selectShopDetail} from '../selector/shopSelector'
 import {getTopicById} from '../selector/topicSelector'
 import * as lcShop from '../api/leancloud/shop'
+import * as AVUtils from '../util/AVUtils'
 
 class TextMessage extends TypedMessage {
 }
@@ -137,6 +138,10 @@ export function initLcMessenger(payload) {
     realtime.createIMClient(payload.userId, {}, payload.tag).then((client) => {
       client.on('message', function (message, conversation) {
         dispatch(onReceiveMsg(message, conversation))
+
+        if(global.chatMessageSoundOpen) {
+          AVUtils.playMessageSound()
+        }
       })
 
       client.on('disconnect', function () {

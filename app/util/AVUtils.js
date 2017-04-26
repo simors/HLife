@@ -19,6 +19,7 @@ import * as pushSelect from '../selector/pushSelector'
 import * as configSelector from '../selector/configSelector'
 import * as authSelector from '../selector/authSelector'
 import * as dateUtils from '../util/dateUtils'
+import './global'
 
 // const EE = new EventEmitter()
 
@@ -53,7 +54,19 @@ export function updateProvincesAndCities(payload) {
   store.dispatch(fetchAllProvincesAndCities(payload))
 }
 
+export function playMessageSound() {
+  if(global.pushMessageSoundOpen) {
+    if(!global.isSounding) {
+      global.isSounding = true
+      global.messageSound.play((success) => {
+        global.isSounding = false
+      })
+    }
+  }
+}
+
 export function appInit() {
+
   updateProvincesAndCities()
 
   store.dispatch(fetchAppServicePhone())
@@ -186,7 +199,7 @@ export function configurePush(options) {
     
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
-      console.log( 'NOTIFICATION:', notification );
+      // console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
       let data = notification.data
 
@@ -246,6 +259,9 @@ export function configurePush(options) {
 
           }
         }
+
+        playMessageSound()
+        
       }
 
     },

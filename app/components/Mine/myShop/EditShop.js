@@ -352,6 +352,7 @@ class EditShop extends Component {
             automaticallyAdjustContentInsets={false}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}
+            keyboardShouldPersistTaps={true}
           >
             <View style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>

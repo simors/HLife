@@ -167,7 +167,6 @@ class Home extends Component {
     // codePush.sync()
     this.checkIosUpdate()
     // codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
-
   }
   
   componentWillReceiveProps(nextProps) {

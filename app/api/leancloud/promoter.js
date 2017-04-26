@@ -241,3 +241,19 @@ export function fetchLastDaysPerformance(payload) {
     throw err
   })
 }
+
+export function fetchAreaMonthsPerformance(payload) {
+  let params = {
+    level: payload.level,
+    province: payload.province,
+    city: payload.city,
+    lastYear: payload.lastYear,
+    lastMonth: payload.lastMonth,
+    months: payload.months,
+  }
+  return AV.Cloud.run('statFetchAreaMonthsPerformance', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
