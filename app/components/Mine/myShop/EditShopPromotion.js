@@ -160,7 +160,7 @@ class EditShopPromotion extends Component {
     this.updateTypesDesc(this.state.form.typeDesc)
     this.setInterval(()=>{
 
-      this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+      this.props.fetchShopPromotionDraft({userId:this.props.userId,draftId:this.draftId, ...this.state.form,
         abstract: this.state.form.abstract,
         promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
         shopId: this.state.form.shopId,
@@ -756,7 +756,7 @@ class EditShopPromotion extends Component {
           rightType="text"
           rightText="发布"
           rightPress={() => {
-              this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+              this.props.fetchShopPromotionDraft({userId:this.props.userId,draftId:this.draftId, ...this.state.form,
                 abstract: this.state.form.abstract,
                 promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
                 shopId: this.state.form.shopId,
@@ -894,6 +894,8 @@ class EditShopPromotion extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  const userId = authSelector.activeUserId(state)
+
   const formData = getInputFormData(state, shopPromotionForm)
   let shopPromotion = formData && formData.shopPromotion
   let abstract = shopPromotion && shopPromotion.abstract
@@ -902,6 +904,7 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('promotionDetailInfo=====', promotionDetailInfo)
 
   return {
+    userId:userId,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
     abstract: abstract,

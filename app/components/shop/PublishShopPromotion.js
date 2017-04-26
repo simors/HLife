@@ -148,7 +148,7 @@ class PublishShopPromotion extends Component {
     //this.showToolBarInput()
     this.setInterval(()=>{
 
-      this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+      this.props.fetchShopPromotionDraft({userId:this.props.userId,draftId:this.draftId, ...this.state.form,
         abstract: this.state.form.abstract,
         promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
         shopId: this.state.form.shopId,
@@ -673,7 +673,7 @@ class PublishShopPromotion extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => {
-            this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+            this.props.fetchShopPromotionDraft({userId:this.props.userId,draftId:this.draftId, ...this.state.form,
               abstract: this.state.form.abstract,
               promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
               shopId: this.state.form.shopId,
@@ -813,6 +813,7 @@ class PublishShopPromotion extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  const userId = authSelector.activeUserId(state)
   const formData = getInputFormData(state, shopPromotionForm)
   let shopPromotion = formData && formData.shopPromotion
   let abstract = shopPromotion && shopPromotion.abstract
@@ -821,6 +822,7 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('promotionDetailInfo=====', promotionDetailInfo)
 
   return {
+    userId:userId,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
     abstract: abstract,
