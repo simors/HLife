@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   Text,
+  Platform,
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
@@ -71,7 +72,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   areaView: {
-    paddingTop: normalizeH(46),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(46),
+      },
+      android: {
+        paddingTop: normalizeH(40),
+      }
+    })
   },
   areaText: {
     fontSize: em(25),
@@ -79,7 +87,14 @@ const styles = StyleSheet.create({
     color: THEME.base.mainColor,
   },
   levelView: {
-    paddingTop: normalizeH(25),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(25),
+      },
+      android: {
+        paddingTop: normalizeH(18),
+      }
+    })
   },
   agentLevelText: {
     fontSize: em(17),

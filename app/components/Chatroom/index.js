@@ -40,9 +40,13 @@ class Chatroom extends Component {
       hasMore: false,
       showLoadEarlier:false
     }
+
+    this.oldChatMessageSoundOpen = true
   }
 
   componentDidMount() {
+    this.oldChatMessageSoundOpen = global.chatMessageSoundOpen
+    global.chatMessageSoundOpen = false
     InteractionManager.runAfterInteractions(() => {
       // console.log('begin to create conversation:', this.props.name, this.props.members)
 
@@ -57,6 +61,10 @@ class Chatroom extends Component {
       })
       
     })
+  }
+
+  componentWillUnmount() {
+    global.chatMessageSoundOpen = this.oldChatMessageSoundOpen
   }
 
   createConversation(callback) {
@@ -187,7 +195,6 @@ class Chatroom extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => {
-            // console.log('this.props.backSceneName===', this.props.backSceneName)
             AVUtils.pop({
               backSceneName: this.props.backSceneName,
               backSceneParams: this.props.backSceneParams,

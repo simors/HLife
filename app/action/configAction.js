@@ -6,6 +6,7 @@ import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
 import * as ConfigActionTypes from '../constants/configActionTypes'
 import * as lcConfig from '../api/leancloud/config'
+const noUpdateVersion = createAction(ConfigActionTypes.FETCH_APP_NOUPDATE_VERSION)
 
 export function fetchBanner(payload) {
   return (dispatch ,getState) => {
@@ -101,4 +102,18 @@ export function fetchAppServicePhone(payload) {
       console.log('fetchAppServicePhone.error--->>>', error)
     })
   }
+}
+
+
+export function fetchAppNoUpdate(payload) {
+  // console.log('payload',payload)
+  return (dispatch) => {
+    dispatch(noUpdateVersion(payload))
+  }
+  //  return (dispatch)=>{
+  //    // let updateAction = createAction(ConfigActionTypes.FETCH_APP_NOUPDATE_VERSION)
+  //    console.log('payload++++++++++++',payload)
+  //
+  //    dispatch(noUpdateVersion(payload))
+  // }
 }

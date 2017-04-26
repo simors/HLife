@@ -34,7 +34,14 @@ export function getAnnouncements(state) {
   }
   return undefined
 }
-
+export function getNoUpdateVersion(state) {
+  let config = getConfig(state)
+  if (config) {
+    // console.log('confi',config.toJS())
+    return config.toJS().noUpdateVersion
+  }
+  return undefined
+}
 export function getAnnouncement(state, type) {
   let announcements = getAnnouncements(state)
   if (announcements) {

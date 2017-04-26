@@ -202,7 +202,7 @@ export function getProvinceInfoByCityName(provinceList = [], cityName) {
       let cityList = provinceInfo.sub
       if(cityList && cityList.length) {
         for(let j = 0; j < cityList.length; j++) {
-          if(cityName == cityList[j].area_name) {
+          if(cityList[j].area_name.indexOf(cityName) != -1) {
             return {
               provinceName: provinceInfo.area_name,
               provinceCode: provinceInfo.area_code
@@ -231,7 +231,7 @@ export function getCityCode(treeData = [], cityName = "") {
     let cityList = getAllCityList(treeData)
     if(cityList && cityList.length) {
       for(let i = 0; i < cityList.length; i++) {
-        if(cityName == cityList[i].area_name) {
+        if(cityList[i].area_name.indexOf(cityName) != -1) {
           return cityList[i].area_code
         }
       }
@@ -245,7 +245,7 @@ export function getDistrictCode(treeData = [], districtName = '') {
     let districtList = getAllDistrictList(treeData)
     if(districtList && districtList.length) {
       for(let i = 0; i < districtList.length; i++) {
-        if(districtName == districtList[i].area_name) {
+        if(districtList[i].area_name.indexOf(districtName) != -1) {
           return districtList[i].area_code
         }
       }

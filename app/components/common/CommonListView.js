@@ -44,12 +44,17 @@ export default class CommonListView extends Component {
   //   this.onRefresh()
   // }
 
+  onContentSizeChange(contentWidth, contentHeight) {
+    // console.log('onContentSizeChange.contentHeight===', contentHeight)
+    this.setState({contentHeight})
+  }
+
   render() {
     return (
       <ListView
         ref="listView"
         enableEmptySections={true}
-        onContentSizeChange={(contentWidth, contentHeight) => this.setState({contentHeight})}
+        onContentSizeChange={(contentWidth, contentHeight) => {this.onContentSizeChange(contentWidth, contentHeight)}}
         automaticallyAdjustContentInsets={false}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={true}

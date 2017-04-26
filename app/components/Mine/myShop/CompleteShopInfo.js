@@ -357,7 +357,7 @@ class CompleteShopInfo extends Component {
     //   Actions.pop()
     // }
     // Actions.MINE()
-    
+
     AVUtils.switchTab('MINE')
   }
 
@@ -407,6 +407,7 @@ class CompleteShopInfo extends Component {
             automaticallyAdjustContentInsets={false}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}
+            keyboardShouldPersistTaps={true}
           >
             <View style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
@@ -492,6 +493,7 @@ class CompleteShopInfo extends Component {
                     onPress={()=>{this.toggleShopTagsSelectShow()}}
                     tags={this.state.selectedShopTags}
                     containerStyle={{height:50}}
+                    noCheckInput={true}
                   />
                 </View>
               </View>

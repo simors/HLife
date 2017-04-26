@@ -50,6 +50,29 @@ export const EarnRecord = Record({
   dealTime: undefined,          // 记录收益时间
 })
 
+export const DailyPerformance = Record({
+  level: undefined,           // 统计的级别，3为省，2为市，1为区县
+  province: undefined,
+  city: undefined,
+  district: undefined,
+  earning: 0,                 // 业绩总金额
+  promoterNum: 0,             // 新发展的推广员数
+  shopNum: 0,                 // 总店铺数
+  statDate: undefined,        // 统计的日期
+})
+
+export const MonthlyPerformance = Record({
+  level: undefined,           // 统计的级别，3为省，2为市，1为区县
+  province: undefined,
+  city: undefined,
+  district: undefined,
+  earning: 0,                 // 业绩总金额
+  promoterNum: 0,             // 新发展的推广员数
+  shopNum: 0,                 // 总店铺数
+  year: undefined,            // 统计的年份
+  month: undefined,           // 统计的月份
+})
+
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
@@ -106,5 +129,10 @@ export const Promoter = Record({
   shopTenant: Map(),                // 保存各地的店铺入驻费用，键为城市名，值为费用
   areaPromoters: List(),            // 某地区的推广员列表，按照业绩排序
   dealRecords: Map(),               // 保存推广员的收益记录，键为推广员id，值为记录列表，类型为EarnRecord
+  lastDaysPerformance: Map(),       /* 保存最近几天的业绩统计数据，键为地区名称，如果是省级，则为省份名，
+                                       如果为市级则为省份加城市，以此类推，值为DailyPerformance列表 */
+  areaLastMonthsPerformance: Map(), /* 保存某地下辖区域最近几个月的业绩统计数据，键为地区名称，如果是省级，则为省份名，
+                                       如果为市级则为省份加城市，以此类推，值为一个List，按照月份排序，
+                                       为MonthlyPerformance列表 */
 }, 'Promoter')
 
