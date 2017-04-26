@@ -40,13 +40,6 @@ import ViewPager from '../../common/ViewPager'
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
-const data = [
-  [0, 1],
-  [1, 4],
-  [2, 7],
-  [3, 3],
-];
-
 class AgentPromoter extends Component {
   constructor(props) {
     super(props)
@@ -57,8 +50,8 @@ class AgentPromoter extends Component {
 
   componentWillMount() {
     let promoter = this.props.promoter
-    // var date = new Date('2017-05-09')
-    var date = new Date()
+    // let date = new Date('2017-05-09')
+    let date = new Date()
     date.setTime(date.getTime() - 24*60*60*1000)    // 统计昨天的业绩
 
     this.lastYear = date.getFullYear()
@@ -161,7 +154,7 @@ class AgentPromoter extends Component {
   renderLastDaysChart() {
     let step = 0
     let lastDaysData = this.props.sevenDaysPerf
-    if (!lastDaysData) {
+    if (!lastDaysData || lastDaysData.length == 0) {
       return <View/>
     }
     let dataSet = new Set()
@@ -232,11 +225,12 @@ class AgentPromoter extends Component {
   }
 
   renderAreaMonthsBarChart(stat) {
+    let promoter = this.props.promoter
     let barData = []
     let month = 0
     stat.forEach((value) => {
       let subData = []
-      subData[0] = value.city
+      subData[0] = promoter.identity == 1 ? value.city : value.district     // 区级代理看不到此数据
       subData[1] = value.earning
       month = value.month
       barData.push(subData)
@@ -309,8 +303,6 @@ class AgentPromoter extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
-
   let province = ownProps.promoter.province
   let city = ownProps.promoter.city
   let district = ownProps.promoter.district
