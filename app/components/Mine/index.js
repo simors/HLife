@@ -132,7 +132,7 @@ class Mine extends Component {
         Actions.PAYMENT({
           title: '支付推广员注册费',
           price: this.props.fee,
-          metadata: {'promoterId': this.props.promoter.id},
+          metadata: {'promoterId': this.props.promoter.id, 'user': this.props.userInfo.id},
         })
       }
     } else {
