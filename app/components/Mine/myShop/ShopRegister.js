@@ -362,7 +362,7 @@ class ShopRegister extends Component {
                     editable={false}
                     showClearBtn={false}
                     containerStyle={styles.containerStyle}
-                    inputStyle={[styles.inputStyle, {height: normalizeH(42)}]}/>
+                    inputStyle={[styles.inputStyle, {height: normalizeH(52)}]}/>
                 </View>
               </View>
 
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   shopAddress: {
-    height: normalizeH(42),
+    height: normalizeH(52),
     justifyContent: 'center',
     paddingRight:10
   },
@@ -640,11 +640,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   containerStyle: {
+    flex:1,
     paddingRight: 0,
     paddingLeft: 0,
   },
   inputStyle:{
-    height: normalizeH(47),
+    height: normalizeH(52),
     fontSize: 17,
     backgroundColor: '#fff',
     borderWidth: 0,

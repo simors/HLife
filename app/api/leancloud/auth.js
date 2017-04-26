@@ -261,12 +261,18 @@ export function profileSubmit(payload) {
   // userInfo.set('identity', [])
 
   return userInfo.save().then((loginedUser)=>{
-    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
-    // userInfo = userInfo.set('token', loginedUser.getSessionToken())
-    // console.log("loginWithPwd", userInfo)
-    return {
-      userInfo: userInfo,
-    }
+    return getUserById({userId: payload.id}).then((user) => {
+      let userInfo = UserInfo.fromLeancloudObject(user)
+      console.log('userInfo===', userInfo)
+      return {
+        userInfo: userInfo,
+      }
+    }, (error) => {
+      let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+      return {
+        userInfo: userInfo,
+      }
+    })
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

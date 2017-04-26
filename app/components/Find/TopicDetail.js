@@ -685,14 +685,15 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         marginTop: normalizeH(64),
+        paddingBottom: 50
       },
       android: {
-        marginTop: normalizeH(44)
+        marginTop: normalizeH(44),
+        paddingBottom: 100
       }
     }),
     flex: 1,
     backgroundColor: '#E5E5E5',
-    paddingBottom: 50
   },
   topicLikesWrap: {
     flex:1,
