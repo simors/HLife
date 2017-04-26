@@ -1246,4 +1246,17 @@ export function updateShopLocationInfo(payload) {
   })
 }
 
+export function getShopPromotionUrl(payload) {
+
+  let params = {
+
+  }
+
+  return AV.Cloud.run('hLifeShareShopPromotionById', params).then((result) => {
+
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
 

@@ -24,7 +24,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
-import {fetchShopPromotionDetail, fetchUserOwnedShopInfo} from '../../action/shopAction'
+import {fetchShopPromotionDetail, fetchUserOwnedShopInfo, fetchSharePromotionUrl} from '../../action/shopAction'
 import {selectShopPromotionDetail} from '../../selector/shopSelector'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
@@ -81,12 +81,18 @@ class ShopPromotionDetail extends Component {
     Actions.CHATROOM(payload)
   }
 
+  submitSuccessCallback(result) {
+    Actions.SHARE(result)
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
   onShare = () => {
-    Actions.SHARE({
-      title: '活动详情',
-      abstract: '摘要',
-      author: '老王',
-      cover: 'http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png',
+    this.props.fetchSharePromotionUrl({
+      shopPromotionId: this.props.id,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback,
     })
   }
 
@@ -174,6 +180,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionDetail,
   fetchUserOwnedShopInfo,
+  fetchSharePromotionUrl
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPromotionDetail)
