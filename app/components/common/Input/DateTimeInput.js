@@ -91,6 +91,12 @@ DateTimeInput.defaultProps = {
     dateText: {
       fontSize: em(18),
 
+    },
+    btnTextConfirm: {
+      color: '#ff7819'
+    },
+    btnTextCancel: {
+      color: '#666'
     }
   }
 }
