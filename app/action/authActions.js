@@ -564,9 +564,9 @@ function handleCompleteShopInfo(payload, formData) {
       coverUrl: payload.coverUrl,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
-      contactNumber2: formData.servicePhone2Input.text,
+      contactNumber2: formData.servicePhone2Input ? formData.servicePhone2Input.text : '',
       ourSpecial: formData.ourSpecialInput.text,
-      tagIds: formData.tagsInput.text,
+      tagIds: formData.tagsInput ? formData.tagsInput.text : '',
     }
     lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
       let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
@@ -593,9 +593,9 @@ function handleEditShopInfo(payload, formData) {
       coverUrl: payload.coverUrl,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
-      contactNumber2: formData.servicePhone2Input.text,
+      contactNumber2: formData.servicePhone2Input ? formData.servicePhone2Input.text : '',
       ourSpecial: formData.ourSpecialInput.text,
-      tagIds: formData.tagsInput.text,
+      tagIds: formData.tagsInput ? formData.tagsInput.text : '',
     }
     lcAuth.submitEditShopInfo(newPayload).then((result) => {
       // console.log('submitEditShopInfo.result====', result)

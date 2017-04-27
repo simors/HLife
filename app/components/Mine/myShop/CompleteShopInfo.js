@@ -83,10 +83,11 @@ const servicePhone2Input = {
   stateKey: Symbol('servicePhone2Input'),
   type: "servicePhone2Input",
   checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '备用电话为空'}
+    return {isVal: true, errMsg: '验证通过'}
+    // if (data && data.text && data.text.length > 0) {
+    //   return {isVal: true, errMsg: '验证通过'}
+    // }
+    // return {isVal: false, errMsg: '备用电话为空'}
   },
 }
 const ourSpecialInput = {
