@@ -77,7 +77,7 @@ class  PhoneInput extends Component {
   }
 
   renderClearBtn() {
-    if (this.state.showClear) {
+    if (this.state.showClear && this.props.editable) {
       return (
         <View style={[styles.defaultClearBtnStyle,
             {right:

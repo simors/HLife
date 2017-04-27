@@ -337,7 +337,7 @@ function _handleProfileSubmit(payload, formData) {
       id: payload.id,
       nickname: formData.nicknameInput && formData.nicknameInput.text,
       avatar: payload.avatar,
-      phone: formData.phoneInput && formData.phoneInput.text,
+      //phone: formData.phoneInput && formData.phoneInput.text,
       birthday: formData.dtPicker && formData.dtPicker.text,
       gender: formData.genderInput && formData.genderInput.text,
     }

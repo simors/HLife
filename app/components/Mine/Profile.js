@@ -153,6 +153,7 @@ class Profile extends Component {
                   <PhoneInput {...phoneInput}
                               initValue={this.props.userInfo.phone? this.props.userInfo.phone: undefined}
                               clearBtnStyle={{right: em(20), top: em(6)}}
+                              editable={false}
                               inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>

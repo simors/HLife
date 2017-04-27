@@ -255,7 +255,7 @@ export function profileSubmit(payload) {
   var userInfo = AV.Object.createWithoutData('_User', payload.id);
   userInfo.set('nickname', payload.nickname)
   userInfo.set('avatar', payload.avatar)
-  userInfo.set('mobilePhoneNumber', payload.phone)
+  //userInfo.set('mobilePhoneNumber', payload.phone)
   userInfo.set('gender', payload.gender)
   userInfo.set('birthday', payload.birthday)
   // userInfo.set('identity', [])
