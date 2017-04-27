@@ -104,7 +104,7 @@ export class TopicComment extends Component {
           <View style={styles.timeLocationStyle}>
             <Text style={styles.timeTextStyle}>{getConversationTime(this.props.topic.createdAt)}</Text>
             <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.timeTextStyle}>{this.props.topic.position? this.props.topic.position.city+this.props.topic.position.district:"未知"}</Text>
+            <Text style={styles.timeTextStyle}>{this.props.topic.position? this.props.topic.position.city:"未知"}</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
               <Image style={styles.likeImageStyle}
                      source={this.props.isLiked ?
