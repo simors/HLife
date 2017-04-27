@@ -81,7 +81,7 @@ class TopicEdit extends Component {
     this.draftDay = new Date().getDate()  }
 
   submitSuccessCallback = () => {
-    console.log('this.draftId',this.draftId)
+    // console.log('this.draftId',this.draftId)
 
     this.isPublishing = false
     Actions.pop({popNum: 2})
