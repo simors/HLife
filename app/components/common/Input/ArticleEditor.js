@@ -432,7 +432,9 @@ class ArticleEditor extends Component {
 
   renderEditToolView() {
     let extHeight = 0
-    console.log('brand', DeviceInfo.getBrand())
+    if ('honor' == DeviceInfo.getBrand()) {   // 华为荣耀手机特殊处理
+      extHeight = 8
+    }
     return (
       <View style={[styles.editToolView,
         {
