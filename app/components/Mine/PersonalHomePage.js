@@ -238,6 +238,12 @@ class PersonalHomePage extends Component {
   }
 
   loadMoreData(isRefresh) {
+
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     let lastCreatedAt = undefined
     if(!isRefresh) {
       if(this.props.userTopics && this.props.userTopics.length){
@@ -254,6 +260,7 @@ class PersonalHomePage extends Component {
       lastCreatedAt: lastCreatedAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
+        this.isQuering = false
         if(!this.listView) {
           return
         }
@@ -264,6 +271,7 @@ class PersonalHomePage extends Component {
         }
       },
       error: (err)=>{
+        this.isQuering = false
         Toast.show(err.message, {duration: 1000})
       }
     }
@@ -503,6 +511,7 @@ const styles = StyleSheet.create({
       }
     }),
     flex: 1,
+    paddingBottom: 60
   },
   personalInfoContainer: {
 
