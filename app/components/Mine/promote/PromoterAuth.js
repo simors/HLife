@@ -113,7 +113,9 @@ class PromoterAuth extends Component {
           metadata: {'promoterId': payload.promoterId},
           popNum: 2,
           paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
-          paySuccessJumpSceneParams: {},
+          paySuccessJumpSceneParams: {
+            promoterId: payload.promoterId,
+          },
           payErrorJumpScene: 'MINE',
           payErrorJumpSceneParams: {}
         })

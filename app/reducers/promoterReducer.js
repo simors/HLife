@@ -54,6 +54,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleLastDaysPerformance(state, action)
     case promoterActionTypes.UPDATE_AREA_MONTHS_PERFORMANCE:
       return handleAreaMonthsPerformance(state, action)
+    case promoterActionTypes.FINISH_PROMOTER_PAYMENT:
+      return handleFinishPromoterPayment(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -330,6 +332,14 @@ function constructAreaKey(level, province, city, district) {
     key = province + city + district
   }
   return key
+}
+
+function handleFinishPromoterPayment(state, action) {
+  let promoterId = action.payload.promoterId
+  let promoter = state.getIn(['promoters', promoterId])
+  promoter = promoter.set('payment', 1)
+  state = state.setIn(['promoters', promoterId], promoter)
+  return state
 }
 
 function onRehydrate(state, action) {

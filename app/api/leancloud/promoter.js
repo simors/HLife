@@ -257,3 +257,14 @@ export function fetchAreaMonthsPerformance(payload) {
     throw err
   })
 }
+
+export function finishPromoterPayment(payload) {
+  let params = {
+    promoterId: payload.promoterId,
+  }
+  return AV.Cloud.run('promoterFinishPayment', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

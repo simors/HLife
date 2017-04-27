@@ -23,11 +23,22 @@ import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import {switchTab} from '../../util/AVUtils'
 import * as Toast from '../common/Toast'
-import {getCurrentPromoter} from '../../action/promoterAction'
+import {getCurrentPromoter, finishPromoterPayment} from '../../action/promoterAction'
 
 class PaymentSuccess extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=> {
+      this.props.finishPromoterPayment({
+        promoterId: this.props.promoterId,
+        error: (err) => {
+          Toast.show(err.message)
+        }
+      })
+    })
   }
 
   componentWillUnmount() {
@@ -88,6 +99,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getCurrentPromoter,
+  finishPromoterPayment,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PaymentSuccess)
