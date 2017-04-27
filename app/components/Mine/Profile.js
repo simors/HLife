@@ -177,6 +177,7 @@ class Profile extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
+  // console.log('mapStateToProps。userInfo====', userInfo)
   return {
     userInfo: userInfo,
   }

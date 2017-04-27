@@ -89,7 +89,8 @@ class PublishTopics extends Component {
     Toast.show('恭喜您,发布成功!')
 
     //Actions.pop()
-    Actions.FIND({categoryId: this.state.selectedTopic.objectId})
+    // Actions.FIND({categoryId: this.state.selectedTopic.objectId})
+    AVUtils.switchTab('FIND', {categoryId: this.state.selectedTopic.objectId})
 
     this.props.handleDestroyTopicDraft({id:this.draftId})
 

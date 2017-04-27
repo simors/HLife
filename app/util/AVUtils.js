@@ -23,9 +23,9 @@ import './global'
 
 // const EE = new EventEmitter()
 
-export function switchTab(tabKey){
+export function switchTab(tabKey = 'MINE', tabParams = {}){
   Actions.HOME({type:'reset'})
-  Actions[tabKey]()
+  Actions[tabKey](tabParams)
 }
 
 this.isPoping = false

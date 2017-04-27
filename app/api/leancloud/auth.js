@@ -261,11 +261,14 @@ export function profileSubmit(payload) {
   // userInfo.set('identity', [])
 
   return userInfo.save().then((loginedUser)=>{
-    return getUserById({userId: payload.id}).then((user) => {
-      let userInfo = UserInfo.fromLeancloudObject(user)
-      console.log('userInfo===', userInfo)
-      return {
-        userInfo: userInfo,
+    return getUserById({userId: payload.id}).then((result) => {
+      if(result.error == 0) {
+        let user = result.userInfo
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        // console.log('profileSubmit.userInfo====', userInfo)
+        return {
+          userInfo: userInfo,
+        }
       }
     }, (error) => {
       let userInfo = UserInfo.fromLeancloudObject(loginedUser)
@@ -642,7 +645,9 @@ export function getUserById(payload) {
     return false
   }
   params.userId = userId
+  // console.log('getUserById==params==', params)
   return AV.Cloud.run('hLifeGetUserinfoById', params).then((result) => {
+    // console.log('getUserById==result==', result)
     return result
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
