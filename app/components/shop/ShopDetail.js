@@ -30,7 +30,7 @@ import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
 
 import {fetchAppServicePhone} from '../../action/configAction'
-import {fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
+import {fetchUserFollowShops, fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
@@ -124,10 +124,12 @@ class ShopDetail extends Component {
       Actions.LOGIN()
       return
     }
+    const that = this
     let payload = {
       id: this.props.id,
       success: function(result) {
         Toast.show(result.message, {duration: 1500})
+        that.props.fetchUserFollowShops()
       },
       error: function(error) {
         Toast.show(error.message, {duration: 1500})
@@ -141,10 +143,12 @@ class ShopDetail extends Component {
       Actions.LOGIN()
       return
     }
+    const that = this
     let payload = {
       id: this.props.id,
       success: function(result) {
         Toast.show(result.message, {duration: 1500})
+        that.props.fetchUserFollowShops()
       },
       error: function(error) {
         Toast.show(error.message, {duration: 1500})
@@ -162,7 +166,7 @@ class ShopDetail extends Component {
     let payload = {
       userId: userId,
       success: function(result) {
-        that.props.fetchUserFollowees()
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -182,7 +186,7 @@ class ShopDetail extends Component {
     let payload = {
       userId: userId,
       success: function(result) {
-        that.props.fetchUserFollowees()
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -799,7 +803,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   userUnUpShop,
   fetchGuessYouLikeShopList,
   fetchUserOwnedShopInfo,
-  fetchAppServicePhone
+  fetchAppServicePhone,
+  fetchUserFollowShops
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

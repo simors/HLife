@@ -58,11 +58,7 @@ class ShopFolloweesView extends Component {
       <View>
         <TouchableOpacity onPress={()=>{
           Actions.SHOP_DETAIL({
-            id: shopInfo.id, 
-            backSceneName:'MYATTENTION',
-            backSceneParams: {
-              tabType: 1
-            }
+            id: shopInfo.id
           })
         }}>
           <View style={[styles.shopInfoWrap]}>
