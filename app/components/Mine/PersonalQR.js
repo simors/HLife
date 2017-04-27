@@ -40,7 +40,7 @@ export default class PersonalQR extends Component {
                   bgColor={THEME.base.mainColor}
                   fgColor='white'/>
           <View style={styles.avatarView}>
-            <Image style={{width: normalizeW(50), height: normalizeH(50)}} source={{uri: this.props.data.avatar}}/>
+            <Image style={{width: normalizeW(50), height: normalizeH(50)}} source={{uri: this.props.avatar}}/>
           </View>
         </View>
       </View>

@@ -144,10 +144,8 @@ class Mine extends Component {
   genPersonalQRCode() {
     let userInfo = {
       userId: this.props.userInfo.id,
-      nickname: this.props.userInfo.nickname,
-      avatar: this.props.userInfo.avatar,
     }
-    Actions.GEN_PERSONALQR({data: userInfo})
+    Actions.GEN_PERSONALQR({data: userInfo, avatar: this.props.userInfo.avatar})
   }
 
   renderToolView() {
@@ -156,10 +154,17 @@ class Mine extends Component {
         <View style={{marginRight: normalizeW(20)}}>
           <TouchableOpacity onPress={() => {
             Actions.QRCODEREADER({
-              readQRSuccess: (userInfo) => {
-                let user = JSON.parse(userInfo)
-                let userId = user.userId
-                Actions.PERSONAL_HOMEPAGE({userId: userId})
+              readQRSuccess: (QRData) => {
+                if (QRData.startsWith('http') || QRData.startsWith('https')) {
+                  Actions.COMMON_WEB_VIEW({url: QRData})
+                  return
+                }
+                let data = JSON.parse(QRData)
+                let userId = data.userId
+                if (userId) {
+                  Actions.PERSONAL_HOMEPAGE({userId: userId})
+                  return
+                }
               }
             })
           }}>
