@@ -37,7 +37,6 @@ class UserFolloweesView extends Component {
               </View>
               {userInfo.latestTopic
                 ?  <View style={styles.row}>
-                    <Text numberOfLines={1} style={styles.subTxt}>最新发布：</Text>
                     <Text numberOfLines={1} style={[styles.subTxt, {flex:1}]}>{userInfo.latestTopic.abstract}</Text>
                   </View>
                 : null
