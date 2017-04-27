@@ -1249,4 +1249,18 @@ export function updateShopLocationInfo(payload) {
   })
 }
 
+export function updateShopInfoAfterPaySuccess(payload) {
+  console.log('hLifeUpdateShopInfoAfterPaySuccess.payload=======', payload)
+  return AV.Cloud.run('hLifeUpdateShopInfoAfterPaySuccess', payload).then((result)=>{
+    console.log('hLifeUpdateShopInfoAfterPaySuccess.result=======', result)
+    // if(result.code == 0) {
+    //   return true
+    // }
+    return true
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 

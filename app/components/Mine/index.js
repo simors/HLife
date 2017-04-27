@@ -88,6 +88,7 @@ class Mine extends Component {
               city: userOwnedShopInfo.geoCity,
               success: (tenant) =>{
                 Actions.PAYMENT({
+                  metadata: {'shopId':userOwnedShopInfo.id, 'tenant': tenant},
                   price: tenant,
                   paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
                   paySuccessJumpSceneParams: {
