@@ -739,3 +739,17 @@ export function unregistShop(payload) {
   }
 }
 
+
+export function updateShopInfoAfterPaySuccess(payload) {
+  return (dispatch, getState) => {
+    lcShop.updateShopInfoAfterPaySuccess(payload).then((successed)=>{
+      if(payload.success){
+        payload.success(successed)
+      }
+    }).catch(error=>{
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}

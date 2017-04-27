@@ -225,30 +225,26 @@ export class MyTopic extends Component {
 
       <SwipeListView
         dataSource={this.props.dataSrc}
-        renderRow={ (data, key, rowId) => ( this.renderTopicItem(data, key, rowId)
-        )
-          // console.log('data',data,key,rowId)
-
-        }
+        renderRow={(data, key, rowId) => (this.renderTopicItem(data, key, rowId))}
 
         leftOpenValue={75}
         rightOpenValue={-75}
+        enableEmptySections={true}
       />
     )
   }
 
   renderShopList() {
-    return (<SwipeListView
-      dataSource={this.props.shopDataSrc}
-      renderRow={ (data, key, rowId) => ( this.renderShopPromotionItem(data, key, rowId)
-      )
-        // console.log('data',data,key,rowId)
+    return (
+      <SwipeListView
+        dataSource={this.props.shopDataSrc}
+        renderRow={(data, key, rowId) => (this.renderShopPromotionItem(data, key, rowId))}
 
-      }
-
-      leftOpenValue={75}
-      rightOpenValue={-75}
-    />)
+        leftOpenValue={75}
+        rightOpenValue={-75}
+        enableEmptySections={true}
+      />
+    )
   }
 
   render() {

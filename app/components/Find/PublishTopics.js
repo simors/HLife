@@ -33,6 +33,7 @@ import ArticleEditor from '../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
 import Icon from 'react-native-vector-icons/Ionicons'
+import * as AVUtils from '../../util/AVUtils'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -87,7 +88,10 @@ class PublishTopics extends Component {
     this.isPublishing = false
     Toast.show('恭喜您,发布成功!')
 
-    Actions.pop()
+    //Actions.pop()
+    // Actions.FIND({categoryId: this.state.selectedTopic.objectId})
+    AVUtils.switchTab('FIND', {categoryId: this.state.selectedTopic.objectId})
+
     this.props.handleDestroyTopicDraft({id:this.draftId})
 
   }
@@ -96,7 +100,7 @@ class PublishTopics extends Component {
     Toast.show(error.message)
   }
   componentWillUnmount(){
-    console.log('unmount')
+    // console.log('unmount')
     // this.timer&&clearInterval(this.timer)
   }
 
@@ -152,7 +156,9 @@ class PublishTopics extends Component {
 
   openModal() {
     Keyboard.dismiss()
-    this.refs.modal3.open();
+    setTimeout(()=>{
+      this.refs.modal3.open();
+    }, 500)
   }
 
   closeModal(value) {

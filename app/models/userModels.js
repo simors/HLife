@@ -95,6 +95,9 @@ export class UserInfo extends UserInfoRecord {
       for(let key in lcObj) {
         if('identity' == key) {
           record.set('identity', new List(lcObj.identity))
+        }else if('mobilePhoneNumber' == key){
+          record.set(key, lcObj[key])
+          record.set('phone', lcObj[key])
         }else {
           record.set(key, lcObj[key])
         }
