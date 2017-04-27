@@ -6,7 +6,6 @@ import {Record, Map, List} from 'immutable'
 export const PromoterRecord = Record({
   id: undefined,
   userId: undefined,              // 对应的用户id
-  name: undefined,                // 真实姓名
   phone: undefined,               // 联系手机号码
   upUser: undefined,              // 推荐人
   payment: undefined,             // 是否已完成支付，0表示未支付，1表示已支付
@@ -79,7 +78,6 @@ export class PromoterInfo extends PromoterRecord {
     promoter = promoter.withMutations((record) => {
       record.set('id', lcObj.objectId)
       record.set('userId', lcObj.user.id)
-      record.set('name', lcObj.name)
       record.set('phone', lcObj.phone)
       record.set('upUser', lcObj.upUser ? lcObj.upUser.id : undefined)
       record.set('payment', lcObj.payment)

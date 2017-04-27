@@ -85,7 +85,6 @@ export function promoterCertification(payload) {
       let region = formData.regionPicker.text
       let promoterInfo = {
         inviteCode: formData.inviteCodeInput.text,
-        name: formData.nameInput.text,
         phone: formData.phoneInput.text,
         liveProvince: region.province,
         liveCity: region.city,
