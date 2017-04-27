@@ -74,6 +74,10 @@ export class Find extends Component {
     // })
   }
 
+  componentWillReceiveProps(nextProps) {
+    
+  }
+
   getSelectedTab(index) {
     this.setState({selectedTab: index}, ()=>{
       this.refreshTopic()
@@ -284,7 +288,7 @@ export class Find extends Component {
       <View style={styles.container}>
         <StatusBar barStyle="dark-content"/>
         <TabScrollView topics={this.props.topicCategories}
-                       topicId={this.props.topicId}
+                       topicId={this.props.categoryId}
                        renderTopics={() => this.renderTopics()}
                        onSelected={(index) => this.getSelectedTab(index)}/>
       </View>
@@ -308,13 +312,14 @@ const mapStateToProps = (state, ownProps) => {
   topicCategories.unshift({title: "精选"})
   topics[0] = pickedTopic
   topics[1] = localTopics
+
   return {
     dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,
     topics: topics,
     isLogin: isLogin,
     userInfo: userInfo,
-    localCity: localCity
+    localCity: localCity,
   }
 }
 

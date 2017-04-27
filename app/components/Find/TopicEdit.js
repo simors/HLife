@@ -81,7 +81,7 @@ class TopicEdit extends Component {
     this.draftDay = new Date().getDate()  }
 
   submitSuccessCallback = () => {
-    console.log('this.draftId',this.draftId)
+    // console.log('this.draftId',this.draftId)
 
     this.isPublishing = false
     Actions.pop({popNum: 2})
@@ -162,7 +162,9 @@ class TopicEdit extends Component {
 
   openModal() {
     Keyboard.dismiss()
-    this.refs.modal3.open();
+    setTimeout(()=>{
+      this.refs.modal3.open();
+    }, 500)
   }
 
   closeModal(value) {
