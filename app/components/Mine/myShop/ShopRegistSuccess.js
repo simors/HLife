@@ -32,7 +32,7 @@ class ShopRegisterSuccess extends Component {
     super(props)
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchUserOwnedShopInfo()
     })

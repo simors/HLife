@@ -30,7 +30,7 @@ class PaymentSuccess extends Component {
     super(props)
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     InteractionManager.runAfterInteractions(()=> {
       this.props.getCurrentPromoter({
         error: (err) => {
