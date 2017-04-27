@@ -25,6 +25,7 @@ import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from '../Toast'
+import * as DeviceInfo from 'react-native-device-info'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -329,14 +330,27 @@ class ArticleEditor extends Component {
     let data = this.props.data
     data[index].text = content
     this.inputChange(data)
+
+    let refName = "content_" + index
+    if (this.state.start == content.length) {
+      setTimeout(() => {
+        let scrollResponder = this.refs.scrollView.getScrollResponder();
+        scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+          findNodeHandle(this.refs[refName]),
+          this.toolbarHeight + 80, //additionalOffset
+          true
+        );
+      }, 50);
+    }
+
     // 内容高度小于显示高度是，不调整光标位置
-    if (this.state.contentHeight < this.state.scrollViewHeight) {
+    /*if (this.state.contentHeight < this.state.scrollViewHeight) {
       return
     }
     let len = data.length
     if (len - 1 == index) {
       this.refs.scrollView.scrollTo({y: this.state.contentHeight - this.state.scrollViewHeight})
-    }
+    }*/
   }
 
   selectChange(event) {
@@ -378,11 +392,6 @@ class ArticleEditor extends Component {
           if (this.props.onFocusEditor) {
             this.props.onFocusEditor()
           }
-          {/*let newEditorHeight = this.compHeight - this.state.keyboardPadding - this.toolbarHeight*/}
-          {/*Animated.timing(this.state.editorHeight, {*/}
-            {/*toValue: newEditorHeight,*/}
-            {/*duration: 210,*/}
-          {/*}).start();*/}
           this.setState({cursor: index, showToolbar: true})
           this.inputFocused("content_" + index)
         }}
@@ -422,12 +431,14 @@ class ArticleEditor extends Component {
   }
 
   renderEditToolView() {
+    let extHeight = 0
+    console.log('brand', DeviceInfo.getBrand())
     return (
       <View style={[styles.editToolView,
         {
           position: 'absolute',
           left: 0,
-          bottom: this.state.keyboardPadding,
+          bottom: this.state.keyboardPadding + extHeight,
           width: PAGE_WIDTH,
           height: this.toolbarHeight,
         }]}
