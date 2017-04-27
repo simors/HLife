@@ -378,7 +378,7 @@ class PersonalHomePage extends Component {
         that.setState({
           userIsFollowedTheUser: true
         })
-        // that.props.fetchUserFollowees()
+        that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -406,7 +406,7 @@ class PersonalHomePage extends Component {
         that.setState({
           userIsFollowedTheUser: false
         })
-        // that.props.fetchUserFollowees()
+        that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
