@@ -34,13 +34,13 @@ class ShopRegisterSuccess extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      console.log('updateShopInfoAfterPaySuccess.shopId===', this.props.shopId)
-      console.log('updateShopInfoAfterPaySuccess.tenant===', this.props.tenant)
+      // console.log('updateShopInfoAfterPaySuccess.shopId===', this.props.shopId)
+      // console.log('updateShopInfoAfterPaySuccess.tenant===', this.props.tenant)
       this.props.updateShopInfoAfterPaySuccess({
         shopId: this.props.shopId,
         tenant: this.props.tenant,
         success: () => {
-          console.log('updateShopInfoAfterPaySuccess===success')
+          // console.log('updateShopInfoAfterPaySuccess===success')
           this.props.fetchUserOwnedShopInfo()
         }
       })

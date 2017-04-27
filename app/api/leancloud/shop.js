@@ -1250,9 +1250,9 @@ export function updateShopLocationInfo(payload) {
 }
 
 export function updateShopInfoAfterPaySuccess(payload) {
-  console.log('hLifeUpdateShopInfoAfterPaySuccess.payload=======', payload)
+  // console.log('hLifeUpdateShopInfoAfterPaySuccess.payload=======', payload)
   return AV.Cloud.run('hLifeUpdateShopInfoAfterPaySuccess', payload).then((result)=>{
-    console.log('hLifeUpdateShopInfoAfterPaySuccess.result=======', result)
+    // console.log('hLifeUpdateShopInfoAfterPaySuccess.result=======', result)
     // if(result.code == 0) {
     //   return true
     // }
