@@ -96,8 +96,7 @@ export default class Share extends Component {
 
   openShareChannel = (index) => {
     let title = this.props.title ? this.props.title : '邻家优店'
-    // let targetUri = __DEV__ ? 'http://dev.12km.com/feedDetail/' + this.props.feedId : 'http://12km.com/feedDetail/' + this.props.feedId
-    let targetUri = 'http://www.baidu.com'
+    let targetUri = this.props.url || 'https://www.pgyer.com/F5Df'
     let content = this.props.abstract ? this.props.abstract : '邻家优店'
     if (index == 4) {
       content = '\n作者：' + this.props.author + '（来自邻家优店）'

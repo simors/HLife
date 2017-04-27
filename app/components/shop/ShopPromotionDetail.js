@@ -81,11 +81,17 @@ class ShopPromotionDetail extends Component {
     Actions.CHATROOM(payload)
   }
 
-  submitSuccessCallback(result) {
-    Actions.SHARE(result)
+  submitSuccessCallback = (result) => {
+    Actions.SHARE({
+      title: this.props.shopPromotionDetail.title,
+      url: result.url,
+      author: this.props.shopPromotionDetail.targetShop.shopName,
+      abstract: this.props.shopPromotionDetail.abstract,
+      cover: this.props.shopPromotionDetail.coverUrl,
+    })
   }
 
-  submitErrorCallback(error) {
+  submitErrorCallback = (error) => {
     Toast.show(error.message)
   }
   onShare = () => {
@@ -167,7 +173,7 @@ class ShopPromotionDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const shopPromotionDetail = selectShopPromotionDetail(state, ownProps.id)
-  // console.log('shopPromotionDetail=====>>>>>', shopPromotionDetail)
+  console.log('shopPromotionDetail=====>>>>>', shopPromotionDetail)
   const isUserLogined = authSelector.isUserLogined(state)
 
   return {
