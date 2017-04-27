@@ -23,7 +23,7 @@ import './global'
 
 // const EE = new EventEmitter()
 
-export function switchTab(tabKey, tabParams){
+export function switchTab(tabKey = 'MINE', tabParams = {}){
   Actions.HOME({type:'reset'})
   Actions[tabKey](tabParams)
 }
