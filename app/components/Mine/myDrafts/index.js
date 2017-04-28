@@ -248,6 +248,8 @@ export class MyTopic extends Component {
   }
 
   render() {
+    let identity=this.props.identity
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content"/>
@@ -288,31 +290,33 @@ export class MyTopic extends Component {
                 >话题</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-              onPress={()=> {
-                this.toggleTab(1)
-              }}>
-              <View style={[{
-                width: normalizeW(100),
-                height: normalizeH(44),
-                justifyContent: 'flex-end',
-                alignItems: 'center'
-              },
-                this.state.tabType == 1 ?
-                {
-                  borderBottomWidth: 3,
-                  borderColor: THEME.base.mainColor
-                } : {}]}>
-                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+            {(identity[0]=='shopKeeper'||identity[1]=='shopKeeper')?
+              <TouchableOpacity
+                style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                onPress={()=> {
+                  this.toggleTab(1)
+                }}>
+                <View style={[{
+                  width: normalizeW(100),
+                  height: normalizeH(44),
+                  justifyContent: 'flex-end',
+                  alignItems: 'center'
+                },
                   this.state.tabType == 1 ?
                   {
-                    color: THEME.base.mainColor,
-                    fontWeight: 'bold',
-                  } : {color: '#4A4A4A'}]}
-                >店铺活动</Text>
-              </View>
-            </TouchableOpacity>
+                    borderBottomWidth: 3,
+                    borderColor: THEME.base.mainColor
+                  } : {}]}>
+                  <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                    this.state.tabType == 1 ?
+                    {
+                      color: THEME.base.mainColor,
+                      fontWeight: 'bold',
+                    } : {color: '#4A4A4A'}]}
+                  >店铺活动</Text>
+                </View>
+              </TouchableOpacity>:null}
+
           </View>
           {this.state.tabType == 0 ? this.renderTopicList() : this.renderShopList()}
 
@@ -324,7 +328,9 @@ export class MyTopic extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+
   const userId = authSelector.activeUserId(state)
+  const identity = authSelector.getUserIdentity(state)
   const topics = getMyTopicDrafts(state)
   const shopPromotions = getMyShopPromotionDrafts(state)
 
@@ -374,6 +380,7 @@ const mapStateToProps = (state, ownProps) => {
     shopDataSrc: ds.cloneWithRows(shopPromotions),
     dataSrc: ds.cloneWithRows(topics),
     // dataSrc: ds.cloneWithRows(topics),
+    identity:identity,
     topics: topics,
   }
 
