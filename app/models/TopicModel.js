@@ -146,6 +146,15 @@ export class TopicCommentsItem extends TopicCommentsConfig {
       }
     })
   }
+
+  static fromLeancloudApi(lcObj) {
+    let topicCommentsConfig = new TopicCommentsConfig()
+    return topicCommentsConfig.withMutations((record)=> {
+      for(let key in lcObj) {
+        record.set(key, lcObj[key])
+      }
+    })
+  }
 }
 
 export const TopicLikeUserConfig = Record({

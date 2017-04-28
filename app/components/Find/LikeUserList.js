@@ -46,6 +46,7 @@ export class LikeUserList extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicLikesCount({
         topicId: this.props.topicId,
+        upType: 'topic',
         success: (likesTotalCount) => {
           this.topicLikeUsersCount = likesTotalCount
         }
