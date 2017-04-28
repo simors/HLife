@@ -60,12 +60,13 @@ export default class AutoGrowingTextInput extends Component {
    using a flag (androidFirstContentSizeChange) to pervent multiple updates in case both notifications works simultaniously in some cases
    */
   _onContentSizeChange(event) {
-    if(ANDROID_PLATFORM) {
-      if(!this.state.androidFirstContentSizeChange) {
-        return;
-      }
-      this.setState({androidFirstContentSizeChange: false});
-    }
+    // 为了ArticleEidtor组件在android中删除图片时，TextInput的高度能够自适应重新组合的文字的高度，将此代码注释
+    // if(ANDROID_PLATFORM) {
+    //   if(!this.state.androidFirstContentSizeChange) {
+    //     return;
+    //   }
+    //   this.setState({androidFirstContentSizeChange: false});
+    // }
     this._handleNativeEvent(event.nativeEvent);
 
     if (this.props.onContentSizeChange) {
@@ -74,7 +75,10 @@ export default class AutoGrowingTextInput extends Component {
   }
 
   _onChange(event) {
-    if(ANDROID_PLATFORM && !this.state.androidFirstContentSizeChange) {
+    // if(ANDROID_PLATFORM && !this.state.androidFirstContentSizeChange) {
+    //   this._handleNativeEvent(event.nativeEvent);
+    // }
+    if(ANDROID_PLATFORM) {
       this._handleNativeEvent(event.nativeEvent);
     }
     if (this.props.onChange) {
