@@ -22,7 +22,7 @@ import {
   Platform,
   InteractionManager,
   StatusBar,
-  Linking
+  Linking,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -78,6 +78,7 @@ class Home extends Component {
       },
     }
   }
+
   checkIosUpdate(){
     // console.log('jhahahah',CommonNative)
     let platform = Platform.OS
