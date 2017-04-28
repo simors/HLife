@@ -237,19 +237,19 @@ class ShopRegister extends Component {
   submitSuccessCallback = (shopInfo) => {
     this.isSubmiting = false
     Loading.hide(this.loading)
-
+    console.log('shopInfo===', shopInfo)
     this.props.getShopTenant({
       province: shopInfo.geoProvince,
       city: shopInfo.geoCity,
       success: (tenant) =>{
         this.props.fetchUserOwnedShopInfo()
         Actions.PAYMENT({
-          metadata: {'shopId':shopInfo.id, 'tenant': tenant, 'user': this.props.userInfo.id},
+          metadata: {'shopId':shopInfo.objectId, 'tenant': tenant, 'user': this.props.userInfo.id},
           price: tenant,
           popNum: 2,
           paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
           paySuccessJumpSceneParams: {
-            shopId: shopInfo.id,
+            shopId: shopInfo.objectId,
             tenant: tenant,
           },
           payErrorJumpScene: 'MINE',

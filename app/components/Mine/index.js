@@ -88,7 +88,7 @@ class Mine extends Component {
               city: userOwnedShopInfo.geoCity,
               success: (tenant) =>{
                 Actions.PAYMENT({
-                  metadata: {'shopId':userOwnedShopInfo.id, 'tenant': tenant},
+                  metadata: {'shopId':userOwnedShopInfo.id, 'tenant': tenant, 'user': this.props.userInfo.id},
                   price: tenant,
                   paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
                   paySuccessJumpSceneParams: {
