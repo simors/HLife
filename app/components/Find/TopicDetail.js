@@ -64,7 +64,7 @@ export class TopicDetail extends Component {
     this.replyInput = null
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.refreshData()
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
@@ -77,6 +77,9 @@ export class TopicDetail extends Component {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
       }
     })
+  }
+
+  componentDidMount() {
 
     if (Platform.OS == 'ios') {
       Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
