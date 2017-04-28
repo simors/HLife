@@ -34,10 +34,10 @@ export class TopicComment extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topicComment'})
-      if( this.props.isLogin ) {
-        this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topicComment'})
-      }
+      // this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topicComment'})
+      // if( this.props.isLogin ) {
+      //   this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topicComment'})
+      // }
     })
   }
 
