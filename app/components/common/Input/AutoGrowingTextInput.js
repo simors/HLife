@@ -134,6 +134,10 @@ export default class AutoGrowingTextInput extends Component {
   isFocused() {
     return this._textInput.isFocused();
   }
+
+  getInputHeight() {
+    return this._getValidHeight(this.state.height)
+  }
 }
 
 var styles = StyleSheet.create({

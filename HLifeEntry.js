@@ -8,6 +8,8 @@ import {
   View,
   Platform,
   AppState,
+  BackAndroid,
+  ToastAndroid,
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router, Actions} from 'react-native-router-flux'
@@ -58,11 +60,20 @@ AV.init(
     AppState.removeEventListener('change', handleAppStateChange);
   }
 
+   onBackAndroid = () => {
+     if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+       return false;
+     }
+     this.lastBackPressed = Date.now();
+     ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+     return true;
+   };
+
   render() {
     return (
       <Provider store={store}>
         <View style={{flex: 1}}>
-          <RouterWithRedux scenes={scenes} store={store} sceneStyle={getSceneStyle}/>
+          <RouterWithRedux scenes={scenes} store={store} sceneStyle={getSceneStyle} onExitApp={this.onBackAndroid}/>
         </View>
       </Provider>
     )
