@@ -16,6 +16,10 @@ export default function messageReducer(state = initialState, action) {
       return onCloseMessager(state, action)
     case Types.INIT_CONVERSATION:
       return onInitConversation(state, action)
+    case Types.FETCH_CONVERSATION:
+      return handleFetchConversation(state, action)
+    case Types.FETCH_CONVERSATION_PAGING:  
+      return handleFetchConversationPaging(state, action)
     case Types.ON_CONVERSATION_CREATED:
       return onConversationCreated(state, action)
     case Types.ON_ENTER_CONVERSATION:
@@ -30,6 +34,8 @@ export default function messageReducer(state = initialState, action) {
       return onMessageReceived(state, action)
     case Types.ON_INIT_MESSAGES:
       return onInitMessages(state, action)
+    case Types.FETCH_HISTORY_CHAT_MESSAGES_BY_PAGING_SUCCESS:
+      return onFetchHistoryChatMessagesByPagingSuccess(state, action)  
     case Types.ON_UPDATE_CONVERSATION:
       return onUpdateConversation(state, action)
     case REHYDRATE:
@@ -53,7 +59,7 @@ function onCloseMessager(state, action) {
 function onInitConversation(state, action) {
   let convs = action.payload.conversations
   convs.map((conv) => {
-    console.log('conv', conv)
+    // console.log('conv', conv)
     const convId = conv.id
     state = state.updateIn(
       ['conversationMap', convId],
@@ -62,6 +68,44 @@ function onInitConversation(state, action) {
     )
   })
   return sortConversationList(state)
+}
+
+function handleFetchConversation(state, action) {
+  let convs = action.payload.conversations
+  let convsIds = []
+  convs.map((conv) => {
+    // console.log('conv', conv)
+    const convId = conv.id
+    convsIds.push(convId)
+    state = state.updateIn(
+      ['conversationMap', convId],
+      new Conversation(),
+      val=>val.merge(conv)
+    )
+  })
+
+  state = state.set('OrderedConversation', new List(convsIds))
+  return state
+}
+
+function handleFetchConversationPaging(state, action) {
+
+  let convs = action.payload.conversations
+  let convsIds = []
+  convs.map((conv) => {
+    // console.log('conv', conv)
+    const convId = conv.id
+    convsIds.push(convId)
+    state = state.updateIn(
+      ['conversationMap', convId],
+      new Conversation(),
+      val=>val.merge(conv)
+    )
+  })
+  let orderedConversations = state.get('OrderedConversation')
+
+  state = state.set('OrderedConversation', orderedConversations.concat(new List(convsIds)))
+  return state
 }
 
 function onInitMessages(state, action) {
@@ -73,6 +117,26 @@ function onInitMessages(state, action) {
     state = state.setIn(['messages', msg.id], msg)
     msgLst = msgLst.push(msg.id)
   })
+
+  state = state.setIn(['conversationMap', conversationId, 'messages'], msgLst)
+  return state
+}
+
+function onFetchHistoryChatMessagesByPagingSuccess(state, action) {
+  let payload = action.payload
+  let conversationId = payload.conversationId
+  let messages = payload.messages
+
+  let msgLst = List()
+  messages.forEach((msg) => {
+    state = state.setIn(['messages', msg.id], msg)
+    msgLst = msgLst.push(msg.id)
+  })
+
+  let _msgList = state.getIn(['conversationMap', conversationId, 'messages'])
+  if(_msgList && _msgList.size) {
+    msgLst = _msgList.concat(msgLst)
+  }
 
   state = state.setIn(['conversationMap', conversationId, 'messages'], msgLst)
   return state
@@ -125,11 +189,12 @@ function onUpdateConversation(state, action) {
 }
 
 function onMessageCreated(state, action) {
-  const msg = action.payload.message
-  const createdMsgId = action.payload.createdMsgId
-  const convId = msg.conversation
-  state = deleteMessage(state, createdMsgId, convId)
-  return createMessage(state, msg)
+  // const msg = action.payload.message
+  // const createdMsgId = action.payload.createdMsgId
+  // const convId = msg.conversation
+  // state = deleteMessage(state, createdMsgId, convId)
+  // return createMessage(state, msg)
+  return state
 }
 
 function onMessageSend(state, action) {
@@ -138,7 +203,7 @@ function onMessageSend(state, action) {
   const convId = msg.conversation
 
   //replace stored message with new id
-  state = deleteMessage(state, createdMsgId, convId)
+  // state = deleteMessage(state, createdMsgId, convId)
   return createMessage(state, msg)
 }
 
@@ -164,11 +229,19 @@ function onMessageReceived(state, action) {
 
 function createMessage(state, msg) {
   state = state.setIn(['messages', msg.id], msg)
-  state = state.updateIn(['conversationMap', msg.conversation, 'messages'], msgList=> {
+  // console.log('createMessage.msg====', msg)
+  state = state.updateIn(['conversationMap', msg.conversation, 'messages'], (msgList)=> {
+    // console.log('createMessage=type msgList==', Object.prototype.toString.call(msgList))
+    // console.log('createMessage=msgList==', msgList)
+    // console.log(msgList)
+    if(!msgList) {
+      return new List([msg.id])
+    }
     if (msgList.includes(msg.id)) {
       return msgList
     }
     return msgList.insert(0, msg.id)   // 消息倒序排列，最新的消息在列表最前面
+    
   })
   state = state.setIn(['conversationMap', msg.conversation, 'lastMessageAt'], msg.timestamp)
   state = state.setIn(['conversationMap', msg.conversation, 'updatedAt'], msg.timestamp)
@@ -182,10 +255,21 @@ function createMessage(state, msg) {
 }
 
 function deleteMessage(state, msgId, cid) {
+  // console.log('msgId===', msgId)
+  // console.log('cid===', cid)
   state = state.deleteIn(['messages', msgId])
   state = state.updateIn(
     ['conversationMap', cid, 'messages'],
-    list=>list.filter(msg => msg.id !== msgId)
+    (list)=>{
+      // console.log('deleteMessage.list====', list)
+      list.filter(msg => {
+        // console.log('deleteMessage=type msg==', Object.prototype.toString.call(msg))
+        // console.log(msg)
+        // console.log('deleteMessage.msg====', msg)
+        // console.log('deleteMessage.msgId====', msgId)
+        msg !== msgId
+      })
+    }
   )
   return state
 }

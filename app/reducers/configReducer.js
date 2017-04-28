@@ -22,7 +22,9 @@ export default function configReducer(state = initialState, action) {
     case ConfigActionTypes.UPDATE_PROVINCES_AND_CITIES:
       return handleUpdateProvincesAndCities(state, action)
     case ConfigActionTypes.FETCH_APP_SERVICE_PHONE_SUCCESS:
-      return handleFetchAppServicePhoneSuccess(state, action)  
+      return handleFetchAppServicePhoneSuccess(state, action)
+    case ConfigActionTypes.FETCH_APP_NOUPDATE_VERSION:
+      return handleFetchAppNoUpdateVersion(state,action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -99,6 +101,11 @@ function handleUpdateGeolocation(state, action) {
   state = state.set('location', location)
   return state
 }
+function handleFetchAppNoUpdateVersion(state,action) {
+  // console.log('===============+>',action.payload)
+  state = state.set('noUpdateVersion',action.payload.noUpdateVersion)
+  return state
+}
 
 function onRehydrate(state, action) {
   var incoming = action.payload.CONFIG
@@ -124,6 +131,10 @@ function onRehydrate(state, action) {
   // console.log('onRehydrate.provinceListWithCityList=====', provinceListWithCityList)
   if(provinceListWithCityList) {
     state = state.set('provinceListWithCityList', new List(provinceListWithCityList))
+  }
+  let noUpdateVersion = incoming.noUpdateVersion
+  if(noUpdateVersion){
+    state = state.set('noUpdateVersion',noUpdateVersion)
   }
   
   return state

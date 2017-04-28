@@ -204,6 +204,7 @@ class MyAttention extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
+    // console.log('loadMoreShopListData===payload====', payload)
     this.props.fetchUserFollowShops(payload)
   }
 
@@ -382,6 +383,7 @@ class MyAttention extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  // console.log('MyAttention.mapStateToProps.state===', state)
   let userFollowees = selectUserFollowees(state)
   // userFollowees = []
   let userFolloweesLastCreatedAt = ''

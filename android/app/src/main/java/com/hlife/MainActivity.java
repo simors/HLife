@@ -1,6 +1,8 @@
 package com.hlife;
 
 import com.facebook.react.ReactActivity;
+import com.microsoft.codepush.react.CodePush;
+//import com.microsoft.codepush.react.CodePush;
 import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;

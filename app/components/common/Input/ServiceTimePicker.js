@@ -117,8 +117,16 @@ class ServiceTimePicker extends Component {
     let text = ''
     if (isBegin) {
       text = data[0].replace('时', ':') + data[1].replace('分', '') + '-' + this.state.endHour + ':' + this.state.endMin
+      this.setState({
+        beginHour: data[0].substring(0, data[0].indexOf('时')),
+        beginMin: data[1].substring(0, data[1].indexOf('分')),
+      })
     } else {
       text = this.state.beginHour + ':' + this.state.beginMin + '-' + data[0].replace('时', ':') + data[1].replace('分', '')
+      this.setState({
+        endHour: data[0].substring(0, data[0].indexOf('时')),
+        endMin: data[1].substring(0, data[1].indexOf('分')),
+      })
     }
     this.updateInput(text)
   }

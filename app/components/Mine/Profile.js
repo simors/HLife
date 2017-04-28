@@ -43,27 +43,42 @@ const nicknameInput = {
   formKey: profileForm,
   stateKey: Symbol('nicknameInput'),
   type: "nicknameInput",
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
 }
 const avatarInput = {
   formKey: profileForm,
   stateKey: Symbol('avatarInput'),
   type: "avatarInput",
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
 }
 const phoneInput = {
   formKey: profileForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput",
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
 }
 
 const genderInput = {
   formKey: profileForm,
   stateKey: Symbol('genderInput'),
   type: "genderInput",
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
 }
 const dtPicker = {
   formKey: profileForm,
   stateKey: Symbol('dtPicker'),
   type: "dtPicker",
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
 }
 
 class Profile extends Component {
@@ -115,7 +130,7 @@ class Profile extends Component {
                 containerStyle={styles.imageInputStyle}
                 addImage={require('../../assets/images/default_portrait.png')}
                 choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(42), overflow: 'hidden', width: normalizeW(84), height: normalizeH(84), overlayColor: '#FFFFFF'}}
-                addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0}}
+                addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0,borderRadius: normalizeW(42),}}
               />
             </View>
             <View style={styles.zoneb}>
@@ -138,6 +153,7 @@ class Profile extends Component {
                   <PhoneInput {...phoneInput}
                               initValue={this.props.userInfo.phone? this.props.userInfo.phone: undefined}
                               clearBtnStyle={{right: em(20), top: em(6)}}
+                              editable={false}
                               inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>
@@ -177,6 +193,7 @@ class Profile extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let userInfo = activeUserInfo(state)
+  // console.log('mapStateToProps。userInfo====', userInfo)
   return {
     userInfo: userInfo,
   }
@@ -239,8 +256,6 @@ const  styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     width: normalizeW(84),
     height: normalizeH(84),
-    borderWidth: 1,
-    borderRadius: normalizeW(42),
-    overflow: 'hidden'
+    borderWidth: 0,
   },
 })

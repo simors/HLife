@@ -8,6 +8,7 @@
  */
 
 #import "AppDelegate.h"
+#import <CodePush/CodePush.h>
 
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
@@ -22,7 +23,12 @@
 {
   NSURL *jsCodeLocation;
 
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  
+#ifdef DEBUG
+  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+#else
+    jsCodeLocation = [CodePush bundleURL];
+#endif
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"HLife"
@@ -35,8 +41,6 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [RCTBaiduMapViewManager initSDK:@"veyQHPX4y1dP7rGVPy5f4yxsLGWA6x19"];
-
   /* 打开UShare调试日志 */
   [[UMSocialManager defaultManager] openLog:YES];
 
@@ -46,11 +50,11 @@
   [self configUSharePlatforms];
 
   [self confitUShareSettings];
-
+  [RCTBaiduMapViewManager initSDK:@"lM541vkXQcRP8poGBgi065mxEZjrVFQB"];
   return YES;
 }
 
-// Required to register for notifications
+// Required to register for notification
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
   [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings];

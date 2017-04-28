@@ -29,6 +29,7 @@ import PhoneInput from '../../common/Input/PhoneInput'
 import CommonTextInput from '../../common/Input/CommonTextInput'
 import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
 import {getShopTenant} from '../../../action/promoterAction'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import * as Toast from '../../common/Toast'
@@ -39,6 +40,7 @@ import Loading from '../../common/Loading'
 import * as Utils from '../../../util/Utils'
 import * as configSelector from '../../../selector/configSelector'
 import {store} from '../../../store/persistStore'
+import * as AVUtils from '../../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -198,7 +200,7 @@ class ShopRegister extends Component {
       nextProps.inputFormUpdate({
         formKey: shopGeoInput.formKey,
         stateKey: shopGeoInput.stateKey,
-        data: {text:[nextProps.latitude, nextProps.longitude]},
+        data: {text:[nextProps.latitude, nextProps.longitude].join(',')},
       })
     }
     if(nextProps.currentCity) {
@@ -240,8 +242,9 @@ class ShopRegister extends Component {
       province: shopInfo.geoProvince,
       city: shopInfo.geoCity,
       success: (tenant) =>{
+        this.props.fetchUserOwnedShopInfo()
         Actions.PAYMENT({
-          metadata: {shopId:shopInfo.id, tenant: tenant},
+          metadata: {'shopId':shopInfo.id, 'tenant': tenant, 'user': this.props.userInfo.id},
           price: tenant,
           popNum: 2,
           paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
@@ -254,7 +257,8 @@ class ShopRegister extends Component {
         })
       },
       error: (error)=>{
-        Actions.MINE()
+        AVUtils.switchTab('MINE')
+        // Actions.MINE()
       }
     })
   }
@@ -358,7 +362,7 @@ class ShopRegister extends Component {
                     editable={false}
                     showClearBtn={false}
                     containerStyle={styles.containerStyle}
-                    inputStyle={[styles.inputStyle, {height: normalizeH(42)}]}/>
+                    inputStyle={[styles.inputStyle, {height: normalizeH(52)}]}/>
                 </View>
               </View>
 
@@ -547,6 +551,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     phone: phone,
+    userInfo: activeUserInfo,
   }
 }
 
@@ -555,7 +560,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
   inputFormUpdate,
   initInputForm,
-  getShopTenant
+  getShopTenant,
+  fetchUserOwnedShopInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopRegister)
@@ -567,7 +573,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   shopAddress: {
-    height: normalizeH(42),
+    height: normalizeH(52),
     justifyContent: 'center',
     paddingRight:10
   },
@@ -635,11 +641,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   containerStyle: {
+    flex:1,
     paddingRight: 0,
     paddingLeft: 0,
   },
   inputStyle:{
-    height: normalizeH(47),
+    height: normalizeH(52),
     fontSize: 17,
     backgroundColor: '#fff',
     borderWidth: 0,

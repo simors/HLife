@@ -44,13 +44,24 @@ const PROMOTE = 'PROMOTE'
 class MessageBox extends Component {
   constructor(props) {
     super(props)
+
+    this.oldChatMessageSoundOpen = true
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      console.log('MessageBox=========componentWillMount-----------')
+      // console.log('MessageBox=========componentWillMount-----------')
       this.refreshData()
     })
+  }
+
+  componentDidMount() {
+    this.oldChatMessageSoundOpen = global.chatMessageSoundOpen
+    global.chatMessageSoundOpen = false
+  }
+
+  componentWillUnmount() {
+    global.chatMessageSoundOpen = this.oldChatMessageSoundOpen
   }
 
   renderNoticeTip(type) {
@@ -206,7 +217,7 @@ class MessageBox extends Component {
         {this.renderTopicMessage()}
         {this.renderShopMessage()}
         {this.renderSystemMessage()}
-        {this.renderPromoteMessage()}
+        {/*this.renderPromoteMessage()*/}
       </View>
     )
   }
@@ -289,7 +300,9 @@ class MessageBox extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+              Actions.pop()
+            }}
           title="消息通知"
         />
         <View style={styles.itemContainer}>

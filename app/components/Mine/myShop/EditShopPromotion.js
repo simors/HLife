@@ -160,7 +160,7 @@ class EditShopPromotion extends Component {
     this.updateTypesDesc(this.state.form.typeDesc)
     this.setInterval(()=>{
 
-      this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+      this.props.fetchShopPromotionDraft({userId:this.props.userId,draftId:this.draftId, ...this.state.form,
         abstract: this.state.form.abstract,
         promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
         shopId: this.state.form.shopId,
@@ -169,6 +169,52 @@ class EditShopPromotion extends Component {
       })
       // console.log('here is uid ',this.draftId)
     },5000)
+
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
+  }
+
+  componentWillUnmount(){
+    // console.log('unmount component')
+
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
+  }
+
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   showOverlay:true
+    // })
+  }
+
+  onKeyboardWillHide = (e) => {
+    this.setState({
+      showOverlay:false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -196,9 +242,7 @@ class EditShopPromotion extends Component {
       // console.log('componentWillReceiveProps=this.state=', this.state)
     })
   }
-  componentWillUnmount(){
-    console.log('i-M un mount hahahahahahahahaha')
-  }
+  
   showToolBarInput(type) {
     this.setState({
       toolBarInputFocusNum: 1,
@@ -340,11 +384,13 @@ class EditShopPromotion extends Component {
   }
 
   onOverlayPress() {
-    if(this.state.form.typeId != 3) {
-      this.onDefaultTypeBtnPress()
-    }else {
-      this.onCustomTypeBtnPress()
-    }
+    dismissKeyboard()
+
+    // if(this.state.form.typeId != 3) {
+    //   this.onDefaultTypeBtnPress()
+    // }else {
+    //   this.onCustomTypeBtnPress()
+    // }
   }
 
   checkForm() {
@@ -412,16 +458,19 @@ class EditShopPromotion extends Component {
 
   renderToolBarContent() {
     // console.log('renderToolBarContent===', this.state.toolBarInputFocusNum)
-    if(this.state.toolBarInputFocusNum) {
-      switch(this.state.toolBarContentType) {
-        case 'DEFAULT_TYPE_INPUT':
-          return this.renderToolBarDefaultTypeInput()
-        case 'CUSTOM_TYPE_INPUT':
-          return this.renderToolBarCustomTypeInput()
-        default:
-          return null
+    if(this.state.showOverlay) {
+      if(this.state.toolBarInputFocusNum) {
+        switch(this.state.toolBarContentType) {
+          case 'DEFAULT_TYPE_INPUT':
+            return this.renderToolBarDefaultTypeInput()
+          case 'CUSTOM_TYPE_INPUT':
+            return this.renderToolBarCustomTypeInput()
+          default:
+            return null
+        }
       }
     }
+
     return null
   }
 
@@ -707,7 +756,7 @@ class EditShopPromotion extends Component {
           rightType="text"
           rightText="发布"
           rightPress={() => {
-              this.props.fetchShopPromotionDraft({draftId:this.draftId, ...this.state.form,
+              this.props.fetchShopPromotionDraft({userId:this.props.userId,draftId:this.draftId, ...this.state.form,
                 abstract: this.state.form.abstract,
                 promotionDetailInfo:  JSON.stringify(this.state.form.promotionDetailInfo),
                 shopId: this.state.form.shopId,
@@ -822,11 +871,13 @@ class EditShopPromotion extends Component {
         </View>
 
         {this.state.showOverlay &&
-          <TouchableWithoutFeedback onPress={()=>{
-            this.onOverlayPress()
-          }}>
-            <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} />
-          </TouchableWithoutFeedback>
+          <TouchableOpacity
+            style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}}
+            onPress={()=>{
+              this.onOverlayPress()
+            }}>
+            <View style={{flex:1}} />
+          </TouchableOpacity>
         }
 
         <KeyboardAwareToolBar
@@ -843,6 +894,8 @@ class EditShopPromotion extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isUserLogined = authSelector.isUserLogined(state)
+  const userId = authSelector.activeUserId(state)
+
   const formData = getInputFormData(state, shopPromotionForm)
   let shopPromotion = formData && formData.shopPromotion
   let abstract = shopPromotion && shopPromotion.abstract
@@ -851,6 +904,7 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('promotionDetailInfo=====', promotionDetailInfo)
 
   return {
+    userId:userId,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
     abstract: abstract,

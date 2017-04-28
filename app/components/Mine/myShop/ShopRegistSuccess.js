@@ -24,7 +24,7 @@ import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import * as authSelector from '../../../selector/authSelector'
-import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
+import {fetchUserOwnedShopInfo, updateShopInfoAfterPaySuccess} from '../../../action/shopAction'
 import * as AVUtils from '../../../util/AVUtils'
 
 class ShopRegisterSuccess extends Component {
@@ -34,7 +34,16 @@ class ShopRegisterSuccess extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchUserOwnedShopInfo()
+      // console.log('updateShopInfoAfterPaySuccess.shopId===', this.props.shopId)
+      // console.log('updateShopInfoAfterPaySuccess.tenant===', this.props.tenant)
+      this.props.updateShopInfoAfterPaySuccess({
+        shopId: this.props.shopId,
+        tenant: this.props.tenant,
+        success: () => {
+          // console.log('updateShopInfoAfterPaySuccess===success')
+          this.props.fetchUserOwnedShopInfo()
+        }
+      })
     })
   }
 
@@ -103,7 +112,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  updateShopInfoAfterPaySuccess
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopRegisterSuccess)

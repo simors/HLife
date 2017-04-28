@@ -10,7 +10,7 @@ import {
   Text,
   Platform,
   TouchableOpacity,
-  NativeModules
+  Linking
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {connect} from 'react-redux'
@@ -25,14 +25,19 @@ import * as Toast from '../../components/common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
 import THEME from '../../constants/themes/theme1'
 import {userLogOut} from '../../action/authActions'
+import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
+import {checkUpdate} from '../../api/leancloud/update'
+const RNDeviceInfo = NativeModules.RNDeviceInfo
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
-const CommonNative = NativeModules.jsVersionUpdate
+const Emitter = (Platform.OS == 'ios' ? NativeEventEmitter : DeviceEventEmitter)
+// const CommonNative = NativeModules.jsVersionUpdate
 
 class Setting extends Component {
   constructor(props) {
     super(props)
+
   }
 
   clearApplication() {
@@ -58,7 +63,8 @@ class Setting extends Component {
         }
       }
     })
-  }
+}
+
   clickListener(index, banners) {
     let banner = banners[index]
     let actionType = banner.actionType
@@ -79,13 +85,62 @@ class Setting extends Component {
       Actions[action]()
     }
   }
+  checkIosUpdate(){
+    // console.log('jhahahah',CommonNative)
+    let platform = Platform.OS
+    if(platform==='ios'){
+      fetch('https://itunes.apple.com/lookup?id=1224852246',{
+        method:'POST'
+      }).then((data)=>{
+        data.json().then((result)=>{
+          // console.log('data',data)
+          // console.log('result',result.results[0].version)
+          // console.log('data',RNDeviceInfo.appVersion)
+          let version = result.results[0].version
+          if(version>RNDeviceInfo.appVersion){
+            this.isUpdate(result.results[0])
+          }
+        })
 
-  checkUpdate(){
-    console.log('jhahahah',CommonNative)
-    CommonNative.getVersion((data)=> {
-     console.log('data',data)
+
+      })
+    }else if (platform==='android'){
+      checkUpdate().then((result)=>{
+        // console.log('result',result)
+        // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
+
+        if(result.version>RNDeviceInfo.appVersion){
+          this.isUpdate({trackViewUrl:result.fileUrl})
+        }
+      })
+    }
+
+  }
+
+  isUpdate(result) {
+    Popup.confirm({
+      title: '版本更新',
+      content: '是否更新？',
+      ok: {
+        text: '更新',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+          // url='https://itunes.apple.com/app/id=1224852246'
+          // console.log('result.trackViewUrl',result.trackViewUrl)
+          let url= result.trackViewUrl
+          Linking.openURL(url).catch(err => console.error('An error occurred', err));
+        }
+      },
+      cancel: {
+        text: '以后',
+        callback: ()=> {
+          // console.log('cancel')
+        }
+      }
     })
   }
+
+
   toUserGuide(){
     let payload = {
       url:'http://www.baidu.com',
@@ -149,11 +204,10 @@ class Setting extends Component {
           title="设置"
         />
         <View style={styles.itemContainer}>
-
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => this.checkUpdate()}>
+            <TouchableOpacity style={styles.selectItem} onPress={() => this.checkIosUpdate()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>
-              <View style={styles.rightWrap}>
+              <View style={styles.rightWrap}><Text style={{color:'#AAAAAA',fontSize:em(15),marginRight:normalizeW(6)}}>{'V'+RNDeviceInfo.appVersion}</Text>
                 <Image source={require("../../assets/images/arrow_left.png")}/>
               </View>
             </TouchableOpacity>
@@ -198,7 +252,6 @@ class Setting extends Component {
               </View>
             </TouchableOpacity>
           </View>
-
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1,marginTop:normalizeH(30),backgroundColor:'#F5F5F5', borderColor: '#F7F7F7',width:normalizeW(345),height:normalizeH(50) }}>
             <TouchableOpacity style={{alignItems:'center',justifyContent:'center'}} onPress={() => this.clearUserInfo()}>
               <Text style={[styles.textStyle,{color:'#FF7819',marginTop:normalizeH(16)}]}>退出登录</Text>

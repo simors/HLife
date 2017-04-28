@@ -12,22 +12,22 @@ export default class LoadEarlier extends React.Component {
   renderLoading() {
     if (this.props.isLoadingEarlier === false) {
       return (
-        <Text style={[styles.text, this.props.textStyle]}>
-          {this.props.label}
+        <Text style={[styles.text, this.props.loadEarlierTextStyle]}>
+          {this.props.loadEarlierLabel}
         </Text>
       );
     }
     return (
       <View>
-        <Text style={[styles.text, this.props.textStyle, {
+        <Text style={[styles.text, this.props.loadEarlierTextStyle, {
             opacity: 0,
           }]}>
-          {this.props.label}
+          {this.props.loadEarlierLabel}
         </Text>
         <ActivityIndicator
           color='white'
           size='small'
-          style={[styles.activityIndicator, this.props.activityIndicatorStyle]}
+          style={[styles.activityIndicator, this.props.loadEarlierActivityIndicatorStyle]}
         />
       </View>
     );
@@ -35,7 +35,7 @@ export default class LoadEarlier extends React.Component {
   render() {
     return (
       <TouchableOpacity
-        style={[styles.container, this.props.containerStyle]}
+        style={[styles.container, this.props.loadEarlierContainerStyle]}
         onPress={() => {
           if (this.props.onLoadEarlier) {
             this.props.onLoadEarlier();
@@ -44,7 +44,7 @@ export default class LoadEarlier extends React.Component {
         disabled={this.props.isLoadingEarlier === true}
         accessibilityTraits="button"
       >
-        <View style={[styles.wrapper, this.props.wrapperStyle]}>
+        <View style={[styles.wrapper, this.props.loadEarlierWrapperStyle]}>
           {this.renderLoading()}
         </View>
       </TouchableOpacity>

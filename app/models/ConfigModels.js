@@ -157,6 +157,7 @@ export const Config = Record({
   location: undefined,
   provinceListWithCityList: List(),
   servicePhone: undefined,
+  noUpdateVersion:'',
 }, 'Config')
 
 

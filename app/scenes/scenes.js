@@ -94,6 +94,8 @@ import Mydrafts from '../components/Mine/myDrafts/index'
 import AreaPromoterDetail from '../components/Mine/promote/AreaPromoterDetail'
 import ChangeAgentView from '../components/Mine/promote/ChangeAgentView'
 import Share from '../components/common/Share'
+import PromoterPaymentOk from '../components/Payment/PromoterPaymentOk'
+import EarningRecord from '../components/Mine/promote/EarningRecord'
 
 const styles = StyleSheet.create({
   container: {
@@ -196,6 +198,8 @@ export const scenes = Actions.create(
       <Scene key="MY_DRAFTS" component={Mydrafts}/>
       <Scene key="AREA_DETAIL" component={AreaPromoterDetail}/>
       <Scene key="CHANGE_AGENT" component={ChangeAgentView}/>
+      <Scene key="PROMOTER_PAYMENT_OK" component={PromoterPaymentOk}/>
+      <Scene key="EARN_RECORD" component={EarningRecord}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

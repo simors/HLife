@@ -49,6 +49,7 @@ import {fetchShopCategories} from '../../../action/configAction'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Toast from '../../common/Toast'
 import Loading from '../../common/Loading'
+import * as AVUtils from '../../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -82,10 +83,11 @@ const servicePhone2Input = {
   stateKey: Symbol('servicePhone2Input'),
   type: "servicePhone2Input",
   checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '备用电话为空'}
+    return {isVal: true, errMsg: '验证通过'}
+    // if (data && data.text && data.text.length > 0) {
+    //   return {isVal: true, errMsg: '验证通过'}
+    // }
+    // return {isVal: false, errMsg: '备用电话为空'}
   },
 }
 const ourSpecialInput = {
@@ -241,13 +243,15 @@ class CompleteShopInfo extends Component {
         Toast.show('更新店铺资料成功', {
           duration: 1500,
           onHidden: () =>{
-            if(this.props.popNum && this.props.popNum > 1) {
-              Actions.pop({
-                popNum: this.props.popNum
-              })
-            }else {
-              Actions.pop()
-            }
+            AVUtils.switchTab('MINE')
+
+            // if(this.props.popNum && this.props.popNum > 1) {
+            //   Actions.pop({
+            //     popNum: this.props.popNum
+            //   })
+            // }else {
+            //   Actions.pop()
+            // }
           }
         })
       },
@@ -353,7 +357,9 @@ class CompleteShopInfo extends Component {
     // }else {
     //   Actions.pop()
     // }
-    Actions.MINE()
+    // Actions.MINE()
+
+    AVUtils.switchTab('MINE')
   }
 
   editShopCover(){
@@ -402,6 +408,7 @@ class CompleteShopInfo extends Component {
             automaticallyAdjustContentInsets={false}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}
+            keyboardShouldPersistTaps={true}
           >
             <View style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
@@ -487,6 +494,7 @@ class CompleteShopInfo extends Component {
                     onPress={()=>{this.toggleShopTagsSelectShow()}}
                     tags={this.state.selectedShopTags}
                     containerStyle={{height:50}}
+                    noCheckInput={true}
                   />
                 </View>
               </View>

@@ -6,7 +6,6 @@ import {Record, Map, List} from 'immutable'
 export const PromoterRecord = Record({
   id: undefined,
   userId: undefined,              // 对应的用户id
-  name: undefined,                // 真实姓名
   phone: undefined,               // 联系手机号码
   upUser: undefined,              // 推荐人
   payment: undefined,             // 是否已完成支付，0表示未支付，1表示已支付
@@ -40,13 +39,45 @@ export const AreaAgent = Record({
   userId: undefined,
 })
 
+export const EarnRecord = Record({
+  cost: undefined,              // 收益金额
+  dealType: undefined,          // 收益的类型，1表示邀请推广员，2表示邀请店铺
+  promoterId: undefined,        // 此收益由哪个推广员完成的推广
+  shopId: undefined,            // 如果收益类型为邀请店铺，那么这个字段记录被邀请的店铺id
+  invitedPromoterId: undefined, // 如果收益类型为邀请推广员，那么这个字段记录被邀请推广员的id
+  userId: undefined,            // 如果收益类型为邀请推广员，那么这个字段记录被邀请推广员的用户id
+  dealTime: undefined,          // 记录收益时间
+})
+
+export const DailyPerformance = Record({
+  level: undefined,           // 统计的级别，3为省，2为市，1为区县
+  province: undefined,
+  city: undefined,
+  district: undefined,
+  earning: 0,                 // 业绩总金额
+  promoterNum: 0,             // 新发展的推广员数
+  shopNum: 0,                 // 总店铺数
+  statDate: undefined,        // 统计的日期
+})
+
+export const MonthlyPerformance = Record({
+  level: undefined,           // 统计的级别，3为省，2为市，1为区县
+  province: undefined,
+  city: undefined,
+  district: undefined,
+  earning: 0,                 // 业绩总金额
+  promoterNum: 0,             // 新发展的推广员数
+  shopNum: 0,                 // 总店铺数
+  year: undefined,            // 统计的年份
+  month: undefined,           // 统计的月份
+})
+
 export class PromoterInfo extends PromoterRecord {
   static fromLeancloudObject(lcObj) {
     let promoter = new PromoterInfo()
     promoter = promoter.withMutations((record) => {
       record.set('id', lcObj.objectId)
       record.set('userId', lcObj.user.id)
-      record.set('name', lcObj.name)
       record.set('phone', lcObj.phone)
       record.set('upUser', lcObj.upUser ? lcObj.upUser.id : undefined)
       record.set('payment', lcObj.payment)
@@ -95,5 +126,11 @@ export const Promoter = Record({
   areaAgents: List(),               // 存储地区代理信息，值为AreaAgent类型
   shopTenant: Map(),                // 保存各地的店铺入驻费用，键为城市名，值为费用
   areaPromoters: List(),            // 某地区的推广员列表，按照业绩排序
+  dealRecords: Map(),               // 保存推广员的收益记录，键为推广员id，值为记录列表，类型为EarnRecord
+  lastDaysPerformance: Map(),       /* 保存最近几天的业绩统计数据，键为地区名称，如果是省级，则为省份名，
+                                       如果为市级则为省份加城市，以此类推，值为DailyPerformance列表 */
+  areaLastMonthsPerformance: Map(), /* 保存某地下辖区域最近几个月的业绩统计数据，键为地区名称，如果是省级，则为省份名，
+                                       如果为市级则为省份加城市，以此类推，值为一个List，按照月份排序，
+                                       为MonthlyPerformance列表 */
 }, 'Promoter')
 

@@ -18,11 +18,14 @@ import {
   UserFollowMsg,
   ShopFollowMsg,
   NotifyMessage,
+  PublishShopPromotionMsg
 } from '../models/notifyModel'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
 import {selectShopDetail} from '../selector/shopSelector'
 import {getTopicById} from '../selector/topicSelector'
+import * as lcShop from '../api/leancloud/shop'
+import * as AVUtils from '../util/AVUtils'
 
 class TextMessage extends TypedMessage {
 }
@@ -68,6 +71,10 @@ class ShopFollowMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_SHOP_FOLLOW)(ShopFollowMessage)
 
+class PublishShopPromotioMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_PUBLISH_SHOP_PROMOTION)(PublishShopPromotioMessage)
+
 
 //we should move this to the server to avoid reverse-engineering
 
@@ -94,6 +101,7 @@ realtime.register(TopicLikeMessage)
 realtime.register(ShopLikeMessage)
 realtime.register(UserFollowMessage)
 realtime.register(ShopFollowMessage)
+realtime.register(PublishShopPromotioMessage)
 
 const initMessenger = createAction(msgTypes.INIT_MESSENGER_CLIENT)
 const onCreateConversation = createAction(msgTypes.ON_CONVERSATION_CREATED)
@@ -130,6 +138,10 @@ export function initLcMessenger(payload) {
     realtime.createIMClient(payload.userId, {}, payload.tag).then((client) => {
       client.on('message', function (message, conversation) {
         dispatch(onReceiveMsg(message, conversation))
+
+        if(global.chatMessageSoundOpen) {
+          AVUtils.playMessageSound()
+        }
       })
 
       client.on('disconnect', function () {
@@ -170,15 +182,21 @@ export function createConversation(payload) {
     dispatch(createLcConversation(payload)).then((conversation) => {
       if (!conversation) {
         console.log('create conversation failed.')
+        if (payload.error) {
+          payload.error()
+        }
         return
       }
       dispatch(onCreateConversation(conversation))
       dispatch(enterConversation({conversationId: conversation.id}))
       if (payload.success) {
-        payload.success({meesage: '创建对话成功'})
+        payload.success({meesage: '创建对话成功', conversation: conversation})
       }
     }).catch((error) => {
       console.log('failed to create conversation: ', error)
+      if (payload.error) {
+        payload.error(error)
+      }
     })
   }
 }
@@ -211,6 +229,7 @@ export function sendMessage(payload) {
     dispatch(onCreateMessage({createdMsgId: payload.msgId, message: msg}))
 
     dispatch(sendLcTypedMessage(payload)).then((message) => {
+      // console.log('sendLcTypedMessage.message===', message)
       dispatch(onSendMessage({createdMsgId: payload.msgId, message: message}))
     }).catch((error) => {
       console.log(error)
@@ -255,8 +274,13 @@ export function fetchConversation(payload) {
     dispatch(fetchLcConversation(payload)).then((convs) => {
       // console.log('fetchConversation.convs===', convs)
       // console.log('fetchConversation.payload===', payload)
-      let initConversations = createAction(msgTypes.INIT_CONVERSATION)
-      dispatch(initConversations({conversations: convs}))
+      let isRefresh = payload.isRefresh
+      let actionType = msgTypes.FETCH_CONVERSATION
+      if(!isRefresh) {
+        actionType = msgTypes.FETCH_CONVERSATION_PAGING
+      }
+      let action = createAction(actionType)
+      dispatch(action({conversations: new List(convs)}))
       if(payload.success) {
         payload.success(convs.length <= 0)
       }
@@ -265,6 +289,43 @@ export function fetchConversation(payload) {
         payload.error(error)
       }
     })
+  }
+}
+
+export function fetchHistoryChatMessagesByPaging(payload) {
+  return (dispatch, getState) => {
+    let conversationId = payload.conversationId
+    let messageIterator = payload.messageIterator
+
+    messageIterator.next().then(function(result) {
+
+      let lcMsgs = result.value
+      let hasMore = !result.done
+
+      let messages = []
+      lcMsgs.map((msg) => {
+        messages.unshift(Message.fromLeancloudMessage(msg))
+      })
+
+      let action = createAction(msgTypes.FETCH_HISTORY_CHAT_MESSAGES_BY_PAGING_SUCCESS)
+      dispatch(action({
+        conversationId,
+        messages,
+      }))
+
+      if(payload.success) {
+        payload.success({
+          messages,
+          hasMore
+        })
+      }
+      
+    }).catch((err) => {
+      console.log('fetchHistoryChatMessagesByPaging.err===', err)
+      if(payload.error) {
+        payload.error(err)
+      }
+    });
   }
 }
 
@@ -310,7 +371,7 @@ function fetchLcConversation(payload) {
       query.lessThan('updatedAt', new Date(lastUpdatedAt))
     }
 
-    query.limit(10)
+    query.limit(8)
     query.addDescending('updatedAt')
 
     // console.log('fetchLcConversation.query====', query)
@@ -318,7 +379,7 @@ function fetchLcConversation(payload) {
       // console.log('fetchLcConversation.lcConvs====', lcConvs)
       let convs = []
       lcConvs.map((conv) => {
-        convs.unshift(Conversation.fromLeancloudConversation(conv))
+        convs.push(Conversation.fromLeancloudConversation(conv))
       })
       return convs
     }, (error)=>{
@@ -348,6 +409,27 @@ function fetchLcChatMessages(payload) {
       return msgs
     }).catch((err) => {
       console.log(err)
+    })
+  }
+}
+
+export function getLcConversation(payload) {
+  return (dispatch, getState) => {
+    let client = messengerClient(getState())
+    if (!client) {
+      if (payload.error) {
+        payload.error()
+      }
+    }
+
+    return client.getConversation(payload.conversationId).then((conversation)=> {
+      if (payload.success) {
+        payload.success(conversation)
+      }
+    }, (error) =>{
+      if (payload.error) {
+        payload.error()
+      }
     })
   }
 }
@@ -478,6 +560,7 @@ function onReceiveMsg(message, conversation) {
       || msgType === msgTypes.MSG_SHOP_LIKE
       || msgType === msgTypes.MSG_USER_FOLLOW
       || msgType === msgTypes.MSG_SHOP_FOLLOW
+      || msgType === msgTypes.MSG_PUBLISH_SHOP_PROMOTION
       || msgType === msgTypes.MSG_SYSTEM) {
       dispatch(onRecvNotifyMessage(message, conversation))
     }
@@ -541,6 +624,11 @@ function onRecvNotifyMessage(message, conversation) {
         message: ShopFollowMsg.fromLeancloudMessage(message),
         conversation: Conversation.fromLeancloudConversation(conversation)
       }))
+    } else if(msgType === msgTypes.MSG_PUBLISH_SHOP_PROMOTION) {
+      dispatch(addNotifyMsg({
+        message: PublishShopPromotionMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
     }
   }
 }
@@ -600,6 +688,8 @@ function createTypedMessage(msgType) {
       return new UserFollowMessage()
     case msgTypes.MSG_SHOP_FOLLOW:
       return new ShopFollowMessage()
+    case msgTypes.MSG_PUBLISH_SHOP_PROMOTION:
+      return new PublishShopPromotioMessage()  
     default:
       return new TextMessage()
   }
@@ -624,7 +714,7 @@ export function notifyTopicComment(payload) {
     }
 
     let currentUser = activeUserInfo(getState())
-    console.log('currentUser===', currentUser)
+    // console.log('currentUser===', currentUser)
     let notifyConv = {
       members: toPeers,   // 可以是一个数组
       unique: true
@@ -651,6 +741,53 @@ export function notifyTopicComment(payload) {
       conversation.send(message)
     }, (err) => {
       console.log(err)
+    })
+  }
+}
+
+export function notifyPublishShopPromotion(payload) {
+  return (dispatch, getState) => {
+    let toPeers = []
+    let shopId = payload.shopId
+    let shopDetail = selectShopDetail(getState(), shopId)
+    if (!shopDetail) {
+      console.log('can\'t find shop by shop id ' + shopId)
+      return
+    }
+
+    lcShop.fetchAllShopFollowerIds({id: shopId}).then((shopFollowerIds) => {
+      // console.log('shopFollowerIds===', shopFollowerIds)
+      toPeers = shopFollowerIds
+
+      let currentUser = activeUserInfo(getState())
+      let notifyConv = {
+        members: toPeers, // 可以是一个数组
+        unique: true
+      }
+      dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
+        let message = createTypedMessage(msgTypes.MSG_PUBLISH_SHOP_PROMOTION)
+        let attrs = {
+          msgType: msgTypes.MSG_PUBLISH_SHOP_PROMOTION,
+          userId: currentUser.id,
+          nickname: currentUser.nickname,
+          avatar: currentUser.avatar,
+          shopId: shopId,
+          shopName: shopDetail.shopName,
+          shopPromotionId: payload.shopPromotionId,
+          shopPromotionCoverUrl: payload.shopPromotionCoverUrl,
+          shopPromotionTitle: payload.shopPromotionTitle,
+          shopPromotionType: payload.shopPromotionType,
+          shopPromotionTypeDesc: payload.shopPromotionTypeDesc,
+        }
+        // console.log('attrs--------', attrs)
+        message.setText('发布了新活动')
+        message.setAttributes(attrs)
+        conversation.send(message)
+      }, (err) => {
+        console.log('createOriginalConversation==err===', err)
+      })
+    }, (error) => {
+      console.log('fetchAllShopFollowerIds=error===', error)
     })
   }
 }

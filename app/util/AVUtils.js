@@ -19,12 +19,13 @@ import * as pushSelect from '../selector/pushSelector'
 import * as configSelector from '../selector/configSelector'
 import * as authSelector from '../selector/authSelector'
 import * as dateUtils from '../util/dateUtils'
+import './global'
 
 // const EE = new EventEmitter()
 
-export function switchTab(tabKey){
+export function switchTab(tabKey = 'MINE', tabParams = {}){
   Actions.HOME({type:'reset'})
-  Actions[tabKey]()
+  Actions[tabKey](tabParams)
 }
 
 this.isPoping = false
@@ -34,10 +35,13 @@ export function pop(payload) {
   this.isPoping = true  
   if(payload && payload.backSceneName) {
     Actions.pop({popNum:2})
-    Actions[payload.backSceneName](payload.backSceneParams)
-    // setTimeout(()=>{
-    //   Actions[payload.backSceneName](payload.backSceneParams)
-    // }, 10)
+    if(payload.timeout) {
+      setTimeout(()=>{
+        Actions[payload.backSceneName](payload.backSceneParams)
+      }, payload.timeout || 10)
+    }else {
+      Actions[payload.backSceneName](payload.backSceneParams)
+    }
   }else{
     Actions.pop()
   }
@@ -50,7 +54,19 @@ export function updateProvincesAndCities(payload) {
   store.dispatch(fetchAllProvincesAndCities(payload))
 }
 
+export function playMessageSound() {
+  if(global.pushMessageSoundOpen) {
+    if(!global.isSounding) {
+      global.isSounding = true
+      global.messageSound.play((success) => {
+        global.isSounding = false
+      })
+    }
+  }
+}
+
 export function appInit() {
+
   updateProvincesAndCities()
 
   store.dispatch(fetchAppServicePhone())
@@ -183,7 +199,7 @@ export function configurePush(options) {
     
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
-      console.log( 'NOTIFICATION:', notification );
+      // console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
       let data = notification.data
 
@@ -243,6 +259,9 @@ export function configurePush(options) {
 
           }
         }
+
+        playMessageSound()
+        
       }
 
     },

@@ -255,18 +255,27 @@ export function profileSubmit(payload) {
   var userInfo = AV.Object.createWithoutData('_User', payload.id);
   userInfo.set('nickname', payload.nickname)
   userInfo.set('avatar', payload.avatar)
-  userInfo.set('mobilePhoneNumber', payload.phone)
+  //userInfo.set('mobilePhoneNumber', payload.phone)
   userInfo.set('gender', payload.gender)
   userInfo.set('birthday', payload.birthday)
   // userInfo.set('identity', [])
 
   return userInfo.save().then((loginedUser)=>{
-    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
-    // userInfo = userInfo.set('token', loginedUser.getSessionToken())
-    // console.log("loginWithPwd", userInfo)
-    return {
-      userInfo: userInfo,
-    }
+    return getUserById({userId: payload.id}).then((result) => {
+      if(result.error == 0) {
+        let user = result.userInfo
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        // console.log('profileSubmit.userInfo====', userInfo)
+        return {
+          userInfo: userInfo,
+        }
+      }
+    }, (error) => {
+      let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+      return {
+        userInfo: userInfo,
+      }
+    })
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -344,7 +353,7 @@ export function _submitCompleteShopInfo(shop, payload) {
   let coverUrl = payload.coverUrl
   let tagIds = payload.tagIds
   let targetShopCategory = null
-  console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
+  // console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
   if(shopCategoryObjectId) {
     targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
     shop.set('targetShopCategory', targetShopCategory)
@@ -636,7 +645,9 @@ export function getUserById(payload) {
     return false
   }
   params.userId = userId
+  // console.log('getUserById==params==', params)
   return AV.Cloud.run('hLifeGetUserinfoById', params).then((result) => {
+    // console.log('getUserById==result==', result)
     return result
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

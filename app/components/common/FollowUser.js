@@ -38,14 +38,16 @@ class FollowUser extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.userIsFollowedTheUser({
-        userId: this.props.userId,
-        success: (result)=>{
-          this.setState({
-            userIsFollowedTheUser: result
-          })
-        }
-      })
+      if(this.props.isUserLogined) {
+        this.props.userIsFollowedTheUser({
+          userId: this.props.userId,
+          success: (result)=>{
+            this.setState({
+              userIsFollowedTheUser: result
+            })
+          }
+        })
+      }
     })
   }
 

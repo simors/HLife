@@ -66,6 +66,7 @@ import com.android.build.OutputFile
  */
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -92,7 +93,7 @@ android {
         targetSdkVersion 22
         multiDexEnabled true
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -109,7 +110,19 @@ android {
         }
     }
     buildTypes {
+        debug {
+
+            // CodePush updates should not be tested in Debug mode
+
+        }
+
+        releaseStaging {
+
+//            buildConfigField "String", "CODEPUSH_KEY", '"TbaNAOjM4Vt_OcKDuU93GfCy_Ex1Ek1T6J40f"'
+
+        }
         release {
+//            buildConfigField "String", "CODEPUSH_KEY", '"LRFxUILuHnlMKRCW_JBlR6hpihP9Ek1T6J40f"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.debug
@@ -149,6 +162,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-sound')
+    compile project(':react-native-code-push')
     compile project(':react-native-linear-gradient')
     compile project(':zzzkk2009-react-native-leancloud-sdk')
     compile project(':react-native-image-crop-picker')

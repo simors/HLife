@@ -159,3 +159,40 @@ export function selectAreaPromoters(state) {
   let promoters = state.PROMOTER.get('areaPromoters')
   return promoters.toJS()
 }
+
+export function selectEarnRecords(state, promoterId) {
+  let recordsList = state.PROMOTER.getIn(['dealRecords', promoterId])
+  if (!recordsList) {
+    return []
+  }
+  let earnRecords = []
+  let records = recordsList.toJS()
+  records.forEach((record) => {
+    let deal = {}
+    deal.cost = record.cost
+    deal.dealType = record.dealType
+    deal.promoterId = record.promoterId
+    deal.shop = selectShopDetail(state, record.shopId)
+    deal.promoter = getPromoterById(state, record.invitedPromoterId)
+    deal.user = selectUserInfoById(state, record.userId)
+    deal.dealTime = record.dealTime
+    earnRecords.push(deal)
+  })
+  return earnRecords
+}
+
+export function selectLastDaysPerformance(state, area) {
+  let stat = state.PROMOTER.getIn(['lastDaysPerformance', area])
+  if (!stat) {
+    return []
+  }
+  return stat.toJS()
+}
+
+export function selectAreaMonthsPerformance(state, area) {
+  let stat = state.PROMOTER.getIn(['areaLastMonthsPerformance', area])
+  if (!stat) {
+    return []
+  }
+  return stat.toJS()
+}

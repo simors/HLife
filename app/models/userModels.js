@@ -64,14 +64,16 @@ export class UserInfo extends UserInfoRecord {
     info = info.withMutations((record) => {
       record.set('id', lcObj.id)
 
-      let createdAt = lcObj.createdAt
-      let updatedAt = lcObj.updatedAt
+      if(lcObj.createdAt) {
+        let createdAt = lcObj.createdAt
+        let updatedAt = lcObj.updatedAt
 
-      record.set('createdAt', createdAt.valueOf())
-      record.set('createdDate', numberUtils.formatLeancloudTime(createdAt, 'YYYY-MM-DD HH:mm:SS'))
-      record.set('updatedAt', updatedAt.valueOf())
-      record.set('updatedDate', numberUtils.formatLeancloudTime(updatedAt, 'YYYY-MM-DD HH:mm:SS'))
-      record.set('lastLoginDuration', numberUtils.getConversationTime(updatedAt))
+        record.set('createdAt', createdAt.valueOf())
+        record.set('createdDate', numberUtils.formatLeancloudTime(createdAt, 'YYYY-MM-DD HH:mm:SS'))
+        record.set('updatedAt', updatedAt.valueOf())
+        record.set('updatedDate', numberUtils.formatLeancloudTime(updatedAt, 'YYYY-MM-DD HH:mm:SS'))
+        record.set('lastLoginDuration', numberUtils.getConversationTime(updatedAt))
+      }
 
       for(let key in attrs) {
         if('identity' == key) {
@@ -93,6 +95,9 @@ export class UserInfo extends UserInfoRecord {
       for(let key in lcObj) {
         if('identity' == key) {
           record.set('identity', new List(lcObj.identity))
+        }else if('mobilePhoneNumber' == key){
+          record.set(key, lcObj[key])
+          record.set('phone', lcObj[key])
         }else {
           record.set(key, lcObj[key])
         }

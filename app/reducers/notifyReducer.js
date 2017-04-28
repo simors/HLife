@@ -12,6 +12,7 @@ import {
   ShopLikeMsg,
   UserFollowMsg,
   ShopFollowMsg,
+  PublishShopPromotionMsg
 } from '../models/notifyModel'
 import {REHYDRATE} from 'redux-persist/constants'
 
@@ -64,6 +65,7 @@ function handleAddNotifyMsg(state, action) {
     case msgActionTypes.MSG_SHOP_COMMENT:
     case msgActionTypes.MSG_SHOP_FOLLOW:
     case msgActionTypes.MSG_SHOP_LIKE:
+    case msgActionTypes.MSG_PUBLISH_SHOP_PROMOTION:
       type = msgActionTypes.SHOP_TYPE
       break
     default:
@@ -83,6 +85,9 @@ function handleAddNotifyMsg(state, action) {
     unReadCnt = msg.get('unReadCount')
     msg = msg.set('unReadCount', unReadCnt+1)
     let msgList = msg.get('messageList')
+    if(msgList.size >= 20) {//只保留最近的20条
+      msgList = msgList.pop()
+    }
     msgList = msgList.unshift(message.msgId)
     msg = msg.set('messageList', msgList)
     state = state.setIn(['notifyMsgByType', type], msg)
@@ -131,6 +136,9 @@ function onRehydrate(state, action) {
         case msgActionTypes.MSG_USER_FOLLOW:
           state = state.updateIn(['messageMap', msg.msgId], new UserFollowMsg(), val => val.merge(msg))
           break
+        case msgActionTypes.MSG_PUBLISH_SHOP_PROMOTION:
+          state = state.updateIn(['messageMap', msg.msgId], new PublishShopPromotionMsg(), val => val.merge(msg))
+          break  
       }
     })
 

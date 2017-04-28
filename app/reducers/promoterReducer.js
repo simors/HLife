@@ -3,7 +3,7 @@
  */
 import {Record, Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Promoter, AreaAgent} from '../models/promoterModel'
+import {Promoter, AreaAgent, EarnRecord, DailyPerformance, MonthlyPerformance} from '../models/promoterModel'
 import * as promoterActionTypes from '../constants/promoterActionTypes'
 
 const initialState = Promoter()
@@ -46,6 +46,16 @@ export default function promoterReducer(state = initialState, action) {
       return handleSetAreaPromoters(state, action)
     case promoterActionTypes.ADD_AREA_PROMOTERS:
       return handleAddAreaPromoters(state, action)
+    case promoterActionTypes.SET_PROMOTER_EARN_RECORDS:
+      return handleSetEarnRecords(state, action)
+    case promoterActionTypes.ADD_PROMOTER_EARN_RECORDS:
+      return handleAddEarnRecords(state, action)
+    case promoterActionTypes.UPDATE_LAST_DAYS_PERFORMANCE:
+      return handleLastDaysPerformance(state, action)
+    case promoterActionTypes.UPDATE_AREA_MONTHS_PERFORMANCE:
+      return handleAreaMonthsPerformance(state, action)
+    case promoterActionTypes.FINISH_PROMOTER_PAYMENT:
+      return handleFinishPromoterPayment(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -203,6 +213,132 @@ function handleAddAreaPromoters(state, action) {
   let promoters = action.payload.promoters
   let oldPros = state.get('areaPromoters')
   state = state.set('areaPromoters', oldPros.concat(new List(promoters)))
+  return state
+}
+
+function handleSetEarnRecords(state, action) {
+  let payload = action.payload
+  let activePromoterId = payload.activePromoterId
+  let dealRecords = payload.dealRecords
+  let recordList = []
+  dealRecords.forEach((deal) => {
+    let record = new EarnRecord({
+      cost: deal.cost,
+      dealType: deal.dealType,
+      promoterId: deal.promoterId,
+      shopId: deal.shopId,
+      invitedPromoterId: deal.invitedPromoterId,
+      userId: deal.userId,
+      dealTime: deal.dealTime,
+    })
+    recordList.push(record)
+  })
+  state = state.setIn(['dealRecords', activePromoterId], new List(recordList))
+  return state
+}
+
+function handleAddEarnRecords(state, action) {
+  let payload = action.payload
+  let activePromoterId = payload.activePromoterId
+  let dealRecords = payload.dealRecords
+  let recordList = []
+  let oldRecords = state.getIn(['dealRecords', activePromoterId])
+  dealRecords.forEach((deal) => {
+    let record = new EarnRecord({
+      cost: deal.cost,
+      dealType: deal.dealType,
+      promoterId: deal.promoterId,
+      shopId: deal.shopId,
+      invitedPromoterId: deal.invitedPromoterId,
+      userId: deal.userId,
+      dealTime: deal.dealTime,
+    })
+    recordList.push(record)
+  })
+  state = state.setIn(['dealRecords', activePromoterId], oldRecords.concat(new List(recordList)))
+  return state
+}
+
+function handleLastDaysPerformance(state, action) {
+  let payload = action.payload
+  let lastDaysPerf = payload.lastDaysPerf
+  let level = payload.level
+  let province = payload.province
+  let city = payload.city
+  let district = payload.district
+
+  let perfs = []
+  lastDaysPerf.forEach((stat) => {
+    let value = new DailyPerformance({
+      level: stat.level,
+      province: stat.province,
+      city: stat.city,
+      district: stat.district,
+      earning: stat.earning,
+      promoterNum: stat.promoterNum,
+      shopNum: stat.shopNum,
+      statDate: stat.statDate,
+    })
+    perfs.push(value)
+  })
+
+  let key = constructAreaKey(level, province, city, district)
+  state = state.setIn(['lastDaysPerformance', key], new List(perfs))
+  return state
+}
+
+function handleAreaMonthsPerformance(state, action) {
+  let payload = action.payload
+  let level = payload.level
+  let province = payload.province
+  let city = payload.city
+  let lastMonthsPerf = payload.lastMonthsPerf
+
+  let perfs = []
+  lastMonthsPerf.forEach((monthStat) => {
+    let monthPerf = []
+    monthStat.forEach((stat) => {
+      if (stat) {
+        let value = new MonthlyPerformance({
+          level: stat.level,
+          province: stat.province,
+          city: stat.city,
+          district: stat.district,
+          earning: stat.earning,
+          promoterNum: stat.promoterNum,
+          shopNum: stat.shopNum,
+          year: stat.year,
+          month: stat.month
+        })
+        monthPerf.push(value)
+      }
+    })
+    perfs.push(new List(monthPerf))
+  })
+
+  let key = constructAreaKey(level, province, city)
+  state = state.setIn(['areaLastMonthsPerformance', key], new List(perfs))
+
+  return state
+}
+
+function constructAreaKey(level, province, city, district) {
+  let key = ''
+  if (level == 3) {
+    key = province
+  } else if (level == 2) {
+    key = province + city
+  } else if (level == 1) {
+    key = province + city + district
+  }
+  return key
+}
+
+function handleFinishPromoterPayment(state, action) {
+  let promoterId = action.payload.promoterId
+  let promoter = state.getIn(['promoters', promoterId])
+  promoter = promoter.set('payment', 1)
+  state = state.setIn(['promoters', promoterId], promoter)
   return state
 }
 

@@ -201,3 +201,70 @@ export function cancelAreaAgent(payload) {
     throw err
   })
 }
+
+export function fetchPromoterByNameOrId(payload) {
+  let params = {
+    keyword: payload.keyword,
+  }
+  return AV.Cloud.run('promoterGetPromoterByNameOrId', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
+
+export function fetchPromoterDealRecords(payload) {
+  let params = {
+    promoterId: payload.promoterId,
+    limit: payload.limit,
+    lastTime: payload.lastTime,
+  }
+  return AV.Cloud.run('promoterGetEarningRecords', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
+
+export function fetchLastDaysPerformance(payload) {
+  let params = {
+    level: payload.level,
+    province: payload.province,
+    city: payload.city,
+    district: payload.district,
+    lastDate: payload.lastDate,
+    days: payload.days,
+  }
+  return AV.Cloud.run('statFetchLastDaysPerformance', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
+
+export function fetchAreaMonthsPerformance(payload) {
+  let params = {
+    level: payload.level,
+    province: payload.province,
+    city: payload.city,
+    lastYear: payload.lastYear,
+    lastMonth: payload.lastMonth,
+    months: payload.months,
+  }
+  return AV.Cloud.run('statFetchAreaMonthsPerformance', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}
+
+export function finishPromoterPayment(payload) {
+  let params = {
+    promoterId: payload.promoterId,
+  }
+  return AV.Cloud.run('promoterFinishPayment', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

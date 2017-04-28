@@ -101,6 +101,63 @@ export const ShopFollowMsgRecord = Record({
   shopId: undefined,
 }, 'ShopFollowMsg')
 
+export const PublishShopPromotionMsgRecord = Record({
+  convId: undefined,
+  msgId: undefined,
+  msgType: undefined,
+  userId: undefined,
+  nickname: undefined,
+  avatar: undefined,
+  shopId: undefined,
+  shopName: undefined,
+  shopPromotionId: undefined,
+  shopPromotionCoverUrl: undefined,
+  shopPromotionTitle: undefined,
+  shopPromotionType: undefined,
+  shopPromotionTypeDesc: undefined,
+  text: undefined,
+  timestamp: undefined,
+  status: undefined,
+}, 'PublishShopPromotionMsgRecord')
+
+export class PublishShopPromotionMsg extends PublishShopPromotionMsgRecord {
+  static fromLeancloudMessage(lcMsg) {
+    let msg = new PublishShopPromotionMsg()
+
+    return msg.withMutations((record) => {
+      var messageType, text
+      if (lcMsg.content) {
+        messageType = lcMsg.content._lctype
+        text = lcMsg.content._lctext
+      } else {
+        messageType = lcMsg.type
+        text = lcMsg.text
+      }
+
+      record.set('convId', lcMsg.cid)
+      record.set('msgId', lcMsg.id)
+      record.set('userId', lcMsg.from)
+      record.set('msgType', messageType)
+      record.set('text', text)
+      record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
+
+      let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
+
+      record.set('shopId', attrs.shopId)
+      record.set('shopName', attrs.shopName)
+      record.set('shopPromotionId', attrs.shopPromotionId)
+      record.set('shopPromotionCoverUrl', attrs.shopPromotionCoverUrl)
+      record.set('shopPromotionTitle', attrs.shopPromotionTitle)
+      record.set('shopPromotionType', attrs.shopPromotionType)
+      record.set('shopPromotionTypeDesc', attrs.shopPromotionTypeDesc)
+      record.set('nickname', attrs.nickname)
+      record.set('avatar', attrs.avatar)
+
+    })
+  }
+}
+
 export class TopicCommentMsg extends TopicCommentMsgRecord {
   static fromLeancloudMessage(lcMsg) {
     let msg = new TopicCommentMsg()

@@ -308,31 +308,45 @@ function handleResetPwdSmsCode(payload, formData) {
 
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
-    let localImgs = []
-    localImgs.push(formData.avatarInput.text)
 
-    return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
-      return leanUris
-    }).then((leanUris) => {
-      let profilePayload = {
-        id: payload.id,
-        nickname: formData.nicknameInput && formData.nicknameInput.text,
-        avatar: leanUris[0],
-        phone: formData.phoneInput && formData.phoneInput.text,
-        birthday: formData.dtPicker && formData.dtPicker.text,
-        gender: formData.genderInput && formData.genderInput.text,
-      }
-      return lcAuth.profileSubmit(profilePayload).then((profile) => {
-        if (payload.success) {
-          payload.success()
-        }
-        let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
-        dispatch(profileAction({...profile}))
+    if(formData.avatarInput && formData.avatarInput.text) {
+      let localImgs = []
+      localImgs.push(formData.avatarInput.text)
+
+      return ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
+        return leanUris
+      }).then((leanUris) => {
+        payload.avatar = leanUris[0]
+        dispatch(_handleProfileSubmit(payload, formData))
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
         }
       })
+    }else {
+      payload.avatar = ''
+      dispatch(_handleProfileSubmit(payload, formData))
+    }
+    
+  }
+}
+
+function _handleProfileSubmit(payload, formData) {
+  return (dispatch, getState) => {
+    let profilePayload = {
+      id: payload.id,
+      nickname: formData.nicknameInput && formData.nicknameInput.text,
+      avatar: payload.avatar,
+      //phone: formData.phoneInput && formData.phoneInput.text,
+      birthday: formData.dtPicker && formData.dtPicker.text,
+      gender: formData.genderInput && formData.genderInput.text,
+    }
+    return lcAuth.profileSubmit(profilePayload).then((profile) => {
+      if (payload.success) {
+        payload.success()
+      }
+      let profileAction = createAction(AuthTypes.PROFILE_SUBMIT_SUCCESS)
+      dispatch(profileAction({...profile}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -564,9 +578,9 @@ function handleCompleteShopInfo(payload, formData) {
       coverUrl: payload.coverUrl,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
-      contactNumber2: formData.servicePhone2Input.text,
+      contactNumber2: formData.servicePhone2Input ? formData.servicePhone2Input.text : '',
       ourSpecial: formData.ourSpecialInput.text,
-      tagIds: formData.tagsInput.text,
+      tagIds: formData.tagsInput ? formData.tagsInput.text : '',
     }
     lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
       let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
@@ -593,9 +607,9 @@ function handleEditShopInfo(payload, formData) {
       coverUrl: payload.coverUrl,
       openTime: formData.serviceTimeInput.text,
       contactNumber: formData.servicePhoneInput.text,
-      contactNumber2: formData.servicePhone2Input.text,
+      contactNumber2: formData.servicePhone2Input ? formData.servicePhone2Input.text : '',
       ourSpecial: formData.ourSpecialInput.text,
-      tagIds: formData.tagsInput.text,
+      tagIds: formData.tagsInput ? formData.tagsInput.text : '',
     }
     lcAuth.submitEditShopInfo(newPayload).then((result) => {
       // console.log('submitEditShopInfo.result====', result)
@@ -777,16 +791,16 @@ export function fetchUserFollowees(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowees(payload).then((result)=> {
       let actionType = AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS
-      if(!payload.isRefresh) {
+      if(payload && !payload.isRefresh) {
         actionType = AuthTypes.FETCH_USER_FOLLOWEES_PAGING_SUCCESS
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction(result))
-      if (payload.success) {
+      if (payload && payload.success) {
         payload.success(result.followees.size <= 0)
       }
     }).catch((error) => {
-      if (payload.error) {
+      if (payload && payload.error) {
         payload.error(error)
       }
     })

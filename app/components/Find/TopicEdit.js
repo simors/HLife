@@ -32,6 +32,7 @@ import ArticleEditor from '../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
 import uuid from 'react-native-uuid'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -80,7 +81,7 @@ class TopicEdit extends Component {
     this.draftDay = new Date().getDate()  }
 
   submitSuccessCallback = () => {
-    console.log('this.draftId',this.draftId)
+    // console.log('this.draftId',this.draftId)
 
     this.isPublishing = false
     Actions.pop({popNum: 2})
@@ -153,7 +154,7 @@ class TopicEdit extends Component {
       this.draftId=this.props.topic.objectId
     }
     this.setInterval(()=>{
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
       })
       // console.log('here is uid ',this.draftId)
     },5000)
@@ -161,7 +162,9 @@ class TopicEdit extends Component {
 
   openModal() {
     Keyboard.dismiss()
-    this.refs.modal3.open();
+    setTimeout(()=>{
+      this.refs.modal3.open();
+    }, 500)
   }
 
   closeModal(value) {
@@ -248,7 +251,7 @@ class TopicEdit extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => {this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+          leftPress={() => {this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
           abstract:this.props.topic.abstract})
             Actions.pop()}}
           title="更新话题"
@@ -284,16 +287,24 @@ class TopicEdit extends Component {
             {this.renderRichText(this.props.topic.content)}
           </View>
 
-          <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
-            <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
-              <Text style={styles.modalShowTopicsStyle}>选择一个主题</Text>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
-                {this.renderTopicsSelected()}
-              </View>
-            </ScrollView>
-          </ModalBox>
-
         </View>
+
+
+        <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
+          <View style={styles.modalTitleContainer}>
+            <Text style={styles.modalTitleTxt}>选择一个主题</Text>
+            <TouchableOpacity onPress={()=>{this.closeModal(this.state.selectedTopic)}} style={{position:'absolute',right:0,top:0}}>
+              <Icon name='ios-close' style={{fontSize:24,height:24}} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
+            <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
+              {this.renderTopicsSelected()}
+            </View>
+          </ScrollView>
+        </ModalBox>
+
+          
       </View>
     );
   }
@@ -408,6 +419,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     height: PAGE_HEIGHT,
     alignItems: 'flex-start',
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(20),
+      },
+      android: {
+        paddingTop: normalizeH(0)
+      }
+    }),
   },
   modalTextStyle: {
     marginTop: normalizeH(17),
@@ -415,6 +434,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: "#5a5a5a",
     fontSize: em(12)
+  },
+  modalTitleContainer: {
+    height: 24,
+    width: PAGE_WIDTH - 30,
+    margin:15,
+    marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  modalTitleTxt: {
+    color: "#4a4a4a",
+    fontSize: em(12),
+    lineHeight: 24,
   },
   modalShowTopicsStyle: {
     marginTop: normalizeH(17),

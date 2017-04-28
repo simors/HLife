@@ -69,7 +69,7 @@ export class TopicContent extends Component {
             </TouchableOpacity>
             <View style={styles.timeLocationStyle}>
               <Text style={styles.timeTextStyle}>
-                {topic.lastLoginDuration}
+                上次登录：{topic.lastLoginDuration}
               </Text>
               <Text style={styles.timeTextStyle}>粉丝：{this.props.userFollowersTotalCount}</Text>
             </View>
