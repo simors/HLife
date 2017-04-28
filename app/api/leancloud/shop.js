@@ -243,13 +243,23 @@ export function deleteShopAnnouncement(payload) {
 }
 
 export function fetchUserFollowShops(payload) {
-  let userId = payload.userId
-  let isRefresh = payload.isRefresh
-  let lastCreatedAt = payload.lastCreatedAt
+  let userId = ''
+  let isRefresh = true
+  let lastCreatedAt = ''
+
   let currentUser = AV.User.current()
-  if(!userId) {
+  userId = currentUser.id
+
+  if(payload) {
+    userId = payload.userId || currentUser.id
+    if(!payload.isRefresh && payload.lastCreatedAt) {
+      isRefresh = false
+      lastCreatedAt = payload.lastCreatedAt
+    }
+  }else {
     userId = currentUser.id
   }
+
   let user = AV.Object.createWithoutData('_User', userId)
   // let query = new AV.Query('ShopFollowee')
   // query.equalTo('user', user)

@@ -150,7 +150,7 @@ export class TopicShow extends Component {
           <View style={styles.locationCommentStyle}>
             <Image style={styles.positionStyle} resizeMode="contain" source={require("../../assets/images/writer_loaction.png")}/>
             <Text
-              style={styles.timeTextStyle}>{this.props.topic.position ? this.props.topic.position.city + this.props.topic.position.district : "未知"}</Text>
+              style={styles.timeTextStyle}>{this.props.topic.position ? this.props.topic.position.city : "未知"}</Text>
             <Text
               style={styles.likeTextStyle}>{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}</Text>
             <Text

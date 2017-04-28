@@ -96,16 +96,16 @@ export function fetchUserFollowShops(payload) {
   return (dispatch, getState) => {
     lcShop.fetchUserFollowShops(payload).then((results) =>{
       let actionType = ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_LIST_SUCCESS
-      if(!payload.isRefresh) {
+      if(payload && !payload.isRefresh) {
         actionType = ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_PAGING_LIST_SUCCESS
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction(results))
-      if(payload.success){
+      if(payload && payload.success){
         payload.success(results.userFollowedShops.size <= 0)
       }
     }).catch((error) => {
-      if(payload.error){
+      if(payload && payload.error){
         payload.error(error)
       }
     })
