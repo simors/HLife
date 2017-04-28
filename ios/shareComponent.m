@@ -50,12 +50,12 @@
   RCT_EXPORT_METHOD(shareURLWithPlate:(NSInteger)index info:(NSDictionary *)info){
     //创建分享消息对象
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
-    NSString *title = [info objectForKey:@"title"]?[info objectForKey:@"title"]:@"12Km";
-    NSString *descr = [info objectForKey:@"descr"]?[info objectForKey:@"descr"]:@"12Km";
+    NSString *title = [info objectForKey:@"title"]?[info objectForKey:@"title"]:@"邻家优店";
+    NSString *descr = [info objectForKey:@"descr"]?[info objectForKey:@"descr"]:@"邻家优店";
     
-    NSString *thumbURL = [info objectForKey:@"thumbURL"]?[info objectForKey:@"thumbURL"]:@"http://weixintest.ihk.cn/ihkwx_upload/heji/material/img/20160414/1460616012469.jpg";
+    NSString *thumbURL = [info objectForKey:@"thumbURL"]?[info objectForKey:@"thumbURL"]:@"https://simors.github.io/ljyd_blog/ic_launcher.png";
     
-    NSString *URL = [info objectForKey:@"URL"]?[info objectForKey:@"URL"]:@"http://www.baidu.com";
+    NSString *URL = [info objectForKey:@"URL"]?[info objectForKey:@"URL"]:@"https://simors.github.io";
     
     
     UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:title descr:descr thumImage:thumbURL];
