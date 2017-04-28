@@ -97,6 +97,8 @@ if [[ "$CONFIGURATION" == "Staging" ]]; then
   install_resource "Pingpp/lib/Pingpp.bundle"
   install_resource "$PODS_CONFIGURATION_BUILD_DIR/QBImagePickerController/QBImagePicker.bundle"
   install_resource "RSKImageCropper/RSKImageCropper/RSKImageCropperStrings.bundle"
+  install_resource "UMengUShare/UShareSDK/UMSocialSDK/UMSocialSDKPromptResources.bundle"
+  install_resource "UMengUShare/UShareSDK/UMSocialUI/UMSocialSDKResources.bundle"
 fi
 
 mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
