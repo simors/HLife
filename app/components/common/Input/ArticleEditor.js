@@ -286,7 +286,7 @@ class ArticleEditor extends Component {
     let len = data.length
     if (index + 1 < len && index - 1 >= 0) {
       if (data[index+1].type === COMP_TEXT && data[index-1].type === COMP_TEXT) {
-        data[index-1].text += '\n' + data[index+1].text
+        data[index-1].text += data[index+1].text
         data.splice(index, 2)
       } else {
         data.splice(index, 1)
@@ -331,6 +331,20 @@ class ArticleEditor extends Component {
     data[index].text = content
     this.inputChange(data)
 
+    // 内容高度小于显示高度是，不调整光标位置
+    if (this.state.contentHeight < this.state.scrollViewHeight) {
+     return
+    }
+
+    // 第一个输入框高度不大于显示高度时，不调整光标位置
+    let focusInput = this.inputRef[index]
+    if (focusInput) {
+      let textInputHeight = focusInput.getInputHeight()
+      if (index == 0 && textInputHeight < this.state.scrollViewHeight) {
+        return
+      }
+    }
+
     let refName = "content_" + index
     if (this.state.start == content.length) {
       setTimeout(() => {
@@ -342,15 +356,6 @@ class ArticleEditor extends Component {
         );
       }, 50);
     }
-
-    // 内容高度小于显示高度是，不调整光标位置
-    /*if (this.state.contentHeight < this.state.scrollViewHeight) {
-      return
-    }
-    let len = data.length
-    if (len - 1 == index) {
-      this.refs.scrollView.scrollTo({y: this.state.contentHeight - this.state.scrollViewHeight})
-    }*/
   }
 
   selectChange(event) {
@@ -358,22 +363,27 @@ class ArticleEditor extends Component {
     this.setState({start: start})
   }
 
-  inputFocused(refName) {
+  inputFocused(refName, index) {
     // 内容高度小于显示高度是，不调整光标位置
     if (this.state.contentHeight < this.state.scrollViewHeight) {
       return
     }
-    let focusInput = this.inputRef.find((input) => {
-      if (input.isFocused()) {
-        return true
-      }
-      return false
-    })
-    let selectIndex = this.state.cursor
-    let content = this.props.data[selectIndex].text
+    let focusInput = this.inputRef[index]
+    let content = this.props.data[index].text
+    let textLen = content.length
+    if (textLen == 0) {
+      setTimeout(() => {
+        let scrollResponder = this.refs.scrollView.getScrollResponder();
+        scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+          findNodeHandle(this.refs[refName]),
+          this.toolbarHeight + 80, //additionalOffset
+          true
+        );
+      }, 50);
+      return
+    }
     if (focusInput) {
       let textInputHeight = focusInput.getInputHeight()
-      let textLen = content.length
       // 计算当前光标距离底部的高度
       let bottomHeight = textInputHeight - (textInputHeight * this.state.start) / textLen
       if (bottomHeight < normalizeH(300)) {
@@ -409,7 +419,7 @@ class ArticleEditor extends Component {
             this.props.onFocusEditor()
           }
           this.setState({cursor: index, showToolbar: true})
-          this.inputFocused("content_" + index)
+          this.inputFocused("content_" + index, index)
         }}
         onSelectionChange={(event) => this.selectChange(event)}
       />
