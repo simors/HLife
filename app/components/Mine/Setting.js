@@ -185,15 +185,6 @@ class Setting extends Component {
     })
   }
 
-  onShare = () => {
-    Actions.SHARE({
-      title: '活动详情',
-      abstract: '摘要',
-      author: '老王',
-      cover: 'http://ac-k5rltwmf.clouddn.com/e786919c3e20cd79de67.png',
-    })
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -231,22 +222,6 @@ class Setting extends Component {
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.clearApplication()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>清空缓存</Text>
-              <View style={styles.rightWrap}>
-                <Image source={require("../../assets/images/arrow_left.png")}/>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PAYMENT()}>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>支付测试</Text>
-              <View style={styles.rightWrap}>
-                <Image source={require("../../assets/images/arrow_left.png")}/>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <TouchableOpacity style={styles.selectItem} onPress={this.onShare}>
-              <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>分享测试</Text>
               <View style={styles.rightWrap}>
                 <Image source={require("../../assets/images/arrow_left.png")}/>
               </View>
