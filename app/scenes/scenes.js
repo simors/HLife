@@ -248,7 +248,8 @@ function tapActions(props) {
       Actions.LOGIN()
     } else {
       let identity = props.identity
-      if (identity && identity.includes(IDENTITY_SHOPKEEPER)) {
+      let shopPayment = props.shopPayment
+      if (identity && identity.includes(IDENTITY_SHOPKEEPER) && shopPayment) {
         Actions.PUBLISH()
       } else {
         Actions.PUBLISH_TOPIC()

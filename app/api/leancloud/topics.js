@@ -72,8 +72,8 @@ export function fetchTopicLikesCount(payload) {
   let upType = payload.upType
   let query = new AV.Query('Up')
   query.equalTo('targetId', topicId)
-  // query.equalTo('upType', upType)
-  query.equalTo('upType', "topic")
+  query.equalTo('upType', upType)
+  // query.equalTo('upType', "topic")
   query.equalTo('status', true)
   return query.count().then((results)=> {
     return results
@@ -440,6 +440,48 @@ export function getTopicById(payload) {
 }
 
 export function fetchTopicComments(payload) {
+  return AV.Cloud.run('hLifeFetchTopicComments', payload).then((results) => {
+    // console.log("fetchTopicComments.results:", results)
+
+    let topicComments = []
+    let topicCommentLikeCounts = []
+    let userUpInfos = []
+
+    if(results && results.length) {
+      results.forEach((item, index) => {
+        if(item.likeCount) {
+          topicCommentLikeCounts.push({
+            topicId: item.objectId,
+            likesTotalCount: item.likeCount
+          })
+          delete item.likeCount
+        }
+        
+        if(item.userUpInfo) {
+          userUpInfos.push({
+            topicId:  item.objectId,
+            userLikeInfo: Up.fromLeancloudApi(item.userUpInfo)
+          })
+          delete item.userUpInfo
+        }
+
+        topicComments.push(TopicCommentsItem.fromLeancloudApi(item))
+      })
+    }
+
+    return {
+      topicComments: new List(topicComments),
+      topicCommentLikeCounts: topicCommentLikeCounts,
+      userUpInfos: userUpInfos
+    }
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+export function fetchTopicComments(payload) {
   let topicId = payload.topicId
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
@@ -476,6 +518,7 @@ export function fetchTopicComments(payload) {
       throw err
     })
 }
+*/
 
 /**
 * deprecated
@@ -519,5 +562,20 @@ export function getMainPageTopics(payload) {
 export function disableTopic(payload){
   return AV.Cloud.run('disableTopicByUser',{id:payload}).then(()=>{
     return {success:true}
+  })
+}
+
+export function getShareTopicUrl(payload) {
+  let params = {
+    topicId: payload.topicId
+  }
+  return AV.Cloud.run('shareTopicById', params).then((result) => {
+    console.log("result:", result)
+    if (result && result.url)
+      return result
+    return undefined
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }

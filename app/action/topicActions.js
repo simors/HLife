@@ -320,7 +320,26 @@ export function fetchTopicById(payload) {
 
 export function fetchTopicCommentsByTopicId(payload) {
   return (dispatch, getState) => {
-    lcTopics.fetchTopicComments(payload).then((topicComments) => {
+    lcTopics.fetchTopicComments(payload).then((result) => {
+
+      let topicComments = result.topicComments
+      let topicCommentLikeCounts = result.topicCommentLikeCounts
+      let userUpInfos = result.userUpInfos
+
+      if(topicCommentLikeCounts && topicCommentLikeCounts.length) {
+        topicCommentLikeCounts.forEach((item) => {
+          let updateAction = createAction(topicActionTypes.FETCH_TOPIC_LIKES_TOTAL_COUNT_SUCCESS)
+          dispatch(updateAction(item))
+        })
+      }
+
+      if(userUpInfos && userUpInfos.length) {
+        userUpInfos.forEach((item) => {
+          let updateAction = createAction(topicActionTypes.FETCH_TOPIC_IS_LIKED_SUCCESS)
+          dispatch(updateAction(item))
+        })
+      }
+      
       let actionType = topicActionTypes.FETCH_TOPIC_COMMENTS_SUCCESS
       if(!payload.isRefresh) {
         actionType = topicActionTypes.FETCH_TOPIC_COMMENTS_SUCCESS_PAGING
@@ -469,5 +488,18 @@ export function disableTopic(payload){
       }
     })
   }
+}
 
+export function fetchShareTopicUrl(payload) {
+  return (dispatch, getState) => {
+    lcTopics.getShareTopicUrl({topicId: payload.topicId}).then((result) => {
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }

@@ -273,6 +273,7 @@ class ImageGroupInput extends Component {
     if(0 == index) { //拍照
       ImageUtil.openPicker({
         openType: 'camera',
+        cropping: false,
         success: (response) => {
           if(this.state.reSltImageIndex != -1) {
             this.toggleModal(false)
@@ -295,6 +296,7 @@ class ImageGroupInput extends Component {
     }else if(1 == index) { //从相册选择
       let option = {
         openType: 'gallery',
+        cropping: false,
         multiple: false, //为了使用裁剪控制图片大小,必须关闭多选
         success: (response) => {
           let uris = []

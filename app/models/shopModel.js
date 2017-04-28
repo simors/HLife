@@ -527,6 +527,15 @@ export class Up extends UpRecord {
       record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
   }
+
+  static fromLeancloudApi(lcObj) {
+    let up = new UpRecord()
+    return up.withMutations((record)=> {
+      for(let key in lcObj) {
+        record.set(key, lcObj[key])
+      }
+    })
+  }
 }
 
 export const ShopCommentReplyRecord = Record({

@@ -128,6 +128,7 @@ class UpdateShopCover extends Component {
               imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
               shouldUploadImage={this.state.shouldUploadImage}
               uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
+              imageWidth={PAGE_WIDTH}
             />
           </View>
         </View>
