@@ -40,7 +40,8 @@ import {
   fetchTopicIsLiked,
   likeTopic,
   unLikeTopic,
-  fetchTopicLikeUsers
+  fetchTopicLikeUsers,
+  fetchShareTopicUrl,
 } from '../../action/topicActions'
 import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
@@ -335,6 +336,27 @@ export class TopicDetail extends Component {
     return false
   }
 
+  fetchSuccessCallback = (result) => {
+    Actions.SHARE({
+      title: this.props.topic.title || "邻家话题",
+      url: result.url || 'http://www.baidu.com',
+      author: this.props.topic.nickname || "邻家小二",
+      abstract: this.props.topic.abstract || "",
+      cover: this.props.topic.avatar,
+    })
+  }
+
+  fetchErrorCallback = (error) => {
+    Toast.show(error.message)
+  }
+  onShare = () => {
+    this.props.fetchShareTopicUrl({
+      topicId: this.props.topic.objectId,
+      success: this.fetchSuccessCallback,
+      error: this.fetchErrorCallback,
+    })
+  }
+
   renderHeaderView() {
     // if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
     //   return (
@@ -353,6 +375,13 @@ export class TopicDetail extends Component {
         leftIconName="ios-arrow-back"
         leftPress={() => Actions.pop()}
         title="详情"
+        rightComponent={()=>{
+          return (
+            <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
+              <Image source={require('../../assets/images/active_share.png')}/>
+            </TouchableOpacity>
+          )
+        }}
       />
     )
   }
@@ -615,7 +644,6 @@ export class TopicDetail extends Component {
 TopicDetail.defaultProps = {}
 
 const mapStateToProps = (state, ownProps) => {
-
   let ds = undefined
   if (ownProps.ds) {
     ds = ownProps.ds
@@ -624,7 +652,6 @@ const mapStateToProps = (state, ownProps) => {
       rowHasChanged: (r1, r2) => r1 != r2,
     })
   }
-
   let dataArray = []
   dataArray.push({type: 'COLUMN_1'})
   dataArray.push({type: 'COLUMN_2'})
@@ -670,7 +697,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicLikesCount,
   likeTopic,
   unLikeTopic,
-  fetchOtherUserFollowersTotalCount
+  fetchOtherUserFollowersTotalCount,
+  fetchShareTopicUrl
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)

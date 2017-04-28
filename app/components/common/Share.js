@@ -32,7 +32,8 @@ export default class Share extends Component {
   }
 
   shareUrl(plateform, url, title, description, thumbURL) {
-    shareNative.shareURLWithPlate(plateform, {title: title, thumbURL: thumbURL, URL: url, descr: description})
+    // shareNative.shareURLWithPlate(plateform, {title: title, thumbURL: thumbURL, URL: url, descr: description})
+    shareNative.shareURLWithPlate(plateform, {title: title, URL: url, descr: description})
   }
 
   componentWillMount() {

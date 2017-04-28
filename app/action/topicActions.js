@@ -469,5 +469,18 @@ export function disableTopic(payload){
       }
     })
   }
+}
 
+export function fetchShareTopicUrl(payload) {
+  return (dispatch, getState) => {
+    lcTopics.getShareTopicUrl({topicId: payload.topicId}).then((result) => {
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }
