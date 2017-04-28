@@ -286,7 +286,7 @@ class ArticleEditor extends Component {
     let len = data.length
     if (index + 1 < len && index - 1 >= 0) {
       if (data[index+1].type === COMP_TEXT && data[index-1].type === COMP_TEXT) {
-        data[index-1].text += '\n' + data[index+1].text
+        data[index-1].text += data[index+1].text
         data.splice(index, 2)
       } else {
         data.splice(index, 1)
