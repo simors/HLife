@@ -363,14 +363,30 @@ class ArticleEditor extends Component {
     if (this.state.contentHeight < this.state.scrollViewHeight) {
       return
     }
-    setTimeout(() => {
-      let scrollResponder = this.refs.scrollView.getScrollResponder();
-      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
-        findNodeHandle(this.refs[refName]),
-        this.toolbarHeight + 80, //additionalOffset
-        true
-      );
-    }, 50);
+    let focusInput = this.inputRef.find((input) => {
+      if (input.isFocused()) {
+        return true
+      }
+      return false
+    })
+    let selectIndex = this.state.cursor
+    let content = this.props.data[selectIndex].text
+    if (focusInput) {
+      let textInputHeight = focusInput.getInputHeight()
+      let textLen = content.length
+      // 计算当前光标距离底部的高度
+      let bottomHeight = textInputHeight - (textInputHeight * this.state.start) / textLen
+      if (bottomHeight < normalizeH(300)) {
+        setTimeout(() => {
+          let scrollResponder = this.refs.scrollView.getScrollResponder();
+          scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+            findNodeHandle(this.refs[refName]),
+            this.toolbarHeight + 80, //additionalOffset
+            true
+          );
+        }, 50);
+      }
+    }
   }
 
   renderTextInput(content, index, autoFocus = false) {
