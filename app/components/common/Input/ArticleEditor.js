@@ -482,6 +482,7 @@ class ArticleEditor extends Component {
     if(0 == index) { //拍照
       ImageUtil.openPicker({
         openType: 'camera',
+        cropping: false,
         success: (response) => {
           this.insertImageComponent(response.path)
         },
@@ -492,6 +493,7 @@ class ArticleEditor extends Component {
     }else if(1 == index) { //从相册选择
       ImageUtil.openPicker({
         openType: 'gallery',
+        cropping: false,
         success: (response) => {
           this.insertImageComponent(response.path)
         },
