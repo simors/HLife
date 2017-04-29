@@ -25,6 +25,7 @@ import {activeConversation, getMessages} from '../../selector/messageSelector'
 import * as msgTypes from '../../constants/messageActionTypes'
 import * as AVUtils from '../../util/AVUtils'
 import * as Toast from '../common/Toast'
+import {normalizeH} from '../../util/Responsive'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -295,13 +296,6 @@ const styles = StyleSheet.create({
   },
   conversationView: {
     flex: 1,
-    ...Platform.select({
-      ios: {
-        marginTop: 65,
-      },
-      android: {
-        marginTop: 45
-      }
-    }),
+    marginTop: normalizeH(64),
   },
 })

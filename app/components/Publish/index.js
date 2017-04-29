@@ -154,14 +154,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(20),
-      },
-      android: {
-        marginTop: normalizeH(0)
-      }
-    }),
+    marginTop: normalizeH(20),
   },
   logo: {
     marginTop: normalizeH(85),
@@ -192,13 +185,6 @@ const styles = StyleSheet.create({
     padding: normalizeH(12),
   },
   closeView: {
-    ...Platform.select({
-      ios: {
-        height: normalizeH(60),
-      },
-      android: {
-        height: normalizeH(80),
-      }
-    }),
+    height: normalizeH(60),
   },
 })

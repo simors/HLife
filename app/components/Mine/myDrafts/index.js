@@ -407,14 +407,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
   },
   listViewStyle: {
     width: PAGE_WIDTH,

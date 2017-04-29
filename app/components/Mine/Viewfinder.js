@@ -176,14 +176,7 @@ var styles = StyleSheet.create({
   backBtn: {
     position: 'absolute',
     left: normalizeW(25),
-    ...Platform.select({
-      ios: {
-        top: normalizeH(34)
-      },
-      android: {
-        top: normalizeH(14)
-      },
-    }),
+    top: normalizeH(34),
     width: normalizeW(50),
     height: normalizeH(50),
   },

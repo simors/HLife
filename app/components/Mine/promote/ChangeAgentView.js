@@ -203,15 +203,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     backgroundColor: THEME.base.backgroundColor,
-    ...Platform.select({
-      ios: {
-        paddingTop: normalizeH(20),
-        height: normalizeH(64)
-      },
-      android: {
-        height: normalizeH(44)
-      }
-    }),
+    paddingTop: normalizeH(20),
+    height: normalizeH(64),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -221,14 +214,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: '#FFF',
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44),
-      }
-    }),
+    marginTop: normalizeH(64),
   },
   goBack: {
     fontSize: em(28),

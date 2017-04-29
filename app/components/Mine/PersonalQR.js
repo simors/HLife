@@ -72,14 +72,7 @@ const styles = StyleSheet.create({
   },
   qrView: {
     alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(140)
-      },
-      android: {
-        marginTop: normalizeH(120)
-      },
-    }),
+    marginTop: normalizeH(140),
   },
   avatarView: {
     position: 'absolute',

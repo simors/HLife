@@ -423,11 +423,7 @@ const styles = StyleSheet.create({
   },
   baseInfoWrap: {
     backgroundColor: '#fff',
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-      },
-    }),
+    paddingTop: 20,
   },
   thumbnailWrap: {
     justifyContent: 'center',

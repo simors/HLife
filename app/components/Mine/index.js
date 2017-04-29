@@ -395,24 +395,10 @@ const styles = StyleSheet.create({
   },
   header: {
     width: PAGE_WIDTH,
-    ...Platform.select({
-      ios: {
-        height: normalizeH(217)
-      },
-      android: {
-        height: normalizeH(197)
-      },
-    }),
+    height: normalizeH(217),
   },
   toolView: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(20)
-      },
-      android: {
-        marginTop: normalizeH(0)
-      },
-    }),
+    marginTop: normalizeH(20),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',

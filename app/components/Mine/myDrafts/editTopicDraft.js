@@ -70,14 +70,7 @@ const topicContent = {
 }
 
 const rteHeight = {
-  ...Platform.select({
-    ios: {
-      height: normalizeH(64),
-    },
-    android: {
-      height: normalizeH(44)
-    }
-  })
+  height: normalizeH(64),
 }
 
 const wrapHeight = normalizeH(118)
@@ -322,14 +315,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     height: PAGE_HEIGHT,
     width: PAGE_WIDTH
   },

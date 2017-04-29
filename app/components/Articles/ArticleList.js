@@ -65,17 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF'
   },
   columnsView: {
-    //width: PAGE_WIDTH,
-    // height: normalizeH(38),
-    // flexDirection: 'column',
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(65),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1
   },
   articlesView: {

@@ -683,14 +683,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    ...Platform.select({
-      ios: {
-        marginTop: 20,
-      },
-      android: {
-        marginTop: 0
-      }
-    }),
+    marginTop: 20,
   },
   map: {
     width: PAGE_WIDTH,

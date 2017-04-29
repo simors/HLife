@@ -232,14 +232,7 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: '#ffffff',
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(65),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
+    marginTop: normalizeH(65),
   },
   itemLayout: {
     width: PAGE_WIDTH,

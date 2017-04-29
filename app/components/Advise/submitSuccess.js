@@ -66,14 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     height: PAGE_HEIGHT,
     width: PAGE_WIDTH,
     alignItems:'center'

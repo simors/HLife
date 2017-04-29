@@ -284,14 +284,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.41,
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     width: PAGE_WIDTH,
     backgroundColor: '#FFF',

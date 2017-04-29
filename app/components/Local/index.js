@@ -444,14 +444,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(65),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
+    marginTop: normalizeH(65),
     flex: 1,
     marginBottom: 42
   },

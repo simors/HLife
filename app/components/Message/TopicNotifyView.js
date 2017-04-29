@@ -287,14 +287,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flex: 1,
     width: PAGE_WIDTH,
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(65),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
+    marginTop: normalizeH(65),
   },
   itemView: {
     marginBottom: 10,

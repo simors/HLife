@@ -572,15 +572,7 @@ const styles = StyleSheet.create(
       alignItems: 'center'
     },
     body: {
-      ...Platform.select({
-        ios: {
-          marginTop: normalizeH(65),
-        },
-        android: {
-          marginTop: normalizeH(45),
-          // paddingBottom: normalizeH(100)
-        }
-      }),
+      marginTop: normalizeH(64),
       flex: 1,
     },
     zanStyle: {

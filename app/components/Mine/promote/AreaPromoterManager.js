@@ -167,14 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     left: 0,
-    ...Platform.select({
-      ios: {
-        top: normalizeH(64),
-      },
-      android: {
-        top: normalizeH(44)
-      }
-    }),
+    top: normalizeH(64),
   },
   itemStyle: {
     flex: 1,
@@ -186,14 +179,7 @@ const styles = StyleSheet.create({
   },
   areaListView: {
     flex: 1,
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(109),
-      },
-      android: {
-        marginTop: normalizeH(89),
-      }
-    }),
+    marginTop: normalizeH(109),
   },
   areaItemView: {
     height: normalizeH(47),

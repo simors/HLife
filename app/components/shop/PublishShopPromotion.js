@@ -52,14 +52,7 @@ const shopPromotion = {
 }
 
 const rteHeight = {
-  ...Platform.select({
-    ios: {
-      height: normalizeH(64),
-    },
-    android: {
-      height: normalizeH(44)
-    }
-  })
+  height: normalizeH(64),
 }
 
 const wrapHeight = 214
@@ -845,14 +838,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     backgroundColor: '#f5f5f5'
   },

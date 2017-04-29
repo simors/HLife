@@ -68,18 +68,10 @@ CommonWebView.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...Platform.select({
-      ios: {
-        paddingTop: normalizeH(20),
-      }
-    }),
+    paddingTop: normalizeH(20),
   },
   headerContainerStyle: {
-    ...Platform.select({
-      ios: {
-        paddingTop: 0,
-        height: normalizeH(44)
-      }
-    })
+    paddingTop: 0,
+    height: normalizeH(44),
   }
 })

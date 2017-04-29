@@ -192,14 +192,7 @@ const styles = StyleSheet.create({
     color: '#030303'
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     width: PAGE_WIDTH,
     backgroundColor: 'rgba(0,0,0,0.05)'

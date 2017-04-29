@@ -152,15 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)'
   },
   closeTop: {
-    // height:normalizeH(507)
-    ...Platform.select({
-      ios: {
-        height: normalizeH(507),
-      },
-      android: {
-        height: normalizeH(487)
-      }
-    }),
+    height:normalizeH(507),
   },
 
     modalRow: {

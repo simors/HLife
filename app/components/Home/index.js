@@ -301,7 +301,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar hidden={false} barStyle="dark-content"/>
+        <StatusBar hidden={false} translucent={true} backgroundColor="transparent" barStyle="dark-content"/>
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/location.png")}
@@ -414,14 +414,7 @@ const styles = StyleSheet.create({
     paddingBottom: 49
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     marginBottom: 42
   },
