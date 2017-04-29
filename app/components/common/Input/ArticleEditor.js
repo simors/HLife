@@ -102,7 +102,7 @@ class ArticleEditor extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      initValue: {text: initText},
+      initValue: {text: initText, abstract: this.getAbstract(initText, 100)},
       checkValid: this.props.checkValid ||this.validInput
     }
     this.props.initInputForm(formInfo)
@@ -221,8 +221,7 @@ class ArticleEditor extends Component {
     return {isVal: true, errMsg: '验证通过'}
   }
 
-  getAbstract(n) {
-    let data = this.props.data
+  getAbstract(data, n) {
     let text = ""
     data.forEach((item) => {
       if (item.type === COMP_TEXT) {
@@ -251,7 +250,7 @@ class ArticleEditor extends Component {
   }
 
   inputChange(text) {
-    let abstract = this.getAbstract(100)
+    let abstract = this.getAbstract(this.props.data, 100)
     let inputForm = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
