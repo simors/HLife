@@ -54,6 +54,7 @@ AV.init(
     )
 
     AVUtils.appInit()
+    codePush.notifyApplicationReady()
   }
 
   componentWillUnmount() {
@@ -96,4 +97,4 @@ const getSceneStyle = (props, computedProps) => {
   return style
 }
 
-export default HLifeEntry = codePush(HLifeEntry);
+export default HLifeEntry = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(HLifeEntry);
