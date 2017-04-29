@@ -9,6 +9,7 @@ import AV from 'leancloud-storage'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import * as numberUtils from '../util/numberUtils'
+import {trim} from '../util/Utils'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -61,8 +62,7 @@ export function publishTopicFormData(payload) {
   }
 }
 
-function
-handlePublishTopic(payload, formData) {
+function handlePublishTopic(payload, formData) {
   return (dispatch, getState) => {
     let position = locSelector.getLocation(getState())
     let province = locSelector.getProvince(getState())
@@ -93,9 +93,9 @@ handlePublishTopic(payload, formData) {
           province: province,
           city: city,
           district: district,
-          title:formData.topicName.text,
+          title: trim(formData.topicName.text),
           content: JSON.stringify(formData.topicContent.text),
-          abstract: formData.topicContent.abstract,
+          abstract: trim(formData.topicContent.abstract),
           imgGroup: leanUris,
           categoryId: payload.categoryId,
           userId: payload.userId,
@@ -125,9 +125,9 @@ handlePublishTopic(payload, formData) {
         province: province,
         city: city,
         district: district,
-        title:formData.topicName.text,
+        title: trim(formData.topicName.text),
         content: JSON.stringify(formData.topicContent.text),
-        abstract: formData.topicContent.abstract,
+        abstract: trim(formData.topicContent.abstract),
         imgGroup: payload.images,
         categoryId: payload.categoryId,
         userId: payload.userId,
@@ -164,9 +164,9 @@ function handleUpdateTopic(payload, formData) {
           })
         }
         let updateTopicPayload = {
-          title:formData.topicName.text,
+          title: trim(formData.topicName.text),
           content: JSON.stringify(formData.topicContent.text),
-          abstract: formData.topicContent.abstract,
+          abstract: trim(formData.topicContent.abstract),
           imgGroup: leanUris,
           categoryId: payload.categoryId,
           topicId: payload.topicId,
@@ -189,9 +189,9 @@ function handleUpdateTopic(payload, formData) {
       })
     } else {
       let updateTopicPayload = {
-        title:formData.topicName.text,
+        title: trim(formData.topicName.text),
         content: JSON.stringify(formData.topicContent.text),
-        abstract: formData.topicContent.abstract,
+        abstract: trim(formData.topicContent.abstract),
         imgGroup: payload.images,
         categoryId: payload.categoryId,
         topicId: payload.topicId,

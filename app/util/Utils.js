@@ -278,3 +278,7 @@ export function getAllDistrictList(treeData = []) {
   }
   return districtList
 }
+
+export function trim(str) {
+  return str.replace(/^(\s|\u00A0)+/,'').replace(/(\s|\u00A0)+$/,'')
+}

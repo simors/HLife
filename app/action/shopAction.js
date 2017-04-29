@@ -11,6 +11,7 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
+import {trim} from '../util/Utils'
 
 export function clearShopList(payload) {
   return (dispatch, getState) => {
@@ -629,11 +630,11 @@ export function submitShopPromotion(payload) {
         shopId: payload.shopId,
         shopPromotionId: payload.shopPromotionId,
         status: payload.status,
-        abstract: payload.abstract,
+        abstract: trim(payload.abstract),
         coverUrl: results.coverUrl,
         originalPrice: payload.originalPrice,
         promotingPrice: payload.promotingPrice,
-        title: payload.title,
+        title: trim(payload.title),
         type: payload.type,
         typeDesc: payload.typeDesc,
         typeId: payload.typeId,
@@ -650,7 +651,7 @@ export function submitShopPromotion(payload) {
           shopId: payload.shopId,
           shopPromotionId: payload.shopPromotionId,
           shopPromotionCoverUrl: results.coverUrl,
-          shopPromotionTitle: payload.title,
+          shopPromotionTitle: trim(payload.title),
           shopPromotionType: payload.type,
           shopPromotionTypeDesc: payload.typeDesc,
         }
