@@ -237,7 +237,7 @@ class ShopRegister extends Component {
   submitSuccessCallback = (shopInfo) => {
     this.isSubmiting = false
     Loading.hide(this.loading)
-    console.log('shopInfo===', shopInfo)
+    // console.log('shopInfo===', shopInfo)
     this.props.getShopTenant({
       province: shopInfo.geoProvince,
       city: shopInfo.geoCity,
