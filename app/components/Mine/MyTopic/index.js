@@ -73,7 +73,9 @@ export class MyTopic extends Component {
   }
   delectTopic(id){
     InteractionManager.runAfterInteractions(() => {
-      this.props.disableTopic({id:id,success:this.refreshTopic.bind(this)})
+      this.props.disableTopic({id:id,
+        success:this.refreshTopic.bind(this)
+      })
     })
   }
   renderTopicItem(value, key) {
