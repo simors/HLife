@@ -32,22 +32,20 @@ export const fetchTopicDraft=(payload)=>{
       formData = getInputFormData(getState(), payload.formKey)
     }
     let city = locSelector.getCity(getState())
-      console.log('data',formData)
-    if(formData.topicContent.abstract!=undefined||payload.imgGroup!=undefined){
-      dispatch(updateTopicDraft({
-        userId:payload.userId,
-        id:payload.draftId,
-        imgGroup:payload.imgGroup,
-        draftDay:payload.draftDay,
-        draftMonth:payload.draftMonth,
-        categoryId:payload.categoryId,
-        city:city,
-        title: trim(formData.topicName.text),
-        content: JSON.stringify(formData.topicContent.text),
-        abstract: trim(formData.topicContent.abstract),
-        objectId: payload.topicId,
-      }))
-    }
+    console.log('data',formData)
+    dispatch(updateTopicDraft({
+      userId:payload.userId,
+      id:payload.draftId,
+      imgGroup:payload.images,
+      draftDay:payload.draftDay,
+      draftMonth:payload.draftMonth,
+      categoryId:payload.categoryId,
+      city:city,
+      title: trim(formData.topicName.text),
+      content: JSON.stringify(formData.topicContent.text),
+      abstract: trim(formData.topicContent.abstract),
+      objectId: payload.topicId,
+    }))
   }
 }
 
