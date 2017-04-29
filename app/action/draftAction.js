@@ -32,20 +32,23 @@ export const fetchTopicDraft=(payload)=>{
       formData = getInputFormData(getState(), payload.formKey)
     }
     let city = locSelector.getCity(getState())
-     console.log('data',formData)
-    dispatch(updateTopicDraft({
-      userId:payload.userId,
-      id:payload.draftId,
-      imgGroup:payload.images,
-      draftDay:payload.draftDay,
-      draftMonth:payload.draftMonth,
-      categoryId:payload.categoryId,
-      city:city,
-      title: (formData.topicName!=undefined&&formData.topicName.text!=undefined)?trim(formData.topicName.text):'',
-      content: (formData.topicContent!=undefined&&formData.topicContent.text!=undefined)?JSON.stringify(formData.topicContent.text):{},
-      abstract: (formData.topicContent!=undefined&&formData.topicContent.abstract!=undefined)?trim(formData.topicContent.abstract):'',
-      objectId: payload.topicId,
-    }))
+     console.log('data',formData,payload.images)
+    if(formData.topicName!=undefined||formData.topicContent.abstract||payload.images.length>0){
+      dispatch(updateTopicDraft({
+        userId:payload.userId,
+        id:payload.draftId,
+        imgGroup:payload.images,
+        draftDay:payload.draftDay,
+        draftMonth:payload.draftMonth,
+        categoryId:payload.categoryId,
+        city:city,
+        title: (formData.topicName!=undefined&&formData.topicName.text!=undefined)?trim(formData.topicName.text):'',
+        content: (formData.topicContent!=undefined&&formData.topicContent.text!=undefined)?JSON.stringify(formData.topicContent.text):{},
+        abstract: (formData.topicContent!=undefined&&formData.topicContent.abstract!=undefined)?trim(formData.topicContent.abstract):'',
+        objectId: payload.topicId,
+      }))
+    }
+
   }
 }
 
