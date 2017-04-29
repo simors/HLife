@@ -37,14 +37,14 @@ class UserFolloweesView extends Component {
               </View>
               {userInfo.latestTopic
                 ?  <View style={styles.row}>
-                    <Text numberOfLines={1} style={[styles.subTxt, {flex:1}]}>{userInfo.latestTopic.abstract}</Text>
+                    <Text numberOfLines={1} style={[styles.subTxt, {flex:1}]}>《{userInfo.latestTopic.title}》{userInfo.latestTopic.abstract}</Text>
                   </View>
-                : null
+                : <Text style={styles.subTxt}>暂无更新</Text>
               }
               
               <View style={styles.row}>
                 <View style={styles.locationBox}>
-                  <Image style={{marginRight:4,width:8,height:11}} source={require("../../../assets/images/writer_loaction.png")}/>
+                  <Image style={{marginRight:4,width:8,height:11}} resizeMode='contain' source={require("../../../assets/images/writer_loaction.png")}/>
                   <Text style={styles.assistTxt}>{userInfo.geoCity || '未知'}</Text>
                 </View>
                 <Text style={[styles.assistTxt, styles.lastLoginDuration]}>{userInfo.lastLoginDuration + '来过'}</Text>
