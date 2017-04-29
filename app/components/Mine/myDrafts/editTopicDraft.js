@@ -167,7 +167,7 @@ class EditTopicDraft extends Component {
     this.refs.modal3.close();
   }
   componentWillUnmount(){
-    console.log('unmount component')
+    // console.log('unmount component')
   }
   renderTopicsSelected() {
     if (this.props.topics) {
@@ -240,7 +240,7 @@ class EditTopicDraft extends Component {
   }
 
   render() {
-    console.log('topicName:', topicName)
+    // console.log('topicName:', topicName)
     return (
       <View style={styles.container}>
         <Header

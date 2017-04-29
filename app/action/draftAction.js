@@ -22,17 +22,17 @@ export const fetchTopicDraft=(payload)=>{
     if (payload.formKey) {
       let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
       dispatch(formCheck({formKey: payload.formKey}))
-      let isFormValid = isInputFormValid(getState(), payload.formKey)
-      if (isFormValid && !isFormValid.isValid) {
-        if (payload.error) {
-          payload.error({message: isFormValid.errMsg})
-        }
-        return
-      }
+      // let isFormValid = isInputFormValid(getState(), payload.formKey)
+      // if (isFormValid && !isFormValid.isValid) {
+      //   if (payload.error) {
+      //     payload.error({message: isFormValid.errMsg})
+      //   }
+      //   return
+      // }
       formData = getInputFormData(getState(), payload.formKey)
     }
     let city = locSelector.getCity(getState())
-    console.log('data',formData)
+    // console.log('data',formData)
     dispatch(updateTopicDraft({
       userId:payload.userId,
       id:payload.draftId,

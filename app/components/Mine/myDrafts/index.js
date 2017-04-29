@@ -358,7 +358,7 @@ const mapStateToProps = (state, ownProps) => {
     // console.log('key',key)
 
     if(topics[key].userId!=userId){
-      console.log('userId',userId)
+      // console.log('userId',userId)
       delete topics[key]
     }
   }

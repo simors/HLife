@@ -117,7 +117,7 @@ export default class TopicDraftShow extends Component {
           <View style={styles.timeWrapStyle}>
             <View style={{backgroundColor: THEME.base.mainColor, borderRadius: 5, padding: 5}}>
               <Text style={styles.dayStyle}>{this.props.topic.draftDay}</Text>
-              <Text style={styles.monthStyle}>{this.props.topic.draftMonth}</Text>
+              <Text style={styles.monthStyle}>{this.props.topic.draftMonth+'月'}</Text>
             </View>
           </View>
           <View style={{flex: 1, paddingLeft: normalizeW(10)}}>
