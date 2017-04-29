@@ -29,6 +29,8 @@ import CommonTextInput from '../common/Input/CommonTextInput'
 import {getPaymentInfo} from '../../selector/paymentSelector'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
+import OpenBankPicker from '../common/Input/OpenBankPicker'
+import * as Utils from '../../util/Utils'
 
 
 let cashForm = Symbol('cashForm')
@@ -43,6 +45,12 @@ const accountInput = {
   formKey: cashForm,
   stateKey: Symbol('accountInput'),
   type: "accountInput",
+}
+
+const bankCodeInput = {
+  formKey: cashForm,
+  stateKey: Symbol('bankCodeInput'),
+  type: "bankCodeInput",
 }
 
 const amountInput = {
@@ -78,12 +86,14 @@ class Withdrawals extends Component {
   }
 
   onWithdrawCash = () => {
-    let order_no = uuid.v4().replace(/-/g, '').substr(0, 16) //unionpay 为1~16位的纯数字
+    let order_no = uuid.v4().replace(/-/g, '').replace(/[a-z]/gi, Utils.getRandomInt(1, 9)).substr(0, 16) //unionpay 为1~16位的纯数字
     this.props.createPingppTransfers({
       formKey: cashForm,
       order_no: order_no,
-      channel: 'alipay',
-      userId: this.props.currentUserId,
+      channel: 'unionpay',
+      metadata: {
+        'userId': this.props.currentUserId,
+      },
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
     })
@@ -109,11 +119,18 @@ class Withdrawals extends Component {
               placeholder="请输入银行账号"
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={30}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
-              initValue={this.props.paymentInfo.alipay_account}
+              initValue={this.props.paymentInfo.card_number}
+              keyboardType="numeric"
             />
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{fontSize: 17, color: '#AAAAAA'}}>姓名</Text>
+            <Text style={{fontSize: 17, color: '#AAAAAA'}}>银行</Text>
+            <OpenBankPicker {...bankCodeInput} containerStyle={{height: normalizeH(42)}}
+                            inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}/>
+          </View>
+
+          <View style={styles.itemContainer}>
+            <Text style={{fontSize: 17, color: '#AAAAAA'}}>户名</Text>
             <CommonTextInput
               {...nameInput}
               placeholder="输入账号姓名"

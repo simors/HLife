@@ -16,32 +16,24 @@ import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import CascadePicker from './CascadePicker'
-
-const PAGE_WIDTH=Dimensions.get('window').width
+import './openBank.json'
 
 class OpenBankPicker extends Component {
   constructor(props) {
     super(props)
-    this.pickerData = [['长沙银行', '中国银行', '招商银行']]
+    this.pickerData = openBank
   }
 
   componentDidMount() {
     let formInfo = {}
     if (this.props.initSelected && 0 != this.props.initSelected.length) {
-      let initValue = {}
       let initSelected = this.props.initSelected
-      if (this.props.level == 1) {
-        initValue.text = {province: initSelected[0]}
-      } else if (this.props.level == 2) {
-        initValue.text = {province: initSelected[0], city: initSelected[1]}
-      } else {
-        initValue.text = undefined
-      }
+
       formInfo = {
         formKey: this.props.formKey,
         stateKey: this.props.stateKey,
         type: this.props.type,
-        initValue: initValue,
+        initValue: initSelected.label,
         checkValid: this.props.checkValid || this.validInput
       }
     } else {
@@ -84,20 +76,13 @@ class OpenBankPicker extends Component {
   }
 
   getPickerData(data) {
-    console.log("getPickerData data", data)
-    if (!this.props.level) {
-      return
-    }
-    let text = {}
-    if (this.props.level == 1) {
-      text = {
-        bank: data[0],
-      }
-    } else if (this.props.level == 2) {
-      text = {
-        bank: data[0],
-        bankType: data[1],
-      }
+    let label = data[0]
+    let index = this.pickerData.findIndex((value) => {
+      return value.label === label
+    })
+    let text = {
+      open_bank: this.pickerData[index].label,
+      open_bank_code: this.pickerData[index].value
     }
     this.updateInput(text)
   }
@@ -107,11 +92,10 @@ class OpenBankPicker extends Component {
       <View style={{flex: 1}}>
         <CascadePicker
           onSubmit={(data) => this.getPickerData(data)}
-          level={this.props.level}
+          level={1}
           title="请选择银行"
           data={this.pickerData}
-          initSelected={this.props.initSelected}
-          cascade={false}
+          cascade={true}
         >
           <View style={styles.container} pointerEvents="none">
             <FormInput
@@ -134,9 +118,8 @@ class OpenBankPicker extends Component {
 }
 
 OpenBankPicker.defaultProps = {
-  placeholder: '请选择银行',
+  placeholder: '选择银行',
   placeholderTextColor: '#E1E1E1',
-  level: 1,
   maxLength: 32,
   editable: false,
   containerStyle: {flex: 1},
@@ -148,7 +131,7 @@ const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   let text = inputData.text
   return {
-    data: text? text.bank: undefined,
+    data: text? text.open_bank: undefined,
   }
 }
 

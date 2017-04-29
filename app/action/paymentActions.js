@@ -51,18 +51,20 @@ export function createPingppTransfers(payload) {
     console.log("createPingppTransfers formData", formData)
 
     let authPayload = {
-      userId: payload.userId,
+      userId: payload.metadata.userId,
       password: formData.passwordInput.text,
     }
 
     lcPayment.paymentAuth(authPayload).then(() => {
       let transfersPayload = {
-        userId: payload.userId,
         order_no: payload.order_no,
         amount: formData.amountInput.text,
-        account:formData.accountInput.text,
+        card_number:formData.accountInput.text,
         userName: formData.nameInput.text,
         channel: payload.channel,
+        metadata: payload.metadata,
+        open_bank_code: formData.bankCodeInput.text.open_bank_code,
+        open_bank: formData.bankCodeInput.text.open_bank,
       }
       return lcPayment.createPingppTransfers(transfersPayload)
     }).then((result) => {

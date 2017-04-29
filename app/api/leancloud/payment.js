@@ -24,13 +24,16 @@ export function createPingppPayment(payload) {
 }
 
 export function createPingppTransfers(payload) {
+  console.log("lcPayment.createPingppTransfers payload", payload)
   let params = {
-    userId: payload.userId,
     order_no: payload.order_no,
     amount: payload.amount,
-    account: payload.account,
     userName: payload.userName,
     channel: payload.channel,
+    metadata: payload.metadata,
+    card_number: payload.card_number,
+    open_bank_code: payload.open_bank_code,
+    open_bank: payload.open_bank
   }
 
   return AV.Cloud.run('hLifeCreateTransfers', params).then((transfersInfo) => {
@@ -99,7 +102,7 @@ export function paymentAuth(payload) {
   return AV.Cloud.run('hLifePaymentPasswordAuth', params).then((result) => {
     return result
   }).catch((error) => {
-    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    error.message = "密码错误"
     throw  error
   })
 }

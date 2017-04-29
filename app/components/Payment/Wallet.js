@@ -84,7 +84,7 @@ class Wallet extends Component {
             <CommonButton
               buttonStyle={{height: normalizeH(40), borderRadius: 5}}
               onPress={this.onWithdrawals}
-              title="支付宝提现"
+              title="提现"
               disabled={false}/>
           </View>
         </View>
