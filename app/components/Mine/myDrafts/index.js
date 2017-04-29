@@ -35,6 +35,7 @@ import ShopPromotionDraftShow from './shopPromotionDraftShow'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as Toast from '../../../components/common/Toast'
 import * as authSelector from '../../../selector/authSelector'
+import {IDENTITY_SHOPKEEPER} from '../../../constants/appConfig'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -247,9 +248,69 @@ export class MyTopic extends Component {
     )
   }
 
-  render() {
+  renderTabBar() {
     let identity=this.props.identity
+    if (identity && identity.includes(IDENTITY_SHOPKEEPER)) {
+      return (
+        <View style={styles.tabBar}>
+          <TouchableOpacity
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+            onPress={()=> {
+              this.toggleTab(0)
+            }}>
+            <View style={[{
+              width: normalizeW(100),
+              height: normalizeH(44),
+              justifyContent: 'flex-end',
+              alignItems: 'center'
+            },
+              this.state.tabType == 0 ?
+              {
+                borderBottomWidth: 3,
+                borderColor: THEME.base.mainColor
+              } : {}]}>
+              <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                this.state.tabType == 0 ?
+                {
+                  color: THEME.base.mainColor,
+                  fontWeight: 'bold',
+                } : {color: '#4A4A4A'}]}
+              >话题</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+            onPress={()=> {
+              this.toggleTab(1)
+            }}>
+            <View style={[{
+              width: normalizeW(100),
+              height: normalizeH(44),
+              justifyContent: 'flex-end',
+              alignItems: 'center'
+            },
+              this.state.tabType == 1 ?
+              {
+                borderBottomWidth: 3,
+                borderColor: THEME.base.mainColor
+              } : {}]}>
+              <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                this.state.tabType == 1 ?
+                {
+                  color: THEME.base.mainColor,
+                  fontWeight: 'bold',
+                } : {color: '#4A4A4A'}]}
+              >店铺活动</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return <View/>
+    }
+  }
 
+  render() {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content"/>
@@ -264,63 +325,8 @@ export class MyTopic extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <View style={styles.tabBar}>
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-              onPress={()=> {
-                this.toggleTab(0)
-              }}>
-              <View style={[{
-                width: normalizeW(100),
-                height: normalizeH(44),
-                justifyContent: 'flex-end',
-                alignItems: 'center'
-              },
-                this.state.tabType == 0 ?
-                {
-                  borderBottomWidth: 3,
-                  borderColor: THEME.base.mainColor
-                } : {}]}>
-                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                  this.state.tabType == 0 ?
-                  {
-                    color: THEME.base.mainColor,
-                    fontWeight: 'bold',
-                  } : {color: '#4A4A4A'}]}
-                >话题</Text>
-              </View>
-            </TouchableOpacity>
-            {(identity[0]=='shopKeeper'||identity[1]=='shopKeeper')?
-              <TouchableOpacity
-                style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                onPress={()=> {
-                  this.toggleTab(1)
-                }}>
-                <View style={[{
-                  width: normalizeW(100),
-                  height: normalizeH(44),
-                  justifyContent: 'flex-end',
-                  alignItems: 'center'
-                },
-                  this.state.tabType == 1 ?
-                  {
-                    borderBottomWidth: 3,
-                    borderColor: THEME.base.mainColor
-                  } : {}]}>
-                  <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                    this.state.tabType == 1 ?
-                    {
-                      color: THEME.base.mainColor,
-                      fontWeight: 'bold',
-                    } : {color: '#4A4A4A'}]}
-                  >店铺活动</Text>
-                </View>
-              </TouchableOpacity>:null}
-
-          </View>
+          {this.renderTabBar()}
           {this.state.tabType == 0 ? this.renderTopicList() : this.renderShopList()}
-
-
         </View>
       </View>
     )
@@ -330,7 +336,7 @@ export class MyTopic extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const userId = authSelector.activeUserId(state)
-  const identity = authSelector.getUserIdentity(state)
+  const identity = authSelector.getUserIdentity(state, userId)
   const topics = getMyTopicDrafts(state)
   const shopPromotions = getMyShopPromotionDrafts(state)
 
@@ -398,7 +404,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#E5E5E5',
+    backgroundColor: '#fff',
   },
   body: {
     ...Platform.select({

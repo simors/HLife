@@ -65,10 +65,10 @@ const topicContent = {
         }
       })
     }
-    if (textLen >= 50) {
+    if (textLen >= 20) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '正文内容不少于50字'}
+    return {isVal: false, errMsg: '正文内容不少于20字'}
   },
 }
 
@@ -167,12 +167,16 @@ class PublishTopics extends Component {
       this.setState({selectedTopic: this.props.topicId});
     }
     this.setInterval(()=>{
-
-      this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      this.props.fetchTopicDraft({
+        userId:this.props.userInfo.id,
+        draftId:this.draftId,
+        formKey: topicForm,
+        images: this.insertImages,
+        draftDay:this.draftDay,
+        draftMonth:this.draftMonth,
+        categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
       })
-      // console.log('here is uid ',this.draftId)
     },5000)
-
   }
 
   openModal() {
@@ -263,7 +267,14 @@ class PublishTopics extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => {
-            this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: topicForm,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+            this.props.fetchTopicDraft({
+              userId:this.props.userInfo.id,
+              draftId:this.draftId,
+              formKey: topicForm,
+              images: this.insertImages,
+              draftDay:this.draftDay,
+              draftMonth:this.draftMonth,
+              categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
             })
             Actions.pop({type:'refresh'})}}
           title="发布话题"

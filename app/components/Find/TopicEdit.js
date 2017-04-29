@@ -42,12 +42,32 @@ const topicName = {
   formKey: updateTopicForm,
   stateKey: Symbol('topicName'),
   type: "topicName",
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入标题'}
+  },
 }
 
 const topicContent = {
   formKey: updateTopicForm,
   stateKey: Symbol('topicContent'),
   type: 'topicContent',
+  checkValid: (data) => {
+    let textLen = 0
+    if (data && data.text) {
+      data.text.forEach((content) => {
+        if (content.type === 'COMP_TEXT') {
+          textLen += content.text.length
+        }
+      })
+    }
+    if (textLen >= 20) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '正文内容不少于20字'}
+  },
 }
 
 const rteHeight = {
@@ -80,9 +100,7 @@ class TopicEdit extends Component {
     this.draftMonth=new Date().getMonth() + 1
     this.draftDay = new Date().getDate()  }
 
-  submitSuccessCallback = () => {
-    // console.log('this.draftId',this.draftId)
-
+  submitSuccessCallback() {
     this.isPublishing = false
     Actions.pop({popNum: 2})
     this.props.handleDestroyTopicDraft({id:this.draftId})
@@ -90,7 +108,8 @@ class TopicEdit extends Component {
     Toast.show('恭喜您,更新成功!')
   }
 
-  submitErrorCallback = (error) => {
+  submitErrorCallback(error) {
+    this.isPublishing = false
     Toast.show(error.message)
   }
 
@@ -98,6 +117,7 @@ class TopicEdit extends Component {
     if (this.props.isLogin) {
       if (this.state.selectedTopic) {
         if (this.isPublishing) {
+          Toast.show('正在发布，请稍后！', {duration: 2000})
           return
         }
         this.isPublishing = true
@@ -109,7 +129,8 @@ class TopicEdit extends Component {
         })
       }
       else {
-        Toast.show("请选择一个话题")
+        this.isPublishing = false
+        Toast.show("请选择一个话题类别")
       }
     }
     else {
@@ -119,28 +140,26 @@ class TopicEdit extends Component {
 
   publishTopic() {
     if(this.props.topic&&this.props.topic.objectId){
-      // console.log('asasasas')
       this.props.publishTopicFormData({
         formKey: updateTopicForm,
         images: this.insertImages,
         topicId: this.props.topic.objectId,
         categoryId: this.state.selectedTopic.objectId,
         submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
-        success: this.submitSuccessCallback,
-        error: this.submitErrorCallback
+        success: () => this.submitSuccessCallback(),
+        error: (err) => this.submitErrorCallback(err)
       })
     }else{
-      // console.log('hahahahah')
       this.props.publishTopicFormData({
         formKey: updateTopicForm,
         images: this.insertImages,
         categoryId: this.state.selectedTopic.objectId,
-         userId: this.props.userInfo.id,
+        userId: this.props.userInfo.id,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
         success: ()=> {
           this.submitSuccessCallback(this)
         },
-        error: this.submitErrorCallback
+        error: (err) => this.submitErrorCallback(err)
       })
     }
 
@@ -154,7 +173,15 @@ class TopicEdit extends Component {
       this.draftId=this.props.topic.objectId
     }
     this.setInterval(()=>{
-      this.props.fetchTopicDraft({userId:this.props.userInfo.id,draftId:this.draftId,formKey: updateTopicForm,topicId:this.props.topic.objectId,images: this.insertImages,draftDay:this.draftDay,draftMonth:this.draftMonth,categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+      this.props.fetchTopicDraft({
+        userId:this.props.userInfo.id,
+        draftId:this.draftId,
+        formKey: updateTopicForm,
+        topicId:this.props.topic.objectId,
+        images: this.insertImages,
+        draftDay:this.draftDay,
+        draftMonth:this.draftMonth,
+        categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
       })
       // console.log('here is uid ',this.draftId)
     },5000)
@@ -315,7 +342,6 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const topicCategory = getTopicCategoriesById(state, ownProps.topic.categoryId)
-  console.log('userinfo',userInfo.id)
   return {
     topics: topics,
     topicCategory: topicCategory,

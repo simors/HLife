@@ -29,8 +29,6 @@ export default class TopicDraftShow extends Component {
   constructor(props) {
     super(props)
     this.state = {}
-    console.log('asasasassssss',this.props.topic)
-
   }
 
   commentButtonPress() {

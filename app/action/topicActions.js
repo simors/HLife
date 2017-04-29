@@ -48,6 +48,7 @@ export function publishTopicFormData(payload) {
       }
       formData = getInputFormData(getState(), payload.formKey)
     }
+    console.log('payload:', payload)
     switch (payload.submitType) {
       case TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS:
         dispatch(handlePublishTopic(payload, formData))
