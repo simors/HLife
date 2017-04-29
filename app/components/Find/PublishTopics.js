@@ -44,12 +44,32 @@ const topicName = {
   formKey: topicForm,
   stateKey: Symbol('topicName'),
   type: "topicName",
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入标题'}
+  },
 }
 
 const topicContent = {
   formKey: topicForm,
   stateKey: Symbol('topicContent'),
   type: 'topicContent',
+  checkValid: (data) => {
+    let textLen = 0
+    if (data && data.text) {
+      data.text.forEach((content) => {
+        if (content.type === 'COMP_TEXT') {
+          textLen += content.text.length
+        }
+      })
+    }
+    if (textLen >= 50) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '正文内容不少于50字'}
+  },
 }
 
 const rteHeight = {
@@ -80,8 +100,6 @@ class PublishTopics extends Component {
     this.draftId=uuid.v1()
     this.draftMonth=new Date().getMonth() + 1
     this.draftDay = new Date().getDate()
-
-
   }
 
   submitSuccessCallback(context) {
@@ -97,6 +115,7 @@ class PublishTopics extends Component {
   }
 
   submitErrorCallback(error) {
+    this.isPublishing = false
     Toast.show(error.message)
   }
   componentWillUnmount(){
@@ -108,18 +127,20 @@ class PublishTopics extends Component {
     if (this.props.isLogin) {
       if (this.state.selectedTopic) {
         if (this.isPublishing) {
+          Toast.show('正在发布，请稍后！', {duration: 2000})
           return
         }
         this.isPublishing = true
         Toast.show('开始发布...', {
-          duration: 1000,
+          duration: 500,
           onHidden: ()=> {
             this.publishTopic()
           }
         })
       }
       else {
-        Toast.show("请选择一个话题")
+        Toast.show("请选择一个话题类别")
+        this.isPublishing = false
       }
     }
     else {
@@ -137,7 +158,7 @@ class PublishTopics extends Component {
       success: ()=> {
         this.submitSuccessCallback(this)
       },
-      error: this.submitErrorCallback
+      error: (err) => this.submitErrorCallback(err)
     })
   }
 
