@@ -19,7 +19,7 @@ import {
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import ImageGroupViewer from '../../../components/common/Input/ImageGroupViewer'
-import {getLeancloudTimeToMonth, getLeancloudTimeToDay} from '../../../util/numberUtils'
+import {getLeancloudTimeToMonth, getLeancloudTimeToDay,getMonthToMounth} from '../../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -117,7 +117,7 @@ export default class TopicDraftShow extends Component {
           <View style={styles.timeWrapStyle}>
             <View style={{backgroundColor: THEME.base.mainColor, borderRadius: 5, padding: 5}}>
               <Text style={styles.dayStyle}>{this.props.topic.draftDay}</Text>
-              <Text style={styles.monthStyle}>{this.props.topic.draftMonth+'月'}</Text>
+              <Text style={styles.monthStyle}>{getMonthToMounth(this.props.topic.draftMonth)}</Text>
             </View>
           </View>
           <View style={{flex: 1, paddingLeft: normalizeW(10)}}>
