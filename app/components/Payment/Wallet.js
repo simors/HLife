@@ -71,7 +71,6 @@ class Wallet extends Component {
             <View style={styles.balance}>
               <Text style={{fontSize: 15, color: '#AAAAAA', marginTop: normalizeH(20)}}>余额（元）</Text>
               <Text style={{fontSize: 36, color: '#FF7819', marginTop: normalizeH(20)}}>{this.props.paymentInfo.balance}</Text>
-              <Text style={{fontSize: 12, color: '#AAAAAA', marginTop: normalizeH(10)}}>平台推广总收益：88888:00</Text>
             </View>
             <View style={styles.setting}>
               <TouchableOpacity style={{flexDirection: 'row'}} onPress={this.onPaymentSetting}>
@@ -97,7 +96,6 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const currentUserId = authSelector.activeUserId(state)
   const paymentInfo = getPaymentInfo(state)
-  console.log("paymentInfo:", paymentInfo)
   return {
     cardNumber: paymentInfo.card_number || undefined,
     isUserLogined: isUserLogined,

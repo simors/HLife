@@ -26,14 +26,17 @@ class OpenBankPicker extends Component {
 
   componentDidMount() {
     let formInfo = {}
-    if (this.props.initSelected && 0 != this.props.initSelected.length) {
-      let initSelected = this.props.initSelected
-
+    if (this.props.initSelected) {
+      let initValue = {}
+      initValue.text = {
+        open_bank_code: this.props.initSelected.open_bank_code,
+        open_bank: this.props.initSelected.open_bank
+      }
       formInfo = {
         formKey: this.props.formKey,
         stateKey: this.props.stateKey,
         type: this.props.type,
-        initValue: initSelected.label,
+        initValue: initValue,
         checkValid: this.props.checkValid || this.validInput
       }
     } else {
@@ -47,7 +50,11 @@ class OpenBankPicker extends Component {
 
     this.props.initInputForm(formInfo)
 
-    if (formInfo.initValue && formInfo.initValue.text.length > 0) {
+    // if (formInfo.initValue && formInfo.initValue.text.length > 0) {
+    //   this.setState({showClear: true})
+    // }
+    console.log("formInfo.initValue:", formInfo.initValue)
+    if (formInfo.initValue) {
       this.setState({showClear: true})
     }
   }
@@ -130,6 +137,7 @@ OpenBankPicker.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
   let text = inputData.text
+  console.log("inputData:", inputData)
   return {
     data: text? text.open_bank: undefined,
   }
