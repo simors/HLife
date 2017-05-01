@@ -15,7 +15,6 @@ import AgreementView from '../components/Login/AgreementView'
 import RetrievePwdVerifyCode from '../components/Login/RetrievePwdVerifyCode'
 import PublishViewTest from '../components/common/Input/PublishViewTest'
 import CommonWebView from '../components/common/CommonWebView'
-import * as reactInvokeMethod from "../util/reactMethodUtils"
 import TabIcon from '../components/common/TabIcon'
 import Profile from '../components/Mine/Profile'
 import PersonalHomePage from '../components/Mine/PersonalHomePage'
@@ -50,17 +49,12 @@ import TextImageTest from '../components/common/Input/TextImageTest'
 import Setting from '../components/Mine/Setting'
 import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
-import DoctorSpec from '../components/Mine/DoctorSpec'
 import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 import PrivateMessageBox from '../components/Message/PrivateMessageBox'
 import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
 import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
-import Doctor from '../components/Mine/Doctor/index'
-import Acknowledge from '../components/Mine/Doctor/Acknowledge'
-import Earnings from '../components/Mine/Doctor/Earnings'
-import BasicDoctorInfo from '../components/Mine/Doctor/BasicDoctorInfo'
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
 import MyTopic from '../components/Mine/MyTopic'
 import MyAttention from '../components/Mine/MyAttention'
@@ -71,7 +65,6 @@ import TopicNotifyView from '../components/Message/TopicNotifyView'
 import SystemNotifyView from '../components/Message/SystemNotifyView'
 import BaiduMapView from '../components/common/BaiduMapView'
 import ShopAddressSelect from '../components/Mine/myShop/ShopAddressSelect'
-import CommentDoctor from '../components/Mine/Doctor/CommentDoctor'
 import QRCodeReader from '../components/Mine/QRCodeReader'
 import PersonalQR from '../components/Mine/PersonalQR'
 import Publish from '../components/Publish'
@@ -166,16 +159,11 @@ export const scenes = Actions.create(
       <Scene key="PRIVATE_MESSAGE_BOX" component={PrivateMessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
-      <Scene key="DOCTOR_SPEC" component={DoctorSpec}/>
       <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
       <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
-      <Scene key="DOCTOR" component={Doctor} />
-      <Scene key="ACKNOWLEDGE" component={Acknowledge} />
-      <Scene key="EARNINGS" component={Earnings} />
-      <Scene key="BASIC_DOCTOR_INFO" component={BasicDoctorInfo}/>
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
       <Scene key="MYTOPIC" component={MyTopic}/>
       <Scene key="MYATTENTION" component={MyAttention}/>
@@ -185,7 +173,6 @@ export const scenes = Actions.create(
       <Scene key="SYSTEM_NOTIFY" component={SystemNotifyView} />
       <Scene key="BAI_DU_MAP_VIEW" component={BaiduMapView} />
       <Scene key="SHOP_ADDRESS_SELECT" component={ShopAddressSelect} />
-      <Scene key="COMMENT_DOCTOR" component={CommentDoctor}/>
       <Scene key="QRCODEREADER" component={QRCodeReader}/>
       <Scene key="GEN_PERSONALQR" component={PersonalQR} />
       <Scene key="PUBLISH" component={Publish}/>
