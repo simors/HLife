@@ -33,8 +33,6 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 const COMP_TEXT = 'COMP_TEXT'
 const COMP_IMG = 'COMP_IMG'
 
-const androidStatusbarHeight = normalizeH(20)
-
 /****************************************************************
  *
  * 数据格式：将所有组件中的数据组织为一个数组，每一个数组中数据结构如下：
@@ -79,8 +77,7 @@ class ArticleEditor extends Component {
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
 
-    // this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
-    let compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
+    let compHeight = PAGE_HEIGHT - this.props.wrapHeight
     this.setState({
       compHeight: compHeight,
       editorHeight: new Animated.Value(compHeight - this.state.keyboardPadding - this.toolbarHeight)
@@ -110,7 +107,7 @@ class ArticleEditor extends Component {
 
   componentWillReceiveProps(newProps) {
     if (this.props.wrapHeight != newProps.wrapHeight) {
-      let compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
+      let compHeight = PAGE_HEIGHT - newProps.wrapHeight
       this.setState({
         compHeight: compHeight,
         editorHeight: new Animated.Value(compHeight - this.state.keyboardPadding- this.toolbarHeight)

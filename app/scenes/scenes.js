@@ -249,7 +249,8 @@ function tapActions(props) {
     } else {
       let identity = props.identity
       let shopPayment = props.shopPayment
-      if (identity && identity.includes(IDENTITY_SHOPKEEPER) && shopPayment) {
+      let shopInfoComplete = props.shopInfoComplete
+      if (identity && identity.includes(IDENTITY_SHOPKEEPER) && shopPayment && shopInfoComplete) {
         Actions.PUBLISH()
       } else {
         Actions.PUBLISH_TOPIC()

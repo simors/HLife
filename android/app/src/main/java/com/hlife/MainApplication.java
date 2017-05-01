@@ -1,6 +1,8 @@
 package com.hlife;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
@@ -41,15 +43,10 @@ public class MainApplication extends Application implements ReactApplication {
     {
         mReactNativeHost = new ReactNativeHost(this) {
 
-    @Override
-    protected String getJSBundleFile() {
-      return CodePush.getJSBundleFile();
-    }
-
-//    @Override
-//    protected String getJSBundleFile() {
-//      return CodePush.getJSBundleFile();
-//    }
+            @Override
+            protected String getJSBundleFile() {
+                return CodePush.getJSBundleFile();
+            }
 
             @Override
             protected boolean getUseDeveloperSupport() {
@@ -88,17 +85,24 @@ public class MainApplication extends Application implements ReactApplication {
         return mReactNativeHost;
     }
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-    Config.DEBUG = true;
-    UMShareAPI.get(this); /* 友盟U-Share初始化 */
-  }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, /* native exopackage */ false);
+        Config.DEBUG = true;
+        UMShareAPI.get(this); /* 友盟U-Share初始化 */
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
     //友盟各个平台的配置，建议放在全局Application或者程序入口
     {
         PlatformConfig.setWeixin("wxdcaaa68c51754994", "4adb3299b4f1917d1b3e79949a61cae6");
-        PlatformConfig.setSinaWeibo("3518147218", "92f09fd6160d4a9bf48d741b5643dd6e","http://xiaojee.cn/sns");
+        PlatformConfig.setSinaWeibo("3518147218", "92f09fd6160d4a9bf48d741b5643dd6e", "http://xiaojee.cn/sns");
         PlatformConfig.setQQZone("1105990907", "uCDdYxKFG6P8PDQF");
     }
 }

@@ -52,14 +52,16 @@ class PersonalHomePage extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.userIsFollowedTheUser({
-        userId: this.props.userId,
-        success: (result)=>{
-          this.setState({
-            userIsFollowedTheUser: result
-          })
-        }
-      })
+      if (this.props.isLogin) {
+        this.props.userIsFollowedTheUser({
+          userId: this.props.userId,
+          success: (result)=>{
+            this.setState({
+              userIsFollowedTheUser: result
+            })
+          }
+        })
+      }
 
       this.props.getUserInfoById({userId: this.props.userId})
       // // this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
@@ -69,7 +71,6 @@ class PersonalHomePage extends Component {
       this.props.getPromoterByUserId({userId: this.props.userId})
       // this.props.fetchUserFollowees()
       this.refreshData()
-
     })
   }
 
