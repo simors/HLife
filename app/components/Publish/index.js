@@ -73,7 +73,7 @@ class Publish extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <StatusBar barStyle="dark-content"/>
+        {/*<StatusBar barStyle="dark-content"/>*/}
         <View style={styles.body}>
           <View style={styles.logo}>
             <Image

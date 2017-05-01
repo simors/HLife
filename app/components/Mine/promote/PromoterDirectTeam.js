@@ -152,7 +152,7 @@ class PromoterDirectTeam extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
+        {/*<StatusBar barStyle="dark-content" />*/}
         <Header leftType="icon"
                 leftIconName="ios-arrow-back"
                 leftPress={()=> {

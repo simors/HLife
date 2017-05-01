@@ -541,7 +541,7 @@ export class TopicDetail extends Component {
   render() {
     return (
       <View style={styles.containerStyle}>
-        <StatusBar barStyle="dark-content"/>
+        {/*<StatusBar barStyle="dark-content"/>*/}
         {this.renderHeaderView()}
         <View style={styles.body}>
 

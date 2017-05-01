@@ -366,7 +366,7 @@ class Local extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content"/>
+        {/*<StatusBar barStyle="dark-content"/>*/}
         <Header
           leftType="none"
           title="汇邻优店"

@@ -4,8 +4,23 @@
 import {activeUserId} from './authSelector'
 
 export function getMyTopicDrafts(state) {
-  return state.DRAFTS.toJS().topics
+  const userId = activeUserId(state)
+  console.log('userId',userId)
+  let topics = state.DRAFTS.toJS().topics
+  for (let key in topics) {
+    if(topics[key].userId!=userId){
+      delete topics[key]
+    }
+  }
+  return topics
 }
 export function getMyShopPromotionDrafts(state) {
-  return state.DRAFTS.toJS().shopPromotions
+  const userId = activeUserId(state)
+  let shopPromotions = state.DRAFTS.toJS().shopPromotions
+  for (let key in shopPromotions) {
+    if(shopPromotions[key].userId!=userId){
+      delete shopPromotions[key]
+    }
+  }
+  return shopPromotions
 }

@@ -286,7 +286,6 @@ export class Find extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content"/>
         <TabScrollView topics={this.props.topicCategories}
                        topicId={this.props.categoryId}
                        renderTopics={() => this.renderTopics()}

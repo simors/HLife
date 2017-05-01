@@ -146,7 +146,7 @@ class ChangeAgentView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
+        {/*<StatusBar barStyle="dark-content" />*/}
         {this.renderHeader()}
         <View style={styles.body}>
           <CommonListView

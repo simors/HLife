@@ -158,7 +158,7 @@ class PromoterPerformance extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        {/*<StatusBar barStyle="light-content" />*/}
         <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
           {this.renderHeaderView()}
           {this.renderBodyView()}

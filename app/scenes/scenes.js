@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet, AsyncStorage} from 'react-native'
+import {StyleSheet, AsyncStorage, StatusBar} from 'react-native'
 import {Actions, Scene, Switch, ActionConst, Modal} from 'react-native-router-flux'
 
 import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
@@ -260,6 +260,7 @@ function tapActions(props) {
       if (!result) {
         Actions.LOGIN()
       } else {
+        // StatusBar.setBarStyle('light-content', true)
         Actions.MINE()
       }
     })
@@ -267,6 +268,7 @@ function tapActions(props) {
     if (!props.isLogin) {
       Actions.LOGIN()
     } else {
+      // StatusBar.setBarStyle('dark-content', true)
       let identity = props.identity
       let shopPayment = props.shopPayment
       let shopInfoComplete = props.shopInfoComplete
@@ -279,14 +281,17 @@ function tapActions(props) {
   } else {
     switch (props.index) {
       case 0: {
+        // StatusBar.setBarStyle('dark-content', true)
         Actions.HOME_INDEX()
         break
       }
       case 1: {
+        // StatusBar.setBarStyle('dark-content', true)
         Actions.LOCAL()
         break
       }
       case 3: {
+        // StatusBar.setBarStyle('dark-content', true)
         Actions.FIND()
         break
       }

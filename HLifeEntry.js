@@ -10,6 +10,7 @@ import {
   AppState,
   BackAndroid,
   ToastAndroid,
+  StatusBar,
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router, Actions} from 'react-native-router-flux'
@@ -71,6 +72,11 @@ AV.init(
    };
 
   render() {
+    if (Platform.OS == 'android') {
+      StatusBar.setTranslucent(true)
+      StatusBar.setBackgroundColor('transparent', true)
+    }
+    StatusBar.setBarStyle('dark-content', true)
     return (
       <Provider store={store}>
         <View style={{flex: 1}}>
