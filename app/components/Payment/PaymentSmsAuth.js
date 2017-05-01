@@ -27,6 +27,8 @@ import THEME from '../../constants/themes/theme1'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
+import Symbol from 'es6-symbol'
+
 
 let authForm = Symbol('authForm')
 
@@ -135,14 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
   },
   inputBox: {

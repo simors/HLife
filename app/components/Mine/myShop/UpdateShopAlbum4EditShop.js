@@ -90,7 +90,7 @@ class UpdateShopAlbum4EditShop extends Component {
           rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
-          <View style={{}}>
+          <View style={{marginTop: normalizeH(10)}}>
             <ImageGroupInput
               {...shopAlbumInput}
               number={20}

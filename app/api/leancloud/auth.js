@@ -1,11 +1,8 @@
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
 import {UserInfo, UserDetail, HealthProfileRecord, HealthProfile} from '../../models/userModels'
-import {Question} from '../../models/doctorModel'
 import {ShopRecord, ShopInfo} from '../../models/shopModel'
 import {ArticleItem} from '../../models/ArticleModel'
-import {PromoterInfo} from '../../models/promoterModel'
-import {DoctorInfo} from '../../models/doctorModel'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
 import * as numberUtils from '../../util/numberUtils'
@@ -159,96 +156,6 @@ export function updateUserLocationInfo(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-}
-
-export function certification(payload) {
-  console.log("certification", payload)
-
-  let userInfo = AV.Object.createWithoutData('_User', payload.id)
-  let query = new AV.Query('Doctor')
-  query.equalTo('user', userInfo)
-  return query.find().then(function (results) {
-    if (results.length == 0) {
-      let Doctor = AV.Object.extend('Doctor')
-      let doctor = new Doctor()
-
-      doctor.set('name', payload.name)
-      doctor.set('ID', payload.ID)
-      doctor.set('phone', payload.phone)
-      doctor.set('organization', payload.organization)
-      doctor.set('department', payload.department)
-      doctor.set('certifiedImage', payload.certifiedImage)
-      doctor.set('certificate', payload.certificate)
-      doctor.set('status', 2) //审核中
-      doctor.set('user', userInfo)
-      userInfo.addUnique('identity', 'doctor')
-      userInfo.save()
-
-      return doctor.save().then((doctorInfo)=>{
-        let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
-        doctor.id = payload.id
-        return {
-          doctorInfo: doctor,
-        }
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-    } else {
-      let Doctor = AV.Object.createWithoutData('Doctor', results[0].id)
-      Doctor.set('name', payload.name)
-      Doctor.set('ID', payload.ID)
-      Doctor.set('phone', payload.phone)
-      Doctor.set('organization', payload.organization)
-      Doctor.set('department', payload.department)
-      Doctor.set('certifiedImage', payload.certifiedImage)
-      Doctor.set('certificate', payload.certificate)
-      Doctor.set('status', 2) //审核中
-      Doctor.set('user', userInfo)
-      return Doctor.save().then((doctorInfo)=>{
-        let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
-        doctor.id = payload.id
-        return {
-          doctorInfo: doctor,
-        }
-      }, function (err) {
-        err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-        throw err
-      })
-
-    }
-  }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-
-  // let Doctor = AV.Object.extend('Doctor')
-  // let doctor = new Doctor()
-  //
-  // doctor.set('name', payload.name)
-  // doctor.set('ID', payload.ID)
-  // doctor.set('phone', payload.phone)
-  // doctor.set('organization', payload.organization)
-  // doctor.set('department', payload.department)
-  // doctor.set('certifiedImage', payload.certifiedImage)
-  // doctor.set('certificate', payload.certificate)
-  // doctor.set('status', 2) //审核中
-  // doctor.set('user', userInfo)
-  //
-  // userInfo.addUnique('identity', 'doctor')
-  // userInfo.save()
-  //
-  // return doctor.save().then((doctorInfo)=>{
-  //   let doctor = DoctorInfo.fromLeancloudObject(doctorInfo)
-  //   doctor.id = payload.id
-  //   return {
-  //     doctorInfo: doctor,
-  //   }
-  // }, function (err) {
-  //   err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-  //   throw err
-  // })
-
 }
 
 export function profileSubmit(payload) {
@@ -910,32 +817,6 @@ export function unFollowUser(payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-}
-
-export function inquirySubmit(payload) {
-  var userInfo = AV.Object.createWithoutData('_User', payload.id)
-  let avQuestion = AV.Object.extend('Question')
-  let question = new avQuestion()
-  question.set('content', payload.question)
-  question.set('diseaseImages', payload.diseaseImages)
-  question.set('quizzer', userInfo)
-  question.set('name', payload.name)
-  question.set('gender', payload.gender)
-  question.set('birthday', payload.birthday)
-  question.set('status', 1) //会话打开
-
-  return question.save().then((record) => {
-
-      let questionRecord = Question.fromLeancloudObject(record)
-    return {
-      question: questionRecord
-    }
-    },
-  function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-
 }
 
 export function healthProfileSubmit(payload) {

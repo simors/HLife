@@ -60,6 +60,7 @@ export class TopicDetail extends Component {
       commentY: 0,
       comment: undefined,
       hideBottomView: false,
+      loadComment: false,
     }
     this.replyInput = null
   }
@@ -492,6 +493,16 @@ export class TopicDetail extends Component {
   }
 
   renderTopicCommentsColumn() {
+    if (!this.state.loadComment) {
+      return (
+        <View style={{flex:1}}>
+          <View style={{flexDirection: 'row',padding:15,paddingTop:20,backgroundColor:'white'}}>
+            <View style={styles.titleLine}/>
+            <Text style={styles.titleTxt}>邻友点评</Text>
+          </View>
+        </View>
+      )
+    }
     return (
       <View style={{flex:1}}>
         {this.renderTopicCommentPage()}
@@ -500,10 +511,16 @@ export class TopicDetail extends Component {
   }
 
   refreshData() {
-    this.loadMoreData(true)
+    // this.loadMoreData(true)
+    this.setState({loadComment: false})
   }
 
   loadMoreData(isRefresh) {
+    if (!this.state.loadComment) {
+      this.setState({loadComment: true}, () => this.loadMoreData(true))
+      return
+    }
+
     if(this.isQuering) {
       return
     }

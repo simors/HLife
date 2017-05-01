@@ -39,10 +39,6 @@ class Wallet extends Component {
     })
   }
 
-  onAlipayCash = () => {
-    Actions.ALIPAY_CASH()
-  }
-
   onWithdrawals = () => {
     Actions.WITHDRAWALS()
   }
@@ -128,14 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
   },
   balance: {

@@ -8,7 +8,6 @@ import messageReducer from './messageReducer'
 import articleReducer from './articleReducer'
 import topicReducer from './topicReducer'
 import shopReducer from './shopReducer'
-import doctorReducer from './doctorReducer'
 import notifyReducer from './notifyReducer'
 import paymentReducer from './paymentReducer'
 import promoterReducer from './promoterReducer'
@@ -23,7 +22,6 @@ const rootReducers = combineReducers({
   ARTICLE: articleReducer,
   TOPIC: topicReducer,
   SHOP: shopReducer,
-  DOCTOR: doctorReducer,
   NOTICE: notifyReducer,
   PAYMENT: paymentReducer,
   PROMOTER: promoterReducer,
