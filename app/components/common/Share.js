@@ -96,11 +96,11 @@ export default class Share extends Component {
   }
 
   openShareChannel = (index) => {
-    let title = this.props.title ? this.props.title : '邻家优店'
+    let title = this.props.title ? this.props.title : '汇邻优店'
     let targetUri = this.props.url || 'https://www.pgyer.com/F5Df'
-    let content = this.props.abstract ? this.props.abstract : '邻家优店'
+    let content = this.props.abstract ? this.props.abstract : '汇邻优店'
     if (index == 4) {
-      content = '\n作者：' + this.props.author + '（来自邻家优店）'
+      content = '\n作者：' + this.props.author + '（来自汇邻优店）'
     }
     let imgUri = this.props.cover ? this.props.cover : ''
     switch (index) {

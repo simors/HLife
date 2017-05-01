@@ -341,46 +341,17 @@ const mapStateToProps = (state, ownProps) => {
   const shopPromotions = getMyShopPromotionDrafts(state)
 
   // let topicArr = []
-  for (let key in topics) {
-    // topicArr.push({
-    //   key: key, data: {
-    //     content: topics[key].content, //话题内容
-    //     title: topics[key].title,
-    //     abstract: topics[key].abstract,
-    //     imgGroup: topics[key].imgGroup, //图片
-    //     objectId: topics[key].topicId,  //话题id
-    //     categoryId: topics[key].categoryId,
-    //     city: topics[key].city,
-    //     draftDay: topics[key].draftDay,
-    //     draftMonth: topics[key].draftMonth
-    //   }
-    // })  console.log('topics',topics)
-    // console.log('key',key)
-
-    if(topics[key].userId!=userId){
-      // console.log('userId',userId)
-      delete topics[key]
-    }
-  }
-  for (let key in shopPromotions) {
-    // topicArr.push({
-    //   key: key, data: {
-    //     content: topics[key].content, //话题内容
-    //     title: topics[key].title,
-    //     abstract: topics[key].abstract,
-    //     imgGroup: topics[key].imgGroup, //图片
-    //     objectId: topics[key].topicId,  //话题id
-    //     categoryId: topics[key].categoryId,
-    //     city: topics[key].city,
-    //     draftDay: topics[key].draftDay,
-    //     draftMonth: topics[key].draftMonth
-    //   }
-    // })
-    if(shopPromotions[key].userId!=userId){
-      delete shopPromotions[key]
-    }
-  }
-  // console.log('topics',topics)
+  // for (let key in topics) {
+  //   if(topics[key].userId!=userId){
+  //     delete topics[key]
+  //   }
+  // }
+  // for (let key in shopPromotions) {
+  //
+  //   if(shopPromotions[key].userId!=userId){
+  //     delete shopPromotions[key]
+  //   }
+  // }
 
   return {
     shopDataSrc: ds.cloneWithRows(shopPromotions),

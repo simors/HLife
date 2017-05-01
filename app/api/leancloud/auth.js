@@ -366,12 +366,18 @@ export function _submitCompleteShopInfo(shop, payload) {
     })
   }
   shop.set('containedTag', containedTag)
-  shop.set('coverUrl', coverUrl)
+  if(coverUrl) {
+    shop.set('coverUrl', coverUrl)
+  }
+  
+  if(album) {
+    shop.set('album', album)
+  }
+
   shop.set('openTime', openTime)
   shop.set('contactNumber', contactNumber)
   shop.set('contactNumber2', contactNumber2)
   shop.set('ourSpecial', ourSpecial)
-  shop.set('album', album)
   // console.log('_submitCompleteShopInfo.shop====', shop)
   return shop.save().then(function (result) {
     return true
@@ -385,7 +391,7 @@ export function _submitCompleteShopInfo(shop, payload) {
 
 export function submitCompleteShopInfo(payload) {
   return new Promise((resolve, reject)=>{
-    // console.log('submitEditShopInfo.payload===', payload)
+    // console.log('submitCompleteShopInfo.payload===', payload)
     let shopId = payload.shopId
     let album = payload.album
     let coverUrl = payload.coverUrl
@@ -393,12 +399,14 @@ export function submitCompleteShopInfo(payload) {
 
     if(coverUrl) {
       ImageUtil.uploadImg2(coverUrl).then((leanCoverImgUrl)=>{
-        // console.log('submitEditShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
+        // console.log('submitCompleteShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
         shop.set('coverUrl', leanCoverImgUrl)
+        payload.coverUrl = undefined
         if(album && album.length) {
           ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-            // console.log('submitEditShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
+            // console.log('submitCompleteShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
             shop.set('album', leanAlbumImgUrls)
+            payload.album = undefined
             _submitCompleteShopInfo(shop, payload).then((result)=>{
               resolve(result)
             }, (reason)=>{
@@ -422,6 +430,7 @@ export function submitCompleteShopInfo(payload) {
       if(album && album.length) {
         ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
           shop.set('album', leanAlbumImgUrls)
+          payload.album = undefined
           _submitCompleteShopInfo(shop, payload).then((result)=>{
             resolve(result)
           }, (reason)=>{
@@ -459,8 +468,8 @@ export function _submitEditShopInfo(shop, payload) {
   shop.set('contactNumber', contactNumber)
   shop.set('contactNumber2', contactNumber2)
   shop.set('ourSpecial', ourSpecial)
-  // console.log('_submitEditShopInfo.payload===', payload)
-  // console.log('_submitEditShopInfo.shop===', shop)
+  console.log('_submitEditShopInfo.payload===', payload)
+  console.log('_submitEditShopInfo.shop===', shop)
   return shop.save().then(()=>{
     return '更新店铺成功'
   }, ()=>{
@@ -565,7 +574,7 @@ export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({
       mobilePhoneNumber:phone,
-      name: '邻家优店',
+      name: '汇邻优店',
       op: '注册',
       ttl: 10}).then(function () {
       // do nothing

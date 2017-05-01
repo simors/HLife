@@ -308,7 +308,7 @@ class Home extends Component {
           leftImageLabel={this.props.city}
           leftPress={() => {
           }}
-          title="邻家优店"
+          title="汇邻优店"
           rightComponent={() => {
             return <MessageBell />
           }}

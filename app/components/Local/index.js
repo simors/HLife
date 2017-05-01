@@ -369,7 +369,7 @@ class Local extends Component {
         {/*<StatusBar barStyle="dark-content"/>*/}
         <Header
           leftType="none"
-          title="邻家优店"
+          title="汇邻优店"
           rightType="image"
           rightComponent={() => {return <MessageBell />}}
         />
