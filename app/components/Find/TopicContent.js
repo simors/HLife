@@ -23,6 +23,7 @@ import ArticleViewer from '../common/Input/ArticleViewer'
 import FollowUser from '../../components/common/FollowUser'
 import {Actions} from 'react-native-router-flux'
 import {activeUserId} from '../../selector/authSelector'
+import * as appConfig from '../../constants/appConfig'
 
 const BASE_PADDING_SIZE = normalizeW(12)
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -98,6 +99,9 @@ export class TopicContent extends Component {
         </View>
         {this.renderUserIntroView()}
         <ArticleViewer artlcleContent={JSON.parse(topic.content)} />
+        <View style={{paddingTop: normalizeH(10), paddingBottom: normalizeH(10), paddingLeft: normalizeW(15), paddingRight: normalizeW(15)}}>
+          <Text style={{fontSize: em(15), color: '#AAAAAA'}}>特别声明：本文为{appConfig.APP_NAME}自媒体作者上传并发布，仅代表该作者观点。{appConfig.APP_NAME}仅提供信息发布平台。</Text>
+        </View>
       </View>
 
     )
