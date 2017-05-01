@@ -27,6 +27,8 @@ import THEME from '../../constants/themes/theme1'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
+import Symbol from 'es6-symbol'
+
 
 let authForm = Symbol('authForm')
 
