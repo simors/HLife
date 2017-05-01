@@ -39,10 +39,6 @@ class Wallet extends Component {
     })
   }
 
-  onAlipayCash = () => {
-    Actions.ALIPAY_CASH()
-  }
-
   onWithdrawals = () => {
     Actions.WITHDRAWALS()
   }

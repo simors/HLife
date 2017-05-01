@@ -79,9 +79,6 @@ import AdviseFeedback from '../components/Advise/index'
 import SubmitAdviseSuccess from '../components/Advise/submitSuccess'
 import PromoterDirectTeam from '../components/Mine/promote/PromoterDirectTeam'
 import Wallet from '../components/Payment/Wallet'
-import AlipayCash from '../components/Payment/AlipayCash'
-import MyCard from '../components/Payment/MyCard'
-import AddCard from '../components/Payment/AddCard'
 import IdentifyCard from '../components/Payment/IdentifyCard'
 import PaymentSmsAuth from '../components/Payment/PaymentSmsAuth'
 import PaymentPassword from '../components/Payment/PaymentPassword'
@@ -187,9 +184,6 @@ export const scenes = Actions.create(
       <Scene key="SUBMIT_ADVISE_SUCCESS" component={SubmitAdviseSuccess}/>
       <Scene key="DIRECT_TEAM" component={PromoterDirectTeam} />
       <Scene key="WALLET" component={Wallet} />
-      <Scene key="ALIPAY_CASH" component={AlipayCash} />
-      <Scene key="MY_CARD" component={MyCard} />
-      <Scene key="ADD_CARD" component={AddCard} />
       <Scene key="IDENTIFY_CARD" component={IdentifyCard} />
       <Scene key="PAYMENT_SMS_AUTH" component={PaymentSmsAuth} />
       <Scene key="PAYMENT_PASSWORD" component={PaymentPassword} />
