@@ -127,7 +127,7 @@ class UpdateShopAlbum extends Component {
           rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
-          <View style={{}}>
+          <View style={{marginTop: normalizeH(15)}}>
             <ImageGroupInput
               {...shopAlbumInput}
               number={9}

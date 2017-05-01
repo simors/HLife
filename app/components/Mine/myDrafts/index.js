@@ -313,7 +313,7 @@ export class MyTopic extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content"/>
+        {/*<StatusBar barStyle="light-content"/>*/}
         <Header
           headerContainerStyle={{backgroundColor: THEME.base.mainColor}}
           leftType="icon"

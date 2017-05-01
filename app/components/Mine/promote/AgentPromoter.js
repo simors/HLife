@@ -292,7 +292,7 @@ class AgentPromoter extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        {/*<StatusBar barStyle="light-content" />*/}
         <ScrollView style={{flex: 1}}>
           {this.renderHeaderView()}
           {this.renderBodyView()}

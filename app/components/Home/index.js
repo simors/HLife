@@ -301,7 +301,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar hidden={false} translucent={true} backgroundColor="transparent" barStyle="dark-content"/>
+        {/*<StatusBar hidden={false} translucent={true} backgroundColor="transparent" barStyle="dark-content"/>*/}
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/location.png")}

@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Keyboard,
   ScrollView,
+  StatusBar,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -157,7 +158,6 @@ class AdviseFeedback extends Component {
   render() {
     return (
       <View style={styles.container}>
-
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"

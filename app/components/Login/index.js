@@ -10,6 +10,7 @@ import {
   Dimensions,
   Platform,
   ScrollView,
+  StatusBar,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'

@@ -48,6 +48,7 @@ class Mine extends Component {
   componentWillReceiveProps(nextProps) {
     // console.log('componentWillReceiveProps.this.props===', this.props)
     // console.log('componentWillReceiveProps.nextProps===', nextProps)
+    // StatusBar.setBarStyle('light-content', true)
   }
 
   componentWillMount() {
@@ -341,7 +342,7 @@ class Mine extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        {/*<StatusBar barStyle="light-content" />*/}
         <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
           {this.renderHeaderView()}
           {this.renderBodyView()}

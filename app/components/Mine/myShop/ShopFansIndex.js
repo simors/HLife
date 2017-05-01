@@ -76,7 +76,7 @@ class ShopFansIndex extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        {/*<StatusBar barStyle="light-content" />*/}
         <Header headerContainerStyle={styles.header}
                 leftType='icon'
                 leftStyle={{color: '#FFFFFF'}}
