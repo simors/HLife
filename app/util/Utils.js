@@ -279,6 +279,10 @@ export function getAllDistrictList(treeData = []) {
   return districtList
 }
 
+export function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 export function trim(str) {
   return str.replace(/^(\s|\u00A0)+/,'').replace(/(\s|\u00A0)+$/,'')
 }

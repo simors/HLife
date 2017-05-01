@@ -960,7 +960,6 @@ export function healthProfileSubmit(payload) {
 }
 
 export function getFavoriteArticles(payload) {
-  // console.log('payload',payload)
   let currentUser = AV.User.current()
   let query = new AV.Query('ArticleFavorite')
   query.equalTo('user',currentUser)
@@ -968,7 +967,6 @@ export function getFavoriteArticles(payload) {
   query.include('article')
   query.include('article.user')
   return query.find().then((results) => {
-    // console.log('result-====>',results)
 
     let article = []
     results.forEach((result) => {
@@ -977,13 +975,11 @@ export function getFavoriteArticles(payload) {
 
       article.push(ArticleItem.fromLeancloudObject(articleInfo))
     })
-   //  console.log('article-====>',article)
     return {
       currentUserId: AV.User.current().id,
       favoriteArticles: List(article)
     }
   }, (err) => {
-    // console.log(err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

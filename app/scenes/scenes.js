@@ -86,13 +86,23 @@ import PaymentSuccess from '../components/Payment/PaymentSuccess'
 import AdviseFeedback from '../components/Advise/index'
 import SubmitAdviseSuccess from '../components/Advise/submitSuccess'
 import PromoterDirectTeam from '../components/Mine/promote/PromoterDirectTeam'
+import Wallet from '../components/Payment/Wallet'
+import AlipayCash from '../components/Payment/AlipayCash'
+import MyCard from '../components/Payment/MyCard'
+import AddCard from '../components/Payment/AddCard'
+import IdentifyCard from '../components/Payment/IdentifyCard'
+import PaymentSmsAuth from '../components/Payment/PaymentSmsAuth'
+import PaymentPassword from '../components/Payment/PaymentPassword'
 import PromoterSecondTeam from '../components/Mine/promote/PromoterSecondTeam'
 import InvitedShops from '../components/Mine/promote/InvitedShops'
 import AgentPromoter from '../components/Mine/promote/AgentPromoter'
 import AreaPromoterManager from '../components/Mine/promote/AreaPromoterManager'
+import PasswordConfirm from '../components/Payment/PasswordConfirm'
 import Mydrafts from '../components/Mine/myDrafts/index'
 import AreaPromoterDetail from '../components/Mine/promote/AreaPromoterDetail'
 import ChangeAgentView from '../components/Mine/promote/ChangeAgentView'
+import PasswordSetting from '../components/Payment/PasswordSetting'
+import Withdrawals from '../components/Payment/Withdrawals'
 import Share from '../components/common/Share'
 import PromoterPaymentOk from '../components/Payment/PromoterPaymentOk'
 import EarningRecord from '../components/Mine/promote/EarningRecord'
@@ -191,13 +201,23 @@ export const scenes = Actions.create(
       <Scene key="ADVISE_FEEDBACK" component={AdviseFeedback}/>
       <Scene key="SUBMIT_ADVISE_SUCCESS" component={SubmitAdviseSuccess}/>
       <Scene key="DIRECT_TEAM" component={PromoterDirectTeam} />
+      <Scene key="WALLET" component={Wallet} />
+      <Scene key="ALIPAY_CASH" component={AlipayCash} />
+      <Scene key="MY_CARD" component={MyCard} />
+      <Scene key="ADD_CARD" component={AddCard} />
+      <Scene key="IDENTIFY_CARD" component={IdentifyCard} />
+      <Scene key="PAYMENT_SMS_AUTH" component={PaymentSmsAuth} />
+      <Scene key="PAYMENT_PASSWORD" component={PaymentPassword} />
       <Scene key="PROMOTER_SECOND_TEAM" component={PromoterSecondTeam} />
       <Scene key="INVITED_SHOPS" component={InvitedShops} />
       <Scene key="AGENT_PROMOTER" component={AgentPromoter} />
       <Scene key="AREA_MANAGER" component={AreaPromoterManager}/>
+      <Scene key="PASSWORD_CONFIRM" component={PasswordConfirm}/>
       <Scene key="MY_DRAFTS" component={Mydrafts}/>
       <Scene key="AREA_DETAIL" component={AreaPromoterDetail}/>
       <Scene key="CHANGE_AGENT" component={ChangeAgentView}/>
+      <Scene key="PAYMENT_SETTING" component={PasswordSetting}/>
+      <Scene key="WITHDRAWALS" component={Withdrawals}/>
       <Scene key="PROMOTER_PAYMENT_OK" component={PromoterPaymentOk}/>
       <Scene key="EARN_RECORD" component={EarningRecord}/>
 

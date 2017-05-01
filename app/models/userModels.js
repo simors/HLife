@@ -30,6 +30,7 @@ export const UserInfoRecord = Record({
   mobilePhoneVerified: false,
   detail: {},
   enable: false,
+  paymentPassword: undefined,
 }, 'UserInfoRecord')
 
 export const HealthProfileRecord = Record({

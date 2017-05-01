@@ -42,10 +42,9 @@ class SmsAuthCodeInput extends Component {
   }
 
   validInput(data) {
-    if(data && !data.text){
-      return {isVal:false, errMsg:"请输入验证码"}
-    }
-    return {isVal:true, errMsg:"ok"}
+    if(data && data.text)
+      return {isVal:true, errMsg:"ok"}
+    return {isVal:false, errMsg:"请输入验证码"}
   }
 
   inputChange(text) {

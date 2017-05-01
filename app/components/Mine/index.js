@@ -302,7 +302,7 @@ class Mine extends Component {
               {this.renderPromoterBtnText()}
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.WALLET()}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_wallet.png')} />
             </View>
