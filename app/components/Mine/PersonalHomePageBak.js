@@ -32,8 +32,6 @@ import * as authSelector from '../../selector/authSelector'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import FollowUser from '../common/FollowUser'
-import {getDoctorInfoByUserId} from '../../selector/doctorSelector'
-import {fetchDoctorByUserId} from '../../action/doctorAction'
 import MyTopicShow from './MyTopic/MyTopicShow'
 import * as Utils from '../../util/Utils'
 
@@ -365,7 +363,6 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'PERSONAL_INFO_COLUMN'})
   dataArray.push({type: 'TOPICS_COLUMN'})
 
-  const doctorInfo = getDoctorInfoByUserId(state, ownProps.userId)
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
@@ -383,7 +380,6 @@ const mapStateToProps = (state, ownProps) => {
     userFollowers: userFollowers,
     userFollowersTotalCount: userFollowersTotalCount,
     userOwnedShopInfo: userOwnedShopInfo,
-    doctorInfo: doctorInfo,
     userTopics: userTopics,
     userFollowees: userFollowees
   }
@@ -395,7 +391,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchOtherUserFollowersTotalCount,
   getUserInfoById,
   fetchUserOwnedShopInfo,
-  fetchDoctorByUserId
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)

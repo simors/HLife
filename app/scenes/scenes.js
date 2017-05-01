@@ -49,7 +49,6 @@ import TextImageTest from '../components/common/Input/TextImageTest'
 import Setting from '../components/Mine/Setting'
 import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
-import InquiryMessageBox from '../components/Message/InquiryMessageBox'
 import PrivateMessageBox from '../components/Message/PrivateMessageBox'
 import ArticleInputTest from '../components/common/Input/ArticleInputTest'
 import PromoterAuth from '../components/Mine/promote/PromoterAuth'
@@ -155,7 +154,6 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_TOPIC" component={PublishTopics} />
       <Scene key="TOPIC_DETAIL" component={TopicDetail} />
       <Scene key="MESSAGE_BOX" component={MessageBox} />
-      <Scene key="INQUIRY_MESSAGE_BOX" component={InquiryMessageBox} />
       <Scene key="PRIVATE_MESSAGE_BOX" component={PrivateMessageBox} />
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
