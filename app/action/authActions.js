@@ -566,6 +566,8 @@ function handleShopAlbum(payload, formData) {
 function handleCompleteShopInfo(payload, formData) {
   return (dispatch, getState) => {
 
+    // console.log('handleCompleteShopInfo.formData===', formData)
+
     let shopCategoryObjectId = ''
     if (payload.canModifyShopCategory) {
       shopCategoryObjectId = formData.shopCategoryInput.text

@@ -389,6 +389,7 @@ class CompleteShopInfo extends Component {
     if(this.props.userOwnedShopInfo.targetShopCategory) {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
     }
+    console.log('targetShopCategory===', targetShopCategory)
 
     return (
       <View style={styles.container}>
@@ -460,27 +461,22 @@ class CompleteShopInfo extends Component {
                   <Text style={styles.inputLabel}>店铺类型</Text>
                 </View>
                 <View style={[styles.inputBox, styles.selectBox]}>
-                  {targetShopCategory.id
-                    ? <View style={styles.inputInnerBox}>
-                        <Text style={styles.inputInnerStyle}>{targetShopCategory.text}</Text>
-                      </View>
-                    : <SelectInput
-                        {...shopCategoryInput}
-                        show={this.state.selectShow}
-                        onPress={(e)=>this._onSelectPress(e)}
-                        style={{}}
-                        styleOption={{height:50}}
-                        selectRef="SELECT"
-                        overlayPageX={0}
-                        overlayPageY={this.state.optionListPos}
-                        optionListHeight={240}
-                        optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                        defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
-                        defaultValue={targetShopCategory.id}
-                        onSelect={this._onSelectShopCategory.bind(this)}>
-                        {this.renderShopCategoryOptions()}
-                      </SelectInput>
-                  }
+                  <SelectInput
+                    {...shopCategoryInput}
+                    show={this.state.selectShow}
+                    onPress={(e)=>this._onSelectPress(e)}
+                    style={{}}
+                    styleOption={{height:50}}
+                    selectRef="SELECT"
+                    overlayPageX={0}
+                    overlayPageY={this.state.optionListPos}
+                    optionListHeight={240}
+                    optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
+                    defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
+                    defaultValue={targetShopCategory.id}
+                    onSelect={this._onSelectShopCategory.bind(this)}>
+                    {this.renderShopCategoryOptions()}
+                  </SelectInput>
                 </View>
               </View>
 
