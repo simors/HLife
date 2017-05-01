@@ -484,7 +484,7 @@ function _saveDeviceTokenToLeancloudAfterNotificationRegistration(payload = {}) 
 export function push(data, query) {
   let defaultData = {
     alert: '通知',
-    title: '邻家优店',
+    title: '汇邻优店',
     prod: 'dev',
     sceneName: 'MESSAGE_BOX',
     sceneParams: {}
