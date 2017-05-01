@@ -17,6 +17,8 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
+import {fetchAppNoUpdate} from '../../action/configAction'
+
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {persistor} from '../../store/persistStore'
 import * as reactInvokeMethod from '../../util/reactMethodUtils'
@@ -120,9 +122,9 @@ class Setting extends Component {
   isUpdate(result) {
     Popup.confirm({
       title: '版本更新',
-      content: '是否更新？',
+      content: '汇邻优店已发布新版本v'+result.version+'，当前版本为v'+RNDeviceInfo.appVersion+'，点击确定更新',
       ok: {
-        text: '更新',
+        text: '确定',
         style: {color: THEME.base.mainColor},
         callback: ()=> {
           // url='https://itunes.apple.com/app/id=1224852246'
@@ -135,6 +137,8 @@ class Setting extends Component {
         text: '以后',
         callback: ()=> {
           // console.log('cancel')
+          this.props.fetchAppNoUpdate({noUpdateVersion:result.version})
+
         }
       }
     })
@@ -247,6 +251,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchAppNoUpdate,
   userLogOut,
 }, dispatch)
 

@@ -88,8 +88,8 @@ class Home extends Component {
       }).then((data)=>{
         data.json().then((result)=>{
           // console.log('data',data)
-          // console.log('result',result.results[0].version)
-          // console.log('data',RNDeviceInfo.appVersion)
+          console.log('result',result.results[0].version)
+          console.log('data',RNDeviceInfo.appVersion)
           let version = result.results[0].version
           if(version>RNDeviceInfo.appVersion){
             if(result.version>this.props.noUpdateVersion) {
@@ -126,9 +126,9 @@ class Home extends Component {
   isUpdate(result) {
     Popup.confirm({
       title: '版本更新',
-      content: '是否更新？',
+      content: '汇邻优店已发布新版本v'+result.version+'，当前版本为v'+RNDeviceInfo.appVersion+'，点击确定更新',
       ok: {
-        text: '更新',
+        text: '确定',
         style: {color: THEME.base.mainColor},
         callback: ()=> {
           // url='https://itunes.apple.com/app/id=1224852246'
