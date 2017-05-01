@@ -46,7 +46,8 @@ class PersonalHomePage extends Component {
     super(props)
 
     this.state = {
-      userIsFollowedTheUser: false
+      userIsFollowedTheUser: false,
+      sameUser: false,
     }
   }
 
@@ -72,6 +73,12 @@ class PersonalHomePage extends Component {
       // this.props.fetchUserFollowees()
       this.refreshData()
     })
+  }
+
+  componentDidMount() {
+    if (this.props.currentUser == this.props.userId) {
+      this.setState({sameUser: true})
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -294,7 +301,7 @@ class PersonalHomePage extends Component {
           rightType="none"
           headerContainerStyle={{borderBottomWidth:0}}
         />
-        <View style={styles.body}>
+        <View style={[styles.body, this.state.sameUser ? {} : {paddingBottom: 60}]}>
           <CommonListView
             contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
             dataSource={this.props.ds}
@@ -313,6 +320,10 @@ class PersonalHomePage extends Component {
   renderBottomView() {
     let userIsFollowedTheUser = this.state.userIsFollowedTheUser
     let userOwnedShopInfo = this.props.userOwnedShopInfo
+
+    if (this.props.currentUser == this.props.userId) {
+      return <View/>
+    }
 
     return (
       <View style={styles.bottomViewWrap}>
@@ -505,7 +516,7 @@ const styles = StyleSheet.create({
   body: {
     marginTop: normalizeH(64),
     flex: 1,
-    paddingBottom: 60
+    // paddingBottom: 60
   },
   personalInfoContainer: {
 
