@@ -74,6 +74,10 @@ export class Find extends Component {
     // })
   }
 
+  componentWillReceiveProps(nextProps) {
+    
+  }
+
   getSelectedTab(index) {
     this.setState({selectedTab: index}, ()=>{
       this.refreshTopic()
@@ -143,6 +147,8 @@ export class Find extends Component {
       return
     }
     this.isQuering = true
+
+    // console.log('refresh in topic')
 
     let lastCreatedAt = undefined
     let lastUpdatedAt = undefined
@@ -248,7 +254,7 @@ export class Find extends Component {
     }
     return (
       this.props.topicCategories.map((value, key)=> {
-        if (key == 1 && !this.props.localCity) {
+        if (key == 1 && (!this.props.localCity || this.props.localCity == '全国')) {
           return (
             <View key={key} tabLabel={value.title}
                   style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
@@ -282,7 +288,7 @@ export class Find extends Component {
       <View style={styles.container}>
         <StatusBar barStyle="dark-content"/>
         <TabScrollView topics={this.props.topicCategories}
-                       topicId={this.props.topicId}
+                       topicId={this.props.categoryId}
                        renderTopics={() => this.renderTopics()}
                        onSelected={(index) => this.getSelectedTab(index)}/>
       </View>
@@ -306,13 +312,14 @@ const mapStateToProps = (state, ownProps) => {
   topicCategories.unshift({title: "精选"})
   topics[0] = pickedTopic
   topics[1] = localTopics
+
   return {
     dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,
     topics: topics,
     isLogin: isLogin,
     userInfo: userInfo,
-    localCity: localCity
+    localCity: localCity,
   }
 }
 

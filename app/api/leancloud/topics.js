@@ -73,6 +73,7 @@ export function fetchTopicLikesCount(payload) {
   let query = new AV.Query('Up')
   query.equalTo('targetId', topicId)
   query.equalTo('upType', upType)
+  // query.equalTo('upType', "topic")
   query.equalTo('status', true)
   return query.count().then((results)=> {
     return results
@@ -84,11 +85,23 @@ export function fetchTopicLikesCount(payload) {
 
 export function fetchTopicLikeUsers(payload) {
   let topicId = payload.topicId
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+
   let query = new AV.Query('Up')
+
+  if(!isRefresh && lastCreatedAt) {
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
+
   query.include(['user']);
   query.equalTo('targetId', topicId)
   query.equalTo('upType', "topic")
   query.equalTo('status', true)
+  query.limit(5)
+  query.addDescending('createdAt')
+  
+  // console.log('fetchTopicLikeUsers.query===', query)
   return query.find().then((results)=> {
     let topicLikeUsers = []
     if (results) {
@@ -308,8 +321,10 @@ export function getLocalTopics(payload) {
   //   query.lessThan('updatedAt', new Date(lastUpdatedAt))
   // }
   query.equalTo('status',1)
-  query.equalTo('city', city)
-  query.equalTo('province', province)
+  if(city && city != '全国') {
+    query.equalTo('city', city)
+    query.equalTo('province', province)
+  }
 
   query.limit(10)
   query.include(['user'])
@@ -424,6 +439,90 @@ export function getTopicById(payload) {
   })
 }
 
+export function fetchTopicComments(payload) {
+  return AV.Cloud.run('hLifeFetchTopicComments', payload).then((results) => {
+    // console.log("fetchTopicComments.results:", results)
+
+    let topicComments = []
+    let topicCommentLikeCounts = []
+    let userUpInfos = []
+
+    if(results && results.length) {
+      results.forEach((item, index) => {
+        if(item.likeCount) {
+          topicCommentLikeCounts.push({
+            topicId: item.objectId,
+            likesTotalCount: item.likeCount
+          })
+          delete item.likeCount
+        }
+        
+        if(item.userUpInfo) {
+          userUpInfos.push({
+            topicId:  item.objectId,
+            userLikeInfo: Up.fromLeancloudApi(item.userUpInfo)
+          })
+          delete item.userUpInfo
+        }
+
+        topicComments.push(TopicCommentsItem.fromLeancloudApi(item))
+      })
+    }
+
+    return {
+      topicComments: new List(topicComments),
+      topicCommentLikeCounts: topicCommentLikeCounts,
+      userUpInfos: userUpInfos
+    }
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+export function fetchTopicComments(payload) {
+  let topicId = payload.topicId
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  let query = new AV.Query('TopicComments')
+
+  var topic = AV.Object.createWithoutData('Topics', topicId)
+  query.equalTo('topic', topic)
+
+  // console.log('isRefresh====', isRefresh)
+  // console.log('lastCreatedAt====', lastCreatedAt)
+  if(!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
+
+  query.limit(5)
+  
+  query.include(['user']);
+  query.include(['parentComment']);
+  query.include(['parentComment.user']);
+  query.descending('createdAt')
+  // console.log('fetchTopicComments.query====', query)
+  return query.find().then(function (results) {
+    // console.log('fetchTopicComments.results====', results)
+      let topicComments = []
+      if (results) {
+        results.forEach((result) => {
+          topicComments.push(TopicCommentsItem.fromLeancloudObject(result))
+        })
+      }
+      return new List(topicComments)
+    }
+    , function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
+}
+*/
+
+/**
+* deprecated
+*/
 export function getTopicComments(payload) {
   let topicId = payload.topicId
   let topic = AV.Object.createWithoutData('Topics', topicId);
@@ -463,5 +562,20 @@ export function getMainPageTopics(payload) {
 export function disableTopic(payload){
   return AV.Cloud.run('disableTopicByUser',{id:payload}).then(()=>{
     return {success:true}
+  })
+}
+
+export function getShareTopicUrl(payload) {
+  let params = {
+    topicId: payload.topicId
+  }
+  return AV.Cloud.run('shareTopicById', params).then((result) => {
+    console.log("result:", result)
+    if (result && result.url)
+      return result
+    return undefined
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }

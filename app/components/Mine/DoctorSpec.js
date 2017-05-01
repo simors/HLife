@@ -132,14 +132,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     width: PAGE_WIDTH,
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44),
-      }
-    })
+    marginTop: normalizeH(65),
   },
   textArea: {
     flex: 1,

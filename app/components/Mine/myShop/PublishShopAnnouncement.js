@@ -198,15 +198,8 @@ const styles = StyleSheet.create({
   headerContainerStyle: {
     borderBottomWidth: 0,
     backgroundColor: THEME.colors.green,
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-        height: 64
-      },
-      android: {
-        height: 44
-      }
-    }),
+    paddingTop: 20,
+    height: 64,
   },
   headerLeftStyle: {
     color: '#fff',
@@ -220,14 +213,7 @@ const styles = StyleSheet.create({
     fontSize: em(17)
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: 64,
-      },
-      android: {
-        marginTop: 44
-      }
-    }),
+    marginTop: 64,
     flex: 1,
   },
   scrollViewStyle: {

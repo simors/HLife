@@ -40,7 +40,9 @@ const ds = new ListView.DataSource({
 export class MyTopic extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      showNoDataView: false
+    }
   }
 
   componentDidMount() {
@@ -71,7 +73,9 @@ export class MyTopic extends Component {
   }
   delectTopic(id){
     InteractionManager.runAfterInteractions(() => {
-      this.props.disableTopic({id:id,success:this.refreshTopic.bind(this)})
+      this.props.disableTopic({id:id,
+        success:this.refreshTopic.bind(this)
+      })
     })
   }
   renderTopicItem(value, key) {
@@ -107,7 +111,7 @@ export class MyTopic extends Component {
 
   loadMoreData(isRefresh) {
     if(this.isQuering) {
-      console.log('here is not fetch')
+      // console.log('here is not fetch')
       return
     }
     this.isQuering = true
@@ -121,7 +125,7 @@ export class MyTopic extends Component {
         lastCreatedAt = currentTopics[currentTopics.length-1].createdAt
       }
     }
-    console.log('here is fetch')
+    // console.log('here is fetch')
     let payload = {
       type: "myTopics",
       lastUpdatedAt: lastUpdatedAt,
@@ -134,6 +138,12 @@ export class MyTopic extends Component {
         }
         if(isEmpty) {
           this.listView.isLoadUp(false)
+
+          if(isRefresh) {
+            this.setState({
+              showNoDataView: true
+            })
+          }
         }else {
           this.listView.isLoadUp(true)
         }
@@ -173,10 +183,32 @@ export class MyTopic extends Component {
             }}
             ref={(listView) => this.listView = listView}
           />
+          {this.renderNoDataView()}
         </View>
       </View>
     )
   }
+
+  renderNoDataView() {
+    if(this.state.showNoDataView) {
+      return (
+        <View style={[{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'white',justifyContent:'center',alignItems:'center'}]}>
+          <Image style={{marginBottom:20}} source={require('../../../assets/images/none_message_140.png')}/>
+          <Text style={{color:'#b2b2b2',fontSize:17,marginBottom:15}}>还没发布过话题</Text>
+          <Text style={{color:'#b2b2b2',fontSize:17,marginBottom:60}}>好吃的、好玩的、新鲜的要和邻居分享噢</Text>
+          <TouchableOpacity style={{backgroundColor:'#ff7819',borderRadius:5,padding:12,paddingLeft:30,paddingRight:30}} 
+            onPress={()=>{
+              Actions.PUBLISH_TOPIC()
+            }}>
+              <Text style={{color:'white',fontSize:17}}>发布话题</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
+    return null
+  }
+
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -203,14 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
   },
   listViewStyle: {
     width: PAGE_WIDTH,

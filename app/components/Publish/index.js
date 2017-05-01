@@ -40,28 +40,34 @@ class Publish extends Component {
       Actions.LOGIN()
       return
     }
-    if(this.props.isExceededShopPromotionMaxNum){
-      Popup.confirm({
-          title: '店铺活动',
-          content: '您的店铺活动已达最大数量,去管理店铺活动？',
-          ok: {
-            text: '确认',
-            style: {color: '#FF7819'},
-            callback: ()=>{
-              // console.log('ok')
-              Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
+    let userOwnedShopInfo = this.props.userOwnedShopInfo
+    if(userOwnedShopInfo.status == 1) {
+      if(this.props.isExceededShopPromotionMaxNum){
+        Popup.confirm({
+            title: '店铺活动',
+            content: '您的店铺活动已达最大数量,去管理店铺活动？',
+            ok: {
+              text: '确认',
+              style: {color: '#FF7819'},
+              callback: ()=>{
+                // console.log('ok')
+                Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
+              }
+            },
+            cancel: {
+              text: '取消',
+              callback: ()=>{
+                // console.log('cancel')
+              }
             }
-          },
-          cancel: {
-            text: '取消',
-            callback: ()=>{
-              // console.log('cancel')
-            }
-          }
-        })
+          })
+      }else{
+        Actions.PUBLISH_SHOP_PROMOTION()
+      }
     }else{
-      Actions.PUBLISH_SHOP_PROMOTION()
+      Toast.show('您的店铺目前处于异常状态，请联系客服')
     }
+    
   }
 
   render() {
@@ -127,7 +133,8 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     isUserLogined: isUserLogined,
-    isExceededShopPromotionMaxNum: isExceededShopPromotionMaxNum
+    isExceededShopPromotionMaxNum: isExceededShopPromotionMaxNum,
+    userOwnedShopInfo: userOwnedShopInfo
   }
 }
 
@@ -147,14 +154,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(20),
-      },
-      android: {
-        marginTop: normalizeH(0)
-      }
-    }),
+    marginTop: normalizeH(20),
   },
   logo: {
     marginTop: normalizeH(85),
@@ -185,13 +185,6 @@ const styles = StyleSheet.create({
     padding: normalizeH(12),
   },
   closeView: {
-    ...Platform.select({
-      ios: {
-        height: normalizeH(60),
-      },
-      android: {
-        height: normalizeH(80),
-      }
-    }),
+    height: normalizeH(60),
   },
 })

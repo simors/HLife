@@ -92,14 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(65),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
+    marginTop: normalizeH(65),
     flex: 1,
   },
   btn: {

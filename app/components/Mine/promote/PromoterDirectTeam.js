@@ -40,22 +40,35 @@ class PromoterDirectTeam extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       this.props.getMyUpPromoter()
-      this.props.getMyPromoterTeam({limit: 10})
+      this.refreshData()
     })
   }
 
   refreshData() {
-    InteractionManager.runAfterInteractions(()=>{
-      this.props.getMyPromoterTeam({limit: 10})
-    })
+    this.loadMoreData(true)
   }
 
-  loadMoreData() {
+  loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
     InteractionManager.runAfterInteractions(()=>{
       this.props.getMyPromoterTeam({
         limit: 10,
-        more: true,
-        lastUpdatedAt: this.lastUpdatedAt,
+        more: !isRefresh,
+        lastUpdatedAt: !!isRefresh ? undefined : this.lastUpdatedAt,
+        success: (isEmpty) => {
+          this.isQuering = false
+          if(!this.listView) {
+            return
+          }
+          this.listView.isLoadUp(!isEmpty)
+        },
+        error: (message) => {
+          this.isQuering = false
+        }
       })
     })
   }
@@ -157,7 +170,7 @@ class PromoterDirectTeam extends Component {
               this.refreshData()
             }}
             loadMoreData={()=> {
-              this.loadMoreData()
+              this.loadMoreData(false)
             }}
             ref={(listView) => this.listView = listView}
           />
@@ -220,14 +233,7 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(5)
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     width: PAGE_WIDTH,
     backgroundColor: '#FFF',

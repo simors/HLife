@@ -13,6 +13,17 @@ PODS:
   - RNDeviceInfo (0.9.3):
     - React
   - RSKImageCropper (1.6.0)
+  - UMengUShare/Core (6.4.2):
+    - UMengUShare/Network
+  - UMengUShare/Network (6.4.2)
+  - UMengUShare/Social/ReducedQQ (6.4.2):
+    - UMengUShare/Core
+  - UMengUShare/Social/ReducedSina (6.4.2):
+    - UMengUShare/Core
+  - UMengUShare/Social/ReducedWeChat (6.4.2):
+    - UMengUShare/Core
+  - UMengUShare/UI (6.4.2):
+    - UMengUShare/Core
 
 DEPENDENCIES:
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
@@ -22,6 +33,10 @@ DEPENDENCIES:
   - React (from `../node_modules/react-native`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RSKImageCropper
+  - UMengUShare/Social/ReducedQQ
+  - UMengUShare/Social/ReducedSina
+  - UMengUShare/Social/ReducedWeChat
+  - UMengUShare/UI
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -38,7 +53,8 @@ SPEC CHECKSUMS:
   React: 3cdd13d7c8f6ad5c20216aa83e032f0ce4087944
   RNDeviceInfo: dc3cbee96cd2392cf03d6ff6191dc15f1606a166
   RSKImageCropper: 6903235c7a8a79acb1e1f3490e2c911b858f8208
+  UMengUShare: 740664d1dd5cc2fb2cc3325d61e4b35539aa9c78
 
-PODFILE CHECKSUM: 41c0691eee8fc22e70daa9746730f5500faaa6fc
+PODFILE CHECKSUM: bb51249a673c6d6e5b162c789dafe4fb151aa307
 
 COCOAPODS: 1.2.0

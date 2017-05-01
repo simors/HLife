@@ -21,13 +21,14 @@ import {
   Image,
   Platform,
   InteractionManager,
-  StatusBar
+  StatusBar,
+  Linking,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {getBanner, selectShopCategories, getTopicCategories} from '../../selector/configSelector'
-import {fetchBanner, fetchShopCategories, getAllTopicCategories} from '../../action/configAction'
+import {getBanner, selectShopCategories, getTopicCategories,getNoUpdateVersion} from '../../selector/configSelector'
+import {fetchBanner, fetchShopCategories, getAllTopicCategories,fetchAppNoUpdate} from '../../action/configAction'
 import {getCurrentLocation} from '../../action/locAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -49,7 +50,17 @@ import * as Toast from '../common/Toast'
 import {selectShopPromotionList} from '../../selector/shopSelector'
 import {fetchShopPromotionList, clearShopPromotionList} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
+import codePush from 'react-native-code-push'
+import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
+import {checkUpdate} from '../../api/leancloud/update'
+import Popup from '@zzzkk2009/react-native-popup'
 
+
+const RNDeviceInfo = NativeModules.RNDeviceInfo
+
+// require("NSBundle");
+
+// const version = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString");
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -57,7 +68,7 @@ class Home extends Component {
 
   constructor(props) {
     super(props)
-
+    // console.log('my version',version)
     this.state = {
       searchForm: {
         distance: 5,
@@ -68,10 +79,76 @@ class Home extends Component {
     }
   }
 
+  checkIosUpdate(){
+    // console.log('jhahahah',CommonNative)
+    let platform = Platform.OS
+    if(platform==='ios'){
+      fetch('https://itunes.apple.com/lookup?id=1224852246',{
+        method:'POST'
+      }).then((data)=>{
+        data.json().then((result)=>{
+          // console.log('data',data)
+          // console.log('result',result.results[0].version)
+          // console.log('data',RNDeviceInfo.appVersion)
+          let version = result.results[0].version
+          if(version>RNDeviceInfo.appVersion){
+            if(result.version>this.props.noUpdateVersion) {
+
+              this.isUpdate(result.results[0])
+            }
+          }
+        })
+
+
+      })
+    }else if (platform==='android'){
+      checkUpdate().then((result)=>{
+        // console.log('result',result)
+        // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
+
+        if(result.version>RNDeviceInfo.appVersion){
+          // console.log('what wronghahahahahhaha',result.version,this.props.noUpdateVersion)
+
+          if(result.version>this.props.noUpdateVersion){
+            // console.log('what wrong',result.version,this.props.noUpdateVersion)
+            this.isUpdate({trackViewUrl:result.fileUrl})
+          }else {
+            // console.log('here is right',result.version,this.props.noUpdateVersion)
+
+          }
+
+       }
+      })
+    }
+
+  }
+
+  isUpdate(result) {
+    Popup.confirm({
+      title: '版本更新',
+      content: '是否更新？',
+      ok: {
+        text: '更新',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+          // url='https://itunes.apple.com/app/id=1224852246'
+          // console.log('result.trackViewUrl',result.trackViewUrl)
+          let url= result.trackViewUrl
+          Linking.openURL(url).catch(err => console.error('An error occurred', err));
+        }
+      },
+      cancel: {
+        text: '以后',
+        callback: ()=> {
+          // console.log('cancel',result.version)
+          this.props.fetchAppNoUpdate({noUpdateVersion:result.version})
+        }
+      }
+    })
+  }
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
-      console.log('componentWillMount.refreshData')
       this.refreshData()
     })
   }
@@ -88,6 +165,9 @@ class Home extends Component {
         }
       })
     }
+    // codePush.sync()
+    this.checkIosUpdate()
+    // codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
   }
   
   componentWillReceiveProps(nextProps) {
@@ -221,14 +301,14 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar hidden={false} barStyle="dark-content"/>
+        <StatusBar hidden={false} translucent={true} backgroundColor="transparent" barStyle="dark-content"/>
         <Header
           leftType="image"
           leftImageSource={require("../../assets/images/location.png")}
           leftImageLabel={this.props.city}
           leftPress={() => {
           }}
-          title="邻家优店"
+          title="汇邻优店"
           rightComponent={() => {
             return <MessageBell />
           }}
@@ -236,12 +316,12 @@ class Home extends Component {
 
         <View style={styles.body}>
           <View style={{flex:1}}>
+            {/*<Text style={{fontSize:em(20)}}>看看能不能更新</Text>*/}
             <CommonListView
               contentContainerStyle={{backgroundColor: '#F5F5F5'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
               loadNewData={()=> {
-                console.log('CommonListView.loadNewData')
                 this.refreshData()
               }}
               loadMoreData={()=> {
@@ -296,8 +376,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const allShopCategories = selectShopCategories(state)
-  // console.log('Home.allShopCategories*********>>>>>>>>>>>', allShopCategories)
-  
+  const noUpdateVersion = getNoUpdateVersion(state)
+  // console.log('Home.allShopCategories*********>>>>>>>>>>>', noUpdateVersion)
+
   return {
     // announcement: announcement,
     banner: banner,
@@ -308,6 +389,7 @@ const mapStateToProps = (state, ownProps) => {
     nextSkipNum: nextSkipNum,
     shopPromotionList: shopPromotionList,
     allShopCategories: allShopCategories,
+    noUpdateVersion:noUpdateVersion,
   }
 }
 
@@ -318,6 +400,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionList,
   clearShopPromotionList,
   fetchShopCategories,
+  fetchAppNoUpdate
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
@@ -331,14 +414,7 @@ const styles = StyleSheet.create({
     paddingBottom: 49
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     marginBottom: 42
   },

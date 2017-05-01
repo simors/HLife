@@ -74,14 +74,7 @@ export default class CommonModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...Platform.select({
-      ios: {
-        paddingTop: normalizeH(100),
-      },
-      android: {
-        paddingTop: normalizeH(80)
-      }
-    }),
+    paddingTop: normalizeH(100),
   },
   modalCntTitleWrap: {
     height: normalizeH(67),

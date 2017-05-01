@@ -230,7 +230,7 @@ class ShopManageIndex extends Component {
       return (
         <View style={styles.commentWrap}>
           <View style={styles.commentHead}>
-            <Text style={styles.commentTitle}>吾友点评（{this.props.shopCommentsTotalCount}）</Text>
+            <Text style={styles.commentTitle}>邻友点评（{this.props.shopCommentsTotalCount}）</Text>
           </View>
           {commentsView}
           <View style={styles.commentFoot}>
@@ -512,15 +512,8 @@ const styles = StyleSheet.create({
   headerContainerStyle: {
     borderBottomWidth: 0,
     backgroundColor: THEME.colors.green,
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-        height: 64
-      },
-      android: {
-        height: 44
-      }
-    }),
+    paddingTop: 20,
+    height: 64,
   },
   headerLeftStyle: {
     color: '#fff',
@@ -533,14 +526,7 @@ const styles = StyleSheet.create({
     fontSize: em(12)
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: 64,
-      },
-      android: {
-        marginTop: 44
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
   },
   contentContainerStyle: {

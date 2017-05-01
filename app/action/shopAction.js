@@ -11,6 +11,7 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
+import {trim} from '../util/Utils'
 
 export function clearShopList(payload) {
   return (dispatch, getState) => {
@@ -96,16 +97,16 @@ export function fetchUserFollowShops(payload) {
   return (dispatch, getState) => {
     lcShop.fetchUserFollowShops(payload).then((results) =>{
       let actionType = ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_LIST_SUCCESS
-      if(!payload.isRefresh) {
+      if(payload && !payload.isRefresh) {
         actionType = ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_PAGING_LIST_SUCCESS
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction(results))
-      if(payload.success){
+      if(payload && payload.success){
         payload.success(results.userFollowedShops.size <= 0)
       }
     }).catch((error) => {
-      if(payload.error){
+      if(payload && payload.error){
         payload.error(error)
       }
     })
@@ -168,6 +169,7 @@ export function followShop(payload) {
         let params = {
           shopId: payload.id
         }
+        // console.log('followShop==params==', params)
         dispatch(msgAction.notifyShopFollow(params))
         if(payload.success){
           payload.success(result)
@@ -628,11 +630,11 @@ export function submitShopPromotion(payload) {
         shopId: payload.shopId,
         shopPromotionId: payload.shopPromotionId,
         status: payload.status,
-        abstract: payload.abstract,
+        abstract: trim(payload.abstract),
         coverUrl: results.coverUrl,
         originalPrice: payload.originalPrice,
         promotingPrice: payload.promotingPrice,
-        title: payload.title,
+        title: trim(payload.title),
         type: payload.type,
         typeDesc: payload.typeDesc,
         typeId: payload.typeId,
@@ -645,6 +647,15 @@ export function submitShopPromotion(payload) {
         if(payload.success){
           payload.success(result)
         }
+        let params = {
+          shopId: payload.shopId,
+          shopPromotionId: payload.shopPromotionId,
+          shopPromotionCoverUrl: results.coverUrl,
+          shopPromotionTitle: trim(payload.title),
+          shopPromotionType: payload.type,
+          shopPromotionTypeDesc: payload.typeDesc,
+        }
+        dispatch(msgAction.notifyPublishShopPromotion(params))
       }).catch((error) => {
         // console.log('submitShopPromotion==error==>>>', error)
         if(payload.error){
@@ -723,6 +734,34 @@ export function unregistShop(payload) {
       }
     }).catch(error=>{
       if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchSharePromotionUrl(payload) {
+  return (dispatch, getState) => {
+    lcShop.getShopPromotionUrl(payload).then((result) => {
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function updateShopInfoAfterPaySuccess(payload) {
+  return (dispatch, getState) => {
+    lcShop.updateShopInfoAfterPaySuccess(payload).then((successed)=> {
+      if (payload.success) {
+        payload.success(successed)
+      }
+    }).catch(error=> {
+      if (payload.error) {
         payload.error(error)
       }
     })

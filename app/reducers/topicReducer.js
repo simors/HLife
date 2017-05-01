@@ -15,6 +15,10 @@ export default function topicReducer(state = initialState, action) {
       return handleUpdateTopics(state, action)
     case TopicTypes.UPDATE_TOPIC_COMMENTS:
       return handleUpdateTopicComments(state, action)
+    case TopicTypes.FETCH_TOPIC_COMMENTS_SUCCESS:
+      return handleFetchTopicCommentsSuccess(state, action)
+    case TopicTypes.FETCH_TOPIC_COMMENTS_SUCCESS_PAGING:
+      return handleFetchTopicCommentsSuccessPaging(state, action)  
     case TopicTypes.FETCH_TOPIC_LIKES_TOTAL_COUNT_SUCCESS:
       return handleUpdateTopicLikesTotalCount(state, action)
     case TopicTypes.FETCH_TOPIC_IS_LIKED_SUCCESS:
@@ -23,6 +27,10 @@ export default function topicReducer(state = initialState, action) {
       return handleAddTopicComment(state, action)
     case TopicTypes.UPDATE_TOPIC_LIKE_USERS:
       return handleUpdateTopicLikeUsers(state, action)
+    case TopicTypes.FETCH_TOPIC_LIKE_USERS_SUCCESS:
+      return handleFetchTopicLikeUsersSuccess(state, action)  
+    case TopicTypes.FETCH_TOPIC_LIKE_USERS_SUCCESS_PAGING:
+      return handleFetchTopicLikeUsersSuccessPaging(state, action)    
     case TopicTypes.ADD_TOPIC:
       return handleAddTopic(state, action)
     case TopicTypes.UPDATE_TOPIC:
@@ -38,6 +46,50 @@ export default function topicReducer(state = initialState, action) {
     default:
       return state
   }
+}
+
+function handleFetchTopicLikeUsersSuccess(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let topicLikeUsers = payload.topicLikeUsers
+  state = state.setIn(['TopicLikeUsers', topicId], topicLikeUsers)
+  return state
+}
+
+function handleFetchTopicLikeUsersSuccessPaging(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let topicLikeUsers = payload.topicLikeUsers
+  let oldTopicLikeUsers = state.getIn(['TopicLikeUsers', topicId])
+  let newTopicLikeUsers = newTopicLikeUsers || new List([])
+  if(oldTopicLikeUsers && oldTopicLikeUsers.size) {
+    newTopicLikeUsers = oldTopicLikeUsers.concat(topicLikeUsers)
+  }
+  state = state.setIn(['TopicLikeUsers', topicId], newTopicLikeUsers)
+  return state
+}
+
+function handleFetchTopicCommentsSuccess(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let topicComments = payload.topicComments
+  state = state.setIn(['topicComments', topicId], topicComments)
+  return state
+}
+
+function handleFetchTopicCommentsSuccessPaging(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let topicComments = payload.topicComments
+  let oldTopicComments = state.getIn(['topicComments', topicId])
+  let newTopicComments = new List([])
+  if(oldTopicComments && oldTopicComments.size) {
+    newTopicComments = oldTopicComments.concat(topicComments)
+  }else{
+    newTopicComments = oldTopicComments
+  }
+  state = state.setIn(['topicComments', topicId], newTopicComments)
+  return state
 }
 
 function handleFetchUserTopicsTotalCountSuccess(state, action) {

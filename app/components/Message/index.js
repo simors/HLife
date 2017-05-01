@@ -11,6 +11,8 @@ import {
   Platform,
   TouchableOpacity,
   ScrollView,
+  ListView,
+  InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -18,10 +20,17 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import * as msgTypes from '../../constants/messageActionTypes'
-import {hasNewMessageByType, getNewestMessageByType} from '../../selector/messageSelector'
+import {hasNewMessageByType, getNewestMessageByType, getOrderedConvsByType} from '../../selector/messageSelector'
 import {hasNewNoticeByType, getNewestNoticeByType} from '../../selector/notifySelector'
 import * as pushSelector from '../../selector/pushSelector'
 import {updateSystemNotice, updateSystemNoticeAsMarkReaded} from '../../action/pushAction'
+import Icon from 'react-native-vector-icons/Ionicons'
+import CommonListView from '../common/CommonListView'
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import {fetchConversation} from '../../action/messageAction'
+import ConversationItem from './ConversationItem'
+import {isUserLogined} from '../../selector/authSelector'
+import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -30,21 +39,33 @@ const PERSONAL = 'PERSONAL'
 const TOPIC = 'TOPIC'
 const SHOP = 'SHOP'
 const SYSTEM = 'SYSTEM'
+const PROMOTE = 'PROMOTE'
 
 class MessageBox extends Component {
   constructor(props) {
     super(props)
+
+    this.oldChatMessageSoundOpen = true
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(() => {
+      // console.log('MessageBox=========componentWillMount-----------')
+      this.refreshData()
+    })
+  }
+
+  componentDidMount() {
+    this.oldChatMessageSoundOpen = global.chatMessageSoundOpen
+    global.chatMessageSoundOpen = false
+  }
+
+  componentWillUnmount() {
+    global.chatMessageSoundOpen = this.oldChatMessageSoundOpen
   }
 
   renderNoticeTip(type) {
     switch (type) {
-      case INQUIRY:
-        if (this.props.newInquiry) {
-          return (
-            <View style={styles.noticeTip}></View>
-          )
-        }
-        break
       case PERSONAL:
         if (this.props.newPersonalLetter) {
           return (
@@ -66,59 +87,16 @@ class MessageBox extends Component {
           )
         }
         break
+    case PROMOTE:
+      if (this.props.newPromoteNotice) {
+        return (
+          <View style={styles.noticeTip}></View>
+        )
+      }
+      break  
       default:
         return <View/>
     }
-  }
-
-  renderInquiryMessage() {
-    return (
-      <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.INQUIRY_MESSAGE_BOX()}>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <View style={styles.noticeIconView}>
-              <Image style={styles.noticeIcon} source={require('../../assets/images/notice_question.png')}></Image>
-              {this.renderNoticeTip(INQUIRY)}
-            </View>
-            <View style={{flex: 1}}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.titleStyle}>问诊</Text>
-                <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>{this.props.lastInquiryMsg.lastMessageAt}</Text>
-              </View>
-              <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastInquiryMsg.lastMessage}</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  renderPersonalMessage() {
-    return (
-      <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PRIVATE_MESSAGE_BOX()}>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <View style={styles.noticeIconView}>
-              <Image style={styles.noticeIcon} source={require('../../assets/images/notice_message.png')}></Image>
-              {this.renderNoticeTip(PERSONAL)}
-            </View>
-            <View style={{flex: 1}}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.titleStyle}>私信</Text>
-                <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>{this.props.lastPersonalMsg.lastMessageAt}</Text>
-              </View>
-              <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastPersonalMsg.lastMessage}</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
   }
 
   renderTopicMessage() {
@@ -141,6 +119,9 @@ class MessageBox extends Component {
               </View>
             </View>
           </View>
+          <Icon
+            name="ios-arrow-forward"
+            style={{marginLeft:6,marginRight:15,color:'#f5f5f5',fontSize:20}}/>
         </TouchableOpacity>
       </View>
     )
@@ -166,6 +147,9 @@ class MessageBox extends Component {
               </View>
             </View>
           </View>
+          <Icon
+            name="ios-arrow-forward"
+            style={{marginLeft:6,marginRight:15,color:'#f5f5f5',fontSize:20}}/>
         </TouchableOpacity>
       </View>
     )
@@ -177,7 +161,7 @@ class MessageBox extends Component {
         <TouchableOpacity style={styles.selectItem} onPress={() => {this.gotoSystemNoticeList()}}>
           <View style={{flex: 1, flexDirection: 'row'}}>
             <View style={styles.noticeIconView}>
-              <Image style={styles.noticeIcon} source={require('../../assets/images/System_notice.png')}></Image>
+              <Image style={styles.noticeIcon} source={require('../../assets/images/notice_system.png')}></Image>
               {!this.props.newestSystemNotice.hasReaded && this.props.newestSystemNotice.message_title &&
                 <View style={styles.noticeTip}></View>
               }
@@ -193,9 +177,121 @@ class MessageBox extends Component {
               </View>
             </View>
           </View>
+          <Icon
+            name="ios-arrow-forward"
+            style={{marginLeft:6,marginRight:15,color:'#f5f5f5',fontSize:20}}/>
         </TouchableOpacity>
       </View>
     )
+  }
+
+  renderPromoteMessage() {
+    return (
+      <View style={styles.itemView}>
+        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PRIVATE_MESSAGE_BOX()}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={styles.noticeIconView}>
+              <Image style={styles.noticeIcon} source={require('../../assets/images/notice_profit.png')}></Image>
+              {this.renderNoticeTip(PROMOTE)}
+            </View>
+            <View style={{flex: 1}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.titleStyle}>推广收益</Text>
+              </View>
+              <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
+                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastPersonalMsg.lastMessage}</Text>
+              </View>
+            </View>
+          </View>
+          <Icon
+            name="ios-arrow-forward"
+            style={{marginLeft:6,marginRight:15,color:'#f5f5f5',fontSize:20}}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderCustomColumn() {
+    return (
+      <View key="custom-column" style={{flex:1}}>
+        {this.renderTopicMessage()}
+        {this.renderShopMessage()}
+        {this.renderSystemMessage()}
+        {/*this.renderPromoteMessage()*/}
+      </View>
+    )
+  }
+
+  renderPrivateMessageList() {
+    const privateConversations = this.props.privateConversations
+
+    let privateConversationsView = <View/>
+    if(privateConversations && privateConversations.length) {
+      privateConversationsView = privateConversations.map((conversation, index)=>{
+        return (
+          <View key={'private-message-' + index}>
+            <ConversationItem conversation={conversation} />
+          </View>
+        )
+      })
+    }
+
+    return (
+      <View style={{flex:1}}>
+        {privateConversationsView}
+      </View>
+    )
+  }
+
+  renderRow(rowData, rowId) {
+    switch (rowData.type) {
+      case 'CUSTOM_COLUMN':
+        return this.renderCustomColumn()
+      case 'PRIVATE_MESSAGE':
+        return this.renderPrivateMessageList()
+      default:
+        return <View />
+    }
+  }
+
+  refreshData() {
+    this.loadMoreData(true)
+  }
+
+  loadMoreData(isRefresh) {
+    // console.log('loadMoreData.isRefresh=====', isRefresh)
+    // console.log('loadMoreData.this.props.lastUpdatedAt=====', this.props.lastUpdatedAt)
+    if(!isRefresh && !this.props.lastUpdatedAt) {
+      return
+    }
+
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
+    let payload = {
+      isRefresh: !!isRefresh,
+      lastUpdatedAt: this.props.lastUpdatedAt,
+      type: PERSONAL_CONVERSATION,
+      success: (isEmpty) => {
+        this.isQuering = false
+        if(!this.listView) {
+          return
+        }
+        // console.log('loadMoreData.isEmpty=====', isEmpty)
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchConversation(payload)
   }
 
   render() {
@@ -204,16 +300,23 @@ class MessageBox extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+              Actions.pop()
+            }}
           title="消息通知"
         />
         <View style={styles.itemContainer}>
-          <ScrollView style={{height: PAGE_HEIGHT}}>
-            {this.renderPersonalMessage()}
-            {this.renderTopicMessage()}
-            {this.renderShopMessage()}
-            {this.renderSystemMessage()}
-          </ScrollView>
+          <CommonListView
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
+            ref={(listView) => this.listView = listView}
+          />
         </View>
       </View>
     )
@@ -230,8 +333,6 @@ class MessageBox extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
-  let newInquiry = hasNewMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
-  let lastInquiryMsg = getNewestMessageByType(state, msgTypes.INQUIRY_CONVERSATION)
   let newPersonalLetter = hasNewMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
   let lastPersonalMsg = getNewestMessageByType(state, msgTypes.PERSONAL_CONVERSATION)
   let newTopicNotice = hasNewNoticeByType(state, msgTypes.TOPIC_TYPE)
@@ -240,14 +341,38 @@ const mapStateToProps = (state, ownProps) => {
   let lastShopNoticeMsg = getNewestNoticeByType(state, msgTypes.SHOP_TYPE)
   let systemNoticeList = pushSelector.selectSystemNoticeList(state)
 
+  let privateConversations = getOrderedConvsByType(state, PERSONAL_CONVERSATION)
+  // console.log('privateConversations=======', privateConversations)
+
+  let lastUpdatedAt = ''
+  if(privateConversations && privateConversations.length) {
+    lastUpdatedAt = privateConversations[privateConversations.length - 1].updatedAt
+  }
+
   let newestSystemNotice = {}
   if(systemNoticeList && systemNoticeList.length) {
     newestSystemNotice = systemNoticeList[0]
   }
   // console.log('systemNoticeList--->>>>>', systemNoticeList)
 
-  newProps.newInquiry = newInquiry
-  newProps.lastInquiryMsg = lastInquiryMsg
+  let ds = undefined
+  if (ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+
+  let dataArray = []
+  dataArray.push({type: 'CUSTOM_COLUMN'})
+  dataArray.push({type: 'PRIVATE_MESSAGE'})
+
+  newProps.ds = ds.cloneWithRows(dataArray)
+
+  newProps.privateConversations = privateConversations
+  newProps.lastUpdatedAt = lastUpdatedAt
+
   newProps.newPersonalLetter = newPersonalLetter
   newProps.lastPersonalMsg = lastPersonalMsg
   newProps.newTopicNotice = newTopicNotice
@@ -258,7 +383,8 @@ const mapStateToProps = (state, ownProps) => {
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  updateSystemNoticeAsMarkReaded
+  updateSystemNoticeAsMarkReaded,
+  fetchConversation
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBox)
@@ -268,15 +394,9 @@ const styles = StyleSheet.create({
     flex: 1
   },
   itemContainer: {
+    flex:1,
     width: PAGE_WIDTH,
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(65),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
+    marginTop: normalizeH(65),
   },
   itemView: {
     borderBottomWidth: 1,

@@ -88,6 +88,7 @@ class Mine extends Component {
               city: userOwnedShopInfo.geoCity,
               success: (tenant) =>{
                 Actions.PAYMENT({
+                  metadata: {'shopId':userOwnedShopInfo.id, 'tenant': tenant, 'user': this.props.userInfo.id},
                   price: tenant,
                   paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
                   paySuccessJumpSceneParams: {
@@ -129,7 +130,11 @@ class Mine extends Component {
           Actions.PROMOTER_PERFORMANCE()
         }
       } else {
-        Actions.PAYMENT({title: '支付推广员注册费', price: this.props.fee})
+        Actions.PAYMENT({
+          title: '支付推广员注册费',
+          price: this.props.fee,
+          metadata: {'promoterId': this.props.promoter.id, 'user': this.props.userInfo.id},
+        })
       }
     } else {
       Actions.PROMOTER_AUTH()
@@ -139,10 +144,8 @@ class Mine extends Component {
   genPersonalQRCode() {
     let userInfo = {
       userId: this.props.userInfo.id,
-      nickname: this.props.userInfo.nickname,
-      avatar: this.props.userInfo.avatar,
     }
-    Actions.GEN_PERSONALQR({data: userInfo})
+    Actions.GEN_PERSONALQR({data: userInfo, avatar: this.props.userInfo.avatar})
   }
 
   renderToolView() {
@@ -151,10 +154,17 @@ class Mine extends Component {
         <View style={{marginRight: normalizeW(20)}}>
           <TouchableOpacity onPress={() => {
             Actions.QRCODEREADER({
-              readQRSuccess: (userInfo) => {
-                let user = JSON.parse(userInfo)
-                let userId = user.userId
-                Actions.PERSONAL_HOMEPAGE({userId: userId})
+              readQRSuccess: (QRData) => {
+                if (QRData.startsWith('http') || QRData.startsWith('https')) {
+                  Actions.COMMON_WEB_VIEW({url: QRData})
+                  return
+                }
+                let data = JSON.parse(QRData)
+                let userId = data.userId
+                if (userId) {
+                  Actions.PERSONAL_HOMEPAGE({userId: userId})
+                  return
+                }
               }
             })
           }}>
@@ -267,6 +277,14 @@ class Mine extends Component {
     return (
       <View style={{marginTop: normalizeH(15)}}>
         <View style={styles.memuItemView}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.MESSAGE_BOX()}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/message_24.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>消息中心</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {this.shopManage()}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_shop.png')} />
@@ -377,24 +395,10 @@ const styles = StyleSheet.create({
   },
   header: {
     width: PAGE_WIDTH,
-    ...Platform.select({
-      ios: {
-        height: normalizeH(217)
-      },
-      android: {
-        height: normalizeH(197)
-      },
-    }),
+    height: normalizeH(217),
   },
   toolView: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(20)
-      },
-      android: {
-        marginTop: normalizeH(0)
-      },
-    }),
+    marginTop: normalizeH(20),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',

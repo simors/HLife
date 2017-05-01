@@ -80,7 +80,7 @@ class MessageBoxCell extends Component {
           return <View/>
         }
         return (
-          <View>
+          <View key={'msg-box-cell-img-icon-', + index}>
             <Image style={{width: size, height: size}}
                    source={this.props.users[index].avatar? {uri: this.props.users[index].avatar} : require("../../assets/images/default_portrait.png")}>
             </Image>

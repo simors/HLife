@@ -101,14 +101,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: PAGE_WIDTH,
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(65),
-      },
-      android: {
-        marginTop: normalizeH(45)
-      }
-    }),
+    marginTop: normalizeH(65),
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
   itemHeader: {

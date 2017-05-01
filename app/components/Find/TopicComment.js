@@ -34,10 +34,10 @@ export class TopicComment extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topicComment'})
-      if( this.props.isLogin ) {
-        this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topicComment'})
-      }
+      // this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType:'topicComment'})
+      // if( this.props.isLogin ) {
+      //   this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topicComment'})
+      // }
     })
   }
 
@@ -103,10 +103,11 @@ export class TopicComment extends Component {
 
           <View style={styles.timeLocationStyle}>
             <Text style={styles.timeTextStyle}>{getConversationTime(this.props.topic.createdAt)}</Text>
-            <Image style={styles.positionStyle} source={require("../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.timeTextStyle}>{this.props.topic.position? this.props.topic.position.city+this.props.topic.position.district:"未知"}</Text>
+            <Image style={styles.positionStyle} resizeMode='contain' source={require("../../assets/images/writer_loaction.png")}/>
+            <Text style={styles.timeTextStyle}>{this.props.topic.position? this.props.topic.position.city:"未知"}</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
               <Image style={styles.likeImageStyle}
+                     resizeMode='contain'
                      source={this.props.isLiked ?
                        require("../../assets/images/like_selected.png") :
                        require("../../assets/images/like_unselect.png")}/>
@@ -115,7 +116,7 @@ export class TopicComment extends Component {
             <TouchableOpacity style={styles.commentStyle} onPress={()=> {
               this.props.onCommentButton(this.props.topic)
             }}>
-              <Image style={styles.commentImageStyle} source={require("../../assets/images/comments_unselect.png")}/>
+              <Image style={styles.commentImageStyle} resizeMode='contain' source={require("../../assets/images/comments_unselect.png")}/>
               <Text style={styles.commentTextStyle}>回复</Text>
             </TouchableOpacity>
           </View>
@@ -261,7 +262,8 @@ const styles = StyleSheet.create({
   timeLocationStyle: {
     marginTop: normalizeH(14),
     marginBottom: normalizeH(15),
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   timeTextStyle: {
     marginRight: normalizeW(26),

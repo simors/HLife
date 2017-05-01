@@ -49,6 +49,7 @@ import {fetchShopCategories} from '../../../action/configAction'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Toast from '../../common/Toast'
 import Loading from '../../common/Loading'
+import * as AVUtils from '../../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -82,10 +83,11 @@ const servicePhone2Input = {
   stateKey: Symbol('servicePhone2Input'),
   type: "servicePhone2Input",
   checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '备用电话为空'}
+    return {isVal: true, errMsg: '验证通过'}
+    // if (data && data.text && data.text.length > 0) {
+    //   return {isVal: true, errMsg: '验证通过'}
+    // }
+    // return {isVal: false, errMsg: '备用电话为空'}
   },
 }
 const ourSpecialInput = {
@@ -241,13 +243,15 @@ class CompleteShopInfo extends Component {
         Toast.show('更新店铺资料成功', {
           duration: 1500,
           onHidden: () =>{
-            if(this.props.popNum && this.props.popNum > 1) {
-              Actions.pop({
-                popNum: this.props.popNum
-              })
-            }else {
-              Actions.pop()
-            }
+            AVUtils.switchTab('MINE')
+
+            // if(this.props.popNum && this.props.popNum > 1) {
+            //   Actions.pop({
+            //     popNum: this.props.popNum
+            //   })
+            // }else {
+            //   Actions.pop()
+            // }
           }
         })
       },
@@ -353,7 +357,9 @@ class CompleteShopInfo extends Component {
     // }else {
     //   Actions.pop()
     // }
-    Actions.MINE()
+    // Actions.MINE()
+
+    AVUtils.switchTab('MINE')
   }
 
   editShopCover(){
@@ -383,6 +389,7 @@ class CompleteShopInfo extends Component {
     if(this.props.userOwnedShopInfo.targetShopCategory) {
       targetShopCategory = this.props.userOwnedShopInfo.targetShopCategory
     }
+    console.log('targetShopCategory===', targetShopCategory)
 
     return (
       <View style={styles.container}>
@@ -402,6 +409,7 @@ class CompleteShopInfo extends Component {
             automaticallyAdjustContentInsets={false}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}
+            keyboardShouldPersistTaps={true}
           >
             <View style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
@@ -453,27 +461,22 @@ class CompleteShopInfo extends Component {
                   <Text style={styles.inputLabel}>店铺类型</Text>
                 </View>
                 <View style={[styles.inputBox, styles.selectBox]}>
-                  {targetShopCategory.id
-                    ? <View style={styles.inputInnerBox}>
-                        <Text style={styles.inputInnerStyle}>{targetShopCategory.text}</Text>
-                      </View>
-                    : <SelectInput
-                        {...shopCategoryInput}
-                        show={this.state.selectShow}
-                        onPress={(e)=>this._onSelectPress(e)}
-                        style={{}}
-                        styleOption={{height:50}}
-                        selectRef="SELECT"
-                        overlayPageX={0}
-                        overlayPageY={this.state.optionListPos}
-                        optionListHeight={240}
-                        optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
-                        defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
-                        defaultValue={targetShopCategory.id}
-                        onSelect={this._onSelectShopCategory.bind(this)}>
-                        {this.renderShopCategoryOptions()}
-                      </SelectInput>
-                  }
+                  <SelectInput
+                    {...shopCategoryInput}
+                    show={this.state.selectShow}
+                    onPress={(e)=>this._onSelectPress(e)}
+                    style={{}}
+                    styleOption={{height:50}}
+                    selectRef="SELECT"
+                    overlayPageX={0}
+                    overlayPageY={this.state.optionListPos}
+                    optionListHeight={240}
+                    optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
+                    defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
+                    defaultValue={targetShopCategory.id}
+                    onSelect={this._onSelectShopCategory.bind(this)}>
+                    {this.renderShopCategoryOptions()}
+                  </SelectInput>
                 </View>
               </View>
 
@@ -487,6 +490,7 @@ class CompleteShopInfo extends Component {
                     onPress={()=>{this.toggleShopTagsSelectShow()}}
                     tags={this.state.selectedShopTags}
                     containerStyle={{height:50}}
+                    noCheckInput={true}
                   />
                 </View>
               </View>
@@ -621,15 +625,8 @@ const styles = StyleSheet.create({
   headerContainerStyle: {
     borderBottomWidth: 0,
     backgroundColor: THEME.colors.green,
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-        height: 64
-      },
-      android: {
-        height: 44
-      }
-    }),
+    paddingTop: 20,
+    height: 64,
   },
   headerLeftStyle: {
     color: '#fff',
@@ -649,14 +646,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: 64,
-      },
-      android: {
-        marginTop: 44
-      }
-    }),
+    marginTop: 64,
     flex: 1,
   },
   inputsWrap: {

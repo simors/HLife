@@ -104,15 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   closeTop:{
-
-    ...Platform.select({
-      ios: {
-        height: normalizeH(483),
-      },
-      android: {
-        height: normalizeH(463)
-      }
-  }),
+    height: normalizeH(483),
     backgroundColor:'rgba(0, 0, 0, 0.3)'
 },columnWrap:{
   paddingTop:normalizeH(20),

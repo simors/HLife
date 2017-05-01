@@ -24,7 +24,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
-import {fetchShopPromotionDetail, fetchUserOwnedShopInfo} from '../../action/shopAction'
+import {fetchShopPromotionDetail, fetchUserOwnedShopInfo, fetchSharePromotionUrl} from '../../action/shopAction'
 import {selectShopPromotionDetail} from '../../selector/shopSelector'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
@@ -81,6 +81,26 @@ class ShopPromotionDetail extends Component {
     Actions.CHATROOM(payload)
   }
 
+  submitSuccessCallback = (result) => {
+    Actions.SHARE({
+      title: this.props.shopPromotionDetail.title,
+      url: result.url,
+      author: this.props.shopPromotionDetail.targetShop.shopName,
+      abstract: this.props.shopPromotionDetail.abstract,
+      cover: this.props.shopPromotionDetail.coverUrl,
+    })
+  }
+
+  submitErrorCallback = (error) => {
+    Toast.show(error.message)
+  }
+  onShare = () => {
+    this.props.fetchSharePromotionUrl({
+      shopPromotionId: this.props.id,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback,
+    })
+  }
 
   render() {
     let shopPromotionDetail = this.props.shopPromotionDetail
@@ -96,7 +116,7 @@ class ShopPromotionDetail extends Component {
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightComponent={()=>{
             return (
-              <TouchableOpacity onPress={()=>{}} style={{marginRight:10}}>
+              <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
                 <Image source={require('../../assets/images/active_share.png')}/>
               </TouchableOpacity>
             )
@@ -153,7 +173,7 @@ class ShopPromotionDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const shopPromotionDetail = selectShopPromotionDetail(state, ownProps.id)
-  // console.log('shopPromotionDetail=====>>>>>', shopPromotionDetail)
+  console.log('shopPromotionDetail=====>>>>>', shopPromotionDetail)
   const isUserLogined = authSelector.isUserLogined(state)
 
   return {
@@ -166,6 +186,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionDetail,
   fetchUserOwnedShopInfo,
+  fetchSharePromotionUrl
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPromotionDetail)
@@ -205,14 +226,7 @@ const styles = StyleSheet.create({
     marginLeft: 8
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     backgroundColor: 'white',
     paddingBottom:50

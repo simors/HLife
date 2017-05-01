@@ -41,29 +41,18 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
 
-const nameInput = {
-  formKey: commonForm,
-  stateKey: Symbol('nameInput'),
-  type: "nameInput",
-  checkValid: (data) => {
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '请输入姓名'}
-  }
-}
-
 const phoneInput = {
   formKey: commonForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput",
 }
+
 const smsAuthCodeInput = {
   formKey: commonForm,
   stateKey: Symbol('smsAuthCodeInput'),
   type: "smsAuthCodeInput",
-
 }
+
 const regionPicker = {
   formKey: commonForm,
   stateKey: Symbol('regionPicker'),
@@ -106,8 +95,19 @@ class PromoterAuth extends Component {
   onButtonPress() {
     this.props.promoterCertification({
       formKey: commonForm,
-      success: () => {
-        Actions.PAYMENT({title: '支付推广员注册费', price: this.props.fee})
+      success: (payload) => {
+        Actions.PAYMENT({
+          title: '支付推广员注册费',
+          price: this.props.fee,
+          metadata: {'promoterId': payload.promoterId, 'user': this.props.userInfo.id},
+          popNum: 2,
+          paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
+          paySuccessJumpSceneParams: {
+            promoterId: payload.promoterId,
+          },
+          payErrorJumpScene: 'MINE',
+          payErrorJumpSceneParams: {}
+        })
         Toast.show('注册为推广员成功')
       },
       error: (err) => {
@@ -156,13 +156,6 @@ class PromoterAuth extends Component {
               <Text style={styles.advText}>欢迎加入{appConfig.APP_NAME}推广联盟，完成认证可赚取高额收益</Text>
             </View>
             <View style={styles.certify}>
-              <View style={styles.inputBox}>
-                <Text style={styles.maintext}>姓名</Text>
-                <View style={{flex: 1}}>
-                  <CommonTextInput {...nameInput} placeholder="与身份证姓名保持一致" containerStyle={{height: normalizeH(42),}}
-                                   inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}/>
-                </View>
-              </View>
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
@@ -291,14 +284,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.41,
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     width: PAGE_WIDTH,
     backgroundColor: '#FFF',

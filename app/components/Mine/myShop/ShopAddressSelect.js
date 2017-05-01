@@ -34,6 +34,7 @@ import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import CommonButton from '../../common/CommonButton'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -92,39 +93,9 @@ class ShopAddressSelect extends Component {
     this.setState({
       showLoading: true
     })
-    Geolocation.getCurrentPosition()
-      .then(data => {
-        this.currentPosition = {
-          latitude: data.latitude,
-          longitude: data.longitude,
-        }
 
-        this.setState({
-          showLoading: false,
-          center: {
-            latitude: data.latitude,
-            longitude: data.longitude,
-          },
-        })
-        
-        if (Platform.OS == 'ios') {
-          this.updateInfoByLatLng(data.latitude, data.longitude)
-        }else {
-          this.setState({
-            shopAddress: data.address,
-            currentCity: abbrCity(data.city),
-            currentDistrict: data.district
-          })
-        }
-        // console.log('getCurrentPosition.this.state===', this.state)
+    this.getCurrentPosition()
 
-      })
-      .catch(e =>{
-        this.setState({
-          showLoading: false
-        })
-        console.warn(e, 'error')
-      })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -154,33 +125,63 @@ class ShopAddressSelect extends Component {
   }
 
   onKeyboardDidShow = (e) => {
-    console.log('onKeyboardDidShow')
+    // console.log('onKeyboardDidShow')
     if (Platform.OS === 'android') {
       this.onKeyboardWillShow(e)
     }
   }
 
   onKeyboardDidHide = (e) => {
-    console.log('onKeyboardDidHide')
+    // console.log('onKeyboardDidHide')
     if (Platform.OS === 'android') {
       this.onKeyboardWillHide(e)
     }
   }
 
-  resetPosition() {
+  getCurrentPosition() {
     // console.log('resetPosition..this.currentPosition===', this.currentPosition)
-    if(this.currentPosition) {
-      MapModule.moveToCenter(this.currentPosition.latitude, this.currentPosition.longitude, this.state.zoom)
-      this.setState({
-        center: {
-          latitude: this.currentPosition.latitude,
-          longitude: this.currentPosition.longitude,
+
+    Geolocation.getCurrentPosition()
+      .then(data => {
+        this.currentPosition = {
+          latitude: data.latitude,
+          longitude: data.longitude,
         }
+
+        this.setState({
+          showLoading: false,
+          center: {
+            latitude: data.latitude,
+            longitude: data.longitude,
+          },
+        })
+        
+        if (Platform.OS == 'ios') {
+          this.updateInfoByLatLng(data.latitude, data.longitude)
+        }else {
+          this.setState({
+            shopAddress: data.address,
+            currentCity: abbrCity(data.city),
+            currentDistrict: data.district
+          })
+
+          
+        }
+        // console.log('getCurrentPosition.this.state===', this.state)
+
       })
-    }
+      .catch(e =>{
+        this.setState({
+          showLoading: false
+        })
+        console.warn(e, 'error')
+      })
+
   }
 
   updateInfoByLatLng(latitude, longitude) {
+    // console.log('reverseGeoCode.latitude===', latitude)
+
     Geolocation.reverseGeoCode(latitude, longitude)
       .then(data => {
         // console.log('reverseGeoCode.data===', data)
@@ -189,12 +190,24 @@ class ShopAddressSelect extends Component {
             shopAddress: data.address,
             currentCity: abbrCity(data.city),
             currentDistrict: data.district,
+            center: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+          }, () => {
+            this.notTriggerRegionDidChangeAnimated4IosEvent = true
           })
         }else {
           this.setState({
             shopAddress: data.province + data.city + data.district + data.streetName + data.streetNumber,
             currentCity: abbrCity(data.city),
             currentDistrict: data.district,
+            center: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+          }, () => {
+            this.notTriggerRegionDidChangeAnimated4IosEvent = true
           })
         }
         // console.log('reverseGeoCode.this.state===', this.state)
@@ -205,8 +218,11 @@ class ShopAddressSelect extends Component {
   }
 
   _onRegionDidChangeAnimated4Ios(e) {
-    // console.log('_onRegionDidChangeAnimated4Ios.e====', e)
-    this._onMapStatusChangeFinish4Android(e)
+    if(!this.notTriggerRegionDidChangeAnimated4IosEvent) {
+      // console.log('_onRegionDidChangeAnimated4Ios.e====', e)
+      this._onMapStatusChangeFinish4Android(e)
+    }
+    this.notTriggerRegionDidChangeAnimated4IosEvent = false
   }
 
   _onMapStatusChangeFinish4Android(e) {
@@ -325,6 +341,8 @@ class ShopAddressSelect extends Component {
         longitude: item.longitude
       }
     })
+
+    dismissKeyboard()
 
     Geolocation.reverseGeoCode(parseFloat(item.latitude), parseFloat(item.longitude))
       .then(data => {
@@ -465,7 +483,7 @@ class ShopAddressSelect extends Component {
 
     return (
       <View style={[styles.searchResultsContainer, searchResultsCustomStyle]}>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={true}>
         {resultView}
         </ScrollView>
       </View>
@@ -505,13 +523,7 @@ class ShopAddressSelect extends Component {
 
     return (
       <View style={{flex:1}}>
-        {false &&
-          <View style={{position:'absolute',left:15,top:-60}}>
-            <TouchableOpacity onPress={()=>{this.resetPosition()}}>
-              <Image source={require('../../../assets/images/now_location.png')}/>
-            </TouchableOpacity>
-          </View>
-        }
+        
 
         <View style={styles.shopInfosContainer}>
           <View style={styles.shopInfoContainer}>
@@ -555,6 +567,8 @@ class ShopAddressSelect extends Component {
     return (
       <KeyboardAwareToolBar
         initKeyboardHeight={0}
+        notListenKeyboardEvent={false}
+        hideOverlay={true}
       >
         {this.renderToolBarContent()}
       </KeyboardAwareToolBar>
@@ -576,56 +590,74 @@ class ShopAddressSelect extends Component {
     }
   }
 
+  renderResetPosition() {
+    if(this.state.keyboardIsShow) {
+      return null
+    }
+
+    return (
+      <View style={{position:'absolute',left:15,bottom:200}}>
+        <TouchableOpacity onPress={()=>{this.getCurrentPosition()}}>
+          <Image style={{width:30,height:30}} source={require('../../../assets/images/now_location.png')}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          onMapStatusChangeFinish={this._onMapStatusChangeFinish4Android.bind(this)}
-          onRegionDidChangeAnimated={this._onRegionDidChangeAnimated4Ios.bind(this)}
-          center={this.state.center}
-          marker={this.state.marker}
-          zoom={this.state.zoom}
-        />
+        <View style={styles.body}>
+          <MapView
+            style={styles.map}
+            onMapStatusChangeFinish={this._onMapStatusChangeFinish4Android.bind(this)}
+            onRegionDidChangeAnimated={this._onRegionDidChangeAnimated4Ios.bind(this)}
+            center={this.state.center}
+            marker={this.state.marker}
+            zoom={this.state.zoom}
+          />
 
-        <Image
-          style={[styles.mapMarker, this.state.mapMarkerPos]}
-          source={require("../../../assets/images/icon_gcoding.png")}
-          onLayout={this.onMapMarkerImageLayout.bind(this)}
-        />
+          <Image
+            style={[styles.mapMarker, this.state.mapMarkerPos]}
+            source={require("../../../assets/images/icon_gcoding.png")}
+            onLayout={this.onMapMarkerImageLayout.bind(this)}
+          />
 
-        <View style={styles.searchContainer}>
-          <View style={styles.searchInputContainer}>
-            <TouchableOpacity onPress={()=>{Actions.pop()}}>
-              <Text style={styles.searchInputLeftTxt}>取消</Text>
-            </TouchableOpacity>
+          <View style={styles.searchContainer}>
+            <View style={styles.searchInputContainer}>
+              <TouchableOpacity onPress={()=>{Actions.pop()}}>
+                <Text style={styles.searchInputLeftTxt}>取消</Text>
+              </TouchableOpacity>
 
-            <FormInput
-              onChangeText={(text) => this._searchTextChange(text)}
-              placeholder="输入店铺的位置名称"
-              underlineColorAndroid="transparent"
-              containerStyle={[styles.inputContainerStyle]}
-              inputStyle={[styles.inputStyle]}
-              value={this.state.searchText}
-              onBlur={this._onSearchInputBlur.bind(this)}
-              onFocus={this._onSearchInputFocus.bind(this)}
-            />
+              <FormInput
+                onChangeText={(text) => this._searchTextChange(text)}
+                placeholder="输入店铺的位置名称"
+                underlineColorAndroid="transparent"
+                containerStyle={[styles.inputContainerStyle]}
+                inputStyle={[styles.inputStyle]}
+                value={this.state.searchText}
+                onBlur={this._onSearchInputBlur.bind(this)}
+                onFocus={this._onSearchInputFocus.bind(this)}
+              />
 
-            {this.state.showClearBtn &&
-              <View style={[styles.clearBtnStyle]}>
-                <TouchableOpacity onPress={() => this.clearSearchInput()}>
-                  <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
-                </TouchableOpacity>
-              </View>
-            }
+              {this.state.showClearBtn &&
+                <View style={[styles.clearBtnStyle]}>
+                  <TouchableOpacity onPress={() => this.clearSearchInput()}>
+                    <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
+                  </TouchableOpacity>
+                </View>
+              }
 
+            </View>
+            {this.renderSearchResult()}
           </View>
-          {this.renderSearchResult()}
         </View>
 
         {this.renderShopInfoArea()}
 
         {this.renderLoading()}
+
+        {this.renderResetPosition()}
 
       </View>
     )
@@ -648,14 +680,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopAddressSelect)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...Platform.select({
-      ios: {
-        marginTop: 20,
-      },
-      android: {
-        marginTop: 0
-      }
-    }),
+  },
+  body: {
+    flex: 1,
+    marginTop: 20,
   },
   map: {
     width: PAGE_WIDTH,

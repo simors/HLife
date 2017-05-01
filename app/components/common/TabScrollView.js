@@ -116,16 +116,8 @@ const styles = StyleSheet.create({
   },
 
   tabBarStyle: {
-    ...Platform.select({
-      ios: {
-        paddingTop: normalizeH(25),
-        height: 64,
-      },
-      android: {
-        paddingTop: normalizeH(5),
-        height: 44,
-      }
-    }),
+    paddingTop: normalizeH(25),
+    height: 64,
   },
   scrollViewStyle: {
     flex: 1,

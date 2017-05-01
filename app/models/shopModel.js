@@ -51,9 +51,15 @@ export class ShopInfo extends ShopRecord {
       let attrs = lcObj.attributes
       if(type) {
         lcObj = attrs[type]
-        attrs = attrs[type].attributes
+        if(lcObj) {
+          attrs = lcObj.attributes
+        }else{
+          return shopRecord
+        }
       }
       return shopRecord.withMutations((record) => {
+        // console.log('lcObj======', lcObj)
+        // console.log('attrs======', attrs)
         record.set('id', lcObj.id)
         // record.set('name', attrs.name)
         record.set('phone', attrs.phone)
@@ -243,10 +249,10 @@ export class ShopInfo extends ShopRecord {
         record.set('geoName', lcObj.geoName)
         record.set('geoCity', lcObj.geoCity)
         record.set('geoDistrict', lcObj.geoDistrict)
-        record.set('geoDistrictCode', attrs.geoDistrictCode)
-        record.set('geoCityCode', attrs.geoCityCode)
-        record.set('geoProvince', attrs.geoProvince)
-        record.set('geoProvinceCode', attrs.geoProvinceCode)
+        record.set('geoDistrictCode', lcObj.geoDistrictCode)
+        record.set('geoCityCode', lcObj.geoCityCode)
+        record.set('geoProvince', lcObj.geoProvince)
+        record.set('geoProvinceCode', lcObj.geoProvinceCode)
         // record.set('pv', numberUtils.formatNum(lcObj.pv))
         record.set('score', lcObj.score)
         record.set('ourSpecial', lcObj.ourSpecial)
@@ -258,6 +264,7 @@ export class ShopInfo extends ShopRecord {
         record.set('updatedAt', lcObj.updatedAt.valueOf())
       })
     } catch(err) {
+      console.log(err)
       throw err
     }
   }
@@ -306,42 +313,46 @@ export class ShopPromotion extends ShopPromotionRecord {
       record.set('nextSkipNum', lcObj.nextSkipNum || 0)
 
       let targetShop = {}
-      let targetShopAttrs = attrs.targetShop.attributes
-      targetShop.id = attrs.targetShop.id
-      if(targetShopLcObj) {
-        targetShopAttrs = targetShopLcObj.attributes
-        targetShop.id = targetShopLcObj.id
-      }
 
-      if(targetShopAttrs) {
-        targetShop.shopName = targetShopAttrs.shopName
-        targetShop.geoDistrict = targetShopAttrs.geoDistrict
-        targetShop.geo = targetShopAttrs.geo
-        if(targetShopAttrs.geo) {
-          let userCurGeo = locSelector.getGeopoint(store.getState())
-          let curGeoPoint = new AV.GeoPoint(userCurGeo)
-          let shopGeoPoint = new AV.GeoPoint(targetShopAttrs.geo)
-          let distance = shopGeoPoint.kilometersTo(curGeoPoint)
-          let distanceUnit = 'km'
-          if(distance > 1) {
-            distance = Number(distance).toFixed(1)
-          }else {
-            distance = Number(distance * 1000).toFixed(0)
-            distanceUnit = 'm'
-          }
-          targetShop.distance = distance
-          targetShop.distanceUnit = distanceUnit
+      if(attrs.targetShop) {
+        let targetShopAttrs = attrs.targetShop.attributes
+        targetShop.id = attrs.targetShop.id
+        if(targetShopLcObj) {
+          targetShopAttrs = targetShopLcObj.attributes
+          targetShop.id = targetShopLcObj.id
         }
-  
-        // console.log('targetShopAttrs----------->>>>>>', targetShopAttrs)
-        let targetShopOwner = targetShopAttrs.owner
-        if(targetShopOwner) {
-          targetShop.owner = {
-            id: targetShopOwner.id,
-            ...targetShopOwner.attributes
+
+        if(targetShopAttrs) {
+          targetShop.shopName = targetShopAttrs.shopName
+          targetShop.geoDistrict = targetShopAttrs.geoDistrict
+          targetShop.geo = targetShopAttrs.geo
+          if(targetShopAttrs.geo) {
+            let userCurGeo = locSelector.getGeopoint(store.getState())
+            let curGeoPoint = new AV.GeoPoint(userCurGeo)
+            let shopGeoPoint = new AV.GeoPoint(targetShopAttrs.geo)
+            let distance = shopGeoPoint.kilometersTo(curGeoPoint)
+            let distanceUnit = 'km'
+            if(distance > 1) {
+              distance = Number(distance).toFixed(1)
+            }else {
+              distance = Number(distance * 1000).toFixed(0)
+              distanceUnit = 'm'
+            }
+            targetShop.distance = distance
+            targetShop.distanceUnit = distanceUnit
+          }
+    
+          // console.log('targetShopAttrs----------->>>>>>', targetShopAttrs)
+          let targetShopOwner = targetShopAttrs.owner
+          if(targetShopOwner) {
+            targetShop.owner = {
+              id: targetShopOwner.id,
+              ...targetShopOwner.attributes
+            }
           }
         }
       }
+      
       // console.log('targetShop------******----->>>>>>', targetShop)
       record.set('targetShop', targetShop)
 
@@ -514,6 +525,15 @@ export class Up extends UpRecord {
       record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
       record.set('createdAt', lcObj.createdAt.valueOf())
       record.set('updatedAt', lcObj.updatedAt.valueOf())
+    })
+  }
+
+  static fromLeancloudApi(lcObj) {
+    let up = new UpRecord()
+    return up.withMutations((record)=> {
+      for(let key in lcObj) {
+        record.set(key, lcObj[key])
+      }
     })
   }
 }

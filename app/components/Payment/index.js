@@ -66,7 +66,7 @@ class Payment extends Component {
     console.log("PingPPModule.createPayment callback!")
     console.log("errorCode:", errorCode)
     console.log("result:", result)
-    if(errorCode == 'success'){
+    if(errorCode == 0 || errorCode == 'success'){
       Toast.show("支付成功")
       if(this.props.paySuccessJumpScene) {
         if(this.props.popNum) {
@@ -215,14 +215,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
   },
   amount: {

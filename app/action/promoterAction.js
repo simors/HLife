@@ -15,7 +15,7 @@ import * as AuthTypes from '../constants/authActionTypes'
 import {PromoterInfo, PromoterStatistics} from '../models/promoterModel'
 import {UserInfo} from '../models/userModels'
 import {ShopInfo} from '../models/shopModel'
-import {activePromoter} from '../selector/promoterSelector'
+import {activePromoter, getPromoterById} from '../selector/promoterSelector'
 
 let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
@@ -34,6 +34,15 @@ let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
 let updateStatistics = createAction(promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE)
 let updateAreaAgent = createAction(promoterActionTypes.UPDATE_AREA_AGENTS)
 let updateShopTenant = createAction(promoterActionTypes.UPDATE_CITY_SHOP_TENANT)
+let setAreaPromoters = createAction(promoterActionTypes.SET_AREA_PROMOTERS)
+let addAreaPromoters = createAction(promoterActionTypes.ADD_AREA_PROMOTERS)
+let setAreaAgent = createAction(promoterActionTypes.SET_AREA_AGENT)
+let cancelAreaAgent = createAction(promoterActionTypes.CANCEL_AREA_AGENT)
+let setEarnRecords = createAction(promoterActionTypes.SET_PROMOTER_EARN_RECORDS)
+let addEarnRecords = createAction(promoterActionTypes.ADD_PROMOTER_EARN_RECORDS)
+let updateLastDaysPerformance = createAction(promoterActionTypes.UPDATE_LAST_DAYS_PERFORMANCE)
+let updateAreaMonthsPerformance = createAction(promoterActionTypes.UPDATE_AREA_MONTHS_PERFORMANCE)
+let finishPayment = createAction(promoterActionTypes.FINISH_PROMOTER_PAYMENT)
 
 export function getInviteCode(payload) {
   return (dispatch, getState) => {
@@ -76,7 +85,6 @@ export function promoterCertification(payload) {
       let region = formData.regionPicker.text
       let promoterInfo = {
         inviteCode: formData.inviteCodeInput.text,
-        name: formData.nameInput.text,
         phone: formData.phoneInput.text,
         liveProvince: region.province,
         liveCity: region.city,
@@ -88,11 +96,12 @@ export function promoterCertification(payload) {
         dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
         dispatch(setActivePromoter({promoterId}))
         dispatch(updatePromoter({promoterId, promoter}))
-      }).then(() => {
+        return promoterId
+      }).then((promoterId) => {
         let userId = activeUserId(getState())
         dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
         if (payload.success) {
-          payload.success()
+          payload.success({promoterId})
         }
       }).catch((error) => {
         if (payload.error) {
@@ -216,6 +225,13 @@ export function getMyPromoterTeam(payload) {
       } else {
         dispatch(setPromoterTeam({promoterId: activePromoter(getState()), team: team}))
       }
+      if (payload.success) {
+        payload.success(team.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
     })
   }
 }
@@ -246,6 +262,13 @@ export function getPromoterTeamById(payload) {
       } else {
         dispatch(setPromoterTeam({promoterId: payload.promoterId, team: team}))
       }
+      if (payload.success) {
+        payload.success(team.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
     })
   }
 }
@@ -267,6 +290,13 @@ export function getMyInvitedShops(payload) {
         dispatch(addPromoterShops({promoterId: activePromoter(getState()), newShops: shopIds}))
       } else {
         dispatch(setPromoterShops({promoterId: activePromoter(getState()), shops: shopIds}))
+      }
+      if (payload.success) {
+        payload.success(shopIds.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
       }
     })
   }
@@ -336,6 +366,217 @@ export function getShopTenantByCity(payload) {
   return (dispatch, getState) => {
     lcPromoter.getCityShopTenant(payload).then((tenant) => {
       dispatch(updateShopTenant({city: payload.city, tenant: tenant.tenant}))
+    })
+  }
+}
+
+export function getPromotersByArea(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.fetchPromoterByArea(payload).then((result) => {
+      let promoters = result.promoters
+      let users = result.users
+      let promoterIds = []
+      promoters.forEach((promoter) => {
+        let promoterId = promoter.objectId
+        promoterIds.push(promoterId)
+        let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+      })
+      users.forEach((user) => {
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        dispatch(addUserProfile({userInfo}))
+      })
+      if (more) {
+        dispatch(addAreaPromoters({promoters: promoterIds}))
+      } else {
+        dispatch(setAreaPromoters({promoters: promoterIds}))
+      }
+
+      if (payload.success) {
+        payload.success(promoterIds.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function setAreaAgent(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.setAreaAgent(payload).then((result) => {
+      if (0 != result.errcode) {
+        if (payload.error) {
+          payload.error(result.message)
+        }
+        return
+      }
+      let promoter = getPromoterById(getState(), result.promoter.objectId)
+      let area = payload.identity == 2 ? payload.city : payload.district
+      dispatch(setAreaAgent({area: area, promoter: promoter}))
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function cancelAreaAgent(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.cancelAreaAgent(payload).then((result) => {
+      if (0 != result.errcode) {
+        if (payload.error) {
+          payload.error(result.message)
+        }
+        return
+      }
+      let area = payload.identity == 2 ? payload.city : payload.district
+      dispatch(cancelAreaAgent({area}))
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function getPromoterByNameOrId(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.fetchPromoterByNameOrId(payload).then((result) => {
+      let promoters = result.promoters
+      let users = result.users
+      let promoterIds = []
+      promoters.forEach((promoter) => {
+        let promoterId = promoter.objectId
+        promoterIds.push(promoterId)
+        let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+      })
+      users.forEach((user) => {
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        dispatch(addUserProfile({userInfo}))
+      })
+      dispatch(setAreaPromoters({promoters: promoterIds}))
+
+      if (payload.success) {
+        payload.success(promoterIds.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function getPromoterDealRecords(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPromoter.fetchPromoterDealRecords(payload).then((result) => {
+      let deals = result.dealRecords
+      let dealRecords = []
+      deals.forEach((record) => {
+        let dealRecord = {}
+        dealRecord.cost = record.cost
+        dealRecord.promoterId = record.promoterId
+        dealRecord.dealType = record.dealType
+        dealRecord.dealTime = record.dealTime
+        if (record.dealType == 2) {
+          dealRecord.shopId = record.shop.objectId
+          let shop = record.shop
+          let shopRecord = ShopInfo.fromLeancloudApi(shop)
+          dispatch(addShopDetail({id: shop.objectId, shopInfo: shopRecord}))
+        } else if (record.dealType == 1) {
+          dealRecord.invitedPromoterId = record.promoter.objectId
+          dealRecord.userId = record.user.id
+          let promoter = record.promoter
+          let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+          dispatch(updatePromoter({promoterId: record.promoter.objectId, promoter: promoterRecord}))
+          dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId: record.promoter.objectId}))
+          let user = record.user
+          let userInfo = UserInfo.fromLeancloudApi(user)
+          dispatch(addUserProfile({userInfo}))
+        }
+        dealRecords.push(dealRecord)
+      })
+      if (more) {
+        dispatch(addEarnRecords({activePromoterId: activePromoter(getState()), dealRecords: dealRecords}))
+      } else {
+        dispatch(setEarnRecords({activePromoterId: activePromoter(getState()), dealRecords: dealRecords}))
+      }
+      if (payload.success) {
+        payload.success(dealRecords.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function getLastDaysPerformance(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.fetchLastDaysPerformance(payload).then((stat) => {
+      let statistics = stat.statistics
+      dispatch(updateLastDaysPerformance({
+        level: payload.level,
+        province: payload.province,
+        city: payload.city,
+        district: payload.district,
+        lastDaysPerf: statistics,
+      }))
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function getAreaMonthsPerformance(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.fetchAreaMonthsPerformance(payload).then((stat) => {
+      let statistics = stat.statistics
+      dispatch(updateAreaMonthsPerformance({
+        level: payload.level,
+        province: payload.province,
+        city: payload.city,
+        lastMonthsPerf: statistics,
+      }))
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
+
+export function finishPromoterPayment(payload) {
+  return (dispatch, getState) => {
+    lcPromoter.finishPromoterPayment(payload).then((promoterInfo) => {
+      dispatch(finishPayment({promoterId: payload.promoterId}))
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
     })
   }
 }

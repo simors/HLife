@@ -103,6 +103,9 @@ import AreaPromoterDetail from '../components/Mine/promote/AreaPromoterDetail'
 import ChangeAgentView from '../components/Mine/promote/ChangeAgentView'
 import PasswordSetting from '../components/Payment/PasswordSetting'
 import Withdrawals from '../components/Payment/Withdrawals'
+import Share from '../components/common/Share'
+import PromoterPaymentOk from '../components/Payment/PromoterPaymentOk'
+import EarningRecord from '../components/Mine/promote/EarningRecord'
 
 const styles = StyleSheet.create({
   container: {
@@ -215,6 +218,9 @@ export const scenes = Actions.create(
       <Scene key="CHANGE_AGENT" component={ChangeAgentView}/>
       <Scene key="PAYMENT_SETTING" component={PasswordSetting}/>
       <Scene key="WITHDRAWALS" component={Withdrawals}/>
+      <Scene key="PROMOTER_PAYMENT_OK" component={PromoterPaymentOk}/>
+      <Scene key="EARN_RECORD" component={EarningRecord}/>
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -239,6 +245,7 @@ export const scenes = Actions.create(
 
       <Scene key="POPUP" component={Popup} />
     </Scene>
+    <Scene key="SHARE" component={Share}/>
   </Scene>
 )
 
@@ -261,7 +268,9 @@ function tapActions(props) {
       Actions.LOGIN()
     } else {
       let identity = props.identity
-      if (identity && identity.includes(IDENTITY_SHOPKEEPER)) {
+      let shopPayment = props.shopPayment
+      let shopInfoComplete = props.shopInfoComplete
+      if (identity && identity.includes(IDENTITY_SHOPKEEPER) && shopPayment && shopInfoComplete) {
         Actions.PUBLISH()
       } else {
         Actions.PUBLISH_TOPIC()

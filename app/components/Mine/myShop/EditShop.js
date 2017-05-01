@@ -82,10 +82,11 @@ const servicePhone2Input = {
   stateKey: Symbol('servicePhone2Input'),
   type: "servicePhone2Input",
   checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '备用电话为空'}
+    return {isVal: true, errMsg: '验证通过'}
+    // if (data && data.text && data.text.length > 0) {
+    //   return {isVal: true, errMsg: '验证通过'}
+    // }
+    // return {isVal: false, errMsg: '备用电话为空'}
   },
 }
 const ourSpecialInput = {
@@ -352,6 +353,7 @@ class EditShop extends Component {
             automaticallyAdjustContentInsets={false}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={0}
+            keyboardShouldPersistTaps={true}
           >
             <View style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
@@ -405,6 +407,7 @@ class EditShop extends Component {
                     {...tagsInput}
                     onPress={()=>{this.toggleShopTagsSelectShow()}}
                     tags={this.state.selectedShopTags}
+                    noCheckInput={true}
                   />
                 </View>
               </View>
@@ -537,15 +540,8 @@ const styles = StyleSheet.create({
   headerContainerStyle: {
     borderBottomWidth: 0,
     backgroundColor: THEME.colors.green,
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-        height: 64
-      },
-      android: {
-        height: 44
-      }
-    }),
+    paddingTop: 20,
+    height: 64,
   },
   headerLeftStyle: {
     color: '#fff',
@@ -565,14 +561,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: 64,
-      },
-      android: {
-        marginTop: 44
-      }
-    }),
+    marginTop: 64,
     flex: 1,
   },
   inputsWrap: {

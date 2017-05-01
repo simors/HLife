@@ -75,6 +75,7 @@ export function getShopList(payload) {
     // query.addDescending('geo')
   }
   query.limit(5) // 最多返回 5 条结果
+
   if(distance) {
     // console.log('getShopList.geo===', geo)
     // console.log('getShopList.Array.isArray(geo)===', Array.isArray(geo))
@@ -85,13 +86,15 @@ export function getShopList(payload) {
   }else {
     // console.log('getShopList.geoCity===', geoCity)
     // console.log('getShopList.typeof geoCity===', typeof geoCity)
-    if(geoCity) {
+    if(geoCity && geoCity != '全国') {
       query.contains('geoCity', geoCity)
     }
+
     if (Array.isArray(geo)) {
       let point = new AV.GeoPoint(geo)
       query.withinKilometers('geo', point, 100)
     }
+    
   }
   if(shopTagId) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
@@ -240,13 +243,23 @@ export function deleteShopAnnouncement(payload) {
 }
 
 export function fetchUserFollowShops(payload) {
-  let userId = payload.userId
-  let isRefresh = payload.isRefresh
-  let lastCreatedAt = payload.lastCreatedAt
+  let userId = ''
+  let isRefresh = true
+  let lastCreatedAt = ''
+
   let currentUser = AV.User.current()
-  if(!userId) {
+  userId = currentUser.id
+
+  if(payload) {
+    userId = payload.userId || currentUser.id
+    if(!payload.isRefresh && payload.lastCreatedAt) {
+      isRefresh = false
+      lastCreatedAt = payload.lastCreatedAt
+    }
+  }else {
     userId = currentUser.id
   }
+
   let user = AV.Object.createWithoutData('_User', userId)
   // let query = new AV.Query('ShopFollowee')
   // query.equalTo('user', user)
@@ -859,27 +872,27 @@ export function fetchUserOwnedShopInfo(payload) {
   })
 }
 
-// export function fetchShopFollowers(payload) {
-//   let shopId = payload.id
-//   let query = new AV.Query('ShopFollower')
-//   let shop = AV.Object.createWithoutData('Shop', shopId)
-//   query.equalTo('shop', shop)
-//   query.include('follower')
-//   return query.find().then((results)=> {
-//     // console.log('fetchShopFollowers.results===', results)
-//     let shopFollowers = []
-//     if(results && results.length) {
-//       results.forEach((result)=>{
-//         shopFollowers.push(UserInfo.fromShopFollowersLeancloudObject(result))
-//       })
-//     }
-//     // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
-//     return new List(shopFollowers)
-//   }, (err) => {
-//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-//     throw err
-//   })
-// }
+export function fetchAllShopFollowerIds(payload) {
+  let shopId = payload.id
+  let query = new AV.Query('ShopFollower')
+  let shop = AV.Object.createWithoutData('Shop', shopId)
+  query.equalTo('shop', shop)
+  query.limit(500)
+  return query.find().then((results)=> {
+    // console.log('fetchShopFollowers.results===', results)
+    let shopFollowerIds = []
+    if(results && results.length) {
+      results.forEach((result)=>{
+        shopFollowerIds.push(result.attributes.follower.id)
+      })
+    }
+    // console.log('fetchShopFollowers.shopFollowers===', shopFollowers)
+    return shopFollowerIds
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
 
 export function fetchShopFollowers(payload) {
   let shopId = payload.id
@@ -892,7 +905,7 @@ export function fetchShopFollowers(payload) {
   }
   // console.log('hLifeFetchShopFollowers===params=====', params)
   return AV.Cloud.run('hLifeFetchShopFollowers', params).then((result) => {
-    console.log('hLifeFetchShopFollowers===result===', result)
+    // console.log('hLifeFetchShopFollowers===result===', result)
     if(result.code == 0) {
       return new List(result.shopFollowers)
     }else{
@@ -1240,6 +1253,36 @@ export function updateShopLocationInfo(payload) {
   return AV.Cloud.run('hLifeUpdateShopLocationInfo', params).then((result)=>{
     // console.log('hLifeUpdateShopLocationInfo.result=======', result)
     return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function getShopPromotionUrl(payload) {
+  let params = {
+    shopPromotionId: payload.shopPromotionId
+  }
+
+  return AV.Cloud.run('hLifeShareShopPromotionById', params).then((result) => {
+    console.log("result:", result)
+    if (result && result.url)
+      return result
+    return undefined
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function updateShopInfoAfterPaySuccess(payload) {
+  // console.log('hLifeUpdateShopInfoAfterPaySuccess.payload=======', payload)
+  return AV.Cloud.run('hLifeUpdateShopInfoAfterPaySuccess', payload).then((result)=> {
+    // console.log('hLifeUpdateShopInfoAfterPaySuccess.result=======', result)
+    // if(result.code == 0) {
+    //   return true
+    // }
+    return true
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

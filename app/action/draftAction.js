@@ -8,6 +8,7 @@ import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as uiTypes from '../constants/uiActionTypes'
 import  {Record,Map,List}from 'immutable'
 import * as locSelector from '../selector/locSelector'
+import {trim} from '../util/Utils'
 
 export const updateTopicDraft = createAction(draftTypes.UPDATE_TOPIC_DRAFT)
 export const updateShopPomotionDraft = createAction(draftTypes.UPDATE_SHOP_PROMOTION_DRAFT)
@@ -21,24 +22,33 @@ export const fetchTopicDraft=(payload)=>{
     if (payload.formKey) {
       let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
       dispatch(formCheck({formKey: payload.formKey}))
-      let isFormValid = isInputFormValid(getState(), payload.formKey)
-      if (isFormValid && !isFormValid.isValid) {
-        if (payload.error) {
-          payload.error({message: isFormValid.errMsg})
-        }
-        return
-      }
+      // let isFormValid = isInputFormValid(getState(), payload.formKey)
+      // if (isFormValid && !isFormValid.isValid) {
+      //   if (payload.error) {
+      //     payload.error({message: isFormValid.errMsg})
+      //   }
+      //   return
+      // }
       formData = getInputFormData(getState(), payload.formKey)
     }
     let city = locSelector.getCity(getState())
-     // console.log('data',formData)
-    if(formData.topicContent.abstract!=undefined||payload.imgGroup!=undefined){
-      // console.log('what wrong')
-      dispatch(updateTopicDraft({id:payload.draftId,imgGroup:payload.imgGroup,draftDay:payload.draftDay,draftMonth:payload.draftMonth,categoryId:payload.categoryId,city:city,title:formData.topicName.text,
-        content: JSON.stringify(formData.topicContent.text),
-        abstract: formData.topicContent.abstract,objectId: payload.topicId,
+     console.log('data',formData,payload.images)
+    if(formData.topicName!=undefined||formData.topicContent.abstract||payload.images.length>0){
+      dispatch(updateTopicDraft({
+        userId:payload.userId,
+        id:payload.draftId,
+        imgGroup:payload.images,
+        draftDay:payload.draftDay,
+        draftMonth:payload.draftMonth,
+        categoryId:payload.categoryId,
+        city:city,
+        title: (formData.topicName!=undefined&&formData.topicName.text!=undefined)?trim(formData.topicName.text):'',
+        content: (formData.topicContent!=undefined&&formData.topicContent.text!=undefined)?JSON.stringify(formData.topicContent.text):{},
+        abstract: (formData.topicContent!=undefined&&formData.topicContent.abstract!=undefined)?trim(formData.topicContent.abstract):'',
+        objectId: payload.topicId,
       }))
     }
+
   }
 }
 

@@ -13,7 +13,10 @@ import {
   TouchableOpacity,
   InteractionManager,
   ScrollView,
-  StatusBar
+  StatusBar,
+  Keyboard,
+  BackAndroid,
+  ListView,
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -37,9 +40,11 @@ import {
   fetchTopicIsLiked,
   likeTopic,
   unLikeTopic,
-  fetchTopicLikeUsers
+  fetchTopicLikeUsers,
+  fetchShareTopicUrl,
 } from '../../action/topicActions'
 import ActionSheet from 'react-native-actionsheet'
+import CommonListView from '../common/CommonListView'
 
 
 import * as Toast from '../common/Toast'
@@ -53,16 +58,17 @@ export class TopicDetail extends Component {
     super(props)
     this.state = {
       commentY: 0,
-      comment: undefined
+      comment: undefined,
+      hideBottomView: false,
     }
     this.replyInput = null
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicCommentsByTopicId({topicId: this.props.topic.objectId, upType: 'topic'})
+      this.refreshData()
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
       if (this.props.isLogin) {
         this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       }
@@ -72,9 +78,31 @@ export class TopicDetail extends Component {
       }
     })
   }
-  componentWillUnmount(){
-    console.log('unmount component')
+
+  componentDidMount() {
+
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
   }
+  componentWillUnmount(){
+    // console.log('unmount component')
+
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
+  }
+
   onRightPress = () => {
     this.ActionSheet.show()
   }
@@ -93,12 +121,18 @@ export class TopicDetail extends Component {
       Actions.LOGIN()
     }
     else {
-      if (this.replyInput) {
-        this.replyInput.focus()
-      }
-      if (callback && typeof callback == 'function') {
-        callback()
-      }
+      this.setState({
+        hideBottomView: true
+      }, ()=>{
+        // console.log('openModel===', this.replyInput)
+        if (this.replyInput) {
+          this.replyInput.focus()
+        }
+        if (callback && typeof callback == 'function') {
+          callback()
+        }
+      })
+      
     }
   }
 
@@ -244,7 +278,7 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId})
+      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
     })
   }
 
@@ -305,6 +339,27 @@ export class TopicDetail extends Component {
     return false
   }
 
+  fetchSuccessCallback = (result) => {
+    Actions.SHARE({
+      title: this.props.topic.title || "邻家话题",
+      url: result.url || 'http://www.baidu.com',
+      author: this.props.topic.nickname || "邻家小二",
+      abstract: this.props.topic.abstract || "",
+      cover: this.props.topic.avatar,
+    })
+  }
+
+  fetchErrorCallback = (error) => {
+    Toast.show(error.message)
+  }
+  onShare = () => {
+    this.props.fetchShareTopicUrl({
+      topicId: this.props.topic.objectId,
+      success: this.fetchSuccessCallback,
+      error: this.fetchErrorCallback,
+    })
+  }
+
   renderHeaderView() {
     // if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
     //   return (
@@ -323,6 +378,13 @@ export class TopicDetail extends Component {
         leftIconName="ios-arrow-back"
         leftPress={() => Actions.pop()}
         title="详情"
+        rightComponent={()=>{
+          return (
+            <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
+              <Image source={require('../../assets/images/active_share.png')}/>
+            </TouchableOpacity>
+          )
+        }}
       />
     )
   }
@@ -334,7 +396,7 @@ export class TopicDetail extends Component {
     // topicLikeUsers = [{},{},{},{},{}]
     // console.log('likesCount====', likesCount)
     // console.log('topicLikeUsers====', topicLikeUsers)
-    if(likesCount) {
+    if(likesCount && topicLikeUsers && topicLikeUsers.length) {
       let topicLikeUsersView = topicLikeUsers.map((item, index)=>{
         if(index > 2) {
           return null
@@ -366,52 +428,168 @@ export class TopicDetail extends Component {
     )
   }
 
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   hideBottomView: true
+    // })
+  }
+
+  onKeyboardWillHide = (e) => {
+    // console.log('onKeyboardWillHide')
+    this.setState({
+      hideBottomView: false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
+  }
+
+  renderRow(rowData, rowId) {
+    switch (rowData.type) {
+      case 'COLUMN_1':
+        return this.renderTopicContentColumn()
+      case 'COLUMN_2':
+        return this.renderTopicCommentsColumn()
+      default:
+        return <View />
+    }
+  }
+
+  renderTopicContentColumn() {
+    let topic = this.props.topic
+    topic.objectId
+    return (
+      <View style={{flex:1}}>
+        <TopicContent 
+          topic={this.props.topic}
+          userFollowersTotalCount={this.props.userFollowersTotalCount}
+          isSelfTopic={this.isSelfTopic()}
+        />
+        <TouchableOpacity style={styles.likeStyle}
+                          onLayout={this.measureMyComponent.bind(this)}
+                          onPress={()=>Actions.LIKE_USER_LIST({topicId: topic.objectId})}>
+          <View style={styles.topicLikesWrap}>
+            <View style={{flexDirection:'row'}}>
+              <View style={styles.titleLine}/>
+              <Text style={styles.titleTxt}>点赞·{this.props.likesCount}</Text>
+            </View>
+            <View style={{flexDirection:'row'}}>
+              {this.renderTopicLikeUsersView()}
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderTopicCommentsColumn() {
+    return (
+      <View style={{flex:1}}>
+        {this.renderTopicCommentPage()}
+      </View>
+    )
+  }
+
+  refreshData() {
+    this.loadMoreData(true)
+  }
+
+  loadMoreData(isRefresh) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
+    let topic = this.props.topic
+    let lastTopicCommentsCreatedAt = this.props.lastTopicCommentsCreatedAt
+    // console.log('lastTopicCommentsCreatedAt------>', lastTopicCommentsCreatedAt)
+
+    let payload = {
+      topicId: topic.objectId,
+      isRefresh: !!isRefresh,
+      lastCreatedAt: lastTopicCommentsCreatedAt,
+      upType: 'topic',
+      success: (isEmpty) => {
+        this.isQuering = false
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+
+    this.props.fetchTopicCommentsByTopicId(payload)
+  }
+
   render() {
     return (
       <View style={styles.containerStyle}>
         <StatusBar barStyle="dark-content"/>
         {this.renderHeaderView()}
         <View style={styles.body}>
-          <ScrollView style={{}} ref={"scrollView"}>
-            <TopicContent 
-              topic={this.props.topic}
-              userFollowersTotalCount={this.props.userFollowersTotalCount}
-              isSelfTopic={this.isSelfTopic()}
-            />
-            <TouchableOpacity style={styles.likeStyle}
-                              onLayout={this.measureMyComponent.bind(this)}
-                              onPress={()=>Actions.LIKE_USER_LIST({topicLikeUsers: this.props.topicLikeUsers})}>
-              <View style={styles.topicLikesWrap}>
-                <View style={{flexDirection:'row'}}>
-                  <View style={styles.titleLine}/>
-                  <Text style={styles.titleTxt}>点赞·{this.props.likesCount}</Text>
-                </View>
-                <View style={{flexDirection:'row'}}>
-                  {this.renderTopicLikeUsersView()}
-                </View>
-              </View>
-            </TouchableOpacity>
-            {this.renderTopicCommentPage()}
-          </ScrollView>
 
-          {this.renderBottomView()}
+          <CommonListView
+            contentContainerStyle={{backgroundColor: '#fff'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
+            ref={(listView) => this.listView = listView}
+          />  
 
-          <KeyboardAwareToolBar
-            initKeyboardHeight={-normalizeH(50)}
-          >
-            <ToolBarContent
-              replyInputRefCallBack={(input)=> {
-                this.replyInput = input
-              }}
-              onSend={(content) => {
-                this.sendReply(content)
-              }}
-              placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
-            />
-          </KeyboardAwareToolBar>
-
-          {this.renderActionSheet()}
+          {this.state.hideBottomView
+            ? null
+            : this.renderBottomView()
+          }
         </View>
+
+        {this.state.hideBottomView
+          ? <TouchableOpacity style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} onPress={()=>{dismissKeyboard()}}>
+              <View style={{flex: 1}}/>
+            </TouchableOpacity>
+          : null
+        }
+
+        <KeyboardAwareToolBar
+          initKeyboardHeight={-normalizeH(50)}
+          hideOverlay={true}
+        >
+          {this.state.hideBottomView
+            ? <ToolBarContent
+                replyInputRefCallBack={(input)=> {
+                  this.replyInput = input
+                }}
+                onSend={(content) => {
+                  this.sendReply(content)
+                }}
+                placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
+              />
+            : null
+          }
+        </KeyboardAwareToolBar>
+
+        {this.renderActionSheet()}
       </View>
     )
   }
@@ -421,10 +599,11 @@ export class TopicDetail extends Component {
       return (
         <TouchableOpacity 
           style={{
+            position:'absolute',bottom:0,left:0,right:0,
             height:50,
             borderTopWidth: normalizeBorder(),
             borderTopColor: THEME.colors.lighterA,
-            backgroundColor: 'rgba(250,250,250, 0.9)',
+            backgroundColor: '#f5f5f5',
             justifyContent: 'center',
             alignItems:'center',
             flexDirection:'row'
@@ -443,7 +622,7 @@ export class TopicDetail extends Component {
       }
 
       return (
-        <View style={styles.shopCommentWrap}>
+        <View style={[styles.shopCommentWrap, {position:'absolute',bottom:0,left:0,right:0}]}>
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
             <View style={[styles.vItem]}>
               <Image style={{width:24,height:24}} source={likeImgSource}/>
@@ -468,13 +647,30 @@ export class TopicDetail extends Component {
 TopicDetail.defaultProps = {}
 
 const mapStateToProps = (state, ownProps) => {
+  let ds = undefined
+  if (ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+  let dataArray = []
+  dataArray.push({type: 'COLUMN_1'})
+  dataArray.push({type: 'COLUMN_2'})
+
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
-  const topicComments = getTopicComments(state)
+  const allTopicComments = getTopicComments(state)
+  const topicComments = allTopicComments[ownProps.topic.objectId]
+  let lastTopicCommentsCreatedAt = ''
+  if(topicComments && topicComments.length) {
+    lastTopicCommentsCreatedAt = topicComments[topicComments.length-1].createdAt
+  }
   const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
-  const commentsTotalCount = topicComments[ownProps.topic.objectId] ? topicComments[ownProps.topic.objectId].length : undefined
+  const commentsTotalCount = topicComments ? topicComments.length : undefined
 
 
   let userFollowersTotalCount = 0
@@ -483,14 +679,16 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
-    topicComments: topicComments[ownProps.topic.objectId],
+    ds: ds.cloneWithRows(dataArray),
+    topicComments: topicComments,
     topicLikeUsers: topicLikeUsers,
     likesCount: likesCount,
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
     commentsTotalCount: commentsTotalCount,
-    userFollowersTotalCount: userFollowersTotalCount
+    userFollowersTotalCount: userFollowersTotalCount,
+    lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt
   }
 }
 
@@ -502,7 +700,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicLikesCount,
   likeTopic,
   unLikeTopic,
-  fetchOtherUserFollowersTotalCount
+  fetchOtherUserFollowersTotalCount,
+  fetchShareTopicUrl
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)
@@ -514,16 +713,10 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     backgroundColor: '#E5E5E5',
+    paddingBottom: 50
   },
   topicLikesWrap: {
     flex:1,
@@ -575,7 +768,7 @@ const styles = StyleSheet.create({
   shopCommentWrap: {
     borderTopWidth: normalizeBorder(),
     borderTopColor: THEME.colors.lighterA,
-    backgroundColor: 'rgba(250,250,250, 0.9)',
+    backgroundColor: '#f5f5f5',
     flexDirection: 'row',
     height:50
   },

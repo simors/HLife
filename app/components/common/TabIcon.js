@@ -27,17 +27,27 @@ class TabIcon extends Component {
   render() {
     return (
       <View>
-        {this.publish(this.props.title, this.props.selected, this.props.number, this.props.onPress, this.props.isLogin, this.props.identity, this.props.isExceededShopPromotionMaxNum)}
+        {this.publish(
+          this.props.title,
+          this.props.selected,
+          this.props.number,
+          this.props.onPress,
+          this.props.isLogin,
+          this.props.identity,
+          this.props.isExceededShopPromotionMaxNum,
+          this.props.shopPayment,
+          this.props.shopInfoComplete
+        )}
       </View>
     )
   }
 
-  publish=(title, selected, index, onPressed, isLogin, identity, isExceededShopPromotionMaxNum) =>{
+  publish=(title, selected, index, onPressed, isLogin, identity, isExceededShopPromotionMaxNum, shopPayment, shopInfoComplete) =>{
     if (index == 2) {
       return (
         <TouchableWithoutFeedback onPress={()=> {
           if (onPressed) {
-            onPressed({isLogin: isLogin, index: index, identity: identity, isExceededShopPromotionMaxNum: isExceededShopPromotionMaxNum})
+            onPressed({isLogin: isLogin, index: index, identity: identity, isExceededShopPromotionMaxNum: isExceededShopPromotionMaxNum, shopPayment: shopPayment, shopInfoComplete: shopInfoComplete})
           }
         }}>
           <View style={[styles.container, {backgroundColor: THEME.base.mainColor}]}>
@@ -142,7 +152,8 @@ const mapStateToProps = (state) => {
     isExceededShopPromotionMaxNum = true
   }
   newProps.isExceededShopPromotionMaxNum = isExceededShopPromotionMaxNum
-
+  newProps.shopPayment = userOwnedShopInfo.payment
+  newProps.shopInfoComplete = userOwnedShopInfo.coverUrl ? true : false
 
   return newProps
 }

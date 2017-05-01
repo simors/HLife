@@ -17,8 +17,10 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 export function openPicker(options) {
   const defaultOptions = {
-    width: 750,
-    height: 750,
+    width: Math.floor(PAGE_WIDTH * 2),
+    height: Math.floor(PAGE_WIDTH * 2),
+    compressImageMaxHeight: 750,
+    compressImageMaxWidth: 750,
     maxFiles: 9, //ios only
     cropping: true,//控制图片大小在1M以内, 裁剪和多选必须互斥
     compressImageQuality: 1,
@@ -33,8 +35,6 @@ export function openPicker(options) {
   //限制图片文件1M以内
   if('camera' == defaultOptions.openType) {
     ImagePicker.openCamera(defaultOptions).then(response => {
-      // console.log('openCamera.response====')
-      // console.log(response)
       if(parseInt(response.size) >= 1024 * 1024) {
         defaultOptions.fail({
           message: '图片尺寸必须小于1M'
@@ -43,9 +43,6 @@ export function openPicker(options) {
       }
       defaultOptions.success(response)
     }, (error)=> {
-      // console.log(error)
-      // console.log(error.code)
-      // console.log(error.message)
       if('E_PICKER_CANCELLED' != error.code) { //用户取消
         defaultOptions.fail({
           message: '获取照片信息失败,请稍候再试'
@@ -58,8 +55,6 @@ export function openPicker(options) {
     })
   }else {
     ImagePicker.openPicker(defaultOptions).then(response => {
-      // console.log('openPicker.response====')
-      // console.log(response)
       if(defaultOptions.multiple) {
         if(response && response.length) {
           for(let i = 0; i < response.length; i++) {
@@ -82,9 +77,6 @@ export function openPicker(options) {
         defaultOptions.success(response)
       }
     }, (error)=> {
-      // console.log(error)
-      // console.log(error.code)
-      // console.log(error.message)
       if('E_PICKER_CANCELLED' != error.code) { //用户取消
         defaultOptions.fail({
           message: '照片类型不支持,请重新选择'

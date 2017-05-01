@@ -1,7 +1,7 @@
 /**
  * Created by zachary on 2016/12/20.
  */
-export const APP_NAME = '邻家优店'
+export const APP_NAME = '汇邻优店'
 
 export const LC_DEV_APP_ID = 'K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz'
 export const LC_DEV_APP_KEY = 'UseC5jvqLT7TIiQWI8nRPmEl'

@@ -255,18 +255,27 @@ export function profileSubmit(payload) {
   var userInfo = AV.Object.createWithoutData('_User', payload.id);
   userInfo.set('nickname', payload.nickname)
   userInfo.set('avatar', payload.avatar)
-  userInfo.set('mobilePhoneNumber', payload.phone)
+  //userInfo.set('mobilePhoneNumber', payload.phone)
   userInfo.set('gender', payload.gender)
   userInfo.set('birthday', payload.birthday)
   // userInfo.set('identity', [])
 
   return userInfo.save().then((loginedUser)=>{
-    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
-    // userInfo = userInfo.set('token', loginedUser.getSessionToken())
-    // console.log("loginWithPwd", userInfo)
-    return {
-      userInfo: userInfo,
-    }
+    return getUserById({userId: payload.id}).then((result) => {
+      if(result.error == 0) {
+        let user = result.userInfo
+        let userInfo = UserInfo.fromLeancloudApi(user)
+        // console.log('profileSubmit.userInfo====', userInfo)
+        return {
+          userInfo: userInfo,
+        }
+      }
+    }, (error) => {
+      let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+      return {
+        userInfo: userInfo,
+      }
+    })
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -344,7 +353,7 @@ export function _submitCompleteShopInfo(shop, payload) {
   let coverUrl = payload.coverUrl
   let tagIds = payload.tagIds
   let targetShopCategory = null
-  console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
+  // console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
   if(shopCategoryObjectId) {
     targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
     shop.set('targetShopCategory', targetShopCategory)
@@ -357,12 +366,18 @@ export function _submitCompleteShopInfo(shop, payload) {
     })
   }
   shop.set('containedTag', containedTag)
-  shop.set('coverUrl', coverUrl)
+  if(coverUrl) {
+    shop.set('coverUrl', coverUrl)
+  }
+  
+  if(album) {
+    shop.set('album', album)
+  }
+
   shop.set('openTime', openTime)
   shop.set('contactNumber', contactNumber)
   shop.set('contactNumber2', contactNumber2)
   shop.set('ourSpecial', ourSpecial)
-  shop.set('album', album)
   // console.log('_submitCompleteShopInfo.shop====', shop)
   return shop.save().then(function (result) {
     return true
@@ -376,7 +391,7 @@ export function _submitCompleteShopInfo(shop, payload) {
 
 export function submitCompleteShopInfo(payload) {
   return new Promise((resolve, reject)=>{
-    // console.log('submitEditShopInfo.payload===', payload)
+    // console.log('submitCompleteShopInfo.payload===', payload)
     let shopId = payload.shopId
     let album = payload.album
     let coverUrl = payload.coverUrl
@@ -384,12 +399,14 @@ export function submitCompleteShopInfo(payload) {
 
     if(coverUrl) {
       ImageUtil.uploadImg2(coverUrl).then((leanCoverImgUrl)=>{
-        // console.log('submitEditShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
+        // console.log('submitCompleteShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
         shop.set('coverUrl', leanCoverImgUrl)
+        payload.coverUrl = undefined
         if(album && album.length) {
           ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-            // console.log('submitEditShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
+            // console.log('submitCompleteShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
             shop.set('album', leanAlbumImgUrls)
+            payload.album = undefined
             _submitCompleteShopInfo(shop, payload).then((result)=>{
               resolve(result)
             }, (reason)=>{
@@ -413,6 +430,7 @@ export function submitCompleteShopInfo(payload) {
       if(album && album.length) {
         ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
           shop.set('album', leanAlbumImgUrls)
+          payload.album = undefined
           _submitCompleteShopInfo(shop, payload).then((result)=>{
             resolve(result)
           }, (reason)=>{
@@ -450,8 +468,8 @@ export function _submitEditShopInfo(shop, payload) {
   shop.set('contactNumber', contactNumber)
   shop.set('contactNumber2', contactNumber2)
   shop.set('ourSpecial', ourSpecial)
-  // console.log('_submitEditShopInfo.payload===', payload)
-  // console.log('_submitEditShopInfo.shop===', shop)
+  console.log('_submitEditShopInfo.payload===', payload)
+  console.log('_submitEditShopInfo.shop===', shop)
   return shop.save().then(()=>{
     return '更新店铺成功'
   }, ()=>{
@@ -556,7 +574,7 @@ export function requestSmsAuthCode(payload) {
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({
       mobilePhoneNumber:phone,
-      name: '邻家优店',
+      name: '汇邻优店',
       op: '注册',
       ttl: 10}).then(function () {
       // do nothing
@@ -636,7 +654,9 @@ export function getUserById(payload) {
     return false
   }
   params.userId = userId
+  // console.log('getUserById==params==', params)
   return AV.Cloud.run('hLifeGetUserinfoById', params).then((result) => {
+    // console.log('getUserById==result==', result)
     return result
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

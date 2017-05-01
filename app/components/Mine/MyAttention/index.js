@@ -131,7 +131,6 @@ class MyAttention extends Component {
     let userFolloweesDs = ds.cloneWithRows(this.props.userFollowees)
     return (
       <CommonListView
-        contentContainerStyle={{minHeight:PAGE_HEIGHT-108}}
         dataSource={userFolloweesDs}
         renderRow={(rowData, rowId) => this.renderFollowees(rowData, rowId)}
         loadNewData={()=> {
@@ -205,6 +204,7 @@ class MyAttention extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
+    // console.log('loadMoreShopListData===payload====', payload)
     this.props.fetchUserFollowShops(payload)
   }
 
@@ -217,7 +217,6 @@ class MyAttention extends Component {
   renderShopList() {
     return (
       <CommonListView
-        contentContainerStyle={{minHeight:PAGE_HEIGHT-108}}
         dataSource={this.props.userFollowedShopList}
         renderRow={(rowData, rowId) => this.renderShopItem(rowData, rowId)}
         loadNewData={()=> {
@@ -287,7 +286,7 @@ class MyAttention extends Component {
     return this.tabs.map((item, index)=>{
       return (
         <View key={index} tabLabel={item}
-              style={[{}]}>
+              style={[{flex:1}]}>
           {index == 0 ? this.renderAttentionList() : this.renderShopList()}
         </View>
       )
@@ -384,6 +383,7 @@ class MyAttention extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  // console.log('MyAttention.mapStateToProps.state===', state)
   let userFollowees = selectUserFollowees(state)
   // userFollowees = []
   let userFolloweesLastCreatedAt = ''
@@ -428,14 +428,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(65),
     flex: 1,
     width: PAGE_WIDTH,
     backgroundColor: 'rgba(0,0,0,0.05)'

@@ -177,14 +177,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgba(0, 0, 0, 0.05)'
 	},
 	body: {
-    ...Platform.select({
-      ios: {
-        marginTop: 64,
-      },
-      android: {
-        marginTop: 44
-      }
-    }),
+		marginTop: normalizeH(64),
     flex: 1,
   },
   row: {

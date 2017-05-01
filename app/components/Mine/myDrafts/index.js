@@ -34,6 +34,8 @@ import THEME from '../../../constants/themes/theme1'
 import ShopPromotionDraftShow from './shopPromotionDraftShow'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as Toast from '../../../components/common/Toast'
+import * as authSelector from '../../../selector/authSelector'
+import {IDENTITY_SHOPKEEPER} from '../../../constants/appConfig'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -224,30 +226,88 @@ export class MyTopic extends Component {
 
       <SwipeListView
         dataSource={this.props.dataSrc}
-        renderRow={ (data, key, rowId) => ( this.renderTopicItem(data, key, rowId)
-        )
-          // console.log('data',data,key,rowId)
-
-        }
+        renderRow={(data, key, rowId) => (this.renderTopicItem(data, key, rowId))}
 
         leftOpenValue={75}
         rightOpenValue={-75}
+        enableEmptySections={true}
       />
     )
   }
 
   renderShopList() {
-    return (<SwipeListView
-      dataSource={this.props.shopDataSrc}
-      renderRow={ (data, key, rowId) => ( this.renderShopPromotionItem(data, key, rowId)
+    return (
+      <SwipeListView
+        dataSource={this.props.shopDataSrc}
+        renderRow={(data, key, rowId) => (this.renderShopPromotionItem(data, key, rowId))}
+
+        leftOpenValue={75}
+        rightOpenValue={-75}
+        enableEmptySections={true}
+      />
+    )
+  }
+
+  renderTabBar() {
+    let identity=this.props.identity
+    if (identity && identity.includes(IDENTITY_SHOPKEEPER)) {
+      return (
+        <View style={styles.tabBar}>
+          <TouchableOpacity
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+            onPress={()=> {
+              this.toggleTab(0)
+            }}>
+            <View style={[{
+              width: normalizeW(100),
+              height: normalizeH(44),
+              justifyContent: 'flex-end',
+              alignItems: 'center'
+            },
+              this.state.tabType == 0 ?
+              {
+                borderBottomWidth: 3,
+                borderColor: THEME.base.mainColor
+              } : {}]}>
+              <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                this.state.tabType == 0 ?
+                {
+                  color: THEME.base.mainColor,
+                  fontWeight: 'bold',
+                } : {color: '#4A4A4A'}]}
+              >话题</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+            onPress={()=> {
+              this.toggleTab(1)
+            }}>
+            <View style={[{
+              width: normalizeW(100),
+              height: normalizeH(44),
+              justifyContent: 'flex-end',
+              alignItems: 'center'
+            },
+              this.state.tabType == 1 ?
+              {
+                borderBottomWidth: 3,
+                borderColor: THEME.base.mainColor
+              } : {}]}>
+              <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
+                this.state.tabType == 1 ?
+                {
+                  color: THEME.base.mainColor,
+                  fontWeight: 'bold',
+                } : {color: '#4A4A4A'}]}
+              >店铺活动</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       )
-        // console.log('data',data,key,rowId)
-
-      }
-
-      leftOpenValue={75}
-      rightOpenValue={-75}
-    />)
+    } else {
+      return <View/>
+    }
   }
 
   render() {
@@ -265,61 +325,8 @@ export class MyTopic extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <View style={styles.tabBar}>
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-              onPress={()=> {
-                this.toggleTab(0)
-              }}>
-              <View style={[{
-                width: normalizeW(100),
-                height: normalizeH(44),
-                justifyContent: 'flex-end',
-                alignItems: 'center'
-              },
-                this.state.tabType == 0 ?
-                {
-                  borderBottomWidth: 3,
-                  borderColor: THEME.base.mainColor
-                } : {}]}>
-                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                  this.state.tabType == 0 ?
-                  {
-                    color: THEME.base.mainColor,
-                    fontWeight: 'bold',
-                  } : {color: '#4A4A4A'}]}
-                >话题</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-              onPress={()=> {
-                this.toggleTab(1)
-              }}>
-              <View style={[{
-                width: normalizeW(100),
-                height: normalizeH(44),
-                justifyContent: 'flex-end',
-                alignItems: 'center'
-              },
-                this.state.tabType == 1 ?
-                {
-                  borderBottomWidth: 3,
-                  borderColor: THEME.base.mainColor
-                } : {}]}>
-                <Text style={[{fontSize: em(17), paddingBottom: normalizeH(8)},
-                  this.state.tabType == 1 ?
-                  {
-                    color: THEME.base.mainColor,
-                    fontWeight: 'bold',
-                  } : {color: '#4A4A4A'}]}
-                >店铺活动</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          {this.renderTabBar()}
           {this.state.tabType == 0 ? this.renderTopicList() : this.renderShopList()}
-
-
         </View>
       </View>
     )
@@ -328,30 +335,58 @@ export class MyTopic extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
+  const userId = authSelector.activeUserId(state)
+  const identity = authSelector.getUserIdentity(state, userId)
   const topics = getMyTopicDrafts(state)
   const shopPromotions = getMyShopPromotionDrafts(state)
-  // console.log('shopPromotions',shopPromotions)
-  let topicArr = []
-  // for (let key in topics) {
-  //   topicArr.push({
-  //     key: key, data: {
-  //       content: topics[key].content, //话题内容
-  //       title: topics[key].title,
-  //       abstract: topics[key].abstract,
-  //       imgGroup: topics[key].imgGroup, //图片
-  //       objectId: topics[key].topicId,  //话题id
-  //       categoryId: topics[key].categoryId,
-  //       city: topics[key].city,
-  //       draftDay: topics[key].draftDay,
-  //       draftMonth: topics[key].draftMonth
-  //     }
-  //   })
-  //   console.log('topicArr', topicArr)
-  // }
+
+  // let topicArr = []
+  for (let key in topics) {
+    // topicArr.push({
+    //   key: key, data: {
+    //     content: topics[key].content, //话题内容
+    //     title: topics[key].title,
+    //     abstract: topics[key].abstract,
+    //     imgGroup: topics[key].imgGroup, //图片
+    //     objectId: topics[key].topicId,  //话题id
+    //     categoryId: topics[key].categoryId,
+    //     city: topics[key].city,
+    //     draftDay: topics[key].draftDay,
+    //     draftMonth: topics[key].draftMonth
+    //   }
+    // })  console.log('topics',topics)
+    // console.log('key',key)
+
+    if(topics[key].userId!=userId){
+      // console.log('userId',userId)
+      delete topics[key]
+    }
+  }
+  for (let key in shopPromotions) {
+    // topicArr.push({
+    //   key: key, data: {
+    //     content: topics[key].content, //话题内容
+    //     title: topics[key].title,
+    //     abstract: topics[key].abstract,
+    //     imgGroup: topics[key].imgGroup, //图片
+    //     objectId: topics[key].topicId,  //话题id
+    //     categoryId: topics[key].categoryId,
+    //     city: topics[key].city,
+    //     draftDay: topics[key].draftDay,
+    //     draftMonth: topics[key].draftMonth
+    //   }
+    // })
+    if(shopPromotions[key].userId!=userId){
+      delete shopPromotions[key]
+    }
+  }
+  // console.log('topics',topics)
+
   return {
     shopDataSrc: ds.cloneWithRows(shopPromotions),
     dataSrc: ds.cloneWithRows(topics),
     // dataSrc: ds.cloneWithRows(topics),
+    identity:identity,
     topics: topics,
   }
 
@@ -369,17 +404,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#E5E5E5',
+    backgroundColor: '#fff',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
   },
   listViewStyle: {
     width: PAGE_WIDTH,

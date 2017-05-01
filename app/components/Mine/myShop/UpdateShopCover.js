@@ -128,6 +128,7 @@ class UpdateShopCover extends Component {
               imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
               shouldUploadImage={this.state.shouldUploadImage}
               uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
+              imageWidth={PAGE_WIDTH}
             />
           </View>
         </View>
@@ -159,15 +160,8 @@ const styles = StyleSheet.create({
   headerContainerStyle: {
     borderBottomWidth: 0,
     backgroundColor: THEME.colors.green,
-    ...Platform.select({
-      ios: {
-        paddingTop: 20,
-        height: 64
-      },
-      android: {
-        height: 44
-      }
-    }),
+    paddingTop: 20,
+    height: 64,
   },
   headerLeftStyle: {
     color: '#fff',
@@ -182,14 +176,7 @@ const styles = StyleSheet.create({
     fontSize: em(17)
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: 64,
-      },
-      android: {
-        marginTop: 44
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
     backgroundColor: '#fff'
   },

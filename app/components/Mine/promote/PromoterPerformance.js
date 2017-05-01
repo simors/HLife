@@ -38,7 +38,7 @@ class PromoterPerformance extends Component {
                           onPress={() => Actions.pop()} >
           <Icon name="ios-arrow-back" style={styles.left} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => {Actions.EARN_RECORD({promoterId: this.props.activePromoterId})}}>
           <Image style={{width: normalizeW(20), height: normalizeH(20)}} source={require('../../../assets/images/revernue_details.png')}/>
         </TouchableOpacity>
       </View>
@@ -172,6 +172,7 @@ const mapStateToProps = (state, ownProps) => {
   let promoterId = activePromoter(state)
   let promoter = getPromoterById(state, promoterId)
   return {
+    activePromoterId: promoterId,
     promoter,
   }
 }
@@ -187,24 +188,10 @@ const styles = StyleSheet.create({
   },
   header: {
     width: PAGE_WIDTH,
-    ...Platform.select({
-      ios: {
-        height: normalizeH(217)
-      },
-      android: {
-        height: normalizeH(197)
-      },
-    }),
+    height: normalizeH(217),
   },
   toolView: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(20)
-      },
-      android: {
-        marginTop: normalizeH(0)
-      },
-    }),
+    marginTop: normalizeH(20),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -10,7 +10,8 @@ import {
   Keyboard,
   Animated,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  BackAndroid
 } from 'react-native'
 
 import dismissKeyboard from 'react-native-dismiss-keyboard'
@@ -21,7 +22,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export default class KeyboardAwareToolBar extends Component {
 
   static defaultProps = {
-    isAnimated : true
+    isAnimated : true,
+    hideOverlay: true
   }
 
   constructor(props) {
@@ -40,8 +42,8 @@ export default class KeyboardAwareToolBar extends Component {
     this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this)
 
     this.state = {
-      showOverlay: false,
-      top: PAGE_HEIGHT
+      top: PAGE_HEIGHT,
+      notListenKeyboardEvent: false
     }
   }
 
@@ -52,6 +54,8 @@ export default class KeyboardAwareToolBar extends Component {
     } else {
       Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
       Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+
+      // BackAndroid.addEventListener('hardwareBackPress', this.onAndroidHardwareBackPress)
     }
   }
 
@@ -62,16 +66,23 @@ export default class KeyboardAwareToolBar extends Component {
     } else {
       Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
       Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+      // BackAndroid.removeListener('hardwareBackPress', this.onAndroidHardwareBackPress)
     }
   }
 
   componentWillReceiveProps(nextProps = {}) {
     // console.log('componentWillReceiveProps.nextProps=====', nextProps)
+    if(this.props.notListenKeyboardEvent != nextProps.notListenKeyboardEvent) {
+      this.setState({
+        notListenKeyboardEvent: !!nextProps.notListenKeyboardEvent
+      })
+    }
   }
 
-  componentWillUnmount() {
-
-  }
+  // onAndroidHardwareBackPress = (e) => {
+  //   this.onKeyboardWillHide(e)
+  // }
 
   getKeyboardHeight() {
     return this._keyboardHeight
@@ -93,10 +104,6 @@ export default class KeyboardAwareToolBar extends Component {
     return this._isTypingDisabled
   }
 
-  setIsTypingDisabled(value) {
-    this._isTypingDisabled = value
-  }
-
   rePosition() {
     return this.getKeyboardHeight()
   }
@@ -106,39 +113,43 @@ export default class KeyboardAwareToolBar extends Component {
     // console.log('onKeyboardWillShow.e.endCoordinates=', e.endCoordinates)
     // console.log('onKeyboardWillShow. e.end=',  e.end)
     // console.log('onKeyboardWillShow. Platform.Version=',  Platform.Version)
-    this.setIsTypingDisabled(true)
-    if (Platform.OS === 'android') {
-      this.setKeyboardHeight(0)
-    }else{
-      this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
+    // console.log('this.state.notListenKeyboardEvent===', this.state.notListenKeyboardEvent)
+    if(!this.state.notListenKeyboardEvent) {
+      if (Platform.OS === 'android') {
+        this.setKeyboardHeight(0)
+      }else{
+        this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height)
+      }
+      if(!this.props.hideOverlay) {
+        this.setState({
+          top: this.props.top || 0,
+        })
+      }
     }
-    this.setState({
-      top: 0,
-      showOverlay: true
-    })
   }
 
-  onKeyboardWillHide() {
-    this.setIsTypingDisabled(true)
-    this.setKeyboardHeight(this.props.initKeyboardHeight || 0)
-    this.setState({
-      top: PAGE_HEIGHT,
-      showOverlay: false
-    })
+  onKeyboardWillHide(e) {
+    // console.log('onKeyboardWillHide.e=', e)
+    if(!this.state.notListenKeyboardEvent) {
+      this.setKeyboardHeight(this.props.initKeyboardHeight || 0)
+      if(!this.props.hideOverlay) {
+        this.setState({
+          top: PAGE_HEIGHT,
+        })
+      }
+    }
   }
 
   onKeyboardDidShow(e) {
     if (Platform.OS === 'android') {
       this.onKeyboardWillShow(e)
     }
-    this.setIsTypingDisabled(false)
   }
 
   onKeyboardDidHide(e) {
     if (Platform.OS === 'android') {
       this.onKeyboardWillHide(e)
     }
-    this.setIsTypingDisabled(false)
   }
 
   onTouchStart() {
@@ -158,14 +169,19 @@ export default class KeyboardAwareToolBar extends Component {
   }
 
   render() {
+    if(this.props.hideOverlay) {
+      return (
+        <Animated.View style={[styles.container, {bottom: this.rePosition()}, this.props.containerStyle]}>
+          {this.props.children}
+        </Animated.View>
+      )
+    }
+
     return (
       <View style={[{position:'absolute',left:0,height:PAGE_HEIGHT,width: PAGE_WIDTH}, {top:this.state.top}]}>
-        {this.state.showOverlay
-          ? <TouchableWithoutFeedback onPress={()=>{this.onKeyboardWillHide();dismissKeyboard()}}>
-              <View style={{flex:1,backgroundColor:'rgba(0,0,0,0.5)'}}/>
-            </TouchableWithoutFeedback>
-          : null
-        }
+        <TouchableWithoutFeedback onPress={()=>{this.onKeyboardWillHide();dismissKeyboard()}}>
+          <View style={{flex:1,backgroundColor:'rgba(0,0,0,0.5)'}}/>
+        </TouchableWithoutFeedback>
         <Animated.View style={[styles.container, {bottom: this.rePosition()}, this.props.containerStyle]}>
           {this.props.children}
         </Animated.View>

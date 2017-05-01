@@ -1,9 +1,6 @@
 /**
  * Created by lilu on 2017/4/15.
  */
-/**
- * Created by wanpeng on 2017/3/24.
- */
 import React, {Component} from 'react'
 import {
   View,
@@ -44,23 +41,36 @@ const topicName = {
   formKey: updateTopicForm,
   stateKey: Symbol('topicName'),
   type: "topicName",
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入标题'}
+  },
 }
 
 const topicContent = {
   formKey: updateTopicForm,
   stateKey: Symbol('topicContent'),
   type: 'topicContent',
+  checkValid: (data) => {
+    let textLen = 0
+    if (data && data.text) {
+      data.text.forEach((content) => {
+        if (content.type === 'COMP_TEXT') {
+          textLen += content.text.length
+        }
+      })
+    }
+    if (textLen >= 20) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '正文内容不少于20字'}
+  },
 }
 
 const rteHeight = {
-  ...Platform.select({
-    ios: {
-      height: normalizeH(64),
-    },
-    android: {
-      height: normalizeH(44)
-    }
-  })
+  height: normalizeH(64),
 }
 
 const wrapHeight = normalizeH(118)
@@ -81,7 +91,7 @@ class EditTopicDraft extends Component {
     this.draftId=uuid.v1()
   }
 
-  submitSuccessCallback = () => {
+  submitSuccessCallback() {
     this.props.handleDestroyTopicDraft({id:this.draftId})
 
     this.isPublishing = false
@@ -89,7 +99,8 @@ class EditTopicDraft extends Component {
     Toast.show('恭喜您,更新成功!')
   }
 
-  submitErrorCallback = (error) => {
+  submitErrorCallback(error) {
+    this.isPublishing = false
     Toast.show(error.message)
   }
 
@@ -97,18 +108,20 @@ class EditTopicDraft extends Component {
     if (this.props.isLogin) {
       if (this.state.selectedTopic) {
         if (this.isPublishing) {
+          Toast.show('正在发布，请稍后！', {duration: 2000})
           return
         }
         this.isPublishing = true
         Toast.show('开始更新...', {
-          duration: 1000,
+          duration: 500,
           onHidden: ()=> {
             this.publishTopic()
           }
         })
       }
       else {
-        Toast.show("请选择一个话题")
+        Toast.show("请选择一个话题类别")
+        this.isPublishing = false
       }
     }
     else {
@@ -123,8 +136,8 @@ class EditTopicDraft extends Component {
       topicId: this.props.topic.objectId,
       categoryId: this.state.selectedTopic.objectId,
       submitType: TOPIC_FORM_SUBMIT_TYPE.UPDATE_TOPICS,
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback
+      success: () =>  this.submitSuccessCallback(),
+      error: (err) => this.submitErrorCallback(err)
     })
   }
 
@@ -133,9 +146,7 @@ class EditTopicDraft extends Component {
       this.setState({selectedTopic: this.props.topicId});
     }
     this.setInterval(()=>{
-      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm,
-      })
-      console.log('here is uid ',this.draftId)
+      this.props.fetchTopicDraft({draftId:this.draftId,formKey: updateTopicForm})
     },1000)
   }
 
@@ -149,7 +160,7 @@ class EditTopicDraft extends Component {
     this.refs.modal3.close();
   }
   componentWillUnmount(){
-    console.log('unmount component')
+    // console.log('unmount component')
   }
   renderTopicsSelected() {
     if (this.props.topics) {
@@ -222,9 +233,9 @@ class EditTopicDraft extends Component {
   }
 
   render() {
+    // console.log('topicName:', topicName)
     return (
       <View style={styles.container}>
-
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
@@ -234,9 +245,7 @@ class EditTopicDraft extends Component {
           rightText="更新"
           rightPress={() => this.onButtonPress()}
         />
-
         <View style={styles.body}>
-
           <View>
             <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
                   onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
@@ -306,14 +315,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     height: PAGE_HEIGHT,
     width: PAGE_WIDTH
   },

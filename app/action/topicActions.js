@@ -8,6 +8,8 @@ import * as locSelector from '../selector/locSelector'
 import AV from 'leancloud-storage'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
+import * as numberUtils from '../util/numberUtils'
+import {trim} from '../util/Utils'
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -46,6 +48,7 @@ export function publishTopicFormData(payload) {
       }
       formData = getInputFormData(getState(), payload.formKey)
     }
+    console.log('payload:', payload)
     switch (payload.submitType) {
       case TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS:
         dispatch(handlePublishTopic(payload, formData))
@@ -91,9 +94,9 @@ function handlePublishTopic(payload, formData) {
           province: province,
           city: city,
           district: district,
-          title:formData.topicName.text,
+          title: trim(formData.topicName.text),
           content: JSON.stringify(formData.topicContent.text),
-          abstract: formData.topicContent.abstract,
+          abstract: trim(formData.topicContent.abstract),
           imgGroup: leanUris,
           categoryId: payload.categoryId,
           userId: payload.userId,
@@ -123,9 +126,9 @@ function handlePublishTopic(payload, formData) {
         province: province,
         city: city,
         district: district,
-        title:formData.topicName.text,
+        title: trim(formData.topicName.text),
         content: JSON.stringify(formData.topicContent.text),
-        abstract: formData.topicContent.abstract,
+        abstract: trim(formData.topicContent.abstract),
         imgGroup: payload.images,
         categoryId: payload.categoryId,
         userId: payload.userId,
@@ -162,9 +165,9 @@ function handleUpdateTopic(payload, formData) {
           })
         }
         let updateTopicPayload = {
-          title:formData.topicName.text,
+          title: trim(formData.topicName.text),
           content: JSON.stringify(formData.topicContent.text),
-          abstract: formData.topicContent.abstract,
+          abstract: trim(formData.topicContent.abstract),
           imgGroup: leanUris,
           categoryId: payload.categoryId,
           topicId: payload.topicId,
@@ -187,9 +190,9 @@ function handleUpdateTopic(payload, formData) {
       })
     } else {
       let updateTopicPayload = {
-        title:formData.topicName.text,
+        title: trim(formData.topicName.text),
         content: JSON.stringify(formData.topicContent.text),
-        abstract: formData.topicContent.abstract,
+        abstract: trim(formData.topicContent.abstract),
         imgGroup: payload.images,
         categoryId: payload.categoryId,
         topicId: payload.topicId,
@@ -238,6 +241,7 @@ function handlePublishTopicComment(payload, formData) {
       return
     }
     lcTopics.publishTopicComments(publishTopicCommentPayload).then((result) => {
+      // console.log('result===', result)
       if (payload.success) {
         payload.success()
       }
@@ -247,7 +251,8 @@ function handlePublishTopicComment(payload, formData) {
         topicId: payload.topicId,
         replyTo: payload.replyTo,
         commentId: result.objectId,
-        content: payload.content
+        content: payload.content,
+        commentTime:result.createdDate,
       }))
       dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
     }).catch((error) => {
@@ -316,6 +321,46 @@ export function fetchTopicById(payload) {
 
 export function fetchTopicCommentsByTopicId(payload) {
   return (dispatch, getState) => {
+    lcTopics.fetchTopicComments(payload).then((result) => {
+
+      let topicComments = result.topicComments
+      let topicCommentLikeCounts = result.topicCommentLikeCounts
+      let userUpInfos = result.userUpInfos
+
+      if(topicCommentLikeCounts && topicCommentLikeCounts.length) {
+        topicCommentLikeCounts.forEach((item) => {
+          let updateAction = createAction(topicActionTypes.FETCH_TOPIC_LIKES_TOTAL_COUNT_SUCCESS)
+          dispatch(updateAction(item))
+        })
+      }
+
+      if(userUpInfos && userUpInfos.length) {
+        userUpInfos.forEach((item) => {
+          let updateAction = createAction(topicActionTypes.FETCH_TOPIC_IS_LIKED_SUCCESS)
+          dispatch(updateAction(item))
+        })
+      }
+      
+      let actionType = topicActionTypes.FETCH_TOPIC_COMMENTS_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = topicActionTypes.FETCH_TOPIC_COMMENTS_SUCCESS_PAGING
+      }
+      let action = createAction(actionType)
+      dispatch(action({topicId:payload.topicId, topicComments: topicComments}))
+      if(payload.success) {
+        payload.success(topicComments.size == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+/*
+export function fetchTopicCommentsByTopicId(payload) {
+  return (dispatch, getState) => {
     lcTopics.getTopicComments(payload).then((topicComments) => {
       let updateTopicCommentsAction = createAction(topicActionTypes.UPDATE_TOPIC_COMMENTS)
       dispatch(updateTopicCommentsAction({topicId:payload.topicId, topicComments: topicComments}))
@@ -326,6 +371,7 @@ export function fetchTopicCommentsByTopicId(payload) {
     })
   }
 }
+*/
 
 export function likeTopic(payload) {
   return (dispatch, getState) => {
@@ -397,8 +443,21 @@ export function fetchTopicIsLiked(payload) {
 export function fetchTopicLikeUsers(payload) {
   return (dispatch, getState) => {
     lcTopics.fetchTopicLikeUsers(payload).then((topicLikeUsers) => {
-      let updateTopicLikeUsersAction = createAction(topicActionTypes.UPDATE_TOPIC_LIKE_USERS)
-      dispatch(updateTopicLikeUsersAction({topicId: payload.topicId, topicLikeUsers: topicLikeUsers}))
+      let actionType = topicActionTypes.FETCH_TOPIC_LIKE_USERS_SUCCESS
+      if(!payload.isRefresh) {
+        actionType = topicActionTypes.FETCH_TOPIC_LIKE_USERS_SUCCESS_PAGING
+      }
+
+      let action = createAction(actionType)
+      dispatch(action({topicId: payload.topicId, topicLikeUsers: topicLikeUsers}))
+
+      if (payload.success) {
+        payload.success(topicLikeUsers.size)
+        // payload.success(topicLikeUsers.size <= 0)
+      }
+
+      // let updateTopicLikeUsersAction = createAction(topicActionTypes.UPDATE_TOPIC_LIKE_USERS)
+      // dispatch(updateTopicLikeUsersAction({topicId: payload.topicId, topicLikeUsers: topicLikeUsers}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -430,5 +489,18 @@ export function disableTopic(payload){
       }
     })
   }
+}
 
+export function fetchShareTopicUrl(payload) {
+  return (dispatch, getState) => {
+    lcTopics.getShareTopicUrl({topicId: payload.topicId}).then((result) => {
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }

@@ -22,6 +22,17 @@ export default class PersonalQR extends Component {
     super(props)
   }
 
+  renderAvatar() {
+    if (!this.props.avatar) {
+      return <View/>
+    }
+    return (
+      <View style={styles.avatarView}>
+        <Image style={{width: normalizeW(50), height: normalizeH(50)}} source={{uri: this.props.avatar}}/>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -39,9 +50,7 @@ export default class PersonalQR extends Component {
                   size={normalizeW(200)}
                   bgColor={THEME.base.mainColor}
                   fgColor='white'/>
-          <View style={styles.avatarView}>
-            <Image style={{width: normalizeW(50), height: normalizeH(50)}} source={{uri: this.props.data.avatar}}/>
-          </View>
+          {this.renderAvatar()}
         </View>
       </View>
     )
@@ -63,14 +72,7 @@ const styles = StyleSheet.create({
   },
   qrView: {
     alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(140)
-      },
-      android: {
-        marginTop: normalizeH(120)
-      },
-    }),
+    marginTop: normalizeH(140),
   },
   avatarView: {
     position: 'absolute',

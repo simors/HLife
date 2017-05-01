@@ -30,7 +30,7 @@ import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
 
 import {fetchAppServicePhone} from '../../action/configAction'
-import {fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
+import {fetchUserFollowShops, fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
 import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
@@ -58,7 +58,8 @@ class ShopDetail extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchShopAnnouncements({id: this.props.id})
+      this.props.fetchShopDetail({id: this.props.id})
+      // this.props.fetchShopAnnouncements({id: this.props.id})
       this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
       this.props.fetchShopCommentTotalCount({id: this.props.id})
       this.props.fetchGuessYouLikeShopList({id: this.props.id})
@@ -73,11 +74,11 @@ class ShopDetail extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(()=>{
-      if(!this.props.shopDetail.id) {
-        this.props.fetchShopDetail({id: this.props.id})
-      }
-    })
+    // InteractionManager.runAfterInteractions(()=>{
+    //   if(!this.props.shopDetail.id) {
+    //     this.props.fetchShopDetail({id: this.props.id})
+    //   }
+    // })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -123,10 +124,12 @@ class ShopDetail extends Component {
       Actions.LOGIN()
       return
     }
+    const that = this
     let payload = {
       id: this.props.id,
       success: function(result) {
         Toast.show(result.message, {duration: 1500})
+        that.props.fetchUserFollowShops()
       },
       error: function(error) {
         Toast.show(error.message, {duration: 1500})
@@ -140,10 +143,12 @@ class ShopDetail extends Component {
       Actions.LOGIN()
       return
     }
+    const that = this
     let payload = {
       id: this.props.id,
       success: function(result) {
         Toast.show(result.message, {duration: 1500})
+        that.props.fetchUserFollowShops()
       },
       error: function(error) {
         Toast.show(error.message, {duration: 1500})
@@ -161,7 +166,7 @@ class ShopDetail extends Component {
     let payload = {
       userId: userId,
       success: function(result) {
-        that.props.fetchUserFollowees()
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -181,7 +186,7 @@ class ShopDetail extends Component {
     let payload = {
       userId: userId,
       success: function(result) {
-        that.props.fetchUserFollowees()
+        // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
       error: function(error) {
@@ -436,10 +441,11 @@ class ShopDetail extends Component {
   }
 
   showShopAlbum() {
-    this.props.shopDetail.album.unshift(this.props.shopDetail.coverUrl)
+    let album = this.props.shopDetail.album || []
+    let allAlbum = [this.props.shopDetail.coverUrl].concat(album)
     // console.log('this.props.shopDetail.album==', this.props.shopDetail.album)
     ImageGallery.show({
-      images: this.props.shopDetail.album
+      images: allAlbum
     })
   }
 
@@ -555,6 +561,8 @@ class ShopDetail extends Component {
       detailWrapStyle = styles.detailWrap
     }
 
+    let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
+
     return (
       <View style={{flex:1}}>
         <View style={detailWrapStyle}>
@@ -562,7 +570,11 @@ class ShopDetail extends Component {
             contentContainerStyle={[styles.contentContainerStyle]}
           >
             <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
-              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}/>
+              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}>
+                <View style={{position:'absolute',right:15,bottom:15,padding:3,paddingLeft:6,paddingRight:6,backgroundColor:'gray',borderRadius:2,}}>
+                  <Text style={{color:'white',fontSize:15}}>{albumLen}</Text>
+                </View>
+              </Image>
             </TouchableOpacity>
             <View style={styles.shopHead}>
               <View style={styles.shopHeadLeft}>
@@ -791,7 +803,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   userUnUpShop,
   fetchGuessYouLikeShopList,
   fetchUserOwnedShopInfo,
-  fetchAppServicePhone
+  fetchAppServicePhone,
+  fetchUserFollowShops
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)
@@ -802,14 +815,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)'
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
   },
   detailWrap: {

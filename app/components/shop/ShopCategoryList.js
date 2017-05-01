@@ -586,14 +586,14 @@ class ShopCategoryList extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <View style={{paddingTop: 40}}>
+          <View style={{flex:1,paddingTop: 40}}>
             {!this.props.shopList.length &&
               <View>
                 {this.renderTags()}
               </View>
             }
             <CommonListView
-              contentContainerStyle={{backgroundColor: 'white',minHeight:PAGE_HEIGHT-104}}
+              contentContainerStyle={{backgroundColor: 'white'}}
               dataSource={this.props.ds}
               renderRow={(rowData, sectionID, rowID, highlightRow) => this.renderRow(rowData, sectionID, rowID, highlightRow)}
               loadNewData={()=>{this.refreshData()}}
@@ -742,14 +742,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    ...Platform.select({
-      ios: {
-        marginTop: normalizeH(64),
-      },
-      android: {
-        marginTop: normalizeH(44)
-      }
-    }),
+    marginTop: normalizeH(64),
     flex: 1,
   },
   selectGroup: {
