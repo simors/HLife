@@ -259,7 +259,7 @@ class CompleteShopInfo extends Component {
         console.log('error=====', error)
         this.isSubmiting = false
         Loading.hide(this.loading)
-        Toast.show('更新店铺资料失败')
+        Toast.show(error.message || '更新店铺资料失败')
       }
     })
   }
