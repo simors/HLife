@@ -83,13 +83,9 @@ class UpdateShopCover4EditShop extends Component {
           leftText="取消"
           leftPress={() => Actions.pop()}
           title="编辑封面"
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText="完成"
           rightPress={()=>{this.updateShopCover()}}
-          rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
           <View style={{}}>

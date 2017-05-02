@@ -82,9 +82,6 @@ class ShopCertificationInfoShow extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="店铺认证信息"
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
           rightType="none"
         />
 

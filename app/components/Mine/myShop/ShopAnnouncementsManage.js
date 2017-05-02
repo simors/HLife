@@ -201,14 +201,11 @@ class ShopAnnouncementsManage extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          leftStyle={styles.headerLeftStyle}
-          headerContainerStyle={styles.headerContainerStyle}
           title="店铺公告管理"
           titleStyle={styles.headerTitleStyle}
           rightType="image"
           rightImageSource={require('../../../assets/images/notice_delete.png')}
           rightPress={()=>{this.toggleDeleteState()}}
-          rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
           <CommonListView

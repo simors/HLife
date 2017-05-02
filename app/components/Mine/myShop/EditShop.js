@@ -342,7 +342,6 @@ class EditShop extends Component {
           leftText="取消"
           leftPress={() => this.goBack()}
           title="编辑店铺"
-          headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightType="none"

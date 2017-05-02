@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     paddingLeft: em(12)
   },
   left: {
-    fontSize: em(24),
+    fontSize: em(17),
     color: '#FFF',
   },
   leftIconLabel: {

@@ -408,7 +408,6 @@ class CompleteShopInfo extends Component {
           leftText="取消"
           leftPress={() => this.goBack()}
           title="完善店铺资料"
-          headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightType="none"

@@ -113,7 +113,6 @@ class ShopPromotionDetail extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="活动详情"
-          headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightComponent={()=>{
             return (
               <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>

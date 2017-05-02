@@ -56,9 +56,6 @@ class PasswordConfirm extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='确认支付密码'
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(46), height: normalizeH(93), alignItems: 'center'}}>
