@@ -136,9 +136,6 @@ class Payment extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title={this.props.title || '收银台'}
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <ScrollView>

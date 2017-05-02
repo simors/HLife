@@ -36,8 +36,7 @@ export default class PersonalQR extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header headerContainerStyle={styles.header}
-                leftType="icon"
+        <Header leftType="icon"
                 leftStyle={styles.left}
                 leftPress={()=> {
                   Actions.pop()

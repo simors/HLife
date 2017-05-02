@@ -85,9 +85,6 @@ class IdentifyCard extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='验证银行卡信息'
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <View style={{justifyContent: 'center', height: normalizeH(104), borderBottomColor: '#AAAAAA', borderBottomWidth: 1}}>

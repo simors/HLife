@@ -77,12 +77,9 @@ class ShopFansIndex extends Component {
     return (
       <View style={styles.container}>
         {/*<StatusBar barStyle="light-content" />*/}
-        <Header headerContainerStyle={styles.header}
-                leftType='icon'
-                leftStyle={{color: '#FFFFFF'}}
+        <Header leftType='icon'
                 leftPress={() => Actions.pop()}
-                title="店铺粉丝"
-                titleStyle={styles.title}>
+                title="店铺粉丝">
         </Header>
         <View style={styles.body}>
           <CommonListView

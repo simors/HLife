@@ -46,7 +46,6 @@ class GetInvitationCode extends Component {
           leftText="x"
           leftPress={() => Actions.pop()}
           title="邀请码获取方式"
-          headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
         />

@@ -58,9 +58,6 @@ class Wallet extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='钱包'
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), paddingRight: normalizeW(15)}}>

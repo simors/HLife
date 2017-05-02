@@ -132,14 +132,10 @@ class PublishShopAnnouncement extends Component {
           leftType="text"
           leftText="取消"
           leftPress={() => Actions.pop()}
-          leftStyle={styles.headerLeftStyle}
-          headerContainerStyle={styles.headerContainerStyle}
           title="发布公告"
-          titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText='完成'
           rightPress={()=>{this.onButtonPress()}}
-          rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
           <KeyboardAwareScrollView>

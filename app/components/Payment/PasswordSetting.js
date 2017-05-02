@@ -36,9 +36,6 @@ class PasswordSetting extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='支付设置'
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <TouchableOpacity style={styles.item} onPress={() => {}}>

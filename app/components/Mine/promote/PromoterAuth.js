@@ -133,15 +133,12 @@ class PromoterAuth extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header headerContainerStyle={styles.header}
-                leftType="icon"
+        <Header leftType="icon"
                 leftIconName="ios-arrow-back"
-                leftStyle={{color: '#FFFFFF'}}
                 leftPress={()=> {
                   Actions.pop()
                 }}
                 title="推广认证"
-                titleStyle={styles.left}
                 rightType=""
         >
         </Header>

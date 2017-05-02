@@ -109,9 +109,6 @@ class Withdrawals extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='确认提现'
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <KeyboardAwareScrollView keyboardShouldPersistTaps={true} automaticallyAdjustContentInsets={false}>

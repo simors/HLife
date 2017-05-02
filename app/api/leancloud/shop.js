@@ -940,14 +940,21 @@ export function fetchSimilarShopList(payload) {
   let similarQuery = new AV.Query('Shop')
   let notQuery = new AV.Query('Shop')
   similarQuery.equalTo('targetShopCategory', targetShopCategory)
-  notQuery.notEqualTo('objectId', shopId)
-  let andQuery = AV.Query.and(similarQuery, notQuery)
-  andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
-  andQuery.addDescending('createdAt')
-  andQuery.limit(3)
-  query.equalTo('status', 1)
-  return andQuery.find().then(function (results) {
-    // console.log('getShopList.results=', results)
+  similarQuery.equalTo('status', 1)
+
+  similarQuery.notEqualTo('objectId', shopId)
+  similarQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
+  similarQuery.addDescending('createdAt')
+  similarQuery.limit(3)
+  
+  // notQuery.notEqualTo('objectId', shopId)
+  // let andQuery = AV.Query.and(similarQuery, notQuery)
+  // andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
+  // andQuery.addDescending('createdAt')
+  // andQuery.limit(3)
+  
+  return similarQuery.find().then(function (results) {
+    console.log('fetchSimilarShopList.results=', results)
     let shopList = []
     results.forEach((result) => {
       shopList.push(ShopInfo.fromLeancloudObject(result))

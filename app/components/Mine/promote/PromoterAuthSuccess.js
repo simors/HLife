@@ -42,9 +42,6 @@ class promoterAuthSuccess extends Component {
           leftText="取消"
           leftPress={() => Actions.pop()}
           title="推广大使"
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <Image style={styles.image} source={require("../../../assets/images/promote_sucsess_gift.png")} />

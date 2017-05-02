@@ -318,9 +318,6 @@ class ShopRegister extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="注册店铺"
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
 

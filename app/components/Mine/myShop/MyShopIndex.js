@@ -60,10 +60,10 @@ class MyShopIndex extends Component {
         this.props.fetchShopCommentList({isRefresh: true, id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopCommentTotalCount({id: this.props.userOwnedShopInfo.id})
 
-        this.props.fetchSimilarShopList({
-          id: this.props.userOwnedShopInfo.id,
-          targetShopCategoryId: this.props.userOwnedShopInfo.targetShopCategory.id
-        })
+        // this.props.fetchSimilarShopList({
+        //   id: this.props.userOwnedShopInfo.id,
+        //   targetShopCategoryId: this.props.userOwnedShopInfo.targetShopCategory.id
+        // })
 
       }
       if(this.props.isUserLogined) {
