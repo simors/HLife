@@ -152,6 +152,7 @@ class Home extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
       this.refreshData()
+      CodePush.disallowRestart();//页面加载的禁止重启，在加载完了可以允许重启
     })
   }
 
@@ -167,7 +168,7 @@ class Home extends Component {
         }
       })
     }
-    // codePush.sync()
+
     this.checkIosUpdate()
     // codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
   }
