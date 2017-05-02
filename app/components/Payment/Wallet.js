@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   headerContainerStyle: {
-    borderBottomWidth: 1,
-    backgroundColor: '#F9F9F9'
+    // borderBottomWidth: 1,
+    // backgroundColor: '#F9F9F9'
   },
   headerLeftStyle: {
     color: THEME.colors.green,

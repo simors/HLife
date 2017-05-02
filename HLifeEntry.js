@@ -22,8 +22,11 @@ import * as LC_CONFIG from './app/constants/appConfig'
 import * as AVUtils from './app/util/AVUtils'
 import {handleAppStateChange} from './app/util/AppStateUtils'
 import codePush from "react-native-code-push"
+import RNRestart from 'react-native-restart'
 import Popup from '@zzzkk2009/react-native-popup'
 import THEME from './app/constants/themes/theme1'
+import {selectNetworkStatus} from './app/selector/configSelector'
+import {updateNetworkStatus} from './app/action/configAction'
 
 const RouterWithRedux = connect()(Router)
 
@@ -76,31 +79,39 @@ AV.init(
    return true;
   }
 
-   _handleConnectionInfoChange = (connectionInfo) => {
-     console.log('connection:', connectionInfo)
-     let connectStatus = true
-     if (Platform.OS == 'ios') {
-       if (connectionInfo == 'none' || connectionInfo == 'unknown') {
-         connectStatus = false
-       }
-     } else {
-       if (connectionInfo == 'NONE' || connectionInfo == 'UNKNOWN') {
-         connectStatus = false
-       }
+  _handleConnectionInfoChange = (connectionInfo) => {
+   let connectStatus = true
+   if (Platform.OS == 'ios') {
+     if (connectionInfo == 'none' || connectionInfo == 'unknown') {
+       connectStatus = false
      }
-     if (!connectStatus) {
-       Popup.confirm({
-         title: '系统提示',
-         content: '无法访问网络，请确认网络已连接！',
-         ok: {
-           text: '确定',
-           style: {color: THEME.base.mainColor},
-           callback: ()=> {
-           }
-         },
-       })
+   } else {
+     if (connectionInfo == 'NONE' || connectionInfo == 'UNKNOWN') {
+       connectStatus = false
      }
    }
+   let preStatus = selectNetworkStatus(store.getState())
+   if (!connectStatus) {
+     Popup.confirm({
+       title: '系统提示',
+       content: '无法访问网络，请确认网络已连接！',
+       ok: {
+         text: '确定',
+         style: {color: THEME.base.mainColor},
+         callback: ()=> {
+         }
+       },
+     })
+    }
+    if (preStatus != undefined) {
+      if (preStatus == false && connectStatus == true) {
+        setTimeout(() => {
+          RNRestart.Restart()
+        }, 1000)
+      }
+    }
+    store.dispatch(updateNetworkStatus({networkStatus: connectStatus}))
+  }
 
   render() {
     if (Platform.OS == 'android') {
