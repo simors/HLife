@@ -855,6 +855,7 @@ export function fetchUserOwnedShopInfo(payload) {
   query.equalTo('owner', user)
   //query.equalTo('status', 1)
   query.include(['owner', 'targetShopCategory', 'containedTag', 'containedPromotions'])
+  // console.log('fetchUserOwnedShopInfo.query====', query)
   return query.first().then((result)=>{
     // console.log('fetchUserOwnedShopInfo.result===', result)
     let shopInfo = {}
