@@ -23,6 +23,7 @@ import {
   InteractionManager,
   StatusBar,
   Linking,
+  Animated,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -76,6 +77,7 @@ class Home extends Component {
         geoCity: props.city || '',
         skipNum: 0
       },
+      fade: new Animated.Value(0),
     }
   }
 
@@ -150,6 +152,7 @@ class Home extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.getCurrentLocation()
       this.refreshData()
+      CodePush.disallowRestart();//页面加载的禁止重启，在加载完了可以允许重启
     })
   }
 
@@ -165,7 +168,7 @@ class Home extends Component {
         }
       })
     }
-    // codePush.sync()
+
     this.checkIosUpdate()
     // codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
   }
@@ -197,6 +200,55 @@ class Home extends Component {
       default:
         return <View />
     }
+  }
+
+  handleOnScroll(e) {
+    let offset = e.nativeEvent.contentOffset.y
+    let comHeight = normalizeH(159)
+    if (offset >= 0 && offset < 10) {
+      Animated.timing(this.state.fade, {
+        toValue: 0,
+        duration: 100,
+      }).start()
+    } else if (offset > 10 && offset < comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: (offset - 10)/comHeight,
+        duration: 100,
+      }).start()
+    } else if (offset >= comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: 1,
+        duration: 100,
+      }).start()
+    }
+  }
+
+  renderMainHeader() {
+    return (
+      <Animated.View style={{
+        backgroundColor: THEME.base.mainColor,
+        opacity: this.state.fade,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: PAGE_WIDTH,
+        zIndex: 10,
+      }}
+      >
+        <Header
+          leftType="image"
+          leftImageSource={require("../../assets/images/location.png")}
+          leftImageLabel={this.props.city}
+          headerContainerStyle={{borderBottomWidth: 0, backgroundColor: 'transparent', position: 'relative'}}
+          leftPress={() => {
+          }}
+          title="汇邻优店"
+          rightComponent={() => {
+            return <MessageBell />
+          }}
+        />
+      </Animated.View>
+    )
   }
 
   renderBannerColumn() {
@@ -301,18 +353,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/*<StatusBar hidden={false} translucent={true} backgroundColor="transparent" barStyle="dark-content"/>*/}
-        <Header
-          leftType="image"
-          leftImageSource={require("../../assets/images/location.png")}
-          leftImageLabel={this.props.city}
-          leftPress={() => {
-          }}
-          title="汇邻优店"
-          rightComponent={() => {
-            return <MessageBell />
-          }}
-        />
+        {this.renderMainHeader()}
 
         <View style={styles.body}>
           <View style={{flex:1}}>
@@ -328,6 +369,8 @@ class Home extends Component {
                 this.loadMoreData()
               }}
               ref={(listView) => this.listView = listView}
+              onScroll={e => this.handleOnScroll(e)}
+              scrollEventThrottle={80}
             />
           </View>
         </View>
@@ -408,13 +451,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Home)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF',
   },
   contentContainerStyle: {
     paddingBottom: 49
   },
   body: {
-    marginTop: normalizeH(64),
+    // marginTop: normalizeH(64),
     flex: 1,
     marginBottom: 42
   },
@@ -428,7 +471,7 @@ const styles = StyleSheet.create({
     //   marginTop: normalizeH(15),
   },
   advertisementModule: {
-    height: normalizeH(159),
+    height: normalizeH(223),
     backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
   },
   columnsModule: {

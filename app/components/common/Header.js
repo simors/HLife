@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    backgroundColor: THEME.base.backgroundColor,
+    backgroundColor: THEME.base.mainColor,
     paddingTop: normalizeH(20),
     height: normalizeH(64),
     flexDirection: 'row',
@@ -174,17 +174,17 @@ const styles = StyleSheet.create({
   },
   left: {
     fontSize: em(24),
-    color: THEME.base.mainColor,
+    color: '#FFF',
   },
   leftIconLabel: {
     marginLeft: normalizeW(5),
-    color: THEME.colors.green,
+    color: '#FFF',
   },
   leftImage: {
     marginRight: 3
   },
   leftImageLabel: {
-    color: THEME.colors.gray
+    color: '#FFF'
   },
   titleWrap: {
     flex: 2,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: em(17),
-    color: '#030303',
+    color: '#FFF',
     alignSelf: 'center'
   },
   rightWrap: {
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   },
   right: {
     fontSize: em(17),
-    color: THEME.base.deepColor,
+    color: '#FFF',
   },
   rightImage: {
     marginLeft: 3

@@ -65,7 +65,7 @@ class PersonalHomePage extends Component {
       }
 
       this.props.getUserInfoById({userId: this.props.userId})
-      // // this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
+      this.props.fetchUserOwnedShopInfo({userId: this.props.userId})
       this.props.fetchOtherUserFollowers({userId: this.props.userId})
       this.props.fetchOtherUserFollowersTotalCount({userId: this.props.userId})
       this.props.fetchUserTopicsTotalCount({userId: this.props.userId})
@@ -340,7 +340,14 @@ class PersonalHomePage extends Component {
             </TouchableOpacity>  
         }
 
-        <TouchableOpacity style={[styles.bottomViewItemBox]} onPress={()=>{Actions.SHOP_DETAIL({id: userOwnedShopInfo.id})}}>
+        <TouchableOpacity style={[styles.bottomViewItemBox]} 
+          onPress={()=>{
+            if(!userOwnedShopInfo.id) {
+              Toast.show('该用户暂未开店')
+              return
+            }
+            Actions.SHOP_DETAIL({id: userOwnedShopInfo.id})
+          }}>
           <View style={[styles.vItem]}>
             <Image style={{}} source={require('../../assets/images/shop_24_personal.png')}/>
             <Text style={[styles.vItemTxt, {color:'#FF7819'}]}>个人店铺</Text>
@@ -460,7 +467,9 @@ const mapStateToProps = (state, ownProps) => {
   }
   // console.log('userInfo===', userInfo)
   // console.log('activeUserInfo===', activeUserInfo)
+  // console.log('ownProps.userId=====', ownProps.userId)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state, ownProps.userId)
+  // console.log('userOwnedShopInfo=====', userOwnedShopInfo)
   const userFollowers = authSelector.selectUserFollowers(state, ownProps.userId)
   const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
 

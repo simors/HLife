@@ -151,6 +151,9 @@ export function userIsFollowedShop(payload) {
     lcShop.isFollowedShop(payload).then((result)=>{
       let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
       dispatch(updateAction(result))
+      if(payload.success){
+        payload.success(result)
+      }
       return result
     }).catch((error) => {
       if(payload.error){
@@ -471,6 +474,7 @@ export function fetchUserOwnedShopInfo(payload) {
   return (dispatch, getState) => {
     lcShop.fetchUserOwnedShopInfo(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS)
+      // console.log('fetchUserOwnedShopInfo==result===', result)
       dispatch(updateAction(result))
       if(payload && payload.success){
         payload.success(result)

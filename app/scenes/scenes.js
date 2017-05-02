@@ -37,6 +37,7 @@ import UpdateShopAlbum4EditShop from '../components/Mine/myShop/UpdateShopAlbum4
 import ShopAnnouncementsManage from '../components/Mine/myShop/ShopAnnouncementsManage'
 import PublishShopAnnouncement from '../components/Mine/myShop/PublishShopAnnouncement'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
+import HowGetInvitationCode from '../components/Mine/myShop/HowGetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
 import ShopDetail from '../components/shop/ShopDetail'
@@ -143,6 +144,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_ANNOUNCEMENTS_MANAGE" component={ShopAnnouncementsManage}/>
       <Scene key="PUBLISH_SHOP_ANNOUNCEMENT" component={PublishShopAnnouncement}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
+      <Scene key="HOW_GET_INVITATION_CODE" component={HowGetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
       <Scene key="SHOP_DETAIL" component={ShopDetail} />

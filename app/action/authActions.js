@@ -55,61 +55,63 @@ export function submitFormData(payload) {
         payload.error({message: isFormValid.errMsg})
       }
       return
+    }else {
+      const formData = getInputFormData(getState(), payload.formKey)
+      switch (payload.submitType) {
+        case INPUT_FORM_SUBMIT_TYPE.REGISTER:
+          dispatch(handleRegister(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
+          dispatch(handleLoginWithPwd(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
+          dispatch(handleResetPwdSmsCode(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.SET_NICKNAME:
+          dispatch(handleSetNickname(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
+          dispatch(handleProfileSubmit(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
+          dispatch(handleShopCertification(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.SHOP_RE_CERTIFICATION:
+          dispatch(handleShopReCertification(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT:
+          dispatch(handleHealthProfileSubmit(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.PROMOTER_RE_CERTIFICATION:
+          dispatch(handleShopReCertification(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
+          dispatch(handleCompleteShopInfo(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.EDIT_SHOP_IFNO:
+          dispatch(handleEditShopInfo(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
+          dispatch(handleShopCover(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_ALBUM:
+          dispatch(handleShopAlbum(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT:
+          dispatch(handlePublishAnnouncement(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.PUBLISH_SHOP_COMMENT:
+          dispatch(handlePublishShopComment(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT:
+          dispatch(handleUpdateAnnouncement(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.PAYMENT_AUTH:
+          dispatch(handlePaymentAuth(payload, formData))
+          break
+      }
     }
-    const formData = getInputFormData(getState(), payload.formKey)
-    switch (payload.submitType) {
-      case INPUT_FORM_SUBMIT_TYPE.REGISTER:
-        dispatch(handleRegister(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
-        dispatch(handleLoginWithPwd(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
-        dispatch(handleResetPwdSmsCode(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.SET_NICKNAME:
-        dispatch(handleSetNickname(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
-        dispatch(handleProfileSubmit(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
-        dispatch(handleShopCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.SHOP_RE_CERTIFICATION:
-        dispatch(handleShopReCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT:
-        dispatch(handleHealthProfileSubmit(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_RE_CERTIFICATION:
-        dispatch(handleShopReCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
-        dispatch(handleCompleteShopInfo(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.EDIT_SHOP_IFNO:
-        dispatch(handleEditShopInfo(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
-        dispatch(handleShopCover(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_ALBUM:
-        dispatch(handleShopAlbum(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT:
-        dispatch(handlePublishAnnouncement(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PUBLISH_SHOP_COMMENT:
-        dispatch(handlePublishShopComment(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT:
-        dispatch(handleUpdateAnnouncement(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PAYMENT_AUTH:
-        dispatch(handlePaymentAuth(payload, formData))
-        break
-    }
+    
   }
 }
 

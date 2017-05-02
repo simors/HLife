@@ -67,6 +67,7 @@ class Mine extends Component {
   }
 
   shopManage() {
+    // Actions.COMPLETE_SHOP_INFO()
     // Actions.SHOPR_EGISTER()
     // return
     if(!this.props.isUserLogined) {

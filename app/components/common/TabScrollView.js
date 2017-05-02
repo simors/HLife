@@ -90,7 +90,7 @@ TabScrollView.defaultProps = {
 
   inactiveTextColor: '#686868',
   activeTextColor: THEME.base.mainColor,
-  backgroundColor: '#f2f2f2',
+  backgroundColor: THEME.base.mainColor,
 }
 
 const styles = StyleSheet.create({
@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
   tabBarTabStyle: {
     paddingBottom: 0,
     paddingLeft: 12,
-    paddingRight: 12
+    paddingRight: 12,
+    backgroundColor: '#FFF',
   },
 
 
@@ -118,6 +119,8 @@ const styles = StyleSheet.create({
   tabBarStyle: {
     paddingTop: normalizeH(25),
     height: 64,
+    borderBottomWidth: 1,
+    borderColor: '#F5F5F5',
   },
   scrollViewStyle: {
     flex: 1,

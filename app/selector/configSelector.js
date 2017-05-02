@@ -179,3 +179,11 @@ export function selectSubArea(state, payload) {
 
   return undefined
 }
+
+export function selectNetworkStatus(state) {
+  let config = getConfig(state)
+  if (config) {
+    return config.networkStatus
+  }
+  return undefined
+}

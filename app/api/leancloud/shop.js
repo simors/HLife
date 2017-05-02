@@ -855,6 +855,7 @@ export function fetchUserOwnedShopInfo(payload) {
   query.equalTo('owner', user)
   //query.equalTo('status', 1)
   query.include(['owner', 'targetShopCategory', 'containedTag', 'containedPromotions'])
+  // console.log('fetchUserOwnedShopInfo.query====', query)
   return query.first().then((result)=>{
     // console.log('fetchUserOwnedShopInfo.result===', result)
     let shopInfo = {}
@@ -944,6 +945,7 @@ export function fetchSimilarShopList(payload) {
   andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   andQuery.addDescending('createdAt')
   andQuery.limit(3)
+  query.equalTo('status', 1)
   return andQuery.find().then(function (results) {
     // console.log('getShopList.results=', results)
     let shopList = []
@@ -974,6 +976,7 @@ export function fetchGuessYouLikeShopList(payload) {
   }
   // query.addDescending('score')
   query.limit(3)
+  query.equalTo('status', 1)
   return query.find().then(function (results) {
     // console.log('fetchGuessYouLikeShopList.results====*******>>>>>>=', results)
     let shopList = []

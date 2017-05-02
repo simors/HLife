@@ -27,7 +27,7 @@ class MultilineText extends Component {
       stateKey: this.props.stateKey,
       type: this.props.type,
       initValue: {text: this.props.initValue},
-      checkValid: this.validInput
+      checkValid: this.props.checkValid || this.validInput
     }
     this.props.initInputForm(formInfo)
   }
