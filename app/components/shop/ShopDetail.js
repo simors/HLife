@@ -754,11 +754,15 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
-  const isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
+  let isFollowedShop = false
+  if(isUserLogined) {
+    isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
+  }
+  
 
-  const userFollowees = authSelector.selectUserFollowees(state)
+  // const userFollowees = authSelector.selectUserFollowees(state)
 
-  const userIsUpedShop = selectUserIsUpedShop(state, ownProps.id)
+  // const userIsUpedShop = selectUserIsUpedShop(state, ownProps.id)
 
   const guessYouLikeList = selectGuessYouLikeShopList(state)
 
@@ -786,8 +790,8 @@ const mapStateToProps = (state, ownProps) => {
     isFollowedShop: isFollowedShop,
     shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
-    userFollowees: userFollowees,
-    userIsUpedShop: userIsUpedShop,
+    // userFollowees: userFollowees,
+    // userIsUpedShop: userIsUpedShop,
     currentUser: authSelector.activeUserId(state),
     userOwnedShopInfo: userOwnedShopInfo,
     appServicePhone: appServicePhone

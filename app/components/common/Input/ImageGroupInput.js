@@ -54,7 +54,7 @@ class ImageGroupInput extends Component {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
       type: this.props.type,
-      checkValid: this.validInput,
+      checkValid: this.props.checkValid || this.validInput,
       initValue: {text: this.props.initValue}
     }
     this.props.initInputForm(formInfo)
