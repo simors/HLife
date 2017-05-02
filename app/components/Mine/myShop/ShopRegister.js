@@ -498,7 +498,7 @@ class ShopRegister extends Component {
 
               <View style={styles.inputWrap}>
                 <TouchableOpacity style={styles.getInvitationWrap} onPress= {()=> {
-                  Actions.QRCODEREADER()
+                  Actions.HOW_GET_INVITATION_CODE()
                 }}>
                   <Image style={{width: 12, height: 12}} source={require('../../../assets/images/question_code.png')}/>
                   <Text style={{marginLeft: normalizeW(5), color:THEME.colors.green,fontSize: 12}}>如何获取邀请码？</Text>

@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#B2B2B2',
-    zIndex: 10,
   },
   leftWrap: {
     flex: 1,
