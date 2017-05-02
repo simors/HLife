@@ -18,8 +18,10 @@ import {getCurrentLocation} from '../action/locAction'
 export function handleAppStateChange(nextAppState) {
   if(AppState.currentState) {
     if (nextAppState === 'active') {
-      // 清空应用图标消息数目
-      PushNotification.setApplicationIconBadgeNumber(0)
+      if(Platform.OS === 'ios') {
+        // 清空应用图标消息数目
+        PushNotification.setApplicationIconBadgeNumber(0)
+      }
       // 获取地理位置
       store.dispatch(getCurrentLocation())
     }
