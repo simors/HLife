@@ -188,8 +188,6 @@ class Home extends Component {
 
   renderRow(rowData, rowId) {
     switch (rowData.type) {
-      case 'MAIN_HEADER':
-        return this.renderMainHeader()
       case 'BANNER_COLUMN':
         return this.renderBannerColumn()
       case 'NEARBY_TOPIC':
@@ -233,6 +231,7 @@ class Home extends Component {
         top: 0,
         left: 0,
         width: PAGE_WIDTH,
+        zIndex: 10,
       }}
       >
         <Header
@@ -353,18 +352,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/*<StatusBar hidden={false} translucent={true} backgroundColor="transparent" barStyle="dark-content"/>*/}
-        {/*<Header*/}
-          {/*leftType="image"*/}
-          {/*leftImageSource={require("../../assets/images/location.png")}*/}
-          {/*leftImageLabel={this.props.city}*/}
-          {/*headerContainerStyle={{backgroundColor: 'transparent'}}*/}
-          {/*leftPress={() => {*/}
-          {/*}}*/}
-          {/*rightComponent={() => {*/}
-            {/*return <MessageBell />*/}
-          {/*}}*/}
-        {/*/>*/}
+        {this.renderMainHeader()}
 
         <View style={styles.body}>
           <View style={{flex:1}}>
@@ -380,7 +368,6 @@ class Home extends Component {
                 this.loadMoreData()
               }}
               ref={(listView) => this.listView = listView}
-              stickyHeaderIndices={[0]}
               onScroll={e => this.handleOnScroll(e)}
               scrollEventThrottle={80}
             />
@@ -402,7 +389,6 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   let dataArray = []
-  dataArray.push({type: 'MAIN_HEADER'})
   dataArray.push({type: 'BANNER_COLUMN'})
   dataArray.push({type: 'NEARBY_TOPIC'})
   dataArray.push({type: 'NEARBY_SHOP'})
