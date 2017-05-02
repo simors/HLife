@@ -20,7 +20,7 @@
  import {fetchUserOwnedShopInfo, unregistShop} from '../../../action/shopAction'
  import {getUserInfoById} from '../../../action/authActions'
  import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
-  import {activeUserId} from '../../../selector/authSelector'
+  import {activeUserId, activeUserInfo} from '../../../selector/authSelector'
  import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
  import Popup from '@zzzkk2009/react-native-popup'
  import * as Toast from '../../common/Toast'
@@ -73,6 +73,7 @@ class ShopCertificationInfoShow extends Component {
 
 	render() {
 		const userOwnedShopInfo = this.props.userOwnedShopInfo
+    const targetShopCategory = userOwnedShopInfo.targetShopCategory
 
     return (
     	<View style={styles.container}>
@@ -91,19 +92,19 @@ class ShopCertificationInfoShow extends Component {
 					<ScrollView>
 						<View style={styles.row}>
 							<View style={styles.label}>
-								<Text style={styles.labelTxt}>姓名</Text>
-							</View>
-							<View style={styles.content}>
-								<Text style={styles.contentTxt}>{userOwnedShopInfo.name || ''}</Text>
-							</View>
+                <Text style={styles.labelTxt}>手机号</Text>
+              </View>
+              <View style={styles.content}>
+                <Text style={styles.contentTxt}>{userOwnedShopInfo.phone || ''}</Text>
+              </View>
 						</View>
 						<View style={[styles.row, styles.borderTop, styles.gutter]}>
 							<View style={styles.label}>
-								<Text style={styles.labelTxt}>手机号</Text>
-							</View>
-							<View style={styles.content}>
-								<Text style={styles.contentTxt}>{userOwnedShopInfo.phone || ''}</Text>
-							</View>
+                <Text style={styles.labelTxt}>店铺分类</Text>
+              </View>
+              <View style={styles.content}>
+                <Text style={styles.contentTxt}>{targetShopCategory.text || ''}</Text>
+              </View>
 						</View>
 
 						<View style={styles.row}>
@@ -120,15 +121,6 @@ class ShopCertificationInfoShow extends Component {
 							</View>
 							<View style={styles.content}>
 								<Text style={styles.contentTxt}>{userOwnedShopInfo.shopAddress || ''}</Text>
-							</View>
-						</View>
-
-						<View style={[styles.row, styles.gutter]}>
-							<View style={styles.label}>
-								<Text style={styles.labelTxt}>认证凭证</Text>
-							</View>
-							<View style={[styles.content]}>
-								<Image style={[styles.certifiedImg]} source={{uri: userOwnedShopInfo.certification}}/>
 							</View>
 						</View>
 
