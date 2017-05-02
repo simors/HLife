@@ -564,18 +564,3 @@ export function disableTopic(payload){
     return {success:true}
   })
 }
-
-export function getShareTopicUrl(payload) {
-  let params = {
-    topicId: payload.topicId
-  }
-  return AV.Cloud.run('shareTopicById', params).then((result) => {
-    console.log("result:", result)
-    if (result && result.url)
-      return result
-    return undefined
-  }).catch((err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-}
