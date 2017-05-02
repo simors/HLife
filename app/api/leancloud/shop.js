@@ -945,6 +945,7 @@ export function fetchSimilarShopList(payload) {
   andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   andQuery.addDescending('createdAt')
   andQuery.limit(3)
+  query.equalTo('status', 1)
   return andQuery.find().then(function (results) {
     // console.log('getShopList.results=', results)
     let shopList = []
@@ -975,6 +976,7 @@ export function fetchGuessYouLikeShopList(payload) {
   }
   // query.addDescending('score')
   query.limit(3)
+  query.equalTo('status', 1)
   return query.find().then(function (results) {
     // console.log('fetchGuessYouLikeShopList.results====*******>>>>>>=', results)
     let shopList = []
