@@ -76,7 +76,7 @@ AV.init(
       StatusBar.setTranslucent(true)
       StatusBar.setBackgroundColor('transparent', true)
     }
-    StatusBar.setBarStyle('dark-content', true)
+    StatusBar.setBarStyle('light-content', true)
     return (
       <Provider store={store}>
         <View style={{flex: 1}}>

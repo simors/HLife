@@ -74,11 +74,13 @@ const styles = StyleSheet.create({
   },
   noticeTip: {
     position: 'absolute',
-    right: 0,
-    top: 0,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    right: -2,
+    top: -2,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: 'red',
+    borderWidth: 1,
+    borderColor: '#FFF',
   },
 })

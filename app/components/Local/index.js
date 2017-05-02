@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   body: {
-    marginTop: normalizeH(65),
+    marginTop: normalizeH(64),
     flex: 1,
     marginBottom: 42
   },
