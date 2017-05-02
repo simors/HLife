@@ -44,6 +44,8 @@ import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
 import * as ShopDetailTestData from './ShopDetailTestData'
 import ActionSheet from 'react-native-actionsheet'
+import TimerMixin from 'react-timer-mixin'
+import Loading from '../common/Loading'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -52,37 +54,109 @@ class ShopDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      modalVisible : false
+      modalVisible : false,
     }
   }
 
   componentWillMount() {
-    this.isFetching = true
+    this.isFetchingShopDetail = true
     InteractionManager.runAfterInteractions(()=>{
       this.props.fetchShopDetail({
         id: this.props.id,
         success: () => {
-          this.isFetching = false
+          this.isFetchingShopDetail = false
         },
         error: () => {
-          this.isFetching = false
+          this.isFetchingShopDetail = false
         }
       })
       // this.props.fetchShopAnnouncements({id: this.props.id})
-      this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
-      this.props.fetchShopCommentTotalCount({id: this.props.id})
-      this.props.fetchGuessYouLikeShopList({id: this.props.id})
+
+      this.setTimeout(() => {
+        this.isFetchingShopCommentList = true
+        this.props.fetchShopCommentList({
+          isRefresh: true, id: this.props.id,
+          success: () => {
+            this.isFetchingShopCommentList = false
+          },
+          error: () => {
+            this.isFetchingShopCommentList = false
+          }
+        })
+
+        this.isFetchingShopCommentTotalCount = true
+        this.props.fetchShopCommentTotalCount({
+          id: this.props.id,
+          success: () => {
+            this.isFetchingShopCommentTotalCount = false
+          },
+          error: () => {
+            this.isFetchingShopCommentTotalCount = false
+          }
+        })
+
+        this.isFetchingGuessYouLikeShopList = true
+        this.props.fetchGuessYouLikeShopList({
+          id: this.props.id,
+          success: () => {
+            this.isFetchingGuessYouLikeShopList = false
+          },
+          error: () => {
+            this.isFetchingGuessYouLikeShopList = false
+          }
+        })
+      }, 1500)
+
       if(this.props.isUserLogined) {
-        this.props.userIsFollowedShop({id: this.props.id})
-        this.props.fetchUserFollowees()
-        this.props.fetchUserUpShopInfo({id: this.props.id})
-        this.props.fetchUserOwnedShopInfo()
+        this.isFetchingUserIsFollowedShop = true
+        this.props.userIsFollowedShop({
+          id: this.props.id,
+          success: () => {
+            this.isFetchingUserIsFollowedShop = false
+          },
+          error: () => {
+            this.isFetchingUserIsFollowedShop = false
+          }
+        })
+
+        this.isFetchingUserFollowees = true
+        this.props.fetchUserFollowees({
+          success: () => {
+            this.isFetchingUserFollowees = false
+          },
+          error: () => {
+            this.isFetchingUserFollowees = false
+          }
+        })
+        // this.props.fetchUserUpShopInfo({id: this.props.id})
+        this.isFetchingUserOwnedShopInfo = true
+        this.props.fetchUserOwnedShopInfo({
+          success: () => {
+            this.isFetchingUserOwnedShopInfo = false
+          },
+          error: () => {
+            this.isFetchingUserOwnedShopInfo = false
+          }
+        })
       }
+      
       // this.props.fetchShopCommentList({id: this.props.shopDetail.id})
     })
   }
 
+  ifHideLoading() {
+    if(!this.isFetchingShopDetail && !this.isFetchingUserIsFollowedShop) {
+      if(this.loading) {
+        Loading.hide(this.loading)
+      }
+    }
+  }
+
   componentDidMount() {
+    this.loading = Loading.show()
+    this.setInterval(() => {
+      this.ifHideLoading()
+    }, 1000)
     // InteractionManager.runAfterInteractions(()=>{
     //   if(!this.props.shopDetail.id) {
     //     this.props.fetchShopDetail({id: this.props.id})
@@ -528,8 +602,8 @@ class ShopDetail extends Component {
 
   renderIllegal() {
     let shopDetail = this.props.shopDetail
-    // console.log('renderIllegal.this.isFetching===', this.isFetching)
-    if(!this.isFetching && shopDetail && 1 != shopDetail.status) {
+    // console.log('renderIllegal.this.isFetchingShopDetail===', this.isFetchingShopDetail)
+    if(!this.isFetchingShopDetail && shopDetail && 1 != shopDetail.status) {
       return (
         <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end'}}>
           <View style={{height:PAGE_HEIGHT*0.487, backgroundColor: 'white',justifyContent:'center',alignItems:'center',padding:20}}>
@@ -821,6 +895,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)
+
+Object.assign(ShopDetail.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {
