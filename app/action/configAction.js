@@ -117,3 +117,10 @@ export function fetchAppNoUpdate(payload) {
   //    dispatch(noUpdateVersion(payload))
   // }
 }
+
+export function updateNetworkStatus(payload) {
+  return (dispatch, getState) => {
+    let updateNetworkStatus = createAction(ConfigActionTypes.UPDATE_NETWORK_STATUS)
+    dispatch(updateNetworkStatus({networkStatus: payload.networkStatus}))
+  }
+}

@@ -25,6 +25,8 @@ export default function configReducer(state = initialState, action) {
       return handleFetchAppServicePhoneSuccess(state, action)
     case ConfigActionTypes.FETCH_APP_NOUPDATE_VERSION:
       return handleFetchAppNoUpdateVersion(state,action)
+    case ConfigActionTypes.UPDATE_NETWORK_STATUS:
+      return handleUpdateNetworkStatus(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -107,6 +109,12 @@ function handleFetchAppNoUpdateVersion(state,action) {
   return state
 }
 
+function handleUpdateNetworkStatus(state, action) {
+  let networkStatus = action.payload.networkStatus
+  state = state.set('networkStatus', networkStatus)
+  return state
+}
+
 function onRehydrate(state, action) {
   var incoming = action.payload.CONFIG
   if (!incoming) return state
@@ -135,6 +143,11 @@ function onRehydrate(state, action) {
   let noUpdateVersion = incoming.noUpdateVersion
   if(noUpdateVersion){
     state = state.set('noUpdateVersion',noUpdateVersion)
+  }
+
+  let networkStatus = incoming.networkStatus
+  if (networkStatus) {
+    state = state.set('networkStatus', networkStatus)
   }
   
   return state
