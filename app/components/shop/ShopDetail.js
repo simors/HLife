@@ -57,8 +57,17 @@ class ShopDetail extends Component {
   }
 
   componentWillMount() {
+    this.isFetching = true
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchShopDetail({id: this.props.id})
+      this.props.fetchShopDetail({
+        id: this.props.id,
+        success: () => {
+          this.isFetching = false
+        },
+        error: () => {
+          this.isFetching = false
+        }
+      })
       // this.props.fetchShopAnnouncements({id: this.props.id})
       this.props.fetchShopCommentList({isRefresh: true, id: this.props.id})
       this.props.fetchShopCommentTotalCount({id: this.props.id})
@@ -519,8 +528,8 @@ class ShopDetail extends Component {
 
   renderIllegal() {
     let shopDetail = this.props.shopDetail
-
-    if(shopDetail && 1 != shopDetail.status) {
+    // console.log('renderIllegal.this.isFetching===', this.isFetching)
+    if(!this.isFetching && shopDetail && 1 != shopDetail.status) {
       return (
         <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end'}}>
           <View style={{height:PAGE_HEIGHT*0.487, backgroundColor: 'white',justifyContent:'center',alignItems:'center',padding:20}}>
