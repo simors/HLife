@@ -21,7 +21,7 @@ import AV from 'leancloud-storage'
 import * as LC_CONFIG from './app/constants/appConfig'
 import * as AVUtils from './app/util/AVUtils'
 import {handleAppStateChange} from './app/util/AppStateUtils'
-import codePush from "react-native-code-push"
+import CodePush from "react-native-code-push"
 import RNRestart from 'react-native-restart'
 import Popup from '@zzzkk2009/react-native-popup'
 import THEME from './app/constants/themes/theme1'
@@ -49,7 +49,15 @@ AV.init(
  class HLifeEntry extends Component {
   constructor(props) {
     super(props)
+    this.state = { restartAllowed: true };
+
   }
+
+   componentWillMount(){
+
+     CodePush.disallowRestart();//页面加载的禁止重启，在加载完了可以允许重启
+
+   }
 
   componentDidMount() {
     console.disableYellowBox = true
@@ -62,7 +70,9 @@ AV.init(
     )
 
     AVUtils.appInit()
-    codePush.notifyApplicationReady()
+    CodePush.allowRestart();//在加载完了可以允许重启
+    CodePush.notifyApplicationReady()
+    CodePush.sync({ installMode: CodePush.InstallMode.ON_NEXT_RESTART })
   }
 
   componentWillUnmount() {
@@ -128,7 +138,9 @@ AV.init(
     )
   }
 }
-
+const codepushOption={
+  
+}
 const getSceneStyle = (props, computedProps) => {
   const style = {
     flex: 1,
@@ -145,4 +157,4 @@ const getSceneStyle = (props, computedProps) => {
   return style
 }
 
-export default HLifeEntry = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESTART })(HLifeEntry);
+export default HLifeEntry = CodePush({ checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME})(HLifeEntry);
