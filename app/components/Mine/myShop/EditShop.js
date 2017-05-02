@@ -326,13 +326,23 @@ class EditShop extends Component {
 
   render() {
 
+    const userOwnedShopInfo = this.props.userOwnedShopInfo
+
     let shopCover = require('../../../assets/images/background_shop.png')
-    if(this.props.userOwnedShopInfo.coverUrl) {
-      shopCover = {uri: this.props.userOwnedShopInfo.coverUrl}
+    if(userOwnedShopInfo.coverUrl) {
+      shopCover = {uri: userOwnedShopInfo.coverUrl}
     }
 
     if(this.localCoverImgUri) {
       shopCover = {uri: this.localCoverImgUri}
+    }
+
+    let albumLen = 0
+    let album = userOwnedShopInfo.album || []
+    if(this.localAlbumList) {
+      albumLen = this.localAlbumList.length
+    }else {
+      albumLen = album.length
     }
 
     return (
@@ -374,7 +384,7 @@ class EditShop extends Component {
                     alignItems:'center',
                     backgroundColor:'rgba(245,245,245,0.49)'
                   }}>
-                    <Text style={{fontSize:15,color:'#fff'}}>编辑相册</Text>
+                    <Text style={{fontSize:15,color:'#fff'}}>{`编辑相册·${albumLen}`}</Text>
                     <Icon
                       name="ios-arrow-forward"
                       style={{marginLeft:20,marginRight:15,color:'white',fontSize:17}}/>
