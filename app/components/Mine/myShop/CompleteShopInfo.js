@@ -278,7 +278,8 @@ class CompleteShopInfo extends Component {
     // console.log('_onSelectShopCategory.shopCategoryId=', shopCategoryId)
     this.updateShopCategoryContainedTags(shopCategoryId)
     this.setState({
-      selectShow: !this.state.selectShow
+      selectShow: !this.state.selectShow,
+      selectedShopTags: []
     })
   }
 
