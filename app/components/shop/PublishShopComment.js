@@ -113,7 +113,9 @@ class PublishShopComment extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
+          leftStyle={{color: '#5a5a5a', fontSize:26}}
           title="发表评价"
+          titleStyle={{color: '#030303',fontSize:17}}
           rightComponent={this.rightComponent.bind(this)}
           headerContainerStyle={{backgroundColor:'#f9f9f9'}}
         />
