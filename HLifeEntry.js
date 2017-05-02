@@ -11,6 +11,7 @@ import {
   BackAndroid,
   ToastAndroid,
   StatusBar,
+  NetInfo,
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router, Actions} from 'react-native-router-flux'
@@ -20,7 +21,9 @@ import AV from 'leancloud-storage'
 import * as LC_CONFIG from './app/constants/appConfig'
 import * as AVUtils from './app/util/AVUtils'
 import {handleAppStateChange} from './app/util/AppStateUtils'
-import codePush from "react-native-code-push";
+import codePush from "react-native-code-push"
+import Popup from '@zzzkk2009/react-native-popup'
+import THEME from './app/constants/themes/theme1'
 
 const RouterWithRedux = connect()(Router)
 
@@ -49,6 +52,7 @@ AV.init(
     console.disableYellowBox = true
 
     AppState.addEventListener('change', handleAppStateChange);
+    NetInfo.addEventListener('change', this._handleConnectionInfoChange);
     // 通知初始化
     AVUtils.configurePush(
       __DEV__ ? KM_Dev : KM_PRO
@@ -60,16 +64,43 @@ AV.init(
 
   componentWillUnmount() {
     AppState.removeEventListener('change', handleAppStateChange);
+    NetInfo.removeEventListener('change', this._handleConnectionInfoChange);
   }
 
-   onBackAndroid = () => {
-     if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-       return false;
+  onBackAndroid = () => {
+   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+     return false;
+   }
+   this.lastBackPressed = Date.now();
+   ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+   return true;
+  }
+
+   _handleConnectionInfoChange = (connectionInfo) => {
+     console.log('connection:', connectionInfo)
+     let connectStatus = true
+     if (Platform.OS == 'ios') {
+       if (connectionInfo == 'none' || connectionInfo == 'unknown') {
+         connectStatus = false
+       }
+     } else {
+       if (connectionInfo == 'NONE' || connectionInfo == 'UNKNOWN') {
+         connectStatus = false
+       }
      }
-     this.lastBackPressed = Date.now();
-     ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
-     return true;
-   };
+     if (!connectStatus) {
+       Popup.confirm({
+         title: '系统提示',
+         content: '无法访问网络，请确认网络已连接！',
+         ok: {
+           text: '确定',
+           style: {color: THEME.base.mainColor},
+           callback: ()=> {
+           }
+         },
+       })
+     }
+   }
 
   render() {
     if (Platform.OS == 'android') {
