@@ -940,13 +940,21 @@ export function fetchSimilarShopList(payload) {
   let similarQuery = new AV.Query('Shop')
   let notQuery = new AV.Query('Shop')
   similarQuery.equalTo('targetShopCategory', targetShopCategory)
-  notQuery.notEqualTo('objectId', shopId)
-  let andQuery = AV.Query.and(similarQuery, notQuery)
-  andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
-  andQuery.addDescending('createdAt')
-  andQuery.limit(3)
-  return andQuery.find().then(function (results) {
-    // console.log('getShopList.results=', results)
+  similarQuery.equalTo('status', 1)
+
+  similarQuery.notEqualTo('objectId', shopId)
+  similarQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
+  similarQuery.addDescending('createdAt')
+  similarQuery.limit(3)
+  
+  // notQuery.notEqualTo('objectId', shopId)
+  // let andQuery = AV.Query.and(similarQuery, notQuery)
+  // andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
+  // andQuery.addDescending('createdAt')
+  // andQuery.limit(3)
+  
+  return similarQuery.find().then(function (results) {
+    console.log('fetchSimilarShopList.results=', results)
     let shopList = []
     results.forEach((result) => {
       shopList.push(ShopInfo.fromLeancloudObject(result))
@@ -975,6 +983,7 @@ export function fetchGuessYouLikeShopList(payload) {
   }
   // query.addDescending('score')
   query.limit(3)
+  query.equalTo('status', 1)
   return query.find().then(function (results) {
     // console.log('fetchGuessYouLikeShopList.results====*******>>>>>>=', results)
     let shopList = []
@@ -1254,22 +1263,6 @@ export function updateShopLocationInfo(payload) {
   return AV.Cloud.run('hLifeUpdateShopLocationInfo', params).then((result)=>{
     // console.log('hLifeUpdateShopLocationInfo.result=======', result)
     return result
-  }, (err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-}
-
-export function getShopPromotionUrl(payload) {
-  let params = {
-    shopPromotionId: payload.shopPromotionId
-  }
-
-  return AV.Cloud.run('hLifeShareShopPromotionById', params).then((result) => {
-    console.log("result:", result)
-    if (result && result.url)
-      return result
-    return undefined
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

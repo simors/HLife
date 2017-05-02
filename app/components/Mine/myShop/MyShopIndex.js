@@ -38,6 +38,7 @@ import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
 import * as numberUtils from '../../../util/numberUtils'
 import Icon from 'react-native-vector-icons/Ionicons'
 import MyShopPromotionModule from './MyShopPromotionModule'
+import {getShareUrl} from '../../../action/configAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -59,10 +60,10 @@ class MyShopIndex extends Component {
         this.props.fetchShopCommentList({isRefresh: true, id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopCommentTotalCount({id: this.props.userOwnedShopInfo.id})
 
-        this.props.fetchSimilarShopList({
-          id: this.props.userOwnedShopInfo.id,
-          targetShopCategoryId: this.props.userOwnedShopInfo.targetShopCategory.id
-        })
+        // this.props.fetchSimilarShopList({
+        //   id: this.props.userOwnedShopInfo.id,
+        //   targetShopCategoryId: this.props.userOwnedShopInfo.targetShopCategory.id
+        // })
 
       }
       if(this.props.isUserLogined) {
@@ -294,6 +295,26 @@ class MyShopIndex extends Component {
     })
   }
 
+  onShare = () => {
+    let shareUrl = ""
+    if (__DEV__) {
+      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
+    } else {
+      shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
+    }
+    shareUrl = shareUrl + "shopShare/" + this.props.userOwnedShopInfo.id
+
+    console.log("shopShare url:", shareUrl)
+
+    Actions.SHARE({
+      title: this.props.userOwnedShopInfo.shopName || "汇邻优店",
+      url: shareUrl,
+      author: this.props.userOwnedShopInfo.shopName || "邻家小二",
+      abstract: this.props.userOwnedShopInfo.shopAddress || "未知地址",
+      cover: this.props.userOwnedShopInfo.coverUrl || '',
+    })
+  }
+
   render() {
     // console.log('this.props.shopDetail===', this.props.shopDetail)
 
@@ -307,7 +328,13 @@ class MyShopIndex extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="店铺管理"
-          rightType="none"
+          rightComponent={()=>{
+            return (
+              <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
+                <Image source={require('../../../assets/images/active_share.png')}/>
+              </TouchableOpacity>
+            )
+          }}
         />
         <View style={styles.body}>
           <View style={styles.detailWrap}>
@@ -500,7 +527,7 @@ const mapStateToProps = (state, ownProps) => {
     shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
     similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
   }
-  // console.log('userOwnedShopInfo===', userOwnedShopInfo)
+  console.log('userOwnedShopInfo===', userOwnedShopInfo)
   // console.log('shopFollowers===', shopFollowers)
   // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
 

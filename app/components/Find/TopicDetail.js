@@ -41,7 +41,6 @@ import {
   likeTopic,
   unLikeTopic,
   fetchTopicLikeUsers,
-  fetchShareTopicUrl,
 } from '../../action/topicActions'
 import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
@@ -340,24 +339,23 @@ export class TopicDetail extends Component {
     return false
   }
 
-  fetchSuccessCallback = (result) => {
+  onShare = () => {
+    let shareUrl = ""
+    if (__DEV__) {
+      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
+    } else {
+      shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
+    }
+    shareUrl = shareUrl + "topicShare/" + this.props.topic.objectId
+
+    console.log("topicShare url:", shareUrl)
+
     Actions.SHARE({
       title: this.props.topic.title || "邻家话题",
-      url: result.url || 'http://www.baidu.com',
+      url: shareUrl,
       author: this.props.topic.nickname || "邻家小二",
       abstract: this.props.topic.abstract || "",
       cover: this.props.topic.avatar,
-    })
-  }
-
-  fetchErrorCallback = (error) => {
-    Toast.show(error.message)
-  }
-  onShare = () => {
-    this.props.fetchShareTopicUrl({
-      topicId: this.props.topic.objectId,
-      success: this.fetchSuccessCallback,
-      error: this.fetchErrorCallback,
     })
   }
 
@@ -718,7 +716,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   likeTopic,
   unLikeTopic,
   fetchOtherUserFollowersTotalCount,
-  fetchShareTopicUrl
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)

@@ -744,20 +744,6 @@ export function unregistShop(payload) {
   }
 }
 
-export function fetchSharePromotionUrl(payload) {
-  return (dispatch, getState) => {
-    lcShop.getShopPromotionUrl(payload).then((result) => {
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
 export function updateShopInfoAfterPaySuccess(payload) {
   return (dispatch, getState) => {
     lcShop.updateShopInfoAfterPaySuccess(payload).then((successed)=> {

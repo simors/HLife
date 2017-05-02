@@ -24,7 +24,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
-import {fetchShopPromotionDetail, fetchUserOwnedShopInfo, fetchSharePromotionUrl} from '../../action/shopAction'
+import {fetchShopPromotionDetail, fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {selectShopPromotionDetail} from '../../selector/shopSelector'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
@@ -81,24 +81,23 @@ class ShopPromotionDetail extends Component {
     Actions.CHATROOM(payload)
   }
 
-  submitSuccessCallback = (result) => {
+  onShare = () => {
+    let shareUrl = ""
+    if (__DEV__) {
+      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
+    } else {
+      shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
+    }
+    shareUrl = shareUrl + "shopPromotionShare/" + this.props.id
+
+    console.log("shopPromotionShare url:", shareUrl)
+
     Actions.SHARE({
       title: this.props.shopPromotionDetail.title,
-      url: result.url,
+      url: shareUrl,
       author: this.props.shopPromotionDetail.targetShop.shopName,
       abstract: this.props.shopPromotionDetail.abstract,
       cover: this.props.shopPromotionDetail.coverUrl,
-    })
-  }
-
-  submitErrorCallback = (error) => {
-    Toast.show(error.message)
-  }
-  onShare = () => {
-    this.props.fetchSharePromotionUrl({
-      shopPromotionId: this.props.id,
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback,
     })
   }
 
@@ -185,7 +184,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionDetail,
   fetchUserOwnedShopInfo,
-  fetchSharePromotionUrl
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPromotionDetail)
