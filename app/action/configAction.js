@@ -89,14 +89,14 @@ export function fetchAllProvincesAndCities(payload) {
 
 export function fetchAppServicePhone(payload) {
   return (dispatch, getState) => {
-    lcConfig.fetchAppServicePhone(payload).then((servicePhone)=>{
+    lcConfig.fetchAppServicePhone(payload).then((servicePhone)=> {
       let updateAction = createAction(ConfigActionTypes.FETCH_APP_SERVICE_PHONE_SUCCESS)
       dispatch(updateAction({servicePhone}))
-      if(payload && payload.success) {
+      if (payload && payload.success) {
         payload.success(servicePhone)
       }
     }).catch((error) => {
-      if(payload && payload.error) {
+      if (payload && payload.error) {
         payload.error(error)
       }
       console.log('fetchAppServicePhone.error--->>>', error)
