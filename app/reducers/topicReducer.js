@@ -275,6 +275,9 @@ function handleUpdateTopicIsLiked(state, action) {
     _map = _map.set(topicId, false)
   }
   state = state.set('IsLikedByCurrentUser', _map)
+  if(userLikeInfo) {
+    state = state.setIn(['currentUserLikedTopics', topicId], userLikeInfo)
+  }
   return state
 }
 
