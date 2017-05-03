@@ -29,6 +29,7 @@ import {selectShopPromotionDetail} from '../../selector/shopSelector'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopPromotionCustomTopView from './ChatroomShopPromotionCustomTopView'
+import {fetchUsers} from '../../action/authActions'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -70,6 +71,9 @@ class ShopPromotionDetail extends Component {
   onIWantPress() {
     let shopPromotionDetail = this.props.shopPromotionDetail
     let targetShop = shopPromotionDetail.targetShop
+
+    this.props.fetchUsers({userIds: [targetShop.owner.id]})
+
     let payload = {
       name: targetShop.owner.nickname,
       members: [this.props.currentUser, targetShop.owner.id],
@@ -184,6 +188,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionDetail,
   fetchUserOwnedShopInfo,
+  fetchUsers
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPromotionDetail)

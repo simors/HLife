@@ -9,7 +9,8 @@ import {
   Image,
   InteractionManager,
   Platform,
-  Text
+  Text,
+  Keyboard
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -39,10 +40,16 @@ class Chatroom extends Component {
 
     this.state = {
       hasMore: false,
-      showLoadEarlier:false
+      showLoadEarlier:false,
+      keyboardShow: false
     }
 
     this.oldChatMessageSoundOpen = true
+
+    this.onKeyboardWillShow = this.onKeyboardWillShow.bind(this)
+    this.onKeyboardWillHide = this.onKeyboardWillHide.bind(this)
+    this.onKeyboardDidShow = this.onKeyboardDidShow.bind(this)
+    this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this)
   }
 
   componentDidMount() {
@@ -62,10 +69,52 @@ class Chatroom extends Component {
       // })
       
     })
+
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
   }
 
   componentWillUnmount() {
     global.chatMessageSoundOpen = this.oldChatMessageSoundOpen
+
+    this.props.leaveConversation()
+
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
+  }
+
+  onKeyboardWillShow(e) {
+   this.setState({
+     keyboardShow: true
+   })
+  }
+
+  onKeyboardWillHide(e) {
+    this.setState({
+      keyboardShow: false
+    })
+  }
+
+  onKeyboardDidShow(e) {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide(e) {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
   }
 
   createConversation(callback) {
@@ -141,10 +190,6 @@ class Chatroom extends Component {
     this.props.fetchHistoryChatMessagesByPaging(payload)
   }
 
-  componentWillUnmount() {
-    this.props.leaveConversation()
-  }
-
   onSend(messages = []) {
     let time = Date.parse(new Date())
     // let date = new Date()
@@ -179,7 +224,7 @@ class Chatroom extends Component {
 
   renderCustomMessage(messageProps) {
     return (
-      <CustomMessage {...messageProps}/>
+      <CustomMessage {...messageProps} customKey={messageProps.key}/>
     )
   }
 
@@ -187,6 +232,18 @@ class Chatroom extends Component {
     if(this.state.hasMore) {
       this.fetchHistoryChatMsgs()
     }
+  }
+
+  renderCustomTopView() {
+    if(this.state.keyboardShow) {
+      return null
+    }
+
+    return (
+      <View style={{flex:1}}>
+        {this.props.customTopView}
+      </View>
+    )
   }
 
   render() {
@@ -205,7 +262,7 @@ class Chatroom extends Component {
           title={this.props.title}
         />
         <View style={styles.conversationView}>
-          {this.props.customTopView}
+          {this.renderCustomTopView()}
           <GiftedChat
             messages={this.props.messages}
             onSend={this.onSend}
