@@ -130,7 +130,7 @@ class Mine extends Component {
     } else {
       shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
     }
-    shareUrl = shareUrl + "appDownload/" + Platform.OS
+    shareUrl = shareUrl + "appDownload/"
 
     console.log("shopShare url:", shareUrl)
 
@@ -339,6 +339,14 @@ class Mine extends Component {
               <Text style={styles.menuName}>草稿箱</Text>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {this.shareToFriend()}}>
+            <View style={styles.menuIcon}>
+              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/recommoned.png')} />
+            </View>
+            <View>
+              <Text style={styles.menuName}>邀请好友</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/contact.png')} />
@@ -355,15 +363,6 @@ class Mine extends Component {
               <Text style={styles.menuName}>意见反馈</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {this.shareToFriend()}}>
-            <View style={styles.menuIcon}>
-              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/recommoned.png')} />
-            </View>
-            <View>
-              <Text style={styles.menuName}>邀请好友</Text>
-            </View>
-          </TouchableOpacity>
-
         </View>
       </View>
     )
