@@ -94,10 +94,15 @@ const ourSpecialInput = {
   stateKey: Symbol('ourSpecialInput'),
   type: 'ourSpecialInput',
   checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
+    if(data && data.text) {
+      if (data.text.length > 0 && data.text.length <= 100) {
+        return {isVal: true, errMsg: '验证通过'}
+      }else {
+        return {isVal: false, errMsg: '字数必须小于100'}
+      }
+    }else{
+      return {isVal: false, errMsg: '本店特色为空'}
     }
-    return {isVal: false, errMsg: '本店特色为空'}
   },
 }
 
@@ -352,7 +357,6 @@ class EditShop extends Component {
           leftText="取消"
           leftPress={() => this.goBack()}
           title="编辑店铺"
-          headerContainerStyle={styles.headerContainerStyle}
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightType="none"
@@ -483,7 +487,7 @@ class EditShop extends Component {
                     placeholder={"描述店铺特色、优势「小于100字」"}
                     clearBtnStyle={{right: 10,top: 30}}
                     inputStyle={{borderColor: '#bdc6cf', color: '#030303',paddingRight:30}}
-                    maxLength={100}
+                    maxLength={110}
                     initValue={this.props.userOwnedShopInfo.ourSpecial}
                   />
                 </View>

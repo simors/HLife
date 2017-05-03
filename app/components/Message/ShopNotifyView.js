@@ -299,7 +299,6 @@ class ShopNotifyView extends Component {
           rightType={this.props.hasData ? 'text' : 'none'}
           rightPress={()=>{this.clear()}}
           rightText='清空'
-          rightStyle={{color:'#ff7819'}}
         />
         <View style={styles.itemContainer}>
           {this.renderContent()}

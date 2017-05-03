@@ -161,13 +161,10 @@ export class MyTopic extends Component {
       <View style={styles.container}>
         {/*<StatusBar barStyle="light-content" />*/}
         <Header
-          headerContainerStyle={{backgroundColor: THEME.base.mainColor}}
           leftType="icon"
-          leftStyle={{color: '#FFFFFF'}}
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="我的话题"
-          titleStyle={{color: '#FFF'}}
           rightType="none"
         />
         <View style={styles.body}>

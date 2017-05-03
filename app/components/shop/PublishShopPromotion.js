@@ -675,11 +675,9 @@ class PublishShopPromotion extends Component {
             })
             Actions.pop()}}
           title="发布活动"
-          headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightType="text"
           rightText="发布"
           rightPress={() => {this.publishPromotion()}}
-          rightStyle={{color: THEME.base.mainColor}}
         />
         <View style={styles.body}>
           <View style={[styles.contentContainer, {height: this.state.headerHeight, overflow:'hidden'}]}

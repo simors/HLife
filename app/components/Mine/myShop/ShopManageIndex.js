@@ -304,14 +304,10 @@ class ShopManageIndex extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => this.goBack()}
-          leftStyle={styles.headerLeftStyle}
-          headerContainerStyle={styles.headerContainerStyle}
           title="店铺管理"
-          titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText=""
           rightPress={()=>{}}
-          rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
           <ScrollView

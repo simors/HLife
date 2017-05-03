@@ -76,8 +76,7 @@ class MyFans extends Component {
     return (
       <View style={styles.container}>
         {/*<StatusBar barStyle="light-content" />*/}
-        <Header headerContainerStyle={styles.header}
-                leftType='icon'
+        <Header leftType='icon'
                 leftStyle={{color: '#FFFFFF'}}
                 leftPress={() => Actions.pop()}
                 title="我的粉丝"

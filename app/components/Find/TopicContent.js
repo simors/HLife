@@ -45,6 +45,7 @@ export class TopicContent extends Component {
       return (
         <FollowUser
           userId={userId}
+          attentionedContainerStyle={{paddingTop:0,paddingBottom:0,paddingLeft:0,paddingRight:0,borderRadius:0}}
         />
       )
     }

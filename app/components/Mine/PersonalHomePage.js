@@ -317,6 +317,26 @@ class PersonalHomePage extends Component {
     )
   }
 
+  renderPersonalShop() {
+    let userOwnedShopInfo = this.props.userOwnedShopInfo
+    console.log('userOwnedShopInfo===', userOwnedShopInfo)
+    if(userOwnedShopInfo && userOwnedShopInfo.status == 1 && userOwnedShopInfo.payment == 1 && userOwnedShopInfo.coverUrl) {
+      return (
+        <TouchableOpacity style={[styles.bottomViewItemBox]} 
+          onPress={()=>{
+            Actions.SHOP_DETAIL({id: userOwnedShopInfo.id})
+          }}>
+          <View style={[styles.vItem]}>
+            <Image style={{}} source={require('../../assets/images/shop_24_personal.png')}/>
+            <Text style={[styles.vItemTxt, {color:'#FF7819'}]}>个人店铺</Text>
+          </View>
+        </TouchableOpacity>
+      )
+    }
+
+    return null
+  }
+
   renderBottomView() {
     let userIsFollowedTheUser = this.state.userIsFollowedTheUser
     let userOwnedShopInfo = this.props.userOwnedShopInfo
@@ -340,19 +360,7 @@ class PersonalHomePage extends Component {
             </TouchableOpacity>  
         }
 
-        <TouchableOpacity style={[styles.bottomViewItemBox]} 
-          onPress={()=>{
-            if(!userOwnedShopInfo.id) {
-              Toast.show('该用户暂未开店')
-              return
-            }
-            Actions.SHOP_DETAIL({id: userOwnedShopInfo.id})
-          }}>
-          <View style={[styles.vItem]}>
-            <Image style={{}} source={require('../../assets/images/shop_24_personal.png')}/>
-            <Text style={[styles.vItemTxt, {color:'#FF7819'}]}>个人店铺</Text>
-          </View>
-        </TouchableOpacity>
+        {this.renderPersonalShop()}
 
         <View style={[styles.bottomViewItemBox]}></View>
 

@@ -20,7 +20,6 @@ export default class CommonWebView extends Component {
       return(
         <View>
           <Header
-            headerContainerStyle={styles.headerContainerStyle}
             leftType={this.props.headerLeftType}
             leftIconName={this.props.headerLeftIconName}
             leftIconLabel={this.props.headerLeftIconLabel}
@@ -33,7 +32,7 @@ export default class CommonWebView extends Component {
             rightImageSource={this.props.headerRightImageSource}
             rightPress={this.props.headerRightPress}
           />
-          <View style={{marginTop: normalizeH(44)}} />
+          <View style={{marginTop: normalizeH(64)}} />
         </View>
       )
     }
@@ -68,7 +67,6 @@ CommonWebView.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: normalizeH(20),
   },
   headerContainerStyle: {
     paddingTop: 0,

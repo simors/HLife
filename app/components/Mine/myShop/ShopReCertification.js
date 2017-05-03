@@ -206,9 +206,6 @@ class ShopReCertification extends Component {
           leftText="取消"
           leftPress={() => Actions.pop()}
           title="重新认证"
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
 

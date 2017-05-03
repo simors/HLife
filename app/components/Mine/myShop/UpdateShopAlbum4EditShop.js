@@ -81,13 +81,9 @@ class UpdateShopAlbum4EditShop extends Component {
           leftText="取消"
           leftPress={() => Actions.pop()}
           title="编辑相册"
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
           rightType="text"
           rightText="完成"
           rightPress={()=>{this.updateShopAlbum()}}
-          rightStyle={styles.headerRightStyle}
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(10)}}>

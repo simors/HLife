@@ -57,9 +57,6 @@ class PaymentSuccess extends Component {
         <Header
           leftType="none"
           title="注册推广员"
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <ScrollView>

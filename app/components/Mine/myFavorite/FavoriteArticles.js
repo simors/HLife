@@ -135,8 +135,7 @@ class FavoriteArticles extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header headerContainerStyle={styles.header}
-                leftType='icon'
+        <Header leftType='icon'
                 leftPress={() => Actions.pop()}
                 title="收藏文章"
                 titleStyle={styles.title}>

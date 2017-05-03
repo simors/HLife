@@ -41,9 +41,6 @@ class PaymentPassword extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='输入支付密码'
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(46), height: normalizeH(93), alignItems: 'center'}}>

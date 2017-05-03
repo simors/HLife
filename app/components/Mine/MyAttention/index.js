@@ -296,10 +296,8 @@ class MyAttention extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header 
-          headerContainerStyle={styles.header}
+        <Header
           leftType='icon'
-          leftStyle={{color: '#FFFFFF'}}
           leftPress={() => {Actions.pop()}}
           title="我的关注"
           titleStyle={styles.title}

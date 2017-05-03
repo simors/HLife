@@ -76,9 +76,6 @@ class PaymentSmsAuth extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='填写验证码'
-          headerContainerStyle={styles.headerContainerStyle}
-          leftStyle={styles.headerLeftStyle}
-          titleStyle={styles.headerTitleStyle}
         />
         <View style={styles.body}>
           <View style={{flexDirection: 'row', marginTop: normalizeH(20), marginLeft: normalizeW(15)}}>

@@ -745,7 +745,6 @@ class EditShopPromotion extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="编辑活动"
-          headerContainerStyle={{backgroundColor:'#f9f9f9'}}
           rightType="text"
           rightText="发布"
           rightPress={() => {

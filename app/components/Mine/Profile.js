@@ -113,13 +113,10 @@ class Profile extends Component {
     return(
       <View style={styles.container}>
         <Header
-          headerContainerStyle={{backgroundColor: THEME.base.mainColor}}
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          leftStyle={{color: '#FFFFFF'}}
           title="个人信息"
-          titleStyle={{color: '#FFF'}}
         />
         <View style={styles.body}>
           <ScrollView keyboardShouldPersistTaps= {true} keyboardDismissMode= {'on-drag'}>

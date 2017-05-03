@@ -21,7 +21,6 @@ export default class InviteExplain extends Component {
     return (
       <View style={styles.container}>
         <Header leftType="icon"
-                leftStyle={{color: THEME.base.mainColor}}
                 leftIconName="ios-arrow-back"
                 leftPress={() => Actions.pop()}
                 title="邀请说明"
