@@ -70,6 +70,9 @@ export default class ChatroomShopCustomTopView extends Component {
 
 const styles = StyleSheet.create({
 	container: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
 		height: 120,
 		backgroundColor:'#f5f5f5',
 		width:PAGE_WIDTH,

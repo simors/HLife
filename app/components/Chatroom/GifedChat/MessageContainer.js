@@ -114,7 +114,7 @@ export default class MessageContainer extends React.Component {
 
     const messageProps = {
       ...this.props,
-      key: message._id + dateTime,
+      key: message._id,
       currentMessage: message,
       previousMessage: message.previousMessage,
       nextMessage: message.nextMessage,
@@ -139,7 +139,6 @@ export default class MessageContainer extends React.Component {
         {...props}
         {...invertibleScrollViewProps}
         ref={component => this._invertibleScrollViewRef = component}
-        key={dateTime}
       />
     );
   }

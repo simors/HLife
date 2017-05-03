@@ -50,6 +50,7 @@ class Chatroom extends Component {
     this.onKeyboardWillHide = this.onKeyboardWillHide.bind(this)
     this.onKeyboardDidShow = this.onKeyboardDidShow.bind(this)
     this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this)
+
   }
 
   componentDidMount() {
@@ -76,13 +77,16 @@ class Chatroom extends Component {
     } else {
       Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
       Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+
     }
+
   }
 
   componentWillUnmount() {
     global.chatMessageSoundOpen = this.oldChatMessageSoundOpen
 
     this.props.leaveConversation()
+
 
     if (Platform.OS == 'ios') {
       Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
@@ -91,12 +95,13 @@ class Chatroom extends Component {
       Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
       Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
     }
+
   }
 
   onKeyboardWillShow(e) {
-   this.setState({
-     keyboardShow: true
-   })
+    this.setState({
+      keyboardShow: true
+    })
   }
 
   onKeyboardWillHide(e) {
@@ -217,8 +222,14 @@ class Chatroom extends Component {
   }
 
   renderCustomInputToolbar(toolbarProps) {
+    // console.log('toolbarProps====', toolbarProps)
     return (
-      <CustomInputToolbar {...toolbarProps}/>
+      <CustomInputToolbar 
+        {...toolbarProps}
+        textInputProps={{
+          ref:(input) => this.messageInput = input
+        }}
+      />
     )
   }
 
@@ -235,15 +246,16 @@ class Chatroom extends Component {
   }
 
   renderCustomTopView() {
+    if(!this.props.customTopView) {
+      return null
+    }
+
+    // console.log('this.messageInput====', this.messageInput)
     if(this.state.keyboardShow) {
       return null
     }
 
-    return (
-      <View style={{flex:1}}>
-        {this.props.customTopView}
-      </View>
-    )
+    return this.props.customTopView
   }
 
   render() {
@@ -262,7 +274,6 @@ class Chatroom extends Component {
           title={this.props.title}
         />
         <View style={styles.conversationView}>
-          {this.renderCustomTopView()}
           <GiftedChat
             messages={this.props.messages}
             onSend={this.onSend}
@@ -280,6 +291,7 @@ class Chatroom extends Component {
             loadEarlierTextStyle={{}}
             onLoadEarlier={this.onLoadEarlier.bind(this)}
           />
+          {this.renderCustomTopView()}
         </View>
       </View>
     )
