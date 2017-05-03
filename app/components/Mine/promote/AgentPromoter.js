@@ -280,7 +280,7 @@ class AgentPromoter extends Component {
         <View style={styles.totalPerView}>
           <Text style={{fontSize: em(15), color: '#5a5a5a'}}>区域总业绩（元）</Text>
           <Text style={{fontSize: em(36), color: THEME.base.mainColor, fontWeight: 'bold', paddingTop: normalizeH(15)}}>
-            {this.props.statistics.totalPerformance}
+            {this.props.statistics.totalPerformance.toFixed(3)}
           </Text>
         </View>
         {this.renderLastDaysChart()}
