@@ -35,7 +35,7 @@ export default class Header extends Component {
                             onPress={() => this.props.leftPress()}>
             <Icon
               name={this.props.leftIconName}
-              style={[styles.left, this.props.leftStyle]}/>
+              style={[styles.left, {fontSize: em(28)}, this.props.leftStyle]}/>
             {this.props.leftIconLabel
               ? <Text style={[styles.leftIconLabel, this.props.leftIconLabelStyle]}>{this.props.leftIconLabel}</Text>
               : <View/>}
@@ -86,7 +86,7 @@ export default class Header extends Component {
                             onPress={() => this.props.rightPress()}>
             <Icon
               name={this.props.rightIconName}
-              style={[styles.right, this.props.rightStyle]}/>
+              style={[styles.right, {fontSize: em(28)}, this.props.rightStyle]}/>
             {this.props.rightIconLabel
               ? <Text style={[styles.rightIconLabel, this.props.rightIconLabelStyle]}>{this.props.rightIconLabel}</Text>
               : <View/>}
