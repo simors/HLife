@@ -130,7 +130,7 @@ class Mine extends Component {
     } else {
       shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
     }
-    shareUrl = shareUrl + "appDownload/" + Platform.OS
+    shareUrl = shareUrl + "appDownload/"
 
     console.log("shopShare url:", shareUrl)
 
