@@ -109,6 +109,9 @@ export default class MessageContainer extends React.Component {
       message.user = {};
     }
 
+    let date = new Date()
+    let dateTime = date.getTime()
+
     const messageProps = {
       ...this.props,
       key: message._id,
@@ -117,7 +120,8 @@ export default class MessageContainer extends React.Component {
       nextMessage: message.nextMessage,
       position: message.user._id === this.props.user._id ? 'right' : 'left',
     };
-
+    // console.log('messageProps====', messageProps)
+    // console.log('message._id====', message._id)
     if (this.props.renderMessage) {
       return this.props.renderMessage(messageProps);
     }
@@ -125,7 +129,11 @@ export default class MessageContainer extends React.Component {
   }
 
   renderScrollComponent(props) {
+    // console.log('renderScrollComponent.props===', props)
     const invertibleScrollViewProps = this.props.invertibleScrollViewProps;
+    let date = new Date()
+    let dateTime = date.getTime()
+    // console.log('renderScrollComponent.dateTime===', dateTime)
     return (
       <InvertibleScrollView
         {...props}
@@ -145,9 +153,7 @@ export default class MessageContainer extends React.Component {
           automaticallyAdjustContentInsets={false}
           initialListSize={20}
           pageSize={20}
-
           dataSource={this.state.dataSource}
-
           renderRow={this.renderRow}
           renderHeader={this.renderFooter}
           renderFooter={this.renderLoadEarlier}

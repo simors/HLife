@@ -94,6 +94,9 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 
 const styles = StyleSheet.create({
 	container: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
 		height: 130,
 		paddingTop: 15,
 		backgroundColor:'#f5f5f5',

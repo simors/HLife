@@ -70,8 +70,13 @@ export default class CustomMessage extends React.Component {
   }
 
   render() {
+    let date = new Date()
+    let dateTime = date.getTime()
+
+    // console.log('CustomMessage.this.props===', this.props)
+
     return (
-      <View>
+      <View key={this.props.customKey || dateTime}>
         {this.renderDay()}
         {this.renderNameView()}
         <View style={[styles[this.props.position].container, {
