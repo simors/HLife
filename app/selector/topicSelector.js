@@ -43,6 +43,11 @@ export function isTopicLiked(state, topicId) {
   return state.TOPIC.toJS().IsLikedByCurrentUser[topicId]
 }
 
+export function selectCurrentUserLikedTopicInfo(state, topicId) {
+  return state.TOPIC.getIn(['currentUserLikedTopics', topicId]) 
+    && state.TOPIC.getIn(['currentUserLikedTopics', topicId]).toJS()
+}
+
 export function getTopicById(state, topicId) {
   let topicList = state.TOPIC.get('topics')
   for (let [userId, value] of topicList) {

@@ -823,11 +823,14 @@ export function fetchUsers(payload) {
       if (0 != code) {
         return
       }
+
+      let userProfiles = []
       user.users.forEach((lcUser) => {
         let userInfo = UserInfo.fromLeancloudApi(lcUser)
-        const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
-        dispatch(addUserProfile({userInfo}))
+        userProfiles.push(userInfo)
       })
+      const action = createAction(AuthTypes.ADD_USER_PROFILES)
+      dispatch(action({userProfiles}))
     }).catch(error => {
       if (payload.error) {
         payload.error(error)

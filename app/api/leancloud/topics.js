@@ -117,12 +117,12 @@ export function fetchTopicLikeUsers(payload) {
 }
 
 export function fetchUserLikeTopicInfo(payload) {
-  let shopId = payload.topicId
+  let topicId = payload.topicId
   let upType = payload.upType
   let currentUser = AV.User.current()
 
   let query = new AV.Query('Up')
-  query.equalTo('targetId', shopId)
+  query.equalTo('targetId', topicId)
   query.equalTo('upType', upType)
   query.equalTo('user', currentUser)
   query.include('user')
@@ -140,37 +140,44 @@ export function fetchUserLikeTopicInfo(payload) {
 
 export function likeTopic(payload) {
   let topicId = payload.topicId
-  let topic = undefined
-  if (payload.upType == "topic")
-    topic = AV.Object.createWithoutData('Topics', payload.topicId)
-  else if (payload.upType == "topicComment")
-    topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
   let upType = payload.upType
+  let topic = undefined
+
+  if (upType == "topic")
+    topic = AV.Object.createWithoutData('Topics', topicId)
+  else if (upType == "topicComment")
+    topic = AV.Object.createWithoutData('TopicComments', topicId)
+
   let currentUser = AV.User.current()
-  return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
-    if (!userLikeTopicInfo) {
+
+  // console.log('likeTopic.topicId===', topicId)
+  let userLikeTopicInfo = topicSelector.selectCurrentUserLikedTopicInfo(store.getState(), topicId)
+  // console.log('likeTopic.userLikeTopicInfo===', userLikeTopicInfo)
+
+  if(userLikeTopicInfo && userLikeTopicInfo.status) {
+    return new Promise((resolve, reject) => {
+      resolve({
+        code: '10107',
+        message: '您已经赞过该话题了'
+      })
+    })
+  }else {
+    let up = null
+    if(!userLikeTopicInfo) {
       let Up = AV.Object.extend('Up')
-      let up = new Up()
+      up = new Up()
       up.set('targetId', topicId)
       up.set('upType', upType)
       up.set('user', currentUser)
-      return up.save()
-    }
-    else if (userLikeTopicInfo.id && !userLikeTopicInfo.status) {
-      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
       up.set('status', true)
-      return up.save()
+    }else {
+      up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+      up.set('status', true)
     }
-    return {
-      code: '10107',
-      message: '您已经赞过该话题了'
-    }
-  }).then((result) => {
-    if (result && '10107' == result.code) {
-      return result
-    }
-    topic.increment("likeCount", 1)
-    return topic.save().then(function (result) {
+    return up.save().then((result) => {
+
+      topic.increment("likeCount", 1)
+      topic.save()
 
       let topicInfo = topicSelector.getTopicById(store.getState(), topicId)
       let activeUser = authSelector.activeUserInfo(store.getState())
@@ -195,36 +202,38 @@ export function likeTopic(payload) {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
-
-  }).catch((err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
+  }
 }
 
 export function unLikeTopic(payload) {
   let topicId = payload.topicId
+  let upType = payload.upType
   let topic = undefined
-  if (payload.upType == "topic")
-    topic = AV.Object.createWithoutData('Topics', payload.topicId)
-  else if (payload.upType == "topicComment")
-    topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
-  return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
-    if (userLikeTopicInfo && userLikeTopicInfo.id) {
-      let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+
+  if (upType == "topic")
+    topic = AV.Object.createWithoutData('Topics', topicId)
+  else if (upType == "topicComment")
+    topic = AV.Object.createWithoutData('TopicComments', topicId)
+
+  let currentUser = AV.User.current()
+
+  let userLikeTopicInfo = topicSelector.selectCurrentUserLikedTopicInfo(store.getState(), topicId)
+
+  if(!userLikeTopicInfo || !userLikeTopicInfo.status) {
+    return new Promise((resolve, reject) => {
+      resolve({
+        code: '10009',
+        message: '您还没有赞过该话题'
+      })
+    })
+  }else {
+    let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
       up.set('status', false)
-      return up.save()
-    }
-    return {
-      code: '10009',
-      message: '您还没有赞过该话题'
-    }
-  }).then((result) => {
-    if (result && '10009' == result.code) {
-      return result
-    }
-    topic.increment("likeCount", -1)
-    return topic.save().then(function (result) {
+    return up.save().then((result) => {
+
+      topic.increment("likeCount", -1)
+      topic.save()
+
       return {
         topicId: topicId,
         code: '10010',
@@ -234,11 +243,111 @@ export function unLikeTopic(payload) {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
-  }).catch((err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
+  }
 }
+
+
+// export function likeTopic(payload) {
+//   let topicId = payload.topicId
+//   let topic = undefined
+//   if (payload.upType == "topic")
+//     topic = AV.Object.createWithoutData('Topics', payload.topicId)
+//   else if (payload.upType == "topicComment")
+//     topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
+//   let upType = payload.upType
+//   let currentUser = AV.User.current()
+//   return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
+//     if (!userLikeTopicInfo) {
+//       let Up = AV.Object.extend('Up')
+//       let up = new Up()
+//       up.set('targetId', topicId)
+//       up.set('upType', upType)
+//       up.set('user', currentUser)
+//       return up.save()
+//     }
+//     else if (userLikeTopicInfo.id && !userLikeTopicInfo.status) {
+//       let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+//       up.set('status', true)
+//       return up.save()
+//     }
+//     return {
+//       code: '10107',
+//       message: '您已经赞过该话题了'
+//     }
+//   }).then((result) => {
+//     if (result && '10107' == result.code) {
+//       return result
+//     }
+//     topic.increment("likeCount", 1)
+//     return topic.save().then(function (result) {
+
+//       let topicInfo = topicSelector.getTopicById(store.getState(), topicId)
+//       let activeUser = authSelector.activeUserInfo(store.getState())
+//       let pushUserid = topicInfo && topicInfo.userId
+//       // console.log('likeTopic.topicInfo==', topicInfo)
+//       if(pushUserid && activeUser.id != pushUserid) {
+//         AVUtils.pushByUserList([pushUserid], {
+//           alert: `${activeUser.nickname}点赞了您的评论,立即查看`,
+//           sceneName: 'TOPIC_DETAIL',
+//           sceneParams: {
+//             topic: topicInfo
+//           }
+//         })
+//       }
+
+//       return {
+//         topicId: topicId,
+//         code: '10108',
+//         message: '成功点赞'
+//       }
+//     }, function (err) {
+//       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//       throw err
+//     })
+
+//   }).catch((err) => {
+//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//     throw err
+//   })
+// }
+
+// export function unLikeTopic(payload) {
+//   let topicId = payload.topicId
+//   let topic = undefined
+//   if (payload.upType == "topic")
+//     topic = AV.Object.createWithoutData('Topics', payload.topicId)
+//   else if (payload.upType == "topicComment")
+//     topic = AV.Object.createWithoutData('TopicComments', payload.topicId)
+//   return fetchUserLikeTopicInfo(payload).then((userLikeTopicInfo) => {
+//     if (userLikeTopicInfo && userLikeTopicInfo.id) {
+//       let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
+//       up.set('status', false)
+//       return up.save()
+//     }
+//     return {
+//       code: '10009',
+//       message: '您还没有赞过该话题'
+//     }
+//   }).then((result) => {
+//     if (result && '10009' == result.code) {
+//       return result
+//     }
+//     topic.increment("likeCount", -1)
+//     return topic.save().then(function (result) {
+//       return {
+//         topicId: topicId,
+//         code: '10010',
+//         message: '取消点赞成功'
+//       }
+//     }, function (err) {
+//       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//       throw err
+//     })
+//   }).catch((err) => {
+//     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+//     throw err
+//   })
+// }
 
 export function publishTopicComments(payload) {
   let TopicComments = AV.Object.extend('TopicComments')

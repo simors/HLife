@@ -280,9 +280,10 @@ export function fetchConversation(payload) {
         actionType = msgTypes.FETCH_CONVERSATION_PAGING
       }
       let action = createAction(actionType)
-      dispatch(action({conversations: new List(convs)}))
+      let convsList = new List(convs)
+      dispatch(action({conversations: convsList}))
       if(payload.success) {
-        payload.success(convs.length <= 0)
+        payload.success(convs.length <= 0, convsList.toJS())
       }
     }, (error)=>{
       if(payload.error) {
