@@ -21,6 +21,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import {getInviteCode} from '../../../action/promoterAction'
 import {inviteCode} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
+import ActionSheet from 'react-native-actionsheet'
+
 
 class InviteCodeViewer extends Component {
   constructor(props) {
@@ -37,12 +39,39 @@ class InviteCodeViewer extends Component {
     })
   }
 
-  renderInviteDeclareBtn() {
+  _handleActionSheetPress(index) {
+    if(0 == index) { //分享
+      let shareUrl = ""
+      if (__DEV__) {
+        shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
+      } else {
+        shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
+      }
+      shareUrl = shareUrl + "inviteCodeShare/" + this.props.code
+
+      console.log("shopShare url:", shareUrl)
+
+      Actions.SHARE({
+        title: "汇邻优店邀请码",
+        url: shareUrl,
+        author: '邻家小二',
+        abstract: "邻里互动，同城交易",
+        cover: "https://simors.github.io/ljyd_blog/ic_launcher.png",
+      })
+    } else if(1 == index) { //说明
+      Actions.INVITE_EXPLAIN()
+    }
+  }
+
+  renderActionSheet() {
     return (
-      <TouchableOpacity style={{paddingRight: normalizeW(15)}} onPress={()=>{Actions.INVITE_EXPLAIN()}}>
-        <Image style={{width: normalizeW(18), height: normalizeH(18)}}
-               source={require('../../../assets/images/explain_revernue.png')}/>
-      </TouchableOpacity>
+      <ActionSheet
+        ref={(o) => this.ActionSheet = o}
+        title=""
+        options={['分享', '说明', '取消']}
+        cancelButtonIndex={2}
+        onPress={this._handleActionSheetPress.bind(this)}
+      />
     )
   }
 
@@ -55,7 +84,11 @@ class InviteCodeViewer extends Component {
                   Actions.pop()
                 }}
                 title="邀请码"
-                rightComponent={()=>this.renderInviteDeclareBtn()}
+                rightType="icon"
+                rightIconName="ios-more"
+                rightPress={() => {
+                  this.ActionSheet.show()
+                }}
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(30), width: normalizeW(247)}}>
@@ -74,6 +107,7 @@ class InviteCodeViewer extends Component {
             </View>
           </View>
         </View>
+        {this.renderActionSheet()}
       </View>
     )
   }

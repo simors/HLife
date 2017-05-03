@@ -25,7 +25,7 @@
 
   
 #ifdef DEBUG
-  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://127.0.0.1:8081/index.ios.bundle?platform=ios&dev=true"];
 #else
   jsCodeLocation = [CodePush bundleURL];
 #endif
@@ -41,9 +41,10 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+#ifdef DEBUG
   /* 打开UShare调试日志 */
   [[UMSocialManager defaultManager] openLog:YES];
-
+#endif
   /* 设置友盟appkey */
   [[UMSocialManager defaultManager] setUmSocialAppkey:@"58f8610d5312ddb147000e04"];
 
