@@ -125,12 +125,17 @@ export default class MessageContainer extends React.Component {
   }
 
   renderScrollComponent(props) {
+    // console.log('renderScrollComponent.props===', props)
     const invertibleScrollViewProps = this.props.invertibleScrollViewProps;
+    let date = new Date()
+    let dateTime = date.getTime()
+    // console.log('renderScrollComponent.dateTime===', dateTime)
     return (
       <InvertibleScrollView
         {...props}
         {...invertibleScrollViewProps}
         ref={component => this._invertibleScrollViewRef = component}
+        key={dateTime}
       />
     );
   }
