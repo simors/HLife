@@ -25,6 +25,8 @@ export default function authReducer(state = initialState, action) {
       return handleProfileSubmitSuccess(state, action)
     case AuthTypes.ADD_USER_PROFILE:
       return handleAddUserProfile(state, action)
+    case AuthTypes.ADD_USER_PROFILES:
+      return handleAddUserProfiles(state, action)  
     case AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS:
       return handleFetchUserFollowersSuccess(state, action)
     case AuthTypes.FETCH_USER_FOLLOWERS_PAGING_SUCCESS:
@@ -100,6 +102,14 @@ function handleProfileSubmitSuccess(state, action) {
 function handleAddUserProfile(state, action) {
   let userInfo = action.payload.userInfo
   state = state.setIn(['profiles', userInfo.id], userInfo)
+  return state
+}
+
+function handleAddUserProfiles(state, action) {
+  let userProfiles = action.payload.userProfiles
+  userProfiles.forEach((userInfo) => {
+    state = state.setIn(['profiles', userInfo.id], userInfo)
+  })
   return state
 }
 

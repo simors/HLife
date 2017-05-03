@@ -57,9 +57,9 @@ class Chatroom extends Component {
         }
       })
 
-      this.props.members.forEach((member) => {
-        this.props.getUserInfoById({userId: member})
-      })
+      // this.props.members.forEach((member) => {
+      //   this.props.getUserInfoById({userId: member})
+      // })
       
     })
   }

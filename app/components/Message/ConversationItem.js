@@ -28,17 +28,18 @@ class ConversationItem extends Component {
   }
 
   componentDidMount() {
-  	let conversation = this.props.conversation
-    let members = conversation.members
-    let otherMem = members.filter((member) => {
-      if (member === this.props.currentUser) {
-        return false
-      }
-      return true
-    })
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUsers({userIds: otherMem})
-    })
+    //note: 移至消息通知列表页获取，提升性能
+  	// let conversation = this.props.conversation
+   //  let members = conversation.members
+   //  let otherMem = members.filter((member) => {
+   //    if (member === this.props.currentUser) {
+   //      return false
+   //    }
+   //    return true
+   //  })
+   //  InteractionManager.runAfterInteractions(() => {
+   //    this.props.fetchUsers({userIds: otherMem})
+   //  })
   }
 
   enterChatroom() {
