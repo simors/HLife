@@ -29,8 +29,9 @@ import CommonListView from '../common/CommonListView'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import {fetchConversation} from '../../action/messageAction'
 import ConversationItem from './ConversationItem'
-import {isUserLogined} from '../../selector/authSelector'
+import {activeUserId, isUserLogined} from '../../selector/authSelector'
 import * as Toast from '../common/Toast'
+import {fetchUsers} from '../../action/authActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -274,8 +275,10 @@ class MessageBox extends Component {
       isRefresh: !!isRefresh,
       lastUpdatedAt: this.props.lastUpdatedAt,
       type: PERSONAL_CONVERSATION,
-      success: (isEmpty) => {
+      success: (isEmpty, convs) => {
+        // console.log('convs---------->', convs)
         this.isQuering = false
+
         if(!this.listView) {
           return
         }
@@ -284,6 +287,22 @@ class MessageBox extends Component {
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
+
+          let memberSet = new Set()
+          let convMembers = []
+          convs.forEach((conv) => {
+            // console.log('conv.members=====', conv.members)
+            convMembers = convMembers.concat(conv.members)
+          })
+          convMembers.map(x => memberSet.add(x))
+          // console.log('memberSet=====', memberSet)
+          let otherMembers = [...memberSet]
+          let activeUserId = this.props.activeUserId
+          otherMembers.filter((element, index, array) => {
+            return element != activeUserId
+          })
+          // console.log('otherMembers=====', otherMembers)
+          this.props.fetchUsers({userIds: otherMembers})
         }
       },
       error: (err)=>{
@@ -380,11 +399,13 @@ const mapStateToProps = (state, ownProps) => {
   newProps.newShopNotice = newShopNotice
   newProps.lastShopNoticeMsg = lastShopNoticeMsg
   newProps.newestSystemNotice = newestSystemNotice
+  newProps.activeUserId = activeUserId(state)
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   updateSystemNoticeAsMarkReaded,
-  fetchConversation
+  fetchConversation,
+  fetchUsers
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBox)
