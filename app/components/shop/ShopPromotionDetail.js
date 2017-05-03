@@ -133,14 +133,14 @@ class ShopPromotionDetail extends Component {
                 <View style={styles.typeDescBox}>
                   <Text numberOfLines={1} style={styles.typeDescTxt}>{shopPromotionDetail.typeDesc}</Text>
                 </View>
-                {shopPromotionDetail.pv
+                {false
                   ? <Text style={styles.pvTxt}>{shopPromotionDetail.pv}人看过</Text>
                   : null
                 }
               </View>
             </View>
             <View style={styles.shopInfoWrap}>
-              <Text style={[styles.shopInfoTxt, styles.shopNameTxt]}>{targetShop.shopName}</Text>
+              <Text numberOfLines={1} style={[styles.shopInfoTxt, styles.shopNameTxt, {maxWidth: PAGE_WIDTH/2}]}>{targetShop.shopName}</Text>
               <Text style={styles.shopInfoTxt}>{targetShop.distance + targetShop.distanceUnit}</Text>
               <View style={styles.shopBtnContainer}>
                 <TouchableOpacity style={styles.shopBtnBox} onPress={()=>{Actions.SHOP_DETAIL({id: targetShop.id})}}>
@@ -171,7 +171,7 @@ class ShopPromotionDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const shopPromotionDetail = selectShopPromotionDetail(state, ownProps.id)
-  console.log('shopPromotionDetail=====>>>>>', shopPromotionDetail)
+  // console.log('shopPromotionDetail=====>>>>>', shopPromotionDetail)
   const isUserLogined = authSelector.isUserLogined(state)
 
   return {
