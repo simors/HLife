@@ -149,9 +149,9 @@ class Profile extends Component {
                 <View style={{flex: 2, justifyContent: 'center'}}>
                   <PhoneInput {...phoneInput}
                               initValue={this.props.userInfo.phone? this.props.userInfo.phone: undefined}
-                              clearBtnStyle={{right: em(20), top: em(6)}}
                               editable={false}
-                              inputStyle={styles.phoneInputStyle}/>
+                              inputStyle={styles.phoneInputStyle}
+                              outContainerWrap={{borderWidth: 0}}/>
                 </View>
               </View>
             </View>
@@ -234,7 +234,8 @@ const  styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5'
+    borderBottomColor: '#F5F5F5',
+    alignItems: 'center',
   },
   phoneInputStyle: {
     height: normalizeH(38),

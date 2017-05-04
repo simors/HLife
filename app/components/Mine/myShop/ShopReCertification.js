@@ -236,6 +236,7 @@ class ShopReCertification extends Component {
                   <PhoneInput
                     {...phoneInput}
                     placeholder="仅用于客服与你联系"
+                    outContainerWrap={{borderWidth: 0}}
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     initValue={this.props.userOwnedShopInfo.phone}

@@ -125,17 +125,17 @@ export const scenes = Actions.create(
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="PROFILE" component={Profile} />
       <Scene key="PERSONAL_HOMEPAGE" component={PersonalHomePage}/>
-      <Scene key="SHOPR_EGISTER" component={ShopRegister}/>
+      <Scene key="SHOPR_EGISTER" component={ShopRegister} />
       <Scene key="ARTICLES_ARTICLE" component={Article}/>
       <Scene key="ARTICLES_ARTICLELIST" component={ArticleList}/>
       <Scene key="SHOPR_EGISTER_SUCCESS" component={ShopRegistSuccess}/>
-      <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo}/>
+      <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo} />
       <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
       <Scene key="SHOP_FANS_INDEX" component={ShopFansIndex}/>
       <Scene key="MY_SHOP_PROMOTION_MANAGE_INDEX" component={MyShopPromotionManageIndex}/>
       <Scene key="SHOP_CERTIFICATION_INFO_SHOW" component={ShopCertificationInfoShow}/>
       <Scene key="MY_SHOP_INDEX" component={MyShopIndex}/>
-      <Scene key="EDIT_SHOP" component={EditShop}/>
+      <Scene key="EDIT_SHOP" component={EditShop} />
       <Scene key="UPDATE_SHOP_COVER" component={UpdateShopCover}/>
       <Scene key="UPDATE_SHOP_COVER_FOR_EDIT_SHOP" component={UpdateShopCover4EditShop}/>
       <Scene key="UPDATE_SHOP_ALBUM" component={UpdateShopAlbum}/>
@@ -157,7 +157,7 @@ export const scenes = Actions.create(
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
-      <Scene key="PROMOTER_AUTH" component={PromoterAuth}/>
+      <Scene key="PROMOTER_AUTH" component={PromoterAuth} />
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>

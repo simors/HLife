@@ -95,8 +95,12 @@ class RetrievePassword extends Component {
         <View style={styles.body}>
           <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
             <View style={{marginTop: 30}}>
-              <PhoneInput {...phoneInput} containerStyle={styles.inputBox}
-                          placeholder='请输入注册的手机号'/>
+              <View style={[styles.inputBox, {paddingLeft: normalizeW(17), paddingRight: normalizeW(17)}]}>
+                <PhoneInput {...phoneInput}
+                            placeholder='请输入注册的手机号'
+                            containerStyle={{paddingLeft: normalizeW(0), paddingRight: normalizeW(0)}}
+                            outContainerWrap={{backgroundColor: '#F3F3F3', borderWidth: 0}}/>
+              </View>
               <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={styles.inputBox}
                                 getSmsAuCode={() => {return this.smsCode()}}  reset={!this.props.phoneValid}
               />
