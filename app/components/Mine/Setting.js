@@ -200,12 +200,12 @@ class Setting extends Component {
         />
         <View style={styles.itemContainer}>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            <View style={styles.selectItem} onPress={() => {}}>
+            {Platform.OS=='android'?<View style={styles.selectItem} onPress={() => {}}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>
               <View style={styles.rightWrap}><Text style={{color:'#AAAAAA',fontSize:em(15),marginRight:normalizeW(6)}}>{'V'+RNDeviceInfo.appVersion}</Text>
                 <Image source={require("../../assets/images/arrow_left.png")}/>
               </View>
-            </View>
+            </View>:null}
           </View>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
             <TouchableOpacity style={styles.selectItem} onPress={() => this.toAbout()}>
