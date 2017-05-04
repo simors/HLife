@@ -470,6 +470,7 @@ class ShopRegister extends Component {
                     {...invitationCodeInput}
                     placeholder="输入邀请码"
                     autoCorrect={false}
+                    outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
                     initValue={this.state.qRCode}

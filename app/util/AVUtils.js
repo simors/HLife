@@ -343,15 +343,7 @@ function buildPushQueryByUserList(userList = []) {
   return queryDeviceTokens(userList).then((tokenList)=>{
     // console.log('buildPushQueryByUserList.tokenList===', tokenList)
     if(tokenList && tokenList.length) {
-      let pushTokens = []
-      tokenList.forEach((item)=>{
-        if ( Platform.OS === 'android' ) {
-          pushTokens.push(item.installationId)
-        }else {
-          pushTokens.push(item.deviceToken)
-        }
-      })
-      return buildPushQuery(pushTokens)
+      return buildPushQuery(tokenList)
     }
     return null
   }, function (error) {
@@ -360,15 +352,44 @@ function buildPushQueryByUserList(userList = []) {
 }
 
 function buildPushQuery(pushTokens = []) {
-  var query = new AV.Query('_Installation')
   if(pushTokens.length) {
-    if ( Platform.OS === 'android' ) {
-      query.containedIn('installationId', pushTokens)
-    }else {
-      query.containedIn('deviceToken', pushTokens)
+    let androidDevices = []
+    let iosDevices = []
+    // console.log('buildPushQuery.pushTokens===', pushTokens)
+    pushTokens.forEach((item, index) => {
+      if ( item.deviceType === 'android' ) {
+        androidDevices.push(item.installationId)
+      }else if ( item.deviceType === 'ios' ) {
+        iosDevices.push(item.deviceToken)
+      }
+    })
+
+    // console.log('buildPushQuery.iosDevices===', iosDevices)
+    // console.log('buildPushQuery.androidDevices===', androidDevices)
+    let androidQuery = new AV.Query('_Installation')
+    if(androidDevices.length) {
+      androidQuery.containedIn('installationId', androidDevices)
     }
-    return query
+
+    let iosQuery = new AV.Query('_Installation')
+    if(iosDevices.length) {
+      iosQuery.containedIn('deviceToken', iosDevices)
+    }
+
+    if(androidDevices.length && iosDevices.length) {
+      let query = AV.Query.or(androidQuery, iosQuery)
+      return query
+    }else {
+      if(androidDevices.length) {
+        return androidQuery
+      }
+
+      if(iosDevices.length) {
+        return iosQuery
+      }
+    }
   }
+
   return null
 }
 
@@ -386,7 +407,8 @@ function queryDeviceTokens(userList = []) {
       userListObj.push(item)
     }
   })
-  var query = new AV.Query('DeviceUserInfo')
+  // var query = new AV.Query('DeviceUserInfo')
+  var query = new AV.Query('_Installation')
   query.containedIn('owner', userListObj)
 
   return query.find().then(function (results) {
@@ -520,6 +542,6 @@ export function push(data, query) {
     sendData.expiration_interval = data.expiration_interval
   }
 
-  console.log('push sendData=====', sendData)
+  // console.log('push sendData=====', sendData)
   AV.Push.send(sendData);
 }

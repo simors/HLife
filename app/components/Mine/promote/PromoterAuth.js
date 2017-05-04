@@ -204,6 +204,7 @@ class PromoterAuth extends Component {
                     {...inviteCodeInput}
                     placeholder="输入邀请码"
                     autoCorrect={false}
+                    outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
                     containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
                     inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: em(17),}}
                     initValue={this.state.inviteCode}

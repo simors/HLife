@@ -43,7 +43,14 @@ RCT_EXPORT_METHOD(createPayment:(NSDictionary *)charge
                   :(RCTResponseSenderBlock)callback)
 {
   [Pingpp createPayment:charge appURLScheme:schema withCompletion:^(NSString *result, PingppError *error) {
-    callback(@[@(error.code), result]);
+//    NSLog(@"completion block: %@", result);
+    if (error == nil) {
+//      NSLog(@"PingppError is nil");
+      callback(@[@(error.code), result]);
+    } else {
+//      NSLog(@"PingppError: code=%lu msg=%@", (unsigned  long)error.code, [error getMsg]);
+      callback(@[@(error.code), [error getMsg]]);
+    }
   }];
 }
 
