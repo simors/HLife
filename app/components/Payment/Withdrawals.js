@@ -120,6 +120,7 @@ class Withdrawals extends Component {
               <CommonTextInput
                 {...accountInput}
                 placeholder="请输入银行账号"
+                outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
                 containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={30}
                 inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
                 initValue={this.props.paymentInfo.card_number}
@@ -138,6 +139,7 @@ class Withdrawals extends Component {
               <CommonTextInput
                 {...nameInput}
                 placeholder="输入账号姓名"
+                outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
                 containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={8}
                 inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
                 initValue={this.props.paymentInfo.id_name}
@@ -161,6 +163,7 @@ class Withdrawals extends Component {
               <CommonTextInput
                 {...amountInput}
                 placeholder="100元整数倍"
+                outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
                 containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
                 inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
                 keyboardType="numeric"
@@ -172,6 +175,7 @@ class Withdrawals extends Component {
               <CommonTextInput
                 {...passwordInput}
                 placeholder="请输入支付密码"
+                outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
                 containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
                 inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
                 secureTextEntry={true}

@@ -325,9 +325,9 @@ class PublishTopics extends Component {
               <View style={{height: normalizeH(59)}}>
                 <CommonTextInput maxLength={36}
                                  autoFocus={true}
+                                 outerContainerStyle={{backgroundColor: '#FFFFFF'}}
                                  containerStyle={styles.titleContainerStyle}
                                  inputStyle={styles.titleInputStyle}
-                                 clearBtnStyle={styles.titleCleanBtnStyle}
                                  {...topicName}
                                  placeholder="标题"/>
               </View>
@@ -432,19 +432,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 0,
     paddingRight: 0,
-    borderBottomWidth: 1,
-    borderStyle: 'solid',
-    borderBottomColor: '#F5F5F5',
+    borderBottomWidth: 0,
   },
   titleInputStyle: {
     flex: 1,
     backgroundColor: '#FFFFFF',
     color: '#5a5a5a',
-  },
-  titleCleanBtnStyle: {
-    position: 'absolute',
-    right: normalizeW(25),
-    top: normalizeH(17),
+    paddingLeft: normalizeW(10),
   },
   topicTypeTitleStyle: {
     fontSize: em(15),

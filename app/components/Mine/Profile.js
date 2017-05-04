@@ -138,7 +138,7 @@ class Profile extends Component {
                 <View style={{flex: 2, justifyContent: 'center'}}>
                   <CommonTextInput {...nicknameInput}
                                    initValue={this.props.userInfo.nickname? this.props.userInfo.nickname: undefined}
-                                   clearBtnStyle={{right: em(20), top: em(15)}}
+                                   outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFFFFF'}}
                                    inputStyle={{height: normalizeH(38), backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0,}}/>
                 </View>
               </View>

@@ -87,7 +87,7 @@ class IdentifyCard extends Component {
           title='验证银行卡信息'
         />
         <View style={styles.body}>
-          <View style={{justifyContent: 'center', height: normalizeH(104), borderBottomColor: '#AAAAAA', borderBottomWidth: 1}}>
+          <View style={{justifyContent: 'center', height: normalizeH(104), borderBottomColor: '#F5F5F5', borderBottomWidth: 1}}>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginLeft: normalizeW(30), width: normalizeW(60), fontSize: 17, color: '#5A5A5A'}}>银行卡</Text>
               <Text style={{fontSize: 17, color: '#5A5A5A'}}>{this.props.bankCode}</Text>
@@ -102,6 +102,7 @@ class IdentifyCard extends Component {
             <CommonTextInput
               {...userNameInput}
               placeholder="持卡人姓名"
+              outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
             />
@@ -111,6 +112,7 @@ class IdentifyCard extends Component {
             <CommonTextInput
               {...idNumberInput}
               placeholder="持卡人身份证号"
+              outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
             />
@@ -120,6 +122,7 @@ class IdentifyCard extends Component {
             <CommonTextInput
               {...phoneInput}
               placeholder="银行预留手机号"
+              outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
               containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={16}
               inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17,}}
               keyboardType="numeric"
@@ -186,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     borderBottomWidth: 1,
-    borderBottomColor: '#AAAAAA'
+    borderBottomColor: '#F5F5F5'
   },
   agreement: {
     flexDirection: 'row',
