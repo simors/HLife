@@ -73,7 +73,10 @@ class Withdrawals extends Component {
   }
 
   amountValidCheck = (data)=> {
-    if (data && data.text && (parseInt(data.text) <= this.props.paymentInfo.balance) && (parseInt(data.text) > 0)) {
+    if (data && data.text
+      && (parseInt(data.text) <= this.props.paymentInfo.balance)
+      && (parseInt(data.text) > 0)
+      && (parseInt(data.text) % 100 == 0)) {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '提现金额输入有误'}
@@ -157,7 +160,7 @@ class Withdrawals extends Component {
               <Text style={{fontSize: 17, color: '#AAAAAA'}}>提现金额</Text>
               <CommonTextInput
                 {...amountInput}
-                placeholder=""
+                placeholder="100元整数倍"
                 containerStyle={{height: normalizeH(42), paddingRight: 0}} maxLength={20}
                 inputStyle={{backgroundColor: '#FFFFFF', borderWidth: 0, paddingLeft: 0, fontSize: 17}}
                 keyboardType="numeric"
