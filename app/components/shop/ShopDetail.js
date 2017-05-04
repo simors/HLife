@@ -639,6 +639,26 @@ class ShopDetail extends Component {
     return null
   }
 
+  renderFollowShop() {
+    if(this.isSelfShop()) {
+      return null
+    }
+
+    if(this.props.isFollowedShop) {
+      return (
+        <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
+          <Image source={require('../../assets/images/followed.png')} />
+        </TouchableOpacity>
+      )
+    }else {
+      return (
+        <TouchableOpacity onPress={this.followShop.bind(this)}>
+          <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
+        </TouchableOpacity>
+      )
+    }
+  }
+
   renderDetailContent() {
     let shopDetail = this.props.shopDetail
 
@@ -702,14 +722,7 @@ class ShopDetail extends Component {
               </View>
               
               <View style={styles.shopXYZRight}>
-                {this.props.isFollowedShop
-                  ? <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
-                      <Image source={require('../../assets/images/followed.png')} />
-                    </TouchableOpacity>
-                  : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                      <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
-                    </TouchableOpacity>
-                }
+                {this.renderFollowShop()}
               </View>
             </View>
 
