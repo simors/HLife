@@ -94,7 +94,7 @@ class Payment extends Component {
       enableButton: true
     })
     if(Platform.OS === 'ios') {
-      PingPPModule.setDebugMode(true, () => {console.log("PingPPModule.setDebugMode success!")})
+      // PingPPModule.setDebugMode(true, () => {console.log("PingPPModule.setDebugMode success!")})
       PingPPModule.createPayment(charge, 'wxdcaaa68c51754994', this.paymentCallback)
     } else if(Platform.OS === 'android') {
       PingPPModule.createPayment(JSON.stringify(charge), 'wxdcaaa68c51754994', this.paymentCallback)
