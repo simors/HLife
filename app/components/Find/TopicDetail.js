@@ -62,6 +62,7 @@ export class TopicDetail extends Component {
       loadComment: false,
     }
     this.replyInput = null
+    this.isReplying = false
   }
 
   componentWillMount() {
@@ -110,10 +111,12 @@ export class TopicDetail extends Component {
   submitSuccessCallback() {
     dismissKeyboard()
     Toast.show('评论成功', {duration: 1000})
+    this.isReplying = false
   }
 
   submitErrorCallback(error) {
     Toast.show(error.message)
+    this.isReplying = false
   }
 
   openModel(callback) {
@@ -141,6 +144,11 @@ export class TopicDetail extends Component {
       Actions.LOGIN()
     }
     else {
+      if (this.isReplying) {
+        Toast.show('正在发表评论，请稍后')
+        return
+      }
+      this.isReplying = true
       this.props.publishTopicFormData({
         content: content,
         topicId: this.props.topic.objectId,
@@ -148,8 +156,8 @@ export class TopicDetail extends Component {
         replyTo: (this.state.comment) ? this.state.comment.userId : this.props.topic.userId,
         commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
-        success: this.submitSuccessCallback.bind(this),
-        error: this.submitErrorCallback
+        success: () => this.submitSuccessCallback(),
+        error: () => this.submitErrorCallback()
       })
     }
   }
