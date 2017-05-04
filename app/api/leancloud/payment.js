@@ -40,10 +40,8 @@ export function createPingppTransfers(payload) {
   return AV.Cloud.run('hLifeCreateTransfers', params).then((transfersInfo) => {
     return transfersInfo
   }).catch((error) => {
-    console.log(error)
-    if(!error.message)
-      error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
-    throw  error
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
   })
 }
 

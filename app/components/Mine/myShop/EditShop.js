@@ -470,6 +470,7 @@ class EditShop extends Component {
                   <ServiceTimePicker
                     {...serviceTimeInput}
                     initValue={this.props.userOwnedShopInfo.openTime}
+                    inputStyle={{textAlign:'center'}}
                   />
                 </View>
               </View>

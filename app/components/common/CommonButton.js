@@ -27,14 +27,28 @@ export default class CommonButton extends Component {
     }
   }
 
+  renderTrip() {
+    if(this.props.disabled && this.props.trip) {
+      return(
+        <Text style={styles.trip}>{this.props.trip}</Text>
+      )
+    } else {
+      return(
+        null
+      )
+    }
+
+  }
+
   render() {
     return (
       <View style={[styles.container, this.props.containerStyle]}>
         <TouchableOpacity style={[styles.defaultBtnStyle, this.props.buttonStyle]}
                           onPress={() => this.pressAction()}
                           disabled={this.props.disabled}>
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
             <Text style={[styles.defaultTitleStyle, this.props.titleStyle]}>{this.props.title}</Text>
+            {this.renderTrip()}
           </View>
         </TouchableOpacity>
       </View>
@@ -60,6 +74,10 @@ const styles = StyleSheet.create({
   },
   defaultTitleStyle: {
     fontSize: em(18),
+    color: 'white'
+  },
+  trip: {
+    fontSize: em(14),
     color: 'white'
   }
 })
