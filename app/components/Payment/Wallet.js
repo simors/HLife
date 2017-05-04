@@ -31,12 +31,21 @@ import {fetchPaymentInfo} from '../../action/paymentActions'
 class Wallet extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      enableWithdrawals: true,
+    }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchPaymentInfo({userId: this.props.currentUserId})
     })
+    let today = new Date()
+    if(today.getDay() == 1 && today.getHours() > 8 && today.getHours() < 22) {
+      this.setState({
+        enableWithdrawals: true,
+      })
+    }
   }
 
   onWithdrawals = () => {
@@ -49,6 +58,7 @@ class Wallet extends Component {
     else
       Actions.PAYMENT_SMS_AUTH()
   }
+
 
   render() {
     return(
@@ -74,10 +84,12 @@ class Wallet extends Component {
           </View>
           <View style={styles.cash}>
             <CommonButton
-              buttonStyle={{height: normalizeH(40), borderRadius: 5}}
+              buttonStyle={this.state.enableWithdrawals? styles.enableButton: styles.disableButton}
               onPress={this.onWithdrawals}
               title="提现"
-              disabled={false}/>
+              disabled={!this.state.enableWithdrawals}
+              trip="（每月1号9：00-22：00可提现）"
+            />
           </View>
         </View>
       </View>
@@ -138,5 +150,14 @@ const styles = StyleSheet.create({
     paddingRight: normalizeW(15),
     justifyContent: 'space-between',
     marginTop: normalizeH(25)
+  },
+  enableButton: {
+    height: normalizeH(40),
+    borderRadius: 5,
+  },
+  disableButton: {
+    height: normalizeH(40),
+    borderRadius: 5,
+    backgroundColor: 'rgba(170, 170, 170, 0.4)'
   }
 })

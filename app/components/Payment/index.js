@@ -37,6 +37,7 @@ class Payment extends Component {
     super(props)
     this.state = {
       selectedChannel: 'wx',
+      enableButton: true,
     }
   }
 
@@ -89,6 +90,9 @@ class Payment extends Component {
 
   submitSuccessCallback = (charge) => {
     console.log("get charge:", JSON.stringify(charge))
+    this.setState({
+      enableButton: true
+    })
     if(Platform.OS === 'ios') {
       PingPPModule.setDebugMode(true, () => {console.log("PingPPModule.setDebugMode success!")})
       PingPPModule.createPayment(charge, 'wxdcaaa68c51754994', this.paymentCallback)
@@ -99,13 +103,16 @@ class Payment extends Component {
   }
 
   submitErrorCallback = (error) => {
+    this.setState({
+      enableButton: true
+    })
     this.showErrorMessage(error.code, error.message)
   }
 
   onPayment() {
     let order_no = uuid.v4().replace(/-/g, '').substr(0, 16)
     this.setState({
-      order_no: order_no
+      enableButton: false
     })
     let paymentPayload = {
       subject: this.props.subject || '邻家优店加盟费',
@@ -164,9 +171,10 @@ class Payment extends Component {
               <Text style={{fontSize: 10, marginTop: 10, color: '#AAAAAA'}}>我们不会以任何形式索要银行账号和密码，并不会收取其他费用</Text>
             </View>
             <CommonButton
-              buttonStyle={{marginTop:normalizeH(20)}}
+              buttonStyle={this.state.enableButton? styles.enableButton: styles.disableButton}
               title="支  付"
               onPress={()=>{this.onPayment()}}
+              disabled = {!this.state.enableButton}
             />
           </ScrollView>
         </View>
@@ -263,5 +271,12 @@ const styles = StyleSheet.create({
     height: normalizeH(66),
     borderBottomWidth: 1,
     borderBottomColor: '#F5F5F5',
+  },
+  enableButton: {
+    marginTop: normalizeH(20)
+  },
+  disableButton: {
+    marginTop: normalizeH(20),
+    backgroundColor: 'rgba(170, 170, 170, 0.4)'
   }
 })
