@@ -198,7 +198,7 @@ export const scenes = Actions.create(
       <Scene key="AREA_DETAIL" component={AreaPromoterDetail}/>
       <Scene key="CHANGE_AGENT" component={ChangeAgentView}/>
       <Scene key="PAYMENT_SETTING" component={PasswordSetting}/>
-      <Scene key="WITHDRAWALS" component={Withdrawals}/>
+      <Scene key="WITHDRAWALS" component={Withdrawals} />
       <Scene key="PROMOTER_PAYMENT_OK" component={PromoterPaymentOk}/>
       <Scene key="EARN_RECORD" component={EarningRecord}/>
 

@@ -73,17 +73,8 @@ class CommonTextInput extends Component {
   renderClearBtn() {
     if (this.state.showClear) {
       return (
-        <View style={[styles.defaultClearBtnStyle,
-            {right:
-               (this.props.containerStyle && this.props.containerStyle.paddingRight)
-               ? (this.props.inputStyle && this.props.inputStyle.marginRight)
-                  ? this.props.containerStyle.paddingRight + this.props.inputStyle.marginRight + 12
-                  : this.props.containerStyle.paddingRight + 12
-               : (this.props.inputStyle && this.props.inputStyle.marginRight)
-                  ? THEME.base.inputContainer.paddingRight + this.props.inputStyle.marginRight + 12
-                  : THEME.base.inputContainer.paddingRight + 12},
-            this.props.clearBtnStyle]}>
-          <TouchableOpacity onPress={() => this.clearInput()}>
+        <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
+          <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center'}} onPress={() => this.clearInput()}>
             <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
           </TouchableOpacity>
         </View>
@@ -166,13 +157,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: normalizeBorder(),
+    borderColor: '#E9E9E9',
+    backgroundColor: '#F3F3F3',
   },
   defaultContainerStyle: {
     flex: 1,
     paddingLeft: normalizeW(17),
-    paddingRight: normalizeW(17),
+    paddingRight: normalizeW(10),
     // height: normalizeH(50),
     borderBottomWidth: 0,
     marginLeft: 0,
@@ -181,17 +175,14 @@ const styles = StyleSheet.create({
   defaultInputStyle: {
     flex: 1,
     padding: 0,
-    paddingLeft: normalizeW(10),
-    paddingRight: normalizeW(10),
-    backgroundColor: '#F3F3F3',
-    borderWidth: normalizeBorder(),
-    borderColor: '#E9E9E9',
+    paddingLeft: normalizeW(0),
+    paddingRight: normalizeW(0),
     fontSize: em(17),
     color: '#B2B2B2'
   },
   defaultClearBtnStyle: {
-    position: 'absolute',
-    right: normalizeW(25),
-    top: normalizeH(12),
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: normalizeW(15),
   },
 })
