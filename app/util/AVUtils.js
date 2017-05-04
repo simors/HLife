@@ -120,7 +120,7 @@ export function configurePush(options) {
     
     // (optional) Called when Token is generated (iOS and Android)
     onRegister: function(data) {
-      console.log( 'DATA:', data );
+      // console.log( 'DATA:', data );
 
       //触发action更新本地状态树
       store.dispatch(updateLocalDeviceToken({deviceToken: data.token}))
@@ -199,7 +199,7 @@ export function configurePush(options) {
     
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
-      // console.log( 'NOTIFICATION:', notification );
+      console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
       let data = notification.data
 

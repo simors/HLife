@@ -40,6 +40,26 @@
         android:name="com.baidu.lbsapi.API_KEY"
         android:value="2WjtSWYlvCcsho70eAgAuIdMA1O7hwUP"/>
 
+      <!--
+        leancloud.APP_ID
+          开发：K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz
+          预上线：TUVjJ5HHNmopfJeREa4IcB1T-gzGzoHsz
+          生产：pHIMCdWo3VQX09TKFuU9AGdd-gzGzoHsz
+      -->
+      <meta-data
+        android:name="leancloud.APP_ID"
+        android:value="K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz"/>
+
+      <!--
+        leancloud.APP_KEY
+          开发：UseC5jvqLT7TIiQWI8nRPmEl
+          预上线：XYSEQ5K4FYtMp7P8HXT8Vz63
+          生产：qhIzQiFonde2yeaBdlcXHUDz
+      -->
+      <meta-data
+        android:name="leancloud.APP_KEY"
+        android:value="UseC5jvqLT7TIiQWI8nRPmEl"/>
+
       <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
       </service>
 

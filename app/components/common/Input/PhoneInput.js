@@ -79,17 +79,8 @@ class  PhoneInput extends Component {
   renderClearBtn() {
     if (this.state.showClear && this.props.editable) {
       return (
-        <View style={[styles.defaultClearBtnStyle,
-            {right:
-               (this.props.containerStyle && this.props.containerStyle.paddingRight)
-               ? (this.props.inputStyle && this.props.inputStyle.marginRight)
-                  ? this.props.containerStyle.paddingRight + this.props.inputStyle.marginRight + 12
-                  : this.props.containerStyle.paddingRight + 12
-               : (this.props.inputStyle && this.props.inputStyle.marginRight)
-                  ? THEME.base.inputContainer.paddingRight + this.props.inputStyle.marginRight + 12
-                  : THEME.base.inputContainer.paddingRight + 12},
-            this.props.clearBtnStyle]}>
-          <TouchableOpacity onPress={() => this.clearInput()}>
+        <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
+          <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center'}} onPress={() => this.clearInput()}>
             <Image style={{width: 25, height: 25}} source={require('../../../assets/images/delete.png')} />
           </TouchableOpacity>
         </View>
@@ -113,7 +104,7 @@ class  PhoneInput extends Component {
 
 	render() {
 		return (
-      <View style={styles.containerWrap}>
+      <View style={[styles.containerWrap, this.props.outContainerWrap]}>
         <FormInput
           onChangeText={(text) => this.inputChange(text)}
           autoFocus={this.props.autoFocus}
@@ -149,18 +140,34 @@ PhoneInput.defaultProps = {
 
 const styles = StyleSheet.create({
   containerWrap: {
-    
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFF',
+    borderWidth: normalizeBorder(),
+    borderColor: '#E9E9E9',
   },
   defaultClearBtnStyle: {
-    position: 'absolute',
-    right: normalizeW(12),
-    top: normalizeH(12)
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: normalizeW(15),
   },
   container: {
-    ...THEME.base.inputContainer
+    flex: 1,
+    paddingLeft: normalizeW(17),
+    paddingRight: normalizeW(10),
+    borderBottomWidth: 0,
+    marginLeft: 0,
+    marginRight: 0,
   },
   input: {
-    ...THEME.base.input
+    height: normalizeH(50),
+    paddingLeft: normalizeW(10),
+    paddingRight: normalizeW(10),
+    backgroundColor: '#F3F3F3',
+    fontSize: em(17),
+    color: '#B2B2B2'
   }
 })
 

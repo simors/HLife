@@ -436,9 +436,9 @@ class EditShop extends Component {
                     placeholder="点击输入电话号码"
                     maxLength={15}
                     noFormatPhone={true}
+                    outContainerWrap={{borderWidth: 0}}
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
-                    clearBtnStyle={{top:6}}
                     initValue={this.props.userOwnedShopInfo.contactNumber}
                   />
                 </View>
@@ -454,9 +454,9 @@ class EditShop extends Component {
                     placeholder="备用电话（选填）"
                     maxLength={15}
                     noFormatPhone={true}
+                    outContainerWrap={{borderWidth: 0}}
                     containerStyle={styles.containerStyle}
                     inputStyle={styles.inputStyle}
-                    clearBtnStyle={{top:6}}
                     initValue={this.props.userOwnedShopInfo.contactNumber2}
                   />
                 </View>
@@ -585,8 +585,9 @@ const styles = StyleSheet.create({
   inputWrap: {
     backgroundColor: '#fff',
     flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: normalizeBorder(),
-    borderBottomColor: THEME.colors.gray,
+    borderBottomColor: '#F5F5F5',
     paddingLeft: normalizeW(20),
   },
   inputLabelBox: {
