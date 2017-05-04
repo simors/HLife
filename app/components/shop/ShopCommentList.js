@@ -43,6 +43,7 @@ class ShopCommentList extends Component {
     super(props)
 
     this.replyInput = null
+    this.isReplying = false
     
     this.state = {
       replyId : '',
@@ -153,10 +154,15 @@ class ShopCommentList extends Component {
       Actions.LOGIN()
       return
     }
+    if (this.isReplying) {
+      Toast.show('正在发表回复信息，请稍后')
+      return
+    }
     if(!content) {
       Toast.show('请输入回复内容')
       return
     }
+    this.isReplying = true
     const that = this
     this.props.reply({
       shopId: this.props.shopId,
@@ -172,9 +178,11 @@ class ShopCommentList extends Component {
           shopId: that.props.shopId,
           replyShopCommentId: this.state.replyShopCommentId
         })
+        this.isReplying = false
       },
       error: (err) => {
         Toast.show(err.message, {duration: 1500})
+        this.isReplying = false
       }
     })
   }
