@@ -31,7 +31,7 @@ import ShopPromotionModule from './ShopPromotionModule'
 
 import {fetchAppServicePhone} from '../../action/configAction'
 import {fetchUserFollowShops, fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
-import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../action/authActions'
+import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import * as configSelector from '../../selector/configSelector'
@@ -536,6 +536,9 @@ class ShopDetail extends Component {
     if (!this.props.isUserLogined) {
       Actions.LOGIN()
     } else {
+
+      this.props.fetchUsers({userIds: [this.props.shopDetail.owner.id]})
+
       let payload = {
         name: this.props.shopDetail.owner.nickname,
         members: [this.props.currentUser, this.props.shopDetail.owner.id],
@@ -636,6 +639,26 @@ class ShopDetail extends Component {
     return null
   }
 
+  renderFollowShop() {
+    if(this.isSelfShop()) {
+      return null
+    }
+
+    if(this.props.isFollowedShop) {
+      return (
+        <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
+          <Image source={require('../../assets/images/followed.png')} />
+        </TouchableOpacity>
+      )
+    }else {
+      return (
+        <TouchableOpacity onPress={this.followShop.bind(this)}>
+          <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
+        </TouchableOpacity>
+      )
+    }
+  }
+
   renderDetailContent() {
     let shopDetail = this.props.shopDetail
 
@@ -699,14 +722,7 @@ class ShopDetail extends Component {
               </View>
               
               <View style={styles.shopXYZRight}>
-                {this.props.isFollowedShop
-                  ? <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
-                      <Image source={require('../../assets/images/followed.png')} />
-                    </TouchableOpacity>
-                  : <TouchableOpacity onPress={this.followShop.bind(this)}>
-                      <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
-                    </TouchableOpacity>
-                }
+                {this.renderFollowShop()}
               </View>
             </View>
 
@@ -891,7 +907,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchGuessYouLikeShopList,
   fetchUserOwnedShopInfo,
   fetchAppServicePhone,
-  fetchUserFollowShops
+  fetchUserFollowShops,
+  fetchUsers
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

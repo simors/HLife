@@ -150,7 +150,7 @@ class ServiceTimePicker extends Component {
   render() {
     return (
       <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-        <View style={{width: normalizeW(50), justifyContent: 'center'}}>
+        <View style={{width: normalizeW(100), justifyContent: 'center'}}>
           <CascadePicker
             onSubmit={(data) => this.getPickerData(data, true)}
             level={2}
@@ -176,7 +176,7 @@ class ServiceTimePicker extends Component {
         <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: normalizeW(20), paddingRight: normalizeW(20)}}>
           <Text style={{fontSize: em(17), color: '#5A5A5A'}}>--</Text>
         </View>
-        <View style={{width: normalizeW(50), justifyContent: 'center'}}>
+        <View style={{width: normalizeW(100), justifyContent: 'center'}}>
           <CascadePicker
             onSubmit={(data) => this.getPickerData(data, false)}
             level={2}

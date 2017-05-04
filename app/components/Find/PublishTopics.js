@@ -34,6 +34,8 @@ import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as AVUtils from '../../util/AVUtils'
+import {getGeopoint} from '../../selector/locSelector'
+import Popup from '@zzzkk2009/react-native-popup'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -142,22 +144,54 @@ class PublishTopics extends Component {
   }
 
   publishTopic() {
-    this.props.publishTopicFormData({
-      formKey: topicForm,
-      images: this.insertImages,
-      categoryId: this.state.selectedTopic.objectId,
-      userId: this.props.userInfo.id,
-      submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
-      success: ()=> {
-        this.submitSuccessCallback(this)
-      },
-      error: (err) => this.submitErrorCallback(err)
-    })
+    let geoPoint = this.props.geoPoint
+    if (geoPoint && geoPoint.latitude == 0 && geoPoint.longitude == 0) {
+      Popup.confirm({
+        title: '系统提示',
+        content: '确定话题不使用位置信息吗？',
+        ok: {
+          text: '确定',
+          style: {color: THEME.base.mainColor},
+          callback: ()=> {
+            this.props.publishTopicFormData({
+              formKey: topicForm,
+              images: this.insertImages,
+              categoryId: this.state.selectedTopic.objectId,
+              userId: this.props.userInfo.id,
+              submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+              success: ()=> {
+                this.submitSuccessCallback(this)
+              },
+              error: (err) => this.submitErrorCallback(err)
+            })
+          }
+        },
+        cancel: {
+          text: '取消',
+          callback: ()=>{
+            this.isPublishing = false
+          }
+        }
+      })
+    }
   }
 
   componentDidMount() {
     if (this.props.topicId && this.props.topicId.objectId) {
       this.setState({selectedTopic: this.props.topicId});
+    }
+    let geoPoint = this.props.geoPoint
+    if (geoPoint && geoPoint.latitude == 0 && geoPoint.longitude == 0) {
+      Popup.confirm({
+        title: '系统提示',
+        content: '请确认已打开位置权限！没有获取到地理位置的情况下发表话题，将不能在本地显示！',
+        ok: {
+          text: '确定',
+          style: {color: THEME.base.mainColor},
+          callback: ()=> {
+          }
+        },
+      })
     }
     this.setInterval(()=>{
       this.props.fetchTopicDraft({
@@ -329,10 +363,12 @@ const mapStateToProps = (state, ownProps) => {
   const topics = getTopicCategories(state)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
+  let geoPoint = getGeopoint(state)
   return {
     topics: topics,
     isLogin: isLogin,
-    userInfo: userInfo
+    userInfo: userInfo,
+    geoPoint: geoPoint,
   }
 }
 

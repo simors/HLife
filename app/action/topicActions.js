@@ -70,12 +70,12 @@ function handlePublishTopic(payload, formData) {
     let city = locSelector.getCity(getState())
     let district = locSelector.getDistrict(getState())
     let geoPoint = locSelector.getGeopoint(getState())
-    if (geoPoint.latitude == 0 && geoPoint.longitude == 0) {
+    /*if (geoPoint.latitude == 0 && geoPoint.longitude == 0) {
       if (payload.error) {
         payload.error({message: '请为应用打开地理位置权限！'})
       }
       return
-    }
+    }*/
     if(payload.images && payload.images.length > 0) {
       return ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
         return leanUris
