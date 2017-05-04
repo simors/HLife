@@ -360,6 +360,7 @@ class ShopRegister extends Component {
                     initValue={this.props.phone}
                     editable={false}
                     showClearBtn={false}
+                    outContainerWrap={{borderWidth: 0}}
                     containerStyle={styles.containerStyle}
                     inputStyle={[styles.inputStyle, {height: normalizeH(52)}]}/>
                 </View>

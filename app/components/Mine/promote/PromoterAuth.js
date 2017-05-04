@@ -164,8 +164,13 @@ class PromoterAuth extends Component {
               <View style={styles.inputBox}>
                 <Text style={styles.maintext}>手机号</Text>
                 <View style={{flex: 1}}>
-                  <PhoneInput {...phoneInput} initValue={this.props.userInfo.phone} placeholder="仅用于客服与你联系"
-                              editable={false} showClearBtn={false} inputStyle={styles.phoneInputStyle}/>
+                  <PhoneInput {...phoneInput}
+                              initValue={this.props.userInfo.phone}
+                              placeholder="仅用于客服与你联系"
+                              editable={false}
+                              showClearBtn={false}
+                              outContainerWrap={{borderWidth: 0}}
+                              inputStyle={styles.phoneInputStyle}/>
                 </View>
               </View>
               <View style={styles.inputBox}>

@@ -86,8 +86,10 @@ class Login extends Component {
         <View style={styles.body}>
           <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
             <View style={{marginTop: 30}}>
-              <View style={styles.inputBox}>
-                <PhoneInput {...phoneInput}/>
+              <View style={[styles.inputBox, {paddingLeft: normalizeW(17), paddingRight: normalizeW(17)}]}>
+                <PhoneInput {...phoneInput}
+                            containerStyle={{paddingLeft: normalizeW(0), paddingRight: normalizeW(0)}}
+                            outContainerWrap={{backgroundColor: '#F3F3F3', borderWidth: 0}}/>
               </View>
               <View style={styles.inputBox}>
                 <PasswordInput {...pwdInput} placeholder="请输入密码"/>
