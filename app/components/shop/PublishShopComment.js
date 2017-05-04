@@ -74,6 +74,11 @@ class PublishShopComment extends Component {
   }
 
   publishShopComment() {
+    if (this.isPublishing) {
+      Toast.show('正在发表评论，请稍后')
+      return
+    }
+    this.isPublishing = true
     this.props.submitFormData({
       formKey: commonForm,
       id: this.props.id,
@@ -88,9 +93,11 @@ class PublishShopComment extends Component {
             Actions.pop()
           }
         })
+        this.isPublishing = false
       },
       error: (err)=>{
         Toast.show(err.message || '发表评论失败')
+        this.isPublishing = false
       }
     })
   }

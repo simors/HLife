@@ -188,6 +188,9 @@ export function getMyUpPromoter(payload) {
   return (dispatch, getState) => {
     let userId = activeUserId(getState())
     lcPromoter.getUpPromoter({userId}).then((promoterInfo) => {
+      if (promoterInfo.errcode != 0) {
+        return
+      }
       let promoterId = promoterInfo.promoter.objectId
       let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
       let userInfo = UserInfo.fromLeancloudApi(promoterInfo.user)

@@ -235,14 +235,14 @@ class ShopRegister extends Component {
   }
 
   submitSuccessCallback = (shopInfo) => {
-    this.isSubmiting = false
-    Loading.hide(this.loading)
     // console.log('shopInfo===', shopInfo)
     this.props.getShopTenant({
       province: shopInfo.geoProvince,
       city: shopInfo.geoCity,
       success: (tenant) =>{
         this.props.fetchUserOwnedShopInfo()
+        this.isSubmiting = false
+        Loading.hide(this.loading)
         Actions.PAYMENT({
           metadata: {'shopId':shopInfo.objectId, 'tenant': tenant, 'user': this.props.userInfo.id},
           price: tenant,
@@ -257,6 +257,8 @@ class ShopRegister extends Component {
         })
       },
       error: (error)=>{
+        this.isSubmiting = false
+        Loading.hide(this.loading)
         AVUtils.switchTab('MINE')
         // Actions.MINE()
       }

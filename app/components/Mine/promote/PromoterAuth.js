@@ -84,6 +84,7 @@ class PromoterAuth extends Component {
     this.state = {
       inviteCode: '',
     }
+    this.isSubmitting = false
   }
 
   componentWillMount() {
@@ -93,6 +94,11 @@ class PromoterAuth extends Component {
   }
 
   onButtonPress() {
+    if (this.isSubmitting) {
+      Toast.show('真正提交请求，请稍后')
+      return
+    }
+    this.isSubmitting = true
     this.props.promoterCertification({
       formKey: commonForm,
       success: (payload) => {
@@ -109,8 +115,10 @@ class PromoterAuth extends Component {
           payErrorJumpSceneParams: {}
         })
         Toast.show('注册为推广员成功')
+        this.isSubmitting = false
       },
       error: (err) => {
+        this.isSubmitting = false
         Toast.show(err.message)
       },
     })
