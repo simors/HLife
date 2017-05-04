@@ -174,6 +174,7 @@ class Setting extends Component {
         callback: ()=>{
           this.props.userLogOut({
             success: () => {
+              persistor.purge(['AUTH', 'MESSAGE', 'NOTICE'])
               Toast.show('登出成功')
               Actions.HOME({type: 'reset'})
             }
