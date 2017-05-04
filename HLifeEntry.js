@@ -81,39 +81,40 @@ AV.init(
   }
 
   onBackAndroid = () => {
-   if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-     return false;
-   }
-   this.lastBackPressed = Date.now();
-   ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
-   return true;
+    if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+      return false;
+    }
+    this.lastBackPressed = Date.now();
+    ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+    return true;
   }
 
   _handleConnectionInfoChange = (connectionInfo) => {
-   let connectStatus = true
-   if (Platform.OS == 'ios') {
-     if (connectionInfo == 'none' || connectionInfo == 'unknown') {
-       connectStatus = false
-     }
-   } else {
-     if (connectionInfo == 'NONE' || connectionInfo == 'UNKNOWN') {
-       connectStatus = false
-     }
-   }
-   let preStatus = selectNetworkStatus(store.getState())
-   if (!connectStatus) {
-     Popup.confirm({
-       title: '系统提示',
-       content: '无法访问网络，请确认网络已连接！',
-       ok: {
-         text: '确定',
-         style: {color: THEME.base.mainColor},
-         callback: ()=> {
-         }
-       },
-     })
+    let connectStatus = true
+    if (Platform.OS == 'ios') {
+      if (connectionInfo == 'none' || connectionInfo == 'unknown') {
+        connectStatus = false
+      }
+    } else {
+      if (connectionInfo == 'NONE' || connectionInfo == 'UNKNOWN') {
+        connectStatus = false
+      }
     }
+    let preStatus = selectNetworkStatus(store.getState())
+
     if (preStatus != undefined) {
+      if (preStatus == true && !connectStatus) {
+        Popup.confirm({
+          title: '系统提示',
+          content: '无法访问网络，请确认网络已连接！',
+          ok: {
+            text: '确定',
+            style: {color: THEME.base.mainColor},
+            callback: ()=> {
+            }
+          },
+        })
+      }
       if (preStatus == false && connectStatus == true) {
         setTimeout(() => {
           RNRestart.Restart()
