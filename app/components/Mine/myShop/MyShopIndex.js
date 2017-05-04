@@ -39,6 +39,7 @@ import * as numberUtils from '../../../util/numberUtils'
 import Icon from 'react-native-vector-icons/Ionicons'
 import MyShopPromotionModule from './MyShopPromotionModule'
 import {getShareUrl} from '../../../action/configAction'
+import ActionSheet from 'react-native-actionsheet'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -82,13 +83,6 @@ class MyShopIndex extends Component {
 
   }
 
-  makePhoneCall(contactNumber) {
-    if(Platform.OS === 'android') {
-      SendIntentAndroid.sendPhoneCall(contactNumber)
-    }else {
-      Communications.phonecall(contactNumber, false)
-    }
-  }
 
   gotoShopDetailScene(id) {
     Actions.SHOP_DETAIL({id: id})
@@ -378,7 +372,7 @@ class MyShopIndex extends Component {
                     </TouchableOpacity>
                   </View>
                   <View style={styles.contactNumberWrap}>
-                    <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.makePhoneCall(this.props.shopDetail.contactNumber)}}>
+                    <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.handleServicePhoneCall()}}>
                       <Image style={styles.contactNumberIcon} source={require('../../../assets/images/shop_call.png')}/>
                       <View style={styles.contactNumberTxtWrap}>
                         <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
@@ -444,9 +438,51 @@ class MyShopIndex extends Component {
             </TouchableOpacity>
           </View>
 
+          {this.renderServicePhoneAction()}
         </View>
       </View>
     )
+  }
+
+  makePhoneCall(contactNumber) {
+    if(Platform.OS === 'android') {
+      SendIntentAndroid.sendPhoneCall(contactNumber)
+    }else {
+      Communications.phonecall(contactNumber, false)
+    }
+  }
+
+  handleServicePhoneCall() {
+    if(this.ServicePhoneActionSheet) {
+      this.ServicePhoneActionSheet.show()
+    }else{
+      this.makePhoneCall(this.props.shopDetail.contactNumber)
+    }
+  }
+
+  renderServicePhoneAction() {
+    let shopDetail = this.props.shopDetail
+
+    if(shopDetail.contactNumber && shopDetail.contactNumber2) {
+      return (
+        <ActionSheet
+          ref={(o) => this.ServicePhoneActionSheet = o}
+          title="客服电话"
+          options={[shopDetail.contactNumber, shopDetail.contactNumber2,'取消']}
+          cancelButtonIndex={2}
+          onPress={this._handleActionSheetPress.bind(this)}
+        />
+      )
+    }
+    return null
+  }
+
+  _handleActionSheetPress(index) {
+    if(0 == index) { //
+      this.makePhoneCall(this.props.shopDetail.contactNumber)
+    }else if(1 == index) { //
+      this.makePhoneCall(this.props.shopDetail.contactNumber2)
+    }
   }
 
   editShop() {
