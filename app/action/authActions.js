@@ -831,6 +831,9 @@ export function fetchUsers(payload) {
       })
       const action = createAction(AuthTypes.ADD_USER_PROFILES)
       dispatch(action({userProfiles}))
+      if (payload.success) {
+        payload.success(userProfiles)
+      }
     }).catch(error => {
       if (payload.error) {
         payload.error(error)

@@ -199,9 +199,13 @@ export function configurePush(options) {
     
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
-      console.log( 'NOTIFICATION:', notification );
+      // console.log( 'NOTIFICATION:', notification );
       // EE.emit('pushUserInfoChange',{userId: ''});
       let data = notification.data
+
+      if(!data) {
+        return
+      }
 
       if(data.notice_type == "SYSTEM_NOTICE"){
         let notice_time = dateUtils.getCurrentDate()
