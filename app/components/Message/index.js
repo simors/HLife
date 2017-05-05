@@ -275,7 +275,7 @@ class MessageBox extends Component {
       isRefresh: !!isRefresh,
       lastUpdatedAt: this.props.lastUpdatedAt,
       type: PERSONAL_CONVERSATION,
-      success: (isEmpty, convs) => {
+      success: (isEmpty, convs = []) => {
         // console.log('convs---------->', convs)
         this.isQuering = false
 
@@ -302,7 +302,19 @@ class MessageBox extends Component {
             return element != activeUserId
           })
           // console.log('otherMembers=====', otherMembers)
-          this.props.fetchUsers({userIds: otherMembers})
+          this.props.fetchUsers({
+            userIds: otherMembers,
+            success: () => {
+              if(isRefresh && convs.length < 8) {
+                this.loadMoreData()
+              }
+            },
+            error: () => {
+              if(isRefresh && convs.length < 8) {
+                this.loadMoreData()
+              }
+            }
+          })
         }
       },
       error: (err)=>{
