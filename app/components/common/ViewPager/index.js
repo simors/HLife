@@ -144,6 +144,8 @@ var ViewPager = React.createClass({
 
     if (nextProps.dataSource) {
       var maxPage = nextProps.dataSource.getPageCount() - 1;
+      // console.log('componentWillReceiveProps.maxPage-----', maxPage)
+      // console.log('componentWillReceiveProps.this.state.currentPage-----', this.state.currentPage)
       var constrainedPage = Math.max(0, Math.min(this.state.currentPage, maxPage));
       this.setState({
         currentPage: constrainedPage,
@@ -151,9 +153,10 @@ var ViewPager = React.createClass({
 
       if (!nextProps.isLoop) {
         this.state.scrollValue.setValue(constrainedPage > 0 ? 1 : 0);
-      }
 
-      this.childIndex = Math.min(this.childIndex, constrainedPage);
+        this.childIndex = Math.min(this.childIndex, constrainedPage);
+      }
+      
       this.fling = false;
     }
 
@@ -163,7 +166,7 @@ var ViewPager = React.createClass({
     if (!this._autoPlayer) {
       this._autoPlayer = this.setInterval(
         () => {this.movePage(1);},
-        5000
+        3000
       );
     }
   },
@@ -184,7 +187,12 @@ var ViewPager = React.createClass({
     var pageCount = this.props.dataSource.getPageCount();
     var pageNumber = this.state.currentPage + step;
     if (this.props.isLoop) {
+      // console.log('movePage.pageCount===', pageCount)
+      // console.log('movePage.pageNumber===', pageNumber)
+      // console.log('movePage.this.state.currentPage===', this.state.currentPage)
+      // console.log('movePage.step===', step)
       pageNumber = pageCount == 0 ? pageNumber = 0 : ((pageNumber + pageCount) % pageCount);
+      // console.log('movePage.pageNumber===', pageNumber)
     } else {
       pageNumber = Math.min(Math.max(0, pageNumber), pageCount - 1);
     }

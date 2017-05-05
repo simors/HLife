@@ -72,12 +72,22 @@ var DefaultViewPageIndicator = React.createClass({
     var pageCount = this.props.pageCount;
     var itemWidth = DOT_SIZE + (DOT_SAPCE * 2);
     var offset = (this.state.viewWidth - itemWidth * pageCount) / 2 + itemWidth * this.props.activePage;
+    // console.log('DefaultViewPageIndicator.this.state.viewWidth===', this.state.viewWidth)
+    // console.log('DefaultViewPageIndicator.itemWidth===', itemWidth)
+    // console.log('DefaultViewPageIndicator.pageCount===', pageCount)
+    // console.log('DefaultViewPageIndicator.offset===', offset)
 
-    //var left = offset;
-    var offsetX = itemWidth * (this.props.activePage - this.props.scrollOffset);
-    var left = this.props.scrollValue.interpolate({
-      inputRange: [0, 1], outputRange: [offsetX, offsetX + itemWidth]
-    })
+    var left = offset;
+    // var offsetX = itemWidth * (this.props.activePage - this.props.scrollOffset);
+    // var left = this.props.scrollValue.interpolate({
+    //   inputRange: [0, 1], outputRange: [offsetX, offsetX + itemWidth]
+    // })
+    // console.log('DefaultViewPageIndicator.this.props.activePage===', this.props.activePage)
+    // console.log('DefaultViewPageIndicator.this.props.scrollOffset===', this.props.scrollOffset)
+    // console.log('DefaultViewPageIndicator.this.props.scrollValue===', this.props.scrollValue)
+    // console.log('DefaultViewPageIndicator.offsetX===', offsetX)
+    // console.log('DefaultViewPageIndicator.itemWidth===', itemWidth)
+    // console.log('DefaultViewPageIndicator.left===', left)
 
     var indicators = [];
     for (var i = 0; i < pageCount; i++) {
