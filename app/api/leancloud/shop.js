@@ -948,6 +948,8 @@ export function fetchSimilarShopList(payload) {
   similarQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   similarQuery.addDescending('createdAt')
   similarQuery.limit(3)
+  similarQuery.equalTo('payment', 1)
+  similarQuery.exists('coverUrl')
   
   // notQuery.notEqualTo('objectId', shopId)
   // let andQuery = AV.Query.and(similarQuery, notQuery)
@@ -986,6 +988,8 @@ export function fetchGuessYouLikeShopList(payload) {
   // query.addDescending('score')
   query.limit(3)
   query.equalTo('status', 1)
+  query.equalTo('payment', 1)
+  query.exists('coverUrl')
   return query.find().then(function (results) {
     // console.log('fetchGuessYouLikeShopList.results====*******>>>>>>=', results)
     let shopList = []
