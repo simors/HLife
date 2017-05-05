@@ -55,6 +55,7 @@ import codePush from 'react-native-code-push'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
 import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
+import ViewPager from '../common/ViewPager'
 
 
 const RNDeviceInfo = NativeModules.RNDeviceInfo
@@ -251,21 +252,93 @@ class Home extends Component {
     )
   }
 
+  bannerClickListener(banner) {
+    let actionType = banner.actionType
+    let action = banner.action
+    let title = banner.title
+    if(actionType == 'link') {
+      let payload = {
+        url: action,
+        showHeader: !!title,
+        headerTitle: title
+      }
+      return (
+        Actions.COMMON_WEB_VIEW(payload)
+      )
+    }else if(actionType == 'toast') {
+      Toast.show(action)
+    }else if(actionType == 'action') {
+      Actions[action]()
+    }
+  }
+
   renderBannerColumn() {
-    if (this.props.banner && this.props.banner.length > 1) {
+    // console.log('this.props.banner====', this.props.banner)
+
+    if (this.props.banner && this.props.banner.length) {
+      let pages = this.props.banner.map((item, index) => {
+        let image = item.image
+        return (
+          <TouchableOpacity
+            style={{flex:1}}
+            key={'b_image_' + index}
+            onPress={() => this.bannerClickListener(item)}
+          >
+            <Image
+              style={[{width:PAGE_WIDTH,height:223}]}
+              resizeMode="stretch"
+              source={typeof(image) == 'string' ? {uri: image} : image}
+            />
+          </TouchableOpacity>
+        )
+      })
+
+      let dataSource = new ViewPager.DataSource({
+        pageHasChanged: (p1, p2) => p1 !== p2,
+      })
+
       return (
         <View style={styles.advertisementModule}>
-          <CommonBanner2
-            banners={this.props.banner}
+          <ViewPager
+            style={{flex:1}}
+            dataSource={dataSource.cloneWithPages(pages)}
+            renderPage={this._renderPage}
+            isLoop={true}
+            autoPlay={true}
           />
         </View>
       )
-    } else {
-      return (
-        <View style={styles.advertisementModule}></View>
-      )
     }
+
+    return (
+      <View style={styles.advertisementModule} />
+    )
   }
+
+  _renderPage(data: Object, pageID) {
+    // console.log('_renderPage.data====', data)
+    return (
+      <View style={{flex:1}}>
+        {data}
+      </View>
+    )
+  }
+
+  // renderBannerColumn() {
+  //   if (this.props.banner && this.props.banner.length > 1) {
+  //     return (
+  //       <View style={styles.advertisementModule}>
+  //         <CommonBanner2
+  //           banners={this.props.banner}
+  //         />
+  //       </View>
+  //     )
+  //   } else {
+  //     return (
+  //       <View style={styles.advertisementModule}></View>
+  //     )
+  //   }
+  // }
 
   renderNearbyTopic() {
     return (
