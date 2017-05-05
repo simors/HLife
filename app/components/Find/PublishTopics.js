@@ -22,6 +22,7 @@ import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {fetchTopicDraft, handleDestroyTopicDraft} from '../../action/draftAction'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 import uuid from 'react-native-uuid'
 import {getTopicCategories} from '../../selector/configSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
@@ -106,7 +107,7 @@ class PublishTopics extends Component {
     AVUtils.switchTab('FIND', {categoryId: this.state.selectedTopic.objectId})
 
     this.props.handleDestroyTopicDraft({id:this.draftId})
-
+    this.props.inputFormOnDestroy({formKey: topicForm})
   }
 
   submitErrorCallback(error) {
@@ -387,7 +388,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishTopicFormData,
   fetchTopicDraft,
-  handleDestroyTopicDraft
+  handleDestroyTopicDraft,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)
