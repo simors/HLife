@@ -576,6 +576,26 @@ class ShopDetail extends Component {
     )
   }
 
+  onShare = () => {
+    let shareUrl = ""
+    if (__DEV__) {
+      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
+    } else {
+      shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
+    }
+    shareUrl = shareUrl + "shopShare/" + this.props.shopDetail.id
+
+    console.log("shopShare url:", shareUrl)
+
+    Actions.SHARE({
+      title: this.props.shopDetail.shopName || "汇邻优店",
+      url: shareUrl,
+      author: this.props.shopDetail.shopName || "邻家小二",
+      abstract: this.props.shopDetail.shopAddress || "未知地址",
+      cover: this.props.shopDetail.coverUrl || '',
+    })
+  }
+
   render() {
     // console.log('this.props.shopDetail===', this.props.shopDetail)
 
@@ -593,7 +613,13 @@ class ShopDetail extends Component {
             })
           }}
           title="店铺详情"
-          rightType="none"
+          rightComponent={()=>{
+            return (
+              <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
+                <Image source={require('../../assets/images/active_share.png')}/>
+              </TouchableOpacity>
+            )
+          }}
         />
         <View style={styles.body}>
           {this.renderDetailContent()}
