@@ -173,6 +173,18 @@ class PublishTopics extends Component {
           }
         }
       })
+    } else {
+      this.props.publishTopicFormData({
+        formKey: topicForm,
+        images: this.insertImages,
+        categoryId: this.state.selectedTopic.objectId,
+        userId: this.props.userInfo.id,
+        submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS,
+        success: ()=> {
+          this.submitSuccessCallback(this)
+        },
+        error: (err) => this.submitErrorCallback(err)
+      })
     }
   }
 
