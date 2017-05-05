@@ -117,13 +117,11 @@ class ChangeAgentView extends Component {
             <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode='contain'
                    source={require('../../../assets/images/search.png')}/>
           </View>
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <TextInput style={styles.searchInputStyle}
-                       placeholder='输入昵称或手机号搜索'
-                       underlineColorAndroid="transparent"
-                       onChangeText={(text) => this.setState({searchText: text})}/>
+          <TextInput style={styles.searchInputStyle}
+                     placeholder='输入昵称或手机号搜索'
+                     underlineColorAndroid="transparent"
+                     onChangeText={(text) => this.setState({searchText: text})}/>
           </View>
-        </View>
         <View style={styles.searchBtn}>
           <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
                             onPress={() => {this.searchPromoter()}}>

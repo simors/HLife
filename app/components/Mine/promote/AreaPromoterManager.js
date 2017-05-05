@@ -66,7 +66,7 @@ class AreaPromoterManager extends Component {
     if (areaAgent.userId) {
       return (
         <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-          <Image style={styles.avatarStyle} resizeMode='contain'
+          <Image style={styles.avatarStyle}
                  source={areaAgent.avatar ? {uri: areaAgent.avatar} : require('../../../assets/images/default_portrait.png')}/>
           <Text style={styles.userNameText} numberOfLines={1}>{areaAgent.nickname}</Text>
         </View>

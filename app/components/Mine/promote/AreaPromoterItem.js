@@ -70,7 +70,7 @@ class AreaPromoterItem extends Component {
         <View style={styles.promoterBaseView}>
           <TouchableOpacity style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(10)}}
                             onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: this.props.userInfo.id})}}>
-            <Image style={styles.avatarStyle} resizeMode='contain'
+            <Image style={styles.avatarStyle}
                    source={this.props.userInfo.avatar ? {uri: this.props.userInfo.avatar} : require('../../../assets/images/default_portrait.png')}/>
           </TouchableOpacity>
           <View style={styles.baseInfoView}>

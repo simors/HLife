@@ -231,12 +231,12 @@ class AreaPromoterDetail extends Component {
     return (
       <View style={[styles.agentItemView, {borderBottomWidth: 1, borderColor: '#f5f5f5'}]}>
         <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), alignItems: 'center'}}>
-          <Image style={styles.avatarStyle} resizeMode='contain'
+          <Image style={styles.avatarStyle}
                  source={agent.avatar ? {uri: agent.avatar} : require('../../../assets/images/default_portrait.png')}/>
           <View style={{paddingLeft: normalizeW(10)}}>
             <Text style={styles.titleText}>{agent.nickname ? agent.nickname : '未设置代理人'}</Text>
             <Text style={{fontSize: em(12), color: '#B6B6B6', paddingTop: normalizeH(9)}}>
-              个人业绩： {promoter ? promoter.shopEarnings + promoter.royaltyEarnings : 0}
+              个人业绩： {promoter ? (promoter.shopEarnings + promoter.royaltyEarnings).toFixed(3) : 0}
             </Text>
           </View>
         </View>
@@ -273,7 +273,7 @@ class AreaPromoterDetail extends Component {
       <View style={{marginTop: normalizeH(8), backgroundColor: '#FFF'}}>
         <View style={styles.totalPerformView}>
           <Text style={[styles.titleText, {paddingTop: normalizeH(15)}]}>区域总业绩（元）</Text>
-          <Text style={[styles.totalPerformText, {paddingTop: normalizeH(15)}]}>{statistics.totalPerformance}</Text>
+          <Text style={[styles.totalPerformText, {paddingTop: normalizeH(15)}]}>{statistics.totalPerformance.toFixed(3)}</Text>
         </View>
         <View style={styles.perforItemView}>
           <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>入驻店铺数</Text>

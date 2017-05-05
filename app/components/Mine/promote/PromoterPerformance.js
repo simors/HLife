@@ -148,6 +148,7 @@ class PromoterPerformance extends Component {
           {this.renderInvitationStat()}
           <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {Actions.INVITE_CODE_VIEWER()}}>
             <Image style={{width: normalizeW(156), height: normalizeH(156)}}
+                   resizeMode='contain'
                    source={require('../../../assets/images/generate_code.png')}/>
           </TouchableOpacity>
         </View>
