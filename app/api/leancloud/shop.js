@@ -102,6 +102,8 @@ export function getShopList(payload) {
   }
 
   query.equalTo('status', 1)
+  query.equalTo('payment', 1)
+  query.exists('coverUrl')
   // console.log('getShopList.query=****************==', query)
   return query.find().then(function (results) {
     // console.log('getShopList.results==>>>>>>>>>>>>>===', results)
