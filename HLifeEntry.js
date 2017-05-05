@@ -35,6 +35,11 @@ const KM_Dev = {
   appKey: LC_CONFIG.LC_DEV_APP_KEY,
 }
 
+const KM_STAGE = {
+  appId: LC_CONFIG.LC_STAGE_APP_ID,
+  appKey: LC_CONFIG.LC_STAGE_APP_KEY,
+}
+
 const KM_PRO = {
   appId: LC_CONFIG.LC_PRO_APP_ID,
   appKey: LC_CONFIG.LC_PRO_APP_KEY,
@@ -42,7 +47,7 @@ const KM_PRO = {
 
 //AV.setProduction(false)
 AV.init(
-  __DEV__ ? KM_Dev : KM_PRO
+  __DEV__ ? KM_Dev : KM_STAGE
 )
 
 

@@ -209,8 +209,8 @@ export class ShopInfo extends ShopRecord {
               id: containedTagAttrs.id,
               name: containedTagAttrs.name,
               createdDate: numberUtils.formatLeancloudTime(new Date(containedTagAttrs.createdAt), 'YYYY-MM-DD HH:mm:SS'),
-              createdAt: containedTagAttrs.createdAt.valueOf(),
-              updatedAt: containedTagAttrs.updatedAt.valueOf(),
+              createdAt: containedTagAttrs.createdAt,
+              updatedAt: containedTagAttrs.updatedAt,
             }
             containedTag.push(tag)
           })
@@ -260,8 +260,8 @@ export class ShopInfo extends ShopRecord {
         record.set('album', new List(lcObj.album))
         record.set('payment', lcObj.payment)
         record.set('tenant', lcObj.tenant)
-        record.set('createdAt', lcObj.createdAt.valueOf())
-        record.set('updatedAt', lcObj.updatedAt.valueOf())
+        record.set('createdAt', lcObj.createdAt)
+        record.set('updatedAt', lcObj.updatedAt)
       })
     } catch(err) {
       console.log(err)
