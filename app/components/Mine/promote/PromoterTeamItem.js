@@ -59,7 +59,7 @@ class PromoterTeamItem extends Component {
         <View style={styles.performView}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={styles.performText}>总业绩</Text>
-            <Text style={styles.royaltyText}>{promoter.royaltyEarnings + promoter.shopEarnings}</Text>
+            <Text style={styles.royaltyText}>{(promoter.royaltyEarnings + promoter.shopEarnings).toFixed(3)}</Text>
           </View>
         </View>
       </View>
