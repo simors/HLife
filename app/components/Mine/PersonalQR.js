@@ -37,12 +37,10 @@ export default class PersonalQR extends Component {
     return (
       <View style={styles.container}>
         <Header leftType="icon"
-                leftStyle={styles.left}
                 leftPress={()=> {
                   Actions.pop()
                 }}
                 title="我的二维码"
-                titleStyle={styles.left}
         />
         <View style={styles.qrView}>
           <QRCode value={JSON.stringify(this.props.data)}
@@ -63,11 +61,6 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: THEME.base.mainColor,
-  },
-  left: {
-    fontSize: em(17),
-    color: '#FFFFFF',
-    letterSpacing: -0.41,
   },
   qrView: {
     alignItems: 'center',
