@@ -176,7 +176,10 @@ class Setting extends Component {
             success: () => {
               persistor.purge(['AUTH', 'MESSAGE', 'NOTICE', 'PUSH'])
               Toast.show('登出成功')
-              Actions.HOME({type: 'reset'})
+              setTimeout(() => {
+                RNRestart.Restart()
+              }, 1000)
+              // Actions.HOME({type: 'reset'})
             }
           })
         }
