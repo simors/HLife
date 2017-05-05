@@ -319,7 +319,7 @@ class PersonalHomePage extends Component {
 
   renderPersonalShop() {
     let userOwnedShopInfo = this.props.userOwnedShopInfo
-    console.log('userOwnedShopInfo===', userOwnedShopInfo)
+    // console.log('userOwnedShopInfo===', userOwnedShopInfo)
     if(userOwnedShopInfo && userOwnedShopInfo.status == 1 && userOwnedShopInfo.payment == 1 && userOwnedShopInfo.coverUrl) {
       return (
         <TouchableOpacity style={[styles.bottomViewItemBox]} 
@@ -350,12 +350,14 @@ class PersonalHomePage extends Component {
         {userIsFollowedTheUser
           ? <TouchableOpacity style={[styles.bottomViewItemBox]} onPress={()=>{this.unFollowUser(this.props.userId)}}>
               <View style={[styles.vItem]}>
-                <Image style={styles.followImg} source={require('../../assets/images/followed.png')}/>
+                <Image style={{}} source={require('../../assets/images/followed_24.png')}/>
+                <Text style={[styles.vItemTxt, {color:'#FF7819'}]}>已关注</Text>
               </View>
             </TouchableOpacity>
           : <TouchableOpacity style={[styles.bottomViewItemBox]} onPress={()=>{this.followUser(this.props.userId)}}>
               <View style={[styles.vItem]}>
-                <Image style={styles.followImg} source={require('../../assets/images/add_follow.png')}/>
+                <Image style={{}} source={require('../../assets/images/follow_24.png')}/>
+                <Text style={[styles.vItemTxt, {color:'#FF7819'}]}>加关注</Text>
               </View>
             </TouchableOpacity>  
         }
