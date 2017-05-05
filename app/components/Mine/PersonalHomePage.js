@@ -319,7 +319,7 @@ class PersonalHomePage extends Component {
 
   renderPersonalShop() {
     let userOwnedShopInfo = this.props.userOwnedShopInfo
-    console.log('userOwnedShopInfo===', userOwnedShopInfo)
+    // console.log('userOwnedShopInfo===', userOwnedShopInfo)
     if(userOwnedShopInfo && userOwnedShopInfo.status == 1 && userOwnedShopInfo.payment == 1 && userOwnedShopInfo.coverUrl) {
       return (
         <TouchableOpacity style={[styles.bottomViewItemBox]} 
