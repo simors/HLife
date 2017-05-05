@@ -48,7 +48,7 @@
       -->
       <meta-data
         android:name="leancloud.APP_ID"
-        android:value="K5Rltwmfnxd5pYjMsOFFL0kT-gzGzoHsz"/>
+        android:value="TUVjJ5HHNmopfJeREa4IcB1T-gzGzoHsz"/>
 
       <!--
         leancloud.APP_KEY
@@ -58,7 +58,7 @@
       -->
       <meta-data
         android:name="leancloud.APP_KEY"
-        android:value="UseC5jvqLT7TIiQWI8nRPmEl"/>
+        android:value="XYSEQ5K4FYtMp7P8HXT8Vz63"/>
 
       <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
       </service>
