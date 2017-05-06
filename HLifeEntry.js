@@ -76,8 +76,8 @@ AV.init(
 
     AVUtils.appInit()
     CodePush.allowRestart();//在加载完了可以允许重启
-    CodePush.notifyApplicationReady()
-    CodePush.sync()
+    // CodePush.notifyApplicationReady()
+    CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESTART})
   }
 
   componentWillUnmount() {
