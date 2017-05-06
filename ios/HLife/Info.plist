@@ -65,6 +65,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>2</string>
+	<key>CodePushServerURL</key>
+	<string>http://admin.xiaojee.cn:3000</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>LSApplicationCategoryType</key>
