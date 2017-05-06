@@ -107,7 +107,7 @@ AV.init(
     }
     let preStatus = selectNetworkStatus(store.getState())
 
-    if (preStatus != undefined) {
+    if (preStatus != undefined && AppState.currentState && AppState.currentState == 'active') {
       if (preStatus == true && !connectStatus) {
         Popup.confirm({
           title: '系统提示',
