@@ -120,11 +120,11 @@ AV.init(
           },
         })
       }
-      if (preStatus == false && connectStatus == true) {
-        setTimeout(() => {
-          RNRestart.Restart()
-        }, 1000)
-      }
+      // if (preStatus == false && connectStatus == true) {
+      //   setTimeout(() => {
+      //     RNRestart.Restart()
+      //   }, 1000)
+      // }
     }
     store.dispatch(updateNetworkStatus({networkStatus: connectStatus}))
   }
