@@ -262,7 +262,7 @@ class MessageBox extends Component {
   loadMoreData(isRefresh) {
     // console.log('loadMoreData.isRefresh=====', isRefresh)
     // console.log('loadMoreData.this.props.lastUpdatedAt=====', this.props.lastUpdatedAt)
-    if(!isRefresh && !this.props.lastUpdatedAt) {
+    if(!isRefresh && !this.props.lastUpdatedAt && !this.lastUpdatedAt) {
       return
     }
 
@@ -273,7 +273,7 @@ class MessageBox extends Component {
 
     let payload = {
       isRefresh: !!isRefresh,
-      lastUpdatedAt: this.props.lastUpdatedAt,
+      lastUpdatedAt: this.props.lastUpdatedAt || this.lastUpdatedAt,
       type: PERSONAL_CONVERSATION,
       success: (isEmpty, convs = []) => {
         // console.log('convs---------->', convs)
@@ -291,6 +291,7 @@ class MessageBox extends Component {
           let memberSet = new Set()
           let convMembers = []
           convs.forEach((conv) => {
+            // console.log('conv=====', conv)
             // console.log('conv.members=====', conv.members)
             convMembers = convMembers.concat(conv.members)
           })
@@ -306,11 +307,17 @@ class MessageBox extends Component {
             userIds: otherMembers,
             success: () => {
               if(isRefresh && convs.length < 8) {
+                if(convs && convs.length) {
+                  this.lastUpdatedAt = convs[convs.length - 1].updatedAt
+                }
                 this.loadMoreData()
               }
             },
             error: () => {
               if(isRefresh && convs.length < 8) {
+                if(convs && convs.length) {
+                  this.lastUpdatedAt = convs[convs.length - 1].updatedAt
+                }
                 this.loadMoreData()
               }
             }
