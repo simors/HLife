@@ -122,10 +122,20 @@ export function userLogOut(payload) {
     dispatch(closeMessageClient({}))
     AVUtils.updateDeviceUserInfo({
       removeUser: true
+    }).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+    }, () => {
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch(() => {
+      if (payload.success) {
+        payload.success()
+      }
     })
-    if (payload.success) {
-      payload.success()
-    }
+    
   }
 }
 
