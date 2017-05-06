@@ -529,10 +529,12 @@ class ShopCategoryList extends Component {
       return
     }
 
+    let limit = 5
     let payload = {
       ...this.state.searchForm,
       isRefresh: !!isRefresh,
-      success: (isEmpty) => {
+      limit: limit,
+      success: (isEmpty, fetchedSize) => {
         if(!this.listView) {
           return
         }
@@ -541,6 +543,12 @@ class ShopCategoryList extends Component {
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
+          // console.log('isRefresh====', isRefresh)
+          // console.log('fetchedSize====', fetchedSize)
+          if(isRefresh && fetchedSize < limit) {
+            this.isRefreshRendering = false
+            this.loadMoreData()
+          }
         }
       },
       error: (err)=>{

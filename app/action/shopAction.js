@@ -32,7 +32,8 @@ export function fetchShopList(payload) {
           actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
         }
         let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
-        dispatch(updateAction({isLastPage: shopList.size < 5}))
+        let limit = payload.limit || 5
+        dispatch(updateAction({isLastPage: shopList.size < limit}))
       }else {
         if(payload.isLocalQuering) {
           actionType = ShopActionTypes.UPDATE_LOCAL_SHOP_LIST
@@ -48,7 +49,7 @@ export function fetchShopList(payload) {
       }
 
       if(payload.success){
-        payload.success(shopList.isEmpty())
+        payload.success(shopList.isEmpty(), shopList.size)
       }
     }).catch((error) => {
       if(payload.error){

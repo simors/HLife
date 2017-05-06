@@ -329,11 +329,13 @@ class Local extends Component {
     }
     this.isQuering = true
 
+    let limit = 5
     let payload = {
       ...this.state.searchForm,
       isRefresh: !!isRefresh,
+      limit: limit,
       isLocalQuering: true,
-      success: (isEmpty) => {
+      success: (isEmpty, fetchedSize) => {
         this.isQuering = false
         if(!this.listView) {
           return
@@ -353,6 +355,9 @@ class Local extends Component {
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
+          if(isRefresh && fetchedSize < limit) {
+            this.loadMoreData()
+          }
         }
       },
       error: (err)=>{

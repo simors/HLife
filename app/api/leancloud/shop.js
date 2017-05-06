@@ -33,6 +33,7 @@ export function getShopList(payload) {
   let geo = payload.geo
   let geoCity = payload.geoCity
   let isRefresh = payload.isRefresh
+  let limit = payload.limit
   // let lastCreatedAt = payload.lastCreatedAt
   // let lastScore = payload.lastScore
   // let lastGeo = payload.lastGeo
@@ -74,7 +75,7 @@ export function getShopList(payload) {
     query.addDescending('score')
     // query.addDescending('geo')
   }
-  query.limit(5) // 最多返回 5 条结果
+  query.limit(limit || 5) // 最多返回 5 条结果
 
   if(distance) {
     // console.log('getShopList.geo===', geo)
