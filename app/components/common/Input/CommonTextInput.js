@@ -178,7 +178,8 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(0),
     paddingRight: normalizeW(0),
     fontSize: em(17),
-    color: '#B2B2B2'
+    color: '#B2B2B2',
+    textAlignVertical: 'center',
   },
   defaultClearBtnStyle: {
     justifyContent: 'center',

@@ -124,7 +124,7 @@ class  PhoneInput extends Component {
         /> 
         {this.props.showClearBtn ? this.renderClearBtn() : <View/>}
       </View>
-      )
+    )
 	}
 }
 
@@ -163,11 +163,13 @@ const styles = StyleSheet.create({
   },
   input: {
     height: normalizeH(50),
+    padding: 0,
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     backgroundColor: '#F3F3F3',
     fontSize: em(17),
-    color: '#B2B2B2'
+    color: '#B2B2B2',
+    textAlignVertical: 'center',
   }
 })
 
