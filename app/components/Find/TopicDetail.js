@@ -649,7 +649,7 @@ export class TopicDetail extends Component {
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
             <View style={[styles.vItem]}>
               <Image style={{width:24,height:24}} source={likeImgSource}/>
-              <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>点赞</Text>
+              <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>{isLiked ? '已赞' : '点赞'}</Text>
             </View>
           </TouchableOpacity>
 
