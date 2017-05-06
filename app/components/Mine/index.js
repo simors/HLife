@@ -371,11 +371,12 @@ class Mine extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/*<StatusBar barStyle="light-content" />*/}
-        <ScrollView style={{flex: 1, height: PAGE_HEIGHT, marginBottom: normalizeH(45)}}>
-          {this.renderHeaderView()}
-          {this.renderBodyView()}
-        </ScrollView>
+        <View style={{flex: 1, marginBottom: normalizeH(45)}}>
+          <ScrollView style={{flex: 1}}>
+            {this.renderHeaderView()}
+            {this.renderBodyView()}
+          </ScrollView>
+        </View>
       </View>
     )
   }
@@ -420,8 +421,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: THEME.base.backgroundColor,
-    width: PAGE_WIDTH,
-    height: PAGE_HEIGHT,
   },
   header: {
     width: PAGE_WIDTH,

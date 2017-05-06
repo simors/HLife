@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
   body: {
     // marginTop: normalizeH(64),
     flex: 1,
-    marginBottom: 42
+    marginBottom: normalizeH(45),
   },
   healthModule: {
     height: normalizeH(64),
