@@ -232,12 +232,17 @@ export class TopicDetail extends Component {
 
   onLikeButton() {
     if (this.props.isLogin) {
+      if(this.isSubmiting) {
+        return 
+      }
+
+      this.isSubmiting = true
       if (this.props.isLiked) {
         this.props.unLikeTopic({
           topicId: this.props.topic.objectId,
           upType: 'topic',
           success: this.likeSuccessCallback.bind(this),
-          error: this.likeErrorCallback
+          error: this.likeErrorCallback.bind(this)
         })
       }
       else {
@@ -245,7 +250,7 @@ export class TopicDetail extends Component {
           topicId: this.props.topic.objectId,
           upType: 'topic',
           success: this.likeSuccessCallback.bind(this),
-          error: this.likeErrorCallback
+          error: this.likeErrorCallback.bind(this)
         })
       }
     }
@@ -279,10 +284,12 @@ export class TopicDetail extends Component {
   }
 
   likeErrorCallback(error) {
+    this.isSubmiting = false
     Toast.show(error.message)
   }
 
   likeSuccessCallback() {
+    this.isSubmiting = false
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
@@ -652,7 +659,7 @@ export class TopicDetail extends Component {
               <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>{isLiked ? '已赞' : '点赞'}</Text>
             </View>
           </TouchableOpacity>
-
+          <View style={{flex:1}}/>
           <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.openModel()}>
             <View style={[styles.contactedBox]}>
               <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
@@ -812,7 +819,7 @@ const styles = StyleSheet.create({
     color:'#ff7819'
   },
   shopCommentInputBox: {
-    flex: 1,
+    width: 64,
   },
   shopCommentInput: {
     fontSize: em(17),
