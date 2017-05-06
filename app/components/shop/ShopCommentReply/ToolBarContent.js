@@ -25,7 +25,8 @@ export default class ToolBarContent extends Component {
     super(props)
 
     this.state = {
-      content: ''
+      content: '',
+      height: 50,
     }
   }
 
@@ -47,15 +48,29 @@ export default class ToolBarContent extends Component {
     this.props.replyInputRefCallBack(input)
   }
 
+  _onChange(event) {
+    const textInputContentHeight = event.nativeEvent.contentSize.height
+    if(textInputContentHeight < 80) {
+      this.setState({
+        height: textInputContentHeight,
+      })
+    }
+
+    if(this.props.onChange) {
+      this.props.onChange(event)
+    }
+  }
+
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {height: this.state.height}]}>
         <TextInput
           ref={(input) =>{this.refFunc(input)}}
           placeholder={this.props.placeholder}
           placeholderTextColor={this.props.placeholderTextColor}
           multiline={this.props.multiline}
-          onChange={this.props.onChange}
+          numberOfLines={this.props.numberOfLines || 1}
+          onChange={this._onChange.bind(this)}
           onChangeText={this.onChangeText.bind(this)}
           style={[styles.textInput, this.props.textInputStyle]}
           value={this.props.initValue}
@@ -81,7 +96,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    height: normalizeH(50),
   },
   textInput: {
     flex: 1,
