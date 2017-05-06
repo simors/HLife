@@ -147,7 +147,7 @@ class Setting extends Component {
 
   toUserGuide(){
     let payload = {
-      url:'http://www.baidu.com',
+      url:'http://simors.github.io/ljyd_blog',
       showHeader:true,
       headerTitle:'用户指南',
     }
@@ -157,7 +157,7 @@ class Setting extends Component {
 
   toAbout(){
     let payload = {
-      url:'http://www.baidu.com',
+      url:'http://simors.github.io/ljyd_blog',
       showHeader:true,
       headerTitle:'关于邻家优店',
     }
