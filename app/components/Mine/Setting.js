@@ -87,36 +87,36 @@ class Setting extends Component {
       Actions[action]()
     }
   }
-  checkIosUpdate(){
-    // console.log('jhahahah',CommonNative)
+
+  checkVersionUpdate() {
     let platform = Platform.OS
     if(platform==='ios'){
-      fetch('https://itunes.apple.com/lookup?id=1224852246',{
-        method:'POST'
-      }).then((data)=>{
+      fetch('https://itunes.apple.com/lookup?id=1224852246',{method:'POST'}).then((data)=>{
         data.json().then((result)=>{
-          // console.log('data',data)
-          // console.log('result',result.results[0].version)
-          // console.log('data',RNDeviceInfo.appVersion)
           let version = result.results[0].version
           if(version>RNDeviceInfo.appVersion){
             this.isUpdate(result.results[0])
           }
         })
-
-
       })
-    }else if (platform==='android'){
+    } else if (platform==='android'){
       checkUpdate().then((result)=>{
-        // console.log('result',result)
-        // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
-
         if(result.version>RNDeviceInfo.appVersion){
-          this.isUpdate({trackViewUrl:result.fileUrl})
+          this.isUpdate({trackViewUrl:result.fileUrl, version: result.version})
+        } else {
+          Popup.confirm({
+            title: '版本更新',
+            content: '已经是最近版本，不需要更新',
+            ok: {
+              text: '确定',
+              style: {color: THEME.base.mainColor},
+              callback: ()=> {
+              }
+            },
+          })
         }
       })
     }
-
   }
 
   isUpdate(result) {
@@ -127,8 +127,6 @@ class Setting extends Component {
         text: '确定',
         style: {color: THEME.base.mainColor},
         callback: ()=> {
-          // url='https://itunes.apple.com/app/id=1224852246'
-          // console.log('result.trackViewUrl',result.trackViewUrl)
           let url= result.trackViewUrl
           Linking.openURL(url).catch(err => console.error('An error occurred', err));
         }
@@ -136,9 +134,7 @@ class Setting extends Component {
       cancel: {
         text: '以后',
         callback: ()=> {
-          // console.log('cancel')
           this.props.fetchAppNoUpdate({noUpdateVersion:result.version})
-
         }
       }
     })
@@ -147,7 +143,7 @@ class Setting extends Component {
 
   toUserGuide(){
     let payload = {
-      url:'http://www.baidu.com',
+      url:'http://simors.github.io/ljyd_blog',
       showHeader:true,
       headerTitle:'用户指南',
     }
@@ -157,7 +153,7 @@ class Setting extends Component {
 
   toAbout(){
     let payload = {
-      url:'http://www.baidu.com',
+      url:'http://simors.github.io/ljyd_blog',
       showHeader:true,
       headerTitle:'关于邻家优店',
     }
@@ -204,9 +200,9 @@ class Setting extends Component {
         />
         <View style={styles.itemContainer}>
           <View style={{marginLeft:normalizeW(15),borderBottomWidth: 1, borderColor: '#F7F7F7'}}>
-            {Platform.OS=='android'?<View style={styles.selectItem} onPress={() => {}}>
+            {Platform.OS=='android'?<View style={styles.selectItem} onPress={() => {this.checkVersionUpdate()}}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>版本更新</Text>
-              <View style={styles.rightWrap}><Text style={{color:'#AAAAAA',fontSize:em(15),marginRight:normalizeW(6)}}>{'V'+RNDeviceInfo.appVersion}</Text>
+              <View style={styles.rightWrap}>
                 <Image source={require("../../assets/images/arrow_left.png")}/>
               </View>
             </View>:null}
@@ -215,6 +211,7 @@ class Setting extends Component {
             <TouchableOpacity style={styles.selectItem} onPress={() => this.toAbout()}>
               <Text style={[styles.textStyle, {marginLeft: normalizeW(15)}]}>关于邻家优店</Text>
               <View style={styles.rightWrap}>
+                <Text style={{color:'#AAAAAA',fontSize:em(15),marginRight:normalizeW(6)}}>{'v'+RNDeviceInfo.appVersion}</Text>
                 <Image source={require("../../assets/images/arrow_left.png")}/>
               </View>
             </TouchableOpacity>
