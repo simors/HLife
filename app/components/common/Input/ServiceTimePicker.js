@@ -159,18 +159,16 @@ class ServiceTimePicker extends Component {
             initSelected={this.getBeginSelected()}
             cascade={false}
           >
-            <View style={styles.container} pointerEvents="none">
-              <FormInput
-                editable={this.props.editable}
-                placeholder="上班时间"
-                placeholderTextColor={this.props.placeholderTextColor}
-                maxLength={this.props.maxLength}
-                underlineColorAndroid="transparent"
-                value={this.getBeginTime(this.props.data)}
-                containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
-                inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
-              />
-            </View>
+            <FormInput
+              editable={this.props.editable}
+              placeholder="上班时间"
+              placeholderTextColor={this.props.placeholderTextColor}
+              maxLength={this.props.maxLength}
+              underlineColorAndroid="transparent"
+              value={this.getBeginTime(this.props.data)}
+              containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
+              inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
+            />
           </CascadePicker>
         </View>
         <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: normalizeW(20), paddingRight: normalizeW(20)}}>
@@ -185,18 +183,16 @@ class ServiceTimePicker extends Component {
             initSelected={this.getEndSelected()}
             cascade={false}
           >
-            <View style={styles.container} pointerEvents="none">
-              <FormInput
-                editable={this.props.editable}
-                placeholder="打烊时间"
-                placeholderTextColor={this.props.placeholderTextColor}
-                maxLength={this.props.maxLength}
-                underlineColorAndroid="transparent"
-                value={this.getEndTime(this.props.data)}
-                containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
-                inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
-              />
-            </View>
+            <FormInput
+              editable={this.props.editable}
+              placeholder="打烊时间"
+              placeholderTextColor={this.props.placeholderTextColor}
+              maxLength={this.props.maxLength}
+              underlineColorAndroid="transparent"
+              value={this.getEndTime(this.props.data)}
+              containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
+              inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
+            />
           </CascadePicker>
         </View>
       </View>
@@ -240,7 +236,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     marginLeft: 0,
     marginRight: 0,
-    width: normalizeW(80),
+    width: normalizeW(100),
   },
   defaultInputStyle: {
     flex: 1,
@@ -250,5 +246,6 @@ const styles = StyleSheet.create({
     fontSize: em(16),
     color: '#030303',
     textAlignVertical: 'center',
+    textAlign: 'center'
   },
 })
