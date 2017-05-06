@@ -114,7 +114,7 @@ class Home extends Component {
 
           if(result.version>this.props.noUpdateVersion){
             // console.log('what wrong',result.version,this.props.noUpdateVersion)
-            this.isUpdate({trackViewUrl:result.fileUrl})
+            this.isUpdate({trackViewUrl:result.fileUrl,version:result.version})
           }else {
             // console.log('here is right',result.version,this.props.noUpdateVersion)
 
