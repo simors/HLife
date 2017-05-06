@@ -109,7 +109,8 @@ export class TopicDetail extends Component {
   }
 
   submitSuccessCallback() {
-    dismissKeyboard()
+    this.setState({hideBottomView: false})
+    // dismissKeyboard()
     Toast.show('评论成功', {duration: 1000})
     this.isReplying = false
   }
@@ -140,14 +141,13 @@ export class TopicDetail extends Component {
   }
 
   sendReply(content) {
+    if (this.isReplying) {
+      Toast.show('正在发表评论，请稍后')
+      return
+    }
     if (!this.props.isLogin) {
       Actions.LOGIN()
-    }
-    else {
-      if (this.isReplying) {
-        Toast.show('正在发表评论，请稍后')
-        return
-      }
+    } else {
       this.isReplying = true
       this.props.publishTopicFormData({
         content: content,
@@ -157,7 +157,7 @@ export class TopicDetail extends Component {
         commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
         success: () => this.submitSuccessCallback(),
-        error: () => this.submitErrorCallback()
+        error: (error) => this.submitErrorCallback(error)
       })
     }
   }
