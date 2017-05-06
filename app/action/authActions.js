@@ -122,15 +122,25 @@ export function userLogOut(payload) {
     dispatch(closeMessageClient({}))
     AVUtils.updateDeviceUserInfo({
       removeUser: true
+    }).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+    }, () => {
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch(() => {
+      if (payload.success) {
+        payload.success()
+      }
     })
-    if (payload.success) {
-      payload.success()
-    }
+    
   }
 }
 
 export function submitInputData(payload) {
-  console.log("submitInputData ",payload)
+  // console.log("submitInputData ",payload)
   return (dispatch, getState) => {
     let data = undefined
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
@@ -167,7 +177,7 @@ function handleLoginWithPwd(payload, formData) {
       password: formData.passwordInput.text,
     }
     lcAuth.loginWithPwd(loginPayload).then((userInfo) => {
-      console.log('handleLoginWithPwd===userInfo=', userInfo)
+      // console.log('handleLoginWithPwd===userInfo=', userInfo)
       if (payload.success) {
         payload.success(userInfo.userInfo.toJS())
       }
@@ -178,6 +188,7 @@ function handleLoginWithPwd(payload, formData) {
       dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
       dispatch(getCurrentPromoter())
       dispatch(initMessageClient(payload))
+      // console.log('handleLoginWithPwd===', user.userInfo.id)
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
       })
