@@ -150,7 +150,7 @@ class AdviseFeedback extends Component {
         getImages={(images) => this.getRichTextImages(images)}
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
         onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
-        placeholder="请详细描述使用中遇到的问题，并附上问题截图。诚挚邀请您加入用户体验俱乐部QQ群：312458688"
+        placeholder="请详述遇到的问题，并附上截图"
       />
     )
   }
