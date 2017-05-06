@@ -54,7 +54,7 @@ public class MainApplication extends Application implements ReactApplication {
                 return Arrays.<ReactPackage>asList(
                         new MainReactPackage(),
                         new RNSoundPackage(),
-                        new CodePush("wKOkzZoUpEORrmdk1EzdmsqgmCUE4ksvOXqog", MainApplication.this, BuildConfig.DEBUG,"http://codepush.xiaojee.cn"),
+                        new CodePush("wKOkzZoUpEORrmdk1EzdmsqgmCUE4ksvOXqog", MainApplication.this, BuildConfig.DEBUG,"http://admin.xiaojee.cn:3000"),
                         new AvOsCloudPackage(getApplicationContext(), MainApplication.this),
                         new PickerPackage(),
                         new RNDeviceInfo(),
