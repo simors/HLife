@@ -57,7 +57,7 @@ export default class ToolBarContent extends Component {
     }
 
     if(this.props.onChange) {
-      this.props.onChange()
+      this.props.onChange(event)
     }
   }
 
