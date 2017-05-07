@@ -56,7 +56,7 @@ class NearbyShopView extends Component {
                 </View>
               </View>
               <View style={{flex: 1}}>
-                <Image style={{flex: 1}} source={{uri: item.showPictureSource}}></Image>
+                <Image style={{flex: 1}} resizeMode='contain' source={{uri: item.showPictureSource}}></Image>
               </View>
             </View>
           </TouchableOpacity>
@@ -91,7 +91,8 @@ class NearbyShopView extends Component {
                 <Text style={styles.itemAbstract} numberOfLines={1}>{item.describe}</Text>
               </View>
               <View style={styles.secondShopImg}>
-                <Image style={{width: normalizeW(82), height: normalizeH(44)}} source={{uri: item.showPictureSource}}></Image>
+                <Image style={{width: normalizeW(82), height: normalizeH(44)}} resizeMode='contain'
+                       source={{uri: item.showPictureSource}}></Image>
               </View>
             </View>
           </TouchableOpacity>
