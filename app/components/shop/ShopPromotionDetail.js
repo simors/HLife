@@ -69,20 +69,24 @@ class ShopPromotionDetail extends Component {
   }
 
   onIWantPress() {
-    let shopPromotionDetail = this.props.shopPromotionDetail
-    let targetShop = shopPromotionDetail.targetShop
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }else {
+      let shopPromotionDetail = this.props.shopPromotionDetail
+      let targetShop = shopPromotionDetail.targetShop
 
-    this.props.fetchUsers({userIds: [targetShop.owner.id]})
+      this.props.fetchUsers({userIds: [targetShop.owner.id]})
 
-    let payload = {
-      name: targetShop.owner.nickname,
-      members: [this.props.currentUser, targetShop.owner.id],
-      conversationType: PERSONAL_CONVERSATION,
-      title: targetShop.shopName,
-      customTopView: this.customTopView()
-      // title: targetShop.owner.nickname,
+      let payload = {
+        name: targetShop.owner.nickname,
+        members: [this.props.currentUser, targetShop.owner.id],
+        conversationType: PERSONAL_CONVERSATION,
+        title: targetShop.shopName,
+        customTopView: this.customTopView()
+        // title: targetShop.owner.nickname,
+      }
+      Actions.CHATROOM(payload)
     }
-    Actions.CHATROOM(payload)
   }
 
   onShare = () => {
