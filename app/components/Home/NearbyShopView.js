@@ -83,7 +83,7 @@ class NearbyShopView extends Component {
         }
         return (
           <TouchableOpacity key={'secondItem_' + index} style={{flex: 1}} onPress={() => {this.gotoShopCategoryList(item)}}>
-            <View style={[styles.secondShopItem, {borderRightWidth: 1, borderColor: '#F5F5F5'}]}>
+            <View style={[styles.secondShopItem, index == 5 ? {} : {borderRightWidth: 1, borderColor: '#F5F5F5'}]}>
               <View>
                 <Text style={[styles.shopTitle, {color: item.textColor || '#4990E2'}]} numberOfLines={1}>{item.text}</Text>
               </View>
