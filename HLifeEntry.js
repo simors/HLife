@@ -55,7 +55,7 @@ AV.init(
     console.disableYellowBox = true
 
     AppState.addEventListener('change', handleAppStateChange);
-    NetInfo.addEventListener('change', this._handleConnectionInfoChange);
+    // NetInfo.addEventListener('change', this._handleConnectionInfoChange);
     // 通知初始化
     AVUtils.configurePush(
       KM_FIN
@@ -69,7 +69,7 @@ AV.init(
 
   componentWillUnmount() {
     AppState.removeEventListener('change', handleAppStateChange);
-    NetInfo.removeEventListener('change', this._handleConnectionInfoChange);
+    // NetInfo.removeEventListener('change', this._handleConnectionInfoChange);
   }
 
   onBackAndroid = () => {
