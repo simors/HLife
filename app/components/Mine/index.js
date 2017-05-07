@@ -128,7 +128,7 @@ class Mine extends Component {
     if (__DEV__) {
       shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
     } else {
-      shareUrl = shareUrl + "http://hlyd-pre.leanapp.cn/"
+      shareUrl = shareUrl + "http://hlyd-pro.leanapp.cn/"
     }
     shareUrl = shareUrl + "appDownload/"
 
