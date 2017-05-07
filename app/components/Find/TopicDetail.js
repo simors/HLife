@@ -48,6 +48,7 @@ import CommonListView from '../common/CommonListView'
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
+import {SHAREURL} from '../../util/global'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -355,13 +356,7 @@ export class TopicDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = ""
-    if (__DEV__) {
-      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
-    } else {
-      shareUrl = shareUrl + "http://hlyd-pro.leanapp.cn/"
-    }
-    shareUrl = shareUrl + "topicShare/" + this.props.topic.objectId
+    let shareUrl = SHAREURL + "topicShare/" + this.props.topic.objectId
 
     console.log("topicShare url:", shareUrl)
 

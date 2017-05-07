@@ -26,6 +26,7 @@ import {selectShopDetail} from '../selector/shopSelector'
 import {getTopicById} from '../selector/topicSelector'
 import * as lcShop from '../api/leancloud/shop'
 import * as AVUtils from '../util/AVUtils'
+import {KM_FIN} from '../../app/util/global'
 
 class TextMessage extends TypedMessage {
 }
@@ -78,13 +79,9 @@ messageType(msgTypes.MSG_PUBLISH_SHOP_PROMOTION)(PublishShopPromotioMessage)
 
 //we should move this to the server to avoid reverse-engineering
 
-
-const appId = __DEV__ ? LC_CONFIG.LC_DEV_APP_ID : LC_CONFIG.LC_PRO_APP_ID
-const appKey = __DEV__ ? LC_CONFIG.LC_DEV_APP_KEY : LC_CONFIG.LC_PRO_APP_KEY
-
 const realtime = new Realtime({
-  appId: appId,
-  appKey: appKey,
+  appId: KM_FIN.appId,
+  appKey: KM_FIN.appKey,
   region: 'cn',
   noBinary: true,
   pushOfflineMessages: true,

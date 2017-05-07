@@ -40,6 +40,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import MyShopPromotionModule from './MyShopPromotionModule'
 import {getShareUrl} from '../../../action/configAction'
 import ActionSheet from 'react-native-actionsheet'
+import {SHAREURL} from '../../../util/global'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -290,13 +291,7 @@ class MyShopIndex extends Component {
   }
 
   onShare = () => {
-    let shareUrl = ""
-    if (__DEV__) {
-      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
-    } else {
-      shareUrl = shareUrl + "http://hlyd-pro.leanapp.cn/"
-    }
-    shareUrl = shareUrl + "shopShare/" + this.props.userOwnedShopInfo.id
+    let shareUrl = SHAREURL + "shopShare/" + this.props.userOwnedShopInfo.id
 
     console.log("shopShare url:", shareUrl)
 

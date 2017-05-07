@@ -27,27 +27,14 @@ import Popup from '@zzzkk2009/react-native-popup'
 import THEME from './app/constants/themes/theme1'
 import {selectNetworkStatus} from './app/selector/configSelector'
 import {updateNetworkStatus} from './app/action/configAction'
+import {KM_FIN, ENV} from './app/util/global'
 
 const RouterWithRedux = connect()(Router)
 
-const KM_Dev = {
-  appId: LC_CONFIG.LC_DEV_APP_ID,
-  appKey: LC_CONFIG.LC_DEV_APP_KEY,
-}
+AV.setProduction(ENV == 'pro')
 
-const KM_STAGE = {
-  appId: LC_CONFIG.LC_STAGE_APP_ID,
-  appKey: LC_CONFIG.LC_STAGE_APP_KEY,
-}
-
-const KM_PRO = {
-  appId: LC_CONFIG.LC_PRO_APP_ID,
-  appKey: LC_CONFIG.LC_PRO_APP_KEY,
-}
-
-//AV.setProduction(false)
 AV.init(
-  __DEV__ ? KM_Dev : KM_STAGE
+  KM_FIN
 )
 
 
@@ -71,7 +58,7 @@ AV.init(
     NetInfo.addEventListener('change', this._handleConnectionInfoChange);
     // 通知初始化
     AVUtils.configurePush(
-      __DEV__ ? KM_Dev : KM_PRO
+      KM_FIN
     )
 
     AVUtils.appInit()

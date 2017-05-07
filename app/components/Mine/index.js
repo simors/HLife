@@ -36,6 +36,8 @@ import {
   selectPromoterIdentity,
   getPromoterById
 } from '../../selector/promoterSelector'
+import {SHAREURL} from '../../util/global'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -124,13 +126,7 @@ class Mine extends Component {
   }
 
   shareToFriend() {
-    let shareUrl = ""
-    if (__DEV__) {
-      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
-    } else {
-      shareUrl = shareUrl + "http://hlyd-pro.leanapp.cn/"
-    }
-    shareUrl = shareUrl + "appDownload/"
+    let shareUrl = SHAREURL + "appDownload/"
 
     console.log("shopShare url:", shareUrl)
 

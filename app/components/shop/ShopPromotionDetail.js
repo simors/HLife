@@ -32,6 +32,7 @@ import ChatroomShopPromotionCustomTopView from './ChatroomShopPromotionCustomTop
 import {fetchUsers} from '../../action/authActions'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+import {SHAREURL} from '../../util/global'
 
 
 
@@ -90,13 +91,7 @@ class ShopPromotionDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = ""
-    if (__DEV__) {
-      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
-    } else {
-      shareUrl = shareUrl + "http://hlyd-pro.leanapp.cn/"
-    }
-    shareUrl = shareUrl + "shopPromotionShare/" + this.props.id
+    let shareUrl = SHAREURL + "shopPromotionShare/" + this.props.id
 
     console.log("shopPromotionShare url:", shareUrl)
 

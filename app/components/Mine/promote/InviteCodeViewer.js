@@ -22,7 +22,7 @@ import {getInviteCode} from '../../../action/promoterAction'
 import {inviteCode} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
 import ActionSheet from 'react-native-actionsheet'
-
+import {SHAREURL} from '../../../util/global'
 
 class InviteCodeViewer extends Component {
   constructor(props) {
@@ -41,13 +41,8 @@ class InviteCodeViewer extends Component {
 
   _handleActionSheetPress(index) {
     if(0 == index) { //分享
-      let shareUrl = ""
-      if (__DEV__) {
-        shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
-      } else {
-        shareUrl = shareUrl + "http://hlyd-pro.leanapp.cn/"
-      }
-      shareUrl = shareUrl + "inviteCodeShare/" + this.props.code
+
+      let shareUrl = SHAREURL + "inviteCodeShare/" + this.props.code
 
       console.log("shopShare url:", shareUrl)
 

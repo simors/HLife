@@ -46,6 +46,7 @@ import * as ShopDetailTestData from './ShopDetailTestData'
 import ActionSheet from 'react-native-actionsheet'
 import TimerMixin from 'react-timer-mixin'
 import Loading from '../common/Loading'
+import {SHAREURL} from '../../util/global'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -577,13 +578,7 @@ class ShopDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = ""
-    if (__DEV__) {
-      shareUrl = shareUrl + "http://hlyd-dev.leanapp.cn/"
-    } else {
-      shareUrl = shareUrl + "http://hlyd-pro.leanapp.cn/"
-    }
-    shareUrl = shareUrl + "shopShare/" + this.props.shopDetail.id
+    let shareUrl = SHAREURL + "shopShare/" + this.props.shopDetail.id
 
     console.log("shopShare url:", shareUrl)
 
