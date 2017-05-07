@@ -178,7 +178,7 @@ class Mine extends Component {
             Actions.QRCODEREADER({
               readQRSuccess: (QRData) => {
                 if (QRData.startsWith('http') || QRData.startsWith('https')) {
-                  Actions.COMMON_WEB_VIEW({url: QRData})
+                  Actions.COMMON_WEB_VIEW({url: QRData, showHeader:true, headerTitle: '网页'})
                   return
                 }
                 let data = JSON.parse(QRData)
