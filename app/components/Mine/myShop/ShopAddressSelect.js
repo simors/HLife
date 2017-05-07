@@ -138,7 +138,7 @@ class ShopAddressSelect extends Component {
     }
   }
 
-  getCurrentPosition() {
+  getCurrentPosition(callback) {
     // console.log('resetPosition..this.currentPosition===', this.currentPosition)
 
     Geolocation.getCurrentPosition()
@@ -157,12 +157,14 @@ class ShopAddressSelect extends Component {
         })
         
         if (Platform.OS == 'ios') {
-          this.updateInfoByLatLng(data.latitude, data.longitude)
+          this.updateInfoByLatLng(data.latitude, data.longitude, callback)
         }else {
           this.setState({
             shopAddress: data.address,
             currentCity: abbrCity(data.city),
             currentDistrict: data.district
+          }, () => {
+            callback && callback(true)
           })
 
           
@@ -174,12 +176,13 @@ class ShopAddressSelect extends Component {
         this.setState({
           showLoading: false
         })
+        callback && callback(false)
         console.warn(e, 'error')
       })
 
   }
 
-  updateInfoByLatLng(latitude, longitude) {
+  updateInfoByLatLng(latitude, longitude, callback) {
     // console.log('reverseGeoCode.latitude===', latitude)
 
     Geolocation.reverseGeoCode(latitude, longitude)
@@ -196,6 +199,7 @@ class ShopAddressSelect extends Component {
             },
           }, () => {
             this.notTriggerRegionDidChangeAnimated4IosEvent = true
+            callback && callback(true)
           })
         }else {
           this.setState({
@@ -208,11 +212,13 @@ class ShopAddressSelect extends Component {
             },
           }, () => {
             this.notTriggerRegionDidChangeAnimated4IosEvent = true
+            callback && callback(true)
           })
         }
         // console.log('reverseGeoCode.this.state===', this.state)
       })
       .catch(e =>{
+        callback && callback(false)
         console.warn(e, 'error')
       })
   }
@@ -421,18 +427,37 @@ class ShopAddressSelect extends Component {
       return
     }
 
+    if(!this.state.currentCity || !this.state.currentDistrict) {
+      this.getCurrentPosition((success) => {
+        if(success) {
+          Actions.pop({
+            refresh: {
+              shopName: this.state.shopName,
+              shopAddress: this.state.shopAddress,
+              currentCity: this.state.currentCity,
+              currentDistrict: this.state.currentDistrict,
+              latitude: this.state.center.latitude,
+              longitude: this.state.center.longitude,
+            }
+          })
+        }else {
+          Toast.show('获取店铺地理位置失败，请确认是否打开定位权限!')
+        }
+      })
+    }else {
+      Actions.pop({
+        refresh: {
+          shopName: this.state.shopName,
+          shopAddress: this.state.shopAddress,
+          currentCity: this.state.currentCity,
+          currentDistrict: this.state.currentDistrict,
+          latitude: this.state.center.latitude,
+          longitude: this.state.center.longitude,
+        }
+      })
+    }
     // console.log('onShopBtnPress.this.state===', this.state)
-    Actions.pop({
-      refresh: {
-        shopName: this.state.shopName,
-        shopAddress: this.state.shopAddress,
-        currentCity: this.state.currentCity,
-        currentDistrict: this.state.currentDistrict,
-        latitude: this.state.center.latitude,
-        longitude: this.state.center.longitude,
-
-      }
-    })
+    
   }
 
   renderSearchResult() {
