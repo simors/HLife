@@ -276,11 +276,15 @@ class AreaPromoterDetail extends Component {
           <Text style={[styles.totalPerformText, {paddingTop: normalizeH(15)}]}>{statistics.totalPerformance.toFixed(3)}</Text>
         </View>
         <View style={styles.perforItemView}>
-          <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>入驻店铺数</Text>
+          <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>区域推广员总数</Text>
+          <Text style={[styles.performItemValue, {paddingRight: normalizeW(15)}]}>{statistics.totalPromoters} 人</Text>
+        </View>
+        <View style={styles.perforItemView}>
+          <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>发展店铺总数</Text>
           <Text style={[styles.performItemValue, {paddingRight: normalizeW(15)}]}>{statistics.totalInvitedShops} 家</Text>
         </View>
         <View style={styles.perforItemView}>
-          <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>推广团队总人数</Text>
+          <Text style={[styles.performItemText, {paddingLeft: normalizeW(15)}]}>发展推广员总数</Text>
           <Text style={[styles.performItemValue, {paddingRight: normalizeW(15)}]}>{statistics.totalTeamMems} 人</Text>
         </View>
       </View>

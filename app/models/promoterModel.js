@@ -30,6 +30,7 @@ export const PromoterStatisticsRecord = Record({
   totalInvitedShops: undefined,
   totalTeamMems: undefined,
   totalPerformance: undefined,
+  totalPromoters: undefined,
 })
 
 export const AreaAgent = Record({
@@ -108,6 +109,7 @@ export class PromoterStatistics extends PromoterStatisticsRecord {
       record.set('totalInvitedShops', lcObj.totalInvitedShops)
       record.set('totalTeamMems', lcObj.totalTeamMems)
       record.set('totalPerformance', lcObj.totalPerformance)
+      record.set('totalPromoters', lcObj.totalPromoters)
     })
     return statistics
   }

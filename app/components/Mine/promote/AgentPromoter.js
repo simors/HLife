@@ -263,18 +263,26 @@ class AgentPromoter extends Component {
       <View style={{marginTop: normalizeH(15), backgroundColor: '#F5F5F5'}}>
         <View style={styles.statItemView}>
           <View style={{paddingLeft: normalizeW(15)}}>
-            <Text style={styles.itemTitle}>入驻店铺数</Text>
+            <Text style={styles.itemTitle}>区域推广员总数</Text>
           </View>
           <View style={{paddingRight: normalizeW(15)}}>
-            <Text style={styles.itemData}>{this.props.statistics.totalInvitedShops}家</Text>
+            <Text style={styles.itemData}>{this.props.statistics.totalPromoters} 人</Text>
+          </View>
+        </View>
+        <View style={styles.statItemView}>
+          <View style={{paddingLeft: normalizeW(15)}}>
+            <Text style={styles.itemTitle}>发展店铺总数</Text>
+          </View>
+          <View style={{paddingRight: normalizeW(15)}}>
+            <Text style={styles.itemData}>{this.props.statistics.totalInvitedShops} 家</Text>
           </View>
         </View>
         <View style={[styles.statItemView, {borderTopWidth: 1, borderColor: '#f5f5f5',}]}>
           <View style={{paddingLeft: normalizeW(15)}}>
-            <Text style={styles.itemTitle}>推广团队总人数</Text>
+            <Text style={styles.itemTitle}>发展推广员总数</Text>
           </View>
           <View style={{paddingRight: normalizeW(15)}}>
-            <Text style={styles.itemData}>{this.props.statistics.totalTeamMems}人</Text>
+            <Text style={styles.itemData}>{this.props.statistics.totalTeamMems} 人</Text>
           </View>
         </View>
         <View style={styles.totalPerView}>
