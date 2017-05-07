@@ -55,13 +55,11 @@ export function updateProvincesAndCities(payload) {
 }
 
 export function playMessageSound() {
-  if(global.pushMessageSoundOpen) {
-    if(!global.isSounding) {
-      global.isSounding = true
-      global.messageSound.play((success) => {
-        global.isSounding = false
-      })
-    }
+  if(!global.isSounding) {
+    global.isSounding = true
+    global.messageSound.play((success) => {
+      global.isSounding = false
+    })
   }
 }
 
@@ -264,7 +262,9 @@ export function configurePush(options) {
           }
         }
 
-        playMessageSound()
+        if(global.pushMessageSoundOpen) {
+          playMessageSound()
+        }
         
       }
 
