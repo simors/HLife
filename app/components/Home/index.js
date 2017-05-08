@@ -260,7 +260,16 @@ class Home extends Component {
       let payload = {
         url: action,
         showHeader: !!title,
-        headerTitle: title
+        headerTitle: title,
+        headerRightType: 'image',
+        headerRightImageSource: require('../../assets/images/active_share.png'),
+        headerRightPress: () => {Actions.SHARE({
+          title: "汇邻优店",
+          url: action,
+          author: '邻家小二',
+          abstract: "邻里互动，同城交易",
+          cover: "https://simors.github.io/ljyd_blog/ic_launcher.png",
+        })},
       }
       return (
         Actions.COMMON_WEB_VIEW(payload)
