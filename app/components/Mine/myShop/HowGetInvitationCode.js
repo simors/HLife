@@ -59,12 +59,12 @@ class HowGetInvitationCode extends Component {
 							<Text style={styles.lineText}>尊敬的用户：</Text>
 							<Text style={styles.lineText}>欢迎加入汇邻优店店铺平台，为了保障店铺信息的真实有效，共建良好的店铺运营环境，店铺入驻必须由平台推广人员发出邀请才能注册。</Text>
 							<Text style={styles.lineText}>您可以通过以下方式找到平台推广人员：</Text>
-							<Text style={styles.lineText}>1. 身边认识的已加入汇邻优店推广联盟的成员</Text>
-							<Text style={styles.lineText}>2. 在本app中找到有推广员身份的邻友</Text>
-							<Text style={[styles.lineText, {fontWeight:'bold'}]}>点击个人头像进入的个人信息页面，头像下方有以下身份标识均具备生成邀请码资格，您可以通过私信与他沟通获取邀请码</Text>
+							<Text style={[styles.lineText, {fontWeight:'bold'}]}>1. 寻找已加入汇邻优店推广联盟的成员；</Text>
+							<Text style={[styles.lineText, {fontWeight:'bold'}]}>2. 在本App中找到有推广员身份的邻友；</Text>
+							<Text style={styles.lineText}>点击个人头像进入的个人信息页面，头像下方有以下身份标识均具备生成邀请码资格，您可以通过私信与他沟通获取邀请码</Text>
 							<Text style={[styles.lineText, {marginTop: 30,marginBottom: 30}]}>
 								若仍有疑问，请
-								<Text onPress={()=>{}} style={{color: '#ff7819'}}>联系客服</Text>
+								<Text onPress={()=>{Actions.CONTACT()}} style={styles.lineText}>联系客服</Text>
 							</Text>
 
 							<View style={{backgroundColor:'rgba(255, 157, 78, 0.08)',borderRadisu:6,padding:10,marginBottom:25}}>

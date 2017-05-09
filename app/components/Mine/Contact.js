@@ -33,7 +33,7 @@ export default class Contact extends Component {
             <Text style={styles.text}>2072809995</Text>
           </View>
           <View style={{marginTop: normalizeH(20), paddingLeft: normalizeW(20)}}>
-            <Text style={styles.text}>微信客服：aiwu8w</Text>
+            <Text style={styles.text}>微信客服：wuai1681688</Text>
           </View>
           <View style={{marginTop: normalizeH(20), alignItems: 'center'}}>
             <Image style={{width: 200, height: 200}} resizeMode='contain' source={require('../../assets/images/wechat_contact.png')}/>
