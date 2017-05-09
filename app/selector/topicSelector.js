@@ -40,7 +40,7 @@ export function getTopicLikeUsers(state, topicId) {
 }
 
 export function isTopicLiked(state, topicId) {
-  return state.TOPIC.toJS().IsLikedByCurrentUser[topicId]
+  return state.TOPIC.getIn(['IsLikedByCurrentUser', topicId]) || false
 }
 
 export function selectCurrentUserLikedTopicInfo(state, topicId) {

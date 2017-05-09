@@ -21,6 +21,10 @@ export default function topicReducer(state = initialState, action) {
       return handleFetchTopicCommentsSuccessPaging(state, action)  
     case TopicTypes.FETCH_TOPIC_LIKES_TOTAL_COUNT_SUCCESS:
       return handleUpdateTopicLikesTotalCount(state, action)
+    case TopicTypes.LIKE_TOPIC_SUCCESS:
+      return handleLikeTopicSuccess(state, action)  
+    case TopicTypes.UNLIKE_TOPIC_SUCCESS:
+      return handleUnlikeTopicSuccess(state, action)    
     case TopicTypes.FETCH_TOPIC_IS_LIKED_SUCCESS:
       return handleUpdateTopicIsLiked(state, action)
     case TopicTypes.PUBLISH_COMMENT_SUCCESS:
@@ -46,6 +50,36 @@ export default function topicReducer(state = initialState, action) {
     default:
       return state
   }
+}
+
+function handleLikeTopicSuccess(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let _map = state.get('TopicLikesNum')
+  let topicLikesTotalCount = _map.get(topicId)
+  if(topicLikesTotalCount > 0) {
+    topicLikesTotalCount += 1
+  }else {
+    topicLikesTotalCount = 1
+  }
+  _map = _map.set(topicId, topicLikesTotalCount)
+  state = state.set('TopicLikesNum', _map)
+  return state
+}
+
+function handleUnlikeTopicSuccess(state, action) {
+  let payload = action.payload
+  let topicId = payload.topicId
+  let _map = state.get('TopicLikesNum')
+  let topicLikesTotalCount = _map.get(topicId)
+  if(topicLikesTotalCount > 0) {
+    topicLikesTotalCount -= 1
+  }else {
+    topicLikesTotalCount = 0
+  }
+  _map = _map.set(topicId, topicLikesTotalCount)
+  state = state.set('TopicLikesNum', _map)
+  return state
 }
 
 function handleFetchTopicLikeUsersSuccess(state, action) {

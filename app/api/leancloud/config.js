@@ -20,7 +20,7 @@ export function fetchAppServicePhone(payload) {
       return result.message
     }
     return ''
-  }, (error)=>{
+  }, (err)=>{
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
