@@ -379,8 +379,8 @@ export function likeTopic(payload) {
       if (payload.success) {
         payload.success()
       }
-      let publishAction = createAction(topicActionTypes.LIKE_TOPIC_SUCCESS)
-      dispatch(publishAction({stateKey: payload.stateKey}))
+      let updateAction = createAction(topicActionTypes.LIKE_TOPIC_SUCCESS)
+      dispatch(updateAction({topicId: payload.topicId}))
       if (payload.upType === 'topic') {
         dispatch(notifyTopicLike({topicId: payload.topicId}))
       }
@@ -398,8 +398,8 @@ export function unLikeTopic(payload) {
       if (payload.success) {
         payload.success()
       }
-      let publishAction = createAction(topicActionTypes.UNLIKE_TOPIC_SUCCESS)
-      dispatch(publishAction({stateKey: payload.stateKey}))
+      let updateAction = createAction(topicActionTypes.UNLIKE_TOPIC_SUCCESS)
+      dispatch(updateAction({topicId: payload.topicId}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

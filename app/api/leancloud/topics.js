@@ -175,7 +175,7 @@ export function likeTopic(payload) {
       up.set('status', true)
     }
     return up.save().then((result) => {
-
+      // console.log('likeTopic.result==', result)
       topic.increment("likeCount", 1)
       topic.save()
 
@@ -230,7 +230,7 @@ export function unLikeTopic(payload) {
     let up = AV.Object.createWithoutData('Up', userLikeTopicInfo.id)
       up.set('status', false)
     return up.save().then((result) => {
-
+      // console.log('unLikeTopic.result==', result)
       topic.increment("likeCount", -1)
       topic.save()
 

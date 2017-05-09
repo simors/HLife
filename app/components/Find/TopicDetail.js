@@ -291,11 +291,9 @@ export class TopicDetail extends Component {
 
   likeSuccessCallback() {
     this.isSubmiting = false
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
-    })
+    this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+    // this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
+    this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
   }
 
   renderTopicLikeOneUser(value, key) {
