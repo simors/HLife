@@ -473,7 +473,6 @@ export class TopicDetail extends Component {
 
   renderTopicContentColumn() {
     let topic = this.props.topic
-    topic.objectId
     return (
       <View style={{flex:1}}>
         <TopicContent 

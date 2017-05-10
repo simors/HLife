@@ -100,6 +100,7 @@ export default class MyTopicShow extends Component {
     if (this.props.topic) {
       let createDate = new Date(this.props.topic.createdAt)
       let updateDate = new Date(this.props.topic.updatedAt)
+      let topic = this.props.topic
       return (
         <View style={[styles.containerStyle, this.props.containerStyle]}>
           <View style={styles.timeWrapStyle}>
@@ -113,12 +114,12 @@ export default class MyTopicShow extends Component {
             <View style={styles.locationCommentStyle}>
               <Image style={styles.positionPicStyle} resizeMode="contain"
                      source={require("../../../assets/images/writer_loaction.png")}/>
-              <Text style={styles.positionTextStyle}>长沙</Text>
+              <Text style={styles.positionTextStyle}>{(topic.position && topic.position.city) ? topic.position.city : '未知'}</Text>
               <Text style={styles.likeTextStyle}>
-                {"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}
+                {"点赞" + " " + (topic.likeCount > 999 ? '999+' : topic.likeCount)}
               </Text>
               <Text style={styles.commentTextStyle}>
-                {"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}
+                {"评论" + " " + (topic.commentNum > 999 ? '999+' : topic.commentNum)}
               </Text>
             </View>
           </View>
