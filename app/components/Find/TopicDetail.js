@@ -64,7 +64,7 @@ export class TopicDetail extends Component {
       hideBottomView: false,
       loadComment: false,
       showPayModal: false,
-      pay: 0,
+      pay: '',
     }
     this.replyInput = null
     this.isReplying = false
@@ -477,7 +477,6 @@ export class TopicDetail extends Component {
 
   renderTopicContentColumn() {
     let topic = this.props.topic
-    topic.objectId
     return (
       <View style={{flex:1}}>
         <TopicContent 
@@ -566,10 +565,15 @@ export class TopicDetail extends Component {
   }
 
   onPaymentPress() {
+    let pay = this.state.pay
+    if (pay.toString().split('.')[1].length > 2) {
+      Toast.show('最多2位小数')
+      return
+    }
     this.setState({showPayModal: false})
     Actions.PAYMENT({
       title: '打赏支付',
-      price: this.state.pay,
+      price: pay,
       metadata: {'user': this.props.userInfo.id},
       popNum: 2,
       paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
@@ -578,6 +582,14 @@ export class TopicDetail extends Component {
       payErrorJumpScene: 'MINE',
       payErrorJumpSceneParams: {}
     })
+  }
+
+  openPaymentModal() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      this.setState({showPayModal: true})
+    }
   }
 
   renderPaymentModal() {
@@ -734,7 +746,7 @@ export class TopicDetail extends Component {
               <Text style={[styles.contactedTxt]}>评论</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.contactedWrap, {backgroundColor: THEME.base.deepColor}]} onPress={() => this.setState({showPayModal: true})}>
+          <TouchableOpacity style={[styles.contactedWrap, {backgroundColor: THEME.base.deepColor}]} onPress={() => this.openPaymentModal()}>
             <View style={[styles.contactedBox]}>
               <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
               <Text style={[styles.contactedTxt]}>打赏</Text>
