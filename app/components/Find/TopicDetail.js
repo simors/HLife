@@ -659,6 +659,12 @@ export class TopicDetail extends Component {
               <Text style={[styles.contactedTxt]}>评论</Text>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity style={[styles.contactedWrap, {backgroundColor: THEME.base.deepColor}]} onPress={() => this.openModel()}>
+            <View style={[styles.contactedBox]}>
+              <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
+              <Text style={[styles.contactedTxt]}>打赏</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       )
     }
@@ -819,7 +825,7 @@ const styles = StyleSheet.create({
     color: '#8f8e94'
   },
   contactedWrap: {
-    width: normalizeW(135),
+    width: normalizeW(110),
     backgroundColor: '#FF9D4E',
     justifyContent: 'center',
     alignItems: 'center'

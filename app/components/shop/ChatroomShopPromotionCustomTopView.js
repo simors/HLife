@@ -26,6 +26,21 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
     super(props)
   }
 
+  onPaymentPress() {
+    let item = this.props.shopPromotionInfo
+    Actions.PAYMENT({
+      title: '商家活动支付',
+      price: item.promotingPrice,
+      metadata: {'user': this.props.userId},
+      popNum: 2,
+      paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
+      paySuccessJumpSceneParams: {
+      },
+      payErrorJumpScene: 'MINE',
+      payErrorJumpSceneParams: {}
+    })
+  }
+
   render() {
   	const item = this.props.shopPromotionInfo
 
@@ -75,11 +90,18 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 	                  : null
 	                }
 	              </View>
-	              <View>
-                  {item.pv
-                    ? <Text style={styles.itemText}>{item.pv}人看过</Text>
-                    : null
-                  }
+	              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View>
+                    {item.pv
+                      ? <Text style={styles.itemText}>{item.pv}人看过</Text>
+                      : null
+                    }
+                  </View>
+                  <View>
+                    <TouchableOpacity style={styles.payBtn} onPress={() => this.onPaymentPress()}>
+                      <Text style={{fontSize: em(15), color: '#FFF'}}>去支付</Text>
+                    </TouchableOpacity>
+                  </View>
 	              </View>
 	            </View>
 	          </View>
@@ -97,7 +119,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-		height: 130,
+		height: 135,
 		paddingTop: 15,
 		backgroundColor:'#f5f5f5',
 		width:PAGE_WIDTH,
@@ -173,5 +195,12 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     fontWeight: 'bold',
     color: '#00BE96',
+  },
+  payBtn: {
+    backgroundColor: THEME.base.mainColor,
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
   },
 })

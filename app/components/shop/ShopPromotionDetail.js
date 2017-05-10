@@ -65,6 +65,7 @@ class ShopPromotionDetail extends Component {
     return (
       <ChatroomShopPromotionCustomTopView
         shopPromotionInfo={this.props.shopPromotionDetail}
+        userId={this.props.currentUser}
       />
     )
   }
@@ -87,6 +88,26 @@ class ShopPromotionDetail extends Component {
         // title: targetShop.owner.nickname,
       }
       Actions.CHATROOM(payload)
+    }
+  }
+
+  onPaymentPress() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }else {
+      let shopPromotionDetail = this.props.shopPromotionDetail
+
+      Actions.PAYMENT({
+        title: '商家活动支付',
+        price: shopPromotionDetail.promotingPrice,
+        metadata: {'user': this.props.currentUser},
+        popNum: 2,
+        paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
+        paySuccessJumpSceneParams: {
+        },
+        payErrorJumpScene: 'MINE',
+        payErrorJumpSceneParams: {}
+      })
     }
   }
 
@@ -164,6 +185,10 @@ class ShopPromotionDetail extends Component {
               <Image source={require('../../assets/images/contacted.png')}/>
               <Text style={styles.footerBtnTxt}>我想要</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.footerBtnBox, {backgroundColor: THEME.base.deepColor}]} onPress={()=>{this.onPaymentPress()}}>
+              <Image source={require('../../assets/images/contacted.png')}/>
+              <Text style={styles.footerBtnTxt}>去支付</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -218,8 +243,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FF9D4E',
     padding: 15,
-    paddingLeft: 35,
-    paddingRight: 35,
+    paddingLeft: 25,
+    paddingRight: 25,
   },
   footerBtnTxt: {
     fontSize: em(15),
