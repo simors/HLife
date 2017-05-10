@@ -46,6 +46,8 @@ import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
 import {fetchShopList, clearShopList} from '../../action/shopAction'
 import ViewPager from '../common/ViewPager'
 import * as DeviceInfo from 'react-native-device-info'
+import SearchBar from '../common/SearchBar'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -374,7 +376,9 @@ class Local extends Component {
         {/*<StatusBar barStyle="dark-content"/>*/}
         <Header
           leftType="none"
-          title="汇邻优店"
+          centerComponent={() => {
+            return <SearchBar />
+          }}
           rightType="image"
           rightComponent={() => {return <MessageBell />}}
         />
