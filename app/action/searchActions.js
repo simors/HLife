@@ -7,8 +7,9 @@ import * as lcSearch from '../api/leancloud/search'
 
 
 export function searchKeyAction(payload) {
+  console.log("searchKeyAction payload", payload)
   return (dispatch, getState) => {
-    lcSearch.searchKey(payload).then(() => {
+    lcSearch.searchAllResult(payload).then(() => {
       if (payload.success) {
         payload.success()
       }

@@ -33,7 +33,16 @@ class Search extends Component {
     }
   }
 
-  renderItemView() {
+  renderUserView() {
+
+  }
+
+  rendershopView() {
+
+  }
+
+  rendertopicView() {
+
   }
 
   onSearch = () => {
@@ -64,6 +73,7 @@ class Search extends Component {
             <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索</Text>
           </TouchableOpacity>
         </View>
+
 
       </View>
     )
