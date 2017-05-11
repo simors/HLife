@@ -31,7 +31,7 @@ import {KM_FIN, ENV} from './app/util/global'
 
 const RouterWithRedux = connect()(Router)
 
-AV.setProduction(ENV == 'pro')
+// AV.setProduction(ENV == 'pro')
 
 AV.init(
   KM_FIN

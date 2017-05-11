@@ -15,3 +15,10 @@ export const LC_PRO_APP_KEY = 'qhIzQiFonde2yeaBdlcXHUDz'
 // 用户身份定义
 export const IDENTITY_SHOPKEEPER = 'shopkeeper'
 export const IDENTITY_PROMOTER= 'promoter'
+
+// 支付类型定义
+export const INVITE_PROMOTER = 1       // 邀请推广员获得的收益
+export const INVITE_SHOP = 2           // 邀请店铺获得的收益
+export const BUY_GOODS = 3             // 购买商品
+export const REWARD = 4                // 打赏
+export const WITHDRAW = 5              // 取现

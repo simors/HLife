@@ -17,6 +17,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
+import {BUY_GOODS} from '../../constants/appConfig'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -31,8 +32,12 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
     Actions.PAYMENT({
       title: '商家活动支付',
       price: item.promotingPrice,
-      metadata: {'user': this.props.userId},
-      popNum: 2,
+      metadata: {
+        'fromUser': this.props.userId,
+        'toUser': item.targetShop.owner.id,
+        'dealType': BUY_GOODS
+      },
+      popNum: 1,
       paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
       paySuccessJumpSceneParams: {
       },

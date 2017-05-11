@@ -46,8 +46,7 @@ import {
 } from '../../action/topicActions'
 import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
-
-
+import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {SHAREURL} from '../../util/global'
@@ -572,10 +571,15 @@ export class TopicDetail extends Component {
       return
     }
     this.setState({showPayModal: false})
+    let topic = this.props.topic
     Actions.PAYMENT({
       title: '打赏支付',
       price: pay,
-      metadata: {'user': this.props.userInfo.id},
+      metadata: {
+        'fromUser': this.props.userInfo.id,
+        'toUser': topic.userId,
+        'dealType': REWARD
+      },
       popNum: 2,
       paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
       paySuccessJumpSceneParams: {

@@ -33,7 +33,7 @@ import {fetchUsers} from '../../action/authActions'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 import {SHAREURL} from '../../util/global'
-
+import {BUY_GOODS} from '../../constants/appConfig'
 
 
 class ShopPromotionDetail extends Component {
@@ -100,8 +100,12 @@ class ShopPromotionDetail extends Component {
       Actions.PAYMENT({
         title: '商家活动支付',
         price: shopPromotionDetail.promotingPrice,
-        metadata: {'user': this.props.currentUser},
-        popNum: 2,
+        metadata: {
+          'fromUser': this.props.currentUser,
+          'toUser': shopPromotionDetail.targetShop.owner.id,
+          'dealType': BUY_GOODS
+        },
+        popNum: 1,
         paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
         paySuccessJumpSceneParams: {
         },
