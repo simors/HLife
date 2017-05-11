@@ -566,7 +566,8 @@ export class TopicDetail extends Component {
 
   onPaymentPress() {
     let pay = this.state.pay
-    if (pay.toString().split('.')[1].length > 2) {
+    let decimal_part = pay.toString().split('.')[1]
+    if (decimal_part && decimal_part.length > 2) {
       Toast.show('最多2位小数')
       return
     }
@@ -735,20 +736,20 @@ export class TopicDetail extends Component {
         <View style={[styles.shopCommentWrap, {position:'absolute',bottom:0,left:0,right:0}]}>
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
             <View style={[styles.vItem]}>
-              <Image style={{width:24,height:24}} source={likeImgSource}/>
+              <Image style={{width:24,height:24}} resizeMode='contain' source={likeImgSource}/>
               <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>{isLiked ? '已赞' : '点赞'}</Text>
             </View>
           </TouchableOpacity>
-          <View style={{flex:1}}/>
-          <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.openModel()}>
-            <View style={[styles.contactedBox]}>
-              <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
-              <Text style={[styles.contactedTxt]}>评论</Text>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={() => this.openModel()}>
+            <View style={[styles.vItem]}>
+              <Image style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/message.png')}/>
+              <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>评论</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.contactedWrap, {backgroundColor: THEME.base.deepColor}]} onPress={() => this.openPaymentModal()}>
+          <View style={{flex:1}}/>
+          <TouchableOpacity style={styles.contactedWrap} onPress={() => this.openPaymentModal()}>
             <View style={[styles.contactedBox]}>
-              <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
+              <Image style={{}} source={require('../../assets/images/reward.png')}/>
               <Text style={[styles.contactedTxt]}>打赏</Text>
             </View>
           </TouchableOpacity>

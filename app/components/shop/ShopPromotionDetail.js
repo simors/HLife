@@ -181,12 +181,14 @@ class ShopPromotionDetail extends Component {
             <View style={styles.priceBox}>
               <Text style={styles.priceTxt}>￥{shopPromotionDetail.promotingPrice}</Text>
             </View>
-            <TouchableOpacity style={styles.footerBtnBox} onPress={()=>{this.onIWantPress()}}>
-              <Image source={require('../../assets/images/contacted.png')}/>
-              <Text style={styles.footerBtnTxt}>我想要</Text>
+            <TouchableOpacity style={{flex: 1}} onPress={()=>{this.onIWantPress()}}>
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Image style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/message.png')}/>
+                <Text style={{fontSize: em(10), color: '#aaa', paddingTop: normalizeH(5)}}>我想要</Text>
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.footerBtnBox, {backgroundColor: THEME.base.deepColor}]} onPress={()=>{this.onPaymentPress()}}>
-              <Image source={require('../../assets/images/contacted.png')}/>
+            <TouchableOpacity style={styles.footerBtnBox} onPress={()=>{this.onPaymentPress()}}>
+              <Image source={require('../../assets/images/reward.png')}/>
               <Text style={styles.footerBtnTxt}>去支付</Text>
             </TouchableOpacity>
           </View>
@@ -241,6 +243,7 @@ const styles = StyleSheet.create({
   },
   footerBtnBox: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#FF9D4E',
     padding: 15,
     paddingLeft: 25,
