@@ -250,7 +250,7 @@ class EditTopicDraft extends Component {
             <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
                   onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
               <View style={styles.toSelectContainer}>
-                <Text style={styles.topicTypeTitleStyle}>主题板块</Text>
+                <Text style={styles.topicTypeTitleStyle}>话题类别</Text>
                 <TouchableOpacity style={styles.selectBtnView} onPress={this.openModal.bind(this)}>
                   {this.renderSelectedTopic()}
                   <Image style={styles.imageStyle} source={require("../../assets/images/PinLeft_gray.png")}/>
