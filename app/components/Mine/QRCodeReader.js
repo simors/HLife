@@ -90,7 +90,7 @@ class QRCodeReader extends Component {
           <Viewfinder/>
         </Camera>
         <TouchableOpacity 
-          style={{ position:'absolute', bottom:30, left: (PAGE_WIDTH/2 - 40), width:80, alignItems:'center'}}
+          style={{ position:'absolute', bottom:30, left: (PAGE_WIDTH/2 - 40), width:80, alignItems:'center',backgroundColor:'transparent'}}
           onPress={() =>{this.recognitionQrcodeFromImage()}}>
           <Text style={{color:'white'}}>从相册选</Text>
         </TouchableOpacity>
