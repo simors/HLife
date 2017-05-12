@@ -99,7 +99,8 @@ class ShopPromotionDetail extends Component {
 
       Actions.PAYMENT({
         title: '商家活动支付',
-        price: shopPromotionDetail.promotingPrice,
+        // price: shopPromotionDetail.promotingPrice,
+        price: '0.01',
         metadata: {
           'fromUser': this.props.currentUser,
           'toUser': shopPromotionDetail.targetShop.owner.id,

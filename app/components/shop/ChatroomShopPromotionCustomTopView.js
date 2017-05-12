@@ -31,7 +31,8 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
     let item = this.props.shopPromotionInfo
     Actions.PAYMENT({
       title: '商家活动支付',
-      price: item.promotingPrice,
+      // price: item.promotingPrice,
+      price: '0.01',
       metadata: {
         'fromUser': this.props.userId,
         'toUser': item.targetShop.owner.id,

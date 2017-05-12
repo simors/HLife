@@ -76,8 +76,8 @@ class Wallet extends Component {
               <Text style={{fontSize: 36, color: '#FF7819', marginTop: normalizeH(20)}}>{this.props.paymentInfo.balance}</Text>
             </View>
             <View style={styles.setting}>
-              <TouchableOpacity style={{flexDirection: 'row'}} onPress={this.onPaymentSetting}>
-                <Image source={require('../../assets/images/promot_set_wallet.png')}/>
+              <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={this.onPaymentSetting}>
+                <Image resizeMode='contain' source={require('../../assets/images/promot_set_wallet.png')}/>
                 <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(5)}}>支付设置</Text>
               </TouchableOpacity>
             </View>
