@@ -10,7 +10,7 @@ import {abbrProvince, abbrCity} from '../util/Utils'
 
 let updateGeolocation = createAction(configTypes.UPDATE_GEO_LOCATION)
 
-export function getCurrentLocation() {
+export function getCurrentLocation(payload) {
   return (dispatch, getState) => {
     if (DeviceInfo.isEmulator()) {
       let geoPoint = {latitude: 28.2239, longitude: 112.87857}
@@ -26,6 +26,9 @@ export function getCurrentLocation() {
         streetNumber: "539号",
       }
       dispatch(updateGeolocation({position: pos}))
+      if(payload && payload.success) {
+        payload.success({position: pos})
+      }
     } else {
       Geolocation.getCurrentPosition().then(geoPoint => {
         if (Platform.OS == 'ios') {
@@ -46,6 +49,14 @@ export function getCurrentLocation() {
               return
             }
             dispatch(updateGeolocation({position: pos}))
+
+            if(payload && payload.success) {
+              payload.success({position: pos})
+            }
+          }, (error) => {
+            if(payload && payload.error) {
+              payload.error(error)
+            }
           })
         } else {
           let pos = {
@@ -64,6 +75,14 @@ export function getCurrentLocation() {
             return
           }
           dispatch(updateGeolocation({position: pos}))
+
+          if(payload && payload.success) {
+            payload.success({position: pos})
+          }
+        }
+      }, (error) => {
+        if(payload && payload.error) {
+          payload.error(error)
         }
       })
     }

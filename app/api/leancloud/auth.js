@@ -14,12 +14,19 @@ import * as configSelector from '../../selector/configSelector'
 import * as locSelector from '../../selector/locSelector'
 import {store} from '../../store/persistStore'
 import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
+import {getCurrentLocation} from '../../action/locAction'
 
 export function become(payload) {
   return AV.User.become(payload.token).then((user) => {
     let userInfo = UserInfo.fromLeancloudObject(user)
     let token = user.getSessionToken()
     userInfo = userInfo.set('token', token)
+
+    if(!userInfo.get('geoProvinceCode')) {
+      updateUserLocationInfo({
+        userId: userInfo.get('id')
+      })
+    }
 
     var params = { token }
     AV.Cloud.run('hLifeLogin', params)//更新updatedAt时间
@@ -55,6 +62,12 @@ export function loginWithPwd(payload) {
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
     // console.log('loginWithPwd==userInfo=', userInfo)
     userInfo = userInfo.set('token', loginedUser.getSessionToken())
+
+    if(!userInfo.get('geoProvinceCode')) {
+      updateUserLocationInfo({
+        userId: userInfo.get('id')
+      })
+    }
 
     AV.Cloud.run('hLifeLogin', payload)//更新updatedAt时间
 
@@ -122,6 +135,12 @@ export function updateUserLocationInfo(payload) {
   let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
   // console.log('provincesAndCities====', provincesAndCities)
 
+  if(!provincesAndCities || !provincesAndCities.length) {
+    return new Promise((resolve, reject) => {
+      reject()
+    })
+  }
+
   let province = locSelector.getProvince(store.getState())
   // console.log('province====', province)
   let provinceCode = Utils.getProvinceCode(provincesAndCities, province)
@@ -139,23 +158,65 @@ export function updateUserLocationInfo(payload) {
 
   let latlng = locSelector.getGeopoint(store.getState())
 
-  let params = {
-    userId,
-    province,
-    provinceCode,
-    city,
-    cityCode,
-    district,
-    districtCode,
-    ...latlng
+  if(!provinceCode) {
+    store.dispatch(getCurrentLocation({
+      success: (result) => {
+        let position = result.position
+        province = position.province
+        provinceCode = Utils.getProvinceCode(provincesAndCities, province)
+        city = position.city
+        cityCode = Utils.getCityCode(provincesAndCities, city)
+        district = position.district
+        districtCode = Utils.getDistrictCode(provincesAndCities, district)
+        latlng = {
+          latitude: position.latitude, 
+          longitude: position.longitude
+        }
+
+        let params = {
+          userId,
+          province,
+          provinceCode,
+          city,
+          cityCode,
+          district,
+          districtCode,
+          ...latlng
+        }
+        // console.log('hLifeUpdateUserLocationInfo.params=======', params)
+        return AV.Cloud.run('hLifeUpdateUserLocationInfo', params).then((result)=>{
+          return result
+        }, (err) => {
+          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+          throw err
+        })
+      },
+      error: (error) => {
+        return new Promise((resolve, reject) => {
+          reject(error)
+        })
+      }
+    }))
+  }else {
+    let params = {
+      userId,
+      province,
+      provinceCode,
+      city,
+      cityCode,
+      district,
+      districtCode,
+      ...latlng
+    }
+    // console.log('hLifeUpdateUserLocationInfo.params=======', params)
+    return AV.Cloud.run('hLifeUpdateUserLocationInfo', params).then((result)=>{
+      return result
+    }, (err) => {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
   }
-  // console.log('hLifeUpdateUserLocationInfo.params=======', params)
-  return AV.Cloud.run('hLifeUpdateUserLocationInfo', params).then((result)=>{
-    return result
-  }, (err) => {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
+  
 }
 
 export function profileSubmit(payload) {
