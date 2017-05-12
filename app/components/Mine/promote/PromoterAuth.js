@@ -35,6 +35,7 @@ import {activeUserInfo} from '../../../selector/authSelector'
 import {getLocation} from '../../../selector/locSelector'
 import {getPromoterTenant} from '../../../action/promoterAction'
 import {getTenantFee} from '../../../selector/promoterSelector'
+import TimerMixin from 'react-timer-mixin'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -220,6 +221,12 @@ class PromoterAuth extends Component {
                                         readQRSuccess: (inviteCode) => {
                                           this.setState({inviteCode: inviteCode})
                                           Actions.pop()
+                                        },
+                                        readQRError: (errMessage) => {
+                                          Actions.pop()
+                                          this.setTimeout(() => {
+                                            Toast.show(errMessage)
+                                          }, 1500)
                                         }
                                       })
                                     }}>
@@ -280,6 +287,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 
 export default connect(mapStateToProps, mapDispatchToProps)(PromoterAuth)
 
+Object.assign(PromoterAuth.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {

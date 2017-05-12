@@ -22,6 +22,7 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
+import com.remobile.qrcodeLocalImage.RCTQRCodeLocalImagePackage;
 import com.rnfs.RNFSPackage;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
@@ -68,7 +69,8 @@ public class MainApplication extends Application implements ReactApplication {
                         new BaiduMapPackage(getApplicationContext()),
                         new LinearGradientPackage(),
                         new RCTPingPPPackage(),
-                        new RCTSharePackage()
+                        new RCTSharePackage(),
+                        new RCTQRCodeLocalImagePackage()
 //                        new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG)
                         // Add/change this line.
                 );

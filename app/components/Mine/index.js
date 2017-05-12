@@ -38,6 +38,8 @@ import {
 } from '../../selector/promoterSelector'
 import {SHAREURL} from '../../util/global'
 
+import TimerMixin from 'react-timer-mixin'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -173,6 +175,7 @@ class Mine extends Component {
           <TouchableOpacity onPress={() => {
             Actions.QRCODEREADER({
               readQRSuccess: (QRData) => {
+                // Actions.pop()
                 if (QRData.startsWith('http') || QRData.startsWith('https')) {
                   Actions.COMMON_WEB_VIEW({url: QRData, showHeader:true, headerTitle: '网页'})
                   return
@@ -183,6 +186,12 @@ class Mine extends Component {
                   Actions.PERSONAL_HOMEPAGE({userId: userId})
                   return
                 }
+              },
+              readQRError: (errMessage) => {
+                Actions.pop()
+                this.setTimeout(() => {
+                  Toast.show(errMessage)
+                }, 1500)
               }
             })
           }}>
@@ -412,6 +421,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)
+
+Object.assign(Mine.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {

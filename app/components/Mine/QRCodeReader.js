@@ -11,11 +11,18 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Linking,
+  Dimensions
 } from 'react-native';
 import Viewfinder from './Viewfinder';
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import * as ImageUtil from '../../util/ImageUtil'
+import * as Toast from '../common/Toast'
 import Camera from 'react-native-camera'
+import QRCode from '@remobile/react-native-qrcode-local-image'
+
+const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_HEIGHT=Dimensions.get('window').height
 
 class QRCodeReader extends Component {
 
@@ -34,14 +41,61 @@ class QRCodeReader extends Component {
     }
   }
 
+  recognitionQrcodeFromImage() {
+    ImageUtil.openPicker({
+      openType: 'gallery',
+      cropping: false,
+      multiple: false, //为了使用裁剪控制图片大小,必须关闭多选
+      success: (response) => {
+        // console.log('response.path====', response.path)
+        let qrCodeImgPath = response.path
+        if(Platform.OS === 'android') {
+          if(response.path.startsWith('file://')) {
+            qrCodeImgPath = response.path.slice(7)
+          }
+        }
+
+        QRCode.decode(qrCodeImgPath, (error, result) => {
+          // console.log('QRCode.decode.error====', error)
+          // console.log('QRCode.decode.result====', result)
+          if(error || !result) {
+            if(this.props.readQRError) {
+              this.props.readQRError('识别二维码失败')
+            }
+          }else {
+            if (this.barCodeFlag) {
+              this.barCodeFlag = false;
+              if (this.props.readQRSuccess) {
+                this.props.readQRSuccess(result)
+              }
+            }
+          }
+        })
+      },
+      fail: (response) => {
+        if(this.props.readQRError) {
+          this.props.readQRError(response.message)
+        }
+      }
+    })
+  }
+
   render() {
     this.barCodeFlag = true
     return (
-      <Camera
-        onBarCodeRead={(code)=>this._onBarCodeRead(code)}
-        style={styles.camera}>
-        <Viewfinder/>
-      </Camera>
+      <View style={{flex:1}}>
+        <Camera
+          onBarCodeRead={(code)=>this._onBarCodeRead(code)}
+          style={styles.camera}>
+          <Viewfinder/>
+        </Camera>
+        <TouchableOpacity 
+          style={{ position:'absolute', bottom:30, left: (PAGE_WIDTH/2 - 40), width:80, alignItems:'center'}}
+          onPress={() =>{this.recognitionQrcodeFromImage()}}>
+          <Text style={{color:'white'}}>从相册选</Text>
+        </TouchableOpacity>
+      </View>
+      
     )
   }
 }

@@ -47,6 +47,7 @@
 		ADD8FAE5242B47F887D10EA2 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED0C6526B00469597D114E8 /* libimageCropPicker.a */; };
 		B62B79C61EAF7BA500569076 /* facebook.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B62B79C41EAF7BA500569076 /* facebook.mp3 */; };
 		B62B79C71EAF7BA500569076 /* twitter.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B62B79C51EAF7BA500569076 /* twitter.mp3 */; };
+		B64B94D31EC5B3960048BB47 /* QRCodeLocalImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64B94D21EC5B3960048BB47 /* QRCodeLocalImage.m */; };
 		B652CD8B1E696FEF00EE1246 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B652CD8A1E696FEF00EE1246 /* libReact.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		B66C85C31E68582500C157EA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B66C85C21E68582500C157EA /* libRCTPushNotification.a */; };
 		B687CD9D1E4EEB2000F47585 /* BaiduMapAPI_Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B687CD9C1E4EEB2000F47585 /* BaiduMapAPI_Base.framework */; };
@@ -410,6 +411,8 @@
 		B453DC967858B3F46587C183 /* Pods-HLife.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLife.release.xcconfig"; path = "Pods/Target Support Files/Pods-HLife/Pods-HLife.release.xcconfig"; sourceTree = "<group>"; };
 		B62B79C41EAF7BA500569076 /* facebook.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = facebook.mp3; sourceTree = "<group>"; };
 		B62B79C51EAF7BA500569076 /* twitter.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = twitter.mp3; sourceTree = "<group>"; };
+		B64B94D11EC5B34F0048BB47 /* QRCodeLocalImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QRCodeLocalImage.h; sourceTree = "<group>"; };
+		B64B94D21EC5B3960048BB47 /* QRCodeLocalImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeLocalImage.m; sourceTree = "<group>"; };
 		B652CD8A1E696FEF00EE1246 /* libReact.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libReact.a; path = "../../../Library/Developer/Xcode/DerivedData/HLife-dhjcwxrmuknsmqblfklezeggfgmv/Build/Products/Debug-iphonesimulator/React/libReact.a"; sourceTree = "<group>"; };
 		B66C85C21E68582500C157EA /* libRCTPushNotification.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRCTPushNotification.a; path = "../node_modules/react-native/Libraries/PushNotificationIOS/build/Debug-iphoneos/libRCTPushNotification.a"; sourceTree = "<group>"; };
 		B66C85C41E68619400C157EA /* HLife.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = HLife.entitlements; path = HLife/HLife.entitlements; sourceTree = "<group>"; };
@@ -597,6 +600,7 @@
 		13B07FAE1A68108700A75B9A /* HLife */ = {
 			isa = PBXGroup;
 			children = (
+				B64B94AB1EC5B2760048BB47 /* QRCodeLocalImage */,
 				7E4CF58F1EA8B0500061C2E8 /* UShare */,
 				2C0346A61EA8F4ED00AC1C48 /* update */,
 				7E240EC41E8B504F00D92457 /* RCTPingPP */,
@@ -779,6 +783,15 @@
 				B62C22651E5D84F20034DCD2 /* libRNDeviceInfo.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B64B94AB1EC5B2760048BB47 /* QRCodeLocalImage */ = {
+			isa = PBXGroup;
+			children = (
+				B64B94D11EC5B34F0048BB47 /* QRCodeLocalImage.h */,
+				B64B94D21EC5B3960048BB47 /* QRCodeLocalImage.m */,
+			);
+			name = QRCodeLocalImage;
 			sourceTree = "<group>";
 		};
 		B652CDC71E6D402500EE1246 /* Products */ = {
@@ -993,7 +1006,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 820;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = simors;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
@@ -1498,6 +1511,7 @@
 				B6FB9ACA1E4EF33700E316C8 /* BaiduMapModule.m in Sources */,
 				B6FB9ACB1E4EF33700E316C8 /* BaseModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				B64B94D31EC5B3960048BB47 /* QRCodeLocalImage.m in Sources */,
 				7E4CF5B31EA8B1170061C2E8 /* shareComponent.m in Sources */,
 				B6FB9ACD1E4EF33700E316C8 /* RCTBaiduMapView.m in Sources */,
 				B6FB9ACE1E4EF33700E316C8 /* RCTBaiduMapViewManager.m in Sources */,
@@ -1664,8 +1678,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODEPUSH_KEY = 0it2YluBBpHRMxxv7Cjs2aQDeVOV4ksvOXqog;
@@ -1675,6 +1691,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -1785,8 +1802,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODEPUSH_KEY = "";
@@ -1794,8 +1813,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1847,8 +1868,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODEPUSH_KEY = tDRZcF7kPNBSNuPJAZd89hEZkyCO4ksvOXqog;
@@ -1858,6 +1881,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

@@ -41,6 +41,7 @@ import * as Utils from '../../../util/Utils'
 import * as configSelector from '../../../selector/configSelector'
 import {store} from '../../../store/persistStore'
 import * as AVUtils from '../../../util/AVUtils'
+import TimerMixin from 'react-timer-mixin'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -490,6 +491,12 @@ class ShopRegister extends Component {
                                           data: {text:code},
                                         })
                                         Actions.pop()
+                                      },
+                                      readQRError: (errMessage) => {
+                                        Actions.pop()
+                                        this.setTimeout(() => {
+                                          Toast.show(errMessage)
+                                        }, 1500)
                                       }
                                     })
                                   }}>
@@ -566,6 +573,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopRegister)
+
+Object.assign(ShopRegister.prototype, TimerMixin)
 
 const styles = StyleSheet.create({
   container: {
