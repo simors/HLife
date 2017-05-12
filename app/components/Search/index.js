@@ -21,6 +21,7 @@ import {normalizeH, normalizeW, normalizeBorder} from '../../util/Responsive'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../constants/themes/theme1'
 import {searchKeyAction} from '../../action/searchActions'
+import {getUserSearchResult, getShopSearchResult, getTopicSearchResult} from '../../selector/searchSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -81,6 +82,12 @@ class Search extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let users = getUserSearchResult(state)
+  let shops = getShopSearchResult(state)
+  let topics = getTopicSearchResult(state)
+  console.log("getUserSearchResult ", users)
+  console.log("getUserSearchResult ", shops)
+  console.log("getUserSearchResult ", topics)
   return {
   }
 }

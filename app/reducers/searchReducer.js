@@ -27,7 +27,6 @@ export default function
 
 function handleUpdateUserResult(state, action) {
   let payload = action.payload
-  console.log("handleUpdateUserResult payload", payload)
   if(payload.hits) {
     state = state.setIn(['user', 'hits'], payload.hits)
   }
@@ -43,7 +42,6 @@ function handleUpdateUserResult(state, action) {
 
 function handleUpdateShopResult(state, action) {
   let payload = action.payload
-  console.log("handleUpdateShopResult payload", payload)
   if(payload.hits) {
     state = state.setIn(['shop', 'hits'], payload.hits)
   }
@@ -58,7 +56,6 @@ function handleUpdateShopResult(state, action) {
 
 function handleUpdateTopicResult(state, action) {
   let payload = action.payload
-  console.log("handleUpdateTopicResult payload", payload)
   if(payload.hits) {
     state = state.setIn(['topic', 'hits'], payload.hits)
   }
