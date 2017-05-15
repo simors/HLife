@@ -171,7 +171,7 @@ class Withdrawals extends Component {
               />
             </View>
             <View style={styles.itemContainer}>
-              <Text style={{fontSize: 17, color: '#AAAAAA'}}>支付密码</Text>
+              <Text style={{fontSize: 17, color: '#AAAAAA'}}>取款密码</Text>
               <CommonTextInput
                 {...passwordInput}
                 placeholder="请输入支付密码"
@@ -182,7 +182,7 @@ class Withdrawals extends Component {
               />
             </View>
             <View style={{alignItems: 'flex-end', height: normalizeH(50), justifyContent: 'center'}}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Actions.PAYMENT_SMS_AUTH()}>
                 <Text style={{fontSize: 17, color: THEME.base.mainColor}}>忘记密码？</Text>
               </TouchableOpacity>
             </View>

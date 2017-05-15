@@ -25,6 +25,7 @@ import THEME from '../../constants/themes/theme1'
 import PaymentPasswordInput from '../common/Input/PaymentPasswordInput'
 import * as Toast from '../common/Toast'
 import {setPaymentPassword} from '../../action/paymentActions'
+import {switchTab} from '../../util/AVUtils'
 
 
 class PasswordConfirm extends Component {
@@ -40,7 +41,8 @@ class PasswordConfirm extends Component {
         password: password,
         success: () => {
           Toast.show("设置成功")
-          Actions.WALLET()
+          // switchTab('WALLET')
+          Actions.pop({popNum: 3})
         },
         error: (error) => {Toast.show(error.message)}
       })

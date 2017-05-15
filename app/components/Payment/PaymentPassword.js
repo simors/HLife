@@ -40,11 +40,11 @@ class PaymentPassword extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title='输入支付密码'
+          title='输入取款密码'
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(46), height: normalizeH(93), alignItems: 'center'}}>
-            <Text style={{fontSize: 17, color: '#5A5A5A'}}>设置在邻家优店的支付密码</Text>
+            <Text style={{fontSize: 17, color: '#5A5A5A'}}>设置在邻家优店的取款密码</Text>
           </View>
           <View style={{marginLeft: normalizeW(15), width: normalizeW(345), height: normalizeH(50)}}>
             <PaymentPasswordInput

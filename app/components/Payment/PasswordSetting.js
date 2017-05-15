@@ -35,14 +35,14 @@ class PasswordSetting extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title='支付设置'
+          title='取款设置'
         />
         <View style={styles.body}>
           <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <Text style={styles.itemText}>修改支付密码</Text>
+            <Text style={styles.itemText}>修改取款密码</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <Text style={styles.itemText}>找回支付密码</Text>
+            <Text style={styles.itemText}>找回取款密码</Text>
           </TouchableOpacity>
         </View>
       </View>

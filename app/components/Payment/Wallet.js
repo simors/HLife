@@ -53,10 +53,7 @@ class Wallet extends Component {
   }
 
   onPaymentSetting = () => {
-    if(this.props.paymentInfo.password)
-      Actions.PAYMENT_SETTING()
-    else
-      Actions.PAYMENT_SMS_AUTH()
+    Actions.PAYMENT_SMS_AUTH()
   }
 
 
@@ -78,7 +75,7 @@ class Wallet extends Component {
             <View style={styles.setting}>
               <TouchableOpacity style={{flexDirection: 'row'}} onPress={this.onPaymentSetting}>
                 <Image source={require('../../assets/images/promot_set_wallet.png')}/>
-                <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(5)}}>支付设置</Text>
+                <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(5)}}>取款设置</Text>
               </TouchableOpacity>
             </View>
           </View>
