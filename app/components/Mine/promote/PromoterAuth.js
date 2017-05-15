@@ -25,7 +25,6 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import PhoneInput from '../../common/Input/PhoneInput'
 import * as appConfig from '../../../constants/appConfig'
 import CommonTextInput from '../../common/Input/CommonTextInput'
-import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {promoterCertification} from '../../../action/promoterAction'
 import * as Toast from '../../common/Toast'
@@ -46,12 +45,6 @@ const phoneInput = {
   formKey: commonForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput",
-}
-
-const smsAuthCodeInput = {
-  formKey: commonForm,
-  stateKey: Symbol('smsAuthCodeInput'),
-  type: "smsAuthCodeInput",
 }
 
 const regionPicker = {
@@ -172,21 +165,6 @@ class PromoterAuth extends Component {
                               showClearBtn={false}
                               outContainerWrap={{borderWidth: 0}}
                               inputStyle={styles.phoneInputStyle}/>
-                </View>
-              </View>
-              <View style={styles.inputBox}>
-                <Text style={styles.maintext}>验证码</Text>
-                <View style={{flex: 1,}}>
-                  <SmsAuthCodeInput {...smsAuthCodeInput} containerStyle={{height: normalizeH(42)}}
-                                    textInput={styles.smsAuthCodeTextInput}
-                                    inputContainer={{paddingLeft: 17, paddingRight: 17}}
-                                    placeholder = "填写手机验证码"
-                                    codeTextContainer={{width: normalizeW(115), height: normalizeH(35)}}
-                                    codeTextContainerDisable={{width: normalizeW(115), height: normalizeH(35)}}
-                                    codeText={{fontSize: em(15)}}
-                                    getSmsAuCode={() => this.smsCode()}
-                                    reset={!this.props.phoneValid}
-                  />
                 </View>
               </View>
             </View>
