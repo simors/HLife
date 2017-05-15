@@ -448,22 +448,7 @@ function _handleProfileSubmit(payload, formData) {
 
 function handleShopCertification(payload, formData) {
   return (dispatch, getState) => {
-
-    if(__DEV__) {
-      dispatch(shopCertification4UploadCertiImg(payload, formData))
-    }else{
-      let smsPayload = {
-        phone: formData.phoneInput.text,
-        smsAuthCode: formData.smsAuthCodeInput.text,
-      }
-      lcAuth.verifySmsCode(smsPayload).then(() => {
-        dispatch(shopCertification4UploadCertiImg(payload, formData))
-      }).catch((error) => {
-        if (payload.error) {
-          payload.error(error || '验证码校验失败')
-        }
-      })
-    }
+    dispatch(shopCertification4UploadCertiImg(payload, formData))
   }
 }
 

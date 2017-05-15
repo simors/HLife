@@ -27,7 +27,6 @@ import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import PhoneInput from '../../common/Input/PhoneInput'
 import CommonTextInput from '../../common/Input/CommonTextInput'
-import SmsAuthCodeInput from '../../common/Input/SmsAuthCodeInput'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
 import {getShopTenant} from '../../../action/promoterAction'
@@ -48,17 +47,6 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 
 let commonForm = Symbol('commonForm')
 
-// const nameInput = {
-//   formKey: commonForm,
-//   stateKey: Symbol('nameInput'),
-//   type: "nameInput",
-//   checkValid: (data)=>{
-//     if (data && data.text && data.text.length > 0) {
-//       return {isVal: true, errMsg: '验证通过'}
-//     }
-//     return {isVal: false, errMsg: '姓名为空'}
-//   },
-// }
 const phoneInput = {
   formKey: commonForm,
   stateKey: Symbol('phoneInput'),
@@ -68,17 +56,6 @@ const phoneInput = {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '手机号为空'}
-  },
-}
-const smsAuthCodeInput = {
-  formKey: commonForm,
-  stateKey: Symbol('smsAuthCodeInput'),
-  type: "smsAuthCodeInput",
-  checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '验证码为空'}
   },
 }
 const shopNameInput = {
@@ -138,18 +115,6 @@ const invitationCodeInput = {
   },
   initValue: {text: '-1'}
 }
-
-// const certificationInput = {
-//   formKey: commonForm,
-//   stateKey: Symbol('certificationInput'),
-//   type: "certificationInput",
-//   checkValid: (data)=>{
-//     if (data && data.text && data.text.length > 0) {
-//       return {isVal: true, errMsg: '验证通过'}
-//     }
-//     return {isVal: false, errMsg: '店铺认证图片为空'}
-//   },
-// }
 
 class ShopRegister extends Component {
   constructor(props) {
@@ -272,12 +237,6 @@ class ShopRegister extends Component {
     Toast.show(error.message || '店铺注册失败')
 
     this.props.inputFormUpdate({
-      formKey: smsAuthCodeInput.formKey,
-      stateKey: smsAuthCodeInput.stateKey,
-      data: {text: ''}
-    })
-
-    this.props.inputFormUpdate({
       formKey: invitationCodeInput.formKey,
       stateKey: invitationCodeInput.stateKey,
       data: {text: ''}
@@ -334,21 +293,6 @@ class ShopRegister extends Component {
             </View>
             
             <View style={styles.inputsWrap}>
-              {/*
-              <View style={styles.inputWrap}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>姓名</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <CommonTextInput
-                    {...nameInput}
-                    placeholder="与身份证姓名保持一致"
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                  />
-                </View>
-              </View>
-              */}
 
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
@@ -364,26 +308,6 @@ class ShopRegister extends Component {
                     outContainerWrap={{borderWidth: 0}}
                     containerStyle={styles.containerStyle}
                     inputStyle={[styles.inputStyle, {height: normalizeH(52)}]}/>
-                </View>
-              </View>
-
-              <View style={styles.inputWrap}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>验证码</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <SmsAuthCodeInput
-                    {...smsAuthCodeInput}
-                    containerStyle={{height:normalizeH(52),}}
-                    textInput={{height:normalizeH(52),backgroundColor: '#fff',borderWidth:0,paddingLeft:0}}
-                    inputContainer={{paddingLeft: 0, paddingRight: 17}}
-                    placeholder = "填写手机验证码"
-                    codeTextContainer={{width: normalizeW(115), height: normalizeH(35)}}
-                    codeTextContainerDisable={{width: normalizeW(115), height: normalizeH(35)}}
-                    codeText={{fontSize: 15}}
-                    getSmsAuCode={() => this.smsCode()}
-                    reset={false}
-                  />
                 </View>
               </View>
 

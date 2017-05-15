@@ -77,37 +77,27 @@ export function promoterCertification(payload) {
       return
     }
     let formData = getInputFormData(getState(), payload.formKey)
-    let smsPayload = {
+    let region = formData.regionPicker.text
+    let promoterInfo = {
+      inviteCode: formData.inviteCodeInput.text,
       phone: formData.phoneInput.text,
-      smsAuthCode: formData.smsAuthCodeInput.text,
+      liveProvince: region.province,
+      liveCity: region.city,
+      liveDistrict: region.district,
     }
-    lcAuth.verifySmsCode(smsPayload).then(() => {
-      let region = formData.regionPicker.text
-      let promoterInfo = {
-        inviteCode: formData.inviteCodeInput.text,
-        phone: formData.phoneInput.text,
-        liveProvince: region.province,
-        liveCity: region.city,
-        liveDistrict: region.district,
+    lcPromoter.promoterCertification(promoterInfo).then((promoterInfo) => {
+      let promoterId = promoterInfo.promoter.objectId
+      let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
+      dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
+      dispatch(setActivePromoter({promoterId}))
+      dispatch(updatePromoter({promoterId, promoter}))
+      return promoterId
+    }).then((promoterId) => {
+      let userId = activeUserId(getState())
+      dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
+      if (payload.success) {
+        payload.success({promoterId})
       }
-      lcPromoter.promoterCertification(promoterInfo).then((promoterInfo) => {
-        let promoterId = promoterInfo.promoter.objectId
-        let promoter = PromoterInfo.fromLeancloudObject(promoterInfo.promoter)
-        dispatch(addIdentity({identity: IDENTITY_PROMOTER}))
-        dispatch(setActivePromoter({promoterId}))
-        dispatch(updatePromoter({promoterId, promoter}))
-        return promoterId
-      }).then((promoterId) => {
-        let userId = activeUserId(getState())
-        dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
-        if (payload.success) {
-          payload.success({promoterId})
-        }
-      }).catch((error) => {
-        if (payload.error) {
-          payload.error(error)
-        }
-      })
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
