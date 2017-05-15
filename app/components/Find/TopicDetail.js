@@ -580,12 +580,10 @@ export class TopicDetail extends Component {
         'toUser': topic.userId,
         'dealType': REWARD
       },
-      popNum: 2,
-      paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
+      paySuccessJumpScene: 'REWARD_OK',
       paySuccessJumpSceneParams: {
       },
-      payErrorJumpScene: 'MINE',
-      payErrorJumpSceneParams: {}
+      payErrorJumpBack: true,
     })
   }
 

@@ -97,6 +97,8 @@ import Share from '../components/common/Share'
 import PromoterPaymentOk from '../components/Payment/PromoterPaymentOk'
 import EarningRecord from '../components/Mine/promote/EarningRecord'
 import Contact from '../components/Mine/Contact'
+import BuyGoodsPaySuccess from '../components/Payment/BuyGoodsPaySuccess'
+import RewardSuccess from '../components/Payment/RewardSuccess'
 
 const styles = StyleSheet.create({
   container: {
@@ -203,6 +205,8 @@ export const scenes = Actions.create(
       <Scene key="PROMOTER_PAYMENT_OK" component={PromoterPaymentOk}/>
       <Scene key="EARN_RECORD" component={EarningRecord}/>
       <Scene key="CONTACT" component={Contact}/>
+      <Scene key="BUY_GOODS_OK" component={BuyGoodsPaySuccess}/>
+      <Scene key="REWARD_OK" component={RewardSuccess}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

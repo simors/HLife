@@ -99,19 +99,17 @@ class ShopPromotionDetail extends Component {
 
       Actions.PAYMENT({
         title: '商家活动支付',
-        // price: shopPromotionDetail.promotingPrice,
-        price: '0.01',
+        price: shopPromotionDetail.promotingPrice,
+        // price: '0.01',
         metadata: {
           'fromUser': this.props.currentUser,
           'toUser': shopPromotionDetail.targetShop.owner.id,
           'dealType': BUY_GOODS
         },
-        popNum: 1,
-        paySuccessJumpScene: 'PROMOTER_PAYMENT_OK',
+        paySuccessJumpScene: 'BUY_GOODS_OK',
         paySuccessJumpSceneParams: {
         },
-        payErrorJumpScene: 'MINE',
-        payErrorJumpSceneParams: {}
+        payErrorJumpBack: true,
       })
     }
   }
