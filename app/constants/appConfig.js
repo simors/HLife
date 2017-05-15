@@ -15,3 +15,6 @@ export const LC_PRO_APP_KEY = 'qhIzQiFonde2yeaBdlcXHUDz'
 // 用户身份定义
 export const IDENTITY_SHOPKEEPER = 'shopkeeper'
 export const IDENTITY_PROMOTER= 'promoter'
+
+//微信开发平台AppID
+export const WXAppID = 'wxdcaaa68c51754994'

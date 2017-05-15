@@ -29,6 +29,7 @@ import {createPingppPayment} from '../../action/paymentActions'
 import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
+import {WXAppID} from '../../constants/appConfig'
 
 const PingPPModule = NativeModules.PingPPModule
 
@@ -95,9 +96,9 @@ class Payment extends Component {
     })
     if(Platform.OS === 'ios') {
       // PingPPModule.setDebugMode(true, () => {console.log("PingPPModule.setDebugMode success!")})
-      PingPPModule.createPayment(charge, 'wxdcaaa68c51754994', this.paymentCallback)
+      PingPPModule.createPayment(charge, WXAppID, this.paymentCallback)
     } else if(Platform.OS === 'android') {
-      PingPPModule.createPayment(JSON.stringify(charge), 'wxdcaaa68c51754994', this.paymentCallback)
+      PingPPModule.createPayment(JSON.stringify(charge), WXAppID, this.paymentCallback)
     }
 
   }
