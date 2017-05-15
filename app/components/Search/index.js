@@ -26,6 +26,8 @@ import {getUserSearchResult, getShopSearchResult, getTopicSearchResult} from '..
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
+
+
 class Search extends Component {
   constructor(props) {
     super(props)
@@ -35,20 +37,68 @@ class Search extends Component {
   }
 
   renderUserView() {
-
+    if(this.props.users && this.props.users.length > 0) {
+      return(
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={{fontSize: 17, color: '#999999'}}>用户</Text>
+          </View>
+          <ListView
+            dataSource={this.props.dataSource}
+            renderRow={(rowData) => this.renderUserItems(rowData)}
+          />
+          {this.props.users.length > 3?
+            <TouchableOpacity style={styles.more}>
+              <Image source={require('../../assets/images/search.png')}/>
+              <Text style={{color: '#65718D', fontSize: 17}}>查看更多用户</Text>
+              <Image source={require('../../assets/images/arrow_left.png')}/>
+            </TouchableOpacity>:
+            <View />
+          }
+        </View>
+      )
+    } else {
+      return <View />
+    }
   }
 
-  rendershopView() {
-
+  renderUserItems(user) {
+    return(
+      <View style={styles.item}>
+        <View>
+          <Image source={{uri: user.avatar}}/>
+        </View>
+        <View>
+          <Text>{user.nickname}</Text>
+        </View>
+      </View>
+    )
   }
 
-  rendertopicView() {
+  renderShopView() {
+    if(this.props.shops && this.props.shops.length > 0) {
+      return(
+        <View></View>
+      )
+    } else {
+      return <View />
+    }
+  }
 
+  renderTopicView() {
+    if(this.props.topics && this.props.topics.length > 0) {
+      return(
+        <View></View>
+      )
+    } else {
+      return <View />
+    }
   }
 
   onSearch = () => {
     this.props.searchKeyAction({
-      key: this.state.searchKey
+      key: this.state.searchKey,
+      limit: 3,
     })
   }
 
@@ -74,14 +124,19 @@ class Search extends Component {
             <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索</Text>
           </TouchableOpacity>
         </View>
-
-
+        <View style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
+          {this.renderUserView()}
+          {this.renderShopView()}
+          {this.renderTopicView()}
+        </View>
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
   let users = getUserSearchResult(state)
   let shops = getShopSearchResult(state)
   let topics = getTopicSearchResult(state)
@@ -89,6 +144,9 @@ const mapStateToProps = (state, ownProps) => {
   console.log("getUserSearchResult ", shops)
   console.log("getUserSearchResult ", topics)
   return {
+    userDataSource: ds.cloneWithRows(users),
+    shopDataSource: ds.cloneWithRows(shops),
+    topicDataSource: ds.cloneWithRows(topics),
   }
 }
 
@@ -145,5 +203,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     height: normalizeH(30),
     color: 'white',
+  },
+  section: {
+    paddingLeft: normalizeW(20),
+    backgroundColor: '#FFFFFF',
+    marginBottom: normalizeH(10)
+  },
+  sectionHeader: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#EBEBEB'
+  },
+  more: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: normalizeH(40),
+  },
+  item: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#EBEBEB'
   }
 })
