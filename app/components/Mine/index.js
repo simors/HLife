@@ -36,7 +36,9 @@ import {
   selectPromoterIdentity,
   getPromoterById
 } from '../../selector/promoterSelector'
-import {SHAREURL} from '../../util/global'
+import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
+import {fetchShareDomain} from '../../action/configAction'
+import {getShareDomain} from '../../selector/configSelector'
 
 import TimerMixin from 'react-timer-mixin'
 
@@ -66,6 +68,7 @@ class Mine extends Component {
           //Toast.show(err.message)
         }})
         this.props.getPromoterTenant()
+        this.props.fetchShareDomain()
       }
     })
   }
@@ -128,7 +131,7 @@ class Mine extends Component {
   }
 
   shareToFriend() {
-    let shareUrl = SHAREURL + "appDownload/"
+    let shareUrl = this.props.shareDomain + "appDownload/"
 
     console.log("shopShare url:", shareUrl)
 
@@ -398,6 +401,7 @@ const mapStateToProps = (state, ownProps) => {
   let isPaid = isPromoterPaid(state, currentPromoterId)
   let promoterIdentity = selectPromoterIdentity(state, currentPromoterId)
   let promoter = getPromoterById(state, currentPromoterId)
+  let shareDomain = getShareDomain(state)
   return {
     userInfo: userInfo,
     userOwnedShopInfo: userOwnedShopInfo,
@@ -408,6 +412,7 @@ const mapStateToProps = (state, ownProps) => {
     fee: getTenantFee(state),
     promoterIdentity: promoterIdentity,
     promoter: promoter,
+    shareDomain: shareDomain
   }
 }
 
@@ -417,7 +422,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserPoint,
   getCurrentPromoter,
   getPromoterTenant,
-  getShopTenant
+  getShopTenant,
+  fetchShareDomain
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)

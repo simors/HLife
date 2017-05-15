@@ -44,11 +44,12 @@ import {
 } from '../../action/topicActions'
 import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
-
+import {fetchShareDomain} from '../../action/configAction'
+import {getShareDomain} from '../../selector/configSelector'
 
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
-import {SHAREURL} from '../../util/global'
+import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -78,6 +79,7 @@ export class TopicDetail extends Component {
       if(this.props.topic && this.props.topic.userId) {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
       }
+      this.props.fetchShareDomain()
     })
   }
 
@@ -354,7 +356,9 @@ export class TopicDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = SHAREURL + "topicShare/" + this.props.topic.objectId
+    let shareUrl = this.props.shareDomain? this.props.shareDomain + "topicShare/" + this.props.topic.objectId:
+      DEFAULT_SHARE_DOMAIN + "topicShare/" + this.props.topic.objectId
+
 
     console.log("topicShare url:", shareUrl)
 
@@ -700,6 +704,8 @@ const mapStateToProps = (state, ownProps) => {
     userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.topic.userId)
   }
 
+  let shareDomain = getShareDomain(state)
+
   return {
     ds: ds.cloneWithRows(dataArray),
     topicComments: topicComments,
@@ -710,7 +716,8 @@ const mapStateToProps = (state, ownProps) => {
     userInfo: userInfo,
     commentsTotalCount: commentsTotalCount,
     userFollowersTotalCount: userFollowersTotalCount,
-    lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt
+    lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt,
+    shareDomain: shareDomain
   }
 }
 
@@ -723,6 +730,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   likeTopic,
   unLikeTopic,
   fetchOtherUserFollowersTotalCount,
+  fetchShareDomain
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)

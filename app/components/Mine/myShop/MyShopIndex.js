@@ -38,9 +38,10 @@ import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
 import * as numberUtils from '../../../util/numberUtils'
 import Icon from 'react-native-vector-icons/Ionicons'
 import MyShopPromotionModule from './MyShopPromotionModule'
-import {getShareUrl} from '../../../action/configAction'
+import {getShareUrl, fetchShareDomain} from '../../../action/configAction'
 import ActionSheet from 'react-native-actionsheet'
-import {SHAREURL} from '../../../util/global'
+import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
+import {getShareDomain} from '../../../selector/configSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -71,6 +72,7 @@ class MyShopIndex extends Component {
       if(this.props.isUserLogined) {
         this.props.fetchUserFollowees()
       }
+      this.props.fetchShareDomain()
     })
   }
 
@@ -291,8 +293,8 @@ class MyShopIndex extends Component {
   }
 
   onShare = () => {
-    let shareUrl = SHAREURL + "shopShare/" + this.props.userOwnedShopInfo.id
-
+    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopShare/" + this.props.userOwnedShopInfo.id:
+      DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.userOwnedShopInfo.id
     console.log("shopShare url:", shareUrl)
 
     Actions.SHARE({
@@ -562,6 +564,8 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('shopFollowers===', shopFollowers)
   // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
 
+  let shareDomain = getShareDomain(state)
+
   return {
     shopDetail: userOwnedShopInfo,
     userOwnedShopInfo: userOwnedShopInfo,
@@ -574,6 +578,7 @@ const mapStateToProps = (state, ownProps) => {
     userFollowees: userFollowees,
     similarShopList: similarShopList,
     currentUser: authSelector.activeUserId(state),
+    shareDomain: shareDomain,
   }
 }
 
@@ -586,6 +591,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopFollowers,
   fetchShopFollowersTotalCount,
   fetchSimilarShopList,
+  fetchShareDomain
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyShopIndex)

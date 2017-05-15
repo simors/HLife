@@ -32,7 +32,9 @@ import ChatroomShopPromotionCustomTopView from './ChatroomShopPromotionCustomTop
 import {fetchUsers} from '../../action/authActions'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-import {SHAREURL} from '../../util/global'
+import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
+import {fetchShareDomain} from '../../action/configAction'
+import {getShareDomain} from '../../selector/configSelector'
 
 
 
@@ -50,6 +52,7 @@ class ShopPromotionDetail extends Component {
     InteractionManager.runAfterInteractions(()=>{
       //this.props.fetchUserOwnedShopInfo()
       this.props.fetchShopPromotionDetail({id: this.props.id})
+      this.props.fetchShareDomain()
     })
   }
 
@@ -91,7 +94,8 @@ class ShopPromotionDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = SHAREURL + "shopPromotionShare/" + this.props.id
+    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopPromotionShare/" + this.props.id:
+      DEFAULT_SHARE_DOMAIN + "shopPromotionShare/" + this.props.id
 
     console.log("shopPromotionShare url:", shareUrl)
 
@@ -177,17 +181,20 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('shopPromotionDetail=====>>>>>', shopPromotionDetail)
   const isUserLogined = authSelector.isUserLogined(state)
 
+  let shareDomain = getShareDomain(state)
   return {
     shopPromotionDetail: shopPromotionDetail,
     isUserLogined: isUserLogined,
     currentUser: authSelector.activeUserId(state),
+    shareDomain: shareDomain,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionDetail,
   fetchUserOwnedShopInfo,
-  fetchUsers
+  fetchUsers,
+  fetchShareDomain
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPromotionDetail)

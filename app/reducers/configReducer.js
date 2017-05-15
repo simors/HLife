@@ -27,6 +27,8 @@ export default function configReducer(state = initialState, action) {
       return handleFetchAppNoUpdateVersion(state,action)
     case ConfigActionTypes.UPDATE_NETWORK_STATUS:
       return handleUpdateNetworkStatus(state, action)
+    case ConfigActionTypes.UPDATE_SHARE_DOMAIN:
+      return handleUpdateShareDomain(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -112,6 +114,14 @@ function handleFetchAppNoUpdateVersion(state,action) {
 function handleUpdateNetworkStatus(state, action) {
   let networkStatus = action.payload.networkStatus
   state = state.set('networkStatus', networkStatus)
+  return state
+}
+
+function handleUpdateShareDomain(state, action) {
+
+  let shareDomain = action.payload.shareDomain
+
+  state = state.set('shareDomain', shareDomain)
   return state
 }
 

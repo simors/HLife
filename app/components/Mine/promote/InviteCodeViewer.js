@@ -22,7 +22,9 @@ import {getInviteCode} from '../../../action/promoterAction'
 import {inviteCode} from '../../../selector/promoterSelector'
 import * as Toast from '../../common/Toast'
 import ActionSheet from 'react-native-actionsheet'
-import {SHAREURL} from '../../../util/global'
+import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
+import {fetchShareDomain} from '../../../action/configAction'
+import {getShareDomain} from '../../../selector/configSelector'
 
 class InviteCodeViewer extends Component {
   constructor(props) {
@@ -36,13 +38,15 @@ class InviteCodeViewer extends Component {
           Toast.show(err.message)
         }
       })
+      this.props.fetchShareDomain()
     })
   }
 
   _handleActionSheetPress(index) {
     if(0 == index) { //分享
 
-      let shareUrl = SHAREURL + "inviteCodeShare/" + this.props.code
+      let shareUrl = this.props.shareDomain ? this.props.shareDomain + "inviteCodeShare/" + this.props.code :
+      DEFAULT_SHARE_DOMAIN + "inviteCodeShare/" + this.props.code
 
       console.log("shopShare url:", shareUrl)
 
@@ -109,13 +113,16 @@ class InviteCodeViewer extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let shareDomain = getShareDomain(state)
   let code = inviteCode(state)
   return {
     code: code ? code : '',
+    shareDomain: shareDomain,
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getInviteCode,
+  fetchShareDomain
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteCodeViewer)

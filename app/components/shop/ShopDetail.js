@@ -29,7 +29,6 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
 
-import {fetchAppServicePhone} from '../../action/configAction'
 import {fetchUserFollowShops, fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
@@ -46,7 +45,8 @@ import * as ShopDetailTestData from './ShopDetailTestData'
 import ActionSheet from 'react-native-actionsheet'
 import TimerMixin from 'react-timer-mixin'
 import Loading from '../common/Loading'
-import {SHAREURL} from '../../util/global'
+import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
+import {fetchShareDomain, fetchAppServicePhone} from '../../action/configAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -140,7 +140,7 @@ class ShopDetail extends Component {
           }
         })
       }
-      
+      this.props.fetchShareDomain()
       // this.props.fetchShopCommentList({id: this.props.shopDetail.id})
     })
   }
@@ -578,7 +578,8 @@ class ShopDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = SHAREURL + "shopShare/" + this.props.shopDetail.id
+    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id:
+      DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.shopDetail.id
 
     console.log("shopShare url:", shareUrl)
 
@@ -881,6 +882,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const appServicePhone = configSelector.selectServicePhone(state)
 
+  let shareDomain = configSelector.getShareDomain(state)
+
   // let shopDetail = ShopDetailTestData.shopDetail
   // const shopComments = ShopDetailTestData.shopComments
   // const shopCommentsTotalCount = 1368
@@ -905,7 +908,8 @@ const mapStateToProps = (state, ownProps) => {
     // userIsUpedShop: userIsUpedShop,
     currentUser: authSelector.activeUserId(state),
     userOwnedShopInfo: userOwnedShopInfo,
-    appServicePhone: appServicePhone
+    appServicePhone: appServicePhone,
+    shareDomain: shareDomain,
   }
 }
 
@@ -929,7 +933,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserOwnedShopInfo,
   fetchAppServicePhone,
   fetchUserFollowShops,
-  fetchUsers
+  fetchUsers,
+  fetchShareDomain
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

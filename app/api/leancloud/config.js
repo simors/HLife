@@ -129,3 +129,12 @@ export function fetchAllProvincesAndCities(payload) {
     return results
   })
 }
+
+export function getShareDomain(payload) {
+  let params = {
+  }
+
+  return AV.Cloud.run('configGetShareDomain', params).then((results) => {
+    return results
+  })
+}

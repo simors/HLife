@@ -187,3 +187,7 @@ export function selectNetworkStatus(state) {
   }
   return undefined
 }
+
+export function getShareDomain(state) {
+  return state.CONFIG.shareDomain? state.CONFIG.shareDomain: undefined
+}

@@ -124,3 +124,18 @@ export function updateNetworkStatus(payload) {
     dispatch(updateNetworkStatus({networkStatus: payload.networkStatus}))
   }
 }
+
+
+export function fetchShareDomain(payload) {
+  return (dispatch, getState) => {
+
+    lcConfig.getShareDomain({}).then((result) => {
+      let updateShareDomainAction = createAction(ConfigActionTypes.UPDATE_SHARE_DOMAIN)
+      dispatch(updateShareDomainAction({shareDomain: result.shareDomain}))
+    }).catch((error) => {
+      if (payload && payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

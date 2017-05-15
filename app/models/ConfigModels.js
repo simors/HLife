@@ -159,6 +159,7 @@ export const Config = Record({
   servicePhone: undefined,
   noUpdateVersion:'',
   networkStatus: undefined,
+  shareDomain: '',
 }, 'Config')
 
 
