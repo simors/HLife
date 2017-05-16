@@ -26,7 +26,7 @@ import * as locSelector from '../../selector/locSelector'
 import {store} from '../../store/persistStore'
 
 export function getShopList(payload) {
-  // console.log('getShopList.payload==', payload)
+  // console.log('getShopList.payload==****************=', payload)
   let shopCategoryId = payload.shopCategoryId
   let sortId = payload.sortId // 0-智能,1-按好评,2-按距离;3-按等级(grade)
   let distance = payload.distance
@@ -38,6 +38,8 @@ export function getShopList(payload) {
   // let lastScore = payload.lastScore
   // let lastGeo = payload.lastGeo
   let skipNum = payload.isRefresh ? 0 : (payload.skipNum || 0)
+  let lastUpdatedAt = payload.lastUpdatedAt || ''
+  let loadingOtherCityData = payload.loadingOtherCityData || false
   let shopTagId = payload.shopTagId
   let query = new AV.Query('Shop')
   if(shopCategoryId){
@@ -77,26 +79,32 @@ export function getShopList(payload) {
   }
   query.limit(limit || 5) // 最多返回 5 条结果
 
-  if(distance) {
-    // console.log('getShopList.geo===', geo)
-    // console.log('getShopList.Array.isArray(geo)===', Array.isArray(geo))
-    if (Array.isArray(geo)) {
-      let point = new AV.GeoPoint(geo)
-      query.withinKilometers('geo', point, distance)
+  if(loadingOtherCityData) {
+    if(geoCity && geoCity != '全国') {
+      query.notContainedIn('geoCity', [geoCity])
     }
   }else {
-    // console.log('getShopList.geoCity===', geoCity)
-    // console.log('getShopList.typeof geoCity===', typeof geoCity)
-    if(geoCity && geoCity != '全国') {
-      query.contains('geoCity', geoCity)
-    }
+    if(distance) {
+      // console.log('getShopList.geo===', geo)
+      // console.log('getShopList.Array.isArray(geo)===', Array.isArray(geo))
+      if (Array.isArray(geo)) {
+        let point = new AV.GeoPoint(geo)
+        query.withinKilometers('geo', point, distance)
+      }
+    }else {
+      // console.log('getShopList.geoCity===', geoCity)
+      // console.log('getShopList.typeof geoCity===', typeof geoCity)
+      if(geoCity && geoCity != '全国') {
+        query.contains('geoCity', geoCity)
+      }
 
-    if (Array.isArray(geo)) {
-      let point = new AV.GeoPoint(geo)
-      query.withinKilometers('geo', point, 100)
+      if (Array.isArray(geo)) {
+        let point = new AV.GeoPoint(geo)
+        query.withinKilometers('geo', point, 100)
+      }
     }
-    
   }
+
   if(shopTagId) {
     let shopTag = AV.Object.createWithoutData('ShopTag', shopTagId)
     query.equalTo('containedTag', shopTag)

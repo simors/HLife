@@ -58,14 +58,15 @@ class Local extends Component {
       searchForm: {
         shopCategoryId: '',
         sortId: 3,
-        distance: 5,
+        distance: 0,
         geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
         geoCity: props.getCity || '',
         lastCreatedAt: '',
         lastScore: '',
         lastGeo: '',
         shopTagId: '',
-        skipNum: 0
+        skipNum: 0,
+        loadingOtherCityData: false
       },
     }
   }
@@ -318,8 +319,19 @@ class Local extends Component {
     )
   }
 
-  refreshData() {
-    this.loadMoreData(true)
+  refreshData(payload) {
+    if(payload && payload.loadingOtherCityData) {
+      this.loadMoreData(true)
+    }else {
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          loadingOtherCityData: false
+        }
+      }, () => {
+        this.loadMoreData(true)
+      })
+    }
   }
 
   loadMoreData(isRefresh, isEndReached) {
@@ -342,16 +354,34 @@ class Local extends Component {
         }
         // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
-          if(isRefresh && this.state.searchForm.distance) {
+          // if(isRefresh && this.state.searchForm.distance) {
+          //   this.setState({
+          //     searchForm: {
+          //       ...this.state.searchForm,
+          //       distance: ''
+          //     }
+          //   }, ()=>{
+          //     this.refreshData()
+          //   })
+          // }
+
+          if(!this.state.searchForm.loadingOtherCityData) {
             this.setState({
               searchForm: {
                 ...this.state.searchForm,
-                distance: ''
+                loadingOtherCityData: true,
+                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
               }
             }, ()=>{
-              this.refreshData()
+              // console.log('isEmpty===', isEmpty)
+              if(isRefresh) {
+                this.refreshData({loadingOtherCityData: true})
+              }else {
+                this.loadMoreData()
+              }
             })
           }
+
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
@@ -418,8 +448,10 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const shopList = selectLocalShopList(state) || []
   let nextSkipNum = 0
+  let lastUpdatedAt = ''
   if(shopList && shopList.length) {
     nextSkipNum = shopList[shopList.length-1].nextSkipNum
+    lastUpdatedAt = shopList[shopList.length-1].updatedAt
   }
 
   let geoPoint = locSelector.getGeopoint(state)
@@ -430,6 +462,7 @@ const mapStateToProps = (state, ownProps) => {
     ds: ds.cloneWithRows(dataArray),
     isUserLogined: isUserLogined,
     nextSkipNum: nextSkipNum,
+    lastUpdatedAt: lastUpdatedAt,
     shopList: shopList,
     geoPoint: geoPoint,
     getCity: getCity
