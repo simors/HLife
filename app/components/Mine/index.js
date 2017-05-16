@@ -352,7 +352,7 @@ class Mine extends Component {
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/recommoned.png')} />
             </View>
             <View>
-              <Text style={styles.menuName}>邀请好友</Text>
+              <Text style={styles.menuName}>分享下载</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.CONTACT()}}>
