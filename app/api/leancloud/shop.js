@@ -121,41 +121,60 @@ export function getShopList(payload) {
 }
 
 export function fetchShopPromotionList(payload) {
+  // console.log('fetchShopPromotionList.payload==*******===', payload)
   let distance = payload.distance
   let geo = payload.geo
   let geoCity = payload.geoCity
   let isRefresh = payload.isRefresh
   let skipNum = payload.isRefresh ? 0 : (payload.skipNum || 0)
+  let lastUpdatedAt = payload.lastUpdatedAt || ''
+  let loadingOtherCityData = payload.loadingOtherCityData || false
   let query = new AV.Query('ShopPromotion')
 
   query.include(['targetShop', 'targetShop.owner'])
   query.limit(5) // 最多返回 5 条结果
 
   if(!isRefresh) { //分页查询
-    query.skip(skipNum)
+    if((!geoCity || geoCity == '全国') && lastUpdatedAt) {
+      query.lessThan('updatedAt', new Date(lastUpdatedAt))
+    }else {
+      query.skip(skipNum)
+    }
   }
 
-  if(!geoCity || geoCity == '全国') {
-    query.addDescending('updatedAt')
-  }else {
+  if(loadingOtherCityData) {
     //构建内嵌查询
     let innerQuery = new AV.Query('Shop')
-    if(distance) {
-      if (Array.isArray(geo)) {
-        let point = new AV.GeoPoint(geo)
-        innerQuery.withinKilometers('geo', point, distance)
-      }
+    if(!geoCity || geoCity == '全国') {
+      query.addDescending('updatedAt')
     }else {
-      if(geoCity) {
-        innerQuery.contains('geoCity', geoCity)
-      }
-      if (Array.isArray(geo)) {
-        let point = new AV.GeoPoint(geo)
-        innerQuery.withinKilometers('geo', point, 100) //距离降序
-      }
+      innerQuery.notContainedIn('geoCity', [geoCity])
+      //执行内嵌查询
+      query.matchesQuery('targetShop', innerQuery)
     }
-    //执行内嵌查询
-    query.matchesQuery('targetShop', innerQuery)
+  }else {
+    if(!geoCity || geoCity == '全国') {
+      query.addDescending('updatedAt')
+    }else {
+      //构建内嵌查询
+      let innerQuery = new AV.Query('Shop')
+      if(distance) {
+        if (Array.isArray(geo)) {
+          let point = new AV.GeoPoint(geo)
+          innerQuery.withinKilometers('geo', point, distance)
+        }
+      }else {
+        if(geoCity) {
+          innerQuery.contains('geoCity', geoCity)
+        }
+        if (Array.isArray(geo)) {
+          let point = new AV.GeoPoint(geo)
+          innerQuery.withinKilometers('geo', point, 100) //距离降序
+        }
+      }
+      //执行内嵌查询
+      query.matchesQuery('targetShop', innerQuery)
+    }
   }
 
   query.equalTo('status', "1")
