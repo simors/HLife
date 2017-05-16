@@ -59,7 +59,8 @@ class ShopCategoryList extends Component {
         lastScore: '',
         lastGeo: '',
         shopTagId: '',
-        skipNum: 0
+        skipNum: 0,
+        loadingOtherCityData: false
       },
       shopCategoryName: '',
       selectGroupShow: [false, false, false],
@@ -112,7 +113,7 @@ class ShopCategoryList extends Component {
       return
     }
 
-    console.log('updateCurrentPosition....>>>>>', this.props.curGeoPoint)
+    // console.log('updateCurrentPosition....>>>>>', this.props.curGeoPoint)
     this.state.searchForm.geo = [this.props.curGeoPoint.latitude, this.props.curGeoPoint.longitude]
     this.state.searchForm.geoCity = this.props.curCity
     this.setState({
@@ -492,10 +493,21 @@ class ShopCategoryList extends Component {
   //   return this.renderShop(rowData)
   // }
 
-  refreshData() {
+  refreshData(payload) {
     this.isLastPage = false
 
-    this.loadMoreData(true)
+    if(payload && payload.loadingOtherCityData) {
+      this.loadMoreData(true)
+    }else {
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          loadingOtherCityData: false
+        }
+      }, () => {
+        this.loadMoreData(true)
+      })
+    }
   }
 
   loadMoreData(isRefresh) {
@@ -540,6 +552,23 @@ class ShopCategoryList extends Component {
         }
         // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
+          if(!this.state.searchForm.loadingOtherCityData) {
+            this.setState({
+              searchForm: {
+                ...this.state.searchForm,
+                loadingOtherCityData: true,
+                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
+              }
+            }, ()=>{
+              // console.log('isEmpty===', isEmpty)
+              if(isRefresh) {
+                this.refreshData({loadingOtherCityData: true})
+              }else {
+                this.loadMoreData()
+              }
+            })
+          }
+
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
