@@ -73,10 +73,11 @@ class Home extends Component {
     // console.log('my version',version)
     this.state = {
       searchForm: {
-        distance: 5,
+        distance: 0, //修改为只按城市查询
         geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
         geoCity: props.city || '',
-        skipNum: 0
+        skipNum: 0,
+        loadingOtherCityData: false
       },
       fade: new Animated.Value(0),
     }
@@ -378,15 +379,25 @@ class Home extends Component {
     )
   }
 
-
-
-  refreshData() {
+  refreshData(payload) {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
       this.props.getAllTopicCategories({})
       this.props.fetchShopCategories()
     })
-    this.loadMoreData(true)
+
+    if(payload && payload.loadingOtherCityData) {
+      this.loadMoreData(true)
+    }else {
+      this.setState({
+        searchForm: {
+          ...this.state.searchForm,
+          loadingOtherCityData: false
+        }
+      }, () => {
+        this.loadMoreData(true)
+      })
+    }
   }
 
   loadMoreData(isRefresh) {
@@ -401,6 +412,7 @@ class Home extends Component {
     let payload = {
       ...this.state.searchForm,
       isRefresh: !!isRefresh,
+      lastUpdatedAt: this.props.lastUpdatedAt,
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -408,17 +420,35 @@ class Home extends Component {
         }
         // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
-          if(isRefresh && this.state.searchForm.distance) {
+          // if(isRefresh && this.state.searchForm.distance) {
+          //   this.setState({
+          //     searchForm: {
+          //       ...this.state.searchForm,
+          //       distance: ''
+          //     }
+          //   }, ()=>{
+          //     // console.log('isEmpty===', isEmpty)
+          //     this.refreshData()
+          //   })
+          // }
+
+          if(!this.state.searchForm.loadingOtherCityData) {
             this.setState({
               searchForm: {
                 ...this.state.searchForm,
-                distance: ''
+                loadingOtherCityData: true,
+                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
               }
             }, ()=>{
               // console.log('isEmpty===', isEmpty)
-              this.refreshData()
+              if(isRefresh) {
+                this.refreshData({loadingOtherCityData: true})
+              }else {
+                this.loadMoreData()
+              }
             })
           }
+
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
@@ -481,8 +511,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const shopPromotionList = selectShopPromotionList(state) || []
   let nextSkipNum = 0
+  let lastUpdatedAt = ''
   if(shopPromotionList && shopPromotionList.length) {
     nextSkipNum = shopPromotionList[shopPromotionList.length-1].nextSkipNum
+    lastUpdatedAt = shopPromotionList[shopPromotionList.length-1].updatedAt
   }
 
   let activeUserInfo = authSelector.activeUserInfo(state)
@@ -512,6 +544,7 @@ const mapStateToProps = (state, ownProps) => {
     city: geoCity,
     geoPoint: geoPoint,
     nextSkipNum: nextSkipNum,
+    lastUpdatedAt: lastUpdatedAt,
     shopPromotionList: shopPromotionList,
     allShopCategories: allShopCategories,
     noUpdateVersion:noUpdateVersion,
