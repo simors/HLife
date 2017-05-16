@@ -6,10 +6,10 @@ import * as lcSearch from '../api/leancloud/search'
 import * as uiTypes from '../constants/uiActionTypes'
 
 
-
-
 export function searchKeyAction(payload) {
   return (dispatch, getState) => {
+    let clearResultAction = createAction(uiTypes.SEARCH_CLEAR)
+    dispatch(clearResultAction({}))
 
     lcSearch.searchUser(payload).then((result) => {
       let updateUserResultAction = createAction(uiTypes.SEARCH_USER)
@@ -34,5 +34,44 @@ export function searchKeyAction(payload) {
       }
     })
   }
+}
 
+export function searchUserAction(payload) {
+  return (dispatch, getState) => {
+
+    lcSearch.searchUser(payload).then((result) => {
+      let updateUserResultAction = createAction(uiTypes.SEARCH_USER)
+      dispatch(updateUserResultAction(result))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function searchShopAction(payload) {
+  return (dispatch, getState) => {
+    lcSearch.searchShop(payload).then((result) => {
+      let updateShopResultAction = createAction(uiTypes.SEARCH_SHOP)
+      dispatch(updateShopResultAction(result))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function searchTopicAction(payload) {
+  return (dispatch, getState) => {
+    lcSearch.searchTopic(payload).then(() => {
+      let updateTopicResultAction = createAction(uiTypes.SEARCH_TOPIC)
+      dispatch(updateTopicResultAction(result))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
 }

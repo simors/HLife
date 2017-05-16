@@ -40,10 +40,12 @@ export function searchUser(payload) {
 
   return AV.Cloud.run('searchFetchUserResult', params).then((result) => {
     let userResults = {}
-    userResults.hits = result.hits
-    userResults.users = result.users
+    userResults.hits = result.hits || 0
+    userResults.users = result.users || []
     if(result.hits > result.users.length) {
       userResults.sid = result.sid
+    } else {
+      userResults.sid = ''
     }
     return userResults
   }).catch((error) => {
@@ -62,10 +64,12 @@ export function searchShop(payload) {
 
   return AV.Cloud.run('searchFetchShopResult', params).then((result) => {
     let shopResult = {}
-    shopResult.hits = result.hits
-    shopResult.shops = result.shops
+    shopResult.hits = result.hits || 0
+    shopResult.shops = result.shops || []
     if(result.hits > result.shops.length) {
       shopResult.sid = result.sid
+    } else {
+      shopResult.sid = ''
     }
     return shopResult
   }).catch((error) => {
@@ -84,10 +88,12 @@ export function searchTopic(payload) {
 
   return AV.Cloud.run('searchFetchTopicResult', params).then((result) => {
     let topicResult = {}
-    topicResult.hits = result.hits
-    topicResult.topics = result.topics
+    topicResult.hits = result.hits || 0
+    topicResult.topics = result.topics || []
     if(result.hits > result.topics.length) {
       topicResult.sid = result.sid
+    } else {
+      topicResult.sid = ''
     }
     return topicResult
   }).catch((error) => {

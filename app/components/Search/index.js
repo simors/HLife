@@ -12,21 +12,26 @@ import {
   TextInput,
   InteractionManager,
   ListView,
+  ScrollView,
   Text,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {normalizeH, normalizeW, normalizeBorder} from '../../util/Responsive'
+import {normalizeH, normalizeW, normalizeBorder, em} from '../../util/Responsive'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../constants/themes/theme1'
 import {searchKeyAction} from '../../action/searchActions'
 import {getUserSearchResult, getShopSearchResult, getTopicSearchResult} from '../../selector/searchSelector'
+import ScoreShow from '../common/ScoreShow'
+import ImageGroupViewer from '../../components/common/Input/ImageGroupViewer'
+
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-
+const DS = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
 class Search extends Component {
   constructor(props) {
@@ -37,69 +42,253 @@ class Search extends Component {
   }
 
   renderUserView() {
-    if(this.props.users && this.props.users.length > 0) {
+   return(
+      <View style={styles.section}>
+        <ListView
+          renderSectionHeader={this.renderUserHeader}
+          dataSource={DS.cloneWithRows(this.props.users.result)}
+          renderRow={(rowData) => this.renderUserItems(rowData)}
+          enableEmptySections={true}
+          stickySectionHeadersEnabled= {true}
+        />
+        {this.renderUserMore()}
+      </View>
+    )
+  }
+
+  renderUserHeader(sectionData, sectionID) {
+    if(sectionData.length > 0) {
       return(
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={{fontSize: 17, color: '#999999'}}>用户</Text>
-          </View>
-          <ListView
-            dataSource={this.props.dataSource}
-            renderRow={(rowData) => this.renderUserItems(rowData)}
-          />
-          {this.props.users.length > 3?
-            <TouchableOpacity style={styles.more}>
-              <Image source={require('../../assets/images/search.png')}/>
-              <Text style={{color: '#65718D', fontSize: 17}}>查看更多用户</Text>
-              <Image source={require('../../assets/images/arrow_left.png')}/>
-            </TouchableOpacity>:
-            <View />
-          }
+        <View style={styles.sectionHeader}>
+          <Text style={{fontSize: 15, color: '#999999', marginTop: normalizeH(10), marginBottom: normalizeH(10)}}>用户</Text>
         </View>
       )
     } else {
-      return <View />
+      return(
+        <View />
+      )
+    }
+  }
+
+  renderUserMore() {
+    if(this.props.users.hasMore) {
+      return(
+        <TouchableOpacity style={styles.more}>
+          <Image source={require('../../assets/images/search.png')}/>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多用户</Text>
+          </View>
+          <Image source={require('../../assets/images/arrow_left.png')}/>
+        </TouchableOpacity>
+      )
+    } else {
+      return(
+        <View />
+      )
     }
   }
 
   renderUserItems(user) {
     return(
-      <View style={styles.item}>
+      <TouchableOpacity style={styles.item}>
         <View>
-          <Image source={{uri: user.avatar}}/>
+          <Image style={{width: 40, height: 40, marginTop: normalizeH(10), marginBottom: normalizeH(10), marginRight: normalizeW(10)}}
+                 source={user.avatar? {uri: user.avatar}: require('../../assets/images/defualt_user.png')}/>
         </View>
         <View>
-          <Text>{user.nickname}</Text>
+          <Text style={{fontSize: 17}}>{user.nickname}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
   renderShopView() {
-    if(this.props.shops && this.props.shops.length > 0) {
+    return(
+      <View style={styles.section}>
+        <ListView
+          renderSectionHeader={this.renderShopHeader}
+          dataSource={DS.cloneWithRows(this.props.shops.result)}
+          renderRow={(rowData) => this.renderShopItems(rowData)}
+          enableEmptySections={true}
+          stickySectionHeadersEnabled= {true}
+        />
+        {this.renderShopMore()}
+      </View>
+    )
+  }
+
+  renderShopHeader(sectionData, sectionID) {
+    if(sectionData.length > 0) {
       return(
-        <View></View>
+        <View style={styles.sectionHeader}>
+          <Text style={{fontSize: 15, color: '#999999', marginTop: normalizeH(10), marginBottom: normalizeH(10)}}>店铺</Text>
+        </View>
       )
     } else {
-      return <View />
+      return(
+        <View />
+      )
+    }
+
+  }
+
+  renderShopMore() {
+    if(this.props.shops.hasMore) {
+      return(
+        <TouchableOpacity style={styles.more}>
+          <Image source={require('../../assets/images/search.png')}/>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多店铺</Text>
+          </View>
+          <Image source={require('../../assets/images/arrow_left.png')}/>
+        </TouchableOpacity>
+      )
+    } else {
+      return(
+        <View />
+      )
     }
   }
 
+  renderShopItems(rowData) {
+    return (
+      <TouchableOpacity onPress={()=>{}}>
+        <View style={styles.item}>
+          <View style={styles.coverWrap}>
+            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
+          </View>
+          <View style={styles.shopIntroWrap}>
+            <View style={styles.shopInnerIntroWrap}>
+              <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
+              <ScoreShow
+                containerStyle={{flex:1}}
+                score={rowData.score}
+              />
+              <View style={styles.subInfoWrap}>
+                <View style={{flex:1,flexDirection:'row'}}>
+                  <Text style={styles.subTxt}>{rowData.shopAddress}</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
   renderTopicView() {
-    if(this.props.topics && this.props.topics.length > 0) {
+    return(
+      <View style={styles.section}>
+        <ListView
+          renderSectionHeader={this.renderTopicHeader}
+          dataSource={DS.cloneWithRows(this.props.topics.result)}
+          renderRow={(rowData) => this.renderTopicItems(rowData)}
+          enableEmptySections={true}
+          stickySectionHeadersEnabled= {true}
+        />
+        {this.renderTopicMore()}
+      </View>
+    )
+  }
+
+  renderTopicHeader(sectionData, sectionID) {
+    if(sectionData.length > 0) {
       return(
-        <View></View>
+        <View style={styles.sectionHeader}>
+          <Text style={{fontSize: 15, color: '#999999', marginTop: normalizeH(10), marginBottom: normalizeH(10)}}>话题</Text>
+        </View>
       )
     } else {
-      return <View />
+      return(
+        <View />
+      )
+    }
+  }
+
+  renderTopicItems(topic) {
+    //没有图片的显示规则
+    if ((!topic.imgGroup) || ((topic.imgGroup.length == 0))) {
+      return (
+        <TouchableOpacity style={styles.topicWrapStyle} onPress={()=> {}}>
+          <Text style={styles.topicTitleStyle} numberOfLines={1}>
+            {topic.title}
+          </Text>
+          <Text style={styles.topicStyle} numberOfLines={2}>
+            {topic.abstract}
+          </Text>
+        </TouchableOpacity>
+      )
+    }
+    //一张到2张图片的显示规则
+    else if (topic.imgGroup && (topic.imgGroup.length < 3)) {
+      let image = []
+      image.push(topic.imgGroup[0])
+      return (
+        <TouchableOpacity style={[styles.topicWrapStyle, {flexDirection: 'row'}]}
+                          onPress={()=> {}}>
+          <View style={{flex: 1}}>
+            <Text style={styles.topicTitleStyle} numberOfLines={2}>
+              {topic.title}
+            </Text>
+            <Text style={styles.topicStyle} numberOfLines={3}>
+              {topic.abstract}
+            </Text>
+          </View>
+          <ImageGroupViewer browse={false}
+                            images={image}
+                            imageLineCnt={1}
+                            containerStyle={{width: PAGE_WIDTH * 2 / 7, marginRight: 0}}/>
+        </TouchableOpacity>
+      )
+    }
+    //3张以上图片的显示规则
+    else if (topic.imgGroup && (topic.imgGroup.length >= 3)) {
+      let image = []
+      image.push(topic.imgGroup[0])
+      image.push(topic.imgGroup[1])
+      image.push(topic.imgGroup[2])
+      return (
+        <TouchableOpacity style={styles.topicWrapStyle} onPress={()=> {}}>
+          <Text style={styles.topicTitleStyle} numberOfLines={1}>
+            {topic.title}
+          </Text>
+          <Text style={styles.topicStyle} numberOfLines={2}>
+            {topic.abstract}
+          </Text>
+          <ImageGroupViewer browse={false}
+                            images={image}
+                            imageLineCnt={3}
+                            containerStyle={{flex: 1, marginLeft: 0, marginRight: 0}}/>
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  renderTopicMore() {
+    if(this.props.topics.hasMore) {
+      return(
+        <TouchableOpacity style={styles.more}>
+          <Image source={require('../../assets/images/search.png')}/>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多店铺</Text>
+          </View>
+          <Image source={require('../../assets/images/arrow_left.png')}/>
+        </TouchableOpacity>
+      )
+    } else {
+      return(
+        <View />
+      )
     }
   }
 
   onSearch = () => {
-    this.props.searchKeyAction({
-      key: this.state.searchKey,
-      limit: 3,
-    })
+    if(this.state.searchKey && this.state.searchKey.length > 0) {
+      this.props.searchKeyAction({
+        key: this.state.searchKey,
+        limit: 3,
+      })
+    }
   }
 
   render() {
@@ -124,29 +313,24 @@ class Search extends Component {
             <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索</Text>
           </TouchableOpacity>
         </View>
-        <View style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
+        <ScrollView keyboardDismissMode="on-drag" style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
           {this.renderUserView()}
           {this.renderShopView()}
           {this.renderTopicView()}
-        </View>
+        </ScrollView>
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-
-  let users = getUserSearchResult(state)
-  let shops = getShopSearchResult(state)
-  let topics = getTopicSearchResult(state)
-  console.log("getUserSearchResult ", users)
-  console.log("getUserSearchResult ", shops)
-  console.log("getUserSearchResult ", topics)
+  let users = getUserSearchResult(state) || []
+  let shops = getShopSearchResult(state) || []
+  let topics = getTopicSearchResult(state) || []
   return {
-    userDataSource: ds.cloneWithRows(users),
-    shopDataSource: ds.cloneWithRows(shops),
-    topicDataSource: ds.cloneWithRows(topics),
+    users: users,
+    shops: shops,
+    topics: topics,
   }
 }
 
@@ -217,10 +401,60 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: normalizeH(40),
+    paddingRight: normalizeW(10)
   },
   item: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#EBEBEB'
-  }
+    borderBottomColor: '#EBEBEB',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  coverWrap: {
+    width: 80,
+    height: 80
+  },
+  cover: {
+    flex: 1
+  },
+  shopIntroWrap: {
+    flex: 1,
+    paddingLeft: 10,
+  },
+  shopInnerIntroWrap: {
+    height: 80,
+  },
+  shopName: {
+    lineHeight: em(20),
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  subInfoWrap: {
+    flexDirection: 'row',
+  },
+  subTxt: {
+    marginRight: normalizeW(10),
+    color: '#d8d8d8',
+    fontSize: em(12)
+  },
+  topicWrapStyle: {
+    flex: 1,
+    marginTop: normalizeH(13),
+    marginLeft: normalizeW(35),
+    marginRight: normalizeW(12)
+  },
+  topicTitleStyle: {
+    fontSize: em(17),
+    fontWeight: 'bold',
+    lineHeight: em(20),
+    marginBottom: normalizeH(5),
+    color: "#5A5A5A"
+  },
+  topicStyle: {
+    marginBottom: normalizeH(13),
+    fontSize: em(15),
+    lineHeight: em(20),
+    color: "#9b9b9b"
+  },
 })

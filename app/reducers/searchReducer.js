@@ -14,6 +14,8 @@ export default function
   switch (action.type) {
     case uiTypes.SEARCH_ALL:
       return
+    case  uiTypes.SEARCH_CLEAR:
+      return handleClearResult(state, action)
     case uiTypes.SEARCH_USER:
       return handleUpdateUserResult(state, action)
     case uiTypes.SEARCH_SHOP:
@@ -23,6 +25,21 @@ export default function
     default:
       return state
   }
+}
+
+function handleClearResult(state, action) {
+  state = state.setIn(['user', 'hits'], 0)
+  state = state.setIn(['user', 'results'], [])
+  state = state.setIn(['user', 'sid'], '')
+
+  state = state.setIn(['shop', 'hits'], 0)
+  state = state.setIn(['shop', 'results'], [])
+  state = state.setIn(['shop', 'sid'], '')
+
+  state = state.setIn(['topic', 'hits'], 0)
+  state = state.setIn(['topic', 'results'], [])
+  state = state.setIn(['topic', 'sid'], '')
+  return state
 }
 
 function handleUpdateUserResult(state, action) {
