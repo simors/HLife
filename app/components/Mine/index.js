@@ -174,33 +174,33 @@ class Mine extends Component {
   renderToolView() {
     return (
       <View style={styles.toolView}>
-        <View style={{marginRight: normalizeW(20)}}>
-          <TouchableOpacity onPress={() => {
-            Actions.QRCODEREADER({
-              readQRSuccess: (QRData) => {
-                // Actions.pop()
-                if (QRData.startsWith('http') || QRData.startsWith('https')) {
-                  Actions.COMMON_WEB_VIEW({url: QRData, showHeader:true, headerTitle: '网页'})
-                  return
-                }
-                let data = JSON.parse(QRData)
-                let userId = data.userId
-                if (userId) {
-                  Actions.PERSONAL_HOMEPAGE({userId: userId})
-                  return
-                }
-              },
-              readQRError: (errMessage) => {
-                Actions.pop()
-                this.setTimeout(() => {
-                  Toast.show(errMessage)
-                }, 1500)
-              }
-            })
-          }}>
-            <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/scan.png')}/>
-          </TouchableOpacity>
-        </View>
+        {/*<View style={{marginRight: normalizeW(20)}}>*/}
+          {/*<TouchableOpacity onPress={() => {*/}
+            {/*Actions.QRCODEREADER({*/}
+              {/*readQRSuccess: (QRData) => {*/}
+                {/*// Actions.pop()*/}
+                {/*if (QRData.startsWith('http') || QRData.startsWith('https')) {*/}
+                  {/*Actions.COMMON_WEB_VIEW({url: QRData, showHeader:true, headerTitle: '网页'})*/}
+                  {/*return*/}
+                {/*}*/}
+                {/*let data = JSON.parse(QRData)*/}
+                {/*let userId = data.userId*/}
+                {/*if (userId) {*/}
+                  {/*Actions.PERSONAL_HOMEPAGE({userId: userId})*/}
+                  {/*return*/}
+                {/*}*/}
+              {/*},*/}
+              {/*readQRError: (errMessage) => {*/}
+                {/*Actions.pop()*/}
+                {/*this.setTimeout(() => {*/}
+                  {/*Toast.show(errMessage)*/}
+                {/*}, 1500)*/}
+              {/*}*/}
+            {/*})*/}
+          {/*}}>*/}
+            {/*<Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/scan.png')}/>*/}
+          {/*</TouchableOpacity>*/}
+        {/*</View>*/}
         <View>
           <TouchableOpacity onPress={() => Actions.SETTING()}>
             <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/set.png')}/>
@@ -233,11 +233,11 @@ class Mine extends Component {
             </View>
           </View>
         </View>
-        <View style={{paddingRight: normalizeW(36)}}>
-          <TouchableOpacity onPress={() => {this.genPersonalQRCode()}}>
-            <Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/code.png')}/>
-          </TouchableOpacity>
-        </View>
+        {/*<View style={{paddingRight: normalizeW(36)}}>*/}
+          {/*<TouchableOpacity onPress={() => {this.genPersonalQRCode()}}>*/}
+            {/*<Image style={styles.toolBtnImg} resizeMode="contain" source={require('../../assets/images/code.png')}/>*/}
+          {/*</TouchableOpacity>*/}
+        {/*</View>*/}
       </View>
     )
   }
@@ -355,14 +355,14 @@ class Mine extends Component {
               <Text style={styles.menuName}>分享下载</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.CONTACT()}}>
-            <View style={styles.menuIcon}>
-              <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/contact.png')} />
-            </View>
-            <View>
-              <Text style={styles.menuName}>联系客服</Text>
-            </View>
-          </TouchableOpacity>
+          {/*<TouchableOpacity style={styles.menuItem} onPress={() => {Actions.CONTACT()}}>*/}
+            {/*<View style={styles.menuIcon}>*/}
+              {/*<Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/contact.png')} />*/}
+            {/*</View>*/}
+            {/*<View>*/}
+              {/*<Text style={styles.menuName}>联系客服</Text>*/}
+            {/*</View>*/}
+          {/*</TouchableOpacity>*/}
           <TouchableOpacity style={styles.menuItem} onPress={() => {this.jumpToAdvise()}}>
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/sugguestion.png')} />
