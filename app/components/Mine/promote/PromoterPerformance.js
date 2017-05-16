@@ -129,7 +129,7 @@ class PromoterPerformance extends Component {
           <View style={styles.statTitleStyle}>
             <Image style={{width: normalizeW(25), height: normalizeH(21)}}
                    source={require('../../../assets/images/my_team.png')}/>
-            <Text style={styles.statTitleText}>团队成员</Text>
+            <Text style={styles.statTitleText}>一级成员</Text>
           </View>
           <View style={styles.statNum}>
             <Text style={{fontSize: em(36), color: THEME.base.mainColor, paddingRight: normalizeW(8)}}>{promoter.teamMemNum}</Text>
