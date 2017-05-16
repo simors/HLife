@@ -171,7 +171,7 @@ class Local extends Component {
                   <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
                 </View>
                 {shopInfo.distance &&
-                  <Text style={[styles.subTxt]}>{shopInfo.distance}km</Text>
+                  <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
                 }
               </View>
             </View>
