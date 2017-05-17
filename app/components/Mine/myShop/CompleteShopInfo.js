@@ -50,6 +50,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import * as Toast from '../../common/Toast'
 import Loading from '../../common/Loading'
 import * as AVUtils from '../../../util/AVUtils'
+import Popup from '@zzzkk2009/react-native-popup'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -175,12 +176,6 @@ class CompleteShopInfo extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-
-    })
-  }
-
-  componentDidMount() {
     if(this.props.userOwnedShopInfo.containedTag && this.props.userOwnedShopInfo.containedTag.length) {
       this.setState({
         selectedShopTags: this.props.userOwnedShopInfo.containedTag
@@ -194,6 +189,17 @@ class CompleteShopInfo extends Component {
         this.updateShopCategoryContainedTags(targetShopCategory.id)
       }
     }
+
+    Popup.confirm({
+      title: '系统提示',
+      content: '未完善店铺资料将无法在店铺列表中显示',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+        }
+      },
+    })
   }
 
   componentWillReceiveProps(nextProps) {
