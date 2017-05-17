@@ -295,7 +295,7 @@ class Search extends Component {
         <TouchableOpacity style={styles.more} onPress={this.onTopicSearchMore}>
           <Image source={require('../../assets/images/search.png')}/>
           <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多店铺</Text>
+            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多话题</Text>
           </View>
           <Image source={require('../../assets/images/arrow_left.png')}/>
         </TouchableOpacity>
@@ -395,18 +395,20 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(10)
   },
   centerWrap: {
-    flex: 2,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginLeft: normalizeW(10),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: 10,
+
   },
   rightWrap: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginLeft: normalizeW(20)
   },
   searchBar: {
     flex: 1,

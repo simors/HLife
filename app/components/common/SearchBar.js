@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     height: normalizeH(30),
-    width: normalizeW(200),
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'flex-start',

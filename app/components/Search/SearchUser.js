@@ -48,7 +48,7 @@ class SearchUser extends Component {
   }
 
   onLoadMore = () => {
-    if(this.props.users.hasMore) {
+     if(this.props.users.hasMore) {
       this.props.searchUserAction({
         key: this.state.searchKey,
         sid: this.props.users.sid
@@ -60,12 +60,15 @@ class SearchUser extends Component {
     return(
       <View style={styles.section}>
         <ListView
+          style={{flex: 1}}
+          keyboardDismissMode="on-drag"
           renderSectionHeader={this.renderUserHeader}
           dataSource={DS.cloneWithRows(this.props.users.result)}
           renderRow={(rowData) => this.renderUserItems(rowData)}
           enableEmptySections={true}
           stickySectionHeadersEnabled= {true}
           onEndReached={this.onLoadMore}
+          onEndReachedThreshold={10}
         />
       </View>
     )
@@ -93,7 +96,7 @@ class SearchUser extends Component {
                  source={user.avatar? {uri: user.avatar}: require('../../assets/images/defualt_user.png')}/>
         </View>
         <View>
-          <Text style={{fontSize: 17}}>{user.nickname}</Text>
+          <Text style={{fontSize: 17}}>{user.nickname || '汇邻优客'}</Text>
         </View>
       </TouchableOpacity>
     )
@@ -120,7 +123,6 @@ class SearchUser extends Component {
               style={{flex: 1, height: normalizeH(30), color: 'white'}}
               onChangeText={(text) => this.setState({searchKey: text})}
               value={this.state.searchKey}
-              autoFocus={true}
               multiline={false}
               placeholder="搜索用户"
               placeholderTextColor='#FFFFFF'/>
@@ -129,9 +131,9 @@ class SearchUser extends Component {
             <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView keyboardDismissMode="on-drag" style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
+        <View style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
           {this.renderUserView()}
-        </ScrollView>
+        </View>
 
       </View>
     )
@@ -181,18 +183,19 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(10)
   },
   centerWrap: {
-    flex: 2,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginLeft: normalizeW(10),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: 10
   },
   rightWrap: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginLeft: normalizeW(20),
   },
   searchBar: {
     flex: 1,
@@ -201,6 +204,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   section: {
+    flex: 1,
     paddingLeft: normalizeW(20),
     backgroundColor: '#FFFFFF',
     marginBottom: normalizeH(10)

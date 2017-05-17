@@ -143,12 +143,16 @@ class SearchTopic extends Component {
     return(
       <View style={styles.section}>
         <ListView
+          style={{flex: 1}}
+          keyboardDismissMode="on-drag"
           renderSectionHeader={this.renderTopicHeader}
           dataSource={DS.cloneWithRows(this.props.topics.result)}
           renderRow={(rowData) => this.renderTopicItems(rowData)}
           enableEmptySections={true}
           stickySectionHeadersEnabled= {true}
           onEndReached={this.onLoadMore}
+          onEndReachedThreshold={10}
+
         />
       </View>
     )
@@ -167,7 +171,6 @@ class SearchTopic extends Component {
               style={{flex: 1, height: normalizeH(30), color: 'white'}}
               onChangeText={(text) => this.setState({searchKey: text})}
               value={this.state.searchKey}
-              autoFocus={true}
               multiline={false}
               placeholder="搜索"
               placeholderTextColor='#FFFFFF'/>
@@ -176,9 +179,9 @@ class SearchTopic extends Component {
             <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索话题</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView keyboardDismissMode="on-drag" style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
+        <View style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
           {this.renderTopicView()}
-        </ScrollView>
+        </View>
 
       </View>
     )
@@ -228,18 +231,19 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(10)
   },
   centerWrap: {
-    flex: 2,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginLeft: normalizeW(10),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: 10,
   },
   rightWrap: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginLeft: normalizeW(20)
   },
   searchBar: {
     flex: 1,
@@ -248,6 +252,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   section: {
+    flex: 1,
     paddingLeft: normalizeW(20),
     backgroundColor: '#FFFFFF',
     marginBottom: normalizeH(10)
@@ -256,47 +261,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#EBEBEB'
   },
-  more: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: normalizeH(40),
-    paddingRight: normalizeW(10)
-  },
-  item: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#EBEBEB',
-    alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  coverWrap: {
-    width: 80,
-    height: 80
-  },
-  cover: {
-    flex: 1
-  },
-  shopIntroWrap: {
-    flex: 1,
-    paddingLeft: 10,
-  },
-  shopInnerIntroWrap: {
-    height: 80,
-  },
-  shopName: {
-    lineHeight: em(20),
-    fontSize: em(17),
-    color: '#8f8e94'
-  },
-  subInfoWrap: {
-    flexDirection: 'row',
-  },
-  subTxt: {
-    marginRight: normalizeW(10),
-    color: '#d8d8d8',
-    fontSize: em(12)
-  },
+
   topicWrapStyle: {
     flex: 1,
     marginTop: normalizeH(13),

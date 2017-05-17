@@ -36,6 +36,7 @@ export function searchUser(payload) {
   let params = {
     key: payload.key,
     limit: payload.limit || 10,
+    sid: payload.sid || undefined
   }
 
   return AV.Cloud.run('searchFetchUserResult', params).then((result) => {
@@ -60,6 +61,8 @@ export function searchShop(payload) {
   let params = {
     key: payload.key,
     limit: payload.limit || 10,
+    sid: payload.sid || undefined
+
   }
 
   return AV.Cloud.run('searchFetchShopResult', params).then((result) => {
@@ -84,6 +87,7 @@ export function searchTopic(payload) {
   let params = {
     key: payload.key,
     limit: payload.limit || 10,
+    sid: payload.sid || undefined
   }
 
   return AV.Cloud.run('searchFetchTopicResult', params).then((result) => {

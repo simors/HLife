@@ -62,18 +62,18 @@ class SearchShop extends Component {
       <TouchableOpacity onPress={()=>{}}>
         <View style={styles.item}>
           <View style={styles.coverWrap}>
-            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
+            <Image style={styles.cover} source={rowData.coverUrl? {uri: rowData.coverUrl}: require('../../assets/images/shop_defualt.png')}/>
           </View>
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
-              <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
+              <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName || '优店'}</Text>
               <ScoreShow
                 containerStyle={{flex:1}}
-                score={rowData.score}
+                score={rowData.score || 2}
               />
               <View style={styles.subInfoWrap}>
                 <View style={{flex:1,flexDirection:'row'}}>
-                  <Text style={styles.subTxt}>{rowData.shopAddress}</Text>
+                  <Text style={styles.subTxt}>{rowData.shopAddress || '未知地址'}</Text>
                 </View>
               </View>
             </View>
@@ -102,19 +102,23 @@ class SearchShop extends Component {
     return(
       <View style={styles.section}>
         <ListView
+          style={{flex: 1}}
+          keyboardDismissMode="on-drag"
           renderSectionHeader={this.renderShopHeader}
           dataSource={DS.cloneWithRows(this.props.shops.result)}
           renderRow={(rowData) => this.renderShopItems(rowData)}
           enableEmptySections={true}
           stickySectionHeadersEnabled= {true}
           onEndReached={this.onLoadMore}
+          onEndReachedThreshold={10}
+
         />
       </View>
     )
   }
 
   onSearchShop = () => {
-    if(this.state.searchKey && this.state.searchKey.length > 0) {
+    if (this.state.searchKey && this.state.searchKey.length > 0) {
       this.props.searchShopAction({
         key: this.state.searchKey,
       })
@@ -134,7 +138,6 @@ class SearchShop extends Component {
               style={{flex: 1, height: normalizeH(30), color: 'white'}}
               onChangeText={(text) => this.setState({searchKey: text})}
               value={this.state.searchKey}
-              autoFocus={true}
               multiline={false}
               placeholder="搜索"
               placeholderTextColor='#FFFFFF'/>
@@ -143,9 +146,9 @@ class SearchShop extends Component {
             <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索店铺</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView keyboardDismissMode="on-drag" style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
+        <View style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
           {this.renderShopView()}
-        </ScrollView>
+        </View>
       </View>
     )
   }
@@ -195,26 +198,22 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(10)
   },
   centerWrap: {
-    flex: 2,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginLeft: normalizeW(10),
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: 10,
   },
   rightWrap: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-  },
-  searchBar: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    height: normalizeH(30),
-    color: 'white',
+    marginLeft: normalizeW(20)
   },
   section: {
+    flex: 1,
     paddingLeft: normalizeW(20),
     backgroundColor: '#FFFFFF',
     marginBottom: normalizeH(10)
@@ -222,12 +221,6 @@ const styles = StyleSheet.create({
   sectionHeader: {
     borderBottomWidth: 1,
     borderBottomColor: '#EBEBEB'
-  },
-  more: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: normalizeH(40),
-    paddingRight: normalizeW(10)
   },
   item: {
     flexDirection: 'row',
@@ -242,7 +235,9 @@ const styles = StyleSheet.create({
     height: 80
   },
   cover: {
-    flex: 1
+    flex: 1,
+    width: 80,
+    height: 80
   },
   shopIntroWrap: {
     flex: 1,
@@ -263,24 +258,5 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(10),
     color: '#d8d8d8',
     fontSize: em(12)
-  },
-  topicWrapStyle: {
-    flex: 1,
-    marginTop: normalizeH(13),
-    marginLeft: normalizeW(35),
-    marginRight: normalizeW(12)
-  },
-  topicTitleStyle: {
-    fontSize: em(17),
-    fontWeight: 'bold',
-    lineHeight: em(20),
-    marginBottom: normalizeH(5),
-    color: "#5A5A5A"
-  },
-  topicStyle: {
-    marginBottom: normalizeH(13),
-    fontSize: em(15),
-    lineHeight: em(20),
-    color: "#9b9b9b"
   },
 })

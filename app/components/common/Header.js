@@ -63,9 +63,13 @@ export default class Header extends Component {
           </TouchableOpacity>
         </View>
       )
+    } else if (this.props.leftType == 'none') {
+      return (
+        <View style={{paddingLeft: em(24)}}/>
+      )
     } else {
       return (
-        <View style={styles.rightWrap}/>
+        <View style={styles.leftWrap}/>
       )
     }
   }
@@ -231,7 +235,7 @@ const styles = StyleSheet.create({
     marginLeft: 3
   },
   centerWrap: {
-    flex: 2,
+    flex: 4,
     justifyContent: 'center',
     alignItems: 'stretch'
   }

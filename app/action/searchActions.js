@@ -44,7 +44,6 @@ export function searchClearAction(payload) {
 }
 
 export function searchUserAction(payload) {
-  console.log("searchUserAction payload", payload)
   return (dispatch, getState) => {
     if(!payload.sid) {
       let clearUserResultAction = createAction(uiTypes.SEARCH_USER_CLEAR)
