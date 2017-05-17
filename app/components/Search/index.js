@@ -326,12 +326,13 @@ class Search extends Component {
           <View style={styles.centerWrap}>
             <Image style={{marginLeft: normalizeW(10), marginRight: normalizeW(10)}} source={require('../../assets/images/search.png')}/>
             <TextInput
-              style={{flex: 1, height: normalizeH(30), color: 'white'}}
+              style={{flex: 1, height: normalizeH(30), color: 'white', padding: 0}}
               onChangeText={(text) => this.setState({searchKey: text})}
               value={this.state.searchKey}
               autoFocus={true}
               multiline={false}
               placeholder="搜索"
+              underlineColorAndroid="transparent"
               placeholderTextColor='#FFFFFF'/>
           </View>
           <TouchableOpacity style={styles.rightWrap} onPress={this.onSearch}>

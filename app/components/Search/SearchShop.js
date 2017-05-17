@@ -135,15 +135,16 @@ class SearchShop extends Component {
           <View style={styles.centerWrap}>
             <Image style={{marginLeft: normalizeW(10), marginRight: normalizeW(10)}} source={require('../../assets/images/search.png')}/>
             <TextInput
-              style={{flex: 1, height: normalizeH(30), color: 'white'}}
+              style={{flex: 1, height: normalizeH(30), color: 'white', padding: 0}}
               onChangeText={(text) => this.setState({searchKey: text})}
               value={this.state.searchKey}
               multiline={false}
-              placeholder="搜索"
+              placeholder="搜索店铺"
+              underlineColorAndroid="transparent"
               placeholderTextColor='#FFFFFF'/>
           </View>
           <TouchableOpacity style={styles.rightWrap} onPress={this.onSearchShop}>
-            <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索店铺</Text>
+            <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索</Text>
           </TouchableOpacity>
         </View>
         <View style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
