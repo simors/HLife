@@ -1,6 +1,7 @@
 /**
  * Created by wanpeng on 2017/5/16.
  */
+
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -18,19 +19,19 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {normalizeH, normalizeW, normalizeBorder} from '../../util/Responsive'
+import {normalizeH, normalizeW, normalizeBorder, em} from '../../util/Responsive'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../constants/themes/theme1'
-import {searchUserAction} from '../../action/searchActions'
-import {getUserSearchResult} from '../../selector/searchSelector'
+import {searchShopAction} from '../../action/searchActions'
+import {getShopSearchResult} from '../../selector/searchSelector'
+import ScoreShow from '../common/ScoreShow'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
 const DS = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-
-class SearchUser extends Component {
+class SearchShop extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -40,7 +41,7 @@ class SearchUser extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.searchUserAction({
+      this.props.searchShopAction({
         key: this.props.searchKey,
         sid: this.props.sid
       })
@@ -48,21 +49,62 @@ class SearchUser extends Component {
   }
 
   onLoadMore = () => {
-    if(this.props.users.hasMore) {
-      this.props.searchUserAction({
+    if(this.props.shops.hasMore) {
+      this.props.searchShopAction({
         key: this.state.searchKey,
-        sid: this.props.users.sid
+        sid: this.props.shops.sid
       })
     }
   }
 
-  renderUserView() {
+  renderShopItems(rowData) {
+    return (
+      <TouchableOpacity onPress={()=>{}}>
+        <View style={styles.item}>
+          <View style={styles.coverWrap}>
+            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
+          </View>
+          <View style={styles.shopIntroWrap}>
+            <View style={styles.shopInnerIntroWrap}>
+              <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
+              <ScoreShow
+                containerStyle={{flex:1}}
+                score={rowData.score}
+              />
+              <View style={styles.subInfoWrap}>
+                <View style={{flex:1,flexDirection:'row'}}>
+                  <Text style={styles.subTxt}>{rowData.shopAddress}</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  renderShopHeader(sectionData, sectionID) {
+    if(sectionData.length > 0) {
+      return(
+        <View style={styles.sectionHeader}>
+          <Text style={{fontSize: 15, color: '#999999', marginTop: normalizeH(10), marginBottom: normalizeH(10)}}>店铺</Text>
+        </View>
+      )
+    } else {
+      return(
+        <View />
+      )
+    }
+
+  }
+
+  renderShopView() {
     return(
       <View style={styles.section}>
         <ListView
-          renderSectionHeader={this.renderUserHeader}
-          dataSource={DS.cloneWithRows(this.props.users.result)}
-          renderRow={(rowData) => this.renderUserItems(rowData)}
+          renderSectionHeader={this.renderShopHeader}
+          dataSource={DS.cloneWithRows(this.props.shops.result)}
+          renderRow={(rowData) => this.renderShopItems(rowData)}
           enableEmptySections={true}
           stickySectionHeadersEnabled= {true}
           onEndReached={this.onLoadMore}
@@ -71,37 +113,9 @@ class SearchUser extends Component {
     )
   }
 
-  renderUserHeader(sectionData, sectionID) {
-    if(sectionData.length > 0) {
-      return(
-        <View style={styles.sectionHeader}>
-          <Text style={{fontSize: 15, color: '#999999', marginTop: normalizeH(10), marginBottom: normalizeH(10)}}>用户</Text>
-        </View>
-      )
-    } else {
-      return(
-        <View />
-      )
-    }
-  }
-
-  renderUserItems(user) {
-    return(
-      <TouchableOpacity style={styles.item}>
-        <View>
-          <Image style={{width: 40, height: 40, marginTop: normalizeH(10), marginBottom: normalizeH(10), marginRight: normalizeW(10)}}
-                 source={user.avatar? {uri: user.avatar}: require('../../assets/images/defualt_user.png')}/>
-        </View>
-        <View>
-          <Text style={{fontSize: 17}}>{user.nickname}</Text>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
-  onSearchUser = () => {
+  onSearchShop = () => {
     if(this.state.searchKey && this.state.searchKey.length > 0) {
-      this.props.searchUserAction({
+      this.props.searchShopAction({
         key: this.state.searchKey,
       })
     }
@@ -122,35 +136,35 @@ class SearchUser extends Component {
               value={this.state.searchKey}
               autoFocus={true}
               multiline={false}
-              placeholder="搜索用户"
+              placeholder="搜索"
               placeholderTextColor='#FFFFFF'/>
           </View>
-          <TouchableOpacity style={styles.rightWrap} onPress={this.onSearchUser}>
-            <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索</Text>
+          <TouchableOpacity style={styles.rightWrap} onPress={this.onSearchShop}>
+            <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索店铺</Text>
           </TouchableOpacity>
         </View>
         <ScrollView keyboardDismissMode="on-drag" style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
-          {this.renderUserView()}
+          {this.renderShopView()}
         </ScrollView>
-
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let users = getUserSearchResult(state) || []
-  console.log("getUserSearchResult ", users)
+
+  let shops = getShopSearchResult(state) || []
   return {
-    users: users,
+    shops: shops,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  searchUserAction
+  searchShopAction
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchUser)
+export default connect(mapStateToProps, mapDispatchToProps)(SearchShop)
+
 
 const styles = StyleSheet.create({
   container: {
@@ -209,10 +223,64 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#EBEBEB'
   },
+  more: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: normalizeH(40),
+    paddingRight: normalizeW(10)
+  },
   item: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#EBEBEB',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  coverWrap: {
+    width: 80,
+    height: 80
+  },
+  cover: {
+    flex: 1
+  },
+  shopIntroWrap: {
+    flex: 1,
+    paddingLeft: 10,
+  },
+  shopInnerIntroWrap: {
+    height: 80,
+  },
+  shopName: {
+    lineHeight: em(20),
+    fontSize: em(17),
+    color: '#8f8e94'
+  },
+  subInfoWrap: {
+    flexDirection: 'row',
+  },
+  subTxt: {
+    marginRight: normalizeW(10),
+    color: '#d8d8d8',
+    fontSize: em(12)
+  },
+  topicWrapStyle: {
+    flex: 1,
+    marginTop: normalizeH(13),
+    marginLeft: normalizeW(35),
+    marginRight: normalizeW(12)
+  },
+  topicTitleStyle: {
+    fontSize: em(17),
+    fontWeight: 'bold',
+    lineHeight: em(20),
+    marginBottom: normalizeH(5),
+    color: "#5A5A5A"
+  },
+  topicStyle: {
+    marginBottom: normalizeH(13),
+    fontSize: em(15),
+    lineHeight: em(20),
+    color: "#9b9b9b"
+  },
 })

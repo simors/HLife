@@ -1,6 +1,7 @@
 /**
- * Created by wanpeng on 2017/5/10.
+ * Created by wanpeng on 2017/5/16.
  */
+
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -21,9 +22,8 @@ import {Actions} from 'react-native-router-flux'
 import {normalizeH, normalizeW, normalizeBorder, em} from '../../util/Responsive'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../constants/themes/theme1'
-import {searchKeyAction, searchClearAction} from '../../action/searchActions'
-import {getUserSearchResult, getShopSearchResult, getTopicSearchResult} from '../../selector/searchSelector'
-import ScoreShow from '../common/ScoreShow'
+import {searchTopicAction} from '../../action/searchActions'
+import {getTopicSearchResult} from '../../selector/searchSelector'
 import ImageGroupViewer from '../../components/common/Input/ImageGroupViewer'
 
 
@@ -31,182 +31,39 @@ const PAGE_WIDTH=Dimensions.get('window').width
 
 const DS = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-class Search extends Component {
+
+class SearchTopic extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      searchKey: undefined
+      searchKey: this.props.searchKey
     }
   }
 
-  componentWillUnmount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.searchClearAction({})
+      this.props.searchTopicAction({
+        key: this.props.searchKey,
+        sid: this.props.sid
+      })
     })
   }
 
-  renderUserView() {
-   return(
-      <View style={styles.section}>
-        <ListView
-          renderSectionHeader={this.renderUserHeader}
-          dataSource={DS.cloneWithRows(this.props.users.result)}
-          renderRow={(rowData) => this.renderUserItems(rowData)}
-          enableEmptySections={true}
-          stickySectionHeadersEnabled= {true}
-        />
-        {this.renderUserMore()}
-      </View>
-    )
-  }
-
-  renderUserHeader(sectionData, sectionID) {
-    if(sectionData.length > 0) {
-      return(
-        <View style={styles.sectionHeader}>
-          <Text style={{fontSize: 15, color: '#999999', marginTop: normalizeH(10), marginBottom: normalizeH(10)}}>用户</Text>
-        </View>
-      )
-    } else {
-      return(
-        <View />
-      )
+  onLoadMore = () => {
+    if(this.props.topics.hasMore) {
+      this.props.searchTopicAction({
+        key: this.state.searchKey,
+        sid: this.props.topics.sid
+      })
     }
   }
 
-  onUserSearchMore = () => {
-    Actions.SEARCH_USER({
-      searchKey: this.state.searchKey,
-      sid: this.props.users.sid
-    })
-  }
-
-  renderUserMore() {
-    if(this.props.users.hasMore) {
-      return(
-        <TouchableOpacity style={styles.more} onPress={this.onUserSearchMore}>
-          <Image source={require('../../assets/images/search.png')}/>
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多用户</Text>
-          </View>
-          <Image source={require('../../assets/images/arrow_left.png')}/>
-        </TouchableOpacity>
-      )
-    } else {
-      return(
-        <View />
-      )
+  onSearchTopic = () => {
+    if(this.state.searchKey && this.state.searchKey.length > 0) {
+      this.props.searchTopicAction({
+        key: this.state.searchKey,
+      })
     }
-  }
-
-  renderUserItems(user) {
-    return(
-      <TouchableOpacity style={styles.item}>
-        <View>
-          <Image style={{width: 40, height: 40, marginTop: normalizeH(10), marginBottom: normalizeH(10), marginRight: normalizeW(10)}}
-                 source={user.avatar? {uri: user.avatar}: require('../../assets/images/defualt_user.png')}/>
-        </View>
-        <View>
-          <Text style={{fontSize: 17}}>{user.nickname}</Text>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
-  renderShopView() {
-    return(
-      <View style={styles.section}>
-        <ListView
-          renderSectionHeader={this.renderShopHeader}
-          dataSource={DS.cloneWithRows(this.props.shops.result)}
-          renderRow={(rowData) => this.renderShopItems(rowData)}
-          enableEmptySections={true}
-          stickySectionHeadersEnabled= {true}
-        />
-        {this.renderShopMore()}
-      </View>
-    )
-  }
-
-  renderShopHeader(sectionData, sectionID) {
-    if(sectionData.length > 0) {
-      return(
-        <View style={styles.sectionHeader}>
-          <Text style={{fontSize: 15, color: '#999999', marginTop: normalizeH(10), marginBottom: normalizeH(10)}}>店铺</Text>
-        </View>
-      )
-    } else {
-      return(
-        <View />
-      )
-    }
-
-  }
-
-  onShopSearchMore = () => {
-    Actions.SEARCH_SHOP({
-      searchKey: this.state.searchKey,
-      sid: this.props.shops.sid
-    })
-  }
-
-  renderShopMore() {
-    if(this.props.shops.hasMore) {
-      return(
-        <TouchableOpacity style={styles.more} onPress={this.onShopSearchMore}>
-          <Image source={require('../../assets/images/search.png')}/>
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多店铺</Text>
-          </View>
-          <Image source={require('../../assets/images/arrow_left.png')}/>
-        </TouchableOpacity>
-      )
-    } else {
-      return(
-        <View />
-      )
-    }
-  }
-
-  renderShopItems(rowData) {
-    return (
-      <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.item}>
-          <View style={styles.coverWrap}>
-            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
-          </View>
-          <View style={styles.shopIntroWrap}>
-            <View style={styles.shopInnerIntroWrap}>
-              <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
-              <ScoreShow
-                containerStyle={{flex:1}}
-                score={rowData.score}
-              />
-              <View style={styles.subInfoWrap}>
-                <View style={{flex:1,flexDirection:'row'}}>
-                  <Text style={styles.subTxt}>{rowData.shopAddress}</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
-  renderTopicView() {
-    return(
-      <View style={styles.section}>
-        <ListView
-          renderSectionHeader={this.renderTopicHeader}
-          dataSource={DS.cloneWithRows(this.props.topics.result)}
-          renderRow={(rowData) => this.renderTopicItems(rowData)}
-          enableEmptySections={true}
-          stickySectionHeadersEnabled= {true}
-        />
-        {this.renderTopicMore()}
-      </View>
-    )
   }
 
   renderTopicHeader(sectionData, sectionID) {
@@ -282,38 +139,19 @@ class Search extends Component {
     }
   }
 
-  onTopicSearchMore = () => {
-    Actions.SEARCH_TOPIC({
-      searchKey: this.state.searchKey,
-      sid: this.props.topics.sid
-    })
-  }
-
-  renderTopicMore() {
-    if(this.props.topics.hasMore) {
-      return(
-        <TouchableOpacity style={styles.more} onPress={this.onTopicSearchMore}>
-          <Image source={require('../../assets/images/search.png')}/>
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text style={{color: '#65718D', fontSize: 15, marginLeft: normalizeW(10)}}>查看更多店铺</Text>
-          </View>
-          <Image source={require('../../assets/images/arrow_left.png')}/>
-        </TouchableOpacity>
-      )
-    } else {
-      return(
-        <View />
-      )
-    }
-  }
-
-  onSearch = () => {
-    if(this.state.searchKey && this.state.searchKey.length > 0) {
-      this.props.searchKeyAction({
-        key: this.state.searchKey,
-        limit: 3,
-      })
-    }
+  renderTopicView() {
+    return(
+      <View style={styles.section}>
+        <ListView
+          renderSectionHeader={this.renderTopicHeader}
+          dataSource={DS.cloneWithRows(this.props.topics.result)}
+          renderRow={(rowData) => this.renderTopicItems(rowData)}
+          enableEmptySections={true}
+          stickySectionHeadersEnabled= {true}
+          onEndReached={this.onLoadMore}
+        />
+      </View>
+    )
   }
 
   render() {
@@ -334,37 +172,32 @@ class Search extends Component {
               placeholder="搜索"
               placeholderTextColor='#FFFFFF'/>
           </View>
-          <TouchableOpacity style={styles.rightWrap} onPress={this.onSearch}>
-            <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索</Text>
+          <TouchableOpacity style={styles.rightWrap} onPress={this.onSearchTopic}>
+            <Text style={{ fontSize: 17, color: '#FFFFFF', paddingRight: normalizeW(10)}}>搜索话题</Text>
           </TouchableOpacity>
         </View>
         <ScrollView keyboardDismissMode="on-drag" style={{marginTop: normalizeH(64), flex: 1,backgroundColor: '#EBEBEB'}}>
-          {this.renderUserView()}
-          {this.renderShopView()}
           {this.renderTopicView()}
         </ScrollView>
+
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let users = getUserSearchResult(state) || []
-  let shops = getShopSearchResult(state) || []
   let topics = getTopicSearchResult(state) || []
   return {
-    users: users,
-    shops: shops,
     topics: topics,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  searchKeyAction,
-  searchClearAction
+  searchTopicAction
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search)
+export default connect(mapStateToProps, mapDispatchToProps)(SearchTopic)
+
 
 const styles = StyleSheet.create({
   container: {
