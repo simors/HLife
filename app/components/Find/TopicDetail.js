@@ -373,7 +373,6 @@ export class TopicDetail extends Component {
 
   renderHeaderView() {
     let topic = this.props.topic
-    console.log('topic:', topic)
     if (topic.picked) {
       return (
         <Header

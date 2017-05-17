@@ -95,7 +95,7 @@ class PromoterDirectTeam extends Component {
           <Text style={styles.tipText}>我的邀请者</Text>
         </View>
         <View>
-          <TouchableOpacity style={styles.infoView} onPress={() => {}}>
+          <TouchableOpacity style={styles.infoView} onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: upUser.id})}}>
             <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
               <Image style={styles.avatarStyle} resizeMode="contain"
                      source={upUser.avatar ? {uri: upUser.avatar} : require("../../../assets/images/default_portrait.png")} />

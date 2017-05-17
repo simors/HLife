@@ -83,7 +83,7 @@ class PromoterSecondTeam extends Component {
           <Text style={styles.tipText}>我的一级好友</Text>
         </View>
         <View>
-          <TouchableOpacity style={styles.infoView} onPress={() => {}}>
+          <TouchableOpacity style={styles.infoView} onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: user.id})}}>
             <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
               <Image style={styles.avatarStyle} resizeMode="contain"
                      source={user.avatar ? {uri: user.avatar} : require("../../../assets/images/default_portrait.png")} />
