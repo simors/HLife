@@ -63,9 +63,13 @@ export default class Header extends Component {
           </TouchableOpacity>
         </View>
       )
+    } else if (this.props.leftType == 'none') {
+      return (
+        <View style={{paddingLeft: em(24)}}/>
+      )
     } else {
       return (
-        <View style={styles.rightWrap}/>
+        <View style={styles.leftWrap}/>
       )
     }
   }
@@ -122,13 +126,27 @@ export default class Header extends Component {
     }
   }
 
+  renderCenter() {
+    if (this.props.centerComponent) {
+      return (
+        <View style={styles.centerWrap}>
+          {this.props.centerComponent()}
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.titleWrap}>
+          <Text numberOfLines={1} style={[styles.title, this.props.titleStyle]}>{this.props.title}</Text>
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={[styles.header, this.props.headerContainerStyle]}>
         {this.renderLeft()}
-        <View style={styles.titleWrap}>
-          <Text numberOfLines={1} style={[styles.title, this.props.titleStyle]}>{this.props.title}</Text>
-        </View>
+        {this.renderCenter()}
         {this.renderRight()}
       </View>
     )
@@ -215,5 +233,10 @@ const styles = StyleSheet.create({
   },
   rightImage: {
     marginLeft: 3
+  },
+  centerWrap: {
+    flex: 4,
+    justifyContent: 'center',
+    alignItems: 'stretch'
   }
 })

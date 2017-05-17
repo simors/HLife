@@ -3,9 +3,11 @@
  */
 import {combineReducers} from 'redux'
 import inputFormReducer from './inputFormReducer'
+import searchReducer from './searchReducer'
 
 const uiReducer = combineReducers({
   INPUTFORM: inputFormReducer,
+  SEARCH: searchReducer,
 })
 
 export default uiReducer

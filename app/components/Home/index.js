@@ -56,6 +56,7 @@ import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-nativ
 import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
 import ViewPager from '../common/ViewPager'
+import SearchBar from '../common/SearchBar'
 
 
 const RNDeviceInfo = NativeModules.RNDeviceInfo
@@ -79,7 +80,7 @@ class Home extends Component {
         skipNum: 0,
         loadingOtherCityData: false
       },
-      fade: new Animated.Value(0),
+      fade: new Animated.Value(20),
     }
   }
 
@@ -244,7 +245,9 @@ class Home extends Component {
           headerContainerStyle={{borderBottomWidth: 0, backgroundColor: 'transparent', position: 'relative'}}
           leftPress={() => {
           }}
-          title="汇邻优店"
+          centerComponent={() => {
+            return <SearchBar />
+          }}
           rightComponent={() => {
             return <MessageBell />
           }}
