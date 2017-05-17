@@ -23,6 +23,7 @@ export const TopicsConfig = Record({
   likedUsers: undefined,  //点赞用户列表
   createdDate: undefined,
   lastLoginDuration: undefined,
+  picked: undefined,
 }, 'TopicsConfig')
 
 export class TopicsItem extends TopicsConfig {
@@ -73,6 +74,7 @@ export class TopicsItem extends TopicsConfig {
       record.set('objectId', lcObj.id)
       record.set('commentNum', attrs.commentNum)
       record.set('likeCount', attrs.likeCount)
+      record.set('picked', attrs.picked)
     })
   }
 }

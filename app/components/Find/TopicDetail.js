@@ -372,32 +372,34 @@ export class TopicDetail extends Component {
   }
 
   renderHeaderView() {
-    // if (this.props.topic && this.props.topic.userId == this.props.userInfo.id) {
-    //   return (
-    //     <Header
-    //       leftType="icon"
-    //       leftIconName="ios-arrow-back"
-    //       leftPress={() => Actions.pop()}
-    //       title="详情"
-    //       rightComponent={() => {return this.renderMoreBtn()}}
-    //     />
-    //   )
-    // }
-    return (
-      <Header
-        leftType="icon"
-        leftIconName="ios-arrow-back"
-        leftPress={() => Actions.pop()}
-        title="详情"
-        rightComponent={()=>{
-          return (
-            <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
-              <Image source={require('../../assets/images/active_share.png')}/>
-            </TouchableOpacity>
-          )
-        }}
-      />
-    )
+    let topic = this.props.topic
+    console.log('topic:', topic)
+    if (topic.picked) {
+      return (
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.pop()}
+          title="详情"
+          rightComponent={()=>{
+            return (
+              <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
+                <Image source={require('../../assets/images/active_share.png')}/>
+              </TouchableOpacity>
+            )
+          }}
+        />
+      )
+    } else {
+      return (
+        <Header
+          leftType="icon"
+          leftIconName="ios-arrow-back"
+          leftPress={() => Actions.pop()}
+          title="详情"
+        />
+      )
+    }
   }
 
   renderTopicLikeUsersView() {
@@ -567,7 +569,6 @@ export class TopicDetail extends Component {
   render() {
     return (
       <View style={styles.containerStyle}>
-        {/*<StatusBar barStyle="dark-content"/>*/}
         {this.renderHeaderView()}
         <View style={styles.body}>
 
