@@ -79,7 +79,7 @@ class Publish extends Component {
             <Image
               resizeMode="contain"
               style={{width: normalizeW(181), height: normalizeH(181), paddingBottom: normalizeH(20)}}
-              source={require('../../assets/images/logo_add.png')}/>
+              source={require('../../assets/images/brand.png')}/>
             {/*<Image source={require('../../assets/images/font_faxian.png')}/>*/}
             <Text style={{fontSize: em(15), color: '#AAAAAA', paddingTop: normalizeH(20)}}>汇聚周边优质好店</Text>
           </View>
