@@ -6,10 +6,22 @@ import * as lcPayment from '../api/leancloud/payment'
 import {CREATE_PAYMENT, CREATE_TRANSFERS, ADD_CARD, GET_PAYMENTINFO, SET_PASSWORD} from '../constants/paymentActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
-
-
+import {UserInfo} from '../models/userModels'
+import {ShopInfo} from '../models/shopModel'
+import {PromoterInfo} from '../models/promoterModel'
+import * as shopActionTypes from '../constants/shopActionTypes'
+import * as AuthTypes from '../constants/authActionTypes'
+import * as promoterActionTypes from '../constants/promoterActionTypes'
+import * as paymentActionTypes from '../constants/paymentActionTypes'
+import {activeUserId} from '../selector/authSelector'
 
 let createPaymentAction = createAction(CREATE_PAYMENT)
+let addShopDetail = createAction(shopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
+let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
+let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
+let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
+let setUserDealRecords = createAction(paymentActionTypes.SET_DEAL_RECORDS)
+let addUserDealRecords = createAction(paymentActionTypes.ADD_DEAL_RECORDS)
 
 export function createPingppPayment(payload) {
   return (dispatch, getState) => {
@@ -150,6 +162,65 @@ export function setPaymentPassword(payload) {
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
+      }
+    })
+  }
+}
+
+export function getUserDealRecords(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcPayment.fetchDealRecords(payload).then((records) => {
+      console.log('records:', records)
+      let deals = records.dealRecords
+      let dealRecords = []
+      deals.forEach((record) => {
+        let dealRecord = {}
+        dealRecord.cost = record.cost
+        dealRecord.dealType = record.dealType
+        dealRecord.dealTime = record.dealTime
+        if (record.dealType == 2) {
+          dealRecord.shopId = record.shop.objectId
+          let shop = record.shop
+          let shopRecord = ShopInfo.fromLeancloudApi(shop)
+          dispatch(addShopDetail({id: shop.objectId, shopInfo: shopRecord}))
+        } else if (record.dealType == 1) {
+          dealRecord.invitedPromoterId = record.promoter.objectId
+          dealRecord.userId = record.user.id
+          let promoter = record.promoter
+          let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
+          dispatch(updatePromoter({promoterId: record.promoter.objectId, promoter: promoterRecord}))
+          dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId: record.promoter.objectId}))
+          let user = record.user
+          let userInfo = UserInfo.fromLeancloudApi(user)
+          dispatch(addUserProfile({userInfo}))
+        } else if (record.dealType == 5) {
+          dealRecord.userId = record.user.id
+          let user = record.user
+          let userInfo = UserInfo.fromLeancloudApi(user)
+          dispatch(addUserProfile({userInfo}))
+        } else {
+          dealRecord.userId = record.user.id
+          let user = record.user
+          let userInfo = UserInfo.fromLeancloudApi(user)
+          dispatch(addUserProfile({userInfo}))
+        }
+        dealRecords.push(dealRecord)
+      })
+      if (more) {
+        dispatch(addUserDealRecords({userId: activeUserId(getState()), dealRecords: dealRecords}))
+      } else {
+        dispatch(setUserDealRecords({userId: activeUserId(getState()), dealRecords: dealRecords}))
+      }
+      if (payload.success) {
+        payload.success(dealRecords.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
       }
     })
   }

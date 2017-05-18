@@ -80,7 +80,7 @@ class Home extends Component {
         skipNum: 0,
         loadingOtherCityData: false
       },
-      fade: new Animated.Value(20),
+      fade: new Animated.Value(0),
     }
   }
 

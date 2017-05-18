@@ -105,3 +105,17 @@ export function paymentAuth(payload) {
     throw  error
   })
 }
+
+export function fetchDealRecords(payload) {
+  let params = {
+    userId: payload.userId,
+    limit: payload.limit,
+    lastTime: payload.lastTime,
+  }
+
+  return AV.Cloud.run('pingPPFetchDealRecords', params).then((result) => {
+    return result
+  }).catch((error) => {
+    throw  error
+  })
+}

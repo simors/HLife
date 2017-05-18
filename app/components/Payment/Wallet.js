@@ -65,6 +65,14 @@ class Wallet extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='钱包'
+          rightComponent={()=>{
+            return (
+              <TouchableOpacity onPress={() => Actions.DEAL_RECORDS({userId: this.props.currentUserId})} style={{marginRight:10}}>
+                <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode='contain'
+                       source={require('../../assets/images/revernue_details.png')}/>
+              </TouchableOpacity>
+            )
+          }}
         />
         <View style={styles.body}>
           <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), paddingRight: normalizeW(15)}}>

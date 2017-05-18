@@ -4,7 +4,7 @@
 import {Map, List, Record} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as PaymentActionTypes from '../constants/paymentActionTypes'
-import {Payment, PaymentRecord} from '../models/paymentModel'
+import {Payment, PaymentRecord, DealRecord} from '../models/paymentModel'
 
 const initialState = Payment()
 
@@ -20,6 +20,10 @@ export default function paymentReducer(state = initialState, action) {
       return handleGetBalance(state, action)
     case PaymentActionTypes.SET_PASSWORD:
       return handleSetPassword(state, action)
+    case PaymentActionTypes.SET_DEAL_RECORDS:
+      return handleSetDealRecords(state, action)
+    case PaymentActionTypes.ADD_DEAL_RECORDS:
+      return handleAddDealRecords(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -51,6 +55,47 @@ function handleSetPassword(state, action) {
   let record = state.get('paymentInfo')
   record = record.set('password', true)
   state = state.set('paymentInfo', record)
+  return state
+}
+
+function handleSetDealRecords(state, action) {
+  let payload = action.payload
+  let activeUserId = payload.userId
+  let dealRecords = payload.dealRecords
+  let recordList = []
+  dealRecords.forEach((deal) => {
+    let record = new DealRecord({
+      cost: deal.cost,
+      dealType: deal.dealType,
+      shopId: deal.shopId,
+      invitedPromoterId: deal.invitedPromoterId,
+      userId: deal.userId,
+      dealTime: deal.dealTime,
+    })
+    recordList.push(record)
+  })
+  state = state.setIn(['dealRecords', activeUserId], new List(recordList))
+  return state
+}
+
+function handleAddDealRecords(state, action) {
+  let payload = action.payload
+  let activeUserId = payload.userId
+  let dealRecords = payload.dealRecords
+  let recordList = []
+  let oldRecords = state.getIn(['dealRecords', activeUserId])
+  dealRecords.forEach((deal) => {
+    let record = new DealRecord({
+      cost: deal.cost,
+      dealType: deal.dealType,
+      shopId: deal.shopId,
+      invitedPromoterId: deal.invitedPromoterId,
+      userId: deal.userId,
+      dealTime: deal.dealTime,
+    })
+    recordList.push(record)
+  })
+  state = state.setIn(['dealRecords', activeUserId], oldRecords.concat(new List(recordList)))
   return state
 }
 
