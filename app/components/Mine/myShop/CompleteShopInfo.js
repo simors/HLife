@@ -375,6 +375,16 @@ class CompleteShopInfo extends Component {
   }
 
   editShopCover(){
+    Popup.confirm({
+      title: '系统提示',
+      content: '不要使用个人二维码作为店铺封面，如有违规店铺将被封闭，敬请遵守平台规则！',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+        }
+      },
+    })
     Actions.UPDATE_SHOP_COVER_FOR_EDIT_SHOP({
       localCoverImgUri: this.localCoverImgUri
     })
