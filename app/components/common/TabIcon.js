@@ -51,9 +51,11 @@ class TabIcon extends Component {
           }
         }}>
           <View style={[styles.container, {backgroundColor: THEME.base.mainColor}]}>
-            <View>
-              <Text style={{color: 'white', fontSize: em(35)}}>+</Text>
-            </View>
+            {this.getImage(index, selected)}
+            <Text style={{color:'#FFF', fontSize: em(10), marginTop: 4}}>
+              {title}
+            </Text>
+            <View style={styles.topLine}/>
             <View style={styles.topLine}/>
           </View>
         </TouchableWithoutFeedback>
@@ -96,7 +98,7 @@ class TabIcon extends Component {
         break
 
       case 2:
-        imageSource = require("../../assets/images/shop_un.png")
+        imageSource = require("../../assets/images/publish_24.png")
         break
 
       case 3:
