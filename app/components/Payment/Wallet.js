@@ -65,6 +65,14 @@ class Wallet extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title='钱包'
+          rightComponent={()=>{
+            return (
+              <TouchableOpacity onPress={() => Actions.DEAL_RECORDS({userId: this.props.currentUserId})} style={{marginRight:10}}>
+                <Image style={{width: normalizeW(20), height: normalizeH(20)}} resizeMode='contain'
+                       source={require('../../assets/images/revernue_details.png')}/>
+              </TouchableOpacity>
+            )
+          }}
         />
         <View style={styles.body}>
           <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), paddingRight: normalizeW(15)}}>
@@ -73,8 +81,8 @@ class Wallet extends Component {
               <Text style={{fontSize: 36, color: '#FF7819', marginTop: normalizeH(20)}}>{this.props.paymentInfo.balance}</Text>
             </View>
             <View style={styles.setting}>
-              <TouchableOpacity style={{flexDirection: 'row'}} onPress={this.onPaymentSetting}>
-                <Image source={require('../../assets/images/promot_set_wallet.png')}/>
+              <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={this.onPaymentSetting}>
+                <Image resizeMode='contain' source={require('../../assets/images/promot_set_wallet.png')}/>
                 <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(5)}}>取款设置</Text>
               </TouchableOpacity>
             </View>

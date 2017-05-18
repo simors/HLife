@@ -35,6 +35,15 @@ export const ChargeRecord = Record({
   credential: undefined,  //支付凭证，用于客户端发起支付
 }, 'ChargeRecord')
 
+export const DealRecord = Record({
+  cost: undefined,              // 收益金额
+  dealType: undefined,          // 收益的类型，1表示邀请推广员，2表示邀请店铺
+  shopId: undefined,            // 如果收益类型为邀请店铺，那么这个字段记录被邀请的店铺id
+  invitedPromoterId: undefined, // 如果收益类型为邀请推广员，那么这个字段记录被邀请推广员的id
+  userId: undefined,            // 如果收益类型为邀请推广员，那么这个字段记录被邀请推广员的用户id
+  dealTime: undefined,          // 记录收益时间
+})
+
 export class ChargeInfo extends ChargeRecord {
   static fromLeancloudObject(lcObj) {
     return undefined
@@ -44,4 +53,5 @@ export class ChargeInfo extends ChargeRecord {
 export const Payment = Record({
   payment: List(),
   paymentInfo: PaymentRecord(),
+  dealRecords: Map(),
 }, 'Payment')
