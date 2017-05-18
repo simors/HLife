@@ -327,8 +327,10 @@ class Mine extends Component {
             <View style={styles.menuIcon}>
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_push.png')} />
             </View>
-            <View>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {this.renderPromoterBtnText()}
+              <Image style={{marginLeft: 5, width: normalizeW(20), height: normalizeH(20)}} resizeMode='contain'
+                     source={require('../../assets/images/hot_20.png')}/>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.WALLET()}}>
