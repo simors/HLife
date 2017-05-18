@@ -17,6 +17,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
+import {BUY_GOODS} from '../../constants/appConfig'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -24,6 +25,24 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export default class ChatroomShopPromotionCustomTopView extends Component {
 	constructor(props) {
     super(props)
+  }
+
+  onPaymentPress() {
+    let item = this.props.shopPromotionInfo
+    Actions.PAYMENT({
+      title: '商家活动支付',
+      price: item.promotingPrice,
+      // price: '0.01',
+      metadata: {
+        'fromUser': this.props.userId,
+        'toUser': item.targetShop.owner.id,
+        'dealType': BUY_GOODS
+      },
+      paySuccessJumpScene: 'BUY_GOODS_OK',
+      paySuccessJumpSceneParams: {
+      },
+      payErrorJumpBack: true,
+    })
   }
 
   render() {
@@ -75,11 +94,18 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 	                  : null
 	                }
 	              </View>
-	              <View>
-                  {item.pv
-                    ? <Text style={styles.itemText}>{item.pv}人看过</Text>
-                    : null
-                  }
+	              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View>
+                    {item.pv
+                      ? <Text style={styles.itemText}>{item.pv}人看过</Text>
+                      : null
+                    }
+                  </View>
+                  <View>
+                    <TouchableOpacity style={styles.payBtn} onPress={() => this.onPaymentPress()}>
+                      <Text style={{fontSize: em(15), color: '#FFF'}}>去支付</Text>
+                    </TouchableOpacity>
+                  </View>
 	              </View>
 	            </View>
 	          </View>
@@ -97,7 +123,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
-		height: 130,
+		height: 135,
 		paddingTop: 15,
 		backgroundColor:'#f5f5f5',
 		width:PAGE_WIDTH,
@@ -173,5 +199,12 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     fontWeight: 'bold',
     color: '#00BE96',
+  },
+  payBtn: {
+    backgroundColor: THEME.base.mainColor,
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
   },
 })

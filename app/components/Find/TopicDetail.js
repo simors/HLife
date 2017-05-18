@@ -17,6 +17,8 @@ import {
   Keyboard,
   BackAndroid,
   ListView,
+  Modal,
+  TextInput,
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -46,7 +48,7 @@ import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
 import {fetchShareDomain} from '../../action/configAction'
 import {getShareDomain} from '../../selector/configSelector'
-
+import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
@@ -62,6 +64,8 @@ export class TopicDetail extends Component {
       comment: undefined,
       hideBottomView: false,
       loadComment: false,
+      showPayModal: false,
+      pay: '',
     }
     this.replyInput = null
     this.isReplying = false
@@ -565,6 +569,92 @@ export class TopicDetail extends Component {
     this.props.fetchTopicCommentsByTopicId(payload)
   }
 
+  onPaymentPress() {
+    let pay = this.state.pay
+    let decimal_part = pay.toString().split('.')[1]
+    if (decimal_part && decimal_part.length > 2) {
+      Toast.show('最多2位小数')
+      return
+    }
+    this.setState({showPayModal: false})
+    let topic = this.props.topic
+    Actions.PAYMENT({
+      title: '打赏支付',
+      price: pay,
+      metadata: {
+        'fromUser': this.props.userInfo.id,
+        'toUser': topic.userId,
+        'dealType': REWARD
+      },
+      paySuccessJumpScene: 'REWARD_OK',
+      paySuccessJumpSceneParams: {
+      },
+      payErrorJumpBack: true,
+    })
+  }
+
+  openPaymentModal() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else {
+      this.setState({showPayModal: true})
+    }
+  }
+
+  renderPaymentModal() {
+    return (
+      <View>
+        <Modal
+          visible={this.state.showPayModal}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={()=>{this.setState({showPayModal: false})}}
+        >
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+            <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
+              <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
+                <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置打赏金额</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>¥</Text>
+                <TextInput
+                  placeholder='打赏金额'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({pay: text})}
+                  value={this.state.pay}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(100),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>元</Text>
+              </View>
+              <View style={{width: PAGE_WIDTH-100, height: normalizeH(50), padding: 0, flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, borderColor: '#F5F5F5'}}>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.setState({showPayModal: false})}>
+                    <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex: 1}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.onPaymentPress()}>
+                    <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.containerStyle}>
@@ -615,6 +705,8 @@ export class TopicDetail extends Component {
           }
         </KeyboardAwareToolBar>
 
+        {this.renderPaymentModal()}
+
         {this.renderActionSheet()}
       </View>
     )
@@ -651,15 +743,21 @@ export class TopicDetail extends Component {
         <View style={[styles.shopCommentWrap, {position:'absolute',bottom:0,left:0,right:0}]}>
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
             <View style={[styles.vItem]}>
-              <Image style={{width:24,height:24}} source={likeImgSource}/>
+              <Image style={{width:24,height:24}} resizeMode='contain' source={likeImgSource}/>
               <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>{isLiked ? '已赞' : '点赞'}</Text>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={() => this.openModel()}>
+            <View style={[styles.vItem]}>
+              <Image style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/message.png')}/>
+              <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>评论</Text>
+            </View>
+          </TouchableOpacity>
           <View style={{flex:1}}/>
-          <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.openModel()}>
+          <TouchableOpacity style={styles.contactedWrap} onPress={() => this.openPaymentModal()}>
             <View style={[styles.contactedBox]}>
-              <Image style={{}} source={require('../../assets/images/topic_message.png')}/>
-              <Text style={[styles.contactedTxt]}>评论</Text>
+              <Image style={{}} source={require('../../assets/images/reward.png')}/>
+              <Text style={[styles.contactedTxt]}>打赏</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -826,7 +924,7 @@ const styles = StyleSheet.create({
     color: '#8f8e94'
   },
   contactedWrap: {
-    width: normalizeW(135),
+    width: normalizeW(110),
     backgroundColor: '#FF9D4E',
     justifyContent: 'center',
     alignItems: 'center'

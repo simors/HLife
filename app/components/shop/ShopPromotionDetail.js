@@ -30,13 +30,14 @@ import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopPromotionCustomTopView from './ChatroomShopPromotionCustomTopView'
 import {fetchUsers} from '../../action/authActions'
-const PAGE_WIDTH = Dimensions.get('window').width
-const PAGE_HEIGHT = Dimensions.get('window').height
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {fetchShareDomain} from '../../action/configAction'
 import {getShareDomain} from '../../selector/configSelector'
+import {SHAREURL} from '../../util/global'
+import {BUY_GOODS} from '../../constants/appConfig'
 
-
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 class ShopPromotionDetail extends Component {
   constructor(props) {
@@ -68,6 +69,7 @@ class ShopPromotionDetail extends Component {
     return (
       <ChatroomShopPromotionCustomTopView
         shopPromotionInfo={this.props.shopPromotionDetail}
+        userId={this.props.currentUser}
       />
     )
   }
@@ -90,6 +92,29 @@ class ShopPromotionDetail extends Component {
         // title: targetShop.owner.nickname,
       }
       Actions.CHATROOM(payload)
+    }
+  }
+
+  onPaymentPress() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }else {
+      let shopPromotionDetail = this.props.shopPromotionDetail
+
+      Actions.PAYMENT({
+        title: '商家活动支付',
+        price: shopPromotionDetail.promotingPrice,
+        // price: '0.01',
+        metadata: {
+          'fromUser': this.props.currentUser,
+          'toUser': shopPromotionDetail.targetShop.owner.id,
+          'dealType': BUY_GOODS
+        },
+        paySuccessJumpScene: 'BUY_GOODS_OK',
+        paySuccessJumpSceneParams: {
+        },
+        payErrorJumpBack: true,
+      })
     }
   }
 
@@ -164,9 +189,15 @@ class ShopPromotionDetail extends Component {
             <View style={styles.priceBox}>
               <Text style={styles.priceTxt}>￥{shopPromotionDetail.promotingPrice}</Text>
             </View>
-            <TouchableOpacity style={styles.footerBtnBox} onPress={()=>{this.onIWantPress()}}>
-              <Image source={require('../../assets/images/contacted.png')}/>
-              <Text style={styles.footerBtnTxt}>我想要</Text>
+            <TouchableOpacity style={{flex: 1}} onPress={()=>{this.onIWantPress()}}>
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Image style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/message.png')}/>
+                <Text style={{fontSize: em(10), color: '#aaa', paddingTop: normalizeH(5)}}>我想要</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.footerBtnBox} onPress={()=>{this.onPaymentPress()}}>
+              <Image source={require('../../assets/images/reward.png')}/>
+              <Text style={styles.footerBtnTxt}>去支付</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -223,10 +254,11 @@ const styles = StyleSheet.create({
   },
   footerBtnBox: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#FF9D4E',
     padding: 15,
-    paddingLeft: 35,
-    paddingRight: 35,
+    paddingLeft: 25,
+    paddingRight: 25,
   },
   footerBtnTxt: {
     fontSize: em(15),

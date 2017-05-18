@@ -18,3 +18,10 @@ export const IDENTITY_PROMOTER= 'promoter'
 
 //微信开发平台AppID
 export const WXAppID = 'wxdcaaa68c51754994'
+
+// 支付类型定义
+export const INVITE_PROMOTER = 1       // 邀请推广员获得的收益
+export const INVITE_SHOP = 2           // 邀请店铺获得的收益
+export const BUY_GOODS = 3             // 购买商品
+export const REWARD = 4                // 打赏
+export const WITHDRAW = 5              // 取现

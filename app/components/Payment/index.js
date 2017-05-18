@@ -56,7 +56,9 @@ class Payment extends Component {
         callback: ()=>{
           if(this.props.payErrorJumpScene) {
             Actions[this.props.payErrorJumpScene](this.props.payErrorJumpSceneParams)
-          }else{
+          }else if (this.props.payErrorJumpBack) {
+            Actions.pop()
+          } else {
             Actions.MINE()
           }
         }
