@@ -90,7 +90,7 @@ class SearchUser extends Component {
 
   renderUserItems(user) {
     return(
-      <TouchableOpacity style={styles.item}>
+      <TouchableOpacity style={styles.item} onPress={() => Actions.PERSONAL_HOMEPAGE({userId: user.id})}>
         <View>
           <Image style={{width: 40, height: 40, marginTop: normalizeH(10), marginBottom: normalizeH(10), marginRight: normalizeW(10)}}
                  source={user.avatar? {uri: user.avatar}: require('../../assets/images/defualt_user.png')}/>

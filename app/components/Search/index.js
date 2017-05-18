@@ -101,7 +101,7 @@ class Search extends Component {
 
   renderUserItems(user) {
     return(
-      <TouchableOpacity style={styles.item}>
+      <TouchableOpacity style={styles.item} onPress={() => Actions.PERSONAL_HOMEPAGE({userId: user.id})}>
         <View>
           <Image style={{width: 40, height: 40, marginTop: normalizeH(10), marginBottom: normalizeH(10), marginRight: normalizeW(10)}}
                  source={user.avatar? {uri: user.avatar}: require('../../assets/images/defualt_user.png')}/>
@@ -170,7 +170,7 @@ class Search extends Component {
 
   renderShopItems(rowData) {
     return (
-      <TouchableOpacity onPress={()=>{}}>
+      <TouchableOpacity onPress={() => {Actions.SHOP_DETAIL({id: rowData.id})}}>
         <View style={styles.item}>
           <View style={styles.coverWrap}>
             <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
@@ -227,7 +227,7 @@ class Search extends Component {
     //没有图片的显示规则
     if ((!topic.imgGroup) || ((topic.imgGroup.length == 0))) {
       return (
-        <TouchableOpacity style={styles.topicWrapStyle} onPress={()=> {}}>
+        <TouchableOpacity style={styles.topicWrapStyle} onPress={() => Actions.TOPIC_DETAIL({topic: topic})}>
           <Text style={styles.topicTitleStyle} numberOfLines={1}>
             {topic.title}
           </Text>
@@ -243,7 +243,7 @@ class Search extends Component {
       image.push(topic.imgGroup[0])
       return (
         <TouchableOpacity style={[styles.topicWrapStyle, {flexDirection: 'row'}]}
-                          onPress={()=> {}}>
+                          onPress={() => Actions.TOPIC_DETAIL({topic: topic})}>
           <View style={{flex: 1}}>
             <Text style={styles.topicTitleStyle} numberOfLines={2}>
               {topic.title}
@@ -266,7 +266,7 @@ class Search extends Component {
       image.push(topic.imgGroup[1])
       image.push(topic.imgGroup[2])
       return (
-        <TouchableOpacity style={styles.topicWrapStyle} onPress={()=> {}}>
+        <TouchableOpacity style={styles.topicWrapStyle} onPress={() => Actions.TOPIC_DETAIL({topic: topic})}>
           <Text style={styles.topicTitleStyle} numberOfLines={1}>
             {topic.title}
           </Text>

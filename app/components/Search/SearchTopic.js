@@ -84,7 +84,7 @@ class SearchTopic extends Component {
     //没有图片的显示规则
     if ((!topic.imgGroup) || ((topic.imgGroup.length == 0))) {
       return (
-        <TouchableOpacity style={styles.topicWrapStyle} onPress={()=> {}}>
+        <TouchableOpacity style={styles.topicWrapStyle} onPress={() => Actions.TOPIC_DETAIL({topic: topic})}>
           <Text style={styles.topicTitleStyle} numberOfLines={1}>
             {topic.title}
           </Text>
@@ -100,7 +100,7 @@ class SearchTopic extends Component {
       image.push(topic.imgGroup[0])
       return (
         <TouchableOpacity style={[styles.topicWrapStyle, {flexDirection: 'row'}]}
-                          onPress={()=> {}}>
+                          onPress={() => Actions.TOPIC_DETAIL({topic: topic})}>
           <View style={{flex: 1}}>
             <Text style={styles.topicTitleStyle} numberOfLines={2}>
               {topic.title}
@@ -123,7 +123,7 @@ class SearchTopic extends Component {
       image.push(topic.imgGroup[1])
       image.push(topic.imgGroup[2])
       return (
-        <TouchableOpacity style={styles.topicWrapStyle} onPress={()=> {}}>
+        <TouchableOpacity style={styles.topicWrapStyle} onPress={() => Actions.TOPIC_DETAIL({topic: topic})}>
           <Text style={styles.topicTitleStyle} numberOfLines={1}>
             {topic.title}
           </Text>

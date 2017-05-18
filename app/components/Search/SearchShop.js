@@ -59,7 +59,7 @@ class SearchShop extends Component {
 
   renderShopItems(rowData) {
     return (
-      <TouchableOpacity onPress={()=>{}}>
+      <TouchableOpacity onPress={() => {Actions.SHOP_DETAIL({id: rowData.id})}}>
         <View style={styles.item}>
           <View style={styles.coverWrap}>
             <Image style={styles.cover} source={rowData.coverUrl? {uri: rowData.coverUrl}: require('../../assets/images/shop_defualt.png')}/>
