@@ -61,7 +61,7 @@ class Mine extends Component {
     // console.log('componentWillMount=this.props====', this.props)
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
-        this.props.fetchUserPoint()
+        // this.props.fetchUserPoint()
         this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
         this.props.getCurrentPromoter({error: (err) => {
@@ -226,10 +226,10 @@ class Mine extends Component {
               <Text style={styles.nicknameStyle}>{this.props.userInfo.nickname}</Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image style={{marginRight: normalizeW(8), width: normalizeW(9), height: normalizeH(12)}}
-                     resizeMode="contain"
-                     source={require('../../assets/images/score.png')} />
-              <Text style={{fontSize: em(12), color: '#FFF'}}>积分  {this.props.point}</Text>
+              {/*<Image style={{marginRight: normalizeW(8), width: normalizeW(9), height: normalizeH(12)}}*/}
+                     {/*resizeMode="contain"*/}
+                     {/*source={require('../../assets/images/score.png')} />*/}
+              {/*<Text style={{fontSize: em(12), color: '#FFF'}}>积分  {this.props.point}</Text>*/}
             </View>
           </View>
         </View>
