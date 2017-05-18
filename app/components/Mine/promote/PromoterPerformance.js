@@ -67,13 +67,13 @@ class PromoterPerformance extends Component {
         <View style={{flex: 1, borderColor: 'rgba(255,255,255,0.50)', borderRightWidth: 1}}>
           <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
             <Text style={styles.categoryTextStyle}>店铺收益 (元)</Text>
-            <Text style={styles.categoryEarningsText}>{Number(promoter.shopEarnings).toFixed(3)}</Text>
+            <Text style={styles.categoryEarningsText}>{Number(promoter.shopEarnings).toFixed(2)}</Text>
           </TouchableOpacity>
         </View>
         <View style={{flex: 1}}>
           <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
             <Text style={styles.categoryTextStyle}>分成收益 (元)</Text>
-            <Text style={styles.categoryEarningsText}>{Number(promoter.royaltyEarnings).toFixed(3)}</Text>
+            <Text style={styles.categoryEarningsText}>{Number(promoter.royaltyEarnings).toFixed(2)}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -101,7 +101,7 @@ class PromoterPerformance extends Component {
       <View style={styles.totalEarningsView}>
         <Text style={{fontSize: em(17), color: '#5A5A5A', paddingTop: normalizeH(25)}}>推广总收益 (元)</Text>
         <Text style={{fontSize: em(38), color: THEME.base.mainColor, paddingTop: normalizeH(5)}}>
-          {Number(promoter.shopEarnings + promoter.royaltyEarnings).toFixed(3)}
+          {Number(promoter.shopEarnings + promoter.royaltyEarnings).toFixed(2)}
         </Text>
       </View>
     )
