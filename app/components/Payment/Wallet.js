@@ -78,7 +78,7 @@ class Wallet extends Component {
           <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), paddingRight: normalizeW(15)}}>
             <View style={styles.balance}>
               <Text style={{fontSize: 15, color: '#AAAAAA', marginTop: normalizeH(20)}}>余额（元）</Text>
-              <Text style={{fontSize: 36, color: '#FF7819', marginTop: normalizeH(20)}}>{this.props.paymentInfo.balance}</Text>
+              <Text style={{fontSize: 36, color: '#FF7819', marginTop: normalizeH(20)}}>{this.props.paymentInfo.balance.toFixed(2)}</Text>
             </View>
             <View style={styles.setting}>
               <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={this.onPaymentSetting}>
