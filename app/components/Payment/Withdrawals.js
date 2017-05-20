@@ -32,6 +32,8 @@ import * as Toast from '../common/Toast'
 import OpenBankPicker from '../common/Input/OpenBankPicker'
 import * as Utils from '../../util/Utils'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import {MERCHANT_CODE} from '../../../app/constants/appConfig'
+
 
 
 
@@ -91,11 +93,12 @@ class Withdrawals extends Component {
   }
 
   onWithdrawCash = () => {
-    let order_no = uuid.v4().replace(/-/g, '').replace(/[a-z]/gi, Utils.getRandomInt(1, 9)).substr(0, 16) //unionpay 为1~16位的纯数字
+    let order_no = uuid.v4().replace(/-/g, '').replace(/[a-z]/gi, Utils.getRandomInt(1, 9)).substr(0, 16)
+    order_no = MERCHANT_CODE + order_no     //通联支付order_no 为通联商户号 + 不重复流水号，长度范围为 20 到 40
     this.props.createPingppTransfers({
       formKey: cashForm,
       order_no: order_no,
-      channel: 'unionpay',
+      channel: 'allinpay',
       metadata: {
         'userId': this.props.currentUserId,
       },
