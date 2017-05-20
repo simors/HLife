@@ -386,9 +386,10 @@ class EditShop extends Component {
                     flexDirection:'row',
                     justifyContent:'flex-end',
                     alignItems:'center',
-                    backgroundColor:'rgba(245,245,245,0.49)'
+                    backgroundColor: THEME.base.mainColor,
+                    opacity: 0.6,
                   }}>
-                    <Text style={{fontSize:15,color:'#fff'}}>{`编辑相册·${albumLen}`}</Text>
+                    <Text style={{fontSize:15,color: '#FFF'}}>{`编辑相册·${albumLen}`}</Text>
                     <Icon
                       name="ios-arrow-forward"
                       style={{marginLeft:20,marginRight:15,color:'white',fontSize:17}}/>
