@@ -32,6 +32,8 @@ import * as Toast from '../common/Toast'
 import OpenBankPicker from '../common/Input/OpenBankPicker'
 import * as Utils from '../../util/Utils'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import {MERCHANT_CODE} from '../../../app/constants/appConfig'
+
 
 
 
@@ -70,6 +72,9 @@ const passwordInput = {
 class Withdrawals extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      enableButton: true,
+    }
   }
 
   amountValidCheck = (data)=> {
@@ -82,26 +87,38 @@ class Withdrawals extends Component {
     return {isVal: false, errMsg: '提现金额输入有误'}
   }
 
-  submitSuccessCallback = () => {
+  submitSuccessCallback() {
+    this.setState({
+      enableButton: true
+    })
     Actions.pop()
+    Toast.show('提现成功')
   }
 
-  submitErrorCallback = (error) => {
+  submitErrorCallback(error) {
+    this.setState({
+      enableButton: true
+    })
     Toast.show(error.message)
   }
 
-  onWithdrawCash = () => {
-    let order_no = uuid.v4().replace(/-/g, '').replace(/[a-z]/gi, Utils.getRandomInt(1, 9)).substr(0, 16) //unionpay 为1~16位的纯数字
+  onWithdrawCash() {
+    let order_no = uuid.v4().replace(/-/g, '').replace(/[a-z]/gi, Utils.getRandomInt(1, 9)).substr(0, 16)
+    order_no = MERCHANT_CODE + order_no     //通联支付order_no 为通联商户号 + 不重复流水号，长度范围为 20 到 40
+    this.setState({
+      enableButton: false
+    })
     this.props.createPingppTransfers({
       formKey: cashForm,
       order_no: order_no,
-      channel: 'unionpay',
+      channel: 'allinpay',
       metadata: {
         'userId': this.props.currentUserId,
       },
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback,
+      success: () => this.submitSuccessCallback(),
+      error: (err) => this.submitErrorCallback(err),
     })
+
   }
 
   render() {
@@ -187,9 +204,11 @@ class Withdrawals extends Component {
               </TouchableOpacity>
             </View>
             <CommonButton
-              onPress={this.onWithdrawCash}
+              buttonStyle={this.state.enableButton? null: styles.disableButton}
+              onPress={() => this.onWithdrawCash()}
               title="确认提现"
-              disabled={false}
+              disabled={!this.state.enableButton}
+              activityIndicator={!this.state.enableButton}
             />
           </KeyboardAwareScrollView>
 
@@ -244,5 +263,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#F5F5F5'
+  },
+  enableButton: {
+  },
+  disableButton: {
+    backgroundColor: 'rgba(170, 170, 170, 0.4)'
   }
 })
