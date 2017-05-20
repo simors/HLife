@@ -87,6 +87,10 @@ export function createPingppTransfers(payload) {
       }
       let createTransfersAction = createAction(CREATE_TRANSFERS)
       dispatch(createTransfersAction({transfers: result.transfers}))
+    }, function (error) {
+      if(payload.error) {
+        payload.error(error)
+      }
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
