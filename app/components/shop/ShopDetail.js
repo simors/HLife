@@ -98,16 +98,16 @@ class ShopDetail extends Component {
           }
         })
 
-        this.isFetchingGuessYouLikeShopList = true
-        this.props.fetchGuessYouLikeShopList({
-          id: this.props.id,
-          success: () => {
-            this.isFetchingGuessYouLikeShopList = false
-          },
-          error: () => {
-            this.isFetchingGuessYouLikeShopList = false
-          }
-        })
+        // this.isFetchingGuessYouLikeShopList = true
+        // this.props.fetchGuessYouLikeShopList({
+        //   id: this.props.id,
+        //   success: () => {
+        //     this.isFetchingGuessYouLikeShopList = false
+        //   },
+        //   error: () => {
+        //     this.isFetchingGuessYouLikeShopList = false
+        //   }
+        // })
       }, 1500)
 
       if(this.props.isUserLogined) {
@@ -816,7 +816,7 @@ class ShopDetail extends Component {
 
             {this.renderComments()}
 
-            {this.renderGuessYouLike()}
+            {/*{this.renderGuessYouLike()}*/}
 
           </ScrollView>
         </View>
