@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
   Text
 } from 'react-native'
 
@@ -37,7 +38,22 @@ export default class CommonButton extends Component {
         null
       )
     }
+  }
 
+  renderActivityIndicator() {
+    if(this.props.activityIndicator) {
+      return(
+        <View style={{marginLeft: 10}}>
+          <ActivityIndicator
+            animating={true}
+            size="small"
+            color={'white'}
+          />
+        </View>
+      )
+    } else {
+      return <View />
+    }
   }
 
   render() {
@@ -49,6 +65,7 @@ export default class CommonButton extends Component {
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
             <Text style={[styles.defaultTitleStyle, this.props.titleStyle]}>{this.props.title}</Text>
             {this.renderTrip()}
+            {this.renderActivityIndicator()}
           </View>
         </TouchableOpacity>
       </View>
@@ -59,6 +76,7 @@ export default class CommonButton extends Component {
 CommonButton.defaultProps = {
   title: '完成',
   disabled: false,
+  activityIndicator: false
 }
 
 const styles = StyleSheet.create({
