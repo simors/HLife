@@ -46,10 +46,24 @@ class Payment extends Component {
 
   }
 
-  showErrorMessage = (errorCode = -99, result = '异常') => {
+  showErrorMessage = (errorCode) => {
+    let errMessage = '支付异常'
+    switch (errorCode) {
+      case 'fail':
+        errMessage = '支付失败'
+        break
+      case 'cancel':
+        errMessage = '用户取消支付'
+        break
+      case 'invalid':
+        errMessage = '找不到支付控件'
+        break
+      default:
+        break
+    }
     Popup.tip({
       title: '支付失败',
-      content: '支付错误码：' + errorCode + '\n错误原因：' + result,
+      content: errMessage,
       bnt: {
         text: '确认',
         style: {color: '#FF7819'},
@@ -67,7 +81,6 @@ class Payment extends Component {
   }
 
   paymentCallback = (errorCode, result) => {
-    console.log("PingPPModule.createPayment callback!")
     console.log("errorCode:", errorCode)
     console.log("result:", result)
     if(errorCode == 0 || errorCode == 'success'){
@@ -87,7 +100,7 @@ class Payment extends Component {
         Actions.MINE()
       }
     }else{
-      this.showErrorMessage(errorCode, result)
+      this.showErrorMessage(errorCode)
     }
   }
 
