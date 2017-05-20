@@ -159,6 +159,19 @@ function onRehydrate(state, action) {
   if (networkStatus) {
     state = state.set('networkStatus', networkStatus)
   }
+
+  let topicCategories = incoming.topicCategories
+  if (topicCategories) {
+    state = state.set('topicCategories', new List(topicCategories))
+  }
+
+  let banners = incoming.banners
+  if (banners) {
+    for (let type in banners) {
+      let typedBanners = banners[type]
+      state = state.setIn(['banners', type], new List(typedBanners))
+    }
+  }
   
   return state
 }

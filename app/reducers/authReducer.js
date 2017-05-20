@@ -190,37 +190,71 @@ function handleUserPoint(state, action) {
 
 function onRehydrate(state, action) {
   var incoming = action.payload.AUTH
-  console.log("onRehydrate incoming", incoming)
-  if (incoming) {
-    if (!incoming.activeUser) {
-      return state
-    }
-    state = state.set('activeUser', incoming.activeUser)
-    state = state.set('token', incoming.token)
-
-    const profiles = Map(incoming.profiles)
-    try {
-      for (let [userId, profile] of profiles) {
-        if (userId && profile) {
-          const userInfo = new UserInfo({...profile})
-          state = state.setIn(['profiles', userId], userInfo)
-        }
-      }
-    } catch (e) {
-      profiles.clear()
-    }
-
-    const healthProfiles = Map(incoming.healthProfiles)
-    try {
-      for (let [userId, profile] of healthProfiles) {
-        if (userId && profile) {
-          const healthProfile = new HealthProfile({...profile})
-          state = state.setIn(['healthProfiles', userId], healthProfile)
-        }
-      }
-    } catch (e) {
-      healthProfiles.clear()
-    }
+  if (!incoming) {
+    return state
   }
+
+  if (!incoming.activeUser) {
+    return state
+  }
+  state = state.set('activeUser', incoming.activeUser)
+  state = state.set('token', incoming.token)
+
+  const profiles = Map(incoming.profiles)
+  try {
+    for (let [userId, profile] of profiles) {
+      if (userId && profile) {
+        const userInfo = new UserInfo({...profile})
+        state = state.setIn(['profiles', userId], userInfo)
+      }
+    }
+  } catch (e) {
+    profiles.clear()
+  }
+
+  /*const healthProfiles = Map(incoming.healthProfiles)
+  try {
+    for (let [userId, profile] of healthProfiles) {
+      if (userId && profile) {
+        const healthProfile = new HealthProfile({...profile})
+        state = state.setIn(['healthProfiles', userId], healthProfile)
+      }
+    }
+  } catch (e) {
+    healthProfiles.clear()
+  }*/
+
+  const followees = Map(incoming.followees)
+  try {
+    for (let [userId, followee] of followees) {
+      if (userId && followee) {
+        let followeeRec = []
+        for (let fol of followee) {
+          let userInfo = new UserInfo({...fol})
+          followeeRec.push(userInfo)
+        }
+        state = state.setIn(['followees', userId], new List(followeeRec))
+      }
+    }
+  } catch (e) {
+    followees.clear()
+  }
+
+  const followers = Map(incoming.followers)
+  try {
+    for (let [userId, follower] of followers) {
+      if (userId && follower) {
+        let followerRec = []
+        for (let fol of follower) {
+          let userInfo = new UserInfo({...fol})
+          followerRec.push(userInfo)
+        }
+        state = state.setIn(['followers', userId], new List(followerRec))
+      }
+    }
+  } catch (e) {
+    followees.clear()
+  }
+
   return state
 }
