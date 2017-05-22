@@ -236,7 +236,9 @@ export class Find extends Component {
         }
       }
     }
-    this.props.fetchTopics(payload)
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopics(payload)
+    })
   }
 
   renderTopics() {

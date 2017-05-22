@@ -14,7 +14,8 @@ import {
   Image,
   Platform,
   InteractionManager,
-  TextInput
+  TextInput,
+  Animated
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -56,6 +57,7 @@ class ShopDetail extends Component {
     super(props)
     this.state = {
       modalVisible : false,
+      fade: new Animated.Value(0),
     }
   }
 
@@ -96,16 +98,16 @@ class ShopDetail extends Component {
           }
         })
 
-        this.isFetchingGuessYouLikeShopList = true
-        this.props.fetchGuessYouLikeShopList({
-          id: this.props.id,
-          success: () => {
-            this.isFetchingGuessYouLikeShopList = false
-          },
-          error: () => {
-            this.isFetchingGuessYouLikeShopList = false
-          }
-        })
+        // this.isFetchingGuessYouLikeShopList = true
+        // this.props.fetchGuessYouLikeShopList({
+        //   id: this.props.id,
+        //   success: () => {
+        //     this.isFetchingGuessYouLikeShopList = false
+        //   },
+        //   error: () => {
+        //     this.isFetchingGuessYouLikeShopList = false
+        //   }
+        // })
       }, 1500)
 
       if(this.props.isUserLogined) {
@@ -592,13 +594,39 @@ class ShopDetail extends Component {
     })
   }
 
-  render() {
-    // console.log('this.props.shopDetail===', this.props.shopDetail)
+  handleOnScroll(e) {
+    let offset = e.nativeEvent.contentOffset.y
+    let comHeight = normalizeH(200)
+    if (offset >= 0 && offset < 10) {
+      Animated.timing(this.state.fade, {
+        toValue: 0,
+        duration: 100,
+      }).start()
+    } else if (offset > 10 && offset < comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: (offset - 10)/comHeight,
+        duration: 100,
+      }).start()
+    } else if (offset >= comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: 1,
+        duration: 100,
+      }).start()
+    }
+  }
 
-    let shopDetail = this.props.shopDetail
-
+  renderMainHeader() {
     return (
-      <View style={styles.container}>
+      <Animated.View style={{
+        backgroundColor: THEME.base.mainColor,
+        opacity: this.state.fade,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: PAGE_WIDTH,
+        zIndex: 10,
+      }}
+      >
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
@@ -617,6 +645,18 @@ class ShopDetail extends Component {
             )
           }}
         />
+      </Animated.View>
+    )
+  }
+
+  render() {
+    // console.log('this.props.shopDetail===', this.props.shopDetail)
+
+    let shopDetail = this.props.shopDetail
+
+    return (
+      <View style={styles.container}>
+        {this.renderMainHeader()}
         <View style={styles.body}>
           {this.renderDetailContent()}
         </View>
@@ -696,6 +736,7 @@ class ShopDetail extends Component {
         <View style={detailWrapStyle}>
           <ScrollView
             contentContainerStyle={[styles.contentContainerStyle]}
+            onScroll={e => this.handleOnScroll(e)}
           >
             <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}>
@@ -775,7 +816,7 @@ class ShopDetail extends Component {
 
             {this.renderComments()}
 
-            {this.renderGuessYouLike()}
+            {/*{this.renderGuessYouLike()}*/}
 
           </ScrollView>
         </View>
@@ -947,7 +988,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)'
   },
   body: {
-    marginTop: normalizeH(64),
+    // marginTop: normalizeH(64),
     flex: 1,
   },
   detailWrap: {

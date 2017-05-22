@@ -87,6 +87,7 @@ export function getColumn() {
 export function getTopicCategories() {
   let query = new AV.Query('TopicCategory')
   query.equalTo('enabled', true)
+  query.addAscending('TopicCategoryId')
   return query.find().then(function (results) {
     let topicCategories = []
     results.forEach((result) => {
@@ -105,6 +106,7 @@ export function getShopCategories(payload) {
   let query = new AV.Query('ShopCategory')
   query.equalTo('status', 1)
   query.include(['containedTag'])
+  query.addAscending('shopCategoryId')
   //query.limit(payload.limit ? payload.limit : 5)
   return query.find().then(function (results) {
     // console.log('getShopCategories===', results)
