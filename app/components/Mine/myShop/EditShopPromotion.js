@@ -756,7 +756,6 @@ class EditShopPromotion extends Component {
                 localRichTextImagesUrls: this.localRichTextImagesUrls,
               })
             this.publishPromotion()}}
-          rightStyle={{color: THEME.base.mainColor}}
         />
         <View style={styles.body}>
           <View style={[styles.contentContainer, {height: this.state.headerHeight, overflow:'hidden'}]}
