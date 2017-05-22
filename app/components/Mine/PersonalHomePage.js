@@ -13,7 +13,8 @@ import {
   TouchableWithoutFeedback,
   Image,
   Platform,
-  InteractionManager
+  InteractionManager,
+  Animated,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -48,6 +49,7 @@ class PersonalHomePage extends Component {
     this.state = {
       userIsFollowedTheUser: false,
       sameUser: false,
+      fade: new Animated.Value(0),
     }
   }
 
@@ -285,10 +287,40 @@ class PersonalHomePage extends Component {
     }
     this.props.fetchTopicsByUserid(payload)
   }
-  
-  render() {
+
+  handleOnScroll(e) {
+    let offset = e.nativeEvent.contentOffset.y
+    let comHeight = normalizeH(200)
+    if (offset >= 0 && offset < 10) {
+      Animated.timing(this.state.fade, {
+        toValue: 0,
+        duration: 100,
+      }).start()
+    } else if (offset > 10 && offset < comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: (offset - 10)/comHeight,
+        duration: 100,
+      }).start()
+    } else if (offset >= comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: 1,
+        duration: 100,
+      }).start()
+    }
+  }
+
+  renderMainHeader() {
     return (
-      <View style={styles.container}>
+      <Animated.View style={{
+        backgroundColor: THEME.base.mainColor,
+        opacity: this.state.fade,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: PAGE_WIDTH,
+        zIndex: 10,
+      }}
+      >
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
@@ -298,9 +330,18 @@ class PersonalHomePage extends Component {
               backSceneParams: this.props.backSceneParams
             })
           }}
+          title="个人主页"
           rightType="none"
           headerContainerStyle={{borderBottomWidth:0}}
         />
+      </Animated.View>
+    )
+  }
+  
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.renderMainHeader()}
         <View style={[styles.body, this.state.sameUser ? {} : {paddingBottom: 60}]}>
           <CommonListView
             contentContainerStyle={{backgroundColor: 'rgba(0,0,0,0.05)'}}
@@ -309,6 +350,7 @@ class PersonalHomePage extends Component {
             loadNewData={()=>{this.refreshData()}}
             loadMoreData={()=>{this.loadMoreData()}}
             ref={(listView) => this.listView = listView}
+            onScroll={e => this.handleOnScroll(e)}
           />
         </View>
 
@@ -533,7 +575,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)'
   },
   body: {
-    marginTop: normalizeH(64),
+    // marginTop: normalizeH(64),
     flex: 1,
     // paddingBottom: 60
   },
@@ -545,7 +587,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     backgroundColor: 'white',
     padding:15,
-    paddingTop: 0,
+    paddingTop: normalizeH(44),
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
