@@ -22,10 +22,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
+  NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+  NSString *baiduMapKey = [infoDictionary objectForKey:@"BaiduMapKey"];
 
   
 #ifdef DEBUG
-  jsCodeLocation = [NSURL URLWithString:@"http://127.0.0.1:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://10.0.0.2:8081/index.ios.bundle?platform=ios&dev=true"];
 #else
   jsCodeLocation = [CodePush bundleURL];
 #endif
@@ -51,7 +53,7 @@
   [self configUSharePlatforms];
 
   [self confitUShareSettings];
-  [RCTBaiduMapViewManager initSDK:@"lM541vkXQcRP8poGBgi065mxEZjrVFQB"];
+  [RCTBaiduMapViewManager initSDK:baiduMapKey];
   return YES;
 }
 

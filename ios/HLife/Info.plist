@@ -69,6 +69,8 @@
 	<string>$(CODEPUSH_KEY)</string>
 	<key>CodePushServerURL</key>
 	<string>http://admin.xiaojee.cn:3000</string>
+  <key>BaiduMapKey</key>
+  <string>$(BAIDU_MAP_KEY)</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
