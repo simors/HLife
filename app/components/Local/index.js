@@ -46,6 +46,7 @@ import {fetchShopList, clearShopList} from '../../action/shopAction'
 import ViewPager from '../common/ViewPager'
 import * as DeviceInfo from 'react-native-device-info'
 import SearchBar from '../common/SearchBar'
+import ScoreShow from '../common/ScoreShow'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -161,7 +162,10 @@ class Local extends Component {
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
               <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
-              <View style={{flex: 1}}>
+              <View style={{flex: 1, justifyContent: 'space-around'}}>
+                <ScoreShow
+                  score={shopInfo.score}
+                />
                 {this.renderShopPromotion(shopInfo)}
               </View>
               <View style={styles.subInfoWrap}>
