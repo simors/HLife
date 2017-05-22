@@ -181,30 +181,6 @@ class Local extends Component {
       </TouchableOpacity>
     )
   }
-  //
-  // renderShopPromotion(shopInfo) {
-  //   let containedPromotions = shopInfo.containedPromotions
-  //   if(containedPromotions && containedPromotions.length) {
-  //     let shopPromotionView = containedPromotions.map((promotion, index)=>{
-  //       return (
-  //         <View key={'promotion_' + index} style={styles.shopPromotionBox}>
-  //           <View style={styles.shopPromotionBadge}>
-  //             <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
-  //           </View>
-  //           <View style={styles.shopPromotionContent}>
-  //             <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
-  //           </View>
-  //         </View>
-  //       )
-  //     })
-  //     return (
-  //       <View style={styles.shopPromotionWrap}>
-  //         {shopPromotionView}
-  //       </View>
-  //     )
-  //   }
-  //   return null
-  // }
 
   renderShopPromotion(shopInfo) {
     let containedPromotions = shopInfo.containedPromotions
