@@ -14,7 +14,8 @@ import {
   Image,
   Platform,
   InteractionManager,
-  TextInput
+  TextInput,
+  Animated,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -50,13 +51,14 @@ class MyShopIndex extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      modalVisible : false
+      modalVisible : false,
+      fade: new Animated.Value(0),
     }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchUserOwnedShopInfo()
+      // this.props.fetchUserOwnedShopInfo()   // 已在组件外获取了店铺信息，不需要重新获取
       if(this.props.userOwnedShopInfo.id) {
         this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
@@ -306,14 +308,39 @@ class MyShopIndex extends Component {
     })
   }
 
-  render() {
-    // console.log('this.props.shopDetail===', this.props.shopDetail)
+  handleOnScroll(e) {
+    let offset = e.nativeEvent.contentOffset.y
+    let comHeight = normalizeH(200)
+    if (offset >= 0 && offset < 10) {
+      Animated.timing(this.state.fade, {
+        toValue: 0,
+        duration: 100,
+      }).start()
+    } else if (offset > 10 && offset < comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: (offset - 10)/comHeight,
+        duration: 100,
+      }).start()
+    } else if (offset >= comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: 1,
+        duration: 100,
+      }).start()
+    }
+  }
 
-    let shopDetail = this.props.shopDetail
-    let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
-
+  renderMainHeader() {
     return (
-      <View style={styles.container}>
+      <Animated.View style={{
+        backgroundColor: THEME.base.mainColor,
+        opacity: this.state.fade,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: PAGE_WIDTH,
+        zIndex: 10,
+      }}
+      >
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
@@ -327,10 +354,24 @@ class MyShopIndex extends Component {
             )
           }}
         />
+      </Animated.View>
+    )
+  }
+
+  render() {
+    // console.log('this.props.shopDetail===', this.props.shopDetail)
+
+    let shopDetail = this.props.shopDetail
+    let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
+
+    return (
+      <View style={styles.container}>
+        {this.renderMainHeader()}
         <View style={styles.body}>
           <View style={styles.detailWrap}>
             <ScrollView
               contentContainerStyle={[styles.contentContainerStyle]}
+              onScroll={e => this.handleOnScroll(e)}
             >
               <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
                 {this.props.shopDetail.coverUrl
@@ -602,7 +643,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)'
   },
   body: {
-    marginTop: normalizeH(64),
+    // marginTop: normalizeH(64),
     flex: 1,
   },
   detailWrap: {
