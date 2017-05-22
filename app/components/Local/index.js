@@ -37,7 +37,6 @@ import * as Utils from '../../util/Utils'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import * as Toast from '../common/Toast'
-import ScoreShow from '../common/ScoreShow'
 import Swiper from 'react-native-swiper'
 import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
@@ -162,10 +161,9 @@ class Local extends Component {
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
               <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
-              <ScoreShow
-                containerStyle={{flex:1}}
-                score={shopInfo.score}
-              />
+              <View style={{flex: 1}}>
+                {this.renderShopPromotion(shopInfo)}
+              </View>
               <View style={styles.subInfoWrap}>
                 {shopTag &&
                  <Text style={[styles.subTxt]}>{shopTag}</Text>
@@ -178,36 +176,54 @@ class Local extends Component {
                 }
               </View>
             </View>
-            {this.renderShopPromotion(shopInfo)}
           </View>
         </View>
       </TouchableOpacity>
     )
   }
+  //
+  // renderShopPromotion(shopInfo) {
+  //   let containedPromotions = shopInfo.containedPromotions
+  //   if(containedPromotions && containedPromotions.length) {
+  //     let shopPromotionView = containedPromotions.map((promotion, index)=>{
+  //       return (
+  //         <View key={'promotion_' + index} style={styles.shopPromotionBox}>
+  //           <View style={styles.shopPromotionBadge}>
+  //             <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
+  //           </View>
+  //           <View style={styles.shopPromotionContent}>
+  //             <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
+  //           </View>
+  //         </View>
+  //       )
+  //     })
+  //     return (
+  //       <View style={styles.shopPromotionWrap}>
+  //         {shopPromotionView}
+  //       </View>
+  //     )
+  //   }
+  //   return null
+  // }
 
   renderShopPromotion(shopInfo) {
     let containedPromotions = shopInfo.containedPromotions
-    if(containedPromotions && containedPromotions.length) {
-      let shopPromotionView = containedPromotions.map((promotion, index)=>{
-        return (
-          <View key={'promotion_' + index} style={styles.shopPromotionBox}>
-            <View style={styles.shopPromotionBadge}>
-              <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
-            </View>
-            <View style={styles.shopPromotionContent}>
-              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
-            </View>
-          </View>
-        )
-      })
+    if(containedPromotions && (containedPromotions.length > 0)) {
+      let promotion = containedPromotions[0]
       return (
-        <View style={styles.shopPromotionWrap}>
-          {shopPromotionView}
+        <View style={styles.shopPromotionBox}>
+          <View style={styles.shopPromotionBadge}>
+            <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
+          </View>
+          <View style={styles.shopPromotionContent}>
+            <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
+          </View>
         </View>
       )
     }
     return null
   }
+
 
   gotoShopCategoryList(shopCategory) {
     Actions.SHOP_CATEGORY_LIST({
