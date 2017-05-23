@@ -46,6 +46,7 @@ import {fetchShopList, clearShopList} from '../../action/shopAction'
 import ViewPager from '../common/ViewPager'
 import * as DeviceInfo from 'react-native-device-info'
 import SearchBar from '../common/SearchBar'
+import ScoreShow from '../common/ScoreShow'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -161,7 +162,10 @@ class Local extends Component {
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
               <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
-              <View style={{flex: 1}}>
+              <View style={{flex: 1, justifyContent: 'space-around'}}>
+                <ScoreShow
+                  score={shopInfo.score}
+                />
                 {this.renderShopPromotion(shopInfo)}
               </View>
               <View style={styles.subInfoWrap}>
@@ -181,30 +185,6 @@ class Local extends Component {
       </TouchableOpacity>
     )
   }
-  //
-  // renderShopPromotion(shopInfo) {
-  //   let containedPromotions = shopInfo.containedPromotions
-  //   if(containedPromotions && containedPromotions.length) {
-  //     let shopPromotionView = containedPromotions.map((promotion, index)=>{
-  //       return (
-  //         <View key={'promotion_' + index} style={styles.shopPromotionBox}>
-  //           <View style={styles.shopPromotionBadge}>
-  //             <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
-  //           </View>
-  //           <View style={styles.shopPromotionContent}>
-  //             <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
-  //           </View>
-  //         </View>
-  //       )
-  //     })
-  //     return (
-  //       <View style={styles.shopPromotionWrap}>
-  //         {shopPromotionView}
-  //       </View>
-  //     )
-  //   }
-  //   return null
-  // }
 
   renderShopPromotion(shopInfo) {
     let containedPromotions = shopInfo.containedPromotions
