@@ -87,17 +87,19 @@ class UpdateShopAlbum4EditShop extends Component {
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(10)}}>
-            <ImageGroupInput
-              {...shopAlbumInput}
-              number={20}
-              imageLineCnt={3}
-              initValue={
-                this.props.localAlbumList && this.props.localAlbumList.length
-                  ? this.props.localAlbumList
-                  : this.props.userOwnedShopInfo.album
-              }
-              getImageList={(imgList)=>{this.localAlbumList = imgList}}
-            />
+            <ScrollView>
+              <ImageGroupInput
+                {...shopAlbumInput}
+                number={20}
+                imageLineCnt={3}
+                initValue={
+                  this.props.localAlbumList && this.props.localAlbumList.length
+                    ? this.props.localAlbumList
+                    : this.props.userOwnedShopInfo.album
+                }
+                getImageList={(imgList)=>{this.localAlbumList = imgList}}
+              />
+            </ScrollView>
           </View>
         </View>
       </View>
