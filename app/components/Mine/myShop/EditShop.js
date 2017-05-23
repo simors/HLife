@@ -18,27 +18,16 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
 import {Actions} from 'react-native-router-flux'
-import {
-  Option,
-  OptionList,
-  SelectInput
-} from '../../common/CommonSelect'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import DatePicker from 'react-native-datepicker'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
-import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import PhoneInput from '../../common/Input/PhoneInput'
 import TextAreaInput from '../../common/Input/TextAreaInput'
-import Checkbox from '../../common/Input/Checkbox'
 import TagsInput from '../../common/Input/TagsInput'
 import ShopTagsSelect from './ShopTagsSelect'
-import CommonTextInput from './ShopTagsSelect'
-import * as MyShopTestData from './MyShopTestData'
-import ImageGroupInput from '../../common/Input/ImageGroupInput'
-import ImageInput from '../../common/Input/ImageInput'
+import CommonTextInput from '../../common/Input/CommonTextInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
 import {fetchShopTags, fetchUserOwnedShopInfo} from '../../../action/shopAction'
 import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
@@ -46,6 +35,7 @@ import * as authSelector from '../../../selector/authSelector'
 import {selectShopCategories} from '../../../selector/configSelector'
 import {selectShopTags, selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import {fetchShopCategories} from '../../../action/configAction'
+import {inputFormUpdate} from '../../../action/inputFormActions'
 import Icon from 'react-native-vector-icons/Ionicons'
 import * as Toast from '../../common/Toast'
 import Loading from '../../common/Loading'
@@ -115,6 +105,47 @@ const tagsInput = {
   },
 }
 
+const shopNameInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopNameInput'),
+  type: "shopNameInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺名称为空'}
+  },
+}
+const shopAddrInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopAddrInput'),
+  type: "shopAddrInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0 && (data.text !== '未知')) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺地址为空'}
+  },
+}
+const shopGeoInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopGeoInput'),
+  type: "shopGeoInput",
+  checkValid: ()=>{return {isVal: true}},
+}
+const shopGeoCityInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopGeoCityInput'),
+  type: "shopGeoCityInput",
+  checkValid: ()=>{return {isVal: true}},
+}
+const shopGeoDistrictInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopGeoDistrictInput'),
+  type: "shopGeoDistrictInput",
+  checkValid: ()=>{return {isVal: true}},
+}
+
 class EditShop extends Component {
   constructor(props) {
     super(props)
@@ -129,6 +160,8 @@ class EditShop extends Component {
         shopCategoryContainedTag: [],
         shouldUploadImage: false,
         shouldUploadImages: false,
+        shopName: '点击输入店铺名称',
+        shopAddress: '标注您的店铺地址',
       }
     }else{
       this.state = {
@@ -140,6 +173,8 @@ class EditShop extends Component {
         shopCategoryContainedTag: [],
         shouldUploadImage: false,
         shouldUploadImages: false,
+        shopName: '点击输入店铺名称',
+        shopAddress: '标注您的店铺地址',
       }
     }
 
@@ -164,12 +199,6 @@ class EditShop extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-
-    })
-  }
-
-  componentDidMount() {
     if(this.props.userOwnedShopInfo.containedTag && this.props.userOwnedShopInfo.containedTag.length) {
       this.setState({
         selectedShopTags: this.props.userOwnedShopInfo.containedTag
@@ -183,6 +212,11 @@ class EditShop extends Component {
         this.updateShopCategoryContainedTags(targetShopCategory.id)
       }
     }
+
+    this.setState({
+      shopName: this.props.userOwnedShopInfo.shopName,
+      shopAddress: this.props.userOwnedShopInfo.shopAddress,
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -195,12 +229,54 @@ class EditShop extends Component {
       // console.log('nextProps.localAlbumList===>>>', nextProps.localAlbumList)
       this.localAlbumList = nextProps.localAlbumList
     }
+
+    if(this.props.shopName != nextProps.shopName) {
+      this.setState({
+        shopName: nextProps.shopName
+      })
+      nextProps.inputFormUpdate({
+        formKey: shopNameInput.formKey,
+        stateKey: shopNameInput.stateKey,
+        data: {text:nextProps.shopName},
+      })
+    }
+    if(this.props.shopAddress != nextProps.shopAddress) {
+      this.setState({
+        shopAddress: nextProps.shopAddress
+      })
+      nextProps.inputFormUpdate({
+        formKey: shopAddrInput.formKey,
+        stateKey: shopAddrInput.stateKey,
+        data: {text:nextProps.shopAddress},
+      })
+    }
+    if(this.props.latitude != nextProps.latitude && this.props.longitude != nextProps.longitude) {
+      nextProps.inputFormUpdate({
+        formKey: shopGeoInput.formKey,
+        stateKey: shopGeoInput.stateKey,
+        data: {text:[nextProps.latitude, nextProps.longitude].join(',')},
+      })
+    }
+    if(this.props.currentCity != nextProps.currentCity) {
+      nextProps.inputFormUpdate({
+        formKey: shopGeoCityInput.formKey,
+        stateKey: shopGeoCityInput.stateKey,
+        data: {text:nextProps.currentCity},
+      })
+
+    }
+
+    if(this.props.currentDistrict != nextProps.currentDistrict) {
+      nextProps.inputFormUpdate({
+        formKey: shopGeoDistrictInput.formKey,
+        stateKey: shopGeoDistrictInput.stateKey,
+        data: {text:nextProps.currentDistrict},
+      })
+    }
   }
 
   updateShopCategoryContainedTags(shopCategoryId) {
     let shopCategoryContainedTag = []
-    // console.log('updateShopCategoryContainedTags.allShopCategories=')
-    // console.log(this.props.allShopCategories)
     if(this.props.allShopCategories && this.props.allShopCategories.length) {
       for(let i = 0; i < this.props.allShopCategories.length; i++) {
         let shopCategory = this.props.allShopCategories[i]
@@ -399,18 +475,53 @@ class EditShop extends Component {
               </View>
             </View>
             <View onLayout={this.onShopBaseInfoWrapLayout.bind(this)} style={styles.shopBaseInfoWrap}>
-              <View style={styles.shopBaseInfoLeftWrap}>
-                <Text numberOfLines={1} style={styles.shopBaseInfoLeftTitle}>{this.props.userOwnedShopInfo.shopName}</Text>
+              <TouchableOpacity onPress={() => Actions.SHOP_ADDRESS_SELECT({
+                shopName:this.state.shopName,
+                shopAddress:this.state.shopAddress
+              })} style={styles.shopBaseInfoLeftWrap}>
+                <Text numberOfLines={1} style={styles.shopBaseInfoLeftTitle}>{this.state.shopName}</Text>
                 <View style={styles.shopBaseInfoLeftLocBox}>
-                  <Image source={require("../../../assets/images/shop_loaction.png")}/>
-                  <Text numberOfLines={2} style={styles.shopBaseInfoLeftLocTxt}>{this.props.userOwnedShopInfo.shopAddress}</Text>
+                  <Image resizeMode='contain' source={require("../../../assets/images/shop_loaction.png")}/>
+                  <Text numberOfLines={2} style={styles.shopBaseInfoLeftLocTxt}>{this.state.shopAddress}</Text>
                 </View>
-              </View>
-              <View style={styles.shopBaseInfoRightWrap}>
-                <TouchableOpacity onPress={()=>{Actions.SHOP_CERTIFICATION_INFO_SHOW()}}>
-                  <Image source={require("../../../assets/images/shop_certified.png")}/>
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
+            </View>
+            <View style={{height:0,width:0}}>
+              <CommonTextInput
+                {...shopNameInput}
+                initValue={this.props.userOwnedShopInfo.shopName}
+                outerContainerStyle={{position:'absolute',height:0,width:0}}
+                containerStyle={{height:0,width:0}}
+                inputStyle={{height:0,width:0}}
+              />
+              <CommonTextInput
+                {...shopAddrInput}
+                initValue={this.props.userOwnedShopInfo.shopAddress}
+                outerContainerStyle={{position:'absolute',height:0,width:0}}
+                containerStyle={{height:0,width:0}}
+                inputStyle={{height:0,width:0}}
+              />
+              <CommonTextInput
+                {...shopGeoInput}
+                initValue={[this.props.userOwnedShopInfo.geo.latitude, this.props.userOwnedShopInfo.geo.longitude].join(',')}
+                outerContainerStyle={{position:'absolute',height:0,width:0}}
+                containerStyle={{height:0,width:0}}
+                inputStyle={{height:0,width:0}}
+              />
+              <CommonTextInput
+                {...shopGeoCityInput}
+                initValue={this.props.userOwnedShopInfo.geoCity}
+                outerContainerStyle={{position:'absolute',height:0,width:0}}
+                containerStyle={{height:0,width:0}}
+                inputStyle={{height:0,width:0}}
+              />
+              <CommonTextInput
+                {...shopGeoDistrictInput}
+                initValue={this.props.userOwnedShopInfo.geoDistrict}
+                outerContainerStyle={{position:'absolute',height:0,width:0}}
+                containerStyle={{height:0,width:0}}
+                inputStyle={{height:0,width:0}}
+              />
             </View>
             <View style={styles.inputsWrap}>
               <View style={styles.inputWrap}>
@@ -543,7 +654,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
   fetchShopCategories,
   fetchShopTags,
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  inputFormUpdate,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditShop)
@@ -640,6 +752,7 @@ const styles = StyleSheet.create({
   },
   shopBaseInfoLeftLocBox: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
     marginRight:10
   },

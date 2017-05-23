@@ -264,7 +264,9 @@ class PublishTopics extends Component {
     }
     else {
       return (
-        <View/>
+        <View>
+          <Text style={{fontSize: em(15), color: '#E1E1E1'}}>请选择话题类别</Text>
+        </View>
       )
     }
   }
@@ -342,7 +344,7 @@ class PublishTopics extends Component {
                                  containerStyle={styles.titleContainerStyle}
                                  inputStyle={styles.titleInputStyle}
                                  {...topicName}
-                                 placeholder="标题"/>
+                                 placeholder="请输入标题"/>
               </View>
             </View>
 
