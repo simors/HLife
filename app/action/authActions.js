@@ -651,6 +651,8 @@ function handleCompleteShopInfo(payload, formData) {
 function handleEditShopInfo(payload, formData) {
   return (dispatch, getState) => {
 
+    console.log('formData:', formData)
+
     let newPayload = {
       shopId: payload.shopId,
       album: payload.album,
