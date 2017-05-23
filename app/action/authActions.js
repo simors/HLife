@@ -650,11 +650,10 @@ function handleCompleteShopInfo(payload, formData) {
 
 function handleEditShopInfo(payload, formData) {
   return (dispatch, getState) => {
-
-    console.log('formData:', formData)
-
     let newPayload = {
       shopId: payload.shopId,
+      shopName: formData.shopNameInput.text,
+      shopAddress: formData.shopAddrInput.text,
       album: payload.album,
       coverUrl: payload.coverUrl,
       openTime: formData.serviceTimeInput.text,
@@ -662,6 +661,9 @@ function handleEditShopInfo(payload, formData) {
       contactNumber2: formData.servicePhone2Input ? formData.servicePhone2Input.text : '',
       ourSpecial: formData.ourSpecialInput.text,
       tagIds: formData.tagsInput ? formData.tagsInput.text : '',
+      geo: formData.shopGeoInput && formData.shopGeoInput.text,
+      geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
+      geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
     }
     lcAuth.submitEditShopInfo(newPayload).then((result) => {
       // console.log('submitEditShopInfo.result====', result)

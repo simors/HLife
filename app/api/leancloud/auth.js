@@ -424,6 +424,23 @@ export function _submitEditShopInfo(shop, payload) {
   let contactNumber2 = payload.contactNumber2
   let ourSpecial = payload.ourSpecial
   let tagIds = payload.tagIds
+  let shopName = payload.shopName
+  let shopAddress = payload.shopAddress
+  let geo = payload.geo
+  let geoCity = payload.geoCity
+  let geoDistrict = payload.geoDistrict
+
+  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
+  let province = provinceInfo.provinceName
+  let provinceCode = provinceInfo.provinceCode
+  let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
+  let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
+
+  let geoProvince = province
+  let geoProvinceCode = provinceCode
+  let geoCityCode = cityCode
+  let geoDistrictCode = districtCode
 
   let containedTag = []
   if(tagIds && tagIds.length) {
@@ -431,16 +448,35 @@ export function _submitEditShopInfo(shop, payload) {
       containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
     })
   }
+  shop.set('shopName', shopName)
+  shop.set('shopAddress', shopAddress)
   shop.set('containedTag', containedTag)
   shop.set('openTime', openTime)
   shop.set('contactNumber', contactNumber)
   shop.set('contactNumber2', contactNumber2)
   shop.set('ourSpecial', ourSpecial)
+  if(geo) {
+    var geoArr = geo.split(',')
+    var latitude = parseFloat(geoArr[0])
+    var longitude = parseFloat(geoArr[1])
+    var numberGeoArr = [latitude, longitude]
+    var point = new AV.GeoPoint(numberGeoArr)
+    shop.set('geo', point)
+  }
+  shop.set('geoProvince', geoProvince)
+  shop.set('geoCity', geoCity)
+  shop.set('geoDistrict', geoDistrict)
+  shop.set('geoProvinceCode', geoProvinceCode.toString())
+  shop.set('geoCityCode', geoCityCode.toString())
+  shop.set('geoDistrictCode', geoDistrictCode.toString())
+
   console.log('_submitEditShopInfo.payload===', payload)
   console.log('_submitEditShopInfo.shop===', shop)
-  return shop.save().then(()=>{
+  return shop.save().then((shopInfo)=>{
+    console.log('new ShopInfo:', shopInfo)
     return '更新店铺成功'
-  }, ()=>{
+  }, (err)=>{
+    console.log(err)
     return '更新店铺失败'
   })
 }
