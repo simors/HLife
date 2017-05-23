@@ -43,8 +43,6 @@ class ImageGroupInput extends Component {
     }
 
     this.isUploadedImages = false
-
-    this.pickerAndUploadImage = !!props.pickerAndUploadImage
   }
 
   componentDidMount() {
@@ -283,11 +281,7 @@ class ImageGroupInput extends Component {
             })
           }
           let uris = [response.path]
-          if(this.pickerAndUploadImage) {
-            this.uploadImgs({uris})
-          }else {
-            this.updateImageGroup({uris})
-          }
+          this.updateImageGroup({uris})
         },
         fail: (response) => {
           Toast.show(response.message)
@@ -297,7 +291,7 @@ class ImageGroupInput extends Component {
       let option = {
         openType: 'gallery',
         cropping: false,
-        multiple: false, //为了使用裁剪控制图片大小,必须关闭多选
+        multiple: true,
         success: (response) => {
           let uris = []
           if(this.state.reSltImageIndex != -1) {
@@ -316,11 +310,7 @@ class ImageGroupInput extends Component {
               uris.push(response.path)
             }
           }
-          if(this.pickerAndUploadImage) {
-            this.uploadImgs({uris})
-          }else {
-            this.updateImageGroup({uris})
-          }
+          this.updateImageGroup({uris})
         },
         fail: (response) => {
           Toast.show(response.message)
