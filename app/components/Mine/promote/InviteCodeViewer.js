@@ -147,8 +147,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: THEME.base.lightColor,
-    width: normalizeW(130),
-    height: normalizeH(30),
+    paddingTop: normalizeH(5),
+    paddingBottom: normalizeH(5),
+    paddingLeft: normalizeW(10),
+    paddingRight: normalizeW(10),
   },
   inviteText: {
     color: THEME.base.mainColor,
