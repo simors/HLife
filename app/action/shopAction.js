@@ -59,14 +59,6 @@ export function fetchShopList(payload) {
   }
 }
 
-export function clearShopPromotionList(payload) {
-  return (dispatch, getState) => {
-    let actionType = ShopActionTypes.UPDATE_SHOP_PROMOTION_LIST
-    let updateAction = createAction(actionType)
-    dispatch(updateAction({shopPromotionList: []}))
-  }
-}
-
 export function fetchShopPromotionList(payload) {
   return (dispatch ,getState) => {
     lcShop.fetchShopPromotionList(payload).then((shopPromotionList) => {
