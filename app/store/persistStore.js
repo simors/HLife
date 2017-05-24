@@ -38,7 +38,7 @@ export default function persist(store) {
     //   }),
     // ],
     transforms: [messageFilter],
-    whitelist: ['AUTH', 'CONFIG', 'MESSAGE', 'ARTICLE', 'TOPIC', 'SHOP', 'NOTICE', 'PAYMENT', 'DRAFTS'],
+    whitelist: ['AUTH', 'CONFIG', 'MESSAGE', 'ARTICLE', 'TOPIC', 'SHOP', 'NOTICE', 'PAYMENT', 'DRAFTS', 'PROMOTER'],
   }, () => {
     store.dispatch(restoreFromPersistence())
   })

@@ -3,7 +3,15 @@
  */
 import {Record, Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
-import {Promoter, AreaAgent, EarnRecord, DailyPerformance, MonthlyPerformance} from '../models/promoterModel'
+import {
+  Promoter,
+  AreaAgent,
+  EarnRecord,
+  DailyPerformance,
+  MonthlyPerformance,
+  PromoterInfo,
+  PromoterStatistics,
+} from '../models/promoterModel'
 import * as promoterActionTypes from '../constants/promoterActionTypes'
 
 const initialState = Promoter()
@@ -343,8 +351,112 @@ function handleFinishPromoterPayment(state, action) {
 }
 
 function onRehydrate(state, action) {
-  var incoming = action.payload.CONFIG
+  var incoming = action.payload.PROMOTER
   if (!incoming) return state
+
+  if (incoming.activePromoter) {
+    state = state.set('activePromoter', incoming.activePromoter)
+  }
+
+  if (incoming.upPromoterId) {
+    state = state.set('upPromoterId', incoming.upPromoterId)
+  }
+
+  if (incoming.inviteCode) {
+    state = state.set('inviteCode', incoming.inviteCode)
+  }
+
+  if (incoming.userToPromoter) {
+    state = state.set('userToPromoter', new Map(incoming.userToPromoter))
+  }
+
+  let promoters = new Map(incoming.promoters)
+  try {
+    for (let [promoterId, promoter] of promoters) {
+      if (promoterId && promoter) {
+        let promoterInfo = new PromoterInfo({...promoter})
+        state = state.setIn(['promoters', promoterId], promoterInfo)
+      }
+    }
+  } catch (e) {
+    promoters.clear()
+  }
+
+  if (incoming.areaAgents) {
+    let areaAgents = incoming.areaAgents
+    let rec = []
+    for (let areaAgent of areaAgents) {
+      let areaAgentRec = new AreaAgent({...areaAgent})
+      rec.push(areaAgentRec)
+    }
+    state = state.set('areaAgents', new List(rec))
+  }
+
+  let team = new Map(incoming.team)
+  try {
+    for (let [promoterId, promoterList] of team) {
+      if (promoterId && promoterList) {
+        state = state.setIn(['team', promoterId], new List(promoterList))
+      }
+    }
+  } catch (e) {
+    team.clear()
+  }
+
+  let invitedShops = new Map(incoming.invitedShops)
+  try {
+    for (let [promoterId, shopList] of invitedShops) {
+      if (promoterId && shopList) {
+        state = state.setIn(['invitedShops', promoterId], new List(shopList))
+      }
+    }
+  } catch (e) {
+    invitedShops.clear()
+  }
+
+  let statistics = new Map(incoming.statistics)
+  try {
+    for (let [areaName, stat] of statistics) {
+      if (areaName && stat) {
+        let statRecord = new PromoterStatistics({...stat})
+        state = state.setIn(['statistics', areaName], statRecord)
+      }
+    }
+  } catch (e) {
+    statistics.clear()
+  }
+
+  let areaLastMonthsPerf = new Map(incoming.areaLastMonthsPerformance)
+  try {
+    for (let [areaName, stat] of areaLastMonthsPerf) {
+      if (areaName && stat) {
+        let rec = []
+        for (let areaStat of stat) {
+          let statRecord = new MonthlyPerformance({...areaStat})
+          rec.push(statRecord)
+        }
+        state = state.setIn(['areaLastMonthsPerformance', areaName], new List(rec))
+      }
+    }
+  } catch (e) {
+    areaLastMonthsPerf.clear()
+  }
+
+  let areaLastDaysPerf = new Map(incoming.lastDaysPerformance)
+  try {
+    for (let [areaName, stat] of areaLastDaysPerf) {
+      if (areaName && stat) {
+        let rec = []
+        for (let areaStat of stat) {
+          let statRecord = new DailyPerformance({...areaStat})
+          rec.push(statRecord)
+        }
+        state = state.setIn(['lastDaysPerformance', areaName], new List(rec))
+      }
+    }
+  } catch (e) {
+    areaLastDaysPerf.clear()
+  }
 
   return state
 }
