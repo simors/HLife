@@ -104,6 +104,7 @@ import SearchTopic from '../components/Search/SearchTopic'
 import DealRecords from '../components/Payment/DealRecords'
 import BuyGoodsPaySuccess from '../components/Payment/BuyGoodsPaySuccess'
 import RewardSuccess from '../components/Payment/RewardSuccess'
+import ShopAlbumView from '../components/Mine/myShop/ShopAlbumView'
 
 const styles = StyleSheet.create({
   container: {
@@ -217,6 +218,7 @@ export const scenes = Actions.create(
       <Scene key="DEAL_RECORDS" component={DealRecords}/>
       <Scene key="BUY_GOODS_OK" component={BuyGoodsPaySuccess}/>
       <Scene key="REWARD_OK" component={RewardSuccess}/>
+      <Scene key="SHOP_ALBUM_VIEW" component={ShopAlbumView}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

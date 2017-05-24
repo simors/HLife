@@ -79,9 +79,6 @@ class Login extends Component {
           leftIconName="ios-arrow-back" 
           leftPress={() => Actions.pop()}
           title="登   陆"
-          rightType="text" 
-          rightText="快速注册"
-          rightPress={() => Actions.REGIST()}
         />
         <View style={styles.body}>
           <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
@@ -96,7 +93,12 @@ class Login extends Component {
               </View>
             </View>
             <CommonButton title="登   陆" onPress={() => this.onButtonPress()}/>
-            <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
+            <View style={styles.txtView}>
+              <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
+              <Text style={[styles.forgetPwd, {paddingLeft: normalizeW(15)}]} onPress={() => Actions.REGIST()}>注册用户</Text>
+            </View>
+            <CommonButton buttonStyle={{backgroundColor: THEME.base.deepColor}}
+                          title="点我注册，打开一片新天地！" onPress={() => Actions.REGIST()}/>
             {/*<SnsLogin />*/}
           </ScrollView>
         </View>
@@ -138,12 +140,16 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(17),
     backgroundColor: THEME.base.mainColor,
   },
+  txtView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: normalizeH(18),
+    marginBottom: normalizeH(50),
+  },
   forgetPwd: {
     fontSize: em(14),
     color: THEME.base.deepColor,
     textAlign: 'center',
-    height: normalizeH(20),
-    marginTop: normalizeH(18),
-    marginBottom: normalizeH(80)
   }
 })

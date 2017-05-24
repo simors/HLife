@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   shopPromotionBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    // marginTop: 10,
   },
   shopPromotionBadge: {
     backgroundColor: '#F6A623',
