@@ -458,5 +458,21 @@ function onRehydrate(state, action) {
     areaLastDaysPerf.clear()
   }
 
+  let dealRecords = new Map(incoming.dealRecords)
+  try {
+    for (let [promoterId, dealList] of dealRecords) {
+      if (promoterId && dealList) {
+        let rec = []
+        for (let deal of dealList) {
+          let dealRecord = new EarnRecord({...deal})
+          rec.push(dealRecord)
+        }
+        state = state.setIn(['dealRecords', promoterId], new List(rec))
+      }
+    }
+  } catch (e) {
+    dealRecords.clear()
+  }
+
   return state
 }
