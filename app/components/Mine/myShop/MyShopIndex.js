@@ -289,9 +289,10 @@ class MyShopIndex extends Component {
     let allAlbum = [this.props.shopDetail.coverUrl].concat(album)
     // this.props.shopDetail.album.unshift(this.props.shopDetail.coverUrl)
     // console.log('this.props.shopDetail.album==', this.props.shopDetail.album)
-    ImageGallery.show({
-      images: allAlbum
-    })
+    // ImageGallery.show({
+    //   images: allAlbum
+    // })
+    Actions.SHOP_ALBUM_VIEW({album: allAlbum})
   }
 
   onShare = () => {

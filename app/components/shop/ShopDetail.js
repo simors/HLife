@@ -530,9 +530,10 @@ class ShopDetail extends Component {
     let album = this.props.shopDetail.album || []
     let allAlbum = [this.props.shopDetail.coverUrl].concat(album)
     // console.log('this.props.shopDetail.album==', this.props.shopDetail.album)
-    ImageGallery.show({
-      images: allAlbum
-    })
+    // ImageGallery.show({
+    //   images: allAlbum
+    // })
+    Actions.SHOP_ALBUM_VIEW({album: allAlbum})
   }
 
   sendPrivateMessage() {

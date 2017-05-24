@@ -81,7 +81,12 @@ class Local extends Component {
       this.refreshData()
     })
   }
-
+  shouldComponentUpdate(nextProps, nextState){
+    // if (Immutable.fromJS(this.props) != Immutable.fromJS(nextProps)) {
+    //   return true
+    // }
+    return false
+  }
   componentDidMount() {
     // console.log('componentDidMount.props===', this.props)
     if(DeviceInfo.isEmulator()) {
@@ -112,6 +117,7 @@ class Local extends Component {
   }
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
+    console.log('rowData',rowData)
     switch (rowData.type) {
       case 'SHOP_CATEGORY_COLUMN':
         return this.renderShopCategoryColumn()
