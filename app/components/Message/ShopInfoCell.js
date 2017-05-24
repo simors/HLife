@@ -18,6 +18,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import ScoreShow from '../common/ScoreShow'
 import {fetchShopDetail} from '../../action/shopAction'
 import {selectShopDetail} from '../../selector/shopSelector'
+import {CachedImage} from 'react-native-img-cache'
 
 class ShopInfoCell extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class ShopInfoCell extends Component {
       <View style={styles.shopView}>
         <TouchableOpacity onPress={() => Actions.SHOP_DETAIL({id: this.props.shopId})}>
           <View style={{flexDirection: 'row', backgroundColor: 'rgba(242,242,242,0.50)'}}>
-            <Image style={{width: 80, height: 80}} source={{uri: this.props.shopInfo.coverUrl}}></Image>
+            <CachedImage mutable style={{width: 80, height: 80}} source={{uri: this.props.shopInfo.coverUrl}}></CachedImage>
             <View style={{flex: 1, paddingLeft: 10, paddingTop: 16, paddingRight: 10}}>
               <Text style={{fontSize: em(17), color: '#4a4a4a'}} numberOfLines={1}>{this.props.shopInfo.shopName}</Text>
               <View style={{marginTop: 12}}>

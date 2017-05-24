@@ -25,6 +25,7 @@ import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from '../Toast'
+import {CachedImage} from 'react-native-img-cache'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -196,7 +197,7 @@ class ImageGroupInput extends Component {
     return (
       <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
-          <Image style={{flex: 1}} source={{uri: src}}/>
+          <CachedImage mutable style={{flex: 1}} source={{uri: src}}/>
         </TouchableOpacity>
       </View>
     )
@@ -207,7 +208,7 @@ class ImageGroupInput extends Component {
       <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Image style={[styles.defaultImgShow, this.props.imgShowStyle]}
+            <CachedImage mutable style={[styles.defaultImgShow, this.props.imgShowStyle]}
                    source={this.props.addImage}/>
           </View>
         </TouchableOpacity>

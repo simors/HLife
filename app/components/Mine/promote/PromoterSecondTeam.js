@@ -27,6 +27,7 @@ import {getPromoterTeamById} from '../../../action/promoterAction'
 import {getPromoterById, activePromoter, getTeamMember} from '../../../selector/promoterSelector'
 import {userInfoById} from '../../../selector/authSelector'
 import {getConversationTime} from '../../../util/numberUtils'
+import {CachedImage} from 'react-native-img-cache'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -85,7 +86,7 @@ class PromoterSecondTeam extends Component {
         <View>
           <TouchableOpacity style={styles.infoView} onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: user.id})}}>
             <View style={{paddingLeft: normalizeW(15), paddingRight: normalizeW(9)}}>
-              <Image style={styles.avatarStyle} resizeMode="contain"
+              <CachedImage mutable style={styles.avatarStyle} resizeMode="contain"
                      source={user.avatar ? {uri: user.avatar} : require("../../../assets/images/default_portrait.png")} />
             </View>
             <View style={{flex: 1}}>
