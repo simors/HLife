@@ -87,7 +87,7 @@ class UpdateShopAlbum4EditShop extends Component {
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(10)}}>
-            <ScrollView>
+            <ScrollView automaticallyAdjustContentInsets={false}>
               <ImageGroupInput
                 {...shopAlbumInput}
                 number={20}
