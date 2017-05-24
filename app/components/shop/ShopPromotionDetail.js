@@ -14,7 +14,8 @@ import {
   Image,
   Platform,
   InteractionManager,
-  TextInput
+  TextInput,
+  Modal,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -42,11 +43,10 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class ShopPromotionDetail extends Component {
   constructor(props) {
     super(props)
-    // console.log('ShopPromotionDetail.props====', props)
     this.state = {
-
+      showPayModal: false,
+      buyAmount: '1',
     }
-
   }
 
   componentWillMount() {
@@ -96,27 +96,27 @@ class ShopPromotionDetail extends Component {
   }
 
   onPaymentPress() {
-    if(!this.props.isUserLogined) {
-      Actions.LOGIN()
-    }else {
-      let shopPromotionDetail = this.props.shopPromotionDetail
-
-      Actions.PAYMENT({
-        title: '商家活动支付',
-        price: shopPromotionDetail.promotingPrice,
-        // price: '0.01',
-        metadata: {
-          'fromUser': this.props.currentUser,
-          'toUser': shopPromotionDetail.targetShop.owner.id,
-          'dealType': BUY_GOODS
-        },
-        subject: '购买汇邻优店商品费用',
-        paySuccessJumpScene: 'BUY_GOODS_OK',
-        paySuccessJumpSceneParams: {
-        },
-        payErrorJumpBack: true,
-      })
+    this.setState({showPayModal: false})
+    let amount = this.state.buyAmount
+    if (Math.floor(amount) != amount) {
+      Toast.show('购买数量只能是整数')
+      return
     }
+    let shopPromotionDetail = this.props.shopPromotionDetail
+    Actions.PAYMENT({
+      title: '商家活动支付',
+      price: shopPromotionDetail.promotingPrice * Number(amount),
+      metadata: {
+        'fromUser': this.props.currentUser,
+        'toUser': shopPromotionDetail.targetShop.owner.id,
+        'dealType': BUY_GOODS
+      },
+      subject: '购买汇邻优店商品费用',
+      paySuccessJumpScene: 'BUY_GOODS_OK',
+      paySuccessJumpSceneParams: {
+      },
+      payErrorJumpBack: true,
+    })
   }
 
   onShare = () => {
@@ -132,6 +132,70 @@ class ShopPromotionDetail extends Component {
       abstract: this.props.shopPromotionDetail.abstract,
       cover: this.props.shopPromotionDetail.coverUrl,
     })
+  }
+
+  openPaymentModal() {
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+    } else {
+      this.setState({showPayModal: true})
+    }
+  }
+
+  renderPaymentModal() {
+    return (
+      <View>
+        <Modal
+          visible={this.state.showPayModal}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={()=>{this.setState({showPayModal: false})}}
+        >
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+            <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
+              <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
+                <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置购买数量</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>数量：</Text>
+                <TextInput
+                  placeholder='输入数量'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({buyAmount: text})}
+                  value={this.state.buyAmount}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    textAlign: 'right',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(80),
+                    paddingRight: normalizeW(15),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>份</Text>
+              </View>
+              <View style={{width: PAGE_WIDTH-100, height: normalizeH(50), padding: 0, flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, borderColor: '#F5F5F5'}}>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.setState({showPayModal: false})}>
+                    <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex: 1}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.onPaymentPress()}>
+                    <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    )
   }
 
   render() {
@@ -196,12 +260,14 @@ class ShopPromotionDetail extends Component {
                 <Text style={{fontSize: em(10), color: '#aaa', paddingTop: normalizeH(5)}}>我想要</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.footerBtnBox} onPress={()=>{this.onPaymentPress()}}>
+            <TouchableOpacity style={styles.footerBtnBox} onPress={()=>{this.openPaymentModal()}}>
               <Image source={require('../../assets/images/reward.png')}/>
               <Text style={styles.footerBtnTxt}>去支付</Text>
             </TouchableOpacity>
           </View>
         </View>
+
+        {this.renderPaymentModal()}
 
       </View>
     )

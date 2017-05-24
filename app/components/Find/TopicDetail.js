@@ -570,13 +570,13 @@ export class TopicDetail extends Component {
   }
 
   onPaymentPress() {
+    this.setState({showPayModal: false})
     let pay = this.state.pay
     let decimal_part = pay.toString().split('.')[1]
     if (decimal_part && decimal_part.length > 2) {
       Toast.show('最多2位小数')
       return
     }
-    this.setState({showPayModal: false})
     let topic = this.props.topic
     Actions.PAYMENT({
       title: '打赏支付',
