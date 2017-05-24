@@ -31,7 +31,7 @@ export default class ShopCategories extends Component {
     this.state = this._initState(this.props)
   }
   shouldComponentUpdate(){
-    return false
+    return true
   }
   _initState(props) {
     let initState = {

@@ -47,7 +47,7 @@ export default class CommonListView extends Component {
     // if (Immutable.fromJS(this.props) != Immutable.fromJS(nextProps)) {
     //   return true
     // }
-    return false
+    return true
   }
   onContentSizeChange(contentWidth, contentHeight) {
     // console.log('onContentSizeChange.contentHeight===', contentHeight)

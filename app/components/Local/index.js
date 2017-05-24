@@ -85,7 +85,7 @@ class Local extends Component {
     // if (Immutable.fromJS(this.props) != Immutable.fromJS(nextProps)) {
     //   return true
     // }
-    return false
+    return true
   }
   componentDidMount() {
     // console.log('componentDidMount.props===', this.props)
