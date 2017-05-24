@@ -38,6 +38,7 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
         'toUser': item.targetShop.owner.id,
         'dealType': BUY_GOODS
       },
+      subject: '购买汇邻优店商品费用',
       paySuccessJumpScene: 'BUY_GOODS_OK',
       paySuccessJumpSceneParams: {
       },

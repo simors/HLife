@@ -207,6 +207,7 @@ class ShopRegister extends Component {
         Actions.PAYMENT({
           metadata: {'shopId':shopInfo.objectId, 'tenant': tenant, 'user': this.props.userInfo.id},
           price: tenant,
+          subject: '店铺入驻汇邻优店加盟费',
           popNum: 2,
           paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
           paySuccessJumpSceneParams: {

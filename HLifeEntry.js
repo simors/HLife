@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   StatusBar,
   NetInfo,
+  InteractionManager,
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router, Actions} from 'react-native-router-flux'
@@ -62,9 +63,12 @@ AV.init(
     )
 
     AVUtils.appInit()
+    InteractionManager.runAfterInteractions(()=>{
+
     CodePush.allowRestart();//在加载完了可以允许重启
     // CodePush.notifyApplicationReady()
     CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESTART})
+    })
   }
 
   componentWillUnmount() {
@@ -131,9 +135,9 @@ AV.init(
     )
   }
 }
-const codepushOption={
-  
-}
+// const codepushOption={
+//
+// }
 const getSceneStyle = (props, computedProps) => {
   const style = {
     flex: 1,

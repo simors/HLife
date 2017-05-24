@@ -131,7 +131,7 @@ class Payment extends Component {
       enableButton: false
     })
     let paymentPayload = {
-      subject: this.props.subject || '邻家优店加盟费',
+      subject: this.props.subject || '汇邻优店加盟费',
       order_no: order_no,
       amount: this.props.price * 100,
       channel: this.state.selectedChannel,

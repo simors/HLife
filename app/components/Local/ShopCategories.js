@@ -30,7 +30,9 @@ export default class ShopCategories extends Component {
     this._getCategoryHeight = this._getCategoryHeight.bind(this)
     this.state = this._initState(this.props)
   }
-
+  shouldComponentUpdate(){
+    return true
+  }
   _initState(props) {
     let initState = {
       width: PAGE_WIDTH,
