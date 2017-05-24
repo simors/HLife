@@ -9,6 +9,7 @@ import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.beefe.picker.PickerViewPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactApplication;
+import com.RNFetchBlob.RNFetchBlobPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -54,6 +55,7 @@ public class MainApplication extends Application implements ReactApplication {
             protected List<ReactPackage> getPackages() {
                 return Arrays.<ReactPackage>asList(
                         new MainReactPackage(),
+            new RNFetchBlobPackage(),
                         new RNSoundPackage(),
                         new CodePush("wKOkzZoUpEORrmdk1EzdmsqgmCUE4ksvOXqog", MainApplication.this, BuildConfig.DEBUG,"http://admin.xiaojee.cn:3000"),
                         new AvOsCloudPackage(getApplicationContext(), MainApplication.this),
