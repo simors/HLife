@@ -586,6 +586,7 @@ export class TopicDetail extends Component {
         'toUser': topic.userId,
         'dealType': REWARD
       },
+      subject: '话题打赏费',
       paySuccessJumpScene: 'REWARD_OK',
       paySuccessJumpSceneParams: {
       },
