@@ -88,7 +88,7 @@ class ShopPromotionDetail extends Component {
         members: [this.props.currentUser, targetShop.owner.id],
         conversationType: PERSONAL_CONVERSATION,
         title: targetShop.shopName,
-        customTopView: this.customTopView()
+        customTopView: this.customTopView(),
         // title: targetShop.owner.nickname,
       }
       Actions.CHATROOM(payload)
