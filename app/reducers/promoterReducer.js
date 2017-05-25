@@ -26,8 +26,12 @@ export default function promoterReducer(state = initialState, action) {
       return handleSetActivePromoter(state, action)
     case promoterActionTypes.SET_USER_PROMOTER_MAP:
       return handleSetUserPromoterMap(state, action)
+    case promoterActionTypes.SET_USER_PROMOTER_BATCH_MAP:
+      return handleSetUserPromoterBatchMap(state, action)
     case promoterActionTypes.UPDATE_PROMOTER_INFO:
       return handleUpdatePromoter(state, action)
+    case promoterActionTypes.UPDATE_BATCH_PROMOTER_INFO:
+      return handleUpdateBatchPromoters(state, action)
     case promoterActionTypes.UPDATE_TENANT_FEE:
       return handleUpdateTenant(state, action)
     case promoterActionTypes.UPDATE_UPPROMOTER_ID:
@@ -50,6 +54,8 @@ export default function promoterReducer(state = initialState, action) {
       return handleCancelAreaAgent(state, action)
     case promoterActionTypes.UPDATE_CITY_SHOP_TENANT:
       return handleUpdateShopTenant(state, action)
+    case promoterActionTypes.UPDATE_BATCH_CITY_SHOP_TENANT:
+      return handleUpdateBatchShopTenant(state, action)
     case promoterActionTypes.SET_AREA_PROMOTERS:
       return handleSetAreaPromoters(state, action)
     case promoterActionTypes.ADD_AREA_PROMOTERS:
@@ -95,10 +101,32 @@ function handleSetUserPromoterMap(state, action) {
   return state
 }
 
+function handleSetUserPromoterBatchMap(state, action) {
+  let payload = action.payload
+  let userIds = payload.userIds
+  let promoterIds = payload.promoterIds
+  if (userIds.length != promoterIds.length) {
+    return state
+  }
+  userIds.forEach((userId, index) => {
+    state = state.setIn(['userToPromoter', userId], promoterIds[index])
+  })
+  return state
+}
+
 function handleUpdatePromoter(state, action) {
   let promoterId = action.payload.promoterId
   let promoter = action.payload.promoter
   state = state.setIn(['promoters', promoterId], promoter)
+  return state
+}
+
+function handleUpdateBatchPromoters(state, action) {
+  let promoters = action.payload.promoters
+  promoters.forEach((promoter) => {
+    let promoterId = promoter.id
+    state = state.setIn(['promoters', promoterId], promoter)
+  })
   return state
 }
 
@@ -208,6 +236,16 @@ function handleUpdateShopTenant(state, action) {
   let city = action.payload.city
   let tenant = action.payload.tenant
   state = state.setIn(['shopTenant', city], tenant)
+  return state
+}
+
+function handleUpdateBatchShopTenant(state, action) {
+  let payload = action.payload
+  let cities = payload.cities
+  let tenants = payload.tenants
+  cities.forEach((city, index) => {
+    state = state.setIn(['shopTenant', city], tenants[index])
+  })
   return state
 }
 
