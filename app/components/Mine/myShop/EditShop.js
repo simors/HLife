@@ -435,7 +435,9 @@ class EditShop extends Component {
           title="编辑店铺"
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
-          rightType="none"
+          rightType="text"
+          rightText="完成"
+          rightPress={() => this.onEditShopBtnPress()}
         />
         <View style={styles.body}>
 
@@ -604,13 +606,6 @@ class EditShop extends Component {
                     initValue={this.props.userOwnedShopInfo.ourSpecial}
                   />
                 </View>
-              </View>
-
-              <View style={{padding:15,backgroundColor:'white',paddingTop:0}}>
-                <CommonButton
-                  buttonStyle={{}}
-                  onPress={()=>{this.onEditShopBtnPress()}}
-                />
               </View>
 
             </View>
