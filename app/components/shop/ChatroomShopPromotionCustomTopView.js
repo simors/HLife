@@ -127,6 +127,7 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 	        <View style={styles.saleItemInnerView}>
 	          <View style={styles.saleImg}>
 	            <Image style={{flex: 1}}
+                     resizeMode='contain'
 	                   source={{uri: item.coverUrl}}/>
 	          </View>
 	          <View style={styles.saleContent}>
@@ -176,7 +177,7 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
                   </View>
                   <View>
                     <TouchableOpacity style={styles.payBtn} onPress={() => this.openPaymentModal()}>
-                      <Text style={{fontSize: em(15), color: '#FFF'}}>去支付</Text>
+                      <Text style={{fontSize: em(12), color: '#FFF'}}>去支付</Text>
                     </TouchableOpacity>
                   </View>
 	              </View>
@@ -195,11 +196,8 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-    // position: 'absolute',
-    // left: 0,
-    // top: 0,
-		height: normalizeH(135),
-		paddingTop: 15,
+		height: normalizeH(80),
+		paddingTop: normalizeH(5),
 		backgroundColor:'#f5f5f5',
 		width:PAGE_WIDTH,
 		marginBottom:8
@@ -210,31 +208,31 @@ const styles = StyleSheet.create({
   saleItemInnerView: {
     flex: 1,
     flexDirection: 'row',
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: normalizeW(5),
+    paddingRight: normalizeW(5),
   },
   saleImg: {
-    width: normalizeW(100),
-    height: normalizeH(100),
+    width: normalizeW(60),
+    height: normalizeH(60),
     paddingLeft: normalizeW(5),
     paddingRight: normalizeW(5),
   },
   saleContent: {
     flex: 1,
-    marginLeft: normalizeW(15),
+    marginLeft: normalizeW(5),
     marginRight: normalizeW(5),
   },
   itemTitle: {
-    fontSize: em(17),
+    fontSize: em(15),
     fontWeight: 'bold',
     color: '#5A5A5A',
   },
   itemText: {
-    fontSize: em(12),
+    fontSize: em(10),
     color: '#AAAAAA',
   },
   abstractTxt: {
-    lineHeight: em(18),
+    // lineHeight: em(18),
   },
   distanceBox: {
     justifyContent: 'center',
@@ -247,12 +245,12 @@ const styles = StyleSheet.create({
   addressTextView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: normalizeH(10),
+    marginTop: normalizeH(3),
   },
   saleAbstract: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: normalizeH(17),
+    marginTop: normalizeH(3),
   },
   saleLabel: {
     backgroundColor: THEME.base.lightColor,
@@ -261,25 +259,25 @@ const styles = StyleSheet.create({
   },
   saleLabelText: {
     color: 'white',
-    fontSize: em(12),
+    fontSize: em(10),
     fontWeight: 'bold',
   },
   priceView: {
     flexDirection: 'row',
-    marginTop: normalizeH(7),
+    marginTop: normalizeH(3),
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   priceText: {
-    fontSize: em(15),
+    fontSize: em(12),
     fontWeight: 'bold',
     color: '#00BE96',
   },
   payBtn: {
     backgroundColor: THEME.base.mainColor,
-    padding: 5,
+    padding: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 2,
   },
 })
