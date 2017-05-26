@@ -21,7 +21,7 @@ global.isSounding = false
 global.chatMessageSoundOpen = true //聊天消息开关
 global.pushMessageSoundOpen = true //通知消息开关
 
-export const ENV = 'pro' //dev 开发环境；pre 预上线环境；pro 生产环境
+export const ENV = 'pre' //dev 开发环境；pre 预上线环境；pro 生产环境
 
 const KM_Dev = {
   appId: LC_CONFIG.LC_DEV_APP_ID,

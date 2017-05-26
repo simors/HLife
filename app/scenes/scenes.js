@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
+      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar />
       <Scene key="LOGIN" component={Login} />
       <Scene key="REGIST" component={Regist} />
       <Scene key="NICKNAME_VIEW" component={NicknameView} />
@@ -221,7 +221,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_ALBUM_VIEW" component={ShopAlbumView}/>
 
 
-      <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
+      <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="WUAI" component={Home}/>
         </Scene>
