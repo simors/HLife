@@ -22,6 +22,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import FollowUser from '../../components/common/FollowUser'
 import {activeUserId} from '../../selector/authSelector'
+import {CachedImage} from "react-native-img-cache"
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -124,7 +125,7 @@ export class TopicShow extends Component {
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-                  <Image style={styles.avatarStyle}
+                  <CachedImage mutable style={styles.avatarStyle}
                          source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
                 </TouchableOpacity>
                 <View>
@@ -148,7 +149,7 @@ export class TopicShow extends Component {
           {this.renderContentImage()}
           {/*{this.renderCommentAndLikeButton()}*/}
           <View style={styles.locationCommentStyle}>
-            <Image style={styles.positionStyle} resizeMode="contain" source={require("../../assets/images/writer_loaction.png")}/>
+            <CachedImage mutable style={styles.positionStyle} resizeMode="contain" source={require("../../assets/images/writer_loaction.png")}/>
             <Text
               style={styles.timeTextStyle}>{this.props.topic.position ? this.props.topic.position.city : "未知"}</Text>
             <Text

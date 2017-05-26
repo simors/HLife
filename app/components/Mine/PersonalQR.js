@@ -14,6 +14,7 @@ import Header from '../common/Header'
 import THEME from '../../constants/themes/theme1'
 import QRCode from 'react-native-qrcode'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {CachedImage} from 'react-native-img-cache'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -28,7 +29,7 @@ export default class PersonalQR extends Component {
     }
     return (
       <View style={styles.avatarView}>
-        <Image style={{width: normalizeW(50), height: normalizeH(50)}} source={{uri: this.props.avatar}}/>
+        <CachedImage mutable style={{width: normalizeW(50), height: normalizeH(50)}} source={{uri: this.props.avatar}}/>
       </View>
     )
   }

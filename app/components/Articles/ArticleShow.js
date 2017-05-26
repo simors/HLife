@@ -31,6 +31,7 @@ import {
 } from '../../action/articleAction'
 import {getIsUp, getcommentList, getcommentCount, getUpCount} from '../../selector/articleSelector'
 import * as Toast from '../common/Toast'
+import {CachedImage} from 'react-native-img-cache'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -226,7 +227,7 @@ class ArticleShow extends Component {
               <TouchableOpacity onPress={()=> {Actions.ARTICLES_ARTICLE(this.props.value)}} onLongPress={()=>{this.props.onLongPress?this.props.onLongPress(this.props.value):this.longPress()}}>
 
               <View style={styles.body1}>
-                <Image style={styles.image1} source={{uri: this.props.value.images[0]}}></Image>
+                <CachedImage mutable style={styles.image1} source={{uri: this.props.value.images[0]}}></CachedImage>
                 <View>
                   <Text style={styles.title1} numberOfLines={2}>{this.props.value.title}</Text>
                   <Text style={styles.abs1} numberOfLines={2}>{this.props.value.abstract}</Text>
@@ -243,9 +244,9 @@ class ArticleShow extends Component {
                 <Text style={styles.title3} numberOfLines={1}>{this.props.value.title}</Text>
                 <Text style={styles.abs3} numberOfLines={2}>{this.props.value.abstract}</Text>
                 <View style={styles.imageV3}>
-                  <Image style={styles.image3} source={{uri: this.props.value.images[0]}}></Image>
-                  <Image style={styles.image3} source={{uri: this.props.value.images[1]}}></Image>
-                  <Image style={styles.image3} source={{uri: this.props.value.images[2]}}></Image>
+                  <CachedImage mutable style={styles.image3} source={{uri: this.props.value.images[0]}}></CachedImage>
+                  <CachedImage mutable style={styles.image3} source={{uri: this.props.value.images[1]}}></CachedImage>
+                  <CachedImage mutable style={styles.image3} source={{uri: this.props.value.images[2]}}></CachedImage>
                 </View>
               </View>
               </TouchableOpacity>

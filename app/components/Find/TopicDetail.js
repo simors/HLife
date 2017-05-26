@@ -52,6 +52,8 @@ import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
+import {CachedImage} from "react-native-img-cache"
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -305,7 +307,7 @@ export class TopicDetail extends Component {
   renderTopicLikeOneUser(value, key) {
     return (
       <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
-        <Image style={styles.zanAvatarStyle}
+        <CachedImage mutable  style={styles.zanAvatarStyle}
                source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait.png")}/>
       </TouchableOpacity>
     )
@@ -346,7 +348,7 @@ export class TopicDetail extends Component {
     return (
       <TouchableOpacity style={styles.moreBtnStyle}
                         onPress={() => {this.onRightPress()}}>
-        <Image style={{width: normalizeW(25), height: normalizeH(6)}} resizeMode="contain"
+        <CachedImage mutable style={{width: normalizeW(25), height: normalizeH(6)}} resizeMode="contain"
                source={require('../../assets/images/more.png')}/>
       </TouchableOpacity>
     )
@@ -387,7 +389,7 @@ export class TopicDetail extends Component {
           rightComponent={()=>{
             return (
               <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
-                <Image source={require('../../assets/images/active_share.png')}/>
+                <CachedImage mutable source={require('../../assets/images/active_share.png')}/>
               </TouchableOpacity>
             )
           }}
@@ -423,7 +425,8 @@ export class TopicDetail extends Component {
         }
 
         return (
-          <Image
+          <CachedImage
+            mutable
             key={'topick_like_' + index}
             style={{width:20,height:20,marginRight:5,borderRadius:10}}
             source={source}
@@ -729,7 +732,7 @@ export class TopicDetail extends Component {
           }}
           onPress={()=>{Actions.TOPIC_EDIT({topic: this.props.topic})}}
         >
-          <Image style={{marginRight:10}} source={require('../../assets/images/shop_edite.png')}/>
+          <CachedImage mutable style={{marginRight:10}} source={require('../../assets/images/shop_edite.png')}/>
           <Text style={{color:'#ff7819',fontSize:17}}>编辑话题</Text>
         </TouchableOpacity>
       )
@@ -744,20 +747,20 @@ export class TopicDetail extends Component {
         <View style={[styles.shopCommentWrap, {position:'absolute',bottom:0,left:0,right:0}]}>
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.onLikeButton()}}>
             <View style={[styles.vItem]}>
-              <Image style={{width:24,height:24}} resizeMode='contain' source={likeImgSource}/>
+              <CachedImage mutable style={{width:24,height:24}} resizeMode='contain' source={likeImgSource}/>
               <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>{isLiked ? '已赞' : '点赞'}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={() => this.openModel()}>
             <View style={[styles.vItem]}>
-              <Image style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/message.png')}/>
+              <CachedImage mutable style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/message.png')}/>
               <Text style={[styles.vItemTxt, styles.bottomZanTxt]}>评论</Text>
             </View>
           </TouchableOpacity>
           <View style={{flex:1}}/>
           <TouchableOpacity style={styles.contactedWrap} onPress={() => this.openPaymentModal()}>
             <View style={[styles.contactedBox]}>
-              <Image style={{}} source={require('../../assets/images/reward.png')}/>
+              <CachedImage mutable style={{}} source={require('../../assets/images/reward.png')}/>
               <Text style={[styles.contactedTxt]}>打赏</Text>
             </View>
           </TouchableOpacity>

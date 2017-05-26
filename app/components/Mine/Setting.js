@@ -29,7 +29,10 @@ import THEME from '../../constants/themes/theme1'
 import {userLogOut} from '../../action/authActions'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
 import {checkUpdate} from '../../api/leancloud/update'
+import {ImageCache} from 'react-native-img-cache'
+
 const RNDeviceInfo = NativeModules.RNDeviceInfo
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -52,6 +55,7 @@ class Setting extends Component {
         callback: ()=>{
           Actions.pop()
           persistor.purge()
+          ImageCache.get().clear()  //清除图片缓存
           Toast.show('清除成功，应用重启！')
           setTimeout(() => {
             RNRestart.Restart()

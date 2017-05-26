@@ -42,6 +42,7 @@
 		80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCAC20F19394FE1AD042648 /* libReact-Native-Webview-Bridge.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		869A160D390F4F709BCFA3C4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F9A086D4D041EB9E0F934D /* libz.tbd */; };
+		8ACE393214394B81AD1220C5 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B2FE42BC3B54116915082EA /* libRNFetchBlob.a */; };
 		9177708741A94F1DB692C8AD /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B583B289C0C4B9BA40FB764 /* libBVLinearGradient.a */; };
 		A329ADAC0A274094BE8DE0B6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 833EA273CD1B4F39BA400B7B /* Zocial.ttf */; };
 		ADD8FAE5242B47F887D10EA2 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED0C6526B00469597D114E8 /* libimageCropPicker.a */; };
@@ -169,6 +170,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 2DD0EFE61DA8533A00B0C975;
 			remoteInfo = "RCTPushNotification-tvOS";
+		};
+		7ED697C81ED53E6C009AE449 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6594DC7E8A2344BB9D8205A8 /* RNFetchBlob.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A15C300E1CD25C330074CB35;
+			remoteInfo = RNFetchBlob;
 		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -376,6 +384,7 @@
 		1E10C6F4B35C4E1982F7B53C /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		1E339AC295A5428D930C3AF0 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		24F9A086D4D041EB9E0F934D /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		2B2FE42BC3B54116915082EA /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
 		2C0346C91EA8F6D300AC1C48 /* jsVersionUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsVersionUpdate.h; sourceTree = "<group>"; };
 		2C0346CA1EA8F6FF00AC1C48 /* jsVersionUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = jsVersionUpdate.m; sourceTree = "<group>"; };
 		3C64BD212D8A4A58838EA436 /* imageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = imageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/imageCropPicker.xcodeproj"; sourceTree = "<group>"; };
@@ -385,6 +394,7 @@
 		530E8403591C427DB9B35BAE /* RNSound.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSound.xcodeproj; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; };
 		5411B72DE67B4E9281A6AA8E /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		5616E2920612420B90CDC160 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
+		6594DC7E8A2344BB9D8205A8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		6B583B289C0C4B9BA40FB764 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		6D030136445CC0004790CC87 /* Pods-HLife.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HLife.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HLife/Pods-HLife.debug.xcconfig"; sourceTree = "<group>"; };
 		74505C66777344C4AD590E84 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
@@ -514,6 +524,7 @@
 				43D1E8FF32A6475199A48F4E /* libCodePush.a in Frameworks */,
 				869A160D390F4F709BCFA3C4 /* libz.tbd in Frameworks */,
 				4BD4CD33C71C4F2387CC6809 /* libRNSound.a in Frameworks */,
+				8ACE393214394B81AD1220C5 /* libRNFetchBlob.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -681,6 +692,14 @@
 			name = UShare;
 			sourceTree = "<group>";
 		};
+		7ED697A51ED53E6C009AE449 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7ED697C91ED53E6C009AE449 /* libRNFetchBlob.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -711,6 +730,7 @@
 				74A5F585ED1A4331B76B7A8C /* BVLinearGradient.xcodeproj */,
 				A48FA6AB04E54B1AB2B1BC66 /* CodePush.xcodeproj */,
 				530E8403591C427DB9B35BAE /* RNSound.xcodeproj */,
+				6594DC7E8A2344BB9D8205A8 /* RNFetchBlob.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1006,7 +1026,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 820;
 				ORGANIZATIONNAME = simors;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
@@ -1128,6 +1148,10 @@
 					ProjectRef = 1E10C6F4B35C4E1982F7B53C /* RNDeviceInfo.xcodeproj */;
 				},
 				{
+					ProductGroup = 7ED697A51ED53E6C009AE449 /* Products */;
+					ProjectRef = 6594DC7E8A2344BB9D8205A8 /* RNFetchBlob.xcodeproj */;
+				},
+				{
 					ProductGroup = DD0B3A981DF9C1EE00AE8D91 /* Products */;
 					ProjectRef = 89409FA3FBBE46EA9C711FF5 /* RNFS.xcodeproj */;
 				},
@@ -1234,6 +1258,13 @@
 			fileType = archive.ar;
 			path = "libRCTPushNotification-tvOS.a";
 			remoteRef = 7E240EF21E8BA3CA00D92457 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7ED697C91ED53E6C009AE449 /* libRNFetchBlob.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFetchBlob.a;
+			remoteRef = 7ED697C81ED53E6C009AE449 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {
@@ -1576,6 +1607,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1584,6 +1616,7 @@
 					"$(PROJECT_DIR)/lib/thirdlibs",
 					"$(SRCROOT)/HLife",
 					"$(SRCROOT)/HLife",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
@@ -1639,6 +1672,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1647,6 +1681,7 @@
 					"$(PROJECT_DIR)/lib/thirdlibs",
 					"$(SRCROOT)/HLife",
 					"$(SRCROOT)/HLife",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
@@ -1717,6 +1752,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1764,6 +1800,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 				);
 				INFOPLIST_FILE = HLife/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1772,6 +1809,7 @@
 					"$(PROJECT_DIR)/lib/thirdlibs",
 					"$(SRCROOT)/HLife",
 					"$(SRCROOT)/HLife",
+					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 					"\"$(SRCROOT)/HLife\"",
 				);
@@ -1849,6 +1887,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1909,6 +1948,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-sound/RNSound",
+					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

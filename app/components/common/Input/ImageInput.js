@@ -24,6 +24,7 @@ import Gallery from 'react-native-gallery'
 import CommonButton from '../CommonButton'
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from '../Toast'
+import {CachedImage} from 'react-native-img-cache'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -156,12 +157,12 @@ class ImageInput extends Component {
     if (this.props.browse) {
       return (
         <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow)}>
-          <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
+          <CachedImage mutable style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
         </TouchableOpacity>
       )
     } else {
       return (
-        <Image style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
+        <CachedImage mutable style={[styles.choosenImageStyle, this.props.choosenImageStyle]} source={{uri: src}}/>
       )
     }
   }
@@ -181,7 +182,7 @@ class ImageInput extends Component {
       return (
         <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
           <View>
-            <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
+            <CachedImage mutable style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
                    source={this.props.addImage}/>
           </View>
         </TouchableOpacity>
@@ -189,7 +190,7 @@ class ImageInput extends Component {
     } else {
       return (
         <View>
-          <Image style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
+          <CachedImage mutable style={[styles.defaultAddImageBtnStyle, this.props.addImageBtnStyle]}
                  source={this.props.addImage}/>
         </View>
       )

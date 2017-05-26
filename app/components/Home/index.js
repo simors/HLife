@@ -51,6 +51,7 @@ import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
 import ViewPager from '../common/ViewPager'
 import SearchBar from '../common/SearchBar'
+import {CachedImage} from "react-native-img-cache"
 
 
 const RNDeviceInfo = NativeModules.RNDeviceInfo
@@ -291,7 +292,8 @@ class Home extends Component {
             key={'b_image_' + index}
             onPress={() => this.bannerClickListener(item)}
           >
-            <Image
+            <CachedImage
+              mutable
               style={[{width:PAGE_WIDTH,height:223}]}
               resizeMode="stretch"
               source={typeof(image) == 'string' ? {uri: image} : image}
