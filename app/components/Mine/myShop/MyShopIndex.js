@@ -373,6 +373,7 @@ class MyShopIndex extends Component {
             <ScrollView
               contentContainerStyle={[styles.contentContainerStyle]}
               onScroll={e => this.handleOnScroll(e)}
+              scrollEventThrottle={80}
             >
               <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
                 {this.props.shopDetail.coverUrl

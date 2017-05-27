@@ -353,6 +353,7 @@ class PersonalHomePage extends Component {
             loadMoreData={()=>{this.loadMoreData()}}
             ref={(listView) => this.listView = listView}
             onScroll={e => this.handleOnScroll(e)}
+            scrollEventThrottle={80}
           />
         </View>
 

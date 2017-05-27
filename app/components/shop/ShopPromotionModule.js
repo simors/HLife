@@ -35,6 +35,7 @@ class ShopPromotionModule extends Component {
               <View style={styles.saleItemInnerView}>
                 <View style={styles.saleImg}>
                   <Image style={{flex: 1}}
+                         resizeMode='contain'
                          source={{uri: item.coverUrl}}/>
                 </View>
                 <View style={styles.saleContent}>
