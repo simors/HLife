@@ -15,17 +15,13 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Gallery from 'react-native-gallery'
-import ImagePicker from 'react-native-image-picker'
 import CommonButton from '../CommonButton'
-import {selectPhotoTapped} from '../../../util/ImageSelector'
 import * as ImageUtil from '../../../util/ImageUtil'
-import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from '../Toast'
-import {CachedImage} from 'react-native-img-cache'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -47,8 +43,6 @@ class ImageGroupInput extends Component {
   }
 
   componentDidMount() {
-    // console.log('componentDidMount++++123+++++this.imgList=', this.imgList)
-    // console.log('componentDidMount+++++++++this.props.initValue=', this.props.initValue)
     let formInfo = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
@@ -57,7 +51,6 @@ class ImageGroupInput extends Component {
       initValue: {text: this.props.initValue}
     }
     this.props.initInputForm(formInfo)
-    // console.log('componentDidMount+++++++++this.imgList=', this.imgList)
   }
 
   calculateImageWidth() {
@@ -77,16 +70,12 @@ class ImageGroupInput extends Component {
   }
 
   componentWillMount() {
-    // console.log('componentWillMount+++++++++this.imgList=', this.imgList)
   }
 
   componentWillUnmount(){
-    // console.log('componentWillUnmount+++++++++this.imgList=', this.imgList)
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('this.props.initValue========', this.props.initValue)
-    // console.log('nextProps.initValue========', nextProps.initValue)
     if(nextProps.initValue && nextProps.initValue.length) {
       if(this.props.initValue) {
         if(this.props.initValue.length != nextProps.initValue.length) {
@@ -197,7 +186,7 @@ class ImageGroupInput extends Component {
     return (
       <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
-          <CachedImage mutable style={{flex: 1}} source={{uri: src}}/>
+          <Image style={{flex: 1}} source={{uri: src}}/>
         </TouchableOpacity>
       </View>
     )
@@ -208,7 +197,7 @@ class ImageGroupInput extends Component {
       <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <CachedImage mutable style={[styles.defaultImgShow, this.props.imgShowStyle]}
+            <Image style={[styles.defaultImgShow, this.props.imgShowStyle]}
                    source={this.props.addImage}/>
           </View>
         </TouchableOpacity>
