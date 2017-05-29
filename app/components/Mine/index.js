@@ -62,12 +62,10 @@ class Mine extends Component {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
         // this.props.fetchUserPoint()
-        this.props.fetchUserOwnedShopInfo()
+        // this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
-        this.props.getCurrentPromoter({error: (err) => {
-          //Toast.show(err.message)
-        }})
-        this.props.getPromoterTenant()
+        // this.props.getCurrentPromoter({})
+        // this.props.getPromoterTenant()
         this.props.fetchShareDomain()
       }
     })
