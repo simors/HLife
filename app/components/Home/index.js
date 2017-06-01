@@ -55,9 +55,9 @@ import codePush from 'react-native-code-push'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
 import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
-// import ViewPager from '../common/ViewPager'
+import ViewPager from '../common/ViewPager'
 // import ViewPager from '../common/ViewPager2'
-import ViewPager from 'react-native-viewpager'
+// import ViewPager from 'react-native-viewpager'
 
 import SearchBar from '../common/SearchBar'
 

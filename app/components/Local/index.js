@@ -46,8 +46,8 @@ import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
 import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
 import {fetchShopList, clearShopList} from '../../action/shopAction'
-// import ViewPager from '../common/ViewPager'
-import ViewPager2 from 'react-native-viewpager'
+import ViewPager from '../common/ViewPager'
+// import ViewPager2 from 'react-native-viewpager'
 import * as DeviceInfo from 'react-native-device-info'
 import SearchBar from '../common/SearchBar'
 import ScoreShow from '../common/ScoreShow'
@@ -333,7 +333,7 @@ class Local extends Component {
 
       // console.log('renderSectionHeader*****==pages==', pages)
 
-      let dataSource = new ViewPager2.DataSource({
+      let dataSource = new ViewPager.DataSource({
         pageHasChanged: (p1, p2) => p1 !== p2,
       })
 
@@ -347,7 +347,7 @@ class Local extends Component {
       //   />
       // )
       return (
-        <ViewPager2
+        <ViewPager
           style={{flex: 1}}
           dataSource={dataSource.cloneWithPages(pages)}
           renderPage={this._renderPage}
