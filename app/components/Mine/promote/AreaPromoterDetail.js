@@ -41,7 +41,7 @@ import {
 import * as Toast from '../../common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
 import Chart from 'react-native-chart'
-import ViewPager from '../../common/ViewPager'
+import ViewPager from '../../common/ViewPager2'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
