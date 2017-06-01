@@ -50,6 +50,9 @@ class ImageGroupInput extends Component {
       checkValid: this.props.checkValid || this.validInput,
       initValue: {text: this.props.initValue}
     }
+    if (this.props.initValue && this.props.initValue instanceof Array) {
+      this.setState({imgCnt: this.props.initValue.length})
+    }
     this.props.initInputForm(formInfo)
   }
 
@@ -211,6 +214,9 @@ class ImageGroupInput extends Component {
     }else{
       this.imgList = []
     }
+    if (this.imgList.length > this.props.number) {
+      this.imgList.splice(this.props.number, this.imgList.length - this.props.number)
+    }
     let imgComp = this.imgList.map((item, key) => {
       return (
         <View key={key}>
@@ -282,6 +288,7 @@ class ImageGroupInput extends Component {
         openType: 'gallery',
         cropping: false,
         multiple: true,
+        maxFiles: this.props.number - this.state.imgCnt,
         success: (response) => {
           let uris = []
           if(this.state.reSltImageIndex != -1) {
