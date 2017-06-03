@@ -11,6 +11,7 @@ import {
   Dimensions,
   Platform,
   Modal,
+  TouchableWithoutFeedback
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -39,7 +40,8 @@ class ImageGroupInput extends Component {
       imgCnt: 0,
       imgModalShow: false,
       showImg: '',
-      reSltImageIndex: -1
+      reSltImageIndex: -1,
+      cancelState:false
     }
 
     this.isUploadedImages = false
@@ -79,26 +81,29 @@ class ImageGroupInput extends Component {
     // console.log('componentWillMount+++++++++this.imgList=', this.imgList)
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     // console.log('componentWillUnmount+++++++++this.imgList=', this.imgList)
   }
 
   componentWillReceiveProps(nextProps) {
     // console.log('this.props.initValue========', this.props.initValue)
     // console.log('nextProps.initValue========', nextProps.initValue)
-    if(nextProps.initValue && nextProps.initValue.length) {
-      if(this.props.initValue) {
-        if(this.props.initValue.length != nextProps.initValue.length) {
+    if(nextProps.cancelState!=this.state.cancelState){
+      this.setState({cancelState:nextProps.cancelState})
+    }
+    if (nextProps.initValue && nextProps.initValue.length) {
+      if (this.props.initValue) {
+        if (this.props.initValue.length != nextProps.initValue.length) {
           this.imgList = nextProps.initValue
           this.inputChange(this.imgList)
         }
-      }else {
+      } else {
         this.imgList = nextProps.initValue
         this.inputChange(this.imgList)
       }
     }
 
-    if(nextProps.shouldUploadImages && !this.isUploadedImages) {
+    if (nextProps.shouldUploadImages && !this.isUploadedImages) {
       this.uploadImgs(this.imgList)
     }
   }
@@ -119,29 +124,29 @@ class ImageGroupInput extends Component {
   }
 
   updateImageGroup(options) {
-    this.imgList = this.imgList.concat(options.uris)
-    this.inputChange(this.imgList)
-    //用户拍照或从相册选择了照片
-    if(typeof this.props.getImageList == 'function') {
-      this.props.getImageList(this.imgList)
-    }
-    if(typeof options.success == 'function') {
-      options.success(options)
-    }
+  this.imgList = this.imgList.concat(options.uris)
+  this.inputChange(this.imgList)
+  //用户拍照或从相册选择了照片
+  if (typeof this.props.getImageList == 'function') {
+    this.props.getImageList(this.imgList)
   }
+  if (typeof options.success == 'function') {
+    options.success(options)
+  }
+}
 
   uploadImgs(uris) {
-    if(uris && uris.length) {
+    if (uris && uris.length) {
       ImageUtil.batchUploadImgs(uris).then((leanUris) => {
         this.isUploadedImages = true
         this.imgList = leanUris
         this.inputChange(this.imgList)
-        if( typeof this.props.uploadImagesCallback == 'function') {
+        if (typeof this.props.uploadImagesCallback == 'function') {
           this.props.uploadImagesCallback({leanImgUrls: this.imgList})
         }
       })
-    }else {
-      if( typeof this.props.uploadImagesCallback == 'function') {
+    } else {
+      if (typeof this.props.uploadImagesCallback == 'function') {
         this.props.uploadImagesCallback({leanImgUrls: []})
       }
     }
@@ -150,7 +155,7 @@ class ImageGroupInput extends Component {
   renderReuploadBtn(index) {
     return (
       <View style={{position: 'absolute', bottom: normalizeH(50), left: normalizeW(17)}}>
-        <CommonButton title="重新上传" onPress={() => this.reSelectImg(index)} />
+        <CommonButton title="重新上传" onPress={() => this.reSelectImg(index)}/>
       </View>
     )
   }
@@ -172,7 +177,9 @@ class ImageGroupInput extends Component {
           visible={this.state.imgModalShow}
           transparent={false}
           animationType='fade'
-          onRequestClose={()=>{this.androidHardwareBackPress()}}
+          onRequestClose={()=> {
+            this.androidHardwareBackPress()
+          }}
         >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
@@ -193,18 +200,68 @@ class ImageGroupInput extends Component {
   }
 
   renderImage(src) {
+    let isCancel = false
     return (
-      <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
-        <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
-          <Image style={{flex: 1}} source={{uri: src}}/>
-        </TouchableOpacity>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View style={[styles.defaultContainerStyle, {
+          margin: this.marginSize,
+          width: this.calImgSize,
+          height: this.calImgSize
+        }]}>
+          <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)} onLongPress={()=>{
+            isCancel = true
+            this.setState({
+              cancelState:true
+            })
+            console.log('hahahahahah',isCancel,this.state.cancelState)
+          }} >
+            <Image style={{flex: 1}} source={{uri: src}}/>
+          </TouchableOpacity>
+        </View>
+        {this.renderDetele(src)}
       </View>
     )
   }
 
+  deleteImageComponent(src){
+    {
+      let count = 0
+      // this.imgList = this.imgList.concat(options.uris)
+      this.imgList.forEach((item)=>{
+        if(item==src){
+          this.imgList.splice(count,1)
+        }
+        count++
+      })
+      this.inputChange(this.imgList)
+      //用户拍照或从相册选择了照片
+      if (typeof this.props.getImageList == 'function') {
+        this.props.getImageList(this.imgList)
+      }
+      // if (typeof options.success == 'function') {
+      //   options.success(options)
+      // }
+    }
+  }
+  renderDetele(src){
+    if(this.state.cancelState){
+      return( <View style={{position: 'absolute', top: 0, right: 0}}>
+        <TouchableOpacity onPress={() => this.deleteImageComponent(src)}>
+          <Image style={{width: 30, height: 30, borderRadius: 15, overflow: 'hidden'}}
+                 source={require('../../../assets/images/delete.png')}/>
+        </TouchableOpacity>
+      </View>)
+    }else
+    {return null}
+  }
+
   renderImageButton() {
     return (
-      <View style={[styles.defaultContainerStyle, {margin: this.marginSize, width: this.calImgSize, height: this.calImgSize}]}>
+      <View style={[styles.defaultContainerStyle, {
+        margin: this.marginSize,
+        width: this.calImgSize,
+        height: this.calImgSize
+      }]}>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.selectImg()}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Image style={[styles.defaultImgShow, this.props.imgShowStyle]}
@@ -218,7 +275,7 @@ class ImageGroupInput extends Component {
   renderImageRow() {
     if (this.props.data) {
       this.imgList = this.props.data
-    }else{
+    } else {
       this.imgList = []
     }
     let imgComp = this.imgList.map((item, key) => {
@@ -268,12 +325,12 @@ class ImageGroupInput extends Component {
   }
 
   _handleActionSheetPress(index) {
-    if(0 == index) { //拍照
+    if (0 == index) { //拍照
       ImageUtil.openPicker({
         openType: 'camera',
         cropping: false,
         success: (response) => {
-          if(this.state.reSltImageIndex != -1) {
+          if (this.state.reSltImageIndex != -1) {
             this.toggleModal(false)
             this.imgList.splice(this.state.reSltImageIndex, 1)
             this.setState({
@@ -287,26 +344,26 @@ class ImageGroupInput extends Component {
           Toast.show(response.message)
         }
       })
-    }else if(1 == index) { //从相册选择
+    } else if (1 == index) { //从相册选择
       let option = {
         openType: 'gallery',
         cropping: false,
         multiple: true,
         success: (response) => {
           let uris = []
-          if(this.state.reSltImageIndex != -1) {
+          if (this.state.reSltImageIndex != -1) {
             this.toggleModal(false)
             this.imgList.splice(this.state.reSltImageIndex, 1)
             this.setState({
               reSltImageIndex: -1
             })
             uris.push(response.path)
-          }else {
-            if(option.multiple) {
+          } else {
+            if (option.multiple) {
               response.forEach((item) => {
                 uris.push(item.path)
               })
-            }else {
+            } else {
               uris.push(response.path)
             }
           }
@@ -317,16 +374,28 @@ class ImageGroupInput extends Component {
         }
       }
 
-      if(this.state.reSltImageIndex != -1) { //重新选择
+      if (this.state.reSltImageIndex != -1) { //重新选择
         option.multiple = false
       }
 
       ImageUtil.openPicker(option)
-    }else if(2 == index) {
+    } else if (2 == index) {
       this.setState({
         reSltImageIndex: -1
       })
     }
+  }
+
+  renderImageInput(src, width, height, index) {
+    return (
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        {/*<Image style={[styles.imgInputStyle, {width, height}]}*/}
+        {/*source={{uri: src}}>*/}
+        {/*</Image>*/}
+        {this.renderImage(src)}
+
+      </View>
+    )
   }
 
   renderActionSheet() {
@@ -343,11 +412,14 @@ class ImageGroupInput extends Component {
 
   render() {
     return (
+          <TouchableWithoutFeedback onPress={() => this.setState({cancelState:false})}>
+
       <View>
         {this.renderImageModal()}
         {this.renderImageShow()}
         {this.renderActionSheet()}
       </View>
+            </TouchableWithoutFeedback>
     )
   }
 }
@@ -384,10 +456,15 @@ const styles = StyleSheet.create({
     borderColor: '#E9E9E9',
     borderWidth: 1,
     backgroundColor: '#FFFFFF',
-    overflow:'hidden',
+    overflow: 'hidden',
   },
   defaultImgShow: {
     width: normalizeW(60),
     height: normalizeH(60),
+  },
+  imgInputStyle: {
+    maxWidth: PAGE_WIDTH,
+    marginTop: 10,
+    marginBottom: 10,
   },
 })

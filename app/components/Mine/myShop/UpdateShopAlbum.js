@@ -81,6 +81,10 @@ class UpdateShopAlbum extends Component {
     this.updateShopAlbum()
   }
 
+  deleteImage(src){
+
+  }
+
   updateShopAlbum() {
     if(this.isPublishing) {
       return
@@ -125,6 +129,7 @@ class UpdateShopAlbum extends Component {
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(15)}}>
             <ImageGroupInput
+              deleteImage={(src)=>{this.deleteImage(src)}}
               {...shopAlbumInput}
               number={9}
               imageLineCnt={3}
