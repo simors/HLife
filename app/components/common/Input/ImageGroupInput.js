@@ -26,6 +26,7 @@ import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from '../Toast'
+import Popup from '@zzzkk2009/react-native-popup'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -106,6 +107,28 @@ class ImageGroupInput extends Component {
     if (nextProps.shouldUploadImages && !this.isUploadedImages) {
       this.uploadImgs(this.imgList)
     }
+  }
+
+  deleteImage(id) {
+    Popup.confirm({
+      title: '提示',
+      content: '确认删除图片？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+          this.deleteImageComponent(id)
+          Toast.show('删除成功！')
+
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=> {
+          // console.log('cancel')
+        }
+      }
+    })
   }
 
   inputChange(text) {
@@ -246,7 +269,7 @@ class ImageGroupInput extends Component {
   renderDetele(src){
     if(this.state.cancelState){
       return( <View style={{position: 'absolute', top: 0, right: 0}}>
-        <TouchableOpacity onPress={() => this.deleteImageComponent(src)}>
+        <TouchableOpacity onPress={() => this.deleteImage(src)}>
           <Image style={{width: 30, height: 30, borderRadius: 15, overflow: 'hidden'}}
                  source={require('../../../assets/images/delete.png')}/>
         </TouchableOpacity>
