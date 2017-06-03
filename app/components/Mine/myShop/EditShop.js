@@ -448,7 +448,7 @@ class EditShop extends Component {
             keyboardShouldPersistTaps={true}
           >
             <View style={{flex:1}}>
-              <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
+              <Image style={{width:PAGE_WIDTH,height: normalizeH(223)}} source={shopCover}/>
               <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(90,90,90,0.5)'}}>
                 <TouchableOpacity style={{flex:1}} onPress={()=>{this.editShopCover()}}>
                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>

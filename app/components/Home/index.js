@@ -294,7 +294,7 @@ class Home extends Component {
           >
             <CachedImage
               mutable
-              style={[{width:PAGE_WIDTH,height:223}]}
+              style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
               resizeMode="stretch"
               source={typeof(image) == 'string' ? {uri: image} : image}
             />
