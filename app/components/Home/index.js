@@ -35,12 +35,6 @@ import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
-import CommonBanner from '../common/CommonBanner'
-import CommonBanner2 from '../common/CommonBanner2'
-import CommonMarquee2 from '../common/CommonMarquee2'
-import Channels from './Channels'
-import DailyChosen from './DailyChosen'
-import Columns from './Columns'
 import * as authSelector from '../../selector/authSelector'
 import MessageBell from '../common/MessageBell'
 import NearbyTopicView from './NearbyTopicView'
@@ -49,7 +43,7 @@ import NearbySalesView from './NearbySalesView'
 import {getCity, getGeopoint} from '../../selector/locSelector'
 import * as Toast from '../common/Toast'
 import {selectShopPromotionList} from '../../selector/shopSelector'
-import {fetchShopPromotionList, clearShopPromotionList} from '../../action/shopAction'
+import {fetchShopPromotionList} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
 import codePush from 'react-native-code-push'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
@@ -60,6 +54,7 @@ import ViewPager from '../common/ViewPager'
 // import ViewPager from 'react-native-viewpager'
 
 import SearchBar from '../common/SearchBar'
+import {CachedImage} from "react-native-img-cache"
 
 
 const RNDeviceInfo = NativeModules.RNDeviceInfo
@@ -300,8 +295,9 @@ class Home extends Component {
             key={'b_image_' + index}
             onPress={() => this.bannerClickListener(item)}
           >
-            <Image
-              style={[{width:PAGE_WIDTH,height:223}]}
+            <CachedImage
+              mutable
+              style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
               resizeMode="stretch"
               source={typeof(image) == 'string' ? {uri: image} : image}
             />
@@ -339,22 +335,6 @@ class Home extends Component {
       </View>
     )
   }
-
-  // renderBannerColumn() {
-  //   if (this.props.banner && this.props.banner.length > 1) {
-  //     return (
-  //       <View style={styles.advertisementModule}>
-  //         <CommonBanner2
-  //           banners={this.props.banner}
-  //         />
-  //       </View>
-  //     )
-  //   } else {
-  //     return (
-  //       <View style={styles.advertisementModule}></View>
-  //     )
-  //   }
-  // }
 
   renderNearbyTopic() {
     return (
@@ -562,7 +542,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   getAllTopicCategories,
   getCurrentLocation,
   fetchShopPromotionList,
-  clearShopPromotionList,
   fetchShopCategories,
   fetchAppNoUpdate
 }, dispatch)
@@ -582,31 +561,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: normalizeH(45),
   },
-  healthModule: {
-    height: normalizeH(64),
-    marginTop: normalizeH(10)
-  },
-  announcementModule: {
-    height: normalizeH(40),
-    backgroundColor: 'white',
-    //   marginTop: normalizeH(15),
-  },
   advertisementModule: {
     height: normalizeH(223),
     backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
-  },
-  columnsModule: {
-    height: normalizeH(84),
-    marginTop: normalizeH(15),
-    marginBottom: normalizeH(5),
-  },
-  channelsModule: {
-    marginTop: normalizeH(15),
-    marginBottom: normalizeH(5),
-  },
-
-  dailyChosenModule: {
-    marginTop: normalizeH(15),
   },
   moduleSpace: {
     paddingBottom: normalizeH(8),

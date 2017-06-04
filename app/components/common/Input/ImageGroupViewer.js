@@ -16,6 +16,7 @@ import {
 } from 'react-native'
 import Gallery from 'react-native-gallery'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {CachedImage} from "react-native-img-cache"
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -92,12 +93,12 @@ export default class ImageGroupViewer extends Component {
     if (this.props.browse) {
       return (
         <TouchableOpacity style={{flex:1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
-          <Image style={imageStyle} source={{uri: src}}/>
+          <CachedImage mutable style={imageStyle} source={{uri: src}}/>
         </TouchableOpacity>
       )
     } else {
       return (
-        <Image style={imageStyle} source={{uri: src}}/>
+        <CachedImage mutable style={imageStyle} source={{uri: src}}/>
       )
     }
   }

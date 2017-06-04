@@ -6,6 +6,8 @@ import {
   View,
   StyleSheet,
   Dimensions,
+  Image,
+  Text
 } from 'react-native'
 import MultilineText from './MultilineText'
 import ImageGroupInput from './ImageGroupInput'
@@ -13,6 +15,7 @@ import ImageGroupViewer from './ImageGroupViewer'
 import TopicImageViewer from '../TopicImageViewer'
 import Symbol from 'es6-symbol'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import {CachedImage} from "react-native-img-cache"
 
 let formKey = Symbol('multiForm')
 const multiInput = {
@@ -63,10 +66,22 @@ export default class TextImageTest extends Component {
             <ImageGroupViewer images={images} imageLineCnt={2}/>
           </View>
           <View style={{marginTop: 30}}>
-            <TopicImageViewer images={topicImgs} />
+          <TopicImageViewer images={topicImgs} />
+        </View>
+          <View style={{marginTop: 30, borderWidth: 1, borderColor: 'red'}}>
+            <Text>CachedImage</Text>
+            <CachedImage mutable style={{width: 100, height: 100}} source={{ uri: "http://ac-k5rltwmf.clouddn.com/2b53e9ff68f739ddadb8.jpg" }}/>
           </View>
         </KeyboardAwareScrollView>
       </View>
     )
   }
+
+  // render() {
+  //   return (
+  //     <View>
+  //       <CachedImage source={{ uri: "https://i.ytimg.com/vi/yaqe1qesQ8c/maxresdefault.jpg" }}/>
+  //     </View>
+  //   )
+  // }
 }

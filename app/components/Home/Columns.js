@@ -24,6 +24,7 @@ import THEME from '../../constants/themes/theme1'
 import {fetchColumn} from '../../action/configAction'
 import {getColumn} from '../../selector/configSelector'
 import CommonModal from '../common/CommonModal'
+import {CachedImage} from 'react-native-img-cache'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -56,7 +57,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
               <TouchableOpacity onPress={()=> {
                 Actions.ARTICLES_ARTICLELIST({columnId: value.columnId})
               }}>
-               <Image style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
+               <CachedImage mutable style={[styles.defaultImageStyles,this.props.imageStyle]} source={{uri: imageUrl}}/>
                 <Text style={styles.channelText}>{value.title}</Text>
               </TouchableOpacity>
             </View>

@@ -738,6 +738,7 @@ class ShopDetail extends Component {
           <ScrollView
             contentContainerStyle={[styles.contentContainerStyle]}
             onScroll={e => this.handleOnScroll(e)}
+            scrollEventThrottle={80}
           >
             <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
               <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}>

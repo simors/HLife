@@ -287,6 +287,7 @@ class GiftedChat extends React.Component {
       <AnimatedView style={{
         height: this.state.messagesContainerHeight,
       }}>
+        {this.renderCustomTopComp()}
         <MessageContainer
           {...this.props}
           invertibleScrollViewProps={this.invertibleScrollViewProps}
@@ -400,6 +401,13 @@ class GiftedChat extends React.Component {
       return this.props.renderLoading();
     }
     return null;
+  }
+
+  renderCustomTopComp() {
+    if (this.props.customTopComp) {
+      return this.props.customTopComp()
+    }
+    return <View/>
   }
 
   render() {

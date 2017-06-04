@@ -17,9 +17,13 @@ import {activeUserId} from '../selector/authSelector'
 
 let createPaymentAction = createAction(CREATE_PAYMENT)
 let addShopDetail = createAction(shopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
+let addBatchShopDetail = createAction(shopActionTypes.FETCH_BATCH_SHOP_DETAIL)
 let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
+let addUserBatchProfile = createAction(AuthTypes.ADD_USER_PROFILES)
 let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
 let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
+let updateBatchPromoter = createAction(promoterActionTypes.UPDATE_BATCH_PROMOTER_INFO)
+let setUserPromoterBatchMap = createAction(promoterActionTypes.SET_USER_PROMOTER_BATCH_MAP)
 let setUserDealRecords = createAction(paymentActionTypes.SET_DEAL_RECORDS)
 let addUserDealRecords = createAction(paymentActionTypes.ADD_DEAL_RECORDS)
 
@@ -178,9 +182,13 @@ export function getUserDealRecords(payload) {
       more = false
     }
     lcPayment.fetchDealRecords(payload).then((records) => {
-      console.log('records:', records)
       let deals = records.dealRecords
       let dealRecords = []
+      let shopInfos = []
+      let promoters = []
+      let userIds = []
+      let promoterIds = []
+      let userProfiles = []
       deals.forEach((record) => {
         let dealRecord = {}
         dealRecord.cost = record.cost
@@ -190,30 +198,35 @@ export function getUserDealRecords(payload) {
           dealRecord.shopId = record.shop.objectId
           let shop = record.shop
           let shopRecord = ShopInfo.fromLeancloudApi(shop)
-          dispatch(addShopDetail({id: shop.objectId, shopInfo: shopRecord}))
+          shopInfos.push(shopRecord)
         } else if (record.dealType == 1) {
           dealRecord.invitedPromoterId = record.promoter.objectId
           dealRecord.userId = record.user.id
           let promoter = record.promoter
           let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
-          dispatch(updatePromoter({promoterId: record.promoter.objectId, promoter: promoterRecord}))
-          dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId: record.promoter.objectId}))
+          promoters.push(promoterRecord)
+          userIds.push(promoter.user.id)
+          promoterIds.push(record.promoter.objectId)
           let user = record.user
           let userInfo = UserInfo.fromLeancloudApi(user)
-          dispatch(addUserProfile({userInfo}))
+          userProfiles.push(userInfo)
         } else if (record.dealType == 5) {
           dealRecord.userId = record.user.id
           let user = record.user
           let userInfo = UserInfo.fromLeancloudApi(user)
-          dispatch(addUserProfile({userInfo}))
+          userProfiles.push(userInfo)
         } else {
           dealRecord.userId = record.user.id
           let user = record.user
           let userInfo = UserInfo.fromLeancloudApi(user)
-          dispatch(addUserProfile({userInfo}))
+          userProfiles.push(userInfo)
         }
         dealRecords.push(dealRecord)
       })
+      dispatch(addBatchShopDetail({shopInfos: shopInfos}))
+      dispatch(updateBatchPromoter({promoters: promoters}))
+      dispatch(setUserPromoterBatchMap({userIds, promoterIds}))
+      dispatch(addUserBatchProfile({userProfiles}))
       if (more) {
         dispatch(addUserDealRecords({userId: activeUserId(getState()), dealRecords: dealRecords}))
       } else {

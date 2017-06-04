@@ -41,16 +41,10 @@ class Chatroom extends Component {
     this.state = {
       hasMore: false,
       showLoadEarlier:false,
-      keyboardShow: false
+      keyboardShow: false,
     }
 
     this.oldChatMessageSoundOpen = true
-
-    this.onKeyboardWillShow = this.onKeyboardWillShow.bind(this)
-    this.onKeyboardWillHide = this.onKeyboardWillHide.bind(this)
-    this.onKeyboardDidShow = this.onKeyboardDidShow.bind(this)
-    this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this)
-
   }
 
   componentDidMount() {
@@ -70,56 +64,11 @@ class Chatroom extends Component {
       // })
       
     })
-
-    if (Platform.OS == 'ios') {
-      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
-      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
-    } else {
-      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
-      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
-
-    }
-
   }
 
   componentWillUnmount() {
     global.chatMessageSoundOpen = this.oldChatMessageSoundOpen
-
     this.props.leaveConversation()
-
-
-    if (Platform.OS == 'ios') {
-      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
-      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
-    } else {
-      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
-      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
-    }
-
-  }
-
-  onKeyboardWillShow(e) {
-    this.setState({
-      keyboardShow: true
-    })
-  }
-
-  onKeyboardWillHide(e) {
-    this.setState({
-      keyboardShow: false
-    })
-  }
-
-  onKeyboardDidShow(e) {
-    if (Platform.OS === 'android') {
-      this.onKeyboardWillShow(e)
-    }
-  }
-
-  onKeyboardDidHide(e) {
-    if (Platform.OS === 'android') {
-      this.onKeyboardWillHide(e)
-    }
   }
 
   createConversation(callback) {
@@ -176,17 +125,12 @@ class Chatroom extends Component {
       conversationId: this.conversation.id,
       messageIterator: this.messageIterator,
       success: (result) => {
-        // console.log('result====', result)
         let hasMore = result.hasMore
         let messages = result.messages
-        // console.log('hasMore===', hasMore)
-
         this.setState({ hasMore })
-
         if(hasMore) {
           this.setState({ showLoadEarlier: true })
         }
-
       },
       error: (error) => {
         Toast.show('加载历史消息失败')
@@ -197,16 +141,11 @@ class Chatroom extends Component {
 
   onSend(messages = []) {
     let time = Date.parse(new Date())
-    // let date = new Date()
-    // let time = date.getTime()
     let msgId = this.props.name + '_' + time
-    // console.log("onSend.msgId=====", msgId)
-
     let payload = {
       msgId: msgId,
       conversationId: this.props.conversationId,
     }
-    // console.log('messages====', messages)
     messages.forEach((value) => {
       if (value.text && value.text.length > 0) {
         payload.type = msgTypes.MSG_TEXT
@@ -222,7 +161,6 @@ class Chatroom extends Component {
   }
 
   renderCustomInputToolbar(toolbarProps) {
-    // console.log('toolbarProps====', toolbarProps)
     return (
       <CustomInputToolbar 
         {...toolbarProps}
@@ -245,16 +183,10 @@ class Chatroom extends Component {
     }
   }
 
-  renderCustomTopView() {
-    if(!this.props.customTopView) {
+  topComp() {
+    if (!this.props.customTopView) {
       return null
     }
-
-    // console.log('this.messageInput====', this.messageInput)
-    if(this.state.keyboardShow) {
-      return null
-    }
-
     return this.props.customTopView
   }
 
@@ -290,8 +222,8 @@ class Chatroom extends Component {
             loadEarlierWrapperStyle={{}}
             loadEarlierTextStyle={{}}
             onLoadEarlier={this.onLoadEarlier.bind(this)}
+            customTopComp={() => {return this.topComp()}}
           />
-          {this.renderCustomTopView()}
         </View>
       </View>
     )
@@ -299,7 +231,7 @@ class Chatroom extends Component {
 }
 
 Chatroom.defaultProps = {
-  title: '聊天室'
+  title: '聊天室',
 }
 
 const mapStateToProps = (state, ownProps) => {

@@ -16,11 +16,8 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Gallery from 'react-native-gallery'
-import ImagePicker from 'react-native-image-picker'
 import CommonButton from '../CommonButton'
-import {selectPhotoTapped} from '../../../util/ImageSelector'
 import * as ImageUtil from '../../../util/ImageUtil'
-import {uploadFile} from '../../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -49,8 +46,6 @@ class ImageGroupInput extends Component {
   }
 
   componentDidMount() {
-    // console.log('componentDidMount++++123+++++this.imgList=', this.imgList)
-    // console.log('componentDidMount+++++++++this.props.initValue=', this.props.initValue)
     let formInfo = {
       formKey: this.props.formKey,
       stateKey: this.props.stateKey,
@@ -58,8 +53,10 @@ class ImageGroupInput extends Component {
       checkValid: this.props.checkValid || this.validInput,
       initValue: {text: this.props.initValue}
     }
+    if (this.props.initValue && this.props.initValue instanceof Array) {
+      this.setState({imgCnt: this.props.initValue.length})
+    }
     this.props.initInputForm(formInfo)
-    // console.log('componentDidMount+++++++++this.imgList=', this.imgList)
   }
 
   calculateImageWidth() {
@@ -79,22 +76,22 @@ class ImageGroupInput extends Component {
   }
 
   componentWillMount() {
-    // console.log('componentWillMount+++++++++this.imgList=', this.imgList)
   }
 
   componentWillUnmount() {
     // console.log('componentWillUnmount+++++++++this.imgList=', this.imgList)
   }
 
+
+
   componentWillReceiveProps(nextProps) {
-    // console.log('this.props.initValue========', this.props.initValue)
-    // console.log('nextProps.initValue========', nextProps.initValue)
-    if(nextProps.cancelState!=this.state.cancelState){
-      this.setState({cancelState:nextProps.cancelState})
-    }
-    if (nextProps.initValue && nextProps.initValue.length) {
-      if (this.props.initValue) {
-        if (this.props.initValue.length != nextProps.initValue.length) {
+
+            if(nextProps.cancelState!=this.state.cancelState){
+              this.setState({cancelState:nextProps.cancelState})
+            }
+    if(nextProps.initValue && nextProps.initValue.length) {
+      if(this.props.initValue) {
+        if(this.props.initValue.length != nextProps.initValue.length) {
           this.imgList = nextProps.initValue
           this.inputChange(this.imgList)
         }
@@ -301,6 +298,9 @@ class ImageGroupInput extends Component {
     } else {
       this.imgList = []
     }
+    if (this.imgList.length > this.props.number) {
+      this.imgList.splice(this.props.number, this.imgList.length - this.props.number)
+    }
     let imgComp = this.imgList.map((item, key) => {
       return (
         <View key={key}>
@@ -372,6 +372,7 @@ class ImageGroupInput extends Component {
         openType: 'gallery',
         cropping: false,
         multiple: true,
+        maxFiles: this.props.number - this.state.imgCnt,
         success: (response) => {
           let uris = []
           if (this.state.reSltImageIndex != -1) {

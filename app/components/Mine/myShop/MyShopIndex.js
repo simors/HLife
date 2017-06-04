@@ -373,15 +373,16 @@ class MyShopIndex extends Component {
             <ScrollView
               contentContainerStyle={[styles.contentContainerStyle]}
               onScroll={e => this.handleOnScroll(e)}
+              scrollEventThrottle={80}
             >
               <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
                 {this.props.shopDetail.coverUrl
-                  ? <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}>
+                  ? <Image style={{width:PAGE_WIDTH,height: normalizeH(223)}} source={{uri: this.props.shopDetail.coverUrl}}>
                       <View style={{position:'absolute',right:15,bottom:15,paddingLeft:6,paddingRight:6,backgroundColor:'gray',borderRadius:2,}}>
                         <Text style={{color:'white',fontSize:15}}>{albumLen}</Text>
                       </View>
                     </Image>
-                  : <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={require('../../../assets/images/background_shop.png')}/>
+                  : <Image style={{width:PAGE_WIDTH,height: normalizeH(223)}} source={require('../../../assets/images/background_shop.png')}/>
                 }
               </TouchableOpacity>
               <View style={styles.shopHead}>

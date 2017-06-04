@@ -62,12 +62,10 @@ class Mine extends Component {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
         // this.props.fetchUserPoint()
-        this.props.fetchUserOwnedShopInfo()
+        // this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
-        this.props.getCurrentPromoter({error: (err) => {
-          //Toast.show(err.message)
-        }})
-        this.props.getPromoterTenant()
+        // this.props.getCurrentPromoter({})
+        // this.props.getPromoterTenant()
         this.props.fetchShareDomain()
       }
     })
@@ -99,6 +97,7 @@ class Mine extends Component {
                 Actions.PAYMENT({
                   metadata: {'shopId':userOwnedShopInfo.id, 'tenant': tenant, 'user': this.props.userInfo.id},
                   price: tenant,
+                  subject: '店铺入驻汇邻优店加盟费',
                   paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
                   paySuccessJumpSceneParams: {
                     shopId: userOwnedShopInfo.id,
@@ -157,6 +156,7 @@ class Mine extends Component {
           title: '支付推广员注册费',
           price: this.props.fee,
           metadata: {'promoterId': this.props.promoter.id, 'user': this.props.userInfo.id},
+          subject: '汇邻优店推广员入驻费',
         })
       }
     } else {

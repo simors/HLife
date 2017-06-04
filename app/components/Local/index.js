@@ -239,6 +239,7 @@ class Local extends Component {
         <View style={styles.shopCategoryBox}>
           <Image
             style={[styles.shopCategoryImage]}
+            resizeMode='contain'
             source={{uri: shopCategory.imageSource}}
           />
           <Text numberOfLines={1} style={[styles.shopCategoryText]}>{shopCategory.text}</Text>
@@ -613,8 +614,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   shopCategoryImage: {
-    height: 50,
-    width: 50,
+    height: normalizeH(45),
+    width: normalizeW(45),
     marginBottom: 6
   },
   shopCategoryText: {},

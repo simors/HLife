@@ -91,9 +91,11 @@ class UpdateShopCover4EditShop extends Component {
           <View style={{}}>
             <ImageInput
               {...shopCoverInput}
-              containerStyle={{width: PAGE_WIDTH, height: 156,borderWidth:0}}
-              addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: 156}}
-              choosenImageStyle={{width: PAGE_WIDTH, height: 156}}
+              containerStyle={{width: PAGE_WIDTH, height: normalizeH(223),borderWidth:0}}
+              addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: normalizeH(223)}}
+              choosenImageStyle={{width: PAGE_WIDTH, height: normalizeH(223)}}
+              imageWidth={PAGE_WIDTH*2}
+              imageHeight={normalizeH(223)*2}
               addImage={require('../../../assets/images/default_upload.png')}
               closeModalAfterSelectedImg={true}
               initValue={

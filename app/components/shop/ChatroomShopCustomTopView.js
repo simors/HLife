@@ -56,7 +56,7 @@ export default class ChatroomShopCustomTopView extends Component {
                   <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
                 </View>
                 {shopInfo.distance &&
-                  <Text style={[styles.subTxt]}>{shopInfo.distance}km</Text>
+                  <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
                 }
               </View>
             </View>
@@ -70,10 +70,7 @@ export default class ChatroomShopCustomTopView extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-		height: 120,
+		height: normalizeH(80),
 		backgroundColor:'#f5f5f5',
 		width:PAGE_WIDTH,
 		marginBottom:8
@@ -81,34 +78,34 @@ const styles = StyleSheet.create({
 	shopInfoWrap: {
     flex: 1,
     flexDirection: 'row',
-    padding: 20,
+    padding: normalizeW(10),
     paddingBottom:15,
     backgroundColor: '#f5f5f5',
   },
   coverWrap: {
-    width: 80,
-    height: 80
+    width: normalizeW(60),
+    height: normalizeH(60)
   },
   cover: {
     flex: 1
   },
   shopIntroWrap: {
     flex: 1,
-    paddingLeft: 10,
+    paddingLeft: normalizeW(5),
   },
   shopInnerIntroWrap: {
-    height: 80,
+    height: normalizeH(60),
   },
   shopName: {
-    fontSize: em(17),
+    fontSize: em(15),
     color: '#5a5a5a'
   },
   subInfoWrap: {
     flexDirection: 'row',
   },
   subTxt: {
-    marginRight: normalizeW(10),
+    marginRight: normalizeW(5),
     color: '#d8d8d8',
-    fontSize: em(12)
+    fontSize: em(10)
   },
 })

@@ -62,6 +62,8 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchSimilarShopListSuccess(state, action)
     case ShopActionTypes.FETCH_SHOP_DETAIL_SUCCESS:
       return handleFetchShopDetailSuccess(state, action)
+    case ShopActionTypes.FETCH_BATCH_SHOP_DETAIL:
+      return handleFetchBatchShopDetail(state, action)
     case ShopActionTypes.FETCH_SHOP_PROMOTION_DETAIL_SUCCESS:
       return handleFetchShopPromotionDetailSuccess(state, action)
     case ShopActionTypes.FETCH_GUESS_YOU_LIKE_SHOP_LIST_SUCCESS:
@@ -379,6 +381,15 @@ function handleFetchShopDetailSuccess(state, action) {
   let shopId = payload.id
   let shopInfo = payload.shopInfo
   state = state.setIn(['shopDetails', shopId], shopInfo)
+  return state
+}
+
+function handleFetchBatchShopDetail(state, action) {
+  let payload = action.payload
+  let shopInfos = payload.shopInfos
+  shopInfos.forEach((shopInfo) => {
+    state = state.setIn(['shopDetails', shopInfo.id], shopInfo)
+  })
   return state
 }
 

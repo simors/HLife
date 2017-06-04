@@ -38,6 +38,7 @@ import * as Utils from '../../util/Utils'
 import * as AVUtils from '../../util/AVUtils'
 import {getPromoterById, activePromoter, selectPromoterByUserId} from '../../selector/promoterSelector'
 import {getPromoterByUserId} from '../../action/promoterAction'
+import {CachedImage} from 'react-native-img-cache'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -134,7 +135,8 @@ class PersonalHomePage extends Component {
         }
 
         return (
-          <Image
+          <CachedImage
+            mutable
             key={'user_follower_' + index}
             style={{width:20,height:20,marginRight:5,borderRadius:10}}
             source={source}
@@ -177,10 +179,10 @@ class PersonalHomePage extends Component {
     return (
       <View style={styles.personalInfoContainer}>
         <View style={styles.personalInfoWrap}>
-          <Image style={styles.avatarImg} source={avatar}/>
+          <CachedImage mutable style={styles.avatarImg} source={avatar}/>
           <View style={styles.row}>
             <Text style={styles.nickname}>{userInfo.nickname}</Text>
-            <Image style={styles.sexImg} source={genderIcon} />
+            <CachedImage mutable style={styles.sexImg} source={genderIcon} />
           </View>
           {userInfo.geoCity 
             ?  <View style={styles.row}>
@@ -194,7 +196,7 @@ class PersonalHomePage extends Component {
           }
           {promoterLevelInfo &&
             <View style={styles.promoterLevelBox}>
-              <Image style={styles.promoterLevelIcon} source={promoterLevelInfo.levelMainIcon} />
+              <CachedImage mutable style={styles.promoterLevelIcon} source={promoterLevelInfo.levelMainIcon} />
               <Text style={styles.promoterLevelName}>{promoterLevelInfo.levelName + '推广员'}</Text>
             </View>
           }
@@ -351,6 +353,7 @@ class PersonalHomePage extends Component {
             loadMoreData={()=>{this.loadMoreData()}}
             ref={(listView) => this.listView = listView}
             onScroll={e => this.handleOnScroll(e)}
+            scrollEventThrottle={80}
           />
         </View>
 
@@ -369,7 +372,7 @@ class PersonalHomePage extends Component {
             Actions.SHOP_DETAIL({id: userOwnedShopInfo.id})
           }}>
           <View style={[styles.vItem]}>
-            <Image style={{}} source={require('../../assets/images/shop_24_personal.png')}/>
+            <CachedImage mutable style={{}} source={require('../../assets/images/shop_24_personal.png')}/>
             <Text style={[styles.vItemTxt, {color:'#FF7819'}]}>个人店铺</Text>
           </View>
         </TouchableOpacity>

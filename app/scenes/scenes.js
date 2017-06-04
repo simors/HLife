@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
-import {StyleSheet, AsyncStorage, StatusBar} from 'react-native'
+import {StyleSheet, AsyncStorage, StatusBar, InteractionManager} from 'react-native'
 import {Actions, Scene, Switch, ActionConst, Modal} from 'react-native-router-flux'
-
+import {store} from '../store/persistStore'
+import {fetchUserOwnedShopInfo} from '../action/shopAction'
+import {getCurrentPromoter, getPromoterTenant} from '../action/promoterAction'
 import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import Launch from '../components/Launch'
 import Home from '../components/Home'
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
 export const scenes = Actions.create(
   <Scene key="modal" component={Modal}>
     <Scene key="root" hideNavBar={true}>
-      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
+      <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar />
       <Scene key="LOGIN" component={Login} />
       <Scene key="REGIST" component={Regist} />
       <Scene key="NICKNAME_VIEW" component={NicknameView} />
@@ -221,7 +223,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_ALBUM_VIEW" component={ShopAlbumView}/>
 
 
-      <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
+      <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="WUAI" component={Home}/>
         </Scene>
@@ -259,15 +261,18 @@ function tapActions(props) {
       if (!result) {
         Actions.LOGIN()
       } else {
-        // StatusBar.setBarStyle('light-content', true)
         Actions.MINE()
+        InteractionManager.runAfterInteractions(()=>{
+          store.dispatch(fetchUserOwnedShopInfo())
+          store.dispatch(getCurrentPromoter({}))
+          store.dispatch(getPromoterTenant())
+        })
       }
     })
   } if (props.index == 2) {
     if (!props.isLogin) {
       Actions.LOGIN()
     } else {
-      // StatusBar.setBarStyle('dark-content', true)
       let identity = props.identity
       let shopPayment = props.shopPayment
       let shopInfoComplete = props.shopInfoComplete
@@ -276,21 +281,19 @@ function tapActions(props) {
       } else {
         Actions.PUBLISH_TOPIC()
       }
+
     }
   } else {
     switch (props.index) {
       case 0: {
-        // StatusBar.setBarStyle('dark-content', true)
         Actions.HOME_INDEX()
         break
       }
       case 1: {
-        // StatusBar.setBarStyle('dark-content', true)
         Actions.LOCAL()
         break
       }
       case 3: {
-        // StatusBar.setBarStyle('dark-content', true)
         Actions.FIND()
         break
       }

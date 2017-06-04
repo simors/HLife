@@ -200,8 +200,8 @@ class ImageInput extends Component {
     if(0 == index) { //拍照
       ImageUtil.openPicker({
         openType: 'camera',
-        width: this.props.imageWidth || Math.floor(PAGE_WIDTH * 2),
-        height: this.props.imageHeight || Math.floor(PAGE_WIDTH * 2),
+        width: Math.floor(this.props.imageWidth) || Math.floor(PAGE_WIDTH * 2),
+        height: Math.floor(this.props.imageHeight) || Math.floor(PAGE_WIDTH * 2),
         success: (response) => {
           this.toggleModal(false)
           if(this.pickerAndUploadImage) {
@@ -217,11 +217,9 @@ class ImageInput extends Component {
     }else if(1 == index) { //从相册选择
       ImageUtil.openPicker({
         openType: 'gallery',
-        width: this.props.imageWidth || Math.floor(PAGE_WIDTH * 2),
-        height: this.props.imageHeight || Math.floor(PAGE_WIDTH * 2),
+        width: Math.floor(this.props.imageWidth) || Math.floor(PAGE_WIDTH * 2),
+        height: Math.floor(this.props.imageHeight) || Math.floor(PAGE_WIDTH * 2),
         success: (response) => {
-          // console.log('gallery===')
-          // console.log(response)
           this.toggleModal(false)
           if(this.pickerAndUploadImage) {
             this.uploadImg(response.path)

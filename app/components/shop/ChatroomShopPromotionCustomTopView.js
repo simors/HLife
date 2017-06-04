@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  Modal,
+  TextInput,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -18,6 +20,7 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import {BUY_GOODS} from '../../constants/appConfig'
+import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -25,24 +28,94 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export default class ChatroomShopPromotionCustomTopView extends Component {
 	constructor(props) {
     super(props)
+    this.state = {
+      showPayModal: false,
+      buyAmount: '1',
+    }
   }
 
   onPaymentPress() {
+    this.setState({showPayModal: false})
+    let amount = this.state.buyAmount
+    if (Math.floor(amount) != amount) {
+      Toast.show('购买数量只能是整数')
+      return
+    }
     let item = this.props.shopPromotionInfo
     Actions.PAYMENT({
       title: '商家活动支付',
-      price: item.promotingPrice,
-      // price: '0.01',
+      price: item.promotingPrice * Number(amount),
       metadata: {
         'fromUser': this.props.userId,
         'toUser': item.targetShop.owner.id,
         'dealType': BUY_GOODS
       },
+      subject: '购买汇邻优店商品费用',
       paySuccessJumpScene: 'BUY_GOODS_OK',
       paySuccessJumpSceneParams: {
       },
       payErrorJumpBack: true,
     })
+  }
+
+  openPaymentModal() {
+    this.setState({showPayModal: true})
+  }
+
+  renderPaymentModal() {
+    return (
+      <View>
+        <Modal
+          visible={this.state.showPayModal}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={()=>{this.setState({showPayModal: false})}}
+        >
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+            <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
+              <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
+                <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置购买数量</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>数量：</Text>
+                <TextInput
+                  placeholder='输入数量'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({buyAmount: text})}
+                  value={this.state.buyAmount}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    textAlign: 'right',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(80),
+                    paddingRight: normalizeW(15),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>份</Text>
+              </View>
+              <View style={{width: PAGE_WIDTH-100, height: normalizeH(50), padding: 0, flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, borderColor: '#F5F5F5'}}>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.setState({showPayModal: false})}>
+                    <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex: 1}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.onPaymentPress()}>
+                    <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    )
   }
 
   render() {
@@ -54,6 +127,7 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 	        <View style={styles.saleItemInnerView}>
 	          <View style={styles.saleImg}>
 	            <Image style={{flex: 1}}
+                     resizeMode='contain'
 	                   source={{uri: item.coverUrl}}/>
 	          </View>
 	          <View style={styles.saleContent}>
@@ -102,8 +176,8 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
                     }
                   </View>
                   <View>
-                    <TouchableOpacity style={styles.payBtn} onPress={() => this.onPaymentPress()}>
-                      <Text style={{fontSize: em(15), color: '#FFF'}}>去支付</Text>
+                    <TouchableOpacity style={styles.payBtn} onPress={() => this.openPaymentModal()}>
+                      <Text style={{fontSize: em(12), color: '#FFF'}}>去支付</Text>
                     </TouchableOpacity>
                   </View>
 	              </View>
@@ -111,6 +185,8 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 	          </View>
 	        </View>
 	      </View>
+
+        {this.renderPaymentModal()}
 	    </TouchableOpacity>
   	)
   	
@@ -120,11 +196,8 @@ export default class ChatroomShopPromotionCustomTopView extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-		height: 135,
-		paddingTop: 15,
+		height: normalizeH(80),
+		paddingTop: normalizeH(5),
 		backgroundColor:'#f5f5f5',
 		width:PAGE_WIDTH,
 		marginBottom:8
@@ -135,31 +208,31 @@ const styles = StyleSheet.create({
   saleItemInnerView: {
     flex: 1,
     flexDirection: 'row',
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: normalizeW(5),
+    paddingRight: normalizeW(5),
   },
   saleImg: {
-    width: normalizeW(100),
-    height: normalizeH(100),
+    width: normalizeW(60),
+    height: normalizeH(60),
     paddingLeft: normalizeW(5),
     paddingRight: normalizeW(5),
   },
   saleContent: {
     flex: 1,
-    marginLeft: normalizeW(15),
+    marginLeft: normalizeW(5),
     marginRight: normalizeW(5),
   },
   itemTitle: {
-    fontSize: em(17),
+    fontSize: em(15),
     fontWeight: 'bold',
     color: '#5A5A5A',
   },
   itemText: {
-    fontSize: em(12),
+    fontSize: em(10),
     color: '#AAAAAA',
   },
   abstractTxt: {
-    lineHeight: em(18),
+    // lineHeight: em(18),
   },
   distanceBox: {
     justifyContent: 'center',
@@ -172,12 +245,12 @@ const styles = StyleSheet.create({
   addressTextView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: normalizeH(10),
+    marginTop: normalizeH(3),
   },
   saleAbstract: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: normalizeH(17),
+    marginTop: normalizeH(3),
   },
   saleLabel: {
     backgroundColor: THEME.base.lightColor,
@@ -186,25 +259,25 @@ const styles = StyleSheet.create({
   },
   saleLabelText: {
     color: 'white',
-    fontSize: em(12),
+    fontSize: em(10),
     fontWeight: 'bold',
   },
   priceView: {
     flexDirection: 'row',
-    marginTop: normalizeH(7),
+    marginTop: normalizeH(3),
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   priceText: {
-    fontSize: em(15),
+    fontSize: em(12),
     fontWeight: 'bold',
     color: '#00BE96',
   },
   payBtn: {
     backgroundColor: THEME.base.mainColor,
-    padding: 5,
+    padding: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 2,
   },
 })

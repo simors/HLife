@@ -69,7 +69,7 @@ export default class CommonListView extends Component {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={true}
         onEndReached={this.onLoadMore.bind(this)}
-        onEndReachedThreshold={10}
+        onEndReachedThreshold={1000}
         contentContainerStyle={{backgroundColor: 'white'}}
         renderSectionHeader={this.props.renderSectionHeader}
         onScroll={this.props.onScroll}

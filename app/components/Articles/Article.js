@@ -56,6 +56,7 @@ import WebHtmlView from 'react-native-webhtmlview'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
+import {CachedImage} from 'react-native-img-cache'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -204,7 +205,7 @@ class Article extends Component {
 
     return (
       <TouchableOpacity key={key} style={{alignSelf: 'center'}}>
-        <Image style={styles.zanAvatarStyle}
+        <CachedImage mutable style={styles.zanAvatarStyle}
                source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait@2x.png")}/>
       </TouchableOpacity>
     )
@@ -355,14 +356,14 @@ class Article extends Component {
               }}>{this.props.title}</Text>
             </View>
             <View style={styles.authorView}>
-              <Image style={{
+              <CachedImage mutable style={{
                 height: normalizeH(30),
                 width: normalizeW(30),
                 overflow: 'hidden',
                 borderRadius: normalizeW(15),
                 marginLeft: normalizeW(12)
               }}
-                     source={this.props.avatar ? {uri: this.props.avatar} : require("../../assets/images/default_portrait.png")}></Image>
+                     source={this.props.avatar ? {uri: this.props.avatar} : require("../../assets/images/default_portrait.png")}></CachedImage>
               <Text style={{
                 fontSize: em(18),
                 color: '#929292',

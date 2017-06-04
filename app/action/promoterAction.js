@@ -22,18 +22,23 @@ const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
 let certificatePromoter = createAction(promoterActionTypes.CERTIFICATE_PROMOTER)
 let setActivePromoter = createAction(promoterActionTypes.SET_ACTIVE_PROMOTER)
 let updatePromoter = createAction(promoterActionTypes.UPDATE_PROMOTER_INFO)
+let updateBatchPromoter = createAction(promoterActionTypes.UPDATE_BATCH_PROMOTER_INFO)
 let updateTenant = createAction(promoterActionTypes.UPDATE_TENANT_FEE)
 let addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
+let addUserBatchProfile = createAction(AuthTypes.ADD_USER_PROFILES)
 let updateUpPromoter = createAction(promoterActionTypes.UPDATE_UPPROMOTER_ID)
 let setPromoterTeam = createAction(promoterActionTypes.SET_PROMOTER_TEAM)
 let addPromoterTeam = createAction(promoterActionTypes.ADD_PROMOTER_TEAM)
 let addShopDetail = createAction(shopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
+let addBatchShopDetail = createAction(shopActionTypes.FETCH_BATCH_SHOP_DETAIL)
 let addPromoterShops = createAction(promoterActionTypes.ADD_PROMOTER_SHOPS)
 let setPromoterShops = createAction(promoterActionTypes.SET_PROMOTER_SHOPS)
 let setUserPromoterMap = createAction(promoterActionTypes.SET_USER_PROMOTER_MAP)
+let setUserPromoterBatchMap = createAction(promoterActionTypes.SET_USER_PROMOTER_BATCH_MAP)
 let updateStatistics = createAction(promoterActionTypes.UPDATE_PROMOTER_PERFORMANCE)
 let updateAreaAgent = createAction(promoterActionTypes.UPDATE_AREA_AGENTS)
 let updateShopTenant = createAction(promoterActionTypes.UPDATE_CITY_SHOP_TENANT)
+let updateBatchShopTenant = createAction(promoterActionTypes.UPDATE_BATCH_CITY_SHOP_TENANT)
 let setAreaPromoters = createAction(promoterActionTypes.SET_AREA_PROMOTERS)
 let addAreaPromoters = createAction(promoterActionTypes.ADD_AREA_PROMOTERS)
 let setAreaAgent = createAction(promoterActionTypes.SET_AREA_AGENT)
@@ -200,23 +205,29 @@ export function getMyPromoterTeam(payload) {
     }
     lcPromoter.getMyPromoterTeam(payload).then((result) => {
       let team = []
+      let userIds = []
+      let promoterIds = []
       let promoters = result.promoters
       let users = result.users
       promoters.forEach((promoter) => {
         let promoterId = promoter.objectId
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
-        team.push(promoterId)
-        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
-        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+        team.push(promoterRecord)
+        userIds.push(promoter.user.id)
+        promoterIds.push(promoterId)
       })
+      dispatch(updateBatchPromoter({promoters: team}))
+      dispatch(setUserPromoterBatchMap({userIds, promoterIds}))
+      let userProfiles = []
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
-        dispatch(addUserProfile({userInfo}))
+        userProfiles.push(userInfo)
       })
+      dispatch(addUserBatchProfile({userProfiles: userProfiles}))
       if (more) {
-        dispatch(addPromoterTeam({promoterId: activePromoter(getState()), newTeam: team}))
+        dispatch(addPromoterTeam({promoterId: activePromoter(getState()), newTeam: promoterIds}))
       } else {
-        dispatch(setPromoterTeam({promoterId: activePromoter(getState()), team: team}))
+        dispatch(setPromoterTeam({promoterId: activePromoter(getState()), team: promoterIds}))
       }
       if (payload.success) {
         payload.success(team.length == 0)
@@ -237,23 +248,29 @@ export function getPromoterTeamById(payload) {
     }
     lcPromoter.getPromoterTeamById(payload).then((result) => {
       let team = []
+      let userIds = []
+      let promoterIds = []
       let promoters = result.promoters
       let users = result.users
       promoters.forEach((promoter) => {
         let promoterId = promoter.objectId
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
-        team.push(promoterId)
-        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
-        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+        team.push(promoterRecord)
+        userIds.push(promoter.user.id)
+        promoterIds.push(promoterId)
       })
+      dispatch(updateBatchPromoter({promoters: team}))
+      dispatch(setUserPromoterBatchMap({userIds, promoterIds}))
+      let userProfiles = []
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
-        dispatch(addUserProfile({userInfo}))
+        userProfiles.push(userInfo)
       })
+      dispatch(addUserBatchProfile({userProfiles: userProfiles}))
       if (more) {
-        dispatch(addPromoterTeam({promoterId: payload.promoterId, newTeam: team}))
+        dispatch(addPromoterTeam({promoterId: payload.promoterId, newTeam: promoterIds}))
       } else {
-        dispatch(setPromoterTeam({promoterId: payload.promoterId, team: team}))
+        dispatch(setPromoterTeam({promoterId: payload.promoterId, team: promoterIds}))
       }
       if (payload.success) {
         payload.success(team.length == 0)
@@ -274,11 +291,13 @@ export function getMyInvitedShops(payload) {
     }
     lcPromoter.getMyInvitedShops(payload).then((shops) => {
       let shopIds = []
+      let shopInfos = []
       shops.forEach((shop) => {
         let shopRecord = ShopInfo.fromLeancloudApi(shop)
         shopIds.push(shop.id)
-        dispatch(addShopDetail({id: shop.id, shopInfo: shopRecord}))
+        shopInfos.push(shopRecord)
       })
+      dispatch(addBatchShopDetail({shopInfos: shopInfos}))
       if (more) {
         dispatch(addPromoterShops({promoterId: activePromoter(getState()), newShops: shopIds}))
       } else {
@@ -308,6 +327,10 @@ export function getAreaPromoterAgents(payload) {
   return (dispatch, getState) => {
     lcPromoter.getAreaAgents(payload).then((result) => {
       let agentsSet = []
+      let userProfiles = []
+      let promoters = []
+      let cities = []
+      let tenants = []
       let areaAgents = result.areaAgent
       areaAgents.forEach((agent) => {
         let agentObj = {}
@@ -316,20 +339,24 @@ export function getAreaPromoterAgents(payload) {
           let promoterId = promoter.objectId
           agentObj.promoterId = promoterId
           let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
-          dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
+          promoters.push(promoterRecord)
         }
         let user = agent.user
         if (user) {
           agentObj.userId = user.id
           let userInfo = UserInfo.fromLeancloudApi(user)
-          dispatch(addUserProfile({userInfo}))
+          userProfiles.push(userInfo)
         }
         agentObj.area = agent.area
         agentObj.tenant = agent.tenant
         agentsSet.push(agentObj)
-        dispatch(updateShopTenant({city: agent.area, tenant: agent.tenant}))
+        cities.push(agent.area)
+        tenants.push(agent.tenant)
       })
       dispatch(updateAreaAgent({agentsSet}))
+      dispatch(addUserBatchProfile({userProfiles}))
+      dispatch(updateBatchPromoter({promoters}))
+      dispatch(updateBatchShopTenant({cities, tenants}))
     })
   }
 }
@@ -373,17 +400,23 @@ export function getPromotersByArea(payload) {
       let promoters = result.promoters
       let users = result.users
       let promoterIds = []
+      let userIds = []
+      let team = []
       promoters.forEach((promoter) => {
         let promoterId = promoter.objectId
-        promoterIds.push(promoterId)
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
-        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
-        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+        team.push(promoterRecord)
+        promoterIds.push(promoterId)
+        userIds.push(promoter.user.id)
       })
+      dispatch(updateBatchPromoter({promoters: team}))
+      dispatch(setUserPromoterBatchMap({userIds, promoterIds}))
+      let userProfiles = []
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
-        dispatch(addUserProfile({userInfo}))
+        userProfiles.push(userInfo)
       })
+      dispatch(addUserBatchProfile({userProfiles}))
       if (more) {
         dispatch(addAreaPromoters({promoters: promoterIds}))
       } else {
@@ -452,17 +485,23 @@ export function getPromoterByNameOrId(payload) {
       let promoters = result.promoters
       let users = result.users
       let promoterIds = []
+      let userIds = []
+      let team = []
       promoters.forEach((promoter) => {
         let promoterId = promoter.objectId
-        promoterIds.push(promoterId)
         let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
-        dispatch(updatePromoter({promoterId, promoter: promoterRecord}))
-        dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId}))
+        team.push(promoterRecord)
+        userIds.push(promoter.user.id)
+        promoterIds.push(promoterId)
       })
+      dispatch(updateBatchPromoter({promoters: team}))
+      dispatch(setUserPromoterBatchMap({userIds, promoterIds}))
+      let userProfiles = []
       users.forEach((user) => {
         let userInfo = UserInfo.fromLeancloudApi(user)
-        dispatch(addUserProfile({userInfo}))
+        userProfiles.push(userInfo)
       })
+      dispatch(addUserBatchProfile({userProfiles}))
       dispatch(setAreaPromoters({promoters: promoterIds}))
 
       if (payload.success) {
@@ -485,6 +524,11 @@ export function getPromoterDealRecords(payload) {
     lcPromoter.fetchPromoterDealRecords(payload).then((result) => {
       let deals = result.dealRecords
       let dealRecords = []
+      let shopInfos = []
+      let promoters = []
+      let userIds = []
+      let promoterIds = []
+      let userProfiles = []
       deals.forEach((record) => {
         let dealRecord = {}
         dealRecord.cost = record.cost
@@ -495,20 +539,25 @@ export function getPromoterDealRecords(payload) {
           dealRecord.shopId = record.shop.objectId
           let shop = record.shop
           let shopRecord = ShopInfo.fromLeancloudApi(shop)
-          dispatch(addShopDetail({id: shop.objectId, shopInfo: shopRecord}))
+          shopInfos.push(shopRecord)
         } else if (record.dealType == 1) {
           dealRecord.invitedPromoterId = record.promoter.objectId
           dealRecord.userId = record.user.id
           let promoter = record.promoter
           let promoterRecord = PromoterInfo.fromLeancloudObject(promoter)
-          dispatch(updatePromoter({promoterId: record.promoter.objectId, promoter: promoterRecord}))
-          dispatch(setUserPromoterMap({userId: promoter.user.id, promoterId: record.promoter.objectId}))
+          promoters.push(promoterRecord)
+          userIds.push(promoter.user.id)
+          promoterIds.push(record.promoter.objectId)
           let user = record.user
           let userInfo = UserInfo.fromLeancloudApi(user)
-          dispatch(addUserProfile({userInfo}))
+          userProfiles.push(userInfo)
         }
         dealRecords.push(dealRecord)
       })
+      dispatch(addBatchShopDetail({shopInfos: shopInfos}))
+      dispatch(updateBatchPromoter({promoters: promoters}))
+      dispatch(setUserPromoterBatchMap({userIds, promoterIds}))
+      dispatch(addUserBatchProfile({userProfiles}))
       if (more) {
         dispatch(addEarnRecords({activePromoterId: activePromoter(getState()), dealRecords: dealRecords}))
       } else {
