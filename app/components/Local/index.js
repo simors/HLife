@@ -88,39 +88,13 @@ class Local extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // console.log('this.props.shopList', this.props.shopList)
-    // console.log('nextProps.shopList', nextProps.shopList)
-    // let isUpdate = false
-    // if(this.props.shopList.length != nextProps.shopList.length) {
-    //   // console.log('here is true shopLength')
-    //   return true
-    // }
-    // if (this.props.allShopCategories.length != nextProps.allShopCategories.length) {
-    //   // console.log('here is true  allShopCategoryLength')
-    //   return true
-    // }
-    // for(let j = 0; j < nextProps.allShopCategories.length; j++) {
-    //   if (!shallowequal(this.props.allShopCategories[j], nextProps.allShopCategories[j])) {
-    //     // console.log('here is true allShopCategory',nextProps.allShopCategories[i])
-    //     isUpdate = true
-    //   }
-    // }
-    // for (let i = 0; i < nextProps.shopList.length; i++) {
-    //   if (!shallowequal(this.props.shopList[i], nextProps.shopList[i])) {
-    //     // console.log('here is true ', this.props.shopList[i])
-    //     isUpdate = true
-    //   }
-    // }
-    if( !shallowequal(this.props, nextProps) ){
-      // console.log('here is true ')
-      return true
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
     }
-    // console.log('here is false ')
-    return false
-
-    // return this.deepCompare(this.props.shopList, nextProps.shopList);
-
-
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
 

@@ -62,14 +62,14 @@ var ViewPager = React.createClass({
       },
     }
   },
-  shouldComponentUpdate(nextProps, nextState){
-    if (!shallowequal(this.props, nextProps))
-    {
-      return true
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
     }
-    // console.log('here is false')
-
-    return false
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   },
   getInitialState() {
     return {

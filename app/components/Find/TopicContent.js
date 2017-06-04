@@ -24,6 +24,7 @@ import FollowUser from '../../components/common/FollowUser'
 import {Actions} from 'react-native-router-flux'
 import {activeUserId} from '../../selector/authSelector'
 import * as appConfig from '../../constants/appConfig'
+import shallowequal from 'shallowequal'
 
 const BASE_PADDING_SIZE = normalizeW(12)
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -34,6 +35,16 @@ export class TopicContent extends Component {
   constructor(props) {
     super(props)
     this.state = {}
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
   renderFollowUserView(userId) {

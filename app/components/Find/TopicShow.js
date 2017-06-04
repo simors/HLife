@@ -22,6 +22,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import FollowUser from '../../components/common/FollowUser'
 import {activeUserId} from '../../selector/authSelector'
+import shallowequal from 'shallowequal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -30,6 +31,16 @@ export class TopicShow extends Component {
   constructor(props) {
     super(props)
     this.state = {}
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
   commentButtonPress() {

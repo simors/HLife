@@ -44,19 +44,16 @@ export default class CommonListView extends Component {
   // componentDidMount() {
   //   this.onRefresh()
   // }
-  shouldComponentUpdate(nextProps, nextState){
-    // console.log('this.props.dataSource',this.props.dataSource)
-    // console.log('nextProps.dataSource',nextProps.dataSource)
-
-    if (!shallowequal(this.props,nextProps)) {
-      // console.log('here is true')
-      return true
-    }else{
-      // console.log('here is false')
-
-      return false
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
     }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
+
   onContentSizeChange(contentWidth, contentHeight) {
     // console.log('onContentSizeChange.contentHeight===', contentHeight)
     this.setState({contentHeight})

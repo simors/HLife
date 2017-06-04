@@ -22,6 +22,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {getConversationTime} from '../../util/numberUtils'
+import shallowequal from 'shallowequal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -39,6 +40,16 @@ export class TopicComment extends Component {
       //   this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topicComment'})
       // }
     })
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
   renderParentComment() {

@@ -29,6 +29,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import TopicShow from './TopicShow'
 import * as Toast from '../common/Toast'
+import shallowequal from 'shallowequal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -77,6 +78,18 @@ export class Find extends Component {
   componentWillReceiveProps(nextProps) {
     
   }
+
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
+  }
+
 
   getSelectedTab(index) {
     this.setState({selectedTab: index}, ()=>{
