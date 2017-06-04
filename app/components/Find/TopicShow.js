@@ -22,6 +22,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import FollowUser from '../../components/common/FollowUser'
 import {activeUserId} from '../../selector/authSelector'
+import shallowequal from 'shallowequal'
 import {CachedImage} from "react-native-img-cache"
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -31,6 +32,16 @@ export class TopicShow extends Component {
   constructor(props) {
     super(props)
     this.state = {}
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
   commentButtonPress() {

@@ -10,6 +10,9 @@
  * remove {} of this.renderRow(rowData, rowId)
  */
 import React, {Component} from 'react'
+import Immutable, {is} from 'immutable'
+import shallowequal from 'shallowequal'
+import {shallowEqualImmutable} from 'react-immutable-render-mixin'
 import {
   StyleSheet,
   View,
@@ -44,10 +47,12 @@ import MessageBell from '../common/MessageBell'
 import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
 import {fetchShopList, clearShopList} from '../../action/shopAction'
 import ViewPager from '../common/ViewPager'
+// import ViewPager2 from 'react-native-viewpager'
 import * as DeviceInfo from 'react-native-device-info'
 import SearchBar from '../common/SearchBar'
 import ScoreShow from '../common/ScoreShow'
-
+import NewShopCategories from './NewShopCategories'
+import ShopCategories from './ShopCategories'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -81,16 +86,22 @@ class Local extends Component {
       this.refreshData()
     })
   }
-  shouldComponentUpdate(nextProps, nextState){
-    // if (Immutable.fromJS(this.props) != Immutable.fromJS(nextProps)) {
-    //   return true
-    // }
-    return true
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
+
+
   componentDidMount() {
     // console.log('componentDidMount.props===', this.props)
-    if(DeviceInfo.isEmulator()) {
-      this.state.searchForm.geo = [28.213866,112.8186868]
+    if (DeviceInfo.isEmulator()) {
+      this.state.searchForm.geo = [28.213866, 112.8186868]
       this.state.searchForm.geoCity = '长沙'
       this.setState({
         searchForm: {
@@ -105,7 +116,7 @@ class Local extends Component {
   componentWillReceiveProps(nextProps) {
     // console.log('componentWillReceiveProps.props===', this.props)
     // console.log('componentWillReceiveProps.nextProps===', nextProps)
-    if(nextProps.nextSkipNum) {
+    if (nextProps.nextSkipNum) {
       // this.state.searchForm.skipNum = nextProps.nextSkipNum
       this.setState({
         searchForm: {
@@ -117,7 +128,7 @@ class Local extends Component {
   }
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
-    console.log('rowData',rowData)
+    // console.log('rowData',rowData)
     switch (rowData.type) {
       case 'SHOP_CATEGORY_COLUMN':
         return this.renderShopCategoryColumn()
@@ -135,13 +146,13 @@ class Local extends Component {
   renderLocalShopListColumn() {
     let shopListView = <View />
     // console.log('this.props.shopList====', this.props.shopList)
-    if(this.props.shopList && this.props.shopList.length) {
-      shopListView = this.props.shopList.map((shopInfo, index)=>{
+    if (this.props.shopList && this.props.shopList.length) {
+      shopListView = this.props.shopList.map((shopInfo, index)=> {
         return this.renderShop(shopInfo, index)
       })
     }
     return (
-      <View style={{flex:1}}>
+      <View style={{flex: 1}}>
         {shopListView}
       </View>
     )
@@ -155,12 +166,14 @@ class Local extends Component {
     // console.log('shopInfo====', shopInfo)
 
     let shopTag = null
-    if(shopInfo.containedTag && shopInfo.containedTag.length) {
+    if (shopInfo.containedTag && shopInfo.containedTag.length) {
       shopTag = shopInfo.containedTag[0].name
     }
 
     return (
-      <TouchableOpacity key={'shop_' + index} onPress={()=>{this.gotoShopDetailScene(shopInfo.id)}}>
+      <TouchableOpacity key={'shop_' + index} onPress={()=> {
+        this.gotoShopDetailScene(shopInfo.id)
+      }}>
         <View style={[styles.shopInfoWrap]}>
           <View style={styles.coverWrap}>
             <Image style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
@@ -176,13 +189,13 @@ class Local extends Component {
               </View>
               <View style={styles.subInfoWrap}>
                 {shopTag &&
-                 <Text style={[styles.subTxt]}>{shopTag}</Text>
+                <Text style={[styles.subTxt]}>{shopTag}</Text>
                 }
-                <View style={{flex:1,flexDirection:'row'}}>
+                <View style={{flex: 1, flexDirection: 'row'}}>
                   <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
                 </View>
                 {shopInfo.distance &&
-                  <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
+                <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
                 }
               </View>
             </View>
@@ -194,7 +207,7 @@ class Local extends Component {
 
   renderShopPromotion(shopInfo) {
     let containedPromotions = shopInfo.containedPromotions
-    if(containedPromotions && (containedPromotions.length > 0)) {
+    if (containedPromotions && (containedPromotions.length > 0)) {
       let promotion = containedPromotions[0]
       return (
         <View style={styles.shopPromotionBox}>
@@ -214,12 +227,15 @@ class Local extends Component {
   gotoShopCategoryList(shopCategory) {
     Actions.SHOP_CATEGORY_LIST({
       shopCategoryId: shopCategory.shopCategoryId,
-      shopCategoryName: shopCategory.text})
+      shopCategoryName: shopCategory.text
+    })
   }
-  
+
   renderShopCategoryBox(shopCategory) {
     return (
-      <TouchableOpacity key={shopCategory.id} style={styles.shopCategoryTouchBox} onPress={()=>{this.gotoShopCategoryList(shopCategory)}}>
+      <TouchableOpacity key={shopCategory.id} style={styles.shopCategoryTouchBox} onPress={()=> {
+        this.gotoShopCategoryList(shopCategory)
+      }}>
         <View style={styles.shopCategoryBox}>
           <Image
             style={[styles.shopCategoryImage]}
@@ -231,18 +247,18 @@ class Local extends Component {
       </TouchableOpacity>
     )
   }
-  
+
   renderShopCategoryRow(row) {
     return (
-      <View key={'row'+ Math.random()} style={styles.shopCategoryRow}>
+      <View key={'row' + Math.random()} style={styles.shopCategoryRow}>
         {row}
       </View>
     )
   }
-  
+
   renderShopCategoryPage(page) {
     return (
-      <View key={'page'+ Math.random()} style={styles.shopCategoryPage}>
+      <View key={'page' + Math.random()} style={styles.shopCategoryPage}>
         {page}
       </View>
     )
@@ -252,11 +268,11 @@ class Local extends Component {
     let pages = []
     let that = this
     // console.log('this.props.allShopCategories===', this.props.allShopCategories)
-    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+    if (this.props.allShopCategories && this.props.allShopCategories.length) {
       let pageView = <View/>
       let shopCategoriesView = []
       let rowView = <View />
-      let row  = []
+      let row = []
       this.props.allShopCategories.forEach((shopCategory, index) => {
         // console.log('shopCategory===', shopCategory)
 
@@ -264,25 +280,25 @@ class Local extends Component {
         row.push(shopCategoryView)
 
         let shopCategoryLength = this.props.allShopCategories.length
-        if(shopCategoryLength == (index+1)) {
+        if (shopCategoryLength == (index + 1)) {
           // console.log('renderSectionHeader*****==row.length==', row.length)
-          if(row.length < 4) {
+          if (row.length < 4) {
             let lastRowLength = row.length
-            for(let i = 0; i < (4 - lastRowLength); i++) {
-              let placeholderRowView = <View key={'empty_'+ i} style={styles.shopCategoryTouchBox} />
+            for (let i = 0; i < (4 - lastRowLength); i++) {
+              let placeholderRowView = <View key={'empty_' + i} style={styles.shopCategoryTouchBox}/>
               row.push(placeholderRowView)
             }
             // console.log('renderSectionHeader*****>>>>>>>>>>>>>==row.length==', row.length)
           }
         }
 
-        if(row.length == 4) {
+        if (row.length == 4) {
           rowView = that.renderShopCategoryRow(row)
           shopCategoriesView.push(rowView)
           row = []
         }
 
-        if(shopCategoriesView.length == 2 || shopCategoryLength == (index+1)) {
+        if (shopCategoriesView.length == 2 || shopCategoryLength == (index + 1)) {
           pageView = that.renderShopCategoryPage(shopCategoriesView)
           pages.push(pageView)
           shopCategoriesView = []
@@ -296,27 +312,42 @@ class Local extends Component {
         pageHasChanged: (p1, p2) => p1 !== p2,
       })
 
+      // return (
+      //   <ViewPager
+      //     style={{flex: 1}}
+      //     dataSource={dataSource.cloneWithPages(pages)}
+      //     renderPage={this._renderPage}
+      //     isLoop={false}
+      //     autoPlay={false}
+      //   />
+      // )
       return (
         <ViewPager
-          style={{flex:1}}
+          style={{flex: 1}}
           dataSource={dataSource.cloneWithPages(pages)}
           renderPage={this._renderPage}
           isLoop={false}
           autoPlay={false}
         />
       )
+    //   return (
+    //     <NewShopCategories allShopCategories = {this.props.allShopCategories}/>
+    // )
+      // return (
+      //   <ShopCategories shopCategories = {this.props.allShopCategories}></ShopCategories>
+      // )
     }
     return null
   }
 
-  _renderPage(data: Object, pageID) {
+  _renderPage(data:Object, pageID) {
     return (
       <View
         style={{
-          width:PAGE_WIDTH,
-          height:normalizeH(200),
-            borderBottomWidth:normalizeBorder(),
-            borderBottomColor: '#f5f5f5'
+          width: PAGE_WIDTH,
+          height: normalizeH(200),
+          borderBottomWidth: normalizeBorder(),
+          borderBottomColor: '#f5f5f5'
         }}
       >
         {data}
@@ -325,9 +356,9 @@ class Local extends Component {
   }
 
   refreshData(payload) {
-    if(payload && payload.loadingOtherCityData) {
+    if (payload && payload.loadingOtherCityData) {
       this.loadMoreData(true)
-    }else {
+    } else {
       this.setState({
         searchForm: {
           ...this.state.searchForm,
@@ -341,7 +372,7 @@ class Local extends Component {
 
   loadMoreData(isRefresh, isEndReached) {
     // console.log('this.state===', this.state)
-    if(this.isQuering) {
+    if (this.isQuering) {
       return
     }
     this.isQuering = true
@@ -354,11 +385,11 @@ class Local extends Component {
       isLocalQuering: true,
       success: (isEmpty, fetchedSize) => {
         this.isQuering = false
-        if(!this.listView) {
+        if (!this.listView) {
           return
         }
         // console.log('loadMoreData.isEmpty=====', isEmpty)
-        if(isEmpty) {
+        if (isEmpty) {
           // if(isRefresh && this.state.searchForm.distance) {
           //   this.setState({
           //     searchForm: {
@@ -370,32 +401,32 @@ class Local extends Component {
           //   })
           // }
 
-          if(!this.state.searchForm.loadingOtherCityData) {
+          if (!this.state.searchForm.loadingOtherCityData) {
             this.setState({
               searchForm: {
                 ...this.state.searchForm,
                 loadingOtherCityData: true,
                 skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
               }
-            }, ()=>{
+            }, ()=> {
               // console.log('isEmpty===', isEmpty)
-              if(isRefresh) {
+              if (isRefresh) {
                 this.refreshData({loadingOtherCityData: true})
-              }else {
+              } else {
                 this.loadMoreData()
               }
             })
           }
 
           this.listView.isLoadUp(false)
-        }else {
+        } else {
           this.listView.isLoadUp(true)
-          if(isRefresh && fetchedSize < limit) {
+          if (isRefresh && fetchedSize < limit) {
             this.loadMoreData()
           }
         }
       },
-      error: (err)=>{
+      error: (err)=> {
         this.isQuering = false
         Toast.show(err.message, {duration: 1000})
       }
@@ -413,10 +444,12 @@ class Local extends Component {
             return <SearchBar />
           }}
           rightType="image"
-          rightComponent={() => {return <MessageBell />}}
+          rightComponent={() => {
+            return <MessageBell />
+          }}
         />
         <View style={styles.body}>
-          <View style={{flex:1}}>
+          <View style={{flex: 1}}>
             <CommonListView
               contentContainerStyle={{backgroundColor: '#fff'}}
               dataSource={this.props.ds}
@@ -456,9 +489,9 @@ const mapStateToProps = (state, ownProps) => {
   const shopList = selectLocalShopList(state) || []
   let nextSkipNum = 0
   let lastUpdatedAt = ''
-  if(shopList && shopList.length) {
-    nextSkipNum = shopList[shopList.length-1].nextSkipNum
-    lastUpdatedAt = shopList[shopList.length-1].updatedAt
+  if (shopList && shopList.length) {
+    nextSkipNum = shopList[shopList.length - 1].nextSkipNum
+    lastUpdatedAt = shopList[shopList.length - 1].updatedAt
   }
 
   let geoPoint = locSelector.getGeopoint(state)
@@ -497,9 +530,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     padding: 20,
-    paddingBottom:15,
+    paddingBottom: 15,
     backgroundColor: '#fff',
-    borderBottomWidth:normalizeBorder(),
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
   shopInnerIntroWrap: {
@@ -508,7 +541,7 @@ const styles = StyleSheet.create({
   shopPromotionWrap: {
     flex: 1,
     marginTop: 10,
-    borderTopWidth:normalizeBorder(),
+    borderTopWidth: normalizeBorder(),
     borderTopColor: '#f5f5f5'
   },
   shopPromotionBox: {
@@ -524,7 +557,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   shopPromotionBadgeTxt: {
-    color:'white',
+    color: 'white',
     fontSize: em(12)
   },
   shopPromotionContent: {
@@ -560,13 +593,13 @@ const styles = StyleSheet.create({
   },
   swiperStyle: {
     backgroundColor: '#fff',
-    borderBottomWidth:normalizeBorder(),
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
   shopCategoryPage: {
-    flex:1,
+    flex: 1,
     padding: 10,
-    paddingBottom:26,
+    paddingBottom: 26,
     justifyContent: 'space-between',
   },
   shopCategoryRow: {
@@ -585,9 +618,7 @@ const styles = StyleSheet.create({
     width: normalizeW(45),
     marginBottom: 6
   },
-  shopCategoryText: {
-
-  },
+  shopCategoryText: {},
   indicators: {
     flex: 1,
     alignItems: 'center',

@@ -2,6 +2,7 @@
 
 var React = require('react');
 var { PropTypes } = React;
+import shallowequal from 'shallowequal'
 
 var ReactNative = require('react-native');
 var {
@@ -13,7 +14,8 @@ var {
   Animated,
   StyleSheet,
 } = ReactNative;
-
+var Immutable = require('immutable')
+// import {shaw} from 'immutable'
 var StaticRenderer = require('react-native/Libraries/Components/StaticRenderer');
 var TimerMixin = require('react-timer-mixin');
 
@@ -60,7 +62,15 @@ var ViewPager = React.createClass({
       },
     }
   },
-
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
+  },
   getInitialState() {
     return {
       currentPage: 0,

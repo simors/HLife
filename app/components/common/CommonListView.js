@@ -2,6 +2,7 @@
  * Created by zachary on 2016/12/13.
  */
 import React, {Component} from "react"
+import shallowequal from 'shallowequal'
 import {
   View,
   Text,
@@ -14,7 +15,7 @@ import {
   Dimensions,
 } from "react-native"
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-
+import Immutable from 'immutable'
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class CommonListView extends Component {
@@ -43,12 +44,16 @@ export default class CommonListView extends Component {
   // componentDidMount() {
   //   this.onRefresh()
   // }
-  shouldComponentUpdate(nextProps, nextState){
-    // if (Immutable.fromJS(this.props) != Immutable.fromJS(nextProps)) {
-    //   return true
-    // }
-    return true
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
+
   onContentSizeChange(contentWidth, contentHeight) {
     // console.log('onContentSizeChange.contentHeight===', contentHeight)
     this.setState({contentHeight})

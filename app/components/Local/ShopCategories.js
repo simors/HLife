@@ -13,7 +13,7 @@ import {
   Platform
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
-
+import shallowequal from 'shallowequal'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import ShopCategory from './ShopCategory'
@@ -30,8 +30,13 @@ export default class ShopCategories extends Component {
     this._getCategoryHeight = this._getCategoryHeight.bind(this)
     this.state = this._initState(this.props)
   }
-  shouldComponentUpdate(){
-    return true
+  shouldComponentUpdate(nextProps,nextState){
+    if (!shallowequal(this.props, nextProps))
+    {
+      return true
+    }
+    // console.log('here is false')
+    return false
   }
   _initState(props) {
     let initState = {

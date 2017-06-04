@@ -50,6 +50,9 @@ import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-nativ
 import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
 import ViewPager from '../common/ViewPager'
+// import ViewPager from '../common/ViewPager2'
+// import ViewPager from 'react-native-viewpager'
+
 import SearchBar from '../common/SearchBar'
 import {CachedImage} from "react-native-img-cache"
 
@@ -307,7 +310,7 @@ class Home extends Component {
       let dataSource = new ViewPager.DataSource({
         pageHasChanged: (p1, p2) => p1 !== p2,
       })
-
+      // console.log('dataSource',pages)
       return (
         <View style={styles.advertisementModule}>
           <ViewPager
