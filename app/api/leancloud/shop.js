@@ -139,6 +139,8 @@ export function fetchShopPromotionList(payload) {
   let loadingOtherCityData = payload.loadingOtherCityData || false
   let query = new AV.Query('ShopPromotion')
 
+  console.log('payload', payload)
+
   query.include(['targetShop', 'targetShop.owner'])
   query.limit(5) // 最多返回 5 条结果
 
@@ -161,14 +163,17 @@ export function fetchShopPromotionList(payload) {
       query.matchesQuery('targetShop', innerQuery)
     }
   }else {
-    if(!geoCity || geoCity == '全国') {
+    if(!geoCity || geoCity == '' || geoCity == '全国') {
+      console.log('abc')
       query.addDescending('updatedAt')
     }else {
+      console.log('def')
       //构建内嵌查询
       let innerQuery = new AV.Query('Shop')
       if(distance) {
         if (Array.isArray(geo)) {
           let point = new AV.GeoPoint(geo)
+          console.log('sdfasdf')
           innerQuery.withinKilometers('geo', point, distance)
         }
       }else {
@@ -1045,6 +1050,7 @@ export function submitShopPromotion(payload) {
   let originalPrice = payload.originalPrice
   let abstract = payload.abstract
   let promotionDetailInfo = payload.promotionDetailInfo
+  let geo = payload.geo
 
   if(Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
     promotionDetailInfo = JSON.stringify(promotionDetailInfo)
@@ -1071,6 +1077,7 @@ export function submitShopPromotion(payload) {
   shopPromotion.set('originalPrice', originalPrice)
   shopPromotion.set('abstract', abstract)
   shopPromotion.set('promotionDetailInfo', promotionDetailInfo)
+  shopPromotion.set('geo', geo)
 
   return shopPromotion.save().then((results) => {
     // console.log('submitShopPromotion===results=', results)

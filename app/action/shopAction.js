@@ -583,19 +583,14 @@ export function fetchGuessYouLikeShopList(payload) {
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
     let localImgs = []
-    // console.log('submitShopPromotion.payload===', payload)
     if(payload.localCoverImgUri){
-      // console.log('submitShopPromotion.payload.localCoverImgUri===', payload.localCoverImgUri)
       localImgs.push(payload.localCoverImgUri)
     }
     if(payload.localRichTextImagesUrls) {
-      // console.log('submitShopPromotion.payload.localImgs===', localImgs)
-      // console.log('submitShopPromotion.payload.localRichTextImagesUrls===', payload.localRichTextImagesUrls)
       localImgs = localImgs.concat(payload.localRichTextImagesUrls)
-      // console.log('submitShopPromotion.payload.localImgs===', localImgs)
     }
 
-    ImageUtil.batchUploadImgs2(localImgs).then((leanUris) => {
+    ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
       let coverUrl = ''
       let leanRichTextImagesUrls = []
       
@@ -636,7 +631,9 @@ export function submitShopPromotion(payload) {
         typeDesc: payload.typeDesc,
         typeId: payload.typeId,
         promotionDetailInfo: payload.promotionDetailInfo,
+        geo: payload.geo,
       }
+      console.log('shopPromotionPayload', shopPromotionPayload)
       lcShop.submitShopPromotion(shopPromotionPayload).then((result) => {
         let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
         dispatch(updateAction(result))

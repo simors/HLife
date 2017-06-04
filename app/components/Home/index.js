@@ -69,7 +69,7 @@ class Home extends Component {
     // console.log('my version',version)
     this.state = {
       searchForm: {
-        distance: 0, //修改为只按城市查询
+        distance: 5, //修改为只按城市查询
         geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
         geoCity: props.city || '',
         skipNum: 0,
@@ -174,12 +174,14 @@ class Home extends Component {
   componentWillReceiveProps(nextProps) {
     // console.log('componentWillReceiveProps.props===', this.props)
     // console.log('componentWillReceiveProps.nextProps===', nextProps)
-    if(nextProps.nextSkipNum) {
+    if(nextProps.nextSkipNum || nextProps.city || nextProps.geoPoint) {
       // this.state.searchForm.skipNum = nextProps.nextSkipNum
       this.setState({
         searchForm: {
           ...this.state.searchForm,
-          skipNum: nextProps.nextSkipNum
+          skipNum: nextProps.nextSkipNum,
+          geo: [nextProps.geoPoint.latitude, nextProps.geoPoint.longitude],
+          geoCity: nextProps.city,
         }
       })
     }
@@ -415,22 +417,22 @@ class Home extends Component {
           //   })
           // }
 
-          if(!this.state.searchForm.loadingOtherCityData) {
-            this.setState({
-              searchForm: {
-                ...this.state.searchForm,
-                loadingOtherCityData: true,
-                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
-              }
-            }, ()=>{
-              // console.log('isEmpty===', isEmpty)
-              if(isRefresh) {
-                this.refreshData({loadingOtherCityData: true})
-              }else {
-                this.loadMoreData()
-              }
-            })
-          }
+          // if(!this.state.searchForm.loadingOtherCityData) {
+          //   this.setState({
+          //     searchForm: {
+          //       ...this.state.searchForm,
+          //       loadingOtherCityData: true,
+          //       skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
+          //     }
+          //   }, ()=>{
+          //     // console.log('isEmpty===', isEmpty)
+          //     if(isRefresh) {
+          //       this.refreshData({loadingOtherCityData: true})
+          //     }else {
+          //       this.loadMoreData()
+          //     }
+          //   })
+          // }
 
           this.listView.isLoadUp(false)
         }else {
