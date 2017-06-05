@@ -217,6 +217,13 @@ class EditShop extends Component {
       shopName: this.props.userOwnedShopInfo.shopName,
       shopAddress: this.props.userOwnedShopInfo.shopAddress,
     })
+
+    if (this.props.userOwnedShopInfo.album) {
+      this.localAlbumList = this.props.userOwnedShopInfo.album
+    } else {
+      this.localAlbumList = []
+    }
+
   }
 
   componentWillReceiveProps(nextProps) {
