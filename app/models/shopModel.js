@@ -290,6 +290,7 @@ export const ShopPromotionRecord = Record({
   updatedDate: undefined,  //格式化后的更新时间
   updatedDuration: undefined, //更新时长
   nextSkipNum: 0, //分页查询,跳过条数
+  geo: undefined, // 地理位置
 })
 
 export class ShopPromotion extends ShopPromotionRecord {
@@ -361,6 +362,47 @@ export class ShopPromotion extends ShopPromotionRecord {
       record.set('updatedAt', lcObj.updatedAt.valueOf())
       record.set('updatedDuration', numberUtils.getConversationTime(lcObj.updatedAt))
       record.set('updatedDate', numberUtils.formatLeancloudTime(lcObj.updatedAt, 'YYYY-MM-DD HH:mm:SS'))
+    })
+  }
+
+  static fromLeancloudApi(lcObj) {
+    let shopPromotion = new ShopPromotionRecord()
+    return shopPromotion.withMutations((record)=> {
+      record.set('id', lcObj.id)
+      record.set('coverUrl', lcObj.coverUrl)
+      record.set('typeId', lcObj.typeId)
+      record.set('type', lcObj.type)
+      record.set('typeDesc', lcObj.typeDesc)
+      record.set('title', lcObj.title)
+      record.set('abstract', lcObj.abstract)
+      record.set('promotingPrice', lcObj.promotingPrice)
+      record.set('originalPrice', lcObj.originalPrice)
+      record.set('status', lcObj.status)
+      record.set('promotionDetailInfo', lcObj.promotionDetailInfo)
+      record.set('geo', lcObj.geo)
+
+      let targetShop = {
+        ...lcObj.targetShop
+      }
+      let userCurGeo = locSelector.getGeopoint(store.getState())
+      let curGeoPoint = new AV.GeoPoint(userCurGeo)
+      let shopGeoPoint = targetShop.geo
+      let distance = shopGeoPoint.kilometersTo(curGeoPoint)
+      let distanceUnit = 'km'
+      if(distance > 1) {
+        distance = Number(distance).toFixed(1)
+      }else {
+        distance = Number(distance * 1000).toFixed(0)
+        distanceUnit = 'm'
+      }
+      targetShop.distance = distance
+      targetShop.distanceUnit = distanceUnit
+      record.set('targetShop', targetShop)
+      record.set('createdDate', numberUtils.formatLeancloudTime(new Date(lcObj.createdAt), 'YYYY-MM-DD HH:mm:SS'))
+      record.set('createdAt', lcObj.createdAt)
+      record.set('updatedAt', lcObj.updatedAt)
+      record.set('updatedDuration', numberUtils.getConversationTime(new Date(lcObj.updatedAt)))
+      record.set('updatedDate', numberUtils.formatLeancloudTime(new Date(lcObj.updatedAt), 'YYYY-MM-DD HH:mm:SS'))
     })
   }
 }

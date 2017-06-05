@@ -26,6 +26,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from '../Toast'
 import * as DeviceInfo from 'react-native-device-info'
+import THEME from '../../../constants/themes/theme1'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -477,7 +478,7 @@ class ArticleEditor extends Component {
                 style={{width: 20, height: 20}}
                 source={require('../../../assets/images/insert_picture.png')}>
               </Image>
-              <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(10)}}>添加图片</Text>
+              <Text style={{fontSize: 15, color: THEME.base.mainColor, marginLeft: normalizeW(10)}}>添加图片</Text>
             </TouchableOpacity>
           </View>
           {this.props.renderCustomToolbar ? this.props.renderCustomToolbar() : <View/>}
