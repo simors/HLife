@@ -43,7 +43,7 @@ import NearbySalesView from './NearbySalesView'
 import {getCity, getGeopoint} from '../../selector/locSelector'
 import * as Toast from '../common/Toast'
 import {selectShopPromotionList} from '../../selector/shopSelector'
-import {fetchShopPromotionList, getShopPromotion} from '../../action/shopAction'
+import {getShopPromotion} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
 import codePush from 'react-native-code-push'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
@@ -467,7 +467,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
   getAllTopicCategories,
   getCurrentLocation,
-  fetchShopPromotionList,
   fetchShopCategories,
   fetchAppNoUpdate,
   getShopPromotion
