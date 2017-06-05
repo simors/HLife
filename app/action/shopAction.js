@@ -9,6 +9,7 @@ import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
+import {ShopPromotion} from '../models/shopModel'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
@@ -50,6 +51,35 @@ export function fetchShopList(payload) {
 
       if(payload.success){
         payload.success(shopList.isEmpty(), shopList.size)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function getShopPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopPromotion(payload).then((promotionInfo) => {
+      console.log('promotionInfo', promotionInfo)
+      let promotions = promotionInfo.promotions
+      let prompList = []
+      promotions.forEach((promp) => {
+        prompList.push(ShopPromotion.fromLeancloudApi(promp))
+      })
+      let actionType = ShopActionTypes.UPDATE_SHOP_PROMOTION_LIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.UPDATE_PAGING_SHOP_PROMOTION_LIST
+      }
+      if(prompList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({shopPromotionList: prompList}))
+      }
+
+      if(payload.success){
+        payload.success(prompList.length == 0)
       }
     }).catch((error) => {
       if(payload.error){

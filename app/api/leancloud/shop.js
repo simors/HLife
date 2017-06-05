@@ -128,6 +128,26 @@ export function getShopList(payload) {
   })
 }
 
+export function fetchShopPromotion(payload) {
+  let params = {
+    geo: payload.geo,
+    lastDistance: payload.lastDistance,
+    limit: 30,
+  }
+  console.log('params:', params)
+  return AV.Cloud.run('shopFetchNearbyPromotion', params).then((promotionInfo) => {
+    return promotionInfo
+  }, (err) => {
+    console.log(err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  }).catch((err) => {
+    console.log(err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function fetchShopPromotionList(payload) {
   // console.log('fetchShopPromotionList.payload==*******===', payload)
   let distance = payload.distance
