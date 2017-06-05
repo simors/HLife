@@ -63,7 +63,6 @@ export function fetchShopList(payload) {
 export function getShopPromotion(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopPromotion(payload).then((promotionInfo) => {
-      console.log('promotionInfo', promotionInfo)
       let promotions = promotionInfo.promotions
       let prompList = []
       promotions.forEach((promp) => {
