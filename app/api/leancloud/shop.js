@@ -128,79 +128,23 @@ export function getShopList(payload) {
   })
 }
 
-export function fetchShopPromotionList(payload) {
-  // console.log('fetchShopPromotionList.payload==*******===', payload)
-  let distance = payload.distance
-  let geo = payload.geo
-  let geoCity = payload.geoCity
-  let isRefresh = payload.isRefresh
-  let skipNum = payload.isRefresh ? 0 : (payload.skipNum || 0)
-  let lastUpdatedAt = payload.lastUpdatedAt || ''
-  let loadingOtherCityData = payload.loadingOtherCityData || false
-  let query = new AV.Query('ShopPromotion')
-
-  query.include(['targetShop', 'targetShop.owner'])
-  query.limit(5) // 最多返回 5 条结果
-
-  if(!isRefresh) { //分页查询
-    if((!geoCity || geoCity == '全国') && lastUpdatedAt) {
-      query.lessThan('updatedAt', new Date(lastUpdatedAt))
-    }else {
-      query.skip(skipNum)
-    }
+export function fetchShopPromotion(payload) {
+  let params = {
+    geo: payload.geo,
+    lastDistance: payload.lastDistance,
+    limit: 30,
   }
-
-  if(loadingOtherCityData) {
-    //构建内嵌查询
-    let innerQuery = new AV.Query('Shop')
-    if(!geoCity || geoCity == '全国') {
-      query.addDescending('updatedAt')
-    }else {
-      innerQuery.notContainedIn('geoCity', [geoCity])
-      //执行内嵌查询
-      query.matchesQuery('targetShop', innerQuery)
-    }
-  }else {
-    if(!geoCity || geoCity == '全国') {
-      query.addDescending('updatedAt')
-    }else {
-      //构建内嵌查询
-      let innerQuery = new AV.Query('Shop')
-      if(distance) {
-        if (Array.isArray(geo)) {
-          let point = new AV.GeoPoint(geo)
-          innerQuery.withinKilometers('geo', point, distance)
-        }
-      }else {
-        if(geoCity) {
-          innerQuery.contains('geoCity', geoCity)
-        }
-        if (Array.isArray(geo)) {
-          let point = new AV.GeoPoint(geo)
-          innerQuery.withinKilometers('geo', point, 100) //距离降序
-        }
-      }
-      //执行内嵌查询
-      query.matchesQuery('targetShop', innerQuery)
-    }
-  }
-
-  query.equalTo('status', "1")
-
-  // console.log('fetchShopPromotionList.query==*******===', query)
-  return query.find().then(function (results) {
-    // console.log('fetchShopPromotionList.results===*******===', results)
-    let shopPromotionList = []
-    results.forEach((result) => {
-      result.nextSkipNum = parseInt(skipNum) + results.length
-      shopPromotionList.push(ShopPromotion.fromLeancloudObject(result))
-    })
-    return new List(shopPromotionList)
-  }, function (err) {
+  return AV.Cloud.run('shopFetchNearbyPromotion', params).then((promotionInfo) => {
+    return promotionInfo
+  }, (err) => {
+    console.log(err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  }).catch((err) => {
+    console.log(err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-
 }
 
 export function fetchShopPromotionDetail(payload) {
@@ -1045,6 +989,7 @@ export function submitShopPromotion(payload) {
   let originalPrice = payload.originalPrice
   let abstract = payload.abstract
   let promotionDetailInfo = payload.promotionDetailInfo
+  let geo = payload.geo
 
   if(Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
     promotionDetailInfo = JSON.stringify(promotionDetailInfo)
@@ -1071,6 +1016,7 @@ export function submitShopPromotion(payload) {
   shopPromotion.set('originalPrice', originalPrice)
   shopPromotion.set('abstract', abstract)
   shopPromotion.set('promotionDetailInfo', promotionDetailInfo)
+  shopPromotion.set('geo', geo)
 
   return shopPromotion.save().then((results) => {
     // console.log('submitShopPromotion===results=', results)

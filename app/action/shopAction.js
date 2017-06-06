@@ -9,6 +9,7 @@ import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
+import {ShopPromotion} from '../models/shopModel'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
@@ -59,24 +60,25 @@ export function fetchShopList(payload) {
   }
 }
 
-export function fetchShopPromotionList(payload) {
-  return (dispatch ,getState) => {
-    lcShop.fetchShopPromotionList(payload).then((shopPromotionList) => {
+export function getShopPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchShopPromotion(payload).then((promotionInfo) => {
+      let promotions = promotionInfo.promotions
+      let prompList = []
+      promotions.forEach((promp) => {
+        prompList.push(ShopPromotion.fromLeancloudApi(promp))
+      })
       let actionType = ShopActionTypes.UPDATE_SHOP_PROMOTION_LIST
       if(!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_PAGING_SHOP_PROMOTION_LIST
       }
-      // console.log('fetchShopPromotion.payload.isRefresh===',payload.isRefresh)
-      // console.log('fetchShopPromotion.shopList.size===',shopList.size)
-      // console.log('fetchShopPromotion.shopList.size < 5===',(shopList.size < 5))
-      
-      if(payload.isRefresh || shopPromotionList.size) {
+      if(prompList.length) {
         let updateAction = createAction(actionType)
-        dispatch(updateAction({shopPromotionList: shopPromotionList}))
+        dispatch(updateAction({shopPromotionList: prompList}))
       }
-      
+
       if(payload.success){
-        payload.success(shopPromotionList.isEmpty())
+        payload.success(prompList.length == 0)
       }
     }).catch((error) => {
       if(payload.error){
@@ -583,19 +585,14 @@ export function fetchGuessYouLikeShopList(payload) {
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
     let localImgs = []
-    // console.log('submitShopPromotion.payload===', payload)
     if(payload.localCoverImgUri){
-      // console.log('submitShopPromotion.payload.localCoverImgUri===', payload.localCoverImgUri)
       localImgs.push(payload.localCoverImgUri)
     }
     if(payload.localRichTextImagesUrls) {
-      // console.log('submitShopPromotion.payload.localImgs===', localImgs)
-      // console.log('submitShopPromotion.payload.localRichTextImagesUrls===', payload.localRichTextImagesUrls)
       localImgs = localImgs.concat(payload.localRichTextImagesUrls)
-      // console.log('submitShopPromotion.payload.localImgs===', localImgs)
     }
 
-    ImageUtil.batchUploadImgs2(localImgs).then((leanUris) => {
+    ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
       let coverUrl = ''
       let leanRichTextImagesUrls = []
       
@@ -636,7 +633,9 @@ export function submitShopPromotion(payload) {
         typeDesc: payload.typeDesc,
         typeId: payload.typeId,
         promotionDetailInfo: payload.promotionDetailInfo,
+        geo: payload.geo,
       }
+      console.log('shopPromotionPayload', shopPromotionPayload)
       lcShop.submitShopPromotion(shopPromotionPayload).then((result) => {
         let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
         dispatch(updateAction(result))

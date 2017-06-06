@@ -326,7 +326,7 @@ class MessageBox extends Component {
       },
       error: (err)=>{
         this.isQuering = false
-        Toast.show(err.message, {duration: 1000})
+        Toast.show("加载失败")
       }
     }
     this.props.fetchConversation(payload)

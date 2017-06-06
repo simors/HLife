@@ -87,7 +87,8 @@ class PublishShopPromotion extends Component {
         promotingPrice: 0.00,
         originalPrice: 0.00,
         abstract: '',
-        promotionDetailInfo: []
+        promotionDetailInfo: [],
+        geo: []
       },
       typeDescPlaceholder: '例:店庆活动,全场七折起(15字内)',
       toolBarContentType: this.toolBarContentTypes.DEFAULT,
@@ -208,8 +209,10 @@ class PublishShopPromotion extends Component {
     // console.log('componentWillReceiveProps=this.state=', this.state)
 
     let shopId = ''
+    let geo = []
     if(nextProps.userOwnedShopInfo && nextProps.userOwnedShopInfo.id) {
       shopId = nextProps.userOwnedShopInfo.id
+      geo = nextProps.userOwnedShopInfo.geo
     }
 
     this.setState({
@@ -217,7 +220,8 @@ class PublishShopPromotion extends Component {
         ...this.state.form,
         abstract: abstract ? abstract : this.state.form.abstract,
         promotionDetailInfo: promotionDetailInfo ? promotionDetailInfo : this.state.form.promotionDetailInfo,
-        shopId: shopId ? shopId : this.state.form.shopId
+        shopId: shopId ? shopId : this.state.form.shopId,
+        geo: geo ? geo : [],
       }
     }, ()=>{
       // console.log('componentWillReceiveProps=this.state=', this.state)

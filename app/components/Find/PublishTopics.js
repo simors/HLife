@@ -339,7 +339,7 @@ class PublishTopics extends Component {
               </View>
               <View style={{height: normalizeH(59)}}>
                 <CommonTextInput maxLength={36}
-                                 autoFocus={true}
+                                 autoFocus={false}
                                  outerContainerStyle={{backgroundColor: '#FFFFFF'}}
                                  containerStyle={styles.titleContainerStyle}
                                  inputStyle={styles.titleInputStyle}

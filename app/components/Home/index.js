@@ -43,7 +43,7 @@ import NearbySalesView from './NearbySalesView'
 import {getCity, getGeopoint} from '../../selector/locSelector'
 import * as Toast from '../common/Toast'
 import {selectShopPromotionList} from '../../selector/shopSelector'
-import {fetchShopPromotionList} from '../../action/shopAction'
+import {getShopPromotion} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
 import codePush from 'react-native-code-push'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
@@ -56,6 +56,7 @@ import shallowequal from 'shallowequal'
 
 import SearchBar from '../common/SearchBar'
 import {CachedImage} from "react-native-img-cache"
+import AV from 'leancloud-storage'
 
 
 const RNDeviceInfo = NativeModules.RNDeviceInfo
@@ -70,15 +71,7 @@ class Home extends Component {
 
   constructor(props) {
     super(props)
-    // console.log('my version',version)
     this.state = {
-      searchForm: {
-        distance: 0, //修改为只按城市查询
-        geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
-        geoCity: props.city || '',
-        skipNum: 0,
-        loadingOtherCityData: false
-      },
       fade: new Animated.Value(0),
     }
   }
@@ -170,34 +163,11 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    if(DeviceInfo.isEmulator()) {
-      this.state.searchForm.geo = [28.213866,112.8186868]
-      this.state.searchForm.geoCity = '长沙'
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          geo: this.state.searchForm.geo,
-          geoCity: this.state.searchForm.geoCity
-        }
-      })
-    }
-
     this.checkIosUpdate()
     // codePush.sync({installMode: codePush.InstallMode.ON_NEXT_RESUME});
   }
   
   componentWillReceiveProps(nextProps) {
-    // console.log('componentWillReceiveProps.props===', this.props)
-    // console.log('componentWillReceiveProps.nextProps===', nextProps)
-    if(nextProps.nextSkipNum) {
-      // this.state.searchForm.skipNum = nextProps.nextSkipNum
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          skipNum: nextProps.nextSkipNum
-        }
-      })
-    }
   }
 
   renderRow(rowData, rowId) {
@@ -358,7 +328,6 @@ class Home extends Component {
   }
 
   renderNearbyShop() {
-    // console.log('renderNearbyShop.this.props.shopPromotionList====', this.props.shopPromotionList)
     return (
       <View style={styles.moduleSpace}>
         <NearbyShopView
@@ -369,10 +338,11 @@ class Home extends Component {
   }
 
   renderNearbySalesView() {
+    let prompList = this.props.shopPromotionList
     return (
       <View style={{}}>
         <NearbySalesView
-          shopPromotionList={this.props.shopPromotionList}
+          shopPromotionList={prompList}
         />
       </View>
     )
@@ -385,71 +355,32 @@ class Home extends Component {
       this.props.fetchShopCategories()
     })
 
-    if(payload && payload.loadingOtherCityData) {
-      this.loadMoreData(true)
-    }else {
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          loadingOtherCityData: false
-        }
-      }, () => {
-        this.loadMoreData(true)
-      })
-    }
+    this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh) {
-    // console.log('loadMoreData.isRefresh===', isRefresh)
     if(this.isQuering) {
       return
     }
     this.isQuering = true
-    // console.log('loadMoreData.isQuering=123==', this.isQuering)
-    // console.log('loadMoreData.isRefresh==12=', isRefresh)
+
+    let lastDistance = undefined
+    if (this.props.geoPoint && this.props.lastShopGeo) {
+      lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+    }
 
     let payload = {
-      ...this.state.searchForm,
+      geo: this.props.geoPoint ? [this.props.geoPoint.latitude, this.props.geoPoint.longitude] : [],
+      lastDistance: lastDistance,
       isRefresh: !!isRefresh,
-      lastUpdatedAt: this.props.lastUpdatedAt,
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
           return
         }
-        // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
-          // if(isRefresh && this.state.searchForm.distance) {
-          //   this.setState({
-          //     searchForm: {
-          //       ...this.state.searchForm,
-          //       distance: ''
-          //     }
-          //   }, ()=>{
-          //     // console.log('isEmpty===', isEmpty)
-          //     this.refreshData()
-          //   })
-          // }
-
-          if(!this.state.searchForm.loadingOtherCityData) {
-            this.setState({
-              searchForm: {
-                ...this.state.searchForm,
-                loadingOtherCityData: true,
-                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
-              }
-            }, ()=>{
-              // console.log('isEmpty===', isEmpty)
-              if(isRefresh) {
-                this.refreshData({loadingOtherCityData: true})
-              }else {
-                this.loadMoreData()
-              }
-            })
-          }
-
           this.listView.isLoadUp(false)
-        }else {
+        } else {
           this.listView.isLoadUp(true)
         }
       },
@@ -458,7 +389,8 @@ class Home extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    this.props.fetchShopPromotionList(payload)
+    // this.props.fetchShopPromotionList(payload)
+    this.props.getShopPromotion(payload)
   }
 
   render() {
@@ -477,7 +409,7 @@ class Home extends Component {
                 this.refreshData()
               }}
               loadMoreData={()=> {
-                this.loadMoreData()
+                this.loadMoreData(false)
               }}
               ref={(listView) => this.listView = listView}
               onScroll={e => this.handleOnScroll(e)}
@@ -509,11 +441,9 @@ const mapStateToProps = (state, ownProps) => {
   const banner = getBanner(state, 0)
 
   const shopPromotionList = selectShopPromotionList(state) || []
-  let nextSkipNum = 0
-  let lastUpdatedAt = ''
+  let lastShopGeo = undefined
   if(shopPromotionList && shopPromotionList.length) {
-    nextSkipNum = shopPromotionList[shopPromotionList.length-1].nextSkipNum
-    lastUpdatedAt = shopPromotionList[shopPromotionList.length-1].updatedAt
+    lastShopGeo = shopPromotionList[shopPromotionList.length-1].geo
   }
 
   let activeUserInfo = authSelector.activeUserInfo(state)
@@ -533,20 +463,16 @@ const mapStateToProps = (state, ownProps) => {
 
   const allShopCategories = selectShopCategories(state)
   const noUpdateVersion = getNoUpdateVersion(state)
-  // console.log('Home.allShopCategories*********>>>>>>>>>>>', noUpdateVersion)
 
   return {
-    // announcement: announcement,
     banner: banner,
-    // topics: pickedTopics,
     ds: ds.cloneWithRows(dataArray),
     city: geoCity,
     geoPoint: geoPoint,
-    nextSkipNum: nextSkipNum,
-    lastUpdatedAt: lastUpdatedAt,
     shopPromotionList: shopPromotionList,
     allShopCategories: allShopCategories,
     noUpdateVersion:noUpdateVersion,
+    lastShopGeo: lastShopGeo,
   }
 }
 
@@ -554,9 +480,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
   getAllTopicCategories,
   getCurrentLocation,
-  fetchShopPromotionList,
   fetchShopCategories,
-  fetchAppNoUpdate
+  fetchAppNoUpdate,
+  getShopPromotion
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
