@@ -86,7 +86,7 @@ class ImageGroupInput extends Component {
 
   componentWillReceiveProps(nextProps) {
 
-            if(nextProps.cancelState!=this.state.cancelState){
+            if(nextProps.cancelState!=this.props.cancelState){
               this.setState({cancelState:nextProps.cancelState})
             }
     if(nextProps.initValue && nextProps.initValue.length) {
@@ -229,11 +229,11 @@ class ImageGroupInput extends Component {
           height: this.calImgSize
         }]}>
           <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)} onLongPress={()=>{
-            isCancel = true
-            this.setState({
-              cancelState:true
-            })
-            console.log('hahahahahah',isCancel,this.state.cancelState)
+           // isCancel = true
+            this.setState({cancelState:true})
+            this.props.updateCancelState()
+            this.setState({cancelState:this.props.cancelState})
+            //console.log('hahahahahah',isCancel,this.state.cancelState)
           }} >
             <Image style={{flex: 1}} source={{uri: src}}/>
           </TouchableOpacity>

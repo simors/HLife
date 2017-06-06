@@ -48,6 +48,7 @@ import TimerMixin from 'react-timer-mixin'
 import Loading from '../common/Loading'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {fetchShareDomain, fetchAppServicePhone} from '../../action/configAction'
+import ShopGoodsList from './ShopGoodsList'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -731,7 +732,7 @@ class ShopDetail extends Component {
     }
 
     let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
-
+    let shopGoodsList=[{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18},{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18},{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18},{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18}]
     return (
       <View style={{flex:1}}>
         <View style={detailWrapStyle}>
@@ -796,7 +797,13 @@ class ShopDetail extends Component {
               noDistance={true}
               shopPromotionList={this.props.shopDetail.containedPromotions}
             />
-
+            <View style={styles.headerView}>
+              <View style={styles.headerItem}>
+                <Image source={require('../../assets/images/activity.png')} width={12} height={14}></Image>
+                <Text style={styles.headerText} numberOfLines={1}>{'产品列表'}</Text>
+              </View>
+            </View>
+            <ShopGoodsList shopGoodsList={shopGoodsList} size={6} />
             <View style={styles.shopAnnouncementWrap}>
               <View style={styles.titleWrap}>
                 <View style={styles.titleLine}/>
@@ -1460,5 +1467,26 @@ const styles = StyleSheet.create({
   shopPromotionContentTxt: {
     color: '#aaaaaa',
     fontSize: em(12)
+  },
+  headerItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: normalizeH(10),
+  },
+  headerText: {
+    fontSize: em(12),
+    color: '#5A5A5A',
+    paddingLeft: 5,
+  },
+  headerView: {
+    backgroundColor: THEME.base.backgroundColor,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: normalizeH(42),
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
   },
 })
