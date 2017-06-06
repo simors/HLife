@@ -40,7 +40,7 @@ export default class ShopGoodsList extends Component {
   renderColumn(value) {
     //console.log('value====>',value)
     return (
-      <TouchableOpacity onPress={()=>this.props.onPress(value.columnId)}>
+      <TouchableOpacity onPress={()=>this.props.showGoodDetail(value.goodId)}>
         <View style={styles.channelWrap}>
 
           <Image style={styles.defaultImageStyles} source={{uri: value.imageSource}}/>
@@ -143,6 +143,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginTop: normalizeH(10),
     marginLeft: normalizeW(7),
+    borderWidth:normalizeBorder(0),
+    backgroundColor:'#F5F5F5'
     // marginBottom:normalizeH(10),
     // marginLeft: normalizeW(20),
     // marginRight:normalizeW(20),
@@ -170,13 +172,14 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: THEME.base.backgroundColor,
-    borderBottomWidth: normalizeBorder(1),
+    // borderBottomWidth: normalizeBorder(),
+    // borderBottomColor: THEME.colors.lighterA,
     width: PAGE_WIDTH,
     flexDirection: 'row',
     //  flexWrap: 'wrap',
     //justifyContent: 'center',
-    borderColor: '#E6E6E6',
-    borderTopWidth: normalizeBorder(1),
+    // borderColor: '#E6E6E6',
+    // borderTopWidth: normalizeBorder(1),
     // paddingTop:normalizeH(10),
      paddingLeft:normalizeH(8),
     paddingRight:normalizeH(8),

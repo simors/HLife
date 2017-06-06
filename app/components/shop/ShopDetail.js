@@ -30,9 +30,34 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
 
-import {fetchUserFollowShops, fetchUserOwnedShopInfo, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, unFollowShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../action/shopAction'
+import {
+  fetchUserFollowShops,
+  fetchUserOwnedShopInfo,
+  fetchShopDetail,
+  fetchGuessYouLikeShopList,
+  fetchShopAnnouncements,
+  userIsFollowedShop,
+  unFollowShop,
+  followShop,
+  submitShopComment,
+  fetchShopCommentList,
+  fetchShopCommentTotalCount,
+  userUpShop,
+  userUnUpShop,
+  fetchUserUpShopInfo
+} from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
-import {selectUserOwnedShopInfo, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../selector/shopSelector'
+import {
+  selectUserOwnedShopInfo,
+  selectShopDetail,
+  selectShopList,
+  selectGuessYouLikeShopList,
+  selectLatestShopAnnouncemment,
+  selectUserIsFollowShop,
+  selectShopComments,
+  selectShopCommentsTotalCount,
+  selectUserIsUpedShop
+} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import * as configSelector from '../../selector/configSelector'
 import Comment from '../common/Comment'
@@ -57,14 +82,14 @@ class ShopDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      modalVisible : false,
+      modalVisible: false,
       fade: new Animated.Value(0),
     }
   }
 
   componentWillMount() {
     this.isFetchingShopDetail = true
-    InteractionManager.runAfterInteractions(()=>{
+    InteractionManager.runAfterInteractions(()=> {
       this.props.fetchShopDetail({
         id: this.props.id,
         success: () => {
@@ -111,7 +136,7 @@ class ShopDetail extends Component {
         // })
       }, 1500)
 
-      if(this.props.isUserLogined) {
+      if (this.props.isUserLogined) {
         this.isFetchingUserIsFollowedShop = true
         this.props.userIsFollowedShop({
           id: this.props.id,
@@ -149,8 +174,8 @@ class ShopDetail extends Component {
   }
 
   ifHideLoading() {
-    if(!this.isFetchingShopDetail && !this.isFetchingUserIsFollowedShop) {
-      if(this.loading) {
+    if (!this.isFetchingShopDetail && !this.isFetchingUserIsFollowedShop) {
+      if (this.loading) {
         Loading.hide(this.loading)
       }
     }
@@ -173,16 +198,16 @@ class ShopDetail extends Component {
   }
 
   userUpShop() {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
     let payload = {
       id: this.props.id,
-      success: function(result) {
+      success: function (result) {
         Toast.show(result.message, {duration: 1500})
       },
-      error: function(error) {
+      error: function (error) {
         Toast.show(error.message, {duration: 1500})
       }
     }
@@ -190,16 +215,16 @@ class ShopDetail extends Component {
   }
 
   userUnUpShop() {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
     let payload = {
       id: this.props.id,
-      success: function(result) {
+      success: function (result) {
         Toast.show(result.message, {duration: 1500})
       },
-      error: function(error) {
+      error: function (error) {
         Toast.show(error.message, {duration: 1500})
       }
     }
@@ -207,18 +232,18 @@ class ShopDetail extends Component {
   }
 
   followShop() {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
     const that = this
     let payload = {
       id: this.props.id,
-      success: function(result) {
+      success: function (result) {
         Toast.show(result.message, {duration: 1500})
         that.props.fetchUserFollowShops()
       },
-      error: function(error) {
+      error: function (error) {
         Toast.show(error.message, {duration: 1500})
       }
     }
@@ -226,18 +251,18 @@ class ShopDetail extends Component {
   }
 
   unFollowShop() {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
     const that = this
     let payload = {
       id: this.props.id,
-      success: function(result) {
+      success: function (result) {
         Toast.show(result.message, {duration: 1500})
         that.props.fetchUserFollowShops()
       },
-      error: function(error) {
+      error: function (error) {
         Toast.show(error.message, {duration: 1500})
       }
     }
@@ -245,18 +270,18 @@ class ShopDetail extends Component {
   }
 
   followUser(userId) {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
     const that = this
     let payload = {
       userId: userId,
-      success: function(result) {
+      success: function (result) {
         // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
-      error: function(error) {
+      error: function (error) {
         Toast.show(error.message, {duration: 1500})
       }
     }
@@ -265,18 +290,18 @@ class ShopDetail extends Component {
   }
 
   unFollowUser(userId) {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
     const that = this
     let payload = {
       userId: userId,
-      success: function(result) {
+      success: function (result) {
         // that.props.fetchUserFollowees()
         Toast.show(result.message, {duration: 1500})
       },
-      error: function(error) {
+      error: function (error) {
         Toast.show(error.message, {duration: 1500})
       }
     }
@@ -289,7 +314,7 @@ class ShopDetail extends Component {
     this.setState({
       modalVisible: true
     })
-    if(callback && typeof callback == 'function'){
+    if (callback && typeof callback == 'function') {
       callback()
     }
   }
@@ -299,14 +324,14 @@ class ShopDetail extends Component {
     this.setState({
       modalVisible: false
     })
-    if(callback && typeof callback == 'function'){
+    if (callback && typeof callback == 'function') {
       callback()
     }
   }
 
   //deprecated
   submitComment(commentData) {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
@@ -318,12 +343,12 @@ class ShopDetail extends Component {
       success: () => {
         that.props.fetchShopCommentList({isRefresh: true, id: that.props.id})
         that.props.fetchShopCommentTotalCount({id: that.props.id})
-        that.closeModal(()=>{
+        that.closeModal(()=> {
           Toast.show('发布成功', {duration: 1000})
         })
       },
       error: (err) => {
-        that.closeModal(()=>{
+        that.closeModal(()=> {
           Toast.show(err.message, {duration: 1000})
         })
       }
@@ -332,9 +357,9 @@ class ShopDetail extends Component {
   }
 
   makePhoneCall(contactNumber) {
-    if(Platform.OS === 'android') {
+    if (Platform.OS === 'android') {
       SendIntentAndroid.sendPhoneCall(contactNumber)
-    }else {
+    } else {
       Communications.phonecall(contactNumber, false)
     }
   }
@@ -345,15 +370,17 @@ class ShopDetail extends Component {
 
   renderGuessYouLikeList() {
     let guessYouLikeView = <View/>
-    if(this.props.guessYouLikeList.length) {
+    if (this.props.guessYouLikeList.length) {
       guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
         // console.log('renderGuessYouLikeList.item***====', item)
         let shopTag = null
-        if(item.containedTag && item.containedTag.length) {
+        if (item.containedTag && item.containedTag.length) {
           shopTag = item.containedTag[0].name
         }
         return (
-          <TouchableOpacity key={'gyl_'+ index} onPress={()=>{this.gotoShopDetailScene(item.id)}}>
+          <TouchableOpacity key={'gyl_' + index} onPress={()=> {
+            this.gotoShopDetailScene(item.id)
+          }}>
             <View style={[styles.shopInfoWrap]}>
               <View style={styles.coverWrap}>
                 <Image style={styles.cover} source={{uri: item.coverUrl}}/>
@@ -362,18 +389,18 @@ class ShopDetail extends Component {
                 <View style={styles.shopInnerIntroWrap}>
                   <Text style={styles.shopName} numberOfLines={1}>{item.shopName}</Text>
                   <ScoreShow
-                    containerStyle={{flex:1}}
+                    containerStyle={{flex: 1}}
                     score={item.score}
                   />
                   <View style={styles.subInfoWrap}>
-                    {shopTag 
+                    {shopTag
                       ? <Text style={[styles.subTxt]}>{shopTag}</Text>
                       : null
                     }
-                    <View style={{flex:1,flexDirection:'row'}}>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={styles.subTxt}>{item.geoDistrict && item.geoDistrict}</Text>
                     </View>
-                    {item.distance 
+                    {item.distance
                       ? <Text style={[styles.subTxt]}>{item.distance + item.distanceUnit}</Text>
                       : null
                     }
@@ -392,8 +419,8 @@ class ShopDetail extends Component {
   renderShopPromotion(shopInfo) {
     // console.log('renderShopPromotion.shopInfo=**********==', shopInfo)
     let containedPromotions = shopInfo.containedPromotions
-    if(containedPromotions && containedPromotions.length) {
-      let shopPromotionView = containedPromotions.map((promotion, index)=>{
+    if (containedPromotions && containedPromotions.length) {
+      let shopPromotionView = containedPromotions.map((promotion, index)=> {
         return (
           <View key={'promotion_' + index} style={styles.shopPromotionBox}>
             <View style={styles.shopPromotionBadge}>
@@ -415,7 +442,7 @@ class ShopDetail extends Component {
   }
 
   renderGuessYouLike() {
-    if(this.props.guessYouLikeList.length) {
+    if (this.props.guessYouLikeList.length) {
       return (
         <View style={styles.guessYouLikeWrap}>
           <View style={styles.guessYouLikeTitleWrap}>
@@ -430,9 +457,9 @@ class ShopDetail extends Component {
 
   userIsFollowedTheUser(userId) {
     let userFollowees = this.props.userFollowees
-    if(userFollowees && userFollowees.length) {
-      for(let i = 0; i < userFollowees.length; i++) {
-        if(userFollowees[i].id == userId) {
+    if (userFollowees && userFollowees.length) {
+      for (let i = 0; i < userFollowees.length; i++) {
+        if (userFollowees[i].id == userId) {
           return true
         }
       }
@@ -441,7 +468,7 @@ class ShopDetail extends Component {
   }
 
   openCommentScene() {
-    if(!this.props.isUserLogined) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
       return
     }
@@ -449,30 +476,34 @@ class ShopDetail extends Component {
   }
 
   renderComments() {
-    if(this.props.shopComments && this.props.shopComments.length) {
+    if (this.props.shopComments && this.props.shopComments.length) {
       let avatar = require('../../assets/images/default_portrait.png')
 
       const commentsView = this.props.shopComments.map((item, index) => {
-        if(index > 2) return
-        if(item.user.avatar) {
+        if (index > 2) return
+        if (item.user.avatar) {
           avatar = {uri: item.user.avatar}
         }
         return (
           <View key={"shop_comment_" + index} style={styles.commentContainer}>
             <View style={styles.commentAvatarBox}>
-              <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
+              <TouchableOpacity onPress={()=> {
+                Actions.PERSONAL_HOMEPAGE({userId: item.user.id})
+              }}>
                 <Image style={styles.commentAvatar} source={avatar}/>
               </TouchableOpacity>
             </View>
             <View style={styles.commentRight}>
-              <TouchableOpacity onPress={()=>{Actions.PERSONAL_HOMEPAGE({userId: item.user.id})}}>
+              <TouchableOpacity onPress={()=> {
+                Actions.PERSONAL_HOMEPAGE({userId: item.user.id})
+              }}>
                 <View style={[styles.commentLine, styles.commentHeadLine]}>
                   <Text style={styles.commentTitle}>{item.user.nickname}</Text>
                   <Text style={styles.commentTime}>{item.createdDate}</Text>
                 </View>
               </TouchableOpacity>
               <View style={[styles.commentLine, {marginBottom: 10}]}>
-                <ScoreShow score={item.score} />
+                <ScoreShow score={item.score}/>
               </View>
               <View style={[styles.commentLine, {marginBottom: 10}]}>
                 <Text numberOfLines={2} style={styles.comment}>{item.content}</Text>
@@ -481,12 +512,12 @@ class ShopDetail extends Component {
               {
                 item.blueprints && item.blueprints.length
                   ? <View style={[styles.commentLine, {marginBottom: 10}]}>
-                      <ImageGroupViewer
-                        images={item.blueprints}
-                        containerStyle={{marginLeft:0,marginRight:0}}
-                        imageStyle={{margin:0,marginRight:2}}
-                      />
-                    </View>
+                  <ImageGroupViewer
+                    images={item.blueprints}
+                    containerStyle={{marginLeft: 0, marginRight: 0}}
+                    imageStyle={{margin: 0, marginRight: 2}}
+                  />
+                </View>
                   : null
               }
             </View>
@@ -504,13 +535,15 @@ class ShopDetail extends Component {
           {commentsView}
 
           <View style={styles.commentFoot}>
-            <TouchableOpacity onPress={()=>{Actions.SHOP_COMMENT_LIST({shopId: this.props.id})}}>
+            <TouchableOpacity onPress={()=> {
+              Actions.SHOP_COMMENT_LIST({shopId: this.props.id})
+            }}>
               <Text style={styles.allCommentsLink}>查看全部评价</Text>
             </TouchableOpacity>
           </View>
         </View>
       )
-    }else{
+    } else {
       return (
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
@@ -518,9 +551,16 @@ class ShopDetail extends Component {
             <Text style={styles.titleTxt}>邻友点评·0</Text>
           </View>
 
-          <View style={{backgroundColor:'white',padding:20,paddingTop:30,paddingBottom:30,justifyContent:'center',alignItems:'center'}}>
-            <Image style={{marginBottom:20}} source={require('../../assets/images/none_message.png')}/>
-            <Text style={{color:'#d8d8d8',fontSize:15}}>留言墙是空的，快来抢占沙发吧!</Text>
+          <View style={{
+            backgroundColor: 'white',
+            padding: 20,
+            paddingTop: 30,
+            paddingBottom: 30,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <Image style={{marginBottom: 20}} source={require('../../assets/images/none_message.png')}/>
+            <Text style={{color: '#d8d8d8', fontSize: 15}}>留言墙是空的，快来抢占沙发吧!</Text>
           </View>
         </View>
       )
@@ -563,7 +603,7 @@ class ShopDetail extends Component {
     )
   }
 
-  renderShopAnnouncement(){
+  renderShopAnnouncement() {
     let announcementCover = {uri: this.props.latestShopAnnouncement.coverUrl}
     return (
       <View style={styles.shopAnnouncementContainer}>
@@ -582,8 +622,8 @@ class ShopDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id:
-      DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.shopDetail.id
+    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id :
+    DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.shopDetail.id
 
     console.log("shopShare url:", shareUrl)
 
@@ -606,7 +646,7 @@ class ShopDetail extends Component {
       }).start()
     } else if (offset > 10 && offset < comHeight) {
       Animated.timing(this.state.fade, {
-        toValue: (offset - 10)/comHeight,
+        toValue: (offset - 10) / comHeight,
         duration: 100,
       }).start()
     } else if (offset >= comHeight) {
@@ -639,9 +679,9 @@ class ShopDetail extends Component {
             })
           }}
           title="店铺详情"
-          rightComponent={()=>{
+          rightComponent={()=> {
             return (
-              <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
+              <TouchableOpacity onPress={this.onShare} style={{marginRight: 10}}>
                 <Image source={require('../../assets/images/active_share.png')}/>
               </TouchableOpacity>
             )
@@ -670,31 +710,52 @@ class ShopDetail extends Component {
   renderIllegal() {
     let shopDetail = this.props.shopDetail
     // console.log('renderIllegal.this.isFetchingShopDetail===', this.isFetchingShopDetail)
-    if(!this.isFetchingShopDetail && shopDetail && 1 != shopDetail.status) {
+    if (!this.isFetchingShopDetail && shopDetail && 1 != shopDetail.status) {
       return (
-        <View style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)',justifyContent:'flex-end'}}>
-          <View style={{height:PAGE_HEIGHT*0.487, backgroundColor: 'white',justifyContent:'center',alignItems:'center',padding:20}}>
-            <Image style={{marginBottom:30}} source={require('../../assets/images/sad_105.png')}/>
-            <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a'}}>此店铺涉嫌违规，被用户举报</Text>
-            <Text style={{marginBottom:10,fontSize:17,color:'#5a5a5a',textAlign:'center'}}>平台已禁止此店铺显示，如需申诉请联系客服：{this.props.appServicePhone}</Text>
+        <View style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          top: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'flex-end'
+        }}>
+          <View style={{
+            height: PAGE_HEIGHT * 0.487,
+            backgroundColor: 'white',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20
+          }}>
+            <Image style={{marginBottom: 30}} source={require('../../assets/images/sad_105.png')}/>
+            <Text style={{marginBottom: 10, fontSize: 17, color: '#5a5a5a'}}>此店铺涉嫌违规，被用户举报</Text>
+            <Text style={{
+              marginBottom: 10,
+              fontSize: 17,
+              color: '#5a5a5a',
+              textAlign: 'center'
+            }}>平台已禁止此店铺显示，如需申诉请联系客服：{this.props.appServicePhone}</Text>
 
-              <TouchableOpacity onPress={()=>{Actions.pop()}} style={{
-                position:'absolute',
-                left:0,
-                right:0,
-                bottom:0,
-                borderTopWidth:normalizeBorder(),
-                borderTopColor: THEME.colors.lighterA,
-                backgroundColor:'#fafafa',
-                flexDirection:'row',
-                justifyContent:'center',
-                alignItems:'center',
-                padding:12
-              }}>
-                <Image style={{marginRight:23}} source={require('../../assets/images/Shape.png')}/>
-                <Text style={{fontSize:17,color:'#ff7819'}}>退出</Text>
-              </TouchableOpacity>
-            
+            <TouchableOpacity onPress={()=> {
+              Actions.pop()
+            }} style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              borderTopWidth: normalizeBorder(),
+              borderTopColor: THEME.colors.lighterA,
+              backgroundColor: '#fafafa',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 12
+            }}>
+              <Image style={{marginRight: 23}} source={require('../../assets/images/Shape.png')}/>
+              <Text style={{fontSize: 17, color: '#ff7819'}}>退出</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
       )
@@ -704,17 +765,17 @@ class ShopDetail extends Component {
   }
 
   renderFollowShop() {
-    if(this.isSelfShop()) {
+    if (this.isSelfShop()) {
       return null
     }
 
-    if(this.props.isFollowedShop) {
+    if (this.props.isFollowedShop) {
       return (
         <TouchableOpacity onPress={this.unFollowShop.bind(this)}>
-          <Image source={require('../../assets/images/followed.png')} />
+          <Image source={require('../../assets/images/followed.png')}/>
         </TouchableOpacity>
       )
-    }else {
+    } else {
       return (
         <TouchableOpacity onPress={this.followShop.bind(this)}>
           <Image style={styles.shopAttention} source={require('../../assets/images/add_follow.png')}/>
@@ -727,24 +788,48 @@ class ShopDetail extends Component {
     let shopDetail = this.props.shopDetail
 
     let detailWrapStyle = {}
-    if(!this.isSelfShop()) {
+    if (!this.isSelfShop()) {
       detailWrapStyle = styles.detailWrap
     }
 
     let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
-    let shopGoodsList=[{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18},{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18},{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18},{imageSource:'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',title:'hahaha',price:18}]
+    let shopGoodsList = [{
+      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
+      title: 'hahaha',
+      price: 18
+    }, {
+      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
+      title: 'hahaha',
+      price: 18
+    }, {
+      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
+      title: 'hahaha',
+      price: 18
+    }, {imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png', title: 'hahaha', price: 18}]
     return (
-      <View style={{flex:1}}>
+      <View style={{flex: 1}}>
         <View style={detailWrapStyle}>
           <ScrollView
             contentContainerStyle={[styles.contentContainerStyle]}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
           >
-            <TouchableOpacity onPress={()=>{this.showShopAlbum()}} style={{flex:1}}>
-              <Image style={{width:PAGE_WIDTH,height: normalizeH(200)}} source={{uri: this.props.shopDetail.coverUrl}}>
-                <View style={{position:'absolute',right:15,bottom:15,padding:3,paddingLeft:6,paddingRight:6,backgroundColor:'gray',borderRadius:2,}}>
-                  <Text style={{color:'white',fontSize:15}}>{albumLen}</Text>
+            <TouchableOpacity onPress={()=> {
+              this.showShopAlbum()
+            }} style={{flex: 1}}>
+              <Image style={{width: PAGE_WIDTH, height: normalizeH(200)}}
+                     source={{uri: this.props.shopDetail.coverUrl}}>
+                <View style={{
+                  position: 'absolute',
+                  right: 15,
+                  bottom: 15,
+                  padding: 3,
+                  paddingLeft: 6,
+                  paddingRight: 6,
+                  backgroundColor: 'gray',
+                  borderRadius: 2,
+                }}>
+                  <Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>
                 </View>
               </Image>
             </TouchableOpacity>
@@ -753,11 +838,12 @@ class ShopDetail extends Component {
                 <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
                 <View style={styles.shopOtherInfo}>
                   <ScoreShow
-                    containerStyle={{flex:1}}
+                    containerStyle={{flex: 1}}
                     score={this.props.shopDetail.score}
                   />
                   {this.props.shopDetail.distance &&
-                  <Text style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
+                  <Text
+                    style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
                   }
                   {this.props.shopDetail.pv
                     ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
@@ -770,7 +856,8 @@ class ShopDetail extends Component {
             <View style={styles.shopXYZWrap}>
               <View style={styles.shopXYZLeft}>
                 <View style={styles.locationWrap}>
-                  <TouchableOpacity style={styles.locationContainer} onPress={()=>{}}>
+                  <TouchableOpacity style={styles.locationContainer} onPress={()=> {
+                  }}>
                     <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
                     <View style={styles.locationTxtWrap}>
                       <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
@@ -778,15 +865,18 @@ class ShopDetail extends Component {
                   </TouchableOpacity>
                 </View>
                 <View style={styles.contactNumberWrap}>
-                  <TouchableOpacity style={styles.contactNumberContainer} onPress={()=>{this.handleServicePhoneCall()}}>
+                  <TouchableOpacity style={styles.contactNumberContainer} onPress={()=> {
+                    this.handleServicePhoneCall()
+                  }}>
                     <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
                     <View style={styles.contactNumberTxtWrap}>
-                      <Text style={styles.contactNumberTxt} numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
+                      <Text style={styles.contactNumberTxt}
+                            numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
               </View>
-              
+
               <View style={styles.shopXYZRight}>
                 {this.renderFollowShop()}
               </View>
@@ -803,7 +893,16 @@ class ShopDetail extends Component {
                 <Text style={styles.headerText} numberOfLines={1}>{'产品列表'}</Text>
               </View>
             </View>
-            <ShopGoodsList shopGoodsList={shopGoodsList} size={6} />
+            <ShopGoodsList shopGoodsList={shopGoodsList} size={6}/>
+            <View style={styles.commentWrap}>
+              <View style={styles.commentFoot}>
+                <TouchableOpacity onPress={()=> {
+                  Actions.SHOP_COMMENT_LIST({shopId: this.props.id})
+                }}>
+                  <Text style={styles.allCommentsLink}>查看全部评价</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
             <View style={styles.shopAnnouncementWrap}>
               <View style={styles.titleWrap}>
                 <View style={styles.titleLine}/>
@@ -816,7 +915,7 @@ class ShopDetail extends Component {
                 </View>
                 <View style={styles.shopSpecial}>
                   <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
-                  <View style={{flex:1, paddingRight:10}}>
+                  <View style={{flex: 1, paddingRight: 10}}>
                     <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
                   </View>
                 </View>
@@ -841,14 +940,14 @@ class ShopDetail extends Component {
 
         {this.renderServicePhoneAction()}
       </View>
-      
+
     )
   }
 
   handleServicePhoneCall() {
-    if(this.ServicePhoneActionSheet) {
+    if (this.ServicePhoneActionSheet) {
       this.ServicePhoneActionSheet.show()
-    }else{
+    } else {
       this.makePhoneCall(this.props.shopDetail.contactNumber)
     }
   }
@@ -856,12 +955,12 @@ class ShopDetail extends Component {
   renderServicePhoneAction() {
     let shopDetail = this.props.shopDetail
 
-    if(shopDetail.contactNumber && shopDetail.contactNumber2) {
+    if (shopDetail.contactNumber && shopDetail.contactNumber2) {
       return (
         <ActionSheet
           ref={(o) => this.ServicePhoneActionSheet = o}
           title="客服电话"
-          options={[shopDetail.contactNumber, shopDetail.contactNumber2,'取消']}
+          options={[shopDetail.contactNumber, shopDetail.contactNumber2, '取消']}
           cancelButtonIndex={2}
           onPress={this._handleActionSheetPress.bind(this)}
         />
@@ -871,28 +970,30 @@ class ShopDetail extends Component {
   }
 
   _handleActionSheetPress(index) {
-    if(0 == index) { //分享
+    if (0 == index) { //分享
       this.makePhoneCall(this.props.shopDetail.contactNumber)
-    }else if(1 == index) { //删除
+    } else if (1 == index) { //删除
       this.makePhoneCall(this.props.shopDetail.contactNumber2)
     }
   }
 
   isSelfShop() {
-    if(this.props.userOwnedShopInfo && (this.props.userOwnedShopInfo.id == this.props.shopDetail.id)) {
+    if (this.props.userOwnedShopInfo && (this.props.userOwnedShopInfo.id == this.props.shopDetail.id)) {
       return true
     }
     return false
   }
 
   renderBottomView() {
-    if(this.isSelfShop()) {
+    if (this.isSelfShop()) {
       return null
     }
 
     return (
       <View style={styles.shopCommentWrap}>
-        <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.openCommentScene()}}>
+        <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
+          this.openCommentScene()
+        }}>
           <View style={[styles.vItem]}>
             <Image style={{}} source={require('../../assets/images/message.png')}/>
             <Text style={[styles.vItemTxt, styles.shopCommentInput]}>点评</Text>
@@ -917,10 +1018,10 @@ const mapStateToProps = (state, ownProps) => {
   const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   let isFollowedShop = false
-  if(isUserLogined) {
+  if (isUserLogined) {
     isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   }
-  
+
 
   // const userFollowees = authSelector.selectUserFollowees(state)
 
@@ -1003,9 +1104,7 @@ const styles = StyleSheet.create({
   detailWrap: {
     marginBottom: 54
   },
-  contentContainerStyle: {
-
-  },
+  contentContainerStyle: {},
   shopHead: {
     flexDirection: 'row',
     padding: 12,
@@ -1047,16 +1146,12 @@ const styles = StyleSheet.create({
     color: '#FF7819',
     fontSize: em(15)
   },
-  shopAttentioned: {
-
-  },
+  shopAttentioned: {},
   shopAttentionedTxt: {
     color: '#fff',
     fontSize: em(14),
   },
-  userAttentioned: {
-    
-  },
+  userAttentioned: {},
   userAttentionedTxt: {
     color: '#fff',
     fontSize: em(9),
@@ -1164,16 +1259,14 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(15),
   },
   shopAnnouncementCover: {
-    width:84,
+    width: 84,
     height: 84
   },
   shopAnnouncementCnt: {
     flex: 1,
     justifyContent: 'space-between'
   },
-  shopAnnouncementTitleWrap: {
-
-  },
+  shopAnnouncementTitleWrap: {},
   shopAnnouncementTitle: {
     fontSize: em(17),
     color: '#8f8e94',
@@ -1212,7 +1305,9 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 10,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
   commentHead: {
     justifyContent: 'center',
@@ -1241,9 +1336,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginBottom: 10
   },
-  commentAttention: {
-
-  },
+  commentAttention: {},
   commentRight: {
     flex: 1,
     paddingLeft: normalizeW(12),
@@ -1273,9 +1366,12 @@ const styles = StyleSheet.create({
     color: '#8f8e94'
   },
   commentFoot: {
+    backgroundColor: '#fff',
     alignItems: 'center',
     paddingTop: normalizeH(10),
     paddingBottom: normalizeH(10),
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
   allCommentsLink: {
     fontSize: em(15),
@@ -1338,17 +1434,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     padding: 20,
-    paddingBottom:15,
+    paddingBottom: 15,
     backgroundColor: '#fff',
-    borderBottomWidth:normalizeBorder(),
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
   shopInnerIntroWrap: {
     height: 80,
   },
-  guessYouLikeIntroWrap: {
-
-  },
+  guessYouLikeIntroWrap: {},
   coverWrap: {
     width: 80,
     height: 80
@@ -1376,17 +1470,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   shopCommentWrap: {
-    position:'absolute',
-    left:0,
-    bottom:0,
-    borderTopWidth:normalizeBorder(),
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    borderTopWidth: normalizeBorder(),
     borderTopColor: THEME.colors.lighterA,
-    backgroundColor:'#fafafa',
-    flexDirection:'row',
+    backgroundColor: '#fafafa',
+    flexDirection: 'row',
   },
   vItem: {
     flex: 1,
-    alignSelf:'flex-start',
+    alignSelf: 'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
@@ -1413,35 +1507,33 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     marginLeft: normalizeW(9)
   },
-  shopCommentInput:{
-
-  },
+  shopCommentInput: {},
   commentBtnWrap: {
     flex: 1
   },
-  commentBtnBadge:{
+  commentBtnBadge: {
     alignItems: 'center',
     width: 30,
-    backgroundColor:'#FF9D4E',
-    position:'absolute',
-    right:10,
-    top:6,
-    borderRadius:10,
-    borderWidth:normalizeBorder(),
+    backgroundColor: '#FF9D4E',
+    position: 'absolute',
+    right: 10,
+    top: 6,
+    borderRadius: 10,
+    borderWidth: normalizeBorder(),
     borderColor: '#FF9D4E'
   },
-  commentBtnBadgeTxt:{
+  commentBtnBadgeTxt: {
     fontSize: em(9),
     color: '#fff'
   },
-  shopUpWrap:{
+  shopUpWrap: {
     flex: 1,
 
   },
   shopPromotionWrap: {
     flex: 1,
     marginTop: 10,
-    borderTopWidth:normalizeBorder(),
+    borderTopWidth: normalizeBorder(),
     borderTopColor: '#f5f5f5'
   },
   shopPromotionBox: {
@@ -1457,7 +1549,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   shopPromotionBadgeTxt: {
-    color:'white',
+    color: 'white',
     fontSize: em(12)
   },
   shopPromotionContent: {
@@ -1486,7 +1578,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: normalizeH(42),
-    borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
 })
