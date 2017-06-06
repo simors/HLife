@@ -107,6 +107,7 @@ import DealRecords from '../components/Payment/DealRecords'
 import BuyGoodsPaySuccess from '../components/Payment/BuyGoodsPaySuccess'
 import RewardSuccess from '../components/Payment/RewardSuccess'
 import ShopAlbumView from '../components/Mine/myShop/ShopAlbumView'
+import ShopGoodsListView from '../components/shop/ShopGoodsListView'
 
 const styles = StyleSheet.create({
   container: {
@@ -174,6 +175,7 @@ export const scenes = Actions.create(
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
       <Scene key="MYTOPIC" component={MyTopic}/>
+      <Scene key="SHOPGOODSLISTVIEW"component={ShopGoodsListView}/>
       <Scene key="MYATTENTION" component={MyAttention}/>
       <Scene key="MYFANS" component={MyFans} />
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />

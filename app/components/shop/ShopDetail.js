@@ -805,6 +805,18 @@ class ShopDetail extends Component {
       imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
       title: 'hahaha',
       price: 18
+    }, {
+      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
+      title: 'hahaha',
+      price: 18
+    }, {
+      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
+      title: 'hahaha',
+      price: 18
+    }, {
+      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
+      title: 'hahaha',
+      price: 18
     }, {imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png', title: 'hahaha', price: 18}]
     return (
       <View style={{flex: 1}}>
@@ -890,16 +902,16 @@ class ShopDetail extends Component {
             <View style={styles.headerView}>
               <View style={styles.headerItem}>
                 <Image source={require('../../assets/images/activity.png')} width={12} height={14}></Image>
-                <Text style={styles.headerText} numberOfLines={1}>{'产品列表'}</Text>
+                <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
               </View>
             </View>
             <ShopGoodsList shopGoodsList={shopGoodsList} size={6}/>
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.SHOP_COMMENT_LIST({shopId: this.props.id})
+                  Actions.SHOPGOODSLISTVIEW({shopGoodsList: shopGoodsList, size: shopGoodsList.length})
                 }}>
-                  <Text style={styles.allCommentsLink}>查看全部评价</Text>
+                  <Text style={styles.allCommentsLink}>查看全部商品</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1097,6 +1109,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.05)'
   },
+
   body: {
     // marginTop: normalizeH(64),
     flex: 1,
