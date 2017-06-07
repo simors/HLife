@@ -237,3 +237,31 @@ export function selectGuessYouLikeShopList(state) {
   }
   return []
 }
+
+export function selectGoodsById(state, shopId, goodsId) {
+  let goodsList = state.SHOP.getIn(['shopGoods', shopId])
+  if (goodsList) {
+    let goods = goodsList.find((goodsInfo) => {
+      return goodsInfo.id == goodsId
+    })
+    if (goods) {
+      return goods.toJS()
+    } else {
+      return undefined
+    }
+  }
+  return undefined
+}
+
+export function selectGoodsList(state, shopId, status) {
+  let goodsList = state.SHOP.getIn(['shopGoods', shopId])
+  let retList = []
+  if (goodsList) {
+    goodsList.forEach((goods) => {
+      if (goods.status == status) {
+        retList.push(goods.toJS())
+      }
+    })
+  }
+  return retList
+}

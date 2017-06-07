@@ -1,7 +1,18 @@
 import {Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as ShopActionTypes from '../constants/shopActionTypes'
-import {Shop, ShopInfo, ShopAnnouncement, ShopComment, ShopCommentUp4Cloud, Up, ShopCommentReply, ShopCommentUp, ShopTag} from '../models/shopModel'
+import {
+  Shop,
+  ShopInfo,
+  ShopAnnouncement,
+  ShopComment,
+  ShopCommentUp4Cloud,
+  Up,
+  ShopCommentReply,
+  ShopCommentUp,
+  ShopTag,
+  ShopGoods,
+} from '../models/shopModel'
 import {UserInfo} from '../models/userModels'
 
 const initialState = Shop()
@@ -74,6 +85,16 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchUserFollowedShopPagingListSuccess(state, action)
     case ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS:
       return handleFetchShopPromotionMaxNumSuccess(state, action)
+    case ShopActionTypes.ADD_NEW_SHOP_GOODS:
+      return handleAddShopGoods(state, action)
+    case ShopActionTypes.UPDATE_SHOP_GOODS:
+      return handleUpdateShopGoods(state, action)
+    case ShopActionTypes.UPDATE_SHOP_GOODS_STATUS:
+      return handleUpdateShopGoodsStatus(state, action)
+    case ShopActionTypes.SET_SHOP_GOODS_LIST:
+      return handleSetShopGoodsList(state, action)
+    case ShopActionTypes.ADD_SHOP_GOODS_LIST:
+      return handleAddShopGoodsList(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -405,6 +426,66 @@ function handleFetchGuessYouLikeShopListSuccess(state, action) {
   let payload = action.payload
   let shopList = payload.shopList
   state = state.set('guessYouLikeShopList', shopList)
+  return state
+}
+
+function handleAddShopGoods(state, action) {
+  let goods = action.payload.goods
+  let shopId = action.payload.shopId
+  let goodsList = state.getIn(['shopGoods', shopId])
+  if (goodsList) {
+    goodsList.splice(0, 0, goods)
+  } else {
+    goodsList = new List([goods])
+  }
+  state = state.setIn(['shopGoods', shopId], goodsList)
+  return state
+}
+
+function handleUpdateShopGoods(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let goodsId = payload.goodsId
+  let goods = payload.goods
+  let goodsList = state.getIn(['shopGoods', shopId])
+  if (goodsList) {
+    let index = goodsList.findIndex((goodsItem) => {
+      return goodsItem.id == goodsId
+    })
+    goodsList = goodsList.update(index, val => goods)
+    state = state.setIn(['shopGoods', shopId], goodsList)
+  }
+  return state
+}
+
+function handleUpdateShopGoodsStatus(state, action) {
+  let payload = action.payload
+  let shopId = payload.shopId
+  let goodsId = payload.goodsId
+  let status = payload.status
+  let goodsList = state.getIn(['shopGoods', shopId])
+  if (goodsList) {
+    let index = goodsList.findIndex((goodsItem) => {
+      return goodsItem.id == goodsId
+    })
+    goodsList = goodsList.updateIn([index, 'status'], val => status)
+    state = state.setIn(['shopGoods', shopId], goodsList)
+  }
+  return state
+}
+
+function handleSetShopGoodsList(state, action) {
+  let goodsList = action.payload.goodsList
+  let shopId = action.payload.shopId
+  state = state.setIn(['shopGoods', shopId], new List(goodsList))
+  return state
+}
+
+function handleAddShopGoodsList(state, action) {
+  let goodsList = action.payload.goodsList
+  let shopId = action.payload.shopId
+  let oldGoodsList = state.getIn(['shopGoods', shopId])
+  state = state.setIn(['shopGoods', shopId], oldGoodsList.concat(new List(goodsList)))
   return state
 }
 

@@ -1250,12 +1250,7 @@ export function updateShopLocationInfo(payload) {
 }
 
 export function updateShopInfoAfterPaySuccess(payload) {
-  // console.log('hLifeUpdateShopInfoAfterPaySuccess.payload=======', payload)
   return AV.Cloud.run('hLifeUpdateShopInfoAfterPaySuccess', payload).then((result)=> {
-    // console.log('hLifeUpdateShopInfoAfterPaySuccess.result=======', result)
-    // if(result.code == 0) {
-    //   return true
-    // }
     return true
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -1263,4 +1258,66 @@ export function updateShopInfoAfterPaySuccess(payload) {
   })
 }
 
+export function addNewShopGoods(payload) {
+  let params = {
+    shopId: payload.shopId,
+    goodsName: payload.goodsName,
+    price: payload.price,
+    originalPrice: payload.originalPrice,
+    coverPhoto: payload.coverPhoto,
+    album: payload.album,
+    detail: payload.detail,
+  }
+  return AV.Cloud.run('goodsAddShopGoods', params).then((goodsInfo)=> {
+    return goodsInfo
+  }, (err) => {
+    throw err
+  })
+}
 
+export function goodsOnline(payload) {
+  let params = {
+    goodsId: payload.goodsId,
+  }
+  return AV.Cloud.run('goodsShopGoodsOnline', params).then((goodsInfo)=> {
+    return goodsInfo
+  }, (err) => {
+    throw err
+  })
+}
+
+export function goodsOffline(payload) {
+  let params = {
+    goodsId: payload.goodsId,
+  }
+  return AV.Cloud.run('goodsShopGoodsOffline', params).then((goodsInfo)=> {
+    return goodsInfo
+  }, (err) => {
+    throw err
+  })
+}
+
+export function goodsDelete(payload) {
+  let params = {
+    goodsId: payload.goodsId,
+  }
+  return AV.Cloud.run('goodsShopGoodsDelete', params).then((goodsInfo)=> {
+    return goodsInfo
+  }, (err) => {
+    throw err
+  })
+}
+
+export function fetchShopGoodsList(payload) {
+  let params = {
+    shopId: payload.shopId,
+    status: payload.status,
+    limit: payload.limit,
+    lastUpdateTime: payload.lastUpdateTime,
+  }
+  return AV.Cloud.run('goodsFetchGoodsList', params).then((goodsInfo)=> {
+    return goodsInfo
+  }, (err) => {
+    throw err
+  })
+}

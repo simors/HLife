@@ -9,10 +9,16 @@ import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion} from '../models/shopModel'
+import {ShopPromotion, ShopGoods} from '../models/shopModel'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
+
+let addShopGoods = createAction(ShopActionTypes.ADD_NEW_SHOP_GOODS)
+let updateShopGoodsStatus = createAction(ShopActionTypes.UPDATE_SHOP_GOODS_STATUS)
+let updateShopGoods = createAction(ShopActionTypes.UPDATE_SHOP_GOODS)
+let setShopGoodsList = createAction(ShopActionTypes.SET_SHOP_GOODS_LIST)
+let addShopGoodsList = createAction(ShopActionTypes.ADD_SHOP_GOODS_LIST)
 
 export function clearShopList(payload) {
   return (dispatch, getState) => {
@@ -750,3 +756,96 @@ export function updateShopInfoAfterPaySuccess(payload) {
   }
 }
 
+export function addNewShopGoods(payload) {
+  return (dispatch, getState) => {
+    lcShop.addNewShopGoods({
+      shopId: '58fec4600ce46300613d849e',
+      goodsName: '虎皮青椒',
+      price: 12,
+      originalPrice: 22,
+      coverPhoto: 'abcdef',
+      album: ['123', '456'],
+      detail: 'iobadlnasdfjalsfj',
+    }).then((goodsInfo) => {
+      if (0 == goodsInfo.errcode) {
+        let goodsObj = goodsInfo.goodsInfo
+        let shopId = goodsObj.targetShop.id
+        let goods = ShopGoods.fromLeancloudApi(goodsObj)
+        dispatch(addShopGoods({shopId, goods}))
+      }
+    })
+  }
+}
+
+export function setShopGoodsOnline(payload) {
+  return (dispatch, getState) => {
+    payload = {
+      goodsId: '59375f8dfe88c20061eabee0',
+      shopId: '58fec4600ce46300613d849e',
+    }
+    lcShop.goodsOnline({goodsId: payload.goodsId}).then((goodsInfo) => {
+      if (0 == goodsInfo.errcode) {
+        let newStatus = goodsInfo.goodsInfo.status
+        dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+      }
+    })
+  }
+}
+
+export function setShopGoodsOffline(payload) {
+  return (dispatch, getState) => {
+    payload = {
+      goodsId: '59375f8dfe88c20061eabee0',
+      shopId: '58fec4600ce46300613d849e',
+    }
+    lcShop.goodsOffline({goodsId: payload.goodsId}).then((goodsInfo) => {
+      if (0 == goodsInfo.errcode) {
+        let newStatus = goodsInfo.goodsInfo.status
+        dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+      }
+    })
+  }
+}
+
+export function setShopGoodsDelete(payload) {
+  return (dispatch, getState) => {
+    payload = {
+      goodsId: '59375f8dfe88c20061eabee0',
+      shopId: '58fec4600ce46300613d849e',
+    }
+    lcShop.goodsDelete({goodsId: payload.goodsId}).then((goodsInfo) => {
+      if (0 == goodsInfo.errcode) {
+        let newStatus = goodsInfo.goodsInfo.status
+        dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+      }
+    })
+  }
+}
+
+export function getShopGoodsList(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcShop.fetchShopGoodsList(payload).then((result) => {
+      let goods = result.goods
+      let goodsList = []
+      goods.forEach((item) => {
+        goodsList.push(ShopGoods.fromLeancloudApi(item))
+      })
+      if (more) {
+        dispatch(addShopGoodsList({shopId: payload.shopId, goodsList}))
+      } else {
+        dispatch(setShopGoodsList({shopId: payload.shopId, goodsList}))
+      }
+      if (payload.success) {
+        payload.success(goodsList.length == 0)
+      }
+    }).catch((err) => {
+      if (payload.error) {
+        payload.error(err.message)
+      }
+    })
+  }
+}
