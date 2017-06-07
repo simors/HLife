@@ -784,6 +784,9 @@ class ShopDetail extends Component {
     }
   }
 
+  showGoodDetail(id){
+  }
+
   renderDetailContent() {
     let shopDetail = this.props.shopDetail
 
@@ -905,7 +908,7 @@ class ShopDetail extends Component {
                 <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
               </View>
             </View>
-            <ShopGoodsList shopGoodsList={shopGoodsList} size={6}/>
+            <ShopGoodsList shopGoodsList={shopGoodsList} size={6} showGoodDetail={(goodId)=>{this.showGoodDetail(goodId)}}/>
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
                 <TouchableOpacity onPress={()=> {
