@@ -47,7 +47,7 @@ import {
 import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
 import {fetchShareDomain} from '../../action/configAction'
-import {getShareDomain} from '../../selector/configSelector'
+import {getShareDomain, getTopicCategoriesById} from '../../selector/configSelector'
 import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
@@ -379,7 +379,7 @@ export class TopicDetail extends Component {
 
   renderHeaderView() {
     let topic = this.props.topic
-    if (topic.picked) {
+    if (topic.picked || this.props.enableShare) {
       return (
         <Header
           leftType="icon"
@@ -806,6 +806,9 @@ const mapStateToProps = (state, ownProps) => {
     userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.topic.userId)
   }
 
+  let topicCategory = getTopicCategoriesById(state, ownProps.topic.categoryId)
+  let enableShare = topicCategory.enableShare
+
   let shareDomain = getShareDomain(state)
 
   return {
@@ -819,7 +822,8 @@ const mapStateToProps = (state, ownProps) => {
     commentsTotalCount: commentsTotalCount,
     userFollowersTotalCount: userFollowersTotalCount,
     lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt,
-    shareDomain: shareDomain
+    shareDomain: shareDomain,
+    enableShare: enableShare,
   }
 }
 

@@ -82,7 +82,8 @@ export const TopicCategoryItemConfig = Record({
   title: undefined, //话题名称
   image: undefined, //图片
   introduction: undefined, //介绍
-  objectId: undefined
+  objectId: undefined,
+  enableShare: undefined,     // 是否允许此话题分类下的文章进行分享
 }, 'TopicCategoryItemConfig')
 
 export class TopicCategoryItem extends TopicCategoryItemConfig {
@@ -95,6 +96,7 @@ export class TopicCategoryItem extends TopicCategoryItemConfig {
       record.set('image', attrs.image)
       record.set('introduction', attrs.introduction)
       record.set('objectId', lcObj.id)
+      record.set('enableShare', attrs.enableShare)
     })
   }
 }
