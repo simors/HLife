@@ -674,6 +674,39 @@ export class ShopTag extends ShopTagRecord {
   }
 }
 
+export const ShopGoodsRecord = Record({
+  id: undefined,
+  targetShop: undefined,
+  goodsName: undefined,
+  price: undefined,
+  originalPrice: undefined,
+  coverPhoto: undefined,
+  album: undefined,
+  status: undefined,
+  detail: undefined,
+  promotion: undefined,
+  updatedAt: undefined,
+})
+
+export class ShopGoods extends ShopGoodsRecord {
+  static fromLeancloudApi(lcObj) {
+    let shopGoods = new ShopGoods()
+    return shopGoods.withMutations((record) => {
+      record.set('id', lcObj.objectId)
+      record.set('targetShop', lcObj.targetShop.id)
+      record.set('goodsName', lcObj.goodsName)
+      record.set('price', lcObj.price)
+      record.set('originalPrice', lcObj.originalPrice)
+      record.set('coverPhoto', lcObj.coverPhoto)
+      record.set('album', new List(lcObj.album))
+      record.set('status', lcObj.status)
+      record.set('detail', lcObj.detail)
+      record.set('promotion', lcObj.promotion)
+      record.set('updatedAt', lcObj.updatedAt)
+    })
+  }
+}
+
 export const Shop = Record({
   shopList: List(),
   localShopList: List(),
@@ -694,5 +727,6 @@ export const Shop = Record({
   shopPromotionDetails: Map(),
   guessYouLikeShopList: List(),
   userFollowedShops: Map(),
-  shopPromotionMaxNum: 3
+  shopPromotionMaxNum: 3,
+  shopGoods: Map(),         // 店铺商品列表，键为店铺id，值为ShopGoods组成的List
 }, 'Shop')
