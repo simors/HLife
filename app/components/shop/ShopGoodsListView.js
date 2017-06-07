@@ -16,6 +16,9 @@ import {
   ScrollView,
   TouchableHighlight,
   Animated,
+  InteractionManager,
+  ListView,
+
 
 } from 'react-native'
 import Header from '../common/Header'
@@ -29,22 +32,33 @@ import THEME from '../../constants/themes/theme1'
 import {getColumn} from '../../selector/configSelector'
 import {CommonModal} from '../common/CommonModal'
 import {Actions} from 'react-native-router-flux'
+import CommonListView from '../common/CommonListView'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-export default class ShopGoodsListView extends Component {
+ class ShopGoodsListView extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       imgSize: normalizeW(45),
       columnCnt: this.props.size,
       fade: new Animated.Value(0),
-
+      loadGoods:false,
+      // ds: ds.cloneWithRows(this.props.shopGoodsList),
     }
+
+
   }
 
-  renderColumn(value) {
+  componentWillMount() {
+
+    InteractionManager.runAfterInteractions(() => {
+
+    })
+  }
+  renderColumn(value,key) {
     //console.log('value====>',value)
     return (
       <TouchableOpacity onPress={()=>this.props.showGoodDetail(value.goodId)}>
@@ -82,16 +96,7 @@ export default class ShopGoodsListView extends Component {
 
   renderMainHeader() {
     return (
-      <Animated.View style={{
-        backgroundColor: THEME.base.mainColor,
-        opacity: this.state.fade,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: PAGE_WIDTH,
-        zIndex: 10,
-      }}
-      >
+
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
@@ -104,7 +109,6 @@ export default class ShopGoodsListView extends Component {
           title="全部商品"
 
         />
-      </Animated.View>
     )
   }
 
@@ -122,7 +126,7 @@ export default class ShopGoodsListView extends Component {
     return shopGoodsList
   }
 
-  renderCutColumn() {
+  renderCutColumn(rowData,rowId) {
     let imgComp = this.renderRows()
     let compList = []
     let comp = []
@@ -150,17 +154,87 @@ export default class ShopGoodsListView extends Component {
     )
   }
 
+  refreshData() {
+    // this.loadMoreData(true)
+    this.setState({loadGoods: false})
+  }
 
+  loadMoreData(isRefresh) {
+    {/*if (!this.state.loadComment) {*/}
+      {/*this.setState({loadComment: true}, () => this.loadMoreData(true))*/}
+      {/*return*/}
+    {/*}*/}
+
+    {/*if(this.isQuering) {*/}
+      {/*return*/}
+    {/*}*/}
+    // this.isQuering = true
+    //
+    // let topic = this.props.topic
+    // let lastTopicCommentsCreatedAt = this.props.lastTopicCommentsCreatedAt
+    // // console.log('lastTopicCommentsCreatedAt------>', lastTopicCommentsCreatedAt)
+    //
+    // let payload = {
+    //   topicId: topic.objectId,
+    //   isRefresh: !!isRefresh,
+    //   lastCreatedAt: lastTopicCommentsCreatedAt,
+    //   upType: 'topic',
+    //   success: (isEmpty) => {
+    //     this.isQuering = false
+    //     if(!this.listView) {
+    //       return
+    //     }
+    //     if(isEmpty) {
+    //       this.listView.isLoadUp(false)
+    //     }else {
+    //       this.listView.isLoadUp(true)
+    //     }
+    //   },
+    //   error: (err)=>{
+    //     this.isQuering = false
+    //     Toast.show(err.message, {duration: 1000})
+    //   }
+    // }
+    //
+    // this.props.fetchTopicCommentsByTopicId(payload)
+  }
+
+
+  renderListRow(rowData,rowId){
+    switch (rowData.type) {
+      case 'SHOP_CATEGORY_COLUMN':
+        return <View />
+      case 'LOCAL_SHOP_LIST_COLUMN':
+        return <View>{this.renderColumns()}</View>
+      default:
+        return <View />
+    }
+  }
   render() {
+
     return (
-      <View style={styles.body}>
-        {this.renderMainHeader()}
-        <ScrollView  contentContainerStyle={[styles.contentContainerStyle]}
-                     onScroll={e => this.handleOnScroll(e)}
-                     scrollEventThrottle={80}
-        >
-          {this.renderColumns()}
-        </ScrollView>
+    <View style={styles.body}>
+      {this.renderMainHeader()}
+      {/*<ScrollView  contentContainerStyle={[styles.contentContainerStyle]}*/}
+                     {/*onScroll={e => this.handleOnScroll(e)}*/}
+                     {/*scrollEventThrottle={80}*/}
+        {/*>*/}
+          {/*{this.renderColumns()}*/}
+        {/*</ScrollView>*/}
+        <View style={styles.contentContainerStyle}>
+      <CommonListView
+        contentContainerStyle={{backgroundColor: '#fff'}}
+        dataSource={this.props.ds}
+        renderRow={(rowData, rowId) => this.renderListRow(rowData, rowId)}
+        loadNewData={()=> {
+          this.refreshData()
+        }}
+        loadMoreData={()=> {
+          this.loadMoreData()
+        }}
+        ref={(listView) => this.listView = listView}
+      />
+    </View>
       </View>
     )
   }
@@ -172,20 +246,31 @@ export default class ShopGoodsListView extends Component {
 //   defaultImageStyles: {},
 // }
 
-// const mapStateToProps = (state, ownProps) => {
-//   let column = getColumn(state).toJS()
-//   //console.log('susususususu<><><><><',column)
-//   return {
-//     column: column,
-//   }
-// }
+const mapStateToProps = (state, ownProps) => {
+  let ds = undefined
+  if (ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+  let dataArray = []
 
-// const mapDispatchToProps = (dispatch) => bindActionCreators({
-//
-// }, dispatch)
+  dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
+  dataArray.push({type: 'LOCAL_SHOP_LIST_COLUMN'})
+  return{
+   ds: ds.cloneWithRows(dataArray),
+
+ }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+
+}, dispatch)
 
 
-// export default connect(mapStateToProps)(Categorys)
+export default connect(mapStateToProps)(ShopGoodsListView)
 
 const styles = StyleSheet.create({
 
@@ -263,6 +348,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)',
     width:PAGE_WIDTH,
   },
-  contentContainerStyle: {},
+  contentContainerStyle: {
+    marginTop:normalizeH(64)
+
+  },
 
 })
