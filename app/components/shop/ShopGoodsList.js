@@ -37,10 +37,14 @@ export default class ShopGoodsList extends Component {
     }
   }
 
+  showGoodDetail(value){
+    Actions.SHOP_GOODS_DETAIL({value:value})
+  }
+
   renderColumn(value) {
     //console.log('value====>',value)
     return (
-      <TouchableOpacity onPress={()=>this.props.showGoodDetail(value.goodId)}>
+      <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
         <View style={styles.channelWrap}>
 
           <Image style={styles.defaultImageStyles} source={{uri: value.imageSource}}/>

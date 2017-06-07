@@ -61,7 +61,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   renderColumn(value,key) {
     //console.log('value====>',value)
     return (
-      <TouchableOpacity onPress={()=>this.props.showGoodDetail(value.goodId)}>
+      <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
         <View style={styles.channelWrap}>
 
           <Image style={styles.defaultImageStyles} source={{uri: value.imageSource}}/>
@@ -73,6 +73,9 @@ const PAGE_HEIGHT = Dimensions.get('window').height
     )
   }
 
+   showGoodDetail(value){
+     Actions.SHOP_GOODS_DETAIL({value:value})
+   }
   handleOnScroll(e) {
     let offset = e.nativeEvent.contentOffset.y
     let comHeight = normalizeH(300)

@@ -59,8 +59,8 @@ class ShopGoodsDetail extends Component{
   }
 
   renderHeaderView() {
-    let topic = this.props.topic
-    if (topic.picked || this.props.enableShare) {
+    // let topic = this.props.topic
+
       return (
         <Header
           leftType="icon"
@@ -76,16 +76,7 @@ class ShopGoodsDetail extends Component{
           }}
         />
       )
-    } else {
-      return (
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
-          title="详情"
-        />
-      )
-    }
+
   }
 
   renderBottomView() {
@@ -121,6 +112,14 @@ class ShopGoodsDetail extends Component{
       )
     }
 
+  }
+  render(){
+    return(
+      <View style={styles.containerStyle}>
+        {this.renderHeaderView()}
+        {this.renderBottomView()}
+      </View>
+    )
   }
 
 }
