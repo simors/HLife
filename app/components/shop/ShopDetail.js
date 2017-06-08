@@ -792,7 +792,13 @@ class ShopDetail extends Component {
     }
   }
 
-  showGoodDetail(id){
+  showGoodDetail(value) {
+    Actions.SHOP_GOODS_DETAIL({
+      value: value,
+      shopDetail: this.props.shopDetail,
+      isUserLogined: this.props.isUserLogined,
+      currentUser:this.props.currentUser
+    })
   }
 
   renderDetailContent() {
@@ -804,31 +810,7 @@ class ShopDetail extends Component {
     }
 
     let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
-    let shopGoodsList = [{
-      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
-      title: 'hahaha',
-      price: 18
-    }, {
-      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
-      title: 'hahaha',
-      price: 18
-    }, {
-      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
-      title: 'hahaha',
-      price: 18
-    }, {
-      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
-      title: 'hahaha',
-      price: 18
-    }, {
-      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
-      title: 'hahaha',
-      price: 18
-    }, {
-      imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png',
-      title: 'hahaha',
-      price: 18
-    }, {imageSource: 'http://ac-K5Rltwmf.clouddn.com/990009fcaf70b4ad2959.png', title: 'hahaha', price: 18}]
+
     return (
       <View style={{flex: 1}}>
         <View style={detailWrapStyle}>
@@ -916,11 +898,18 @@ class ShopDetail extends Component {
                 <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
               </View>
             </View>
-            <ShopGoodsList shopGoodsList={this.props.goodList} size={6} showGoodDetail={(goodId)=>{this.showGoodDetail(goodId)}}/>
+            <ShopGoodsList shopGoodsList={this.props.goodList} size={6} showGoodDetail={(value)=> {
+              this.showGoodDetail(value)
+            }}/>
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.SHOPGOODSLISTVIEW({goodList: this.props.goodList,id:this.props.id, size: shopGoodsList.length})
+                  Actions.SHOPGOODSLISTVIEW({
+                    goodList: this.props.goodList,
+                    id: this.props.id,
+                    size: shopGoodsList.length,
+                    showGoodDetail: (value)=>this.showGoodDetail(value)
+                  })
                 }}>
                   <Text style={styles.allCommentsLink}>查看全部商品</Text>
                 </TouchableOpacity>
@@ -1055,7 +1044,7 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
 
   const appServicePhone = configSelector.selectServicePhone(state)
-  const goodList = selectGoodsList(state,ownProps.id,1)
+  const goodList = selectGoodsList(state, ownProps.id, 1)
   let shareDomain = configSelector.getShareDomain(state)
 
   // let shopDetail = ShopDetailTestData.shopDetail
@@ -1065,13 +1054,13 @@ const mapStateToProps = (state, ownProps) => {
   // const shopList = ShopDetailTestData.shopList
   // const isUserLogined = true
   // const isFollowedShop = true
-    console.log('goodList',goodList)
+  //   console.log('goodList',goodList)
   // if(shopList.length > 3) {
   //   shopList.splice(0, shopList.length-3)
   // }
 
   return {
-    goodList:goodList,
+    goodList: goodList,
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
     guessYouLikeList: guessYouLikeList,

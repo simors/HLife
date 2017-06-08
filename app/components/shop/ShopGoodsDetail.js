@@ -25,6 +25,9 @@ import THEME from '../../constants/themes/theme1'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import ViewPager2 from '../common/ViewPager2'
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
+import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -90,7 +93,7 @@ class ShopGoodsDetail extends Component{
           <View style={styles.priceBox}>
             <Text style={styles.priceTxt}>￥{this.props.value.price}</Text>
           </View>
-          <TouchableOpacity style={{flex: 1}} onPress={()=>{this.onIWantPress()}}>
+          <TouchableOpacity style={{flex: 1}} onPress={() => this.sendPrivateMessage()}>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <Image style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/service_24.png')}/>
               <Text style={{fontSize: em(10), color: '#aaa', paddingTop: normalizeH(5)}}>联系卖家</Text>
@@ -106,42 +109,37 @@ class ShopGoodsDetail extends Component{
 
   }
 
+  sendPrivateMessage() {
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+    } else {
+
+      this.props.fetchUsers({userIds: [this.props.shopDetail.owner.id]})
+
+      let payload = {
+        name: this.props.shopDetail.owner.nickname,
+        members: [this.props.currentUser, this.props.shopDetail.owner.id],
+        conversationType: PERSONAL_CONVERSATION,
+        title: this.props.shopDetail.shopName,
+        customTopView: this.customTopView()
+      }
+      Actions.CHATROOM(payload)
+    }
+  }
+
+  customTopView() {
+    return (
+      <ChatroomShopCustomTopView
+        shopInfo={this.props.shopDetail}
+      />
+    )
+  }
 
   renderBannerColumn() {
-    // console.log('this.props.banner====', this.props.banner)
 
     if (this.props.imageList && this.props.imageList.length) {
-      // let pages = this.props.banner.map((item, index) => {
-      //   let image = item.image
-      //   return (
-      //     <TouchableOpacity
-      //       style={{flex:1}}
-      //       key={'b_image_' + index}
-      //       onPress={() => this.bannerClickListener(item)}
-      //     >
-      //       <CachedImage
-      //         mutable
-      //         style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
-      //         resizeMode="stretch"
-      //         source={typeof(image) == 'string' ? {uri: image} : image}
-      //       />
-      //     </TouchableOpacity>
-      //   )
-      // })
-      //
-      // let dataSource = new ViewPager.DataSource({
-      //   pageHasChanged: (p1, p2) => p1 !== p2,
-      // })
-      // console.log('dataSource',pages)
       return (
         <View style={styles.advertisementModule}>
-          {/*<ViewPager*/}
-          {/*style={{flex:1}}*/}
-          {/*dataSource={dataSource.cloneWithPages(pages)}*/}
-          {/*renderPage={this._renderPage}*/}
-          {/*isLoop={true}*/}
-          {/*autoPlay={true}*/}
-          {/*/>*/}
           <ViewPager2 dataSource={this.props.imageList}/>
         </View>
       )
@@ -164,7 +162,6 @@ class ShopGoodsDetail extends Component{
 
 }
 
-
 const mapStateToProps = (state, ownProps) => {
   let imageList = []
   if(ownProps.value.album&&ownProps.value.album.length>0)
@@ -186,6 +183,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchUsers,
 
 }, dispatch)
 

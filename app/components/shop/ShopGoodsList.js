@@ -39,7 +39,8 @@ export default class ShopGoodsList extends Component {
   }
 
   showGoodDetail(value){
-    Actions.SHOP_GOODS_DETAIL({value:value})
+    this.props.showGoodDetail(value)
+    // Actions.SHOP_GOODS_DETAIL({value:value})
   }
 
   renderColumn(value) {

@@ -99,7 +99,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   }
 
    showGoodDetail(value){
-     Actions.SHOP_GOODS_DETAIL({value:value})
+     this.props.showGoodDetail(value)
+     // Actions.SHOP_GOODS_DETAIL({value:value})
    }
   handleOnScroll(e) {
     let offset = e.nativeEvent.contentOffset.y
