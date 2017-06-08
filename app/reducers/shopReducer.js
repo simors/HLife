@@ -602,6 +602,17 @@ function onRehydrate(state, action) {
     state = state.set('shopTagList', List(incoming.shopTagList))
     state = state.set('guessYouLikeShopList', List(incoming.guessYouLikeShopList))
     state = state.set('fetchShopListArrivedLastPage', incoming.fetchShopListArrivedLastPage)
+
+    let shopGoodsMap = Map(incoming.shopGoods)
+    shopGoodsMap.map((goodsList, key) => {
+      let goodsListRec = []
+      goodsList.forEach((goods) => {
+        let shopGoods = new ShopGoods({...goods, album: new List(goods.album)})
+        goodsListRec.push(shopGoods)
+      })
+
+      state = state.setIn(['shopGoods', key], new List(goodsListRec))
+    })
   }
   return state
 }
