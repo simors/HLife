@@ -17,6 +17,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
+import shallowequal from 'shallowequal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -26,14 +27,21 @@ class NearbyShopView extends Component {
     super(props)
   }
 
-  componentWillReceiveProps(nextProps) {
-    //console.log('NearbyShopView.allShopCategories=====>>>>>', nextProps.allShopCategories)
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props.allShopCategories, nextProps.allShopCategories)) {
+      return true
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true
+    }
+    return false
   }
 
   gotoShopCategoryList(shopCategory) {
     Actions.SHOP_CATEGORY_LIST({
       shopCategoryId: shopCategory.shopCategoryId,
-      shopCategoryName: shopCategory.text})
+      shopCategoryName: shopCategory.text,
+    })
   }
 
   renderMainShop() {

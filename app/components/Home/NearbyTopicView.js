@@ -20,6 +20,7 @@ import THEME from '../../constants/themes/theme1'
 import Swiper from 'react-native-swiper'
 import {fetchMainPageTopics} from '../../action/topicActions'
 import {getMainPageTopics} from '../../selector/topicSelector'
+import shallowequal from 'shallowequal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -31,6 +32,16 @@ class NearbyTopicView extends Component {
       swiperHeight: 60,
       swiperWidth: 300,
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props.mainPageTopics, nextProps.mainPageTopics)) {
+      return true
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true
+    }
+    return false
   }
 
   componentDidMount() {
