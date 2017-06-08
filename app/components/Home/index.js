@@ -352,8 +352,12 @@ class Home extends Component {
     this.isQuering = true
 
     let lastDistance = undefined
-    if (this.props.geoPoint && this.props.lastShopGeo) {
-      lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+    if (isRefresh) {
+      lastDistance = undefined
+    } else {
+      if (this.props.geoPoint && this.props.lastShopGeo) {
+        lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+      }
     }
 
     let payload = {
@@ -376,7 +380,6 @@ class Home extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    // this.props.fetchShopPromotionList(payload)
     this.props.getShopPromotion(payload)
   }
 
