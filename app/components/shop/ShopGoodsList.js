@@ -60,14 +60,23 @@ export default class ShopGoodsList extends Component {
     const imageStyle = {
       flex: 1,
     }
-    let shopGoodsList = this.props.shopGoodsList.map((item, key) => {
-      return (
-        <View key={key} style={imageStyle}>
-          {this.renderColumn(item)}
-        </View>
-      )
+    // let shopGoodsList = []
+    // if(this.props.shopGoodsList.length>6){
+    //   shopGoodsList = this.props.shopGoodsList.splice(6,this.props.shopGoodsList.length)
+    // }else{
+    //   shopGoodsList=this.props.shopGoodsList
+    // }
+
+     let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
+       if(key<6) {
+         return (
+           <View key={key} style={imageStyle}>
+             {this.renderColumn(item)}
+           </View>
+         )
+       }
     })
-    return shopGoodsList
+    return shopGoodsListView
   }
 
   renderCutColumn() {
