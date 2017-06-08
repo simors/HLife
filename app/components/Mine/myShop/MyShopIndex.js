@@ -29,10 +29,13 @@ import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import ScoreShow from '../../common/ScoreShow'
 import ShopPromotionModule from '../../shop/ShopPromotionModule'
+import ShopGoodsList from '../../shop/ShopGoodsList'
 
-import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchSimilarShopList, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo} from '../../../action/shopAction'
+import {fetchUserOwnedShopInfo, fetchShopFollowers, fetchShopFollowersTotalCount, fetchSimilarShopList, fetchShopDetail, fetchGuessYouLikeShopList, fetchShopAnnouncements, userIsFollowedShop, followShop, submitShopComment, fetchShopCommentList, fetchShopCommentTotalCount, userUpShop, userUnUpShop, fetchUserUpShopInfo,  getShopGoodsList,
+} from '../../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../../action/authActions'
-import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectSimilarShopList, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop} from '../../../selector/shopSelector'
+import {selectUserOwnedShopInfo, selectShopFollowers, selectShopFollowersTotalCount, selectSimilarShopList, selectShopDetail,selectShopList, selectGuessYouLikeShopList, selectLatestShopAnnouncemment, selectUserIsFollowShop, selectShopComments, selectShopCommentsTotalCount, selectUserIsUpedShop,  selectGoodsList
+} from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
 import ImageGallery from '../../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
@@ -284,6 +287,17 @@ class MyShopIndex extends Component {
     }
   }
 
+  showGoodDetail(value) {
+    Actions.SHOP_GOODS_DETAIL({
+      value: value,
+      shopDetail: this.props.shopDetail,
+      isUserLogined: this.props.isUserLogined,
+      currentUser:this.props.currentUser,
+      shareDomain:this.props.shareDomain
+    })
+  }
+
+
   showShopAlbum() {
     let album = this.props.shopDetail.album || []
     let allAlbum = [this.props.shopDetail.coverUrl].concat(album)
@@ -427,7 +441,29 @@ class MyShopIndex extends Component {
                 noDistance={true}
                 shopPromotionList={this.props.shopDetail.containedPromotions}
               />
-
+              <View style={styles.headerView}>
+                <View style={styles.headerItem}>
+                  <Image source={require('../../../assets/images/activity.png')} width={12} height={14}></Image>
+                  <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
+                </View>
+              </View>
+              <ShopGoodsList shopGoodsList={this.props.goodList} size={6} showGoodDetail={(value)=> {
+                this.showGoodDetail(value)
+              }}/>
+              <View style={styles.commentWrap}>
+                <View style={styles.commentFoot}>
+                  <TouchableOpacity onPress={()=> {
+                    Actions.SHOPGOODSLISTVIEW({
+                      goodList: this.props.goodList,
+                      id: this.props.id,
+                      size: this.props.goodList.length,
+                      showGoodDetail: (value)=>this.showGoodDetail(value)
+                    })
+                  }}>
+                    <Text style={styles.allCommentsLink}>查看全部商品</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
               <View style={styles.shopAnnouncementWrap}>
                 <View style={styles.titleWrap}>
                   <View style={styles.titleLine}/>
@@ -587,7 +623,7 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('userOwnedShopInfo====', userOwnedShopInfo)
   const isUserLogined = authSelector.isUserLogined(state)
   const userFollowees = authSelector.selectUserFollowees(state)
-
+  let goodList = []
   let shopFollowers = []
   let shopFollowersTotalCount = 0
   let latestShopAnnouncement = {}
@@ -602,14 +638,16 @@ const mapStateToProps = (state, ownProps) => {
     // console.log('shopComments==***==', shopComments)
     shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
     similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
+    goodList = selectGoodsList(state, userOwnedShopInfo.id, 1)
+
   }
-  console.log('userOwnedShopInfo===', userOwnedShopInfo)
+  // console.log('userOwnedShopInfo===', userOwnedShopInfo)
   // console.log('shopFollowers===', shopFollowers)
   // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
-
   let shareDomain = getShareDomain(state)
 
   return {
+    goodList: goodList,
     shopDetail: userOwnedShopInfo,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
@@ -634,7 +672,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopFollowers,
   fetchShopFollowersTotalCount,
   fetchSimilarShopList,
-  fetchShareDomain
+  fetchShareDomain,
+  getShopGoodsList
+
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyShopIndex)
@@ -1126,5 +1166,26 @@ const styles = StyleSheet.create({
   shopPromotionContentTxt: {
     color: '#aaaaaa',
     fontSize: em(12)
+  },
+  headerItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: normalizeH(10),
+  },
+  headerText: {
+    fontSize: em(12),
+    color: '#5A5A5A',
+    paddingLeft: 5,
+  },
+  headerView: {
+    backgroundColor: THEME.base.backgroundColor,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: normalizeH(42),
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
 })

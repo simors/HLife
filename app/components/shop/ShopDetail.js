@@ -908,7 +908,7 @@ class ShopDetail extends Component {
                   Actions.SHOPGOODSLISTVIEW({
                     goodList: this.props.goodList,
                     id: this.props.id,
-                    size: shopGoodsList.length,
+                    size: this.props.goodList.length,
                     showGoodDetail: (value)=>this.showGoodDetail(value)
                   })
                 }}>

@@ -69,7 +69,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class ShopGoodsDetail extends Component {
   constructor(props) {
     super(props)
-    this.state={
+    this.state = {
       showPayModal: false,
       fade: new Animated.Value(0),
       buyAmount: '1',
@@ -139,7 +139,7 @@ class ShopGoodsDetail extends Component {
       this.setState({showPayModal: true})
     }
   }
-  
+
   renderBottomView() {
 
 
@@ -207,9 +207,12 @@ class ShopGoodsDetail extends Component {
           visible={this.state.showPayModal}
           transparent={true}
           animationType='fade'
-          onRequestClose={()=>{this.setState({showPayModal: false})}}
+          onRequestClose={()=> {
+            this.setState({showPayModal: false})
+          }}
         >
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
             <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
               <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
                 <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置购买数量</Text>
@@ -235,16 +238,26 @@ class ShopGoodsDetail extends Component {
                 />
                 <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>份</Text>
               </View>
-              <View style={{width: PAGE_WIDTH-100, height: normalizeH(50), padding: 0, flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, borderColor: '#F5F5F5'}}>
+              <View style={{
+                width: PAGE_WIDTH - 100,
+                height: normalizeH(50),
+                padding: 0,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderTopWidth: 1,
+                borderColor: '#F5F5F5'
+              }}>
                 <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
-                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
-                                    onPress={() => this.setState({showPayModal: false})}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.setState({showPayModal: false})}>
                     <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={{flex: 1}}>
-                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
-                                    onPress={() => this.onPaymentPress()}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.onPaymentPress()}>
                     <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
                   </TouchableOpacity>
                 </View>
@@ -274,8 +287,7 @@ class ShopGoodsDetail extends Component {
       },
       subject: '购买汇邻优店商品费用',
       paySuccessJumpScene: 'BUY_GOODS_OK',
-      paySuccessJumpSceneParams: {
-      },
+      paySuccessJumpSceneParams: {},
       payErrorJumpBack: true,
     })
   }
