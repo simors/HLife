@@ -797,7 +797,8 @@ class ShopDetail extends Component {
       value: value,
       shopDetail: this.props.shopDetail,
       isUserLogined: this.props.isUserLogined,
-      currentUser:this.props.currentUser
+      currentUser:this.props.currentUser,
+      shareDomain:this.props.shareDomain
     })
   }
 

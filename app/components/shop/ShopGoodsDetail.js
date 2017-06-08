@@ -109,6 +109,21 @@ class ShopGoodsDetail extends Component{
 
   }
 
+  onShare = () => {
+    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id :
+    DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.shopDetail.id
+
+    console.log("shopShare url:", shareUrl)
+
+    Actions.SHARE({
+      title: this.props.shopDetail.shopName || "汇邻优店",
+      url: shareUrl,
+      author: this.props.shopDetail.shopName || "邻家小二",
+      abstract: this.props.shopDetail.shopAddress || "未知地址",
+      cover: this.props.shopDetail.coverUrl || '',
+    })
+  }
+
   sendPrivateMessage() {
     if (!this.props.isUserLogined) {
       Actions.LOGIN()
