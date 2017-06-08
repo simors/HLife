@@ -465,10 +465,17 @@ class MyShopIndex extends Component {
           </View>
 
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.editShop()}}>
+            <TouchableOpacity style={{}} onPress={()=>{this.editShop()}}>
               <View style={[styles.vItem]}>
                 <Image style={{}} source={require('../../../assets/images/shop_edite.png')}/>
                 <Text style={[styles.vItemTxt, styles.shopCommentInput]}>编辑店铺</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.manageShopGoods()}}>
+              <View style={[styles.vItem, {marginLeft: 19}]}>
+                <Image style={{}} source={require('../../../assets/images/goods_20.png')}/>
+                <Text style={[styles.vItemTxt, styles.shopCommentInput]}>商品管理</Text>
               </View>
             </TouchableOpacity>
 
@@ -532,6 +539,14 @@ class MyShopIndex extends Component {
     }
     Actions.EDIT_SHOP()
     // Actions.COMPLETE_SHOP_INFO()
+  }
+
+  manageShopGoods() {
+    if(!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    Actions.SHOP_GOODS_MANAGE()
   }
 
   activityManage() {
@@ -1050,7 +1065,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingBottom: 3,
-    paddingLeft: 30
+    paddingLeft: 30,
   },
   vItemTxt: {
     marginTop: 6,
