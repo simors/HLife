@@ -172,6 +172,11 @@ function onRehydrate(state, action) {
       state = state.setIn(['banners', type], new List(typedBanners))
     }
   }
+
+  let shopCategories = incoming.shopCategories
+  if (shopCategories) {
+    state = state.set('shopCategories', new List(shopCategories))
+  }
   
   return state
 }
