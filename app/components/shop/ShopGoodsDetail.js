@@ -19,6 +19,8 @@ import {
   ListView,
   Modal,
   TextInput,
+  Animated
+
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
@@ -28,6 +30,7 @@ import ViewPager2 from '../common/ViewPager2'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
+import * as AVUtils from '../../util/AVUtils'
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -58,53 +61,95 @@ import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import ArticleViewer from '../common/Input/ArticleViewer'
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
-class ShopGoodsDetail extends Component{
-  constructor(props){
+class ShopGoodsDetail extends Component {
+  constructor(props) {
     super(props)
+    this.state={
+      fade: new Animated.Value(0),
+    }
   }
 
-  renderHeaderView() {
-    // let topic = this.props.topic
-
-      return (
+  renderMainHeader() {
+    return (
+      <Animated.View style={{
+        backgroundColor: THEME.base.mainColor,
+        opacity: this.state.fade,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: PAGE_WIDTH,
+        zIndex: 10,
+      }}
+      >
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {
+            AVUtils.pop({
+              backSceneName: this.props.backSceneName,
+              backSceneParams: this.props.backSceneParams
+            })
+          }}
           title="商品详情"
           rightComponent={()=> {
             return (
               <TouchableOpacity onPress={this.onShare} style={{marginRight: 10}}>
-                <CachedImage mutable source={require('../../assets/images/active_share.png')}/>
+                <Image source={require('../../assets/images/active_share.png')}/>
               </TouchableOpacity>
             )
           }}
         />
-      )
+      </Animated.View>
+    )
+  }
 
+  handleOnScroll(e) {
+    let offset = e.nativeEvent.contentOffset.y
+    let comHeight = normalizeH(200)
+    if (offset >= 0 && offset < 10) {
+      Animated.timing(this.state.fade, {
+        toValue: 0,
+        duration: 100,
+      }).start()
+    } else if (offset > 10 && offset < comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: (offset - 10) / comHeight,
+        duration: 100,
+      }).start()
+    } else if (offset >= comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: 1,
+        duration: 100,
+      }).start()
+    }
   }
 
   renderBottomView() {
 
 
-      return (
-        <View style={styles.footerWrap}>
-          <View style={styles.priceBox}>
-            <Text style={styles.priceTxt}>￥{this.props.value.price}</Text>
-          </View>
-          <TouchableOpacity style={{flex: 1}} onPress={() => this.sendPrivateMessage()}>
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Image style={{width:24,height:24}} resizeMode='contain' source={require('../../assets/images/service_24.png')}/>
-              <Text style={{fontSize: em(10), color: '#aaa', paddingTop: normalizeH(5)}}>联系卖家</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.footerBtnBox} onPress={()=>{this.openPaymentModal()}}>
-            <Image source={require('../../assets/images/purchase_24.png')}/>
-            <Text style={styles.footerBtnTxt}>立即购买</Text>
-          </TouchableOpacity>
+    return (
+      <View style={styles.footerWrap}>
+        <View style={styles.priceBox}>
+          <Text style={styles.priceTxt}>￥{this.props.value.price}</Text>
         </View>
-      )
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.sendPrivateMessage()}>
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Image style={{width: 24, height: 24}} resizeMode='contain'
+                   source={require('../../assets/images/service_24.png')}/>
+            <Text style={{fontSize: em(10), color: '#aaa', paddingTop: normalizeH(5)}}>联系卖家</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.footerBtnBox} onPress={()=> {
+          this.openPaymentModal()
+        }}>
+          <Image source={require('../../assets/images/purchase_24.png')}/>
+          <Text style={styles.footerBtnTxt}>立即购买</Text>
+        </TouchableOpacity>
+      </View>
+    )
 
 
   }
@@ -161,15 +206,21 @@ class ShopGoodsDetail extends Component{
     }
   }
 
-  render(){
+  render() {
     // console.log('value',this.props.value)
-    return(
+    return (
       <View style={styles.containerStyle}>
-        {this.renderHeaderView()}
+        {this.renderMainHeader()}
         <View style={styles.body}>
-          {this.renderBannerColumn()}
-        {this.props.value.detail?<ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)} />:null}
-        {this.renderBottomView()}
+          <ScrollView
+            contentContainerStyle={[styles.contentContainerStyle]}
+            onScroll={e => this.handleOnScroll(e)}
+            scrollEventThrottle={80}
+          >
+            {this.renderBannerColumn()}
+            {this.props.value.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)}/> : null}
+          </ScrollView>
+          {this.renderBottomView()}
         </View>
       </View>
     )
@@ -179,21 +230,21 @@ class ShopGoodsDetail extends Component{
 
 const mapStateToProps = (state, ownProps) => {
   let imageList = []
-  if(ownProps.value.album&&ownProps.value.album.length>0)
-   imageList = ownProps.value.album.map((item,key)=>{
-    return(
-    {
-      action: "LOGIN",
-      actionType: "action",
-      image: item,
-      title: ownProps.value.title,
-      type: 0
-    }
-    )
-  })
+  if (ownProps.value.album && ownProps.value.album.length > 0)
+    imageList = ownProps.value.album.map((item, key)=> {
+      return (
+      {
+        action: "LOGIN",
+        actionType: "action",
+        image: item,
+        title: ownProps.value.title,
+        type: 0
+      }
+      )
+    })
 
   return {
-  imageList:imageList
+    imageList: imageList
   }
 }
 
@@ -205,26 +256,25 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodsDetail)
 
 
-
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
   },
 
   body: {
-    marginTop: normalizeH(64),
+    // marginTop: normalizeH(64),
     flex: 1,
     backgroundColor: '#E5E5E5',
     paddingBottom: 50
   },
   topicLikesWrap: {
-    flex:1,
-    flexDirection:'row',
-    marginTop:8,
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 8,
     padding: 15,
     paddingTop: 20,
     paddingBottom: 20,
-    backgroundColor:'white',
+    backgroundColor: 'white',
     justifyContent: 'space-between',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
@@ -239,7 +289,7 @@ const styles = StyleSheet.create({
     fontSize: em(15)
   },
   likeStyle: {
-    flex:1
+    flex: 1
   },
   zanStyle: {
     backgroundColor: THEME.colors.green,
@@ -269,11 +319,11 @@ const styles = StyleSheet.create({
     borderTopColor: THEME.colors.lighterA,
     backgroundColor: '#f5f5f5',
     flexDirection: 'row',
-    height:50
+    height: 50
   },
   vItem: {
     flex: 1,
-    alignSelf:'flex-start',
+    alignSelf: 'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
@@ -286,7 +336,7 @@ const styles = StyleSheet.create({
     color: '#FF7819'
   },
   bottomZanTxt: {
-    color:'#ff7819'
+    color: '#ff7819'
   },
   shopCommentInputBox: {
     width: 64,
@@ -352,7 +402,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   footerBtnBox: {
-    height:normalizeH(49),
+    height: normalizeH(49),
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#FF9D4E',
@@ -371,7 +421,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     flexDirection: 'row',
-    height:normalizeH(49),
+    height: normalizeH(49),
     alignItems: 'center',
     paddingLeft: 15,
     backgroundColor: '#fafafa'
@@ -379,5 +429,14 @@ const styles = StyleSheet.create({
   advertisementModule: {
     height: normalizeH(223),
     backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
+  },
+  contentContainerStyle: {},
+  shopHead: {
+    flexDirection: 'row',
+    padding: 12,
+    height: 70,
+    backgroundColor: '#fff',
+    borderBottomWidth: normalizeBorder(),
+    borderBottomColor: THEME.colors.lighterA,
   },
 })
