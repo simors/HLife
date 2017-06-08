@@ -29,7 +29,7 @@ import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopPromotionModule from './ShopPromotionModule'
-
+// import from '../../action/shopAction'
 import {
   fetchUserFollowShops,
   fetchUserOwnedShopInfo,
@@ -44,7 +44,8 @@ import {
   fetchShopCommentTotalCount,
   userUpShop,
   userUnUpShop,
-  fetchUserUpShopInfo
+  fetchUserUpShopInfo,
+  getShopGoodsList,
 } from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 import {
@@ -56,7 +57,8 @@ import {
   selectUserIsFollowShop,
   selectShopComments,
   selectShopCommentsTotalCount,
-  selectUserIsUpedShop
+  selectUserIsUpedShop,
+  selectGoodsList
 } from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import * as configSelector from '../../selector/configSelector'
@@ -90,6 +92,12 @@ class ShopDetail extends Component {
   componentWillMount() {
     this.isFetchingShopDetail = true
     InteractionManager.runAfterInteractions(()=> {
+      this.props.getShopGoodsList({
+        shopId: this.props.id,
+        status: 1,
+        limit: 6,
+        // lastUpdateTime: payload.lastUpdateTime,
+      })
       this.props.fetchShopDetail({
         id: this.props.id,
         success: () => {
@@ -908,11 +916,11 @@ class ShopDetail extends Component {
                 <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
               </View>
             </View>
-            <ShopGoodsList shopGoodsList={shopGoodsList} size={6} showGoodDetail={(goodId)=>{this.showGoodDetail(goodId)}}/>
+            <ShopGoodsList shopGoodsList={this.props.goodList} size={6} showGoodDetail={(goodId)=>{this.showGoodDetail(goodId)}}/>
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.SHOPGOODSLISTVIEW({shopGoodsList: shopGoodsList, size: shopGoodsList.length})
+                  Actions.SHOPGOODSLISTVIEW({goodList: this.props.goodList,id:this.props.id, size: shopGoodsList.length})
                 }}>
                   <Text style={styles.allCommentsLink}>查看全部商品</Text>
                 </TouchableOpacity>
@@ -1047,7 +1055,7 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
 
   const appServicePhone = configSelector.selectServicePhone(state)
-
+  const goodList = selectGoodsList(state,ownProps.id,1)
   let shareDomain = configSelector.getShareDomain(state)
 
   // let shopDetail = ShopDetailTestData.shopDetail
@@ -1057,12 +1065,13 @@ const mapStateToProps = (state, ownProps) => {
   // const shopList = ShopDetailTestData.shopList
   // const isUserLogined = true
   // const isFollowedShop = true
-
+    console.log('goodList',goodList)
   // if(shopList.length > 3) {
   //   shopList.splice(0, shopList.length-3)
   // }
 
   return {
+    goodList:goodList,
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
     guessYouLikeList: guessYouLikeList,
@@ -1100,7 +1109,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchAppServicePhone,
   fetchUserFollowShops,
   fetchUsers,
-  fetchShareDomain
+  fetchShareDomain,
+  getShopGoodsList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

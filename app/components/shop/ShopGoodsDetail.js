@@ -24,6 +24,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
+import ViewPager2 from '../common/ViewPager2'
+
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 
@@ -103,12 +105,57 @@ class ShopGoodsDetail extends Component{
 
 
   }
+
+
+  renderBannerColumn() {
+    // console.log('this.props.banner====', this.props.banner)
+
+    if (this.props.imageList && this.props.imageList.length) {
+      // let pages = this.props.banner.map((item, index) => {
+      //   let image = item.image
+      //   return (
+      //     <TouchableOpacity
+      //       style={{flex:1}}
+      //       key={'b_image_' + index}
+      //       onPress={() => this.bannerClickListener(item)}
+      //     >
+      //       <CachedImage
+      //         mutable
+      //         style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
+      //         resizeMode="stretch"
+      //         source={typeof(image) == 'string' ? {uri: image} : image}
+      //       />
+      //     </TouchableOpacity>
+      //   )
+      // })
+      //
+      // let dataSource = new ViewPager.DataSource({
+      //   pageHasChanged: (p1, p2) => p1 !== p2,
+      // })
+      // console.log('dataSource',pages)
+      return (
+        <View style={styles.advertisementModule}>
+          {/*<ViewPager*/}
+          {/*style={{flex:1}}*/}
+          {/*dataSource={dataSource.cloneWithPages(pages)}*/}
+          {/*renderPage={this._renderPage}*/}
+          {/*isLoop={true}*/}
+          {/*autoPlay={true}*/}
+          {/*/>*/}
+          <ViewPager2 dataSource={this.props.imageList}/>
+        </View>
+      )
+    }
+  }
+
   render(){
+    // console.log('value',this.props.value)
     return(
       <View style={styles.containerStyle}>
         {this.renderHeaderView()}
         <View style={styles.body}>
-        {this.props.value.content?<ArticleViewer artlcleContent={JSON.parse(this.props.value.content)} />:null}
+          {this.renderBannerColumn()}
+        {this.props.value.detail?<ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)} />:null}
         {this.renderBottomView()}
         </View>
       </View>
@@ -119,9 +166,22 @@ class ShopGoodsDetail extends Component{
 
 
 const mapStateToProps = (state, ownProps) => {
+  let imageList = []
+  if(ownProps.value.album&&ownProps.value.album.length>0)
+   imageList = ownProps.value.album.map((item,key)=>{
+    return(
+    {
+      action: "LOGIN",
+      actionType: "action",
+      image: item,
+      title: ownProps.value.title,
+      type: 0
+    }
+    )
+  })
 
   return {
-
+  imageList:imageList
   }
 }
 
@@ -302,5 +362,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 15,
     backgroundColor: '#fafafa'
+  },
+  advertisementModule: {
+    height: normalizeH(223),
+    backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
   },
 })

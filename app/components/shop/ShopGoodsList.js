@@ -13,6 +13,7 @@ import {
   ScrollView,
   TouchableHighlight
 } from 'react-native'
+import {CachedImage} from "react-native-img-cache"
 
 import AV from 'leancloud-storage'
 import {connect} from 'react-redux'
@@ -46,9 +47,9 @@ export default class ShopGoodsList extends Component {
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
         <View style={styles.channelWrap}>
-
-          <Image style={styles.defaultImageStyles} source={{uri: value.imageSource}}/>
-          <Text style={ styles.channelText}>{value.title}</Text>
+          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: value.coverPhoto}}/>
+          {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
+          <Text style={ styles.channelText}>{value.goodsName}</Text>
           <Text style={ styles.channelPrice}>{'¥' + value.price}</Text>
 
         </View>
@@ -66,17 +67,21 @@ export default class ShopGoodsList extends Component {
     // }else{
     //   shopGoodsList=this.props.shopGoodsList
     // }
+    if(this.props.shopGoodsList&&this.props.shopGoodsList.length){
+      let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
+        if(key<6) {
+          return (
+            <View key={key} style={imageStyle}>
+              {this.renderColumn(item)}
+            </View>
+          )
+        }
+      })
+      return shopGoodsListView
+    }else{
+      return <View/>
+    }
 
-     let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
-       if(key<6) {
-         return (
-           <View key={key} style={imageStyle}>
-             {this.renderColumn(item)}
-           </View>
-         )
-       }
-    })
-    return shopGoodsListView
   }
 
   renderCutColumn() {

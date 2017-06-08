@@ -2,6 +2,8 @@
  * Created by lilu on 2017/6/6.
  */
 import React, {Component} from 'react'
+import shallowequal from 'shallowequal'
+
 import {
   StyleSheet,
   View,
@@ -21,6 +23,8 @@ import {
 
 
 } from 'react-native'
+import {CachedImage} from "react-native-img-cache"
+
 import Header from '../common/Header'
 import * as AVUtils from '../../util/AVUtils'
 import AV from 'leancloud-storage'
@@ -33,7 +37,12 @@ import {getColumn} from '../../selector/configSelector'
 import {CommonModal} from '../common/CommonModal'
 import {Actions} from 'react-native-router-flux'
 import CommonListView from '../common/CommonListView'
-
+import {
+  getShopGoodsList,
+} from '../../action/shopAction'
+import {
+  selectGoodsList
+} from '../../selector/shopSelector'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -55,17 +64,33 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   componentWillMount() {
 
     InteractionManager.runAfterInteractions(() => {
-
+      this.props.getShopGoodsList({
+        shopId: this.props.id,
+        status: 1,
+        // limit: 6,
+        // lastUpdateTime: payload.lastUpdateTime,
+      })
     })
   }
+
+   shouldComponentUpdate(nextProps, nextState) {
+     if (!shallowequal(this.props, nextProps)) {
+       return true;
+     }
+     if (!shallowequal(this.state, nextState)) {
+       return true;
+     }
+     return false;
+   }
+
   renderColumn(value,key) {
     //console.log('value====>',value)
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
         <View style={styles.channelWrap}>
-
-          <Image style={styles.defaultImageStyles} source={{uri: value.imageSource}}/>
-          <Text style={ styles.channelText}>{value.title}</Text>
+          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: value.coverPhoto}}/>
+          {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
+          <Text style={ styles.channelText}>{value.goodsName}</Text>
           <Text style={ styles.channelPrice}>{'¥' + value.price}</Text>
 
         </View>
@@ -119,14 +144,19 @@ const PAGE_HEIGHT = Dimensions.get('window').height
     const imageStyle = {
       flex: 1,
     }
-    let shopGoodsList = this.props.shopGoodsList.map((item, key) => {
-      return (
-        <View key={key} style={imageStyle}>
-          {this.renderColumn(item)}
-        </View>
-      )
-    })
-    return shopGoodsList
+    if(this.props.goodList&&this.props.goodList.length){
+      let shopGoodsList = this.props.goodList.map((item, key) => {
+        return (
+          <View key={key} style={imageStyle}>
+            {this.renderColumn(item)}
+          </View>
+        )
+      })
+      return shopGoodsList
+    }else{
+      return <View/>
+    }
+
   }
 
   renderCutColumn(rowData,rowId) {
@@ -250,6 +280,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 // }
 
 const mapStateToProps = (state, ownProps) => {
+  const goodList = selectGoodsList(state,ownProps.id,1)
+
   let ds = undefined
   if (ownProps.ds) {
     ds = ownProps.ds
@@ -264,16 +296,17 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'LOCAL_SHOP_LIST_COLUMN'})
   return{
    ds: ds.cloneWithRows(dataArray),
-
+   goodList:goodList
  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 
+  getShopGoodsList
 }, dispatch)
 
 
-export default connect(mapStateToProps)(ShopGoodsListView)
+export default connect(mapStateToProps,mapDispatchToProps)(ShopGoodsListView)
 
 const styles = StyleSheet.create({
 
