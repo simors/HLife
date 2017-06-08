@@ -1275,6 +1275,23 @@ export function addNewShopGoods(payload) {
   })
 }
 
+export function modifyShopGoods(payload) {
+  let params = {
+    goodsId: payload.goodsId,
+    goodsName: payload.goodsName,
+    price: payload.price,
+    originalPrice: payload.originalPrice,
+    coverPhoto: payload.coverPhoto,
+    album: payload.album,
+    detail: payload.detail,
+  }
+  return AV.Cloud.run('goodsModifyShopGoods', params).then((goodsInfo)=> {
+    return goodsInfo
+  }, (err) => {
+    throw err
+  })
+}
+
 export function goodsOnline(payload) {
   let params = {
     goodsId: payload.goodsId,

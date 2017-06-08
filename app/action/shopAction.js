@@ -777,6 +777,27 @@ export function addNewShopGoods(payload) {
   }
 }
 
+export function modifyShopGoods(payload) {
+  return (dispatch, getState) => {
+    lcShop.modifyShopGoods({
+      goodsId: payload.goodsId,
+      goodsName: '地三鲜',
+      price: 20,
+      originalPrice: 33,
+      coverPhoto: 'http://ac-K5Rltwmf.clouddn.com/0cae603addad837deccf.jpg',
+      album: ['123', '456'],
+      detail: 'iobadlnasdfjalsfj',
+    }).then((goodsInfo) => {
+      if (0 == goodsInfo.errcode) {
+        let goodsObj = goodsInfo.goodsInfo
+        let shopId = goodsObj.targetShop.id
+        let goods = ShopGoods.fromLeancloudApi(goodsObj)
+        dispatch(updateShopGoods({shopId, goodsId: payload.goodsId, goods}))
+      }
+    })
+  }
+}
+
 export function setShopGoodsOnline(payload) {
   return (dispatch, getState) => {
     payload = {
