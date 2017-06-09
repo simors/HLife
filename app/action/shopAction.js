@@ -13,6 +13,10 @@ import {ShopPromotion, ShopGoods} from '../models/shopModel'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
+import * as uiTypes from '../constants/uiActionTypes'
+import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
+
+
 
 let addShopGoods = createAction(ShopActionTypes.ADD_NEW_SHOP_GOODS)
 let updateShopGoodsStatus = createAction(ShopActionTypes.UPDATE_SHOP_GOODS_STATUS)
@@ -616,7 +620,7 @@ export function submitShopPromotion(payload) {
         leanRichTextImagesUrls: leanRichTextImagesUrls,
       }
     }).then((results) => {
-      if(payload.promotionDetailInfo && payload.promotionDetailInfo.length && 
+      if(payload.promotionDetailInfo && payload.promotionDetailInfo.length &&
           results.leanRichTextImagesUrls && results.leanRichTextImagesUrls.length) {
         let leanRichTextImagesUrls = results.leanRichTextImagesUrls.reverse()
         payload.promotionDetailInfo.forEach((value) => {
@@ -777,67 +781,123 @@ export function addNewShopGoods(payload) {
   }
 }
 
-export function modifyShopGoods(payload) {
-  return (dispatch, getState) => {
-    lcShop.modifyShopGoods({
-      goodsId: payload.goodsId,
-      goodsName: '地三鲜',
-      price: 20,
-      originalPrice: 33,
-      coverPhoto: 'http://ac-K5Rltwmf.clouddn.com/0cae603addad837deccf.jpg',
-      album: ['123', '456'],
-      detail: 'iobadlnasdfjalsfj',
-    }).then((goodsInfo) => {
-      if (0 == goodsInfo.errcode) {
-        let goodsObj = goodsInfo.goodsInfo
-        let shopId = goodsObj.targetShop.id
-        let goods = ShopGoods.fromLeancloudApi(goodsObj)
-        dispatch(updateShopGoods({shopId, goodsId: payload.goodsId, goods}))
-      }
-    })
-  }
-}
+// export function modifyShopGoods(payload) {
+//   return (dispatch, getState) => {
+//     lcShop.modifyShopGoods({
+//       goodsId: payload.goodsId,
+//       goodsName: '地三鲜',
+//       price: 20,
+//       originalPrice: 33,
+//       coverPhoto: 'http://ac-K5Rltwmf.clouddn.com/0cae603addad837deccf.jpg',
+//       album: ['123', '456'],
+//       detail: 'iobadlnasdfjalsfj',
+//     }).then((goodsInfo) => {
+//       if (0 == goodsInfo.errcode) {
+//         let goodsObj = goodsInfo.goodsInfo
+//         let shopId = goodsObj.targetShop.id
+//         let goods = ShopGoods.fromLeancloudApi(goodsObj)
+//         dispatch(updateShopGoods({shopId, goodsId: payload.goodsId, goods}))
+//       }
+//     })
+//   }
+// }
 
 export function setShopGoodsOnline(payload) {
   return (dispatch, getState) => {
-    payload = {
-      goodsId: '59375f8dfe88c20061eabee0',
-      shopId: '58fec4600ce46300613d849e',
+    let onlinePayload = {
+      goodsId: payload.goodsId,
+      shopId: payload.shopId,
     }
-    lcShop.goodsOnline({goodsId: payload.goodsId}).then((goodsInfo) => {
+    lcShop.goodsOnline({goodsId: onlinePayload.goodsId}).then((goodsInfo) => {
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
-        dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+        dispatch(updateShopGoodsStatus({shopId: onlinePayload.shopId, goodsId: onlinePayload.goodsId, status: newStatus}))
+      } else {
+        console.log("goodsOffline fail, goodsInfo:", goodsInfo)
+        if(payload.error) {
+          payload.error()
+        }
+      }
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
       }
     })
   }
 }
+
+// export function setShopGoodsOffline(payload) {
+//   return (dispatch, getState) => {
+//     payload = {
+//       goodsId: '59375f8dfe88c20061eabee0',
+//       shopId: '58fec4600ce46300613d849e',
+//     }
+//     lcShop.goodsOffline({goodsId: payload.goodsId}).then((goodsInfo) => {
+//       if (0 == goodsInfo.errcode) {
+//         let newStatus = goodsInfo.goodsInfo.status
+//         dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+//       }
+//     })
+//   }
+// }
 
 export function setShopGoodsOffline(payload) {
   return (dispatch, getState) => {
-    payload = {
-      goodsId: '59375f8dfe88c20061eabee0',
-      shopId: '58fec4600ce46300613d849e',
+    let offLinePayload = {
+      goodsId: payload.goodsId,
+      shopId: payload.shopId,
     }
-    lcShop.goodsOffline({goodsId: payload.goodsId}).then((goodsInfo) => {
+    lcShop.goodsOffline({goodsId: offLinePayload.goodsId}).then((goodsInfo) => {
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
-        dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+        dispatch(updateShopGoodsStatus({shopId: offLinePayload.shopId, goodsId: offLinePayload.goodsId, status: newStatus}))
+      } else {
+        console.log("goodsOffline fail, goodsInfo:", goodsInfo)
+        if(payload.error) {
+          payload.error()
+        }
+      }
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
       }
     })
   }
 }
 
+// export function setShopGoodsDelete(payload) {
+//   return (dispatch, getState) => {
+//     payload = {
+//       goodsId: '59375f8dfe88c20061eabee0',
+//       shopId: '58fec4600ce46300613d849e',
+//     }
+//     lcShop.goodsDelete({goodsId: payload.goodsId}).then((goodsInfo) => {
+//       if (0 == goodsInfo.errcode) {
+//         let newStatus = goodsInfo.goodsInfo.status
+//         dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+//       }
+//     })
+//   }
+// }
+
 export function setShopGoodsDelete(payload) {
   return (dispatch, getState) => {
-    payload = {
-      goodsId: '59375f8dfe88c20061eabee0',
-      shopId: '58fec4600ce46300613d849e',
+    let deletePayload = {
+      goodsId: payload.goodsId,
+      shopId: payload.shopId,
     }
-    lcShop.goodsDelete({goodsId: payload.goodsId}).then((goodsInfo) => {
+    lcShop.goodsDelete({goodsId: deletePayload.goodsId}).then((goodsInfo) => {
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
-        dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
+        dispatch(updateShopGoodsStatus({shopId: deletePayload.shopId, goodsId: deletePayload.goodsId, status: newStatus}))
+      } else {
+        if(payload.error) {
+          payload.error()
+        }
+      }
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
       }
     })
   }
@@ -868,5 +928,167 @@ export function getShopGoodsList(payload) {
         payload.error(err.message)
       }
     })
+  }
+}
+
+export function submitShopGood(payload) {
+  console.log("submitShopGood payload", payload)
+  return (dispatch, getState) => {
+    let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+    dispatch(formCheck({formKey: payload.formKey}))
+    let isFormValid = isInputFormValid(getState(), payload.formKey)
+    if (!isFormValid.isValid) {
+      if (payload.error) {
+        payload.error({message: isFormValid.errMsg})
+      }
+      return
+    }else {
+      const formData = getInputFormData(getState(), payload.formKey)
+       console.log("submitShopGood formData:", formData)
+      let coverUrl = ''
+      let album = []
+      let leanRichTextImagesUrls = []
+      let localCover = formData.shopGoodCover.text
+      let localAlbum = []
+      if(formData.shopGoodAlbumInput && formData.shopGoodAlbumInput.text && formData.shopGoodAlbumInput.text.length > 1){
+        localAlbum = formData.shopGoodAlbumInput.text
+      }
+
+      ImageUtil.uploadImg2(localCover).then((url) => {
+        coverUrl = url
+        return ImageUtil.batchUploadImgs(localAlbum)
+      }).then((urls) => {
+        album = urls
+        return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
+      }).then((urls) => {
+        leanRichTextImagesUrls = urls
+        let content = formData.shopGoodContent.text
+        if(content && content.length &&
+          leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
+          content.forEach((value) => {
+            if(value.type == 'COMP_IMG' && value.url)
+              value.url = leanRichTextImagesUrls.pop()
+          })
+        }
+
+        let shopGoodPayload = {
+          shopId: payload.shopId,
+          goodsName: formData.title.text || '',
+          price: Number(formData.price.text) || 0,
+          originalPrice: Number(formData.originalPrice.text) || 0,
+          coverPhoto: coverUrl,
+          album: album,
+          detail: JSON.stringify(content),
+        }
+
+        console.log("shopGoodPayload:", shopGoodPayload)
+
+        lcShop.addNewShopGoods(shopGoodPayload).then((goodsInfo) => {
+          console.log("addNewShopGoods return goodsInfo:", goodsInfo)
+
+          if (0 == goodsInfo.errcode) {
+            let goodsObj = goodsInfo.goodsInfo
+            let shopId = goodsObj.targetShop.id
+            let goods = ShopGoods.fromLeancloudApi(goodsObj)
+            dispatch(addShopGoods({shopId, goods}))
+            if(payload.success) {
+              payload.success()
+            }
+          } else {
+            console.log("lcShop.addNewShopGoods fail, goodsInfo:", goodsInfo)
+            if(payload.error) {
+              payload.error()
+            }
+          }
+        })
+      }).catch((error) => {
+        console.log("error", error)
+        if(payload.error) {
+          payload.error(error)
+        }
+      })
+
+    }
+  }
+}
+
+export function modifyShopGoods(payload) {
+  console.log("modifyShopGoods", payload)
+  return (dispatch, getState) => {
+    let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+    dispatch(formCheck({formKey: payload.formKey}))
+    let isFormValid = isInputFormValid(getState(), payload.formKey)
+    if (!isFormValid.isValid) {
+      if (payload.error) {
+        payload.error({message: isFormValid.errMsg})
+      }
+      return
+    } else {
+      const formData = getInputFormData(getState(), payload.formKey)
+      console.log("modifyShopGoods formData:", formData)
+
+      let coverUrl = ''
+      let album = []
+      let leanRichTextImagesUrls = []
+      let localCover = formData.shopGoodCover.text
+      let localAlbum = []
+      if(formData.shopGoodAlbumInput && formData.shopGoodAlbumInput.text && formData.shopGoodAlbumInput.text.length > 1){
+        localAlbum = formData.shopGoodAlbumInput.text
+      }
+
+      ImageUtil.uploadImg2(localCover).then((url) => {
+        coverUrl = url
+        return ImageUtil.batchUploadImgs(localAlbum)
+      }).then((urls) => {
+        album = urls
+        return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
+      }).then((urls) => {
+        leanRichTextImagesUrls = urls
+        let content = formData.shopGoodContent.text
+        if(content && content.length &&
+          leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
+          content.forEach((value) => {
+            if(value.type == 'COMP_IMG' && value.url)
+              value.url = leanRichTextImagesUrls.pop()
+          })
+        }
+
+        let modifyShopGoodPayload = {
+          goodsId: payload.goodsId,
+          goodsName: formData.title.text || '',
+          price: Number(formData.price.text) || 0,
+          originalPrice: Number(formData.originalPrice.text) || 0,
+          coverPhoto: coverUrl,
+          album: album,
+          detail: JSON.stringify(content)
+        }
+
+        console.log("modifyShopGoodPayload:", modifyShopGoodPayload)
+
+        lcShop.modifyShopGoods(modifyShopGoodPayload).then((goodsInfo) => {
+          console.log("modifyShopGoods return goodsInfo:", goodsInfo)
+
+          if (0 == goodsInfo.errcode) {
+            let goodsObj = goodsInfo.goodsInfo
+            let shopId = goodsObj.targetShop.id
+            let goods = ShopGoods.fromLeancloudApi(goodsObj)
+            dispatch(updateShopGoods({shopId, goodsId: payload.goodsId, goods}))
+            if(payload.success) {
+              payload.success()
+            }
+          } else {
+            console.log("lcShop.modifyShopGoods fail, goodsInfo:", goodsInfo)
+            if(payload.error) {
+              payload.error()
+            }
+          }
+        })
+      }).catch((error) => {
+        console.log("error", error)
+        if(payload.error) {
+          payload.error(error)
+        }
+      })
+    }
   }
 }

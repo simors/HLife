@@ -71,7 +71,7 @@ class CommonTextInput extends Component {
   }
 
   renderClearBtn() {
-    if (this.state.showClear) {
+    if (this.state.showClear && this.props.showClear) {
       return (
         <View style={[styles.defaultClearBtnStyle, this.props.clearBtnStyle]}>
           <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center'}} onPress={() => this.clearInput()}>
@@ -134,6 +134,7 @@ CommonTextInput.defaultProps = {
   containerStyle: {flex: 1},
   inputStyle: {flex: 1},
   clearBtnStyle: {},
+  showClear: true,
   autoCorrect: true,
   keyboardType: 'default',
   secureTextEntry: false,

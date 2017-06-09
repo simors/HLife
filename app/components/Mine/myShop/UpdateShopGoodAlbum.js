@@ -18,63 +18,41 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
 import {Actions} from 'react-native-router-flux'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
-import * as appConfig from '../../../constants/appConfig'
 import Header from '../../common/Header'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
-import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import * as Toast from '../../common/Toast'
-import {fetchUserOwnedShopInfo} from '../../../action/shopAction'
-import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
-
-let commonForm = Symbol('commonForm')
-const shopGoodAlbumInput = {
-  formKey: commonForm,
-  stateKey: Symbol('shopGoodAlbumInput'),
-  type: 'shopGoodAlbumInput'
-}
 
 
 class UpdateShopGoodAlbum extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      shouldUploadImages: false
-    }
-
-    this.isPublishing = false
   }
 
-
-
-
   render() {
+    const shopGoodAlbumInput = {
+      formKey: this.props.formKey,
+      stateKey: Symbol('shopGoodAlbumInput'),
+      type: 'shopGoodAlbumInput'
+    }
     return (
       <View style={styles.container}>
         <Header
-          leftType="text"
-          leftText="取消"
+          leftType="icon"
+          leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="编辑商品相册"
-          rightType="text"
-          rightText="完成"
-          rightPress={()=>{this.updateShopAlbum()}}
+          title="选取商品相册"
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(15)}}>
             <ImageGroupInput
-              deleteImage={(src)=>{}}
               {...shopGoodAlbumInput}
               number={9}
               imageLineCnt={3}
               getImageList={()=>{}}
-              shouldUploadImages={true}
               uploadImagesCallback={()=>{}}
             />
           </View>

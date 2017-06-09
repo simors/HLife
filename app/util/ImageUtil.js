@@ -158,7 +158,7 @@ export function batchUploadImgs2(uris) {
 
 export function uploadImg(source) {
   let fileUri = ''
-  if (Platform.OS === 'ios') {
+  if (Platform.OS === 'ios'  && !uri.startsWith('http://') && !uri.startsWith('https://')) {
     fileUri = fileUri.concat('file://')
   }
   fileUri = fileUri.concat(source.uri)
@@ -203,7 +203,7 @@ export function uploadImg(source) {
 export function uploadImg2(uri, hideLoading) {
   return new Promise((resolve, reject)=>{
     let fileUri = ''
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
       fileUri = fileUri.concat('file://')
     }
     fileUri = fileUri.concat(uri)
@@ -243,7 +243,7 @@ export function uploadImg2(uri, hideLoading) {
 export async function uploadImg3(uri, hideLoading) {
   try{
     let fileUri = ''
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios'  && !uri.startsWith('http://') && !uri.startsWith('https://')) {
       fileUri = fileUri.concat('file://')
     }
     fileUri = fileUri.concat(uri)

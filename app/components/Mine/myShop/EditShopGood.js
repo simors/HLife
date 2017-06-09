@@ -1,5 +1,5 @@
 /**
- * Created by wanpeng on 2017/6/8.
+ * Created by wanpeng on 2017/6/9.
  */
 import React, {Component} from 'react'
 import {
@@ -20,46 +20,46 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import Header from '../common/Header'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import THEME from '../../constants/themes/theme1'
-import * as Toast from '../common/Toast'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import ImageInput from '../common/Input/ImageInput'
-import CommonTextInput from '../common/Input/CommonTextInput'
-import ArticleEditor from '../common/Input/ArticleEditor'
+import Header from '../../common/Header'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import THEME from '../../../constants/themes/theme1'
+import * as Toast from '../../common/Toast'
+import ImageInput from '../../common/Input/ImageInput'
+import CommonTextInput from '../../common/Input/CommonTextInput'
+import ArticleEditor from '../../common/Input/ArticleEditor'
 import Symbol from 'es6-symbol'
-import Loading from '../common/Loading'
-import {submitShopGood} from '../../action/shopAction'
+import Loading from '../../common/Loading'
+import {modifyShopGoods} from '../../../action/shopAction'
+import {selectGoodsById} from '../../../selector/shopSelector'
 
 
 
-let shopGoodForm = Symbol('shopGoodForm')
+let shopGoodEditForm = Symbol('shopGoodEditForm')
 const shopGoodContent = {
-  formKey: shopGoodForm,
+  formKey: shopGoodEditForm,
   stateKey: Symbol('shopGoodContent'),
   type: 'shopGoodContent',
 }
 
 const shopGoodCover = {
-  formKey: shopGoodForm,
+  formKey: shopGoodEditForm,
   stateKey: Symbol('shopGoodCover'),
   type: 'shopGoodCover',
 }
 
 const title = {
-  formKey: shopGoodForm,
+  formKey: shopGoodEditForm,
   stateKey: Symbol('title'),
   type: 'title',
 }
 
 const price = {
-  formKey: shopGoodForm,
+  formKey: shopGoodEditForm,
   stateKey: Symbol('price'),
   type: 'price',
 }
 const originalPrice = {
-  formKey: shopGoodForm,
+  formKey: shopGoodEditForm,
   stateKey: Symbol('originalPrice'),
   type: 'originalPrice',
 }
@@ -72,7 +72,7 @@ const rteHeight = {
 
 const wrapHeight = 373
 
-class PublishShopGood extends Component {
+class EditShopGood extends Component {
   constructor(props) {
     super(props)
     this.localRichTextImagesUrls = []
@@ -105,7 +105,7 @@ class PublishShopGood extends Component {
     // console.log('getRichTextImages.localRichTextImagesUrls==', this.localRichTextImagesUrls)
   }
 
-  renderRichText() {
+  renderRichText(initValue) {
     return (
       <ArticleEditor
         {...shopGoodContent}
@@ -121,27 +121,28 @@ class PublishShopGood extends Component {
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
         onBlurEditor={() => {this.setState({headerHeight: 373})}}
         placeholder="描述一下商品详情"
+        initValue={JSON.parse(initValue)}
       />
     )
   }
 
   submitForm() {
     this.loading = Loading.show()
-    this.props.submitShopGood({
-      shopId: this.props.shopId,
-      formKey: shopGoodForm,
+    this.props.modifyShopGoods({
+      goodsId: this.props.goodsId,
+      formKey: shopGoodEditForm,
       localRichTextImagesUrls: this.localRichTextImagesUrls,
       success: ()=>{
         this.isPublishing = false
         Loading.hide(this.loading)
-        Toast.show('商品发布成功')
+        Toast.show('商品更新成功')
         Actions.MY_SHOP_INDEX()
 
       },
       error: ()=>{
         this.isPublishing = false
         Loading.hide(this.loading)
-        Toast.show('商品发布失败')
+        Toast.show('商品更新失败')
       }
     })
   }
@@ -163,18 +164,18 @@ class PublishShopGood extends Component {
           leftPress={() => {Actions.pop()}}
           title="编辑商品"
           rightType="text"
-          rightText="发布"
+          rightText="更新"
           rightPress={() => {this.publishGood()}}
         />
         <View style={styles.body}>
           <View style={{height: this.state.headerHeight, overflow:'hidden'}}
                 onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
             <View>
-              <Image style={{width:PAGE_WIDTH,height: normalizeH(264)}} source={require('../../assets/images/background_good.png')}/>
+              <Image style={{width:PAGE_WIDTH,height: normalizeH(264)}} source={require('../../../assets/images/background_good.png')}/>
               <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(90,90,90,0.5)'}}>
-                <TouchableOpacity style={{flex:1}} onPress={()=>{Actions.UPDATE_SHOP_GOOD_ALBUM({formKey: shopGoodForm})}}>
+                <TouchableOpacity style={{flex:1}} onPress={()=>{Actions.UPDATE_SHOP_GOOD_ALBUM({formKey: shopGoodEditForm})}}>
                   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                    <Image style={{width:44,height:44}} source={require("../../assets/images/edite_pic_44_white.png")}/>
+                    <Image style={{width:44,height:44}} source={require("../../../assets/images/edite_pic_44_white.png")}/>
                     <Text style={{marginTop:15,fontSize:15,color:'#fff'}}>上传商品相册</Text>
                   </View>
                 </TouchableOpacity>
@@ -187,13 +188,12 @@ class PublishShopGood extends Component {
               <View style={styles.coverBox}>
                 <ImageInput
                   {...shopGoodCover}
-                  imageWidth={Math.floor(normalizeW(169)) * 2}
-                  imageHeight={Math.floor(normalizeW(169)) * 2}
-                  containerStyle={{width: normalizeW(80), height: normalizeW(80),borderWidth:0}}
-                  addImageBtnStyle={{top:0, left: 0, width: normalizeW(80), height: normalizeW(80)}}
-                  choosenImageStyle={{width: normalizeW(80), height: normalizeW(80)}}
-                  addImage={require('../../assets/images/upload_pic.png')}
+                  containerStyle={{width: 80, height: 80,borderWidth:0}}
+                  addImageBtnStyle={{top:0, left: 0, width: 80, height: 80}}
+                  choosenImageStyle={{width: 80, height: 80}}
+                  addImage={require('../../../assets/images/upload_pic.png')}
                   closeModalAfterSelectedImg={true}
+                  initValue={this.props.goodInfo.coverPhoto}
                 />
               </View>
               <View style={styles.introBox}>
@@ -206,6 +206,7 @@ class PublishShopGood extends Component {
                     outerContainerStyle={[styles.titleInput, {backgroundColor: '#fff', borderWidth: 0}]}
                     inputStyle={{backgroundColor: '#fff'}}
                     showClear={false}
+                    initValue={this.props.goodInfo.goodsName}
                   />
                 </View>
                 <View style={styles.priceBox}>
@@ -221,6 +222,7 @@ class PublishShopGood extends Component {
                       outerContainerStyle={[styles.promotingPriceInput, {backgroundColor: '#fff', borderWidth: 0}]}
                       inputStyle={{backgroundColor: '#fff', color: '#FF7819'}}
                       showClear={false}
+                      initValue={this.props.goodInfo.price}
                     />
                   </View>
 
@@ -236,6 +238,7 @@ class PublishShopGood extends Component {
                       outerContainerStyle={[styles.originalPriceBox, {backgroundColor: '#fff', borderWidth: 0}]}
                       inputStyle={{backgroundColor: '#fff'}}
                       showClear={false}
+                      initValue={this.props.goodInfo.originalPrice}
                     />
                   </View>
                 </View>
@@ -243,7 +246,7 @@ class PublishShopGood extends Component {
             </View>
 
           </View>
-          {this.renderRichText()}
+          {this.renderRichText(this.props.goodInfo.detail)}
 
         </View>
 
@@ -253,15 +256,18 @@ class PublishShopGood extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const goodInfo = selectGoodsById(state, ownProps.shopId, ownProps.goodsId)
+  console.log("EditShopGood info:", goodInfo)
   return {
+    goodInfo: goodInfo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitShopGood
+  modifyShopGoods
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishShopGood)
+export default connect(mapStateToProps, mapDispatchToProps)(EditShopGood)
 
 const styles = StyleSheet.create({
   container: {

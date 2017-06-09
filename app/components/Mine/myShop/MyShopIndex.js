@@ -546,7 +546,7 @@ class MyShopIndex extends Component {
       Actions.LOGIN()
       return
     }
-    Actions.SHOP_GOODS_MANAGE()
+    Actions.SHOP_GOODS_MANAGE({shopId: this.props.userOwnedShopInfo.id})
   }
 
   activityManage() {
@@ -618,10 +618,6 @@ const mapStateToProps = (state, ownProps) => {
     shopCommentsTotalCount = selectShopCommentsTotalCount(state, userOwnedShopInfo.id)
     similarShopList = selectSimilarShopList(state, userOwnedShopInfo.id)
   }
-  console.log('userOwnedShopInfo===', userOwnedShopInfo)
-  // console.log('shopFollowers===', shopFollowers)
-  // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
-
   let shareDomain = getShareDomain(state)
 
   return {

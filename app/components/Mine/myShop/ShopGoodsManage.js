@@ -25,6 +25,9 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import CommonListView from '../../common/CommonListView'
 import ScrollableTabView, {ScrollableTabBar} from '../../common/ScrollableTableView'
+import {selectGoodsList} from '../../../selector/shopSelector'
+import {CachedImage} from "react-native-img-cache"
+import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods} from '../../../action/shopAction'
 
 
 
@@ -58,9 +61,9 @@ class ShopGoodsManage extends Component {
 
   refresh() {
     if(0 == this.state.tabType) {
-      this.refreshHotGoodsList()
+      this.refreshOnlineGoodsList()
     } else if(1 == this.state.tabType) {
-      this.refreshSaleoffGoodsList()
+      this.refreshOfflineGoodsList()
     }
   }
 
@@ -69,73 +72,148 @@ class ShopGoodsManage extends Component {
       return (
         <View key={index} tabLabel={item}
               style={[{flex:1}]}>
-          {index == 0 ? this.renderHotList() : this.renderSaleoffList()}
+          {index == 0 ? this.renderOnlineGoodsList() : this.renderOfflineGoodsList()}
         </View>
       )
     })
   }
 
-  renderHotList() {
+  renderOnlineGoodsList() {
     return(
       <CommonListView
-        dataSource={this.props.hotGoodsList}
-        renderRow={(rowData, rowId) => this.renderHotGoodItem(rowData, rowId)}
+        dataSource={this.props.onlineGoodsList}
+        renderRow={(rowData, rowId) => this.renderOnlineGoodItem(rowData, rowId)}
         loadNewData={()=> {
-          this.refreshHotGoodsList()
+          this.refreshOnlineGoodsList()
         }}
         loadMoreData={()=> {
-          this.loadMoreHotGoodsListData()
+          this.loadMoreOnlineGoodsListData()
         }}
-        ref={(listView) => this.hotGoodListView = listView}
+        ref={(listView) => this.onlineGoodListView = listView}
       />
     )
   }
 
-  renderHotGoodItem(rowData) {
+  renderOnlineGoodItem(value, key) {
     return(
-      <View>
-
+      <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
+        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}}>
+          <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
+            <CachedImage mutable style={{width: normalizeH(100), height: normalizeH(75)}}
+                         source={require('../../../assets/images/goods_20.png')}>
+            </CachedImage>
+          </View>
+          <View>
+            <Text style={{marginTop: normalizeH(22), fontSize: 17, color: '#5A5A5A'}}>{value.goodsName}</Text>
+            <View style={{flexDirection: 'row', flex: 1, marginTop: normalizeH(13), marginBottom: normalizeH(13), alignItems: 'center'}}>
+              <Text style={{fontSize: 17, color: '#00BE96'}}>¥ {value.price}</Text>
+              <Text style={{fontSize: 10, color: '#AAAAAA', marginLeft: 6}}>原价：{value.originalPrice}</Text>
+            </View>
+            <Text style={{marginBottom: normalizeH(16), fontSize: 12, color: '#D8D8D8'}}>上架时间：{value.updatedAt.slice(0, 10)} </Text>
+          </View>
+        </TouchableOpacity>
+        <View style={{flexDirection: 'row', height: normalizeH(58), justifyContent: 'flex-end', alignItems: 'center'}}>
+          <TouchableOpacity style={styles.button} onPress={() => {this.onSetGoodOffline(value.id)}}>
+            <Text style={{fontSize: 17, color: 'black'}}>下架</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, {marginRight: normalizeW(15)}]} onPress={() => {this.onReEditorGood(value.id)}}>
+            <Text style={{fontSize: 17, color: 'black'}}>编辑</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
 
-  refreshHotGoodsList() {
-    this.loadMoreHotGoodsListData(true)
+  onSetGoodOffline(GoodId) {
+    this.props.setShopGoodsOffline({
+      goodsId: GoodId,
+      shopId: this.props.shopId
+    })
   }
 
-  loadMoreHotGoodsListData(isRefresh) {
+  onSetGoodOnline(GoodId) {
+    this.props.setShopGoodsOnline({
+      goodsId: GoodId,
+      shopId: this.props.shopId
+    })
+  }
+
+  onReEditorGood(GoodId) {
+    Actions.EDIT_SHOP_GOOD({
+      goodsId: GoodId,
+      shopId: this.props.shopId
+    })
+  }
+
+  onDeleteGood(GoodId) {
+    this.props.setShopGoodsDelete({
+      goodsId: GoodId,
+      shopId: this.props.shopId
+    })
+  }
+
+  refreshOnlineGoodsList() {
+    this.loadMoreOnlineGoodsListData(true)
+  }
+
+  loadMoreOnlineGoodsListData(isRefresh) {
 
   }
 
-  renderSaleoffList() {
+  renderOfflineGoodsList() {
     return(
       <CommonListView
-        dataSource={this.props.saleoffGoodsList}
-        renderRow={(rowData, rowId) => this.renderSaleoffGoodItem(rowData, rowId)}
+        dataSource={this.props.offlineGoodsList}
+        renderRow={(rowData, rowId) => this.renderOfflineGoodItem(rowData, rowId)}
         loadNewData={()=> {
-          this.refreshSaleoffGoodsList()
+          this.refreshOfflineGoodsList()
         }}
         loadMoreData={()=> {
-          this.loadMoreSaleoffGoodsListData()
+          this.loadMoreOfflineGoodsListData()
         }}
-        ref={(listView) => this.saleoffGoodListView = listView}
+        ref={(listView) => this.offlineGoodListView = listView}
       />
     )
   }
 
-  renderSaleoffGoodItem(rowData) {
+  renderOfflineGoodItem(value, key) {
     return(
-      <View>
-
+      <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
+        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}}>
+          <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
+            <CachedImage mutable style={{width: normalizeH(100), height: normalizeH(75)}}
+                         source={require('../../../assets/images/goods_20.png')}>
+            </CachedImage>
+          </View>
+          <View>
+            <Text style={{marginTop: normalizeH(22), fontSize: 17, color: '#5A5A5A'}}>{value.goodsName}</Text>
+            <View style={{flexDirection: 'row', flex: 1, marginTop: normalizeH(13), marginBottom: normalizeH(13), alignItems: 'center'}}>
+              <Text style={{fontSize: 17, color: '#00BE96'}}>¥ {value.price}</Text>
+              <Text style={{fontSize: 10, color: '#AAAAAA', marginLeft: 6}}>原价：{value.originalPrice}</Text>
+            </View>
+            <Text style={{marginBottom: normalizeH(16), fontSize: 12, color: '#D8D8D8'}}>上架时间：{value.updatedAt.slice(0, 10)} </Text>
+          </View>
+        </TouchableOpacity>
+        <View style={{flexDirection: 'row', height: normalizeH(58), justifyContent: 'flex-end', alignItems: 'center'}}>
+          <TouchableOpacity style={styles.button} onPress={() => {this.onSetGoodOnline(value.id)}}>
+            <Text style={{fontSize: 17, color: 'black'}}>上架</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => {this.onReEditorGood(value.id)}}>
+            <Text style={{fontSize: 17, color: 'black'}}>编辑</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, {marginRight: normalizeW(15)}]} onPress={() => {this.onDeleteGood(value.id)}}>
+            <Text style={{fontSize: 17, color: 'black'}}>删除</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
 
-  refreshSaleoffGoodsList() {
-    this.loadMoreSaleoffGoodsListData(true)
+  refreshOfflineGoodsList() {
+    this.loadMoreOfflineGoodsListData(true)
   }
 
-  loadMoreSaleoffGoodsListData(isRefresh) {
+  loadMoreOfflineGoodsListData(isRefresh) {
 
   }
 
@@ -187,7 +265,7 @@ class ShopGoodsManage extends Component {
                   Toast.show('您的店铺商品数已达最大数量')
                   return
                 }
-                Actions.PUBLISH_SHOP_GOOD()
+                Actions.PUBLISH_SHOP_GOOD({shopId: this.props.shopId})
               }}
             >
               <View style={{
@@ -212,17 +290,20 @@ class ShopGoodsManage extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-  const hotGoodsList = []
-  const saleoffGoodsList = []
+  const onlineGoodsList = selectGoodsList(state, ownProps.shopId, 1)  //status: 1--上架 2--下架  3--删除
+  const offlineGoodsList = selectGoodsList(state, ownProps.shopId, 2)
 
   return {
-    hotGoodsList: ds.cloneWithRows(hotGoodsList),
-    saleoffGoodsList: ds.cloneWithRows(saleoffGoodsList)
+    onlineGoodsList: ds.cloneWithRows(onlineGoodsList),
+    offlineGoodsList: ds.cloneWithRows(offlineGoodsList)
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  setShopGoodsOffline,
+  setShopGoodsOnline,
+  setShopGoodsDelete,
+  modifyShopGoods
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodsManage)
@@ -250,5 +331,14 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: THEME.base.mainColor,
     marginLeft: 10,
+  },
+  button: {
+    width: 68,
+    height: 28,
+    borderWidth: 1,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(10)
   }
 })

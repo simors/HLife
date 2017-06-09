@@ -110,6 +110,7 @@ import ShopAlbumView from '../components/Mine/myShop/ShopAlbumView'
 import ShopGoodsManage from '../components/Mine/myShop/ShopGoodsManage'
 import UpdateShopGoodAlbum from '../components/Mine/myShop/UpdateShopGoodAlbum'
 import PublishShopGood from '../components/shop/PublishShopGood'
+import EditShopGood from '../components/Mine/myShop/EditShopGood'
 
 const styles = StyleSheet.create({
   container: {
@@ -227,6 +228,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_GOODS_MANAGE" component={ShopGoodsManage}/>
       <Scene key="PUBLISH_SHOP_GOOD" component={PublishShopGood}/>
       <Scene key="UPDATE_SHOP_GOOD_ALBUM" component={UpdateShopGoodAlbum}/>
+      <Scene key="EDIT_SHOP_GOOD" component={EditShopGood}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
