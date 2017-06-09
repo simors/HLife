@@ -899,14 +899,12 @@ class ShopDetail extends Component {
                 <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
               </View>
             </View>
-            <ShopGoodsList shopGoodsList={this.props.goodList} size={6} showGoodDetail={(value)=> {
-              this.showGoodDetail(value)
-            }}/>
+            <ShopGoodsList shopGoodsList={this.props.goodList} size={6}
+            />
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
                 <TouchableOpacity onPress={()=> {
                   Actions.SHOPGOODSLISTVIEW({
-                    goodList: this.props.goodList,
                     id: this.props.id,
                     size: this.props.goodList.length,
                     showGoodDetail: (value)=>this.showGoodDetail(value)

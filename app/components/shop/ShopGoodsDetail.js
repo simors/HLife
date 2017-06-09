@@ -31,9 +31,21 @@ import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 import * as AVUtils from '../../util/AVUtils'
-
+import {
+  selectUserOwnedShopInfo,
+  selectShopDetail,
+  selectShopList,
+  selectGuessYouLikeShopList,
+  selectLatestShopAnnouncemment,
+  selectUserIsFollowShop,
+  selectShopComments,
+  selectShopCommentsTotalCount,
+  selectUserIsUpedShop,
+  selectGoodsList
+} from '../../selector/shopSelector'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import * as configSelector from '../../selector/configSelector'
 
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
@@ -99,13 +111,7 @@ class ShopGoodsDetail extends Component {
             })
           }}
           title="商品详情"
-          rightComponent={()=> {
-            return (
-              <TouchableOpacity onPress={this.onShare} style={{marginRight: 10}}>
-                <Image source={require('../../assets/images/active_share.png')}/>
-              </TouchableOpacity>
-            )
-          }}
+
         />
       </Animated.View>
     )
@@ -193,7 +199,7 @@ class ShopGoodsDetail extends Component {
         name: this.props.shopDetail.owner.nickname,
         members: [this.props.currentUser, this.props.shopDetail.owner.id],
         conversationType: PERSONAL_CONVERSATION,
-        title: this.props.shopDetail.shopName,
+        title: this.props.value.goodsName,
         customTopView: this.customTopView()
       }
       Actions.CHATROOM(payload)
@@ -295,7 +301,7 @@ class ShopGoodsDetail extends Component {
   customTopView() {
     return (
       <ChatroomShopCustomTopView
-        shopInfo={this.props.shopDetail}
+        shopInfo={{...this.props.shopDetail,shopName:this.props.value.goodsName,coverUrl:this.props.value.coverPhoto}}
       />
     )
   }
@@ -322,7 +328,7 @@ class ShopGoodsDetail extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
           >
-            {this.renderBannerColumn()}
+            {(this.props.imageList&&this.props.imageList.length)?this.renderBannerColumn():null}
             {this.props.value.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)}/> : null}
           </ScrollView>
           {this.renderBottomView()}
@@ -337,6 +343,11 @@ class ShopGoodsDetail extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let shopDetail = selectShopDetail(state, ownProps.value.targetShop)
+  const isUserLogined = authSelector.isUserLogined(state)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  let shareDomain = configSelector.getShareDomain(state)
+
   let imageList = []
   if (ownProps.value.album && ownProps.value.album.length > 0)
     imageList = ownProps.value.album.map((item, key)=> {
@@ -352,7 +363,13 @@ const mapStateToProps = (state, ownProps) => {
     })
 
   return {
-    imageList: imageList
+    imageList: imageList,
+    shopDetail: shopDetail,
+    isUserLogined: isUserLogined,
+    currentUser: authSelector.activeUserId(state),
+    userOwnedShopInfo: userOwnedShopInfo,
+    shareDomain: shareDomain,
+
   }
 }
 

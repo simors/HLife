@@ -24,7 +24,7 @@ import {
 
 } from 'react-native'
 import {CachedImage} from "react-native-img-cache"
-
+import * as Toast from '../common/Toast'
 import Header from '../common/Header'
 import * as AVUtils from '../../util/AVUtils'
 import AV from 'leancloud-storage'
@@ -100,8 +100,8 @@ class ShopGoodsListView extends Component {
   }
 
   showGoodDetail(value) {
-    this.props.showGoodDetail(value)
-    // Actions.SHOP_GOODS_DETAIL({value:value})
+    // this.props.showGoodDetail(value)
+    Actions.SHOP_GOODS_DETAIL({value:value})
   }
 
   handleOnScroll(e) {
@@ -220,35 +220,8 @@ class ShopGoodsListView extends Component {
         if (!this.listView) {
           return
         }
-        // console.log('loadMoreData.isEmpty=====', isEmpty)
         if (isEmpty) {
-          // if(isRefresh && this.state.searchForm.distance) {
-          //   this.setState({
-          //     searchForm: {
-          //       ...this.state.searchForm,
-          //       distance: ''
-          //     }
-          //   }, ()=>{
-          //     this.refreshData()
-          //   })
-          // }
 
-          // if (!this.state.searchForm.loadingOtherCityData) {
-          //   this.setState({
-          //     searchForm: {
-          //       ...this.state.searchForm,
-          //       loadingOtherCityData: true,
-          //       skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
-          //     }
-          //   }, ()=> {
-          //     // console.log('isEmpty===', isEmpty)
-          //     if (isRefresh) {
-          //       this.refreshData({loadingOtherCityData: true})
-          //     } else {
-          //       this.loadMoreData()
-          //     }
-          //   })
-          // }
 
           this.listView.isLoadUp(false)
         } else {
@@ -268,14 +241,9 @@ class ShopGoodsListView extends Component {
 
 
   renderListRow(rowData, rowId) {
-    switch (rowData.type) {
-      case 'SHOP_CATEGORY_COLUMN':
-        return <View />
-      case 'LOCAL_SHOP_LIST_COLUMN':
+
         return <View>{this.renderColumns()}</View>
-      default:
-        return <View />
-    }
+
   }
 
   render() {
@@ -327,7 +295,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   let dataArray = []
 
-  dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
+  // dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
   dataArray.push({type: 'LOCAL_SHOP_LIST_COLUMN'})
   console.log('goodlist',goodList)
   return {

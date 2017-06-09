@@ -39,8 +39,8 @@ export default class ShopGoodsList extends Component {
   }
 
   showGoodDetail(value){
-    this.props.showGoodDetail(value)
-    // Actions.SHOP_GOODS_DETAIL({value:value})
+    // this.props.showGoodDetail(value)
+    Actions.SHOP_GOODS_DETAIL({value:value})
   }
 
   renderColumn(value) {
@@ -52,7 +52,6 @@ export default class ShopGoodsList extends Component {
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
           <Text style={ styles.channelText}>{value.goodsName}</Text>
           <Text style={ styles.channelPrice}>{'¥' + value.price}</Text>
-
         </View>
       </TouchableOpacity>
     )
