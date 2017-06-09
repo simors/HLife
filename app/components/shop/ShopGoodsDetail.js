@@ -27,6 +27,9 @@ import THEME from '../../constants/themes/theme1'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import ViewPager2 from '../common/ViewPager2'
+import ViewPager from '../common/ViewPager'
+import Gallery from 'react-native-gallery'
+
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
@@ -46,7 +49,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as configSelector from '../../selector/configSelector'
-
+import GoodAlbumShow from './GoodAlbumShow'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
@@ -85,8 +88,18 @@ class ShopGoodsDetail extends Component {
       showPayModal: false,
       fade: new Animated.Value(0),
       buyAmount: '1',
-
+      imgModalShow: false,
+      showImg: '',
     }
+    this.images = []
+
+  }
+
+  componentDidMount() {
+    this.props.value.album.map((item) => {
+        this.images.push(item)
+
+    })
   }
 
   renderMainHeader() {
@@ -114,6 +127,112 @@ class ShopGoodsDetail extends Component {
 
         />
       </Animated.View>
+    )
+  }
+
+  bannerClickListener(banner) {
+
+  }
+  toggleModal(isShow, src) {
+    this.setState({
+      ...this.state,
+      imgModalShow: isShow,
+      showImg: src
+    })
+  }
+
+  androidHardwareBackPress() {
+    this.toggleModal(false)
+  }
+
+  renderImageModal() {
+    let index = this.images.findIndex((val) => {
+      return (val == this.state.showImg)
+    })
+    if (index == -1) {
+      index = 0
+    }
+    return (
+      <View>
+        <Modal
+          visible={this.state.imgModalShow}
+          transparent={false}
+          animationType='fade'
+          onRequestClose={()=>{this.androidHardwareBackPress()}}
+        >
+          <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
+            <Gallery
+              style={{flex: 1, backgroundColor: 'black'}}
+              images={this.images}
+              initialPage={index}
+              onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}
+            />
+          </View>
+        </Modal>
+      </View>
+    )
+  }
+
+  renderBannerColumn() {
+     // console.log('this.props.value.album====', this.props.value.album)
+
+    if ( this.props.value.album && this.props.value.album.length>1) {
+      let pages =  this.props.value.album.map((item, index) => {
+        let image = item
+        return (
+          // <TouchableOpacity
+          //   style={{flex: 1}}
+          //   key={'b_image_' + index}
+          //   onPress={() => this.bannerClickListener(item)}
+          // >
+          //   <CachedImage
+          //     mutable
+          //     style={[{width: PAGE_WIDTH, height: normalizeH(223)}]}
+          //     resizeMode="stretch"
+          //     source={typeof(image) == 'string' ? {uri: image} : image}
+          //   />
+          // </TouchableOpacity>
+          <GoodAlbumShow image={image} onPress={() => this.toggleModal(!this.state.imgModalShow, item)}/>
+        )
+      })
+
+      let dataSource = new ViewPager.DataSource({
+        pageHasChanged: (p1, p2) => p1 !== p2,
+      })
+      // console.log('dataSource',pages)
+      return (
+        <View style={styles.advertisementModule}>
+          <ViewPager
+            style={{flex: 1}}
+            dataSource={dataSource.cloneWithPages(pages)}
+            renderPage={this._renderPage}
+            isLoop={true}
+            autoPlay={true}
+          />
+        </View>
+      )
+    }else if(this.props.value.album && this.props.value.album.length==1){
+      return(
+        <TouchableOpacity
+          style={{flex: 1}}
+          onPress={() => this.toggleModal(!this.state.imgModalShow, this.props.value.album[0])}
+        >
+          <CachedImage
+            mutable
+            style={[{width: PAGE_WIDTH, height: normalizeH(223)}]}
+            resizeMode="stretch"
+            source={typeof(this.props.value.album[0]) == 'string' ? {uri: this.props.value.album[0]} : this.props.value.album[0]}
+          />
+        </TouchableOpacity>
+      )
+    }
+  }
+  _renderPage(data: Object, pageID) {
+    // console.log('_renderPage.data====', data)
+    return (
+      <View style={{flex:1}}>
+        {data}
+      </View>
     )
   }
 
@@ -147,8 +266,6 @@ class ShopGoodsDetail extends Component {
   }
 
   renderBottomView() {
-
-
     return (
       <View style={styles.footerWrap}>
         <View style={styles.priceBox}>
@@ -169,8 +286,6 @@ class ShopGoodsDetail extends Component {
         </TouchableOpacity>
       </View>
     )
-
-
   }
 
   onShare = () => {
@@ -306,16 +421,16 @@ class ShopGoodsDetail extends Component {
     )
   }
 
-  renderBannerColumn() {
-
-    if (this.props.imageList && this.props.imageList.length) {
-      return (
-        <View style={styles.advertisementModule}>
-          <ViewPager2 dataSource={this.props.imageList}/>
-        </View>
-      )
-    }
-  }
+  // renderBannerColumn() {
+  //
+  //   if (this.props.imageList && this.props.imageList.length) {
+  //     return (
+  //       <View style={styles.advertisementModule}>
+  //         <ViewPager2 dataSource={this.props.imageList}/>
+  //       </View>
+  //     )
+  //   }
+  // }
 
   render() {
     // console.log('value',this.props.value)
@@ -328,12 +443,14 @@ class ShopGoodsDetail extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
           >
-            {(this.props.imageList&&this.props.imageList.length)?this.renderBannerColumn():null}
+            {/*{(this.props.imageList&&this.props.imageList.length)?this.renderBannerColumn():null}*/}
+            {this.renderBannerColumn()}
             {this.props.value.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)}/> : null}
           </ScrollView>
           {this.renderBottomView()}
         </View>
         {this.renderPaymentModal()}
+        {this.renderImageModal()}
 
       </View>
 
@@ -357,7 +474,8 @@ const mapStateToProps = (state, ownProps) => {
         actionType: "action",
         image: item,
         title: ownProps.value.title,
-        type: 0
+        type: 0,
+        key:key
       }
       )
     })
@@ -564,4 +682,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
   },
+
 })

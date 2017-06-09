@@ -205,11 +205,10 @@ class ShopGoodsListView extends Component {
     }
     this.isQuering = true
 
-    let limit = 6
+    let limit = this.props.limit?this.props.limit:6
     let payload = {
       shopId: this.props.id,
       status: 1,
-      limit: 6,
       lastUpdateTime: this.props.goodList[this.props.goodList.length-1].updatedAt,
       more:true,
       isRefresh: !!isRefresh,
@@ -251,12 +250,7 @@ class ShopGoodsListView extends Component {
     return (
       <View style={styles.body}>
         {this.renderMainHeader()}
-        {/*<ScrollView  contentContainerStyle={[styles.contentContainerStyle]}*/}
-        {/*onScroll={e => this.handleOnScroll(e)}*/}
-        {/*scrollEventThrottle={80}*/}
-        {/*>*/}
-        {/*{this.renderColumns()}*/}
-        {/*</ScrollView>*/}
+
         <View style={styles.contentContainerStyle}>
           <CommonListView
             contentContainerStyle={{backgroundColor: '#fff'}}
