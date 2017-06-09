@@ -35,7 +35,7 @@ import {
   getAreaMonthsPerformance,
 } from '../../../action/promoterAction'
 import Chart from 'react-native-chart'
-import ViewPager from '../../common/ViewPager2'
+import ViewPager from '../../common/ViewPager'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
