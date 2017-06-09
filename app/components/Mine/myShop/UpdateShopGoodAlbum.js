@@ -64,7 +64,7 @@ class UpdateShopGoodAlbum extends Component {
           <View style={{marginTop: normalizeH(15)}}>
             <ImageGroupInput
               {...shopGoodAlbumInput}
-              number={9}
+              number={5}
               imageLineCnt={3}
               initValue={this.props.albums}
               getImageList={(localAlbums) => {this.albums = localAlbums}}

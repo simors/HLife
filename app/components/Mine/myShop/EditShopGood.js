@@ -77,10 +77,19 @@ class EditShopGood extends Component {
     super(props)
     this.localRichTextImagesUrls = []
     this.isPublishing = false
-
     this.state = {
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
+    }
+  }
+
+  componentDidMount() {
+    this.albums = this.props.goodInfo.album
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.albums) {
+      this.albums = nextProps.albums
     }
   }
 
@@ -132,6 +141,7 @@ class EditShopGood extends Component {
       goodsId: this.props.goodsId,
       formKey: shopGoodEditForm,
       localRichTextImagesUrls: this.localRichTextImagesUrls,
+      albums: this.albums,
       success: ()=>{
         this.isPublishing = false
         Loading.hide(this.loading)
@@ -155,6 +165,32 @@ class EditShopGood extends Component {
 
     this.submitForm()
   }
+  renderAlbum() {
+    if(this.albums && this.albums.length > 0) {
+      return(
+        <TouchableOpacity onPress={()=>{Actions.UPDATE_SHOP_GOOD_ALBUM({albums: this.albums})}}>
+          <Image style={{width:PAGE_WIDTH,height: normalizeH(264)}} source={{uri: this.albums[0]}}/>
+        </TouchableOpacity>
+      )
+    } else {
+      return(
+        <View>
+          <Image style={{width:PAGE_WIDTH,height: normalizeH(264)}} source={require('../../../assets/images/background_good.png')}/>
+          <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(90,90,90,0.5)'}}>
+            <TouchableOpacity style={{flex:1}} onPress={()=>{Actions.UPDATE_SHOP_GOOD_ALBUM({albums: this.albums})}}>
+              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <Image style={{width:44,height:44}} source={require("../../../assets/images/edite_pic_44_white.png")}/>
+                <Text style={{marginTop:15,fontSize:15,color:'#fff'}}>上传商品相册</Text>
+              </View>
+            </TouchableOpacity>
+
+          </View>
+
+        </View>
+      )
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -170,20 +206,7 @@ class EditShopGood extends Component {
         <View style={styles.body}>
           <View style={{height: this.state.headerHeight, overflow:'hidden'}}
                 onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
-            <View>
-              <Image style={{width:PAGE_WIDTH,height: normalizeH(264)}} source={require('../../../assets/images/background_good.png')}/>
-              <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'rgba(90,90,90,0.5)'}}>
-                <TouchableOpacity style={{flex:1}} onPress={()=>{Actions.UPDATE_SHOP_GOOD_ALBUM({formKey: shopGoodEditForm})}}>
-                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                    <Image style={{width:44,height:44}} source={require("../../../assets/images/edite_pic_44_white.png")}/>
-                    <Text style={{marginTop:15,fontSize:15,color:'#fff'}}>上传商品相册</Text>
-                  </View>
-                </TouchableOpacity>
-
-              </View>
-
-            </View>
-
+            {this.renderAlbum()}
             <View style={styles.introWrap}>
               <View style={styles.coverBox}>
                 <ImageInput
