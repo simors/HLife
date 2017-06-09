@@ -27,10 +27,8 @@ import CommonListView from '../../common/CommonListView'
 import ScrollableTabView, {ScrollableTabBar} from '../../common/ScrollableTableView'
 import {selectGoodsList} from '../../../selector/shopSelector'
 import {CachedImage} from "react-native-img-cache"
-import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods} from '../../../action/shopAction'
-
-
-
+import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList} from '../../../action/shopAction'
+import * as Toast from '../../common/Toast'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -87,7 +85,7 @@ class ShopGoodsManage extends Component {
           this.refreshOnlineGoodsList()
         }}
         loadMoreData={()=> {
-          this.loadMoreOnlineGoodsListData()
+          this.loadMoreGoodsListData(false, 1)
         }}
         ref={(listView) => this.onlineGoodListView = listView}
       />
@@ -99,8 +97,8 @@ class ShopGoodsManage extends Component {
       <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
         <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}}>
           <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
-            <CachedImage mutable style={{width: normalizeH(100), height: normalizeH(75)}}
-                         source={require('../../../assets/images/goods_20.png')}>
+            <CachedImage mutable style={{width: normalizeH(75), height: normalizeH(75)}}
+                         source={value.coverPhoto? {uri: value.coverPhoto} : require('../../../assets/images/default_goods_cover.png')}>
             </CachedImage>
           </View>
           <View>
@@ -153,11 +151,62 @@ class ShopGoodsManage extends Component {
   }
 
   refreshOnlineGoodsList() {
-    this.loadMoreOnlineGoodsListData(true)
+    this.loadMoreGoodsListData(true, 1)
   }
 
-  loadMoreOnlineGoodsListData(isRefresh) {
+  loadMoreGoodsListData(isRefresh, status) {
+    if(this.isQuering) {
+      return
+    }
+    this.isQuering = true
 
+    let lastUpdateTime = undefined
+    if (isRefresh) {
+      lastUpdateTime = undefined
+    } else {
+      if(status === 1 && this.props.lastOnlineGood) {
+        lastUpdateTime = this.props.lastOnlineGood.updatedAt
+      } else if(status === 2 && this.props.lastOfflineGood) {
+        lastUpdateTime = this.props.lastOfflineGood.updatedAt
+      }
+    }
+
+    let payload = {
+      more: !isRefresh,
+      shopId: this.props.shopId,
+      status: status,
+      limit: 6,
+      lastUpdateTime: lastUpdateTime,
+      success: (isEmpty) => {
+        this.isQuering = false
+
+        if(status === 1 ) {
+          if(!this.onlineGoodListView) {
+            return
+          }
+          if(isEmpty) {
+            this.onlineGoodListView.isLoadUp(false)
+          } else {
+            this.onlineGoodListView.isLoadUp(true)
+          }
+        } else if (status === 2) {
+          if(!this.offlineGoodListView) {
+            return
+          }
+          if(isEmpty) {
+            this.offlineGoodListView.isLoadUp(false)
+          } else {
+            this.offlineGoodListView.isLoadUp(true)
+          }
+        }
+      },
+      error: (err) => {
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+
+    this.props.getShopGoodsList(payload)
   }
 
   renderOfflineGoodsList() {
@@ -169,7 +218,7 @@ class ShopGoodsManage extends Component {
           this.refreshOfflineGoodsList()
         }}
         loadMoreData={()=> {
-          this.loadMoreOfflineGoodsListData()
+          this.loadMoreGoodsListData(false, 2)
         }}
         ref={(listView) => this.offlineGoodListView = listView}
       />
@@ -181,8 +230,8 @@ class ShopGoodsManage extends Component {
       <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
         <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}}>
           <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
-            <CachedImage mutable style={{width: normalizeH(100), height: normalizeH(75)}}
-                         source={require('../../../assets/images/goods_20.png')}>
+            <CachedImage mutable style={{width: normalizeH(75), height: normalizeH(75)}}
+                         source={value.coverPhoto? {uri: value.coverPhoto} : require('../../../assets/images/default_goods_cover.png')}>
             </CachedImage>
           </View>
           <View>
@@ -210,11 +259,7 @@ class ShopGoodsManage extends Component {
   }
 
   refreshOfflineGoodsList() {
-    this.loadMoreOfflineGoodsListData(true)
-  }
-
-  loadMoreOfflineGoodsListData(isRefresh) {
-
+    this.loadMoreGoodsListData(true, 2)
   }
 
   renderTabBar() {
@@ -292,10 +337,14 @@ const mapStateToProps = (state, ownProps) => {
 
   const onlineGoodsList = selectGoodsList(state, ownProps.shopId, 1)  //status: 1--上架 2--下架  3--删除
   const offlineGoodsList = selectGoodsList(state, ownProps.shopId, 2)
+  let lastOnlineGood = onlineGoodsList[onlineGoodsList.length - 1]
+  let lastOfflineGood = offlineGoodsList[offlineGoodsList.length - 1]
 
   return {
     onlineGoodsList: ds.cloneWithRows(onlineGoodsList),
-    offlineGoodsList: ds.cloneWithRows(offlineGoodsList)
+    offlineGoodsList: ds.cloneWithRows(offlineGoodsList),
+    lastOnlineGood: lastOnlineGood,
+    lastOfflineGood: lastOfflineGood,
   }
 }
 
@@ -303,7 +352,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   setShopGoodsOffline,
   setShopGoodsOnline,
   setShopGoodsDelete,
-  modifyShopGoods
+  modifyShopGoods,
+  getShopGoodsList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodsManage)

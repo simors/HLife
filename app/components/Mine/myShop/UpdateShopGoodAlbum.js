@@ -27,17 +27,28 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 
+let shopGoodAlbumForm = Symbol('shopGoodAlbumForm')
+
+const shopGoodAlbumInput = {
+  formKey: shopGoodAlbumForm,
+  stateKey: Symbol('shopGoodAlbumInput'),
+  type: 'shopGoodAlbumInput'
+}
+
 class UpdateShopGoodAlbum extends Component {
   constructor(props) {
     super(props)
   }
 
+  updateAlbum() {
+    Actions.pop({
+      refresh: {
+        albums: this.albums,
+      }
+    })
+  }
+
   render() {
-    const shopGoodAlbumInput = {
-      formKey: this.props.formKey,
-      stateKey: Symbol('shopGoodAlbumInput'),
-      type: 'shopGoodAlbumInput'
-    }
     return (
       <View style={styles.container}>
         <Header
@@ -45,6 +56,9 @@ class UpdateShopGoodAlbum extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="选取商品相册"
+          rightType="text"
+          rightText="完成"
+          rightPress={()=>{this.updateAlbum()}}
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(15)}}>
@@ -52,8 +66,8 @@ class UpdateShopGoodAlbum extends Component {
               {...shopGoodAlbumInput}
               number={9}
               imageLineCnt={3}
-              getImageList={()=>{}}
-              uploadImagesCallback={()=>{}}
+              initValue={this.props.albums}
+              getImageList={(localAlbums) => {this.albums = localAlbums}}
             />
           </View>
         </View>
