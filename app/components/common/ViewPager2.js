@@ -16,10 +16,14 @@ import {
   TouchableWithoutFeedback,
   ToastAndroid,
 } from 'react-native'
+import {CachedImage} from "react-native-img-cache"
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import shallowequal from 'shallowequal'
 
 import {Actions} from 'react-native-router-flux'
 
 const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class ViewPager extends Component {
 
@@ -41,6 +45,16 @@ export default class ViewPager extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.timer)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props.dataSource, nextProps.dataSource)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
   handleScroll = (event) => {
@@ -96,14 +110,36 @@ export default class ViewPager extends Component {
   }
 
   renderPage = (data, key) => {
+    let actionType = data.actionType
+    let action = data.action
+    let title = data.title
+     // console.log('action==========>',action)
+    let payload = {
+      url: action,
+      showHeader: !!title,
+      headerTitle: title,
+      headerRightType: 'image',
+      headerRightImageSource: require('../../assets/images/active_share.png'),
+      headerRightPress: () => {Actions.SHARE({
+        title: "汇邻优店",
+        url: action,
+        author: '邻家小二',
+        abstract: "邻里互动，同城交易",
+        cover: "https://simors.github.io/ljyd_blog/ic_launcher.png",
+      })},
+    }
+    // console.log('payload==========>',payload)
+
     return (
       <TouchableWithoutFeedback
         key={key}
         onPress={()=> {
-          console.log('data is ',data)
-          if(data.type == 'link'){
-            Actions.BANNER({...data.content})
-          }else if(data.type == 'feed'){
+        //  console.log('data is ',data)
+          if(actionType == 'link'){
+            //console.log('here is touch',{payload})
+            Actions.COMMON_WEB_VIEW({...payload})
+          }
+          else if(data.type == 'feed'){
             Actions.FEED_DETAIL({feedId: data.content.feedId, isOneWord: false})
           }else if (data.type == 'group'){
             Actions.GROUP_CONTENT({
@@ -112,10 +148,12 @@ export default class ViewPager extends Component {
               abstUser: data.content.abstUser
             })
           }
-
         }}>
-        <Image style={[styles.page, this.props.pageStyle]}
-               source={data.cover }
+        <CachedImage
+          mutable
+          style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
+          resizeMode="stretch"
+          source={typeof(data.image) == 'string' ? {uri: data.image} : data.image}
         />
       </TouchableWithoutFeedback>
     )

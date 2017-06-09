@@ -44,7 +44,9 @@ class UpdateShopAlbum4EditShop extends Component {
     super(props)
 
     this.state = {
-      shouldUploadImages: false
+      shouldUploadImages: false,
+      cancelState:false
+
     }
 
   }
@@ -73,6 +75,12 @@ class UpdateShopAlbum4EditShop extends Component {
     })
   }
 
+  updateCancelState(){
+  this.setState({
+    cancelState:!this.state.cancelState
+  })
+}
+
   render() {
     return (
       <View style={styles.container}>
@@ -90,6 +98,9 @@ class UpdateShopAlbum4EditShop extends Component {
             <ScrollView automaticallyAdjustContentInsets={false}>
               <ImageGroupInput
                 {...shopAlbumInput}
+                updateCancelState={()=>{this.updateCancelState()}}
+                cancelState ={this.state.cancelState}
+
                 number={20}
                 imageLineCnt={3}
                 initValue={

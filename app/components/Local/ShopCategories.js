@@ -38,6 +38,7 @@ export default class ShopCategories extends Component {
     // console.log('here is false')
     return false
   }
+
   _initState(props) {
     let initState = {
       width: PAGE_WIDTH,

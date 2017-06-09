@@ -17,6 +17,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
+import shallowequal from 'shallowequal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -24,6 +25,16 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class NearbySalesView extends Component {
   constructor(props) {
     super(props)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props.shopPromotionList, nextProps.shopPromotionList)) {
+      return true
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true
+    }
+    return false
   }
 
   renderSaleItems() {

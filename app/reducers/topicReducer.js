@@ -369,6 +369,11 @@ function onRehydrate(state, action) {
     state = state.set('localTopics', List(incoming.localTopics))
     state = state.set('TopicLikesNum', Map(incoming.TopicLikesNum))
     state = state.set('IsLikedByCurrentUser', Map(incoming.IsLikedByCurrentUser))
+
+    let mainPageTopics = incoming.mainPageTopics
+    if (mainPageTopics) {
+      state = state.set('mainPageTopics', List(mainPageTopics))
+    }
   }
   return state
 }

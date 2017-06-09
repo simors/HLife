@@ -50,8 +50,9 @@ import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-nativ
 import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
 import ViewPager from '../common/ViewPager'
-// import ViewPager from '../common/ViewPager2'
+import ViewPager2 from '../common/ViewPager2'
 // import ViewPager from 'react-native-viewpager'
+import shallowequal from 'shallowequal'
 
 import SearchBar from '../common/SearchBar'
 import {CachedImage} from "react-native-img-cache"
@@ -74,6 +75,17 @@ class Home extends Component {
       fade: new Animated.Value(0),
     }
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
+  }
+
 
   checkIosUpdate(){
     // console.log('jhahahah',CommonNative)
@@ -254,40 +266,41 @@ class Home extends Component {
   }
 
   renderBannerColumn() {
-    // console.log('this.props.banner====', this.props.banner)
+     console.log('this.props.banner====', this.props.banner)
 
     if (this.props.banner && this.props.banner.length) {
-      let pages = this.props.banner.map((item, index) => {
-        let image = item.image
-        return (
-          <TouchableOpacity
-            style={{flex:1}}
-            key={'b_image_' + index}
-            onPress={() => this.bannerClickListener(item)}
-          >
-            <CachedImage
-              mutable
-              style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
-              resizeMode="stretch"
-              source={typeof(image) == 'string' ? {uri: image} : image}
-            />
-          </TouchableOpacity>
-        )
-      })
-
-      let dataSource = new ViewPager.DataSource({
-        pageHasChanged: (p1, p2) => p1 !== p2,
-      })
+      // let pages = this.props.banner.map((item, index) => {
+      //   let image = item.image
+      //   return (
+      //     <TouchableOpacity
+      //       style={{flex:1}}
+      //       key={'b_image_' + index}
+      //       onPress={() => this.bannerClickListener(item)}
+      //     >
+      //       <CachedImage
+      //         mutable
+      //         style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
+      //         resizeMode="stretch"
+      //         source={typeof(image) == 'string' ? {uri: image} : image}
+      //       />
+      //     </TouchableOpacity>
+      //   )
+      // })
+      //
+      // let dataSource = new ViewPager.DataSource({
+      //   pageHasChanged: (p1, p2) => p1 !== p2,
+      // })
       // console.log('dataSource',pages)
       return (
         <View style={styles.advertisementModule}>
-          <ViewPager
-            style={{flex:1}}
-            dataSource={dataSource.cloneWithPages(pages)}
-            renderPage={this._renderPage}
-            isLoop={true}
-            autoPlay={true}
-          />
+          {/*<ViewPager*/}
+            {/*style={{flex:1}}*/}
+            {/*dataSource={dataSource.cloneWithPages(pages)}*/}
+            {/*renderPage={this._renderPage}*/}
+            {/*isLoop={true}*/}
+            {/*autoPlay={true}*/}
+          {/*/>*/}
+          <ViewPager2 dataSource={this.props.banner} />
         </View>
       )
     }
@@ -298,7 +311,7 @@ class Home extends Component {
   }
 
   _renderPage(data: Object, pageID) {
-    // console.log('_renderPage.data====', data)
+     // console.log('_renderPage.data====', data)
     return (
       <View style={{flex:1}}>
         {data}
@@ -352,8 +365,12 @@ class Home extends Component {
     this.isQuering = true
 
     let lastDistance = undefined
-    if (this.props.geoPoint && this.props.lastShopGeo) {
-      lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+    if (isRefresh) {
+      lastDistance = undefined
+    } else {
+      if (this.props.geoPoint && this.props.lastShopGeo) {
+        lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+      }
     }
 
     let payload = {
@@ -376,7 +393,6 @@ class Home extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    // this.props.fetchShopPromotionList(payload)
     this.props.getShopPromotion(payload)
   }
 

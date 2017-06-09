@@ -45,7 +45,8 @@ class UpdateShopAlbum extends Component {
     super(props)
 
     this.state = {
-      shouldUploadImages: false
+      shouldUploadImages: false,
+      cancelState:false
     }
 
     this.isPublishing = false
@@ -81,6 +82,11 @@ class UpdateShopAlbum extends Component {
     this.updateShopAlbum()
   }
 
+  updateCancelState(){
+    this.setState({
+      cancelState:!this.state.cancelState
+    })
+  }
   deleteImage(src){
 
   }
@@ -130,6 +136,8 @@ class UpdateShopAlbum extends Component {
           <View style={{marginTop: normalizeH(15)}}>
             <ImageGroupInput
               deleteImage={(src)=>{this.deleteImage(src)}}
+              cancelState ={this.state.cancelState}
+              updateCancelState={()=>{this.updateCancelState()}}
               {...shopAlbumInput}
               number={9}
               imageLineCnt={3}

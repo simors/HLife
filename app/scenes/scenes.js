@@ -111,6 +111,8 @@ import ShopGoodsManage from '../components/Mine/myShop/ShopGoodsManage'
 import UpdateShopGoodAlbum from '../components/Mine/myShop/UpdateShopGoodAlbum'
 import PublishShopGood from '../components/shop/PublishShopGood'
 import EditShopGood from '../components/Mine/myShop/EditShopGood'
+import ShopGoodsListView from '../components/shop/ShopGoodsListView'
+import ShopGoodsDetail from '../components/shop/ShopGoodsDetail'
 
 const styles = StyleSheet.create({
   container: {
@@ -178,6 +180,7 @@ export const scenes = Actions.create(
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
       <Scene key="MYTOPIC" component={MyTopic}/>
+      <Scene key="SHOPGOODSLISTVIEW"component={ShopGoodsListView}/>
       <Scene key="MYATTENTION" component={MyAttention}/>
       <Scene key="MYFANS" component={MyFans} />
       <Scene key="SHOP_NOTIFY" component={ShopNotifyView} />
@@ -229,7 +232,7 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_SHOP_GOOD" component={PublishShopGood}/>
       <Scene key="UPDATE_SHOP_GOOD_ALBUM" component={UpdateShopGoodAlbum}/>
       <Scene key="EDIT_SHOP_GOOD" component={EditShopGood}/>
-
+      <Scene key="SHOP_GOODS_DETAIL" component={ShopGoodsDetail}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

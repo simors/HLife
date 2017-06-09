@@ -39,6 +39,7 @@ export default class CommonWebView extends Component {
   }
 
   render() {
+    console.log('this.props.url',this.props.url)
     return(
       <View style={styles.container}>
         {this.renderHeader()}
