@@ -107,8 +107,13 @@ import DealRecords from '../components/Payment/DealRecords'
 import BuyGoodsPaySuccess from '../components/Payment/BuyGoodsPaySuccess'
 import RewardSuccess from '../components/Payment/RewardSuccess'
 import ShopAlbumView from '../components/Mine/myShop/ShopAlbumView'
+import ShopGoodsManage from '../components/Mine/myShop/ShopGoodsManage'
+import UpdateShopGoodAlbum from '../components/Mine/myShop/UpdateShopGoodAlbum'
+import PublishShopGood from '../components/shop/PublishShopGood'
+import EditShopGood from '../components/Mine/myShop/EditShopGood'
 import ShopGoodsListView from '../components/shop/ShopGoodsListView'
 import ShopGoodsDetail from '../components/shop/ShopGoodsDetail'
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -223,6 +228,10 @@ export const scenes = Actions.create(
       <Scene key="BUY_GOODS_OK" component={BuyGoodsPaySuccess}/>
       <Scene key="REWARD_OK" component={RewardSuccess}/>
       <Scene key="SHOP_ALBUM_VIEW" component={ShopAlbumView}/>
+      <Scene key="SHOP_GOODS_MANAGE" component={ShopGoodsManage}/>
+      <Scene key="PUBLISH_SHOP_GOOD" component={PublishShopGood}/>
+      <Scene key="UPDATE_SHOP_GOOD_ALBUM" component={UpdateShopGoodAlbum}/>
+      <Scene key="EDIT_SHOP_GOOD" component={EditShopGood}/>
       <Scene key="SHOP_GOODS_DETAIL" component={ShopGoodsDetail}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
