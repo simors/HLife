@@ -906,7 +906,6 @@ class ShopDetail extends Component {
               <View style={styles.commentFoot}>
                 <TouchableOpacity onPress={()=> {
                   Actions.SHOPGOODSLISTVIEW({
-                    goodList: this.props.goodList,
                     id: this.props.id,
                     size: this.props.goodList.length,
                     showGoodDetail: (value)=>this.showGoodDetail(value)

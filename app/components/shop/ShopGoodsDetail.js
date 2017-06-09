@@ -193,7 +193,7 @@ class ShopGoodsDetail extends Component {
         name: this.props.shopDetail.owner.nickname,
         members: [this.props.currentUser, this.props.shopDetail.owner.id],
         conversationType: PERSONAL_CONVERSATION,
-        title: this.props.shopDetail.shopName,
+        title: this.props.value.goodsName,
         customTopView: this.customTopView()
       }
       Actions.CHATROOM(payload)
@@ -295,7 +295,7 @@ class ShopGoodsDetail extends Component {
   customTopView() {
     return (
       <ChatroomShopCustomTopView
-        shopInfo={this.props.shopDetail}
+        shopInfo={{...this.props.shopDetail,shopName:this.props.value.goodsName,coverUrl:this.props.value.coverPhoto}}
       />
     )
   }
@@ -322,7 +322,7 @@ class ShopGoodsDetail extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
           >
-            {this.renderBannerColumn()}
+            {(this.props.imageList&&this.props.imageList.length)?this.renderBannerColumn():null}
             {this.props.value.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)}/> : null}
           </ScrollView>
           {this.renderBottomView()}
