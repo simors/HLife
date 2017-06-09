@@ -15,6 +15,7 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   Platform
 } from 'react-native'
@@ -51,7 +52,7 @@ export default class GoodAlbumShow extends Component {
 
   render() {
     return (
-      <TouchableOpacity
+      <TouchableWithoutFeedback
         style={[styles.shopCategory, this.props.containerStyle]}
         onPress={this.props.onPress}
       >
@@ -64,7 +65,7 @@ export default class GoodAlbumShow extends Component {
         {/*{this.renderImageModal()}*/}
 
         {/*<Text style={[styles.text, this.props.textStyle]}>{this.props.text}</Text>*/}
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
 
     )
   }

@@ -11,6 +11,7 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   InteractionManager,
   ScrollView,
   StatusBar,
@@ -213,7 +214,7 @@ class ShopGoodsDetail extends Component {
       )
     }else if(this.props.value.album && this.props.value.album.length==1){
       return(
-        <TouchableOpacity
+        <TouchableWithoutFeedback
           style={{flex: 1}}
           onPress={() => this.toggleModal(!this.state.imgModalShow, this.props.value.album[0])}
         >
@@ -223,7 +224,7 @@ class ShopGoodsDetail extends Component {
             resizeMode="stretch"
             source={typeof(this.props.value.album[0]) == 'string' ? {uri: this.props.value.album[0]} : this.props.value.album[0]}
           />
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
       )
     }
   }
@@ -444,7 +445,7 @@ class ShopGoodsDetail extends Component {
             scrollEventThrottle={80}
           >
             {/*{(this.props.imageList&&this.props.imageList.length)?this.renderBannerColumn():null}*/}
-            {this.renderBannerColumn()}
+            {this.props.value.album&&this.props.value.album.length?this.renderBannerColumn():null}
             {this.props.value.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)}/> : null}
           </ScrollView>
           {this.renderBottomView()}
