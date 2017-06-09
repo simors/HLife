@@ -61,6 +61,12 @@ class MyShopIndex extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
+      this.props.getShopGoodsList({
+        shopId: this.props.userOwnedShopInfo.id,
+        status: 1,
+        limit: 6,
+        // lastUpdateTime: payload.lastUpdateTime,
+      })
       // this.props.fetchUserOwnedShopInfo()   // 已在组件外获取了店铺信息，不需要重新获取
       if(this.props.userOwnedShopInfo.id) {
         this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
@@ -455,7 +461,7 @@ class MyShopIndex extends Component {
                   <TouchableOpacity onPress={()=> {
                     Actions.SHOPGOODSLISTVIEW({
                       goodList: this.props.goodList,
-                      id: this.props.id,
+                      id: this.props.userOwnedShopInfo.id,
                       size: this.props.goodList.length,
                       showGoodDetail: (value)=>this.showGoodDetail(value)
                     })
@@ -641,8 +647,8 @@ const mapStateToProps = (state, ownProps) => {
     goodList = selectGoodsList(state, userOwnedShopInfo.id, 1)
 
   }
-  // console.log('userOwnedShopInfo===', userOwnedShopInfo)
-  // console.log('shopFollowers===', shopFollowers)
+  console.log('userOwnedShopInfo===', userOwnedShopInfo)
+   console.log('goodList===', goodList)
   // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
   let shareDomain = getShareDomain(state)
 

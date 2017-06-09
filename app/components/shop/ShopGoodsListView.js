@@ -46,7 +46,7 @@ import {
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
- class ShopGoodsListView extends Component {
+class ShopGoodsListView extends Component {
   constructor(props) {
     super(props)
 
@@ -54,7 +54,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
       imgSize: normalizeW(45),
       columnCnt: this.props.size,
       fade: new Animated.Value(0),
-      loadGoods:false,
+      loadGoods: false,
       // ds: ds.cloneWithRows(this.props.shopGoodsList),
     }
 
@@ -67,23 +67,24 @@ const PAGE_HEIGHT = Dimensions.get('window').height
       this.props.getShopGoodsList({
         shopId: this.props.id,
         status: 1,
-        // limit: 6,
+        limit: 6,
+        more:false
         // lastUpdateTime: payload.lastUpdateTime,
       })
     })
   }
 
-   shouldComponentUpdate(nextProps, nextState) {
-     if (!shallowequal(this.props, nextProps)) {
-       return true;
-     }
-     if (!shallowequal(this.state, nextState)) {
-       return true;
-     }
-     return false;
-   }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props, nextProps)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
+  }
 
-  renderColumn(value,key) {
+  renderColumn(value, key) {
     //console.log('value====>',value)
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
@@ -98,10 +99,11 @@ const PAGE_HEIGHT = Dimensions.get('window').height
     )
   }
 
-   showGoodDetail(value){
-     this.props.showGoodDetail(value)
-     // Actions.SHOP_GOODS_DETAIL({value:value})
-   }
+  showGoodDetail(value) {
+    this.props.showGoodDetail(value)
+    // Actions.SHOP_GOODS_DETAIL({value:value})
+  }
+
   handleOnScroll(e) {
     let offset = e.nativeEvent.contentOffset.y
     let comHeight = normalizeH(300)
@@ -126,18 +128,18 @@ const PAGE_HEIGHT = Dimensions.get('window').height
   renderMainHeader() {
     return (
 
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => {
-            AVUtils.pop({
-              backSceneName: this.props.backSceneName,
-              backSceneParams: this.props.backSceneParams
-            })
-          }}
-          title="全部商品"
+      <Header
+        leftType="icon"
+        leftIconName="ios-arrow-back"
+        leftPress={() => {
+          AVUtils.pop({
+            backSceneName: this.props.backSceneName,
+            backSceneParams: this.props.backSceneParams
+          })
+        }}
+        title="全部商品"
 
-        />
+      />
     )
   }
 
@@ -145,7 +147,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
     const imageStyle = {
       flex: 1,
     }
-    if(this.props.goodList&&this.props.goodList.length){
+    if (this.props.goodList && this.props.goodList.length) {
       let shopGoodsList = this.props.goodList.map((item, key) => {
         return (
           <View key={key} style={imageStyle}>
@@ -154,13 +156,13 @@ const PAGE_HEIGHT = Dimensions.get('window').height
         )
       })
       return shopGoodsList
-    }else{
+    } else {
       return <View/>
     }
 
   }
 
-  renderCutColumn(rowData,rowId) {
+  renderCutColumn(rowData, rowId) {
     let imgComp = this.renderRows()
     let compList = []
     let comp = []
@@ -188,53 +190,84 @@ const PAGE_HEIGHT = Dimensions.get('window').height
     )
   }
 
-  refreshData() {
-    // this.loadMoreData(true)
-    this.setState({loadGoods: false})
+  refreshData(payload) {
+
+
+        this.loadMoreData(true)
+
+
   }
 
-  loadMoreData(isRefresh) {
-    {/*if (!this.state.loadComment) {*/}
-      {/*this.setState({loadComment: true}, () => this.loadMoreData(true))*/}
-      {/*return*/}
-    {/*}*/}
+  loadMoreData(isRefresh, isEndReached) {
+    // console.log('this.state===', this.state)
+    if (this.isQuering) {
+      return
+    }
+    this.isQuering = true
 
-    {/*if(this.isQuering) {*/}
-      {/*return*/}
-    {/*}*/}
-    // this.isQuering = true
-    //
-    // let topic = this.props.topic
-    // let lastTopicCommentsCreatedAt = this.props.lastTopicCommentsCreatedAt
-    // // console.log('lastTopicCommentsCreatedAt------>', lastTopicCommentsCreatedAt)
-    //
-    // let payload = {
-    //   topicId: topic.objectId,
-    //   isRefresh: !!isRefresh,
-    //   lastCreatedAt: lastTopicCommentsCreatedAt,
-    //   upType: 'topic',
-    //   success: (isEmpty) => {
-    //     this.isQuering = false
-    //     if(!this.listView) {
-    //       return
-    //     }
-    //     if(isEmpty) {
-    //       this.listView.isLoadUp(false)
-    //     }else {
-    //       this.listView.isLoadUp(true)
-    //     }
-    //   },
-    //   error: (err)=>{
-    //     this.isQuering = false
-    //     Toast.show(err.message, {duration: 1000})
-    //   }
-    // }
-    //
-    // this.props.fetchTopicCommentsByTopicId(payload)
+    let limit = 6
+    let payload = {
+      shopId: this.props.id,
+      status: 1,
+      limit: 6,
+      lastUpdateTime: this.props.goodList[this.props.goodList.length-1].updatedAt,
+      more:true,
+      isRefresh: !!isRefresh,
+      limit: limit,
+      isLocalQuering: true,
+      success: (isEmpty, fetchedSize) => {
+        this.isQuering = false
+        if (!this.listView) {
+          return
+        }
+        // console.log('loadMoreData.isEmpty=====', isEmpty)
+        if (isEmpty) {
+          // if(isRefresh && this.state.searchForm.distance) {
+          //   this.setState({
+          //     searchForm: {
+          //       ...this.state.searchForm,
+          //       distance: ''
+          //     }
+          //   }, ()=>{
+          //     this.refreshData()
+          //   })
+          // }
+
+          // if (!this.state.searchForm.loadingOtherCityData) {
+          //   this.setState({
+          //     searchForm: {
+          //       ...this.state.searchForm,
+          //       loadingOtherCityData: true,
+          //       skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
+          //     }
+          //   }, ()=> {
+          //     // console.log('isEmpty===', isEmpty)
+          //     if (isRefresh) {
+          //       this.refreshData({loadingOtherCityData: true})
+          //     } else {
+          //       this.loadMoreData()
+          //     }
+          //   })
+          // }
+
+          this.listView.isLoadUp(false)
+        } else {
+          this.listView.isLoadUp(true)
+          if (isRefresh && fetchedSize < limit) {
+            this.loadMoreData()
+          }
+        }
+      },
+      error: (err)=> {
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.getShopGoodsList(payload)
   }
 
 
-  renderListRow(rowData,rowId){
+  renderListRow(rowData, rowId) {
     switch (rowData.type) {
       case 'SHOP_CATEGORY_COLUMN':
         return <View />
@@ -244,31 +277,32 @@ const PAGE_HEIGHT = Dimensions.get('window').height
         return <View />
     }
   }
+
   render() {
 
     return (
-    <View style={styles.body}>
-      {this.renderMainHeader()}
-      {/*<ScrollView  contentContainerStyle={[styles.contentContainerStyle]}*/}
-                     {/*onScroll={e => this.handleOnScroll(e)}*/}
-                     {/*scrollEventThrottle={80}*/}
+      <View style={styles.body}>
+        {this.renderMainHeader()}
+        {/*<ScrollView  contentContainerStyle={[styles.contentContainerStyle]}*/}
+        {/*onScroll={e => this.handleOnScroll(e)}*/}
+        {/*scrollEventThrottle={80}*/}
         {/*>*/}
-          {/*{this.renderColumns()}*/}
+        {/*{this.renderColumns()}*/}
         {/*</ScrollView>*/}
         <View style={styles.contentContainerStyle}>
-      <CommonListView
-        contentContainerStyle={{backgroundColor: '#fff'}}
-        dataSource={this.props.ds}
-        renderRow={(rowData, rowId) => this.renderListRow(rowData, rowId)}
-        loadNewData={()=> {
-          this.refreshData()
-        }}
-        loadMoreData={()=> {
-          this.loadMoreData()
-        }}
-        ref={(listView) => this.listView = listView}
-      />
-    </View>
+          <CommonListView
+            contentContainerStyle={{backgroundColor: '#fff'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId) => this.renderListRow(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData()
+            }}
+            ref={(listView) => this.listView = listView}
+          />
+        </View>
       </View>
     )
   }
@@ -281,7 +315,7 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 // }
 
 const mapStateToProps = (state, ownProps) => {
-  const goodList = selectGoodsList(state,ownProps.id,1)
+  const goodList = selectGoodsList(state, ownProps.id, 1)
 
   let ds = undefined
   if (ownProps.ds) {
@@ -295,10 +329,11 @@ const mapStateToProps = (state, ownProps) => {
 
   dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
   dataArray.push({type: 'LOCAL_SHOP_LIST_COLUMN'})
-  return{
-   ds: ds.cloneWithRows(dataArray),
-   goodList:goodList
- }
+  console.log('goodlist',goodList)
+  return {
+    ds: ds.cloneWithRows(dataArray),
+    goodList: goodList
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -307,7 +342,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(ShopGoodsListView)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodsListView)
 
 const styles = StyleSheet.create({
 
@@ -380,13 +415,13 @@ const styles = StyleSheet.create({
     //   borderColor:'#E6E6E6',
     //   borderTopWidth:normalizeH(1),
   },
-  body:{
-    flex:1,
+  body: {
+    flex: 1,
     backgroundColor: 'rgba(0,0,0,0.05)',
-    width:PAGE_WIDTH,
+    width: PAGE_WIDTH,
   },
   contentContainerStyle: {
-    marginTop:normalizeH(64)
+    marginTop: normalizeH(64)
 
   },
 
