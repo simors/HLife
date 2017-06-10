@@ -312,45 +312,45 @@ export function handleShopAlbum(payload) {
 }
 
 export function _submitCompleteShopInfo(shop, payload) {
-  let shopCategoryObjectId = payload.shopCategoryObjectId
-  let openTime = payload.openTime
-  let contactNumber = payload.contactNumber
-  let contactNumber2 = payload.contactNumber2
-  let ourSpecial = payload.ourSpecial
-  let album = payload.album
-  let coverUrl = payload.coverUrl
-  let tagIds = payload.tagIds
-  let targetShopCategory = null
-  // console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
-  if(shopCategoryObjectId) {
-    targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
-    shop.set('targetShopCategory', targetShopCategory)
-  }
-
-  let containedTag = []
-  if(tagIds && tagIds.length) {
-    tagIds.forEach((tagId) =>{
-      containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
-    })
-  }
-  shop.set('containedTag', containedTag)
-  if(coverUrl) {
-    shop.set('coverUrl', coverUrl)
-  }
-  
-  if(album) {
-    shop.set('album', album)
-  }
-
-  shop.set('openTime', openTime)
-  shop.set('contactNumber', contactNumber)
-  shop.set('contactNumber2', contactNumber2)
-  shop.set('ourSpecial', ourSpecial)
-  // console.log('_submitCompleteShopInfo.shop====', shop)
-  return shop.save().then(function (result) {
+  // let shopCategoryObjectId = payload.shopCategoryObjectId
+  // let openTime = payload.openTime
+  // let contactNumber = payload.contactNumber
+  // let contactNumber2 = payload.contactNumber2
+  // let ourSpecial = payload.ourSpecial
+  // let album = payload.album
+  // let coverUrl = payload.coverUrl
+  // let tagIds = payload.tagIds
+  // let targetShopCategory = null
+  // // console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
+  // if(shopCategoryObjectId) {
+  //   targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
+  //   shop.set('targetShopCategory', targetShopCategory)
+  // }
+  //
+  // let containedTag = []
+  // if(tagIds && tagIds.length) {
+  //   tagIds.forEach((tagId) =>{
+  //     containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
+  //   })
+  // }
+  // shop.set('containedTag', containedTag)
+  // if(coverUrl) {
+  //   shop.set('coverUrl', coverUrl)
+  // }
+  //
+  // if(album) {
+  //   shop.set('album', album)
+  // }
+  //
+  // shop.set('openTime', openTime)
+  // shop.set('contactNumber', contactNumber)
+  // shop.set('contactNumber2', contactNumber2)
+  // shop.set('ourSpecial', ourSpecial)
+  // // console.log('_submitCompleteShopInfo.shop====', shop)
+  return AV.Cloud.run('submitCompleteShopInfo',{shop:shop,payload:payload}).then(function (result) {
     return true
   }, function (err) {
-    console.log('_submitCompleteShopInfo.err====', err)
+    // console.log('_submitCompleteShopInfo.err====', err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -364,7 +364,11 @@ export function submitCompleteShopInfo(payload) {
     let album = payload.album
     let coverUrl = payload.coverUrl
     let shop = AV.Object.createWithoutData('Shop', shopId)
-
+    // let shop = {
+    //   shopId:shopId,
+    //   album:[],
+    //   coverUrl:[],
+    // }
     if(coverUrl) {
       ImageUtil.uploadImg2(coverUrl).then((leanCoverImgUrl)=>{
         // console.log('submitCompleteShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
@@ -418,65 +422,69 @@ export function submitCompleteShopInfo(payload) {
   })
 }
 
-export function _submitEditShopInfo(shop, payload) {
-  let openTime = payload.openTime
-  let contactNumber = payload.contactNumber
-  let contactNumber2 = payload.contactNumber2
-  let ourSpecial = payload.ourSpecial
-  let tagIds = payload.tagIds
-  let shopName = payload.shopName
-  let shopAddress = payload.shopAddress
-  let geo = payload.geo
-  let geoCity = payload.geoCity
-  let geoDistrict = payload.geoDistrict
-
-  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
-  let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
-  let province = provinceInfo.provinceName
-  let provinceCode = provinceInfo.provinceCode
-  let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
-  let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
-
-  let geoProvince = province
-  let geoProvinceCode = provinceCode
-  let geoCityCode = cityCode
-  let geoDistrictCode = districtCode
-
-  let containedTag = []
-  if(tagIds && tagIds.length) {
-    tagIds.forEach((tagId) =>{
-      containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
-    })
+export function _submitEditShopInfo(shopId, payload) {
+  // let openTime = payload.openTime
+  // let contactNumber = payload.contactNumber
+  // let contactNumber2 = payload.contactNumber2
+  // let ourSpecial = payload.ourSpecial
+  // let tagIds = payload.tagIds
+  // let shopName = payload.shopName
+  // let shopAddress = payload.shopAddress
+  // let geo = payload.geo
+  // let geoCity = payload.geoCity
+  // let geoDistrict = payload.geoDistrict
+  //
+  // let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  // let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
+  // let province = provinceInfo.provinceName
+  // let provinceCode = provinceInfo.provinceCode
+  // let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
+  // let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
+  //
+  // let geoProvince = province
+  // let geoProvinceCode = provinceCode
+  // let geoCityCode = cityCode
+  // let geoDistrictCode = districtCode
+  //
+  // let containedTag = []
+  // if(tagIds && tagIds.length) {
+  //   tagIds.forEach((tagId) =>{
+  //     containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
+  //   })
+  // }
+  // shop.set('shopName', shopName)
+  // shop.set('shopAddress', shopAddress)
+  // shop.set('containedTag', containedTag)
+  // shop.set('openTime', openTime)
+  // shop.set('contactNumber', contactNumber)
+  // shop.set('contactNumber2', contactNumber2)
+  // shop.set('ourSpecial', ourSpecial)
+  // if(geo) {
+  //   var geoArr = geo.split(',')
+  //   var latitude = parseFloat(geoArr[0])
+  //   var longitude = parseFloat(geoArr[1])
+  //   var numberGeoArr = [latitude, longitude]
+  //   var point = new AV.GeoPoint(numberGeoArr)
+  //   shop.set('geo', point)
+  // }
+  // shop.set('geoProvince', geoProvince)
+  // shop.set('geoCity', geoCity)
+  // shop.set('geoDistrict', geoDistrict)
+  // shop.set('geoProvinceCode', geoProvinceCode.toString())
+  // shop.set('geoCityCode', geoCityCode.toString())
+  // shop.set('geoDistrictCode', geoDistrictCode.toString())
+  //
+  // console.log('_submitEditShopInfo.payload===', payload)
+  // console.log('_submitEditShopInfo.shop===', shop)
+  let params = {
+    shopId:shopId,
+    payload:payload
   }
-  shop.set('shopName', shopName)
-  shop.set('shopAddress', shopAddress)
-  shop.set('containedTag', containedTag)
-  shop.set('openTime', openTime)
-  shop.set('contactNumber', contactNumber)
-  shop.set('contactNumber2', contactNumber2)
-  shop.set('ourSpecial', ourSpecial)
-  if(geo) {
-    var geoArr = geo.split(',')
-    var latitude = parseFloat(geoArr[0])
-    var longitude = parseFloat(geoArr[1])
-    var numberGeoArr = [latitude, longitude]
-    var point = new AV.GeoPoint(numberGeoArr)
-    shop.set('geo', point)
-  }
-  shop.set('geoProvince', geoProvince)
-  shop.set('geoCity', geoCity)
-  shop.set('geoDistrict', geoDistrict)
-  shop.set('geoProvinceCode', geoProvinceCode.toString())
-  shop.set('geoCityCode', geoCityCode.toString())
-  shop.set('geoDistrictCode', geoDistrictCode.toString())
-
-  console.log('_submitEditShopInfo.payload===', payload)
-  console.log('_submitEditShopInfo.shop===', shop)
-  return shop.save().then((shopInfo)=>{
-    console.log('new ShopInfo:', shopInfo)
+  return AV.Cloud.run('submitEditShopInfo',params).then((shopInfo)=>{
+    // console.log('new ShopInfo:', shopInfo)
     return '更新店铺成功'
   }, (err)=>{
-    console.log(err)
+    // console.log(err)
     return '更新店铺失败'
   })
 }
@@ -497,7 +505,7 @@ export function submitEditShopInfo(payload) {
           ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
             // console.log('submitEditShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
             shop.set('album', leanAlbumImgUrls)
-            _submitEditShopInfo(shop, payload).then((result)=>{
+            _submitEditShopInfo(shopId, payload).then((result)=>{
               resolve(result)
             }, (reason)=>{
               reject(reason)
@@ -506,7 +514,7 @@ export function submitEditShopInfo(payload) {
             reject({message: '上传店铺相册失败'})
           })
         }else {
-          _submitEditShopInfo(shop, payload).then((result)=>{
+          _submitEditShopInfo(shopId, payload).then((result)=>{
             resolve(result)
           }, (reason)=>{
             reject(reason)
@@ -520,7 +528,7 @@ export function submitEditShopInfo(payload) {
       if(album && album.length) {
         ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
           shop.set('album', leanAlbumImgUrls)
-          _submitEditShopInfo(shop, payload).then((result)=>{
+          _submitEditShopInfo(shopId, payload).then((result)=>{
             resolve(result)
           }, (reason)=>{
             reject(reason)
@@ -529,7 +537,7 @@ export function submitEditShopInfo(payload) {
           reject({message: '上传店铺相册失败'})
         })
       }else {
-        _submitEditShopInfo(shop, payload).then((result)=>{
+        _submitEditShopInfo(shopId, payload).then((result)=>{
           resolve(result)
         }, (reason)=>{
           reject(reason)
