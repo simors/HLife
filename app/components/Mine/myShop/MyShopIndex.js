@@ -295,11 +295,8 @@ class MyShopIndex extends Component {
 
   showGoodDetail(value) {
     Actions.SHOP_GOODS_DETAIL({
-      value: value,
-      shopDetail: this.props.shopDetail,
-      isUserLogined: this.props.isUserLogined,
-      currentUser:this.props.currentUser,
-      shareDomain:this.props.shareDomain
+      goodInfo: value,
+
     })
   }
 
@@ -459,7 +456,7 @@ class MyShopIndex extends Component {
               <View style={styles.commentWrap}>
                 <View style={styles.commentFoot}>
                   <TouchableOpacity onPress={()=> {
-                    Actions.SHOPGOODSLISTVIEW({
+                    Actions.SHOP_GOODSLIST_VIEW({
                       goodList: this.props.goodList,
                       id: this.props.userOwnedShopInfo.id,
                       size: this.props.goodList.length,

@@ -792,15 +792,6 @@ class ShopDetail extends Component {
     }
   }
 
-  showGoodDetail(value) {
-    Actions.SHOP_GOODS_DETAIL({
-      value: value,
-      shopDetail: this.props.shopDetail,
-      isUserLogined: this.props.isUserLogined,
-      currentUser:this.props.currentUser,
-      shareDomain:this.props.shareDomain
-    })
-  }
 
   renderDetailContent() {
     let shopDetail = this.props.shopDetail
