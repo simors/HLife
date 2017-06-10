@@ -205,11 +205,10 @@ class ShopGoodsListView extends Component {
     }
     this.isQuering = true
 
-    let limit = 6
+    let limit = this.props.limit?this.props.limit:6
     let payload = {
       shopId: this.props.id,
       status: 1,
-      limit: 6,
       lastUpdateTime: this.props.goodList[this.props.goodList.length-1].updatedAt,
       more:true,
       isRefresh: !!isRefresh,
@@ -251,12 +250,7 @@ class ShopGoodsListView extends Component {
     return (
       <View style={styles.body}>
         {this.renderMainHeader()}
-        {/*<ScrollView  contentContainerStyle={[styles.contentContainerStyle]}*/}
-        {/*onScroll={e => this.handleOnScroll(e)}*/}
-        {/*scrollEventThrottle={80}*/}
-        {/*>*/}
-        {/*{this.renderColumns()}*/}
-        {/*</ScrollView>*/}
+
         <View style={styles.contentContainerStyle}>
           <CommonListView
             contentContainerStyle={{backgroundColor: '#fff'}}
@@ -337,21 +331,36 @@ const styles = StyleSheet.create({
     // height: normalizeH(80),
     // width: normalizeW(35),
   },
-  channelText: {
-    marginTop: 10,
+  channelText: Platform.OS=='ios'?{
+    marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
     fontSize: em(12),
     alignItems: 'flex-start',
     color: '#5A5A5A'
     // textAlign: 'start',
+  }:{
+    marginTop: normalizeH(10),
+    width: normalizeW(144),
+    height: normalizeH(12),
+    fontSize: em(11),
+    alignItems: 'flex-start',
+    color: '#5A5A5A'
   },
-  channelPrice: {
+  channelPrice: Platform.OS=='ios'?{
     // flexDirection:'row'
     marginTop: normalizeH(8),
     width: normalizeW(144),
     height: normalizeH(15),
     fontSize: em(15),
+    // textAlign: 'start',
+    // justifyContent:'flex-start'
+    color: '#00BE96'
+  }:{
+    marginTop: normalizeH(8),
+    width: normalizeW(144),
+    height: normalizeH(15),
+    fontSize: em(14),
     // textAlign: 'start',
     // justifyContent:'flex-start'
     color: '#00BE96'
