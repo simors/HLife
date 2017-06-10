@@ -41,17 +41,43 @@ const shopGoodContent = {
   formKey: shopGoodForm,
   stateKey: Symbol('shopGoodContent'),
   type: 'shopGoodContent',
+  checkValid: (data) => {
+    let textLen = 0
+    if (data && data.text) {
+      data.text.forEach((content) => {
+        if (content.type === 'COMP_TEXT') {
+          textLen += content.text.length
+        }
+      })
+    }
+    if (textLen >= 20) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '正文内容不少于20字'}
+  },
 }
 
 const shopGoodCover = {
   formKey: shopGoodForm,
   stateKey: Symbol('shopGoodCover'),
   type: 'shopGoodCover',
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入封面'}
+  },
 }
 
 const title = {
   formKey: shopGoodForm,
   stateKey: Symbol('title'),
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入标题'}
+  },
   type: 'title',
 }
 
@@ -59,11 +85,23 @@ const price = {
   formKey: shopGoodForm,
   stateKey: Symbol('price'),
   type: 'price',
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入价格'}
+  },
 }
 const originalPrice = {
   formKey: shopGoodForm,
   stateKey: Symbol('originalPrice'),
   type: 'originalPrice',
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入原价'}
+  },
 }
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -147,10 +185,10 @@ class PublishShopGood extends Component {
         Actions.MY_SHOP_INDEX()
 
       },
-      error: ()=>{
+      error: (err)=>{
         this.isPublishing = false
         Loading.hide(this.loading)
-        Toast.show('商品发布失败')
+        Toast.show(err.message)
       }
     })
   }
@@ -209,6 +247,7 @@ class PublishShopGood extends Component {
             <KeyboardAwareScrollView
               style={{flex: 1}}
               automaticallyAdjustContentInsets={false}
+              scrollEventThrottle={0}
               keyboardShouldPersistTaps={true}>
               {this.renderAlbum()}
               <View style={styles.introWrap}>

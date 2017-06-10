@@ -95,7 +95,7 @@ class ShopGoodsManage extends Component {
   renderOnlineGoodItem(value, key) {
     return(
       <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
-        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}}>
+        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}} onPress={() => {Actions.SHOP_GOODS_DETAIL({goodInfo: value})}}>
           <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
             <CachedImage mutable style={{width: normalizeH(75), height: normalizeH(75)}}
                          source={value.coverPhoto? {uri: value.coverPhoto} : require('../../../assets/images/default_goods_cover.png')}>
@@ -228,7 +228,7 @@ class ShopGoodsManage extends Component {
   renderOfflineGoodItem(value, key) {
     return(
       <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
-        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}}>
+        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}} onPress={() => {Actions.SHOP_GOODS_DETAIL({goodInfo: value})}}>
           <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
             <CachedImage mutable style={{width: normalizeH(75), height: normalizeH(75)}}
                          source={value.coverPhoto? {uri: value.coverPhoto} : require('../../../assets/images/default_goods_cover.png')}>
