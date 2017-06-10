@@ -39,29 +39,67 @@ const shopGoodContent = {
   formKey: shopGoodEditForm,
   stateKey: Symbol('shopGoodContent'),
   type: 'shopGoodContent',
+  checkValid: (data) => {
+    let textLen = 0
+    if (data && data.text) {
+      data.text.forEach((content) => {
+        if (content.type === 'COMP_TEXT') {
+          textLen += content.text.length
+        }
+      })
+    }
+    if (textLen >= 20) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '正文内容不少于20字'}
+  },
 }
 
 const shopGoodCover = {
   formKey: shopGoodEditForm,
   stateKey: Symbol('shopGoodCover'),
   type: 'shopGoodCover',
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入封面'}
+  }
 }
 
 const title = {
   formKey: shopGoodEditForm,
   stateKey: Symbol('title'),
   type: 'title',
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入标题'}
+  },
 }
 
 const price = {
   formKey: shopGoodEditForm,
   stateKey: Symbol('price'),
   type: 'price',
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入价格'}
+  },
 }
 const originalPrice = {
   formKey: shopGoodEditForm,
   stateKey: Symbol('originalPrice'),
   type: 'originalPrice',
+  checkValid: (data) => {
+    if (data && data.text) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请输入原价'}
+  },
 }
 
 const PAGE_WIDTH = Dimensions.get('window').width
