@@ -38,6 +38,15 @@ const shopGoodAlbumInput = {
 class UpdateShopGoodAlbum extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      cancelState:false
+    }
+  }
+
+  updateCancelState(){
+    this.setState({
+      cancelState:!this.state.cancelState
+    })
   }
 
   updateAlbum() {
@@ -64,6 +73,8 @@ class UpdateShopGoodAlbum extends Component {
           <View style={{marginTop: normalizeH(15)}}>
             <ImageGroupInput
               {...shopGoodAlbumInput}
+              cancelState ={this.state.cancelState}
+              updateCancelState={()=>{this.updateCancelState()}}
               number={5}
               imageLineCnt={3}
               initValue={this.props.albums}

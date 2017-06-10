@@ -131,6 +131,7 @@ class EditShopGood extends Component {
         onBlurEditor={() => {this.setState({headerHeight: 373})}}
         placeholder="描述一下商品详情"
         initValue={JSON.parse(initValue)}
+        mode="modify"
       />
     )
   }
@@ -216,7 +217,7 @@ class EditShopGood extends Component {
                   choosenImageStyle={{width: 80, height: 80}}
                   addImage={require('../../../assets/images/upload_pic.png')}
                   closeModalAfterSelectedImg={true}
-                  initValue={this.props.goodInfo.coverPhoto}
+                  initValue={this.props.goodInfo.coverPhoto.toString()}
                 />
               </View>
               <View style={styles.introBox}>
@@ -245,7 +246,7 @@ class EditShopGood extends Component {
                       outerContainerStyle={[styles.promotingPriceInput, {backgroundColor: '#fff', borderWidth: 0}]}
                       inputStyle={{backgroundColor: '#fff', color: '#FF7819'}}
                       showClear={false}
-                      initValue={this.props.goodInfo.price}
+                      initValue={this.props.goodInfo.price.toString()}
                     />
                   </View>
 
@@ -261,7 +262,7 @@ class EditShopGood extends Component {
                       outerContainerStyle={[styles.originalPriceBox, {backgroundColor: '#fff', borderWidth: 0}]}
                       inputStyle={{backgroundColor: '#fff'}}
                       showClear={false}
-                      initValue={this.props.goodInfo.originalPrice}
+                      initValue={this.props.goodInfo.originalPrice.toString()}
                     />
                   </View>
                 </View>
