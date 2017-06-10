@@ -38,22 +38,22 @@ export default class ShopGoodsList extends Component {
     }
   }
 
-  showGoodDetail(value){
+  showGoodDetail(goodInfo){
     // this.props.showGoodDetail(value)
-    Actions.SHOP_GOODS_DETAIL({value:value})
+    Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})
   }
 
-  renderColumn(value) {
+  renderColumn(goodInfo) {
     //console.log('value====>',value)
     return (
-      <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
+      <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
         <View style={styles.channelWrap}>
           <View style={styles.defaultImageStyles}>
-          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={value.coverPhoto ? {uri: value.coverPhoto} : require("../../assets/images/default_goods_cover.png")}/>
+          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={goodInfo.coverPhoto ? {uri: goodInfo.coverPhoto} : require("../../assets/images/default_goods_cover.png")}/>
           </View>
             {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-          <Text style={ styles.channelText}>{value.goodsName}</Text>
-          <Text style={ styles.channelPrice}>{'¥' + value.price}</Text>
+          <Text style={ styles.channelText}>{goodInfo.goodsName}</Text>
+          <Text style={ styles.channelPrice}>{'¥' + goodInfo.price}</Text>
         </View>
       </TouchableOpacity>
     )

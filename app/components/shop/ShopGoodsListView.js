@@ -84,24 +84,24 @@ class ShopGoodsListView extends Component {
     return false;
   }
 
-  renderColumn(value, key) {
+  renderColumn(goodInfo, key) {
     //console.log('value====>',value)
     return (
-      <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
+      <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
         <View style={styles.channelWrap}>
-          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: value.coverPhoto}}/>
+          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: goodInfo.coverPhoto}}/>
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-          <Text style={ styles.channelText}>{value.goodsName}</Text>
-          <Text style={ styles.channelPrice}>{'¥' + value.price}</Text>
+          <Text style={ styles.channelText}>{goodInfo.goodsName}</Text>
+          <Text style={ styles.channelPrice}>{'¥' + goodInfo.price}</Text>
 
         </View>
       </TouchableOpacity>
     )
   }
 
-  showGoodDetail(value) {
+  showGoodDetail(goodInfo) {
     // this.props.showGoodDetail(value)
-    Actions.SHOP_GOODS_DETAIL({value:value})
+    Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})
   }
 
   handleOnScroll(e) {

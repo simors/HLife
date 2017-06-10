@@ -97,7 +97,7 @@ class ShopGoodsDetail extends Component {
   }
 
   componentDidMount() {
-    this.props.value.album.map((item) => {
+    this.props.goodInfo.album.map((item) => {
         this.images.push(item)
 
     })
@@ -177,8 +177,8 @@ class ShopGoodsDetail extends Component {
   renderBannerColumn() {
      // console.log('this.props.value.album====', this.props.value.album)
 
-    if ( this.props.value.album && this.props.value.album.length>1) {
-      let pages =  this.props.value.album.map((item, index) => {
+    if ( this.props.goodInfo.album && this.props.goodInfo.album.length>1) {
+      let pages =  this.props.goodInfo.album.map((item, index) => {
         let image = item
         return (
           // <TouchableOpacity
@@ -212,17 +212,17 @@ class ShopGoodsDetail extends Component {
           />
         </View>
       )
-    }else if(this.props.value.album && this.props.value.album.length==1){
+    }else if(this.props.goodInfo.album && this.props.goodInfo.album.length==1){
       return(
         <TouchableWithoutFeedback
           style={{flex: 1}}
-          onPress={() => this.toggleModal(!this.state.imgModalShow, this.props.value.album[0])}
+          onPress={() => this.toggleModal(!this.state.imgModalShow, this.props.goodInfo.album[0])}
         >
           <CachedImage
             mutable
             style={[{width: PAGE_WIDTH, height: normalizeH(223)}]}
             resizeMode="stretch"
-            source={typeof(this.props.value.album[0]) == 'string' ? {uri: this.props.value.album[0]} : this.props.value.album[0]}
+            source={typeof(this.props.goodInfo.album[0]) == 'string' ? {uri: this.props.goodInfo.album[0]} : this.props.goodInfo.album[0]}
           />
         </TouchableWithoutFeedback>
       )
@@ -270,7 +270,7 @@ class ShopGoodsDetail extends Component {
     return (
       <View style={styles.footerWrap}>
         <View style={styles.priceBox}>
-          <Text style={styles.priceTxt}>￥{this.props.value.price}</Text>
+          <Text style={styles.priceTxt}>￥{this.props.goodInfo.price}</Text>
         </View>
         <TouchableOpacity style={{flex: 1}} onPress={() => this.sendPrivateMessage()}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -315,7 +315,7 @@ class ShopGoodsDetail extends Component {
         name: this.props.shopDetail.owner.nickname,
         members: [this.props.currentUser, this.props.shopDetail.owner.id],
         conversationType: PERSONAL_CONVERSATION,
-        title: this.props.value.goodsName,
+        title: this.props.goodInfo.goodsName,
         customTopView: this.customTopView()
       }
       Actions.CHATROOM(payload)
@@ -398,7 +398,7 @@ class ShopGoodsDetail extends Component {
       Toast.show('购买数量只能是整数')
       return
     }
-    let shopGoodDetail = this.props.value
+    let shopGoodDetail = this.props.goodInfo
     Actions.PAYMENT({
       title: '商家活动支付',
       price: shopGoodDetail.price * Number(amount),
@@ -417,7 +417,7 @@ class ShopGoodsDetail extends Component {
   customTopView() {
     return (
       <ChatroomShopGoodCustiomTopView
-        shopInfo={{shopName:this.props.value.goodsName,coverUrl:this.props.value.coverPhoto,price:this.props.value.price}}
+        shopInfo={{shopName:this.props.goodInfo.goodsName,coverUrl:this.props.goodInfo.coverPhoto,price:this.props.goodInfo.price}}
       />
     )
   }
@@ -445,8 +445,11 @@ class ShopGoodsDetail extends Component {
             scrollEventThrottle={80}
           >
             {/*{(this.props.imageList&&this.props.imageList.length)?this.renderBannerColumn():null}*/}
-            {this.props.value.album&&this.props.value.album.length?this.renderBannerColumn():null}
-            {this.props.value.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.value.detail)}/> : null}
+            {this.props.goodInfo.album&&this.props.goodInfo.album.length?this.renderBannerColumn():null}
+            {this.props.goodInfo.goodsName?<View style={styles.titleStyle}>
+              <Text style={styles.titleTextStyle}>{this.props.goodInfo.goodsName}</Text>
+            </View>:null}
+            {this.props.goodInfo.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.goodInfo.detail)}/> : null}
           </ScrollView>
           {this.renderBottomView()}
         </View>
@@ -461,20 +464,20 @@ class ShopGoodsDetail extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let shopDetail = selectShopDetail(state, ownProps.value.targetShop)
+  let shopDetail = selectShopDetail(state, ownProps.goodInfo.targetShop)
   const isUserLogined = authSelector.isUserLogined(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   let shareDomain = configSelector.getShareDomain(state)
 
   let imageList = []
-  if (ownProps.value.album && ownProps.value.album.length > 0)
-    imageList = ownProps.value.album.map((item, key)=> {
+  if (ownProps.goodInfo.album && ownProps.goodInfo.album.length > 0)
+    imageList = ownProps.goodInfo.album.map((item, key)=> {
       return (
       {
         action: "LOGIN",
         actionType: "action",
         image: item,
-        title: ownProps.value.title,
+        title: ownProps.goodInfo.title,
         type: 0,
         key:key
       }
@@ -503,13 +506,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodsDetail)
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.05)'
+
   },
 
   body: {
     // marginTop: normalizeH(64),
     flex: 1,
-    backgroundColor: '#E5E5E5',
-    paddingBottom: 50
+    // backgroundColor: '#E5E5E5',
+    paddingBottom: 50,
+    backgroundColor: '#fff'
+
   },
   topicLikesWrap: {
     flex: 1,
@@ -668,7 +675,10 @@ const styles = StyleSheet.create({
     height: normalizeH(49),
     alignItems: 'center',
     paddingLeft: 15,
-    backgroundColor: '#fafafa'
+    borderTopWidth: normalizeBorder(),
+    borderTopColor: THEME.colors.lighterA,
+    backgroundColor: '#f5f5f5',
+
   },
   advertisementModule: {
     height: normalizeH(223),
@@ -683,5 +693,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
   },
+  titleStyle:{
+    flex:1,
+    width:PAGE_WIDTH,
+    alignItems:'center',
+    marginBottom:normalizeH(15),
+    borderBottomWidth:normalizeH(1),
+    borderBottomColor:'#F5F5F5',
+  },
+  titleTextStyle:{
+    marginLeft:normalizeW(19),
+    marginRight:normalizeW(19),
+    marginTop:normalizeH(16),
+    color:'#030303',
+    fontSize:em(17),
+    marginBottom:normalizeH(15),
 
+  }
 })
