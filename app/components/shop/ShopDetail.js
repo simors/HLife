@@ -904,10 +904,8 @@ class ShopDetail extends Component {
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
                 <TouchableOpacity onPress={()=> {
-                  Actions.SHOPGOODSLISTVIEW({
+                  Actions.SHOP_GOODSLIST_VIEW({
                     id: this.props.id,
-                    size: this.props.goodList.length,
-                    showGoodDetail: (value)=>this.showGoodDetail(value)
                   })
                 }}>
                   <Text style={styles.allCommentsLink}>查看全部商品</Text>
