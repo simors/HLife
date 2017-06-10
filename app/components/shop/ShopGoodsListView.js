@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     // height: normalizeH(80),
     // width: normalizeW(35),
   },
-  channelText: {
+  channelText: Platform.OS=='ios'?{
     marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
@@ -339,6 +339,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     color: '#5A5A5A'
     // textAlign: 'start',
+  }:{
+    marginTop: normalizeH(10),
+    width: normalizeW(144),
+    height: normalizeH(12),
+    fontSize: em(11),
+    alignItems: 'flex-start',
+    color: '#5A5A5A'
   },
   channelPrice: Platform.OS=='ios'?{
     // flexDirection:'row'
