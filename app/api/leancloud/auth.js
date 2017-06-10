@@ -363,21 +363,21 @@ export function submitCompleteShopInfo(payload) {
     let shopId = payload.shopId
     let album = payload.album
     let coverUrl = payload.coverUrl
-    let shop = AV.Object.createWithoutData('Shop', shopId)
-    // let shop = {
-    //   shopId:shopId,
-    //   album:[],
-    //   coverUrl:[],
-    // }
+    // let shop = AV.Object.createWithoutData('Shop', shopId)
+    let shop = {
+      shopId:shopId,
+      album:[],
+      coverUrl:'',
+    }
     if(coverUrl) {
       ImageUtil.uploadImg2(coverUrl).then((leanCoverImgUrl)=>{
         // console.log('submitCompleteShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
-        shop.set('coverUrl', leanCoverImgUrl)
+        shop.coverUrl=  leanCoverImgUrl
         payload.coverUrl = undefined
         if(album && album.length) {
           ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
             // console.log('submitCompleteShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
-            shop.set('album', leanAlbumImgUrls)
+            shop.album=  leanAlbumImgUrls
             payload.album = undefined
             _submitCompleteShopInfo(shop, payload).then((result)=>{
               resolve(result)
@@ -401,7 +401,7 @@ export function submitCompleteShopInfo(payload) {
     }else {
       if(album && album.length) {
         ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-          shop.set('album', leanAlbumImgUrls)
+          shop.album=  leanAlbumImgUrls
           payload.album = undefined
           _submitCompleteShopInfo(shop, payload).then((result)=>{
             resolve(result)
@@ -422,7 +422,7 @@ export function submitCompleteShopInfo(payload) {
   })
 }
 
-export function _submitEditShopInfo(shopId, payload) {
+export function _submitEditShopInfo(shop, payload) {
   // let openTime = payload.openTime
   // let contactNumber = payload.contactNumber
   // let contactNumber2 = payload.contactNumber2
@@ -433,19 +433,19 @@ export function _submitEditShopInfo(shopId, payload) {
   // let geo = payload.geo
   // let geoCity = payload.geoCity
   // let geoDistrict = payload.geoDistrict
-  //
-  // let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
-  // let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
-  // let province = provinceInfo.provinceName
-  // let provinceCode = provinceInfo.provinceCode
-  // let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
-  // let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
-  //
-  // let geoProvince = province
-  // let geoProvinceCode = provinceCode
-  // let geoCityCode = cityCode
-  // let geoDistrictCode = districtCode
-  //
+
+  let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
+  let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
+  let province = provinceInfo.provinceName
+  let provinceCode = provinceInfo.provinceCode
+  let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
+  let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
+
+  let geoProvince = province
+  let geoProvinceCode = provinceCode
+  let geoCityCode = cityCode
+  let geoDistrictCode = districtCode
+
   // let containedTag = []
   // if(tagIds && tagIds.length) {
   //   tagIds.forEach((tagId) =>{
@@ -477,7 +477,7 @@ export function _submitEditShopInfo(shopId, payload) {
   // console.log('_submitEditShopInfo.payload===', payload)
   // console.log('_submitEditShopInfo.shop===', shop)
   let params = {
-    shopId:shopId,
+    shop:{...shop,geoProvince:geoProvince,geoProvinceCode:geoProvinceCode,geoCityCode:geoCityCode.toString(),geoDistrictCode:geoDistrictCode.toString()},
     payload:payload
   }
   return AV.Cloud.run('submitEditShopInfo',params).then((shopInfo)=>{
@@ -495,17 +495,21 @@ export function submitEditShopInfo(payload) {
     let shopId = payload.shopId
     let album = payload.album
     let coverUrl = payload.coverUrl
-    let shop = AV.Object.createWithoutData('Shop', shopId)
-
+    // let shop = AV.Object.createWithoutData('Shop', shopId)
+    let shop = {
+      shopId:shopId,
+      album:[],
+      coverUrl:'',
+    }
     if(coverUrl) {
       ImageUtil.uploadImg2(coverUrl).then((leanCoverImgUrl)=>{
         // console.log('submitEditShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
-        shop.set('coverUrl', leanCoverImgUrl)
+        shop.coverUrl=leanCoverImgUrl
         if(album && album.length) {
           ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
             // console.log('submitEditShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
-            shop.set('album', leanAlbumImgUrls)
-            _submitEditShopInfo(shopId, payload).then((result)=>{
+            shop.album=leanAlbumImgUrls
+            _submitEditShopInfo(shop, payload).then((result)=>{
               resolve(result)
             }, (reason)=>{
               reject(reason)
@@ -514,7 +518,7 @@ export function submitEditShopInfo(payload) {
             reject({message: '上传店铺相册失败'})
           })
         }else {
-          _submitEditShopInfo(shopId, payload).then((result)=>{
+          _submitEditShopInfo(shop, payload).then((result)=>{
             resolve(result)
           }, (reason)=>{
             reject(reason)
@@ -527,8 +531,8 @@ export function submitEditShopInfo(payload) {
     }else {
       if(album && album.length) {
         ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-          shop.set('album', leanAlbumImgUrls)
-          _submitEditShopInfo(shopId, payload).then((result)=>{
+          shop.album=leanAlbumImgUrls
+          _submitEditShopInfo(shop, payload).then((result)=>{
             resolve(result)
           }, (reason)=>{
             reject(reason)
@@ -537,7 +541,7 @@ export function submitEditShopInfo(payload) {
           reject({message: '上传店铺相册失败'})
         })
       }else {
-        _submitEditShopInfo(shopId, payload).then((result)=>{
+        _submitEditShopInfo(shop, payload).then((result)=>{
           resolve(result)
         }, (reason)=>{
           reject(reason)
