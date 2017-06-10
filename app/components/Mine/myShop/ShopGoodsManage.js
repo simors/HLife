@@ -289,7 +289,7 @@ class ShopGoodsManage extends Component {
 
         <View style={styles.body}>
           <ScrollableTabView
-            style={[{flex:1}]}
+            style={[{flex:1, marginBottom: normalizeH(49)}]}
             page={this.state.tabType}
             initialPage={this.state.tabType}
             scrollWithoutAnimation={true}
@@ -314,7 +314,7 @@ class ShopGoodsManage extends Component {
               }}
             >
               <View style={{
-                padding:15,
+                height: normalizeH(49),
                 flexDirection:'row',
                 justifyContent:'center',
                 alignItems:'center',
