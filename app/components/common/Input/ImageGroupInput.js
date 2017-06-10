@@ -231,8 +231,8 @@ class ImageGroupInput extends Component {
           <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)} onLongPress={()=>{
            // isCancel = true
             this.setState({cancelState:true})
-            this.props.updateCancelState()
-            this.setState({cancelState:this.props.cancelState})
+            this.props.updateCancelState?this.props.updateCancelState():null
+            this.setState({cancelState:this.props.cancelState?this.props.cancelState:this.state.cancelState})
             //console.log('hahahahahah',isCancel,this.state.cancelState)
           }} >
             <Image style={{flex: 1}} source={{uri: src}}/>
