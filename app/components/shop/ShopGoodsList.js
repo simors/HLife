@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     // width: normalizeW(35),
   },
   channelText: {
-    marginTop: 10,
+    marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
     fontSize: em(12),
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     color:'#5A5A5A'
       // textAlign: 'start',
   },
-  channelPrice: {
+  channelPrice: Platform.OS=='ios'?{
     // flexDirection:'row'
     marginTop: normalizeH(8),
     width: normalizeW(144),
@@ -186,7 +186,15 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     // textAlign: 'start',
     // justifyContent:'flex-start'
-    color:'#00BE96'
+    color: '#00BE96'
+  }:{
+    marginTop: normalizeH(8),
+    width: normalizeW(144),
+    height: normalizeH(15),
+    fontSize: em(14),
+    // textAlign: 'start',
+    // justifyContent:'flex-start'
+    color: '#00BE96'
   },
   container: {
     backgroundColor: THEME.base.backgroundColor,
