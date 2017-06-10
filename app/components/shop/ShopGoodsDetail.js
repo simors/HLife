@@ -32,7 +32,7 @@ import ViewPager from '../common/ViewPager'
 import Gallery from 'react-native-gallery'
 
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
-import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
+import ChatroomShopGoodCustiomTopView from './ChatroomShopGoodCustiomTopView'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 import * as AVUtils from '../../util/AVUtils'
 import {
@@ -416,8 +416,8 @@ class ShopGoodsDetail extends Component {
 
   customTopView() {
     return (
-      <ChatroomShopCustomTopView
-        shopInfo={{...this.props.shopDetail,shopName:this.props.value.goodsName,coverUrl:this.props.value.coverPhoto}}
+      <ChatroomShopGoodCustiomTopView
+        shopInfo={{shopName:this.props.value.goodsName,coverUrl:this.props.value.coverPhoto,price:this.props.value.price}}
       />
     )
   }
