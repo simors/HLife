@@ -48,8 +48,10 @@ export default class ShopGoodsList extends Component {
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(value)}>
         <View style={styles.channelWrap}>
-          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: value.coverPhoto}}/>
-          {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
+          <View style={styles.defaultImageStyles}>
+          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={value.coverPhoto ? {uri: value.coverPhoto} : require("../../assets/images/default_goods_cover.png")}/>
+          </View>
+            {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
           <Text style={ styles.channelText}>{value.goodsName}</Text>
           <Text style={ styles.channelPrice}>{'¥' + value.price}</Text>
         </View>
@@ -150,7 +152,6 @@ const styles = StyleSheet.create({
   defaultImageStyles: {
     height: normalizeH(169),
     width: normalizeW(169),
-    resizeMode: 'contain'
   },
   channelWrap: {
     flex: 1,
@@ -169,7 +170,9 @@ const styles = StyleSheet.create({
     // height: normalizeH(80),
     // width: normalizeW(35),
   },
-  channelText: Platform.OS=='ios'?{
+  channelText: {
+    flex:1,
+    flexDirection:'row',
     marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
@@ -177,29 +180,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     color: '#5A5A5A'
     // textAlign: 'start',
-  }:{
-    marginTop: normalizeH(10),
-    width: normalizeW(144),
-    height: normalizeH(12),
-    fontSize: em(11),
-    alignItems: 'flex-start',
-    color: '#5A5A5A'
   },
-  channelPrice: Platform.OS=='ios'?{
+  channelPrice: {
     // flexDirection:'row'
-    marginTop: normalizeH(8),
+    flex:1,
+    marginTop: normalizeH(6),
     width: normalizeW(144),
-    height: normalizeH(15),
+    height: 15,
     fontSize: em(15),
-    // textAlign: 'start',
-    // justifyContent:'flex-start'
-    color: '#00BE96'
-  }:{
-    marginTop: normalizeH(8),
-    width: normalizeW(144),
-    height: normalizeH(15),
-    fontSize: em(14),
-    // textAlign: 'start',
+    // textAlign: 'center',
     // justifyContent:'flex-start'
     color: '#00BE96'
   },
