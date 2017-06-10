@@ -72,7 +72,7 @@ const rteHeight = {
   height: normalizeH(64),
 }
 
-const wrapHeight = 373
+const wrapHeight = normalizeH(373)
 
 class PublishShopGood extends Component {
   constructor(props) {
@@ -126,7 +126,7 @@ class PublishShopGood extends Component {
         }}
         getImages={(images) => this.getRichTextImages(images)}
         onFocusEditor={() => {this.setState({headerHeight: 0})}}
-        onBlurEditor={() => {this.setState({headerHeight: 373})}}
+        onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
         placeholder="描述一下商品详情"
         mode="modify"
       />
@@ -203,9 +203,13 @@ class PublishShopGood extends Component {
           rightPress={() => {this.publishGood()}}
         />
         <View style={styles.body}>
-          <View style={{height: this.state.headerHeight, overflow:'hidden'}}
+
+          <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
                 onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
-            <KeyboardAwareScrollView behavior="position">
+            <KeyboardAwareScrollView
+              style={{flex: 1}}
+              automaticallyAdjustContentInsets={false}
+              keyboardShouldPersistTaps={true}>
               {this.renderAlbum()}
               <View style={styles.introWrap}>
                 <View style={styles.coverBox}>
@@ -298,9 +302,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5'
   },
   introWrap: {
+    flex: 1,
     flexDirection: 'row',
     backgroundColor: 'white',
-    height: normalizeH(109),
     paddingTop: 15,
     paddingLeft: 15,
     paddingBottom: 10,
