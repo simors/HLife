@@ -188,8 +188,7 @@ class EditShopGood extends Component {
         this.isPublishing = false
         Loading.hide(this.loading)
         Toast.show('商品更新成功')
-        Actions.HOME({type:'reset'})
-
+        Actions.MY_SHOP_INDEX({type:'replace'})
       },
       error: (err)=>{
         this.isPublishing = false
