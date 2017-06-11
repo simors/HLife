@@ -955,7 +955,7 @@ export function submitShopGood(payload) {
         album = urls
         return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
       }).then((urls) => {
-        leanRichTextImagesUrls = urls
+        leanRichTextImagesUrls = urls.reverse()
         let content = formData.shopGoodContent.text
         if(content && content.length &&
           leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
@@ -1031,7 +1031,7 @@ export function modifyShopGoods(payload) {
         album = urls
         return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
       }).then((urls) => {
-        leanRichTextImagesUrls = urls
+        leanRichTextImagesUrls = urls.reverse()
         let content = formData.shopGoodContent.text
         if(content && content.length &&
           leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
