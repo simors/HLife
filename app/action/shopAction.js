@@ -932,7 +932,6 @@ export function getShopGoodsList(payload) {
 }
 
 export function submitShopGood(payload) {
-  console.log("submitShopGood payload", payload)
   return (dispatch, getState) => {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
@@ -944,7 +943,6 @@ export function submitShopGood(payload) {
       return
     }else {
       const formData = getInputFormData(getState(), payload.formKey)
-       console.log("submitShopGood formData:", formData)
       let coverUrl = ''
       let album = []
       let leanRichTextImagesUrls = []
@@ -970,8 +968,8 @@ export function submitShopGood(payload) {
         let shopGoodPayload = {
           shopId: payload.shopId,
           goodsName: formData.title.text || '',
-          price: Number(formData.price.text) || 0,
-          originalPrice: Number(formData.originalPrice.text) || 0,
+          price: Number(payload.price) || 0,
+          originalPrice: Number(payload.originalPrice) || 0,
           coverPhoto: coverUrl,
           album: album,
           detail: JSON.stringify(content),
@@ -1009,7 +1007,6 @@ export function submitShopGood(payload) {
 }
 
 export function modifyShopGoods(payload) {
-  console.log("modifyShopGoods", payload)
   return (dispatch, getState) => {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
@@ -1021,7 +1018,6 @@ export function modifyShopGoods(payload) {
       return
     } else {
       const formData = getInputFormData(getState(), payload.formKey)
-      console.log("modifyShopGoods formData:", formData)
 
       let coverUrl = ''
       let album = []
@@ -1052,17 +1048,15 @@ export function modifyShopGoods(payload) {
         let modifyShopGoodPayload = {
           goodsId: payload.goodsId,
           goodsName: formData.title.text || '',
-          price: Number(formData.price.text) || 0,
-          originalPrice: Number(formData.originalPrice.text) || 0,
+          price: Number(payload.price) || 0,
+          originalPrice: Number(payload.originalPrice) || 0,
           coverPhoto: coverUrl,
           album: album,
           detail: JSON.stringify(content)
         }
 
-        console.log("modifyShopGoodPayload:", modifyShopGoodPayload)
 
         lcShop.modifyShopGoods(modifyShopGoodPayload).then((goodsInfo) => {
-          console.log("modifyShopGoods return goodsInfo:", goodsInfo)
 
           if (0 == goodsInfo.errcode) {
             let goodsObj = goodsInfo.goodsInfo
