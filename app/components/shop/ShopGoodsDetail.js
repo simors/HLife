@@ -220,7 +220,7 @@ class ShopGoodsDetail extends Component {
         >
           <CachedImage
             mutable
-            style={[{width: PAGE_WIDTH, height: normalizeH(223)}]}
+            style={[{width: PAGE_WIDTH, height: normalizeH(264)}]}
             resizeMode="stretch"
             source={typeof(this.props.goodInfo.album[0]) == 'string' ? {uri: this.props.goodInfo.album[0]} : this.props.goodInfo.album[0]}
           />
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
 
   },
   advertisementModule: {
-    height: normalizeH(223),
+    height: normalizeH(264),
     backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
   },
   contentContainerStyle: {},
