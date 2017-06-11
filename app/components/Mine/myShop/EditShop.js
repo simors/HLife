@@ -495,43 +495,43 @@ class EditShop extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-            <View style={{height:0,width:0}}>
-              <CommonTextInput
-                {...shopNameInput}
-                initValue={this.props.userOwnedShopInfo.shopName}
-                outerContainerStyle={{position:'absolute',height:0,width:0}}
-                containerStyle={{height:0,width:0}}
-                inputStyle={{height:0,width:0}}
-              />
-              <CommonTextInput
-                {...shopAddrInput}
-                initValue={this.props.userOwnedShopInfo.shopAddress}
-                outerContainerStyle={{position:'absolute',height:0,width:0}}
-                containerStyle={{height:0,width:0}}
-                inputStyle={{height:0,width:0}}
-              />
-              <CommonTextInput
-                {...shopGeoInput}
-                initValue={[this.props.userOwnedShopInfo.geo.latitude, this.props.userOwnedShopInfo.geo.longitude].join(',')}
-                outerContainerStyle={{position:'absolute',height:0,width:0}}
-                containerStyle={{height:0,width:0}}
-                inputStyle={{height:0,width:0}}
-              />
-              <CommonTextInput
-                {...shopGeoCityInput}
-                initValue={this.props.userOwnedShopInfo.geoCity}
-                outerContainerStyle={{position:'absolute',height:0,width:0}}
-                containerStyle={{height:0,width:0}}
-                inputStyle={{height:0,width:0}}
-              />
-              <CommonTextInput
-                {...shopGeoDistrictInput}
-                initValue={this.props.userOwnedShopInfo.geoDistrict}
-                outerContainerStyle={{position:'absolute',height:0,width:0}}
-                containerStyle={{height:0,width:0}}
-                inputStyle={{height:0,width:0}}
-              />
-            </View>
+            {/*<View style={{height:0,width:0}}>*/}
+              {/*<CommonTextInput*/}
+                {/*{...shopNameInput}*/}
+                {/*initValue={this.props.userOwnedShopInfo.shopName}*/}
+                {/*outerContainerStyle={{position:'absolute',height:0,width:0}}*/}
+                {/*containerStyle={{height:0,width:0}}*/}
+                {/*inputStyle={{height:0,width:0}}*/}
+              {/*/>*/}
+              {/*<CommonTextInput*/}
+                {/*{...shopAddrInput}*/}
+                {/*initValue={this.props.userOwnedShopInfo.shopAddress}*/}
+                {/*outerContainerStyle={{position:'absolute',height:0,width:0}}*/}
+                {/*containerStyle={{height:0,width:0}}*/}
+                {/*inputStyle={{height:0,width:0}}*/}
+              {/*/>*/}
+              {/*<CommonTextInput*/}
+                {/*{...shopGeoInput}*/}
+                {/*initValue={[this.props.userOwnedShopInfo.geo.latitude, this.props.userOwnedShopInfo.geo.longitude].join(',')}*/}
+                {/*outerContainerStyle={{position:'absolute',height:0,width:0}}*/}
+                {/*containerStyle={{height:0,width:0}}*/}
+                {/*inputStyle={{height:0,width:0}}*/}
+              {/*/>*/}
+              {/*<CommonTextInput*/}
+                {/*{...shopGeoCityInput}*/}
+                {/*initValue={this.props.userOwnedShopInfo.geoCity}*/}
+                {/*outerContainerStyle={{position:'absolute',height:0,width:0}}*/}
+                {/*containerStyle={{height:0,width:0}}*/}
+                {/*inputStyle={{height:0,width:0}}*/}
+              {/*/>*/}
+              {/*<CommonTextInput*/}
+                {/*{...shopGeoDistrictInput}*/}
+                {/*initValue={this.props.userOwnedShopInfo.geoDistrict}*/}
+                {/*outerContainerStyle={{position:'absolute',height:0,width:0}}*/}
+                {/*containerStyle={{height:0,width:0}}*/}
+                {/*inputStyle={{height:0,width:0}}*/}
+              {/*/>*/}
+            {/*</View>*/}
             <View style={styles.inputsWrap}>
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>

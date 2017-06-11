@@ -347,7 +347,10 @@ export function _submitCompleteShopInfo(shop, payload) {
   // shop.set('contactNumber2', contactNumber2)
   // shop.set('ourSpecial', ourSpecial)
   // // console.log('_submitCompleteShopInfo.shop====', shop)
-  return AV.Cloud.run('submitCompleteShopInfo',{shop:shop,payload:payload}).then(function (result) {
+  let params = {
+    shop:shop,payload:payload
+  }
+  return AV.Cloud.run('submitCompleteShopInfo',params).then(function (result) {
     return true
   }, function (err) {
     // console.log('_submitCompleteShopInfo.err====', err)
