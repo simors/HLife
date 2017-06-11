@@ -1023,14 +1023,10 @@ export function modifyShopGoods(payload) {
       let album = []
       let leanRichTextImagesUrls = []
       let localCover = formData.shopGoodCover.text
-      let localAlbum = []
-      if(formData.shopGoodAlbumInput && formData.shopGoodAlbumInput.text && formData.shopGoodAlbumInput.text.length > 1){
-        localAlbum = formData.shopGoodAlbumInput.text
-      }
 
       ImageUtil.uploadImg2(localCover).then((url) => {
         coverUrl = url
-        return ImageUtil.batchUploadImgs(localAlbum)
+        return ImageUtil.batchUploadImgs(payload.albums)
       }).then((urls) => {
         album = urls
         return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
