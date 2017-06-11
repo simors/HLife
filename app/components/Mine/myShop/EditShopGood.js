@@ -52,7 +52,7 @@ const shopGoodContent = {
     if (textLen >= 20) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '正文内容不少于20字'}
+    return {isVal: false, errMsg: '产品介绍不少于20字'}
   },
 }
 
@@ -161,6 +161,21 @@ class EditShopGood extends Component {
   }
 
   submitForm() {
+    if (this.albums.length == 0) {
+      Toast.show('请设置商品相册')
+      this.isPublishing = false
+      return
+    }
+    if (this.state.price == undefined) {
+      Toast.show('请输入商品价格')
+      this.isPublishing = false
+      return
+    }
+    if (this.state.originalPrice == undefined) {
+      Toast.show('请输入商品原价')
+      this.isPublishing = false
+      return
+    }
     this.loading = Loading.show()
     this.props.modifyShopGoods({
       goodsId: this.props.goodsId,

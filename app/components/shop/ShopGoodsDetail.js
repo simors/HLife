@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
   titleStyle:{
     flex:1,
     width:PAGE_WIDTH,
-    alignItems:'center',
+    alignItems:'flex-start',
     marginBottom:normalizeH(15),
     borderBottomWidth:normalizeH(1),
     borderBottomColor:'#F5F5F5',
@@ -707,6 +707,7 @@ const styles = StyleSheet.create({
     marginTop:normalizeH(16),
     color:'#030303',
     fontSize:em(17),
+    fontWeight: 'bold',
     marginBottom:normalizeH(15),
 
   }
