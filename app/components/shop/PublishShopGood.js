@@ -183,7 +183,7 @@ class PublishShopGood extends Component {
         this.isPublishing = false
         Loading.hide(this.loading)
         Toast.show('商品发布成功')
-        Actions.MY_SHOP_INDEX()
+        Actions.HOME({type:'reset'})
       },
       error: (err)=>{
         this.isPublishing = false
