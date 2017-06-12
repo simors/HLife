@@ -135,7 +135,6 @@ class EditShopGood extends Component {
 
   getRichTextImages(images) {
     this.localRichTextImagesUrls = images
-    // console.log('getRichTextImages.localRichTextImagesUrls==', this.localRichTextImagesUrls)
   }
 
   renderRichText(initValue) {
@@ -383,7 +382,6 @@ class EditShopGood extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const goodInfo = selectGoodsById(state, ownProps.shopId, ownProps.goodsId)
-  console.log("EditShopGood info:", goodInfo)
   return {
     goodInfo: goodInfo,
   }

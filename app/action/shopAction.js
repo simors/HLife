@@ -826,21 +826,6 @@ export function setShopGoodsOnline(payload) {
   }
 }
 
-// export function setShopGoodsOffline(payload) {
-//   return (dispatch, getState) => {
-//     payload = {
-//       goodsId: '59375f8dfe88c20061eabee0',
-//       shopId: '58fec4600ce46300613d849e',
-//     }
-//     lcShop.goodsOffline({goodsId: payload.goodsId}).then((goodsInfo) => {
-//       if (0 == goodsInfo.errcode) {
-//         let newStatus = goodsInfo.goodsInfo.status
-//         dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
-//       }
-//     })
-//   }
-// }
-
 export function setShopGoodsOffline(payload) {
   return (dispatch, getState) => {
     let offLinePayload = {
@@ -864,21 +849,6 @@ export function setShopGoodsOffline(payload) {
     })
   }
 }
-
-// export function setShopGoodsDelete(payload) {
-//   return (dispatch, getState) => {
-//     payload = {
-//       goodsId: '59375f8dfe88c20061eabee0',
-//       shopId: '58fec4600ce46300613d849e',
-//     }
-//     lcShop.goodsDelete({goodsId: payload.goodsId}).then((goodsInfo) => {
-//       if (0 == goodsInfo.errcode) {
-//         let newStatus = goodsInfo.goodsInfo.status
-//         dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
-//       }
-//     })
-//   }
-// }
 
 export function setShopGoodsDelete(payload) {
   return (dispatch, getState) => {
@@ -975,11 +945,8 @@ export function submitShopGood(payload) {
           detail: JSON.stringify(content),
         }
 
-        console.log("shopGoodPayload:", shopGoodPayload)
 
         lcShop.addNewShopGoods(shopGoodPayload).then((goodsInfo) => {
-          console.log("addNewShopGoods return goodsInfo:", goodsInfo)
-
           if (0 == goodsInfo.errcode) {
             let goodsObj = goodsInfo.goodsInfo
             let shopId = goodsObj.targetShop.id

@@ -33,7 +33,6 @@ import ArticleEditor from '../common/Input/ArticleEditor'
 import Symbol from 'es6-symbol'
 import Loading from '../common/Loading'
 import {submitShopGood} from '../../action/shopAction'
-import ViewPager from '../common/ViewPager'
 
 
 
