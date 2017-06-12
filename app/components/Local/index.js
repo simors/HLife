@@ -36,26 +36,20 @@ import {selectShopCategories} from '../../selector/configSelector'
 import {fetchShopCategories} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import * as Utils from '../../util/Utils'
-import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import * as Toast from '../common/Toast'
-import Swiper from 'react-native-swiper'
 import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
 import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
 import {fetchShopList, clearShopList} from '../../action/shopAction'
-import ViewPager from '../common/ViewPager'
-// import ViewPager2 from 'react-native-viewpager'
 import * as DeviceInfo from 'react-native-device-info'
 import SearchBar from '../common/SearchBar'
 import ScoreShow from '../common/ScoreShow'
-import NewShopCategories from './NewShopCategories'
-import ShopCategories from './ShopCategories'
+import ViewPager from 'react-native-viewpager'
+import {CachedImage} from "react-native-img-cache"
 
 const PAGE_WIDTH = Dimensions.get('window').width
-const PAGE_HEIGHT = Dimensions.get('window').height
 
 class Local extends Component {
   constructor(props) {
@@ -137,10 +131,6 @@ class Local extends Component {
       default:
         return <View />
     }
-  }
-
-  renderShopCategoryColumn() {
-    return this.renderSectionHeader()
   }
 
   renderLocalShopListColumn() {
@@ -231,129 +221,46 @@ class Local extends Component {
     })
   }
 
-  renderShopCategoryBox(shopCategory) {
+  _renderPage = (data, pageID) => {
     return (
-      <TouchableOpacity key={shopCategory.id} style={styles.shopCategoryTouchBox} onPress={()=> {
-        this.gotoShopCategoryList(shopCategory)
-      }}>
-        <View style={styles.shopCategoryBox}>
-          <Image
-            style={[styles.shopCategoryImage]}
-            resizeMode='contain'
-            source={{uri: shopCategory.imageSource}}
-          />
-          <Text numberOfLines={1} style={[styles.shopCategoryText]}>{shopCategory.text}</Text>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
-  renderShopCategoryRow(row) {
-    return (
-      <View key={'row' + Math.random()} style={styles.shopCategoryRow}>
-        {row}
+      <View key={pageID} style={{width: PAGE_WIDTH, height: normalizeH(218), flexWrap: 'wrap'}}>
+        {
+          data.map((value, key) => {
+            return(
+              <TouchableOpacity key={key} style={{width: PAGE_WIDTH/4, height: normalizeH(109), justifyContent: 'center', alignItems: 'center'}}
+                                onPress={() => {this.gotoShopCategoryList({shopCategoryId: value.shopCategoryId, shopCategoryName: value.text})}}>
+                <CachedImage mutable style={{width: normalizeW(50), height: normalizeW(50), marginBottom: normalizeH(8)}} source={{uri: value.imageSource}}/>
+                <Text numberOfLines={1} style={{}}>{value.text}</Text>
+              </TouchableOpacity>
+            )
+          })
+        }
       </View>
     )
   }
 
-  renderShopCategoryPage(page) {
-    return (
-      <View key={'page' + Math.random()} style={styles.shopCategoryPage}>
-        {page}
-      </View>
-    )
-  }
+  renderShopCategoryColumn() {
+    let dataSource = new ViewPager.DataSource({
+      pageHasChanged: (p1, p2) => p1 !== p2,
+    })
 
-  renderSectionHeader() {
-    let pages = []
-    let that = this
-    // console.log('this.props.allShopCategories===', this.props.allShopCategories)
-    if (this.props.allShopCategories && this.props.allShopCategories.length) {
-      let pageView = <View/>
-      let shopCategoriesView = []
-      let rowView = <View />
-      let row = []
-      this.props.allShopCategories.forEach((shopCategory, index) => {
-        // console.log('shopCategory===', shopCategory)
+    const categoryPageData = Array.apply(null, {
+      length: Math.ceil(this.props.allShopCategories.length / 8)
+    }).map((x, i) => {
+      return this.props.allShopCategories.slice(i * 8, (i + 1) * 8);
+    })
 
-        let shopCategoryView = that.renderShopCategoryBox(shopCategory)
-        row.push(shopCategoryView)
-
-        let shopCategoryLength = this.props.allShopCategories.length
-        if (shopCategoryLength == (index + 1)) {
-          // console.log('renderSectionHeader*****==row.length==', row.length)
-          if (row.length < 4) {
-            let lastRowLength = row.length
-            for (let i = 0; i < (4 - lastRowLength); i++) {
-              let placeholderRowView = <View key={'empty_' + i} style={styles.shopCategoryTouchBox}/>
-              row.push(placeholderRowView)
-            }
-            // console.log('renderSectionHeader*****>>>>>>>>>>>>>==row.length==', row.length)
-          }
-        }
-
-        if (row.length == 4) {
-          rowView = that.renderShopCategoryRow(row)
-          shopCategoriesView.push(rowView)
-          row = []
-        }
-
-        if (shopCategoriesView.length == 2 || shopCategoryLength == (index + 1)) {
-          pageView = that.renderShopCategoryPage(shopCategoriesView)
-          pages.push(pageView)
-          shopCategoriesView = []
-        }
-
-      })
-
-      // console.log('renderSectionHeader*****==pages==', pages)
-
-      let dataSource = new ViewPager.DataSource({
-        pageHasChanged: (p1, p2) => p1 !== p2,
-      })
-
-      // return (
-      //   <ViewPager
-      //     style={{flex: 1}}
-      //     dataSource={dataSource.cloneWithPages(pages)}
-      //     renderPage={this._renderPage}
-      //     isLoop={false}
-      //     autoPlay={false}
-      //   />
-      // )
-      return (
-        <ViewPager
-          style={{flex: 1}}
-          dataSource={dataSource.cloneWithPages(pages)}
-          renderPage={this._renderPage}
-          isLoop={false}
-          autoPlay={false}
-        />
+    return(
+      <ViewPager
+        style={{}}
+        dataSource={dataSource.cloneWithPages(categoryPageData)}
+        renderPage={this._renderPage}
+        isLoop={false}
+        autoPlay={false}
+      />
       )
-    //   return (
-    //     <NewShopCategories allShopCategories = {this.props.allShopCategories}/>
-    // )
-      // return (
-      //   <ShopCategories shopCategories = {this.props.allShopCategories}></ShopCategories>
-      // )
-    }
-    return null
   }
 
-  _renderPage(data:Object, pageID) {
-    return (
-      <View
-        style={{
-          width: PAGE_WIDTH,
-          height: normalizeH(200),
-          borderBottomWidth: normalizeBorder(),
-          borderBottomColor: '#f5f5f5'
-        }}
-      >
-        {data}
-      </View>
-    )
-  }
 
   refreshData(payload) {
     if (payload && payload.loadingOtherCityData) {
