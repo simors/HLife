@@ -42,34 +42,19 @@ import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
 import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
-import {fetchShopList, clearShopList} from '../../action/shopAction'
+import {clearShopList, getNearbyShopList} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
 import SearchBar from '../common/SearchBar'
 import ScoreShow from '../common/ScoreShow'
 import ViewPager from 'react-native-viewpager'
 import {CachedImage} from "react-native-img-cache"
+import AV from 'leancloud-storage'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
 class Local extends Component {
   constructor(props) {
-    // console.log('constructor.props===', props)
     super(props)
-    this.state = {
-      searchForm: {
-        shopCategoryId: '',
-        sortId: 3,
-        distance: 0,
-        geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
-        geoCity: props.getCity || '',
-        lastCreatedAt: '',
-        lastScore: '',
-        lastGeo: '',
-        shopTagId: '',
-        skipNum: 0,
-        loadingOtherCityData: false
-      },
-    }
   }
 
   componentWillMount() {
@@ -93,32 +78,9 @@ class Local extends Component {
 
 
   componentDidMount() {
-    // console.log('componentDidMount.props===', this.props)
-    if (DeviceInfo.isEmulator()) {
-      this.state.searchForm.geo = [28.213866, 112.8186868]
-      this.state.searchForm.geoCity = '长沙'
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          geo: this.state.searchForm.geo,
-          geoCity: this.state.searchForm.geoCity
-        }
-      })
-    }
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('componentWillReceiveProps.props===', this.props)
-    // console.log('componentWillReceiveProps.nextProps===', nextProps)
-    if (nextProps.nextSkipNum) {
-      // this.state.searchForm.skipNum = nextProps.nextSkipNum
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          skipNum: nextProps.nextSkipNum
-        }
-      })
-    }
   }
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -263,74 +225,38 @@ class Local extends Component {
 
 
   refreshData(payload) {
-    if (payload && payload.loadingOtherCityData) {
-      this.loadMoreData(true)
-    } else {
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          loadingOtherCityData: false
-        }
-      }, () => {
-        this.loadMoreData(true)
-      })
-    }
+    this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh, isEndReached) {
-    // console.log('this.state===', this.state)
     if (this.isQuering) {
       return
     }
     this.isQuering = true
 
-    let limit = 5
+    let lastDistance = undefined
+    if (isRefresh) {
+      lastDistance = undefined
+    } else {
+      if (this.props.geoPoint && this.props.lastShopGeo) {
+        lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+      }
+    }
+
     let payload = {
-      ...this.state.searchForm,
       isRefresh: !!isRefresh,
-      limit: limit,
+      geo: this.props.geoPoint ? [this.props.geoPoint.latitude, this.props.geoPoint.longitude] : [],
+      lastDistance: lastDistance,
       isLocalQuering: true,
-      success: (isEmpty, fetchedSize) => {
+      success: (isEmpty) => {
         this.isQuering = false
         if (!this.listView) {
           return
         }
-        // console.log('loadMoreData.isEmpty=====', isEmpty)
         if (isEmpty) {
-          // if(isRefresh && this.state.searchForm.distance) {
-          //   this.setState({
-          //     searchForm: {
-          //       ...this.state.searchForm,
-          //       distance: ''
-          //     }
-          //   }, ()=>{
-          //     this.refreshData()
-          //   })
-          // }
-
-          if (!this.state.searchForm.loadingOtherCityData) {
-            this.setState({
-              searchForm: {
-                ...this.state.searchForm,
-                loadingOtherCityData: true,
-                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
-              }
-            }, ()=> {
-              // console.log('isEmpty===', isEmpty)
-              if (isRefresh) {
-                this.refreshData({loadingOtherCityData: true})
-              } else {
-                this.loadMoreData()
-              }
-            })
-          }
-
           this.listView.isLoadUp(false)
         } else {
           this.listView.isLoadUp(true)
-          if (isRefresh && fetchedSize < limit) {
-            this.loadMoreData()
-          }
         }
       },
       error: (err)=> {
@@ -338,7 +264,7 @@ class Local extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    this.props.fetchShopList(payload)
+    this.props.getNearbyShopList(payload)
   }
 
   render() {
@@ -394,32 +320,28 @@ const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
   const isUserLogined = authSelector.isUserLogined(state)
   const shopList = selectLocalShopList(state) || []
-  let nextSkipNum = 0
-  let lastUpdatedAt = ''
-  if (shopList && shopList.length) {
-    nextSkipNum = shopList[shopList.length - 1].nextSkipNum
-    lastUpdatedAt = shopList[shopList.length - 1].updatedAt
+
+  let lastShopGeo = undefined
+  if(shopList && shopList.length) {
+    lastShopGeo = shopList[shopList.length-1].geo
   }
 
   let geoPoint = locSelector.getGeopoint(state)
-  let getCity = locSelector.getCity(state)
 
   return {
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
     isUserLogined: isUserLogined,
-    nextSkipNum: nextSkipNum,
-    lastUpdatedAt: lastUpdatedAt,
     shopList: shopList,
     geoPoint: geoPoint,
-    getCity: getCity
+    lastShopGeo: lastShopGeo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
-  fetchShopList,
-  clearShopList
+  clearShopList,
+  getNearbyShopList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)

@@ -9,7 +9,7 @@ import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion, ShopGoods} from '../models/shopModel'
+import {ShopPromotion, ShopGoods, ShopInfo} from '../models/shopModel'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
@@ -63,6 +63,46 @@ export function fetchShopList(payload) {
         payload.success(shopList.isEmpty(), shopList.size)
       }
     }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function getNearbyShopList(payload) {
+  return (dispatch, getState) => {
+    console.log('lastDistance:', payload)
+    lcShop.fetchNearbyShops(payload).then((shopInfo) => {
+      let shopList = []
+      shopInfo.shops.forEach((shop) => {
+        shopList.push(ShopInfo.fromLeancloudApi(shop))
+      })
+      let actionType = ShopActionTypes.UPDATE_SHOP_LIST
+      if(!payload.isRefresh) {
+        if(payload.isLocalQuering) {
+          actionType = ShopActionTypes.UPDATE_LOCAL_PAGING_SHOP_LIST
+        }else {
+          actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
+        }
+        let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
+        let limit = payload.limit || 30
+        dispatch(updateAction({isLastPage: shopList.length == 0}))
+      }else {
+        if(payload.isLocalQuering) {
+          actionType = ShopActionTypes.UPDATE_LOCAL_SHOP_LIST
+        }
+      }
+
+      if(payload.isRefresh || shopList.length) {
+        let updateShopListAction = createAction(actionType)
+        dispatch(updateShopListAction({shopList: shopList}))
+      }
+      if(payload.success){
+        payload.success(shopList.length == 0)
+      }
+    }).catch((error) => {
+      console.log(error)
       if(payload.error){
         payload.error(error)
       }
