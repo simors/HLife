@@ -19,11 +19,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-
-import {Geolocation} from '../common/BaiduMap'
-import * as DeviceInfo from 'react-native-device-info'
 import * as locSelector from '../../selector/locSelector'
-
 import Header from '../common/Header'
 import {
   Option,
@@ -38,8 +34,9 @@ import ScoreShow from '../common/ScoreShow'
 import {selectShopCategories} from '../../selector/configSelector'
 import {selectShopList, selectShopTags, selectFetchShopListIsArrivedLastPage} from '../../selector/shopSelector'
 import {fetchShopCategories} from '../../action/configAction'
-import {fetchShopList, fetchShopTags} from '../../action/shopAction'
+import {fetchShopTags, getNearbyShopList} from '../../action/shopAction'
 import TimerMixin from 'react-timer-mixin'
+import AV from 'leancloud-storage'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -49,24 +46,15 @@ class ShopCategoryList extends Component {
     super(props)
 
     this.state = {
-      searchForm: {
-        shopCategoryId: '',
-        sortId: '0',
-        distance: '',
-        geo: undefined,
-        geoCity: '',
-        lastCreatedAt: '',
-        lastScore: '',
-        lastGeo: '',
-        shopTagId: '',
-        skipNum: 0,
-        loadingOtherCityData: false
-      },
-      shopCategoryName: '',
       selectGroupShow: [false, false, false],
       selectGroupHeight: 40,
       overlayHeight: 0,
-      animating: false
+      animating: false,
+      distance: undefined,
+      shopTagId: undefined,
+      shopCategoryId: undefined,
+      shopCategoryName: '',
+      sortId: '0',
     }
 
     this.isRefreshRendering = true
@@ -74,17 +62,10 @@ class ShopCategoryList extends Component {
   }
 
   componentWillMount() {
-    // console.log('componentWillMount.this.props.shopCategoryId==', this.props.shopCategoryId)
     if(this.props.shopCategoryId) {
-      this.state.searchForm.shopCategoryId = this.props.shopCategoryId
-      this.state.searchForm.shopCategoryName = this.props.shopCategoryName
       this.setState({
-        ...this.state,
-        searchForm: {
-          ...this.state.searchForm,
-          shopCategoryId: this.state.searchForm.shopCategoryId
-        },
-        shopCategoryName: this.state.searchForm.shopCategoryName
+        shopCategoryId: this.props.shopCategoryId,
+        shopCategoryName: this.props.shopCategoryName
       })
     }
 
@@ -94,101 +75,12 @@ class ShopCategoryList extends Component {
       this.refreshData()
     })
 
-    this.updateCurrentPosition()
-  }
-
-  updateCurrentPosition(callback) {
-    // console.log("DeviceInfo.isEmulator===", DeviceInfo.isEmulator())
-    if(DeviceInfo.isEmulator()) {
-      this.state.searchForm.geo = [28.213866,112.8186868]
-      this.state.searchForm.geoCity = '长沙'
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          geo: this.state.searchForm.geo,
-          geoCity: this.state.searchForm.geoCity
-        }
-      })
-      callback && callback()
-      return
-    }
-
-    // console.log('updateCurrentPosition....>>>>>', this.props.curGeoPoint)
-    this.state.searchForm.geo = [this.props.curGeoPoint.latitude, this.props.curGeoPoint.longitude]
-    this.state.searchForm.geoCity = this.props.curCity
-    this.setState({
-      ...this.state.searchForm,
-      geo: this.state.searchForm.geo,
-      geoCity: this.state.searchForm.geoCity
-    }, ()=>{
-      callback && callback()
-    })
-
-    // Geolocation.getCurrentPosition()
-    // .then(data => {
-    //   this.state.searchForm.geo = [data.latitude, data.longitude]
-    //   this.setState({
-    //     searchForm: {
-    //       ...this.state.searchForm,
-    //       geo: this.state.searchForm.geo,
-    //     }
-    //   })
-    //
-    //   if (Platform.OS == 'ios') {
-    //     Geolocation.reverseGeoCode(data.latitude, data.longitude)
-    //       .then(response => {
-    //         this.state.searchForm.geoCity = response.city,
-    //           this.setState({
-    //             searchForm: {
-    //               ...this.state.searchForm,
-    //               geoCity: this.state.searchForm.geoCity
-    //             }
-    //           }, ()=>{
-    //             callback && callback()
-    //           })
-    //       })
-    //   }else {
-    //     this.state.searchForm.geoCity = data.city,
-    //       this.setState({
-    //         searchForm: {
-    //           ...this.state.searchForm,
-    //           geoCity: this.state.searchForm.geoCity
-    //         }
-    //       }, ()=>{
-    //         callback && callback()
-    //       })
-    //   }
-
-    // }, (reason)=>{
-    //   callback && callback()
-    // })
   }
 
   componentDidMount() {
-    //console.log('========componentDidMount=========')
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.lastScore || nextProps.lastGeo || nextProps.lastCreatedAt || nextProps.total) {
-      this.state.searchForm.skipNum = nextProps.nextSkipNum
-      this.state.searchForm.lastScore = nextProps.lastScore
-      this.state.searchForm.lastGeo = nextProps.lastGeo
-      this.state.searchForm.lastCreatedAt = nextProps.lastCreatedAt
-      this.setState({
-        ...this.state,
-        searchForm: this.state.searchForm
-      })
-    }
-
-    // this.isLastPage = nextProps.isLastPage
-    // console.log('========componentWillReceiveProps====this.isLastPage=====',this.isLastPage)
-    // if(this.isLastPage) {
-    //   this.setTimeout(()=>{
-    //     if(this.listView) {
-    //       this.listView.isLoadUp(false)
-    //     }
-    //   }, 1000)
-    // }
   }
 
   _getOptionList(OptionListRef) {
@@ -198,21 +90,13 @@ class ShopCategoryList extends Component {
 
   _onSelectShopCategory(shopCategoryId) {
     this.scrollToTop(()=>{
-      // console.log('_onSelectShopCategory.shopCategoryId=' , shopCategoryId)
-      this.state.searchForm.shopCategoryId = shopCategoryId
       this.state.selectGroupShow = [false, false, false]
       this.setState({
-        ...this.state,
-        searchForm: {
-          ...this.state.searchForm,
-          shopCategoryId: this.state.searchForm.shopCategoryId,
-          shopTagId: ''
-        },
+        shopCategoryId: shopCategoryId,
         selectGroupShow: this.state.selectGroupShow
       }, ()=>{
         this.refreshData()
       })
-      // console.log('_onSelectShopCategory.this.state=' , this.state)
       this.toggleSelectGroupHeight()
     })
 
@@ -221,13 +105,8 @@ class ShopCategoryList extends Component {
   _onSelectSort(sortId) {
     this.scrollToTop(() => {
       this.state.selectGroupShow = [false, false, false]
-      this.state.searchForm.sortId = sortId
       this.setState({
-        ...this.state,
-        searchFrom: {
-          ...this.state.searchForm,
-          sortId: this.state.searchForm.sortId
-        },
+        sortId: sortId,
         selectGroupShow: this.state.selectGroupShow
       }, ()=>{
         this.refreshData()
@@ -238,7 +117,6 @@ class ShopCategoryList extends Component {
 
   scrollToTop(callback) {
     if(this.listView) {
-      // console.log('this.listView===', this.listView)
       this.listView.refs.listView.scrollTo({y:0})
     }
     if(typeof callback == 'function') {
@@ -248,17 +126,12 @@ class ShopCategoryList extends Component {
 
   _onSelectDistance(distance) {
     this.scrollToTop(()=>{
-      if('全城' == distance) {
-        distance = ''
+      if('不限' == distance) {
+        distance = undefined
       }
       this.state.selectGroupShow = [false, false, false]
-      this.state.searchForm.distance = distance
       this.setState({
-        ...this.state,
-        searchFrom: {
-          ...this.state.searchForm,
-          distance: this.state.searchForm.distance
-        },
+        distance: distance,
         selectGroupShow: this.state.selectGroupShow
       }, ()=>{
         this.refreshData()
@@ -320,7 +193,7 @@ class ShopCategoryList extends Component {
     if(this.props.allShopCategories) {
       optionsView = this.props.allShopCategories.map((item, index) => {
         return (
-          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.shopCategoryId}>{item.text}</Option>
+          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.id}>{item.text}</Option>
         )
       })
     }
@@ -333,10 +206,7 @@ class ShopCategoryList extends Component {
 
   shopTagQuery(shopTagId, isSlted) {
     this.setState({
-      searchForm: {
-        ...this.state.searchForm,
-        shopTagId: isSlted ? '' : shopTagId
-      }
+      shopTagId: isSlted ? undefined : shopTagId
     }, ()=>{
       this.refreshData()
     })
@@ -347,7 +217,7 @@ class ShopCategoryList extends Component {
     if(this.props.allShopCategories && this.props.allShopCategories.length) {
       for(let i = 0; i < this.props.allShopCategories.length; i++) {
         let shopCategory = this.props.allShopCategories[i]
-        if(shopCategory.shopCategoryId == this.state.searchForm.shopCategoryId) {
+        if(shopCategory.id == this.state.shopCategoryId) {
           shopCategoryContainedTag = shopCategory.containedTag
           break
         }
@@ -372,14 +242,13 @@ class ShopCategoryList extends Component {
   }
 
   renderTags() {
-    // console.log('renderTags')
     let shopTags = this.getRecommendShopTags()
     if(shopTags && shopTags.length) {
       let allShopTagsView = shopTags.map((item, index)=> {
         let sltedTagBoxStyle = {}
         let sltedShopTagStyle = {}
         let isSlted = false
-        if(this.state.searchForm.shopTagId == item.id) {
+        if(this.state.shopTagId == item.id) {
           isSlted = true
           sltedTagBoxStyle = {
             backgroundColor: THEME.colors.green
@@ -489,126 +358,66 @@ class ShopCategoryList extends Component {
     )
   }
 
-  // renderRow(rowData, sectionID, rowID, highlightRow) {
-  //   return this.renderShop(rowData)
-  // }
-
   refreshData(payload) {
     this.isLastPage = false
 
-    if(payload && payload.loadingOtherCityData) {
-      this.loadMoreData(true)
-    }else {
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          loadingOtherCityData: false
-        }
-      }, () => {
-        this.loadMoreData(true)
-      })
-    }
+    this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh) {
-    // console.log('========loadMoreData===this.isLastPage======', this.isLastPage)
-    // console.log('========loadMoreData===isRefresh======', isRefresh)
-    // console.log('========loadMoreData=======this.isRefreshRendering==', this.isRefreshRendering)
-    if (!this.state.searchForm.geo
-      || this.state.searchForm.geo.length != 2
-      || !this.state.searchForm.geoCity) {
-      this.updateCurrentPosition(()=> {
-        this.fetchMoreData(isRefresh)
-      })
-    }else {
-      this.fetchMoreData(isRefresh)
-    }
-  }
-
-  fetchMoreData(isRefresh) {
     if(!isRefresh) {
       if(this.isRefreshRendering) {
         return
       }
-      // this.listView.hideFooter(false)
     }else {
       this.isRefreshRendering = true
-      // this.listView.hideFooter(true)
     }
-    // console.log('loadMoreData.isLastPage=====', this.isLastPage)
     if(this.isLastPage) {
       this.listView.isLoadUp(false)
       return
     }
 
-    let limit = 5
+    let lastDistance = undefined
+    if (isRefresh) {
+      lastDistance = undefined
+    } else {
+      if (this.props.geoPoint && this.props.lastShopGeo) {
+        lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+      }
+    }
+
     let payload = {
-      ...this.state.searchForm,
       isRefresh: !!isRefresh,
-      limit: limit,
-      success: (isEmpty, fetchedSize) => {
+      geo: this.props.geoPoint ? [this.props.geoPoint.latitude, this.props.geoPoint.longitude] : [],
+      lastDistance: lastDistance,
+      shopCategoryId: this.state.shopCategoryId,
+      shopTagId: this.state.shopTagId,
+      distance: this.state.distance,
+      isLocalQuering: false,
+      success: (isEmpty) => {
         if(!this.listView) {
           return
         }
-        // console.log('loadMoreData.isEmpty=====', isEmpty)
         if(isEmpty) {
-          if(!this.state.searchForm.loadingOtherCityData) {
-            this.setState({
-              searchForm: {
-                ...this.state.searchForm,
-                loadingOtherCityData: true,
-                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
-              }
-            }, ()=>{
-              // console.log('isEmpty===', isEmpty)
-              if(isRefresh) {
-                this.refreshData({loadingOtherCityData: true})
-              }else {
-                this.loadMoreData()
-              }
-            })
-          }
-
           this.listView.isLoadUp(false)
         }else {
           this.listView.isLoadUp(true)
-          // console.log('isRefresh====', isRefresh)
-          // console.log('fetchedSize====', fetchedSize)
-          if(isRefresh && fetchedSize < limit) {
-            this.isRefreshRendering = false
-            this.loadMoreData()
-          }
         }
       },
       error: (err)=>{
         Toast.show(err.message, {duration: 1000})
       }
     }
-    this.props.fetchShopList(payload)
+    this.props.getNearbyShopList(payload)
   }
 
   renderSectionHeader(sectionData, sectionID) {
     return null
-    // if(sectionData.length < 12) {
-    //   return null
-    // }
-    // return (
-    //   <View style={styles.sectionHeader}>
-    //     <ScrollView
-    //       showsVerticalScrollIndicator={true}
-    //     >
-    //       {this.renderTags(this.props.allShopTags)}
-    //     </ScrollView>
-    //   </View>
-    // )
   }
 
   handleOnScroll(e) {
-    // this.scrollOffSet = e.nativeEvent.contentOffset.y
-    // console.log('e.nativeEvent.contentOffset.y===', e.nativeEvent.contentOffset.y)
     if(e.nativeEvent.contentOffset.y > 0) {
       this.isRefreshRendering = false
-      //this.listView.hideFooter(false)
     }
   }
 
@@ -653,7 +462,7 @@ class ShopCategoryList extends Component {
                 hasOverlay={false}
                 optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
                 defaultText={this.state.shopCategoryName}
-                defaultValue={this.state.searchForm.shopCategoryId}
+                defaultValue={this.state.shopCategoryId}
                 onSelect={this._onSelectShopCategory.bind(this)}>
 
                 <Option key={"shopCategoryOption_-1"} value="">全部分类</Option>
@@ -671,35 +480,33 @@ class ShopCategoryList extends Component {
                 optionListHeight={200}
                 hasOverlay={false}
                 optionListRef={()=> this._getOptionList('DISTANCE_OPTION_LIST')}
-                defaultText="全城"
+                defaultText="不限"
                 defaultValue=""
                 onSelect={this._onSelectDistance.bind(this)}>
                 <Option key={"distanceOption_0"} value="1">1km</Option>
                 <Option key={"distanceOption_1"} value="2">2km</Option>
                 <Option key={"distanceOption_2"} value="5">5km</Option>
                 <Option key={"distanceOption_3"} value="10">10km</Option>
-                <Option key={"distanceOption_4"} value="全城">全城</Option>
+                <Option key={"distanceOption_4"} value="不限">不限</Option>
               </Select>
 
             </View>
-            <View style={styles.selectContainer}>
-              <Select
-                show={this.state.selectGroupShow[2]}
-                onPress={()=>this._onSelectPress(2)}
-                style={{borderBottomWidth:normalizeBorder()}}
-                selectRef="SELECT3"
-                overlayPageX={0}
-                hasOverlay={false}
-                optionListRef={()=> this._getOptionList('SORT_OPTION_LIST')}
-                defaultText="智能排序"
-                defaultValue="0"
-                onSelect={this._onSelectSort.bind(this)}>
-                <Option key={"sortOption_0"} value="0">智能排序</Option>
-                <Option key={"sortOption_1"} value="1">好评优先</Option>
-                <Option key={"sortOption_2"} value="2">距离优先</Option>
-              </Select>
+            {/*<View style={styles.selectContainer}>*/}
+              {/*<Select*/}
+                {/*show={this.state.selectGroupShow[2]}*/}
+                {/*onPress={()=>this._onSelectPress(2)}*/}
+                {/*style={{borderBottomWidth:normalizeBorder()}}*/}
+                {/*selectRef="SELECT3"*/}
+                {/*overlayPageX={0}*/}
+                {/*hasOverlay={false}*/}
+                {/*optionListRef={()=> this._getOptionList('SORT_OPTION_LIST')}*/}
+                {/*defaultText="距离优先"*/}
+                {/*defaultValue="0"*/}
+                {/*onSelect={this._onSelectSort.bind(this)}>*/}
+                {/*<Option key={"sortOption_0"} value="0">距离优先</Option>*/}
+              {/*</Select>*/}
 
-            </View>
+            {/*</View>*/}
           </View>
           <TouchableWithoutFeedback onPress={()=>{this._onOverlayPress()}}>
             <View style={[styles.selectOverlay, { height: this.state.overlayHeight }]}>
@@ -724,50 +531,38 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
   let isLastPage = selectFetchShopListIsArrivedLastPage(state)
-  // console.log('selectFetchShopListIsArrivedLastPage.isLastPage===', isLastPage)
   const allShopCategories = selectShopCategories(state)
-  // console.log('allShopCategories=', allShopCategories)
   const shopList = selectShopList(state) || []
-  // console.log('mapStateToProps.shopList=', shopList)
-  let lastScore = ''
-  let lastCreatedAt = ''
-  let lastGeo = []
-  let nextSkipNum = 0
   if(shopList && shopList.length) {
-    lastCreatedAt = shopList[shopList.length-1].createdAt
-    lastScore = shopList[shopList.length-1].score
-    lastGeo = shopList[shopList.length-1].geo
-    nextSkipNum = shopList[shopList.length-1].nextSkipNum
-    // console.log('mapStateToProps.shopList.length=', shopList.length)
     if(shopList.length < 5) {
       isLastPage = true
     }
   }
 
+  let lastShopGeo = undefined
+  if(shopList && shopList.length) {
+    lastShopGeo = shopList[shopList.length-1].geo
+  }
+
   const allShopTags = selectShopTags(state)
 
-  const curGeoPoint = locSelector.getGeopoint(state)
-  const curCity = locSelector.getCity(state)
+  const geoPoint = locSelector.getGeopoint(state)
 
   return {
     ds: ds.cloneWithRows(shopList),
     shopList: shopList,
     allShopCategories: allShopCategories,
-    lastCreatedAt: lastCreatedAt,
-    lastScore: lastScore,
-    lastGeo: lastGeo,
     allShopTags: allShopTags,
     isLastPage: isLastPage,
-    nextSkipNum: nextSkipNum,
-    curGeoPoint: curGeoPoint,
-    curCity: curCity,
+    geoPoint: geoPoint,
+    lastShopGeo: lastShopGeo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
-  fetchShopList,
   fetchShopTags,
+  getNearbyShopList,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCategoryList)

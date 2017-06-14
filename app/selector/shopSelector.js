@@ -62,7 +62,7 @@ export function selectShopDetail(state, id) {
   }
 
   // console.log('shopDetail=', shopDetail)
-  return shopDetail
+  return shopDetail.toJS()
 }
 
 export function selectShopPromotionDetail(state, id) {

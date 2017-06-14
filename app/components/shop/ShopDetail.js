@@ -1047,6 +1047,8 @@ const mapStateToProps = (state, ownProps) => {
   //   shopList.splice(0, shopList.length-3)
   // }
 
+  console.log('shopDetail', shopDetail)
+
   return {
     goodList: goodList,
     shopDetail: shopDetail,

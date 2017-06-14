@@ -41,9 +41,8 @@ import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
-import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
+import {selectLocalShopList} from '../../selector/shopSelector'
 import {clearShopList, getNearbyShopList} from '../../action/shopAction'
-import * as DeviceInfo from 'react-native-device-info'
 import SearchBar from '../common/SearchBar'
 import ScoreShow from '../common/ScoreShow'
 import ViewPager from 'react-native-viewpager'
@@ -179,7 +178,7 @@ class Local extends Component {
   gotoShopCategoryList(shopCategory) {
     Actions.SHOP_CATEGORY_LIST({
       shopCategoryId: shopCategory.shopCategoryId,
-      shopCategoryName: shopCategory.text
+      shopCategoryName: shopCategory.shopCategoryName
     })
   }
 
@@ -190,7 +189,7 @@ class Local extends Component {
           data.map((value, key) => {
             return(
               <TouchableOpacity key={key} style={{width: PAGE_WIDTH/4, height: normalizeH(109), justifyContent: 'center', alignItems: 'center'}}
-                                onPress={() => {this.gotoShopCategoryList({shopCategoryId: value.shopCategoryId, shopCategoryName: value.text})}}>
+                                onPress={() => {this.gotoShopCategoryList({shopCategoryId: value.id, shopCategoryName: value.text})}}>
                 <CachedImage mutable style={{width: normalizeW(50), height: normalizeW(50), marginBottom: normalizeH(8)}} source={{uri: value.imageSource}}/>
                 <Text numberOfLines={1} style={{}}>{value.text}</Text>
               </TouchableOpacity>

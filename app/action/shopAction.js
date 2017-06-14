@@ -72,7 +72,6 @@ export function fetchShopList(payload) {
 
 export function getNearbyShopList(payload) {
   return (dispatch, getState) => {
-    console.log('lastDistance:', payload)
     lcShop.fetchNearbyShops(payload).then((shopInfo) => {
       let shopList = []
       shopInfo.shops.forEach((shop) => {
@@ -86,7 +85,6 @@ export function getNearbyShopList(payload) {
           actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
         }
         let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
-        let limit = payload.limit || 30
         dispatch(updateAction({isLastPage: shopList.length == 0}))
       }else {
         if(payload.isLocalQuering) {
