@@ -103,6 +103,21 @@ class ShopGoodsDetail extends Component {
     })
   }
 
+  onShare = () => {
+    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + this.props.goodInfo.id :
+    DEFAULT_SHARE_DOMAIN + "goodShare/" + this.props.goodInfo.id
+
+    console.log("shopShare url:", shareUrl)
+
+    Actions.SHARE({
+      title: this.props.goodInfo.goodsName || "汇邻优店",
+      url: shareUrl,
+      author: this.props.shopDetail.shopName || "邻家小二",
+      abstract: this.props.shopDetail.shopAddress || "未知地址",
+      cover: this.props.goodInfo.coverPhoto || '',
+    })
+  }
+
   renderMainHeader() {
     return (
       <Animated.View style={{
@@ -125,7 +140,13 @@ class ShopGoodsDetail extends Component {
             })
           }}
           title="商品详情"
-
+          rightComponent={()=> {
+            return (
+              <TouchableOpacity onPress={this.onShare} style={{marginRight: 10}}>
+                <Image source={require('../../assets/images/active_share.png')}/>
+              </TouchableOpacity>
+            )
+          }}
         />
       </Animated.View>
     )
@@ -220,7 +241,7 @@ class ShopGoodsDetail extends Component {
         >
           <CachedImage
             mutable
-            style={[{width: PAGE_WIDTH, height: normalizeH(223)}]}
+            style={[{width: PAGE_WIDTH, height: normalizeH(264)}]}
             resizeMode="stretch"
             source={typeof(this.props.goodInfo.album[0]) == 'string' ? {uri: this.props.goodInfo.album[0]} : this.props.goodInfo.album[0]}
           />
@@ -287,21 +308,6 @@ class ShopGoodsDetail extends Component {
         </TouchableOpacity>
       </View>
     )
-  }
-
-  onShare = () => {
-    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id :
-    DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.shopDetail.id
-
-    console.log("shopShare url:", shareUrl)
-
-    Actions.SHARE({
-      title: this.props.shopDetail.shopName || "汇邻优店",
-      url: shareUrl,
-      author: this.props.shopDetail.shopName || "邻家小二",
-      abstract: this.props.shopDetail.shopAddress || "未知地址",
-      cover: this.props.shopDetail.coverUrl || '',
-    })
   }
 
   sendPrivateMessage() {
@@ -681,7 +687,7 @@ const styles = StyleSheet.create({
 
   },
   advertisementModule: {
-    height: normalizeH(223),
+    height: normalizeH(264),
     backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
   },
   contentContainerStyle: {},
@@ -696,7 +702,7 @@ const styles = StyleSheet.create({
   titleStyle:{
     flex:1,
     width:PAGE_WIDTH,
-    alignItems:'center',
+    alignItems:'flex-start',
     marginBottom:normalizeH(15),
     borderBottomWidth:normalizeH(1),
     borderBottomColor:'#F5F5F5',
@@ -707,6 +713,7 @@ const styles = StyleSheet.create({
     marginTop:normalizeH(16),
     color:'#030303',
     fontSize:em(17),
+    fontWeight: 'bold',
     marginBottom:normalizeH(15),
 
   }

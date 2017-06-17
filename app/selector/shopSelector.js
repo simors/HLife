@@ -1,6 +1,7 @@
 /**
  * Created by zachary on 2016/12/14.
  */
+import {Record} from 'immutable'
 import {activeUserId} from './authSelector'
 
 export function selectShop(state) {
@@ -62,7 +63,11 @@ export function selectShopDetail(state, id) {
   }
 
   // console.log('shopDetail=', shopDetail)
-  return shopDetail
+  if (shopDetail instanceof Record) {
+    return shopDetail.toJS()
+  } else {
+    return shopDetail
+  }
 }
 
 export function selectShopPromotionDetail(state, id) {

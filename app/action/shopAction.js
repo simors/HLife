@@ -9,7 +9,7 @@ import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion, ShopGoods} from '../models/shopModel'
+import {ShopPromotion, ShopGoods, ShopInfo} from '../models/shopModel'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
@@ -63,6 +63,44 @@ export function fetchShopList(payload) {
         payload.success(shopList.isEmpty(), shopList.size)
       }
     }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function getNearbyShopList(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchNearbyShops(payload).then((shopInfo) => {
+      let shopList = []
+      shopInfo.shops.forEach((shop) => {
+        shopList.push(ShopInfo.fromLeancloudApi(shop))
+      })
+      let actionType = ShopActionTypes.UPDATE_SHOP_LIST
+      if(!payload.isRefresh) {
+        if(payload.isLocalQuering) {
+          actionType = ShopActionTypes.UPDATE_LOCAL_PAGING_SHOP_LIST
+        }else {
+          actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
+        }
+        let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
+        dispatch(updateAction({isLastPage: shopList.length == 0}))
+      }else {
+        if(payload.isLocalQuering) {
+          actionType = ShopActionTypes.UPDATE_LOCAL_SHOP_LIST
+        }
+      }
+
+      if(payload.isRefresh || shopList.length) {
+        let updateShopListAction = createAction(actionType)
+        dispatch(updateShopListAction({shopList: shopList}))
+      }
+      if(payload.success){
+        payload.success(shopList.length == 0)
+      }
+    }).catch((error) => {
+      console.log(error)
       if(payload.error){
         payload.error(error)
       }
@@ -826,21 +864,6 @@ export function setShopGoodsOnline(payload) {
   }
 }
 
-// export function setShopGoodsOffline(payload) {
-//   return (dispatch, getState) => {
-//     payload = {
-//       goodsId: '59375f8dfe88c20061eabee0',
-//       shopId: '58fec4600ce46300613d849e',
-//     }
-//     lcShop.goodsOffline({goodsId: payload.goodsId}).then((goodsInfo) => {
-//       if (0 == goodsInfo.errcode) {
-//         let newStatus = goodsInfo.goodsInfo.status
-//         dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
-//       }
-//     })
-//   }
-// }
-
 export function setShopGoodsOffline(payload) {
   return (dispatch, getState) => {
     let offLinePayload = {
@@ -864,21 +887,6 @@ export function setShopGoodsOffline(payload) {
     })
   }
 }
-
-// export function setShopGoodsDelete(payload) {
-//   return (dispatch, getState) => {
-//     payload = {
-//       goodsId: '59375f8dfe88c20061eabee0',
-//       shopId: '58fec4600ce46300613d849e',
-//     }
-//     lcShop.goodsDelete({goodsId: payload.goodsId}).then((goodsInfo) => {
-//       if (0 == goodsInfo.errcode) {
-//         let newStatus = goodsInfo.goodsInfo.status
-//         dispatch(updateShopGoodsStatus({shopId: payload.shopId, goodsId: payload.goodsId, status: newStatus}))
-//       }
-//     })
-//   }
-// }
 
 export function setShopGoodsDelete(payload) {
   return (dispatch, getState) => {
@@ -932,7 +940,6 @@ export function getShopGoodsList(payload) {
 }
 
 export function submitShopGood(payload) {
-  console.log("submitShopGood payload", payload)
   return (dispatch, getState) => {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
@@ -944,7 +951,6 @@ export function submitShopGood(payload) {
       return
     }else {
       const formData = getInputFormData(getState(), payload.formKey)
-       console.log("submitShopGood formData:", formData)
       let coverUrl = ''
       let album = []
       let leanRichTextImagesUrls = []
@@ -957,7 +963,7 @@ export function submitShopGood(payload) {
         album = urls
         return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
       }).then((urls) => {
-        leanRichTextImagesUrls = urls
+        leanRichTextImagesUrls = urls.reverse()
         let content = formData.shopGoodContent.text
         if(content && content.length &&
           leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
@@ -970,18 +976,15 @@ export function submitShopGood(payload) {
         let shopGoodPayload = {
           shopId: payload.shopId,
           goodsName: formData.title.text || '',
-          price: Number(formData.price.text) || 0,
-          originalPrice: Number(formData.originalPrice.text) || 0,
+          price: Number(payload.price) || 0,
+          originalPrice: Number(payload.originalPrice) || 0,
           coverPhoto: coverUrl,
           album: album,
           detail: JSON.stringify(content),
         }
 
-        console.log("shopGoodPayload:", shopGoodPayload)
 
         lcShop.addNewShopGoods(shopGoodPayload).then((goodsInfo) => {
-          console.log("addNewShopGoods return goodsInfo:", goodsInfo)
-
           if (0 == goodsInfo.errcode) {
             let goodsObj = goodsInfo.goodsInfo
             let shopId = goodsObj.targetShop.id
@@ -1009,7 +1012,6 @@ export function submitShopGood(payload) {
 }
 
 export function modifyShopGoods(payload) {
-  console.log("modifyShopGoods", payload)
   return (dispatch, getState) => {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
@@ -1021,25 +1023,20 @@ export function modifyShopGoods(payload) {
       return
     } else {
       const formData = getInputFormData(getState(), payload.formKey)
-      console.log("modifyShopGoods formData:", formData)
 
       let coverUrl = ''
       let album = []
       let leanRichTextImagesUrls = []
       let localCover = formData.shopGoodCover.text
-      let localAlbum = []
-      if(formData.shopGoodAlbumInput && formData.shopGoodAlbumInput.text && formData.shopGoodAlbumInput.text.length > 1){
-        localAlbum = formData.shopGoodAlbumInput.text
-      }
 
       ImageUtil.uploadImg2(localCover).then((url) => {
         coverUrl = url
-        return ImageUtil.batchUploadImgs(localAlbum)
+        return ImageUtil.batchUploadImgs(payload.albums)
       }).then((urls) => {
         album = urls
         return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
       }).then((urls) => {
-        leanRichTextImagesUrls = urls
+        leanRichTextImagesUrls = urls.reverse()
         let content = formData.shopGoodContent.text
         if(content && content.length &&
           leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
@@ -1052,17 +1049,15 @@ export function modifyShopGoods(payload) {
         let modifyShopGoodPayload = {
           goodsId: payload.goodsId,
           goodsName: formData.title.text || '',
-          price: Number(formData.price.text) || 0,
-          originalPrice: Number(formData.originalPrice.text) || 0,
+          price: Number(payload.price) || 0,
+          originalPrice: Number(payload.originalPrice) || 0,
           coverPhoto: coverUrl,
           album: album,
           detail: JSON.stringify(content)
         }
 
-        console.log("modifyShopGoodPayload:", modifyShopGoodPayload)
 
         lcShop.modifyShopGoods(modifyShopGoodPayload).then((goodsInfo) => {
-          console.log("modifyShopGoods return goodsInfo:", goodsInfo)
 
           if (0 == goodsInfo.errcode) {
             let goodsObj = goodsInfo.goodsInfo

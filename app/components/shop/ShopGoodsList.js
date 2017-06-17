@@ -52,8 +52,8 @@ export default class ShopGoodsList extends Component {
           <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={goodInfo.coverPhoto ? {uri: goodInfo.coverPhoto} : require("../../assets/images/default_goods_cover.png")}/>
           </View>
             {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-          <Text style={ styles.channelText}>{goodInfo.goodsName}</Text>
-          <Text style={ styles.channelPrice}>{'¥' + goodInfo.price}</Text>
+          <Text style={ styles.channelText} numberOfLines={1}>{goodInfo.goodsName}</Text>
+          <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + goodInfo.price}</Text>
         </View>
       </TouchableOpacity>
     )

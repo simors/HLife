@@ -58,7 +58,7 @@ export default class GoodAlbumShow extends Component {
       >
         <CachedImage
           mutable
-          style={[{width: PAGE_WIDTH, height: normalizeH(223)}]}
+          style={[{width: PAGE_WIDTH, height: normalizeH(264)}]}
           resizeMode="stretch"
           source={typeof(this.props.image) == 'string' ? {uri: this.props.image} : this.props.image}
         />

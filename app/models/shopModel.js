@@ -220,10 +220,7 @@ export class ShopInfo extends ShopRecord {
         let containedPromotions = []
         if(lcObj.containedPromotions && lcObj.containedPromotions.length) {
           lcObj.containedPromotions.forEach((promotion)=>{
-            // TODO: promotion的其他数据还没有获取到
-            let promotionRecord = {
-              id: promotion.id,
-            }
+            let promotionRecord = ShopPromotion.fromLeancloudApi(promotion)
             containedPromotions.push(promotionRecord)
           })
         }
@@ -387,16 +384,19 @@ export class ShopPromotion extends ShopPromotionRecord {
       let userCurGeo = locSelector.getGeopoint(store.getState())
       let curGeoPoint = new AV.GeoPoint(userCurGeo)
       let shopGeoPoint = targetShop.geo
-      let distance = shopGeoPoint.kilometersTo(curGeoPoint)
-      let distanceUnit = 'km'
-      if(distance > 1) {
-        distance = Number(distance).toFixed(1)
-      }else {
-        distance = Number(distance * 1000).toFixed(0)
-        distanceUnit = 'm'
+      if (shopGeoPoint) {
+        let distance = shopGeoPoint.kilometersTo(curGeoPoint)
+        let distanceUnit = 'km'
+        if(distance > 1) {
+          distance = Number(distance).toFixed(1)
+        }else {
+          distance = Number(distance * 1000).toFixed(0)
+          distanceUnit = 'm'
+        }
+        targetShop.distance = distance
+        targetShop.distanceUnit = distanceUnit
       }
-      targetShop.distance = distance
-      targetShop.distanceUnit = distanceUnit
+
       record.set('targetShop', targetShop)
       record.set('createdDate', numberUtils.formatLeancloudTime(new Date(lcObj.createdAt), 'YYYY-MM-DD HH:mm:SS'))
       record.set('createdAt', lcObj.createdAt)

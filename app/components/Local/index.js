@@ -36,46 +36,24 @@ import {selectShopCategories} from '../../selector/configSelector'
 import {fetchShopCategories} from '../../action/configAction'
 import CommonListView from '../common/CommonListView'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import * as Utils from '../../util/Utils'
-import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import * as Toast from '../common/Toast'
-import Swiper from 'react-native-swiper'
 import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
-import {selectShopList, selectLocalShopList} from '../../selector/shopSelector'
-import {fetchShopList, clearShopList} from '../../action/shopAction'
-import ViewPager from '../common/ViewPager'
-// import ViewPager2 from 'react-native-viewpager'
-import * as DeviceInfo from 'react-native-device-info'
+import {selectLocalShopList} from '../../selector/shopSelector'
+import {clearShopList, getNearbyShopList} from '../../action/shopAction'
 import SearchBar from '../common/SearchBar'
 import ScoreShow from '../common/ScoreShow'
-import NewShopCategories from './NewShopCategories'
-import ShopCategories from './ShopCategories'
+import ViewPager from 'react-native-viewpager'
+import {CachedImage} from "react-native-img-cache"
+import AV from 'leancloud-storage'
 
 const PAGE_WIDTH = Dimensions.get('window').width
-const PAGE_HEIGHT = Dimensions.get('window').height
 
 class Local extends Component {
   constructor(props) {
-    // console.log('constructor.props===', props)
     super(props)
-    this.state = {
-      searchForm: {
-        shopCategoryId: '',
-        sortId: 3,
-        distance: 0,
-        geo: props.geoPoint ? [props.geoPoint.latitude, props.geoPoint.longitude] : undefined,
-        geoCity: props.getCity || '',
-        lastCreatedAt: '',
-        lastScore: '',
-        lastGeo: '',
-        shopTagId: '',
-        skipNum: 0,
-        loadingOtherCityData: false
-      },
-    }
   }
 
   componentWillMount() {
@@ -99,32 +77,9 @@ class Local extends Component {
 
 
   componentDidMount() {
-    // console.log('componentDidMount.props===', this.props)
-    if (DeviceInfo.isEmulator()) {
-      this.state.searchForm.geo = [28.213866, 112.8186868]
-      this.state.searchForm.geoCity = '长沙'
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          geo: this.state.searchForm.geo,
-          geoCity: this.state.searchForm.geoCity
-        }
-      })
-    }
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('componentWillReceiveProps.props===', this.props)
-    // console.log('componentWillReceiveProps.nextProps===', nextProps)
-    if (nextProps.nextSkipNum) {
-      // this.state.searchForm.skipNum = nextProps.nextSkipNum
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          skipNum: nextProps.nextSkipNum
-        }
-      })
-    }
   }
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -137,10 +92,6 @@ class Local extends Component {
       default:
         return <View />
     }
-  }
-
-  renderShopCategoryColumn() {
-    return this.renderSectionHeader()
   }
 
   renderLocalShopListColumn() {
@@ -227,203 +178,84 @@ class Local extends Component {
   gotoShopCategoryList(shopCategory) {
     Actions.SHOP_CATEGORY_LIST({
       shopCategoryId: shopCategory.shopCategoryId,
-      shopCategoryName: shopCategory.text
+      shopCategoryName: shopCategory.shopCategoryName
     })
   }
 
-  renderShopCategoryBox(shopCategory) {
+  _renderPage = (data, pageID) => {
     return (
-      <TouchableOpacity key={shopCategory.id} style={styles.shopCategoryTouchBox} onPress={()=> {
-        this.gotoShopCategoryList(shopCategory)
-      }}>
-        <View style={styles.shopCategoryBox}>
-          <Image
-            style={[styles.shopCategoryImage]}
-            resizeMode='contain'
-            source={{uri: shopCategory.imageSource}}
-          />
-          <Text numberOfLines={1} style={[styles.shopCategoryText]}>{shopCategory.text}</Text>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
-  renderShopCategoryRow(row) {
-    return (
-      <View key={'row' + Math.random()} style={styles.shopCategoryRow}>
-        {row}
+      <View key={pageID} style={{width: PAGE_WIDTH, height: normalizeH(218), flexWrap: 'wrap'}}>
+        {
+          data.map((value, key) => {
+            return(
+              <TouchableOpacity key={key} style={{width: PAGE_WIDTH/4, height: normalizeH(109), justifyContent: 'center', alignItems: 'center'}}
+                                onPress={() => {this.gotoShopCategoryList({shopCategoryId: value.id, shopCategoryName: value.text})}}>
+                <CachedImage mutable style={{width: normalizeW(50), height: normalizeW(50), marginBottom: normalizeH(8)}} source={{uri: value.imageSource}}/>
+                <Text numberOfLines={1} style={{}}>{value.text}</Text>
+              </TouchableOpacity>
+            )
+          })
+        }
       </View>
     )
   }
 
-  renderShopCategoryPage(page) {
-    return (
-      <View key={'page' + Math.random()} style={styles.shopCategoryPage}>
-        {page}
-      </View>
-    )
-  }
+  renderShopCategoryColumn() {
+    let dataSource = new ViewPager.DataSource({
+      pageHasChanged: (p1, p2) => p1 !== p2,
+    })
 
-  renderSectionHeader() {
-    let pages = []
-    let that = this
-    // console.log('this.props.allShopCategories===', this.props.allShopCategories)
-    if (this.props.allShopCategories && this.props.allShopCategories.length) {
-      let pageView = <View/>
-      let shopCategoriesView = []
-      let rowView = <View />
-      let row = []
-      this.props.allShopCategories.forEach((shopCategory, index) => {
-        // console.log('shopCategory===', shopCategory)
+    const categoryPageData = Array.apply(null, {
+      length: Math.ceil(this.props.allShopCategories.length / 8)
+    }).map((x, i) => {
+      return this.props.allShopCategories.slice(i * 8, (i + 1) * 8);
+    })
 
-        let shopCategoryView = that.renderShopCategoryBox(shopCategory)
-        row.push(shopCategoryView)
-
-        let shopCategoryLength = this.props.allShopCategories.length
-        if (shopCategoryLength == (index + 1)) {
-          // console.log('renderSectionHeader*****==row.length==', row.length)
-          if (row.length < 4) {
-            let lastRowLength = row.length
-            for (let i = 0; i < (4 - lastRowLength); i++) {
-              let placeholderRowView = <View key={'empty_' + i} style={styles.shopCategoryTouchBox}/>
-              row.push(placeholderRowView)
-            }
-            // console.log('renderSectionHeader*****>>>>>>>>>>>>>==row.length==', row.length)
-          }
-        }
-
-        if (row.length == 4) {
-          rowView = that.renderShopCategoryRow(row)
-          shopCategoriesView.push(rowView)
-          row = []
-        }
-
-        if (shopCategoriesView.length == 2 || shopCategoryLength == (index + 1)) {
-          pageView = that.renderShopCategoryPage(shopCategoriesView)
-          pages.push(pageView)
-          shopCategoriesView = []
-        }
-
-      })
-
-      // console.log('renderSectionHeader*****==pages==', pages)
-
-      let dataSource = new ViewPager.DataSource({
-        pageHasChanged: (p1, p2) => p1 !== p2,
-      })
-
-      // return (
-      //   <ViewPager
-      //     style={{flex: 1}}
-      //     dataSource={dataSource.cloneWithPages(pages)}
-      //     renderPage={this._renderPage}
-      //     isLoop={false}
-      //     autoPlay={false}
-      //   />
-      // )
-      return (
-        <ViewPager
-          style={{flex: 1}}
-          dataSource={dataSource.cloneWithPages(pages)}
-          renderPage={this._renderPage}
-          isLoop={false}
-          autoPlay={false}
-        />
+    return(
+      <ViewPager
+        style={{}}
+        dataSource={dataSource.cloneWithPages(categoryPageData)}
+        renderPage={this._renderPage}
+        isLoop={false}
+        autoPlay={false}
+      />
       )
-    //   return (
-    //     <NewShopCategories allShopCategories = {this.props.allShopCategories}/>
-    // )
-      // return (
-      //   <ShopCategories shopCategories = {this.props.allShopCategories}></ShopCategories>
-      // )
-    }
-    return null
   }
 
-  _renderPage(data:Object, pageID) {
-    return (
-      <View
-        style={{
-          width: PAGE_WIDTH,
-          height: normalizeH(200),
-          borderBottomWidth: normalizeBorder(),
-          borderBottomColor: '#f5f5f5'
-        }}
-      >
-        {data}
-      </View>
-    )
-  }
 
   refreshData(payload) {
-    if (payload && payload.loadingOtherCityData) {
-      this.loadMoreData(true)
-    } else {
-      this.setState({
-        searchForm: {
-          ...this.state.searchForm,
-          loadingOtherCityData: false
-        }
-      }, () => {
-        this.loadMoreData(true)
-      })
-    }
+    this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh, isEndReached) {
-    // console.log('this.state===', this.state)
     if (this.isQuering) {
       return
     }
     this.isQuering = true
 
-    let limit = 5
+    let lastDistance = undefined
+    if (isRefresh) {
+      lastDistance = undefined
+    } else {
+      if (this.props.geoPoint && this.props.lastShopGeo) {
+        lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+      }
+    }
+
     let payload = {
-      ...this.state.searchForm,
       isRefresh: !!isRefresh,
-      limit: limit,
+      geo: this.props.geoPoint ? [this.props.geoPoint.latitude, this.props.geoPoint.longitude] : [],
+      lastDistance: lastDistance,
       isLocalQuering: true,
-      success: (isEmpty, fetchedSize) => {
+      success: (isEmpty) => {
         this.isQuering = false
         if (!this.listView) {
           return
         }
-        // console.log('loadMoreData.isEmpty=====', isEmpty)
         if (isEmpty) {
-          // if(isRefresh && this.state.searchForm.distance) {
-          //   this.setState({
-          //     searchForm: {
-          //       ...this.state.searchForm,
-          //       distance: ''
-          //     }
-          //   }, ()=>{
-          //     this.refreshData()
-          //   })
-          // }
-
-          if (!this.state.searchForm.loadingOtherCityData) {
-            this.setState({
-              searchForm: {
-                ...this.state.searchForm,
-                loadingOtherCityData: true,
-                skipNum: isRefresh ? 0 : this.state.searchForm.skipNum
-              }
-            }, ()=> {
-              // console.log('isEmpty===', isEmpty)
-              if (isRefresh) {
-                this.refreshData({loadingOtherCityData: true})
-              } else {
-                this.loadMoreData()
-              }
-            })
-          }
-
           this.listView.isLoadUp(false)
         } else {
           this.listView.isLoadUp(true)
-          if (isRefresh && fetchedSize < limit) {
-            this.loadMoreData()
-          }
         }
       },
       error: (err)=> {
@@ -431,7 +263,7 @@ class Local extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    this.props.fetchShopList(payload)
+    this.props.getNearbyShopList(payload)
   }
 
   render() {
@@ -487,32 +319,28 @@ const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
   const isUserLogined = authSelector.isUserLogined(state)
   const shopList = selectLocalShopList(state) || []
-  let nextSkipNum = 0
-  let lastUpdatedAt = ''
-  if (shopList && shopList.length) {
-    nextSkipNum = shopList[shopList.length - 1].nextSkipNum
-    lastUpdatedAt = shopList[shopList.length - 1].updatedAt
+
+  let lastShopGeo = undefined
+  if(shopList && shopList.length) {
+    lastShopGeo = shopList[shopList.length-1].geo
   }
 
   let geoPoint = locSelector.getGeopoint(state)
-  let getCity = locSelector.getCity(state)
 
   return {
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
     isUserLogined: isUserLogined,
-    nextSkipNum: nextSkipNum,
-    lastUpdatedAt: lastUpdatedAt,
     shopList: shopList,
     geoPoint: geoPoint,
-    getCity: getCity
+    lastShopGeo: lastShopGeo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
-  fetchShopList,
-  clearShopList
+  clearShopList,
+  getNearbyShopList
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)

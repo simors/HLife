@@ -31,6 +31,7 @@ export const UserInfoRecord = Record({
   detail: {},
   enable: false,
   paymentPassword: undefined,
+  isVirtual:0
 }, 'UserInfoRecord')
 
 export const HealthProfileRecord = Record({

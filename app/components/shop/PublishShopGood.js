@@ -16,6 +16,8 @@ import {
   InteractionManager,
   Keyboard,
   TextInput,
+  Modal,
+
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -31,7 +33,6 @@ import ArticleEditor from '../common/Input/ArticleEditor'
 import Symbol from 'es6-symbol'
 import Loading from '../common/Loading'
 import {submitShopGood} from '../../action/shopAction'
-import ViewPager from '../common/ViewPager'
 
 
 
@@ -53,7 +54,7 @@ const shopGoodContent = {
     if (textLen >= 20) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '正文内容不少于20字'}
+    return {isVal: false, errMsg: '产品介绍不少于20字'}
   },
 }
 
@@ -81,28 +82,6 @@ const title = {
   type: 'title',
 }
 
-const price = {
-  formKey: shopGoodForm,
-  stateKey: Symbol('price'),
-  type: 'price',
-  checkValid: (data) => {
-    if (data && data.text) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '请输入价格'}
-  },
-}
-const originalPrice = {
-  formKey: shopGoodForm,
-  stateKey: Symbol('originalPrice'),
-  type: 'originalPrice',
-  checkValid: (data) => {
-    if (data && data.text) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '请输入原价'}
-  },
-}
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -121,6 +100,10 @@ class PublishShopGood extends Component {
     this.state = {
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
+      showPriceModal: false,
+      price: undefined,
+      originalPrice: undefined,
+
     }
   }
 
@@ -172,18 +155,34 @@ class PublishShopGood extends Component {
   }
 
   submitForm() {
+    if (this.albums.length == 0) {
+      Toast.show('请设置商品相册')
+      this.isPublishing = false
+      return
+    }
+    if (this.state.price == undefined) {
+      Toast.show('请输入商品价格')
+      this.isPublishing = false
+      return
+    }
+    if (this.state.originalPrice == undefined) {
+      Toast.show('请输入商品原价')
+      this.isPublishing = false
+      return
+    }
     this.loading = Loading.show()
     this.props.submitShopGood({
       shopId: this.props.shopId,
       formKey: shopGoodForm,
       localRichTextImagesUrls: this.localRichTextImagesUrls,
       albums: this.albums,
+      price: this.state.price,
+      originalPrice: this.state.originalPrice,
       success: ()=>{
         this.isPublishing = false
         Loading.hide(this.loading)
         Toast.show('商品发布成功')
-        Actions.MY_SHOP_INDEX()
-
+        Actions.MY_SHOP_INDEX({type:'replace'})
       },
       error: (err)=>{
         this.isPublishing = false
@@ -226,6 +225,83 @@ class PublishShopGood extends Component {
         </View>
       )
     }
+  }
+
+  openPriceModal() {
+    this.setState({showPriceModal: true})
+  }
+
+  renderPriceModal() {
+    return (
+      <View>
+        <Modal
+          visible={this.state.showPriceModal}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={()=>{this.setState({showPriceModal: false})}}
+        >
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+            <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
+              <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
+                <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置商品价格</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>¥</Text>
+                <TextInput
+                  placeholder='价格'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({price: text})}
+                  value={this.state.price}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(100),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>元</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>¥</Text>
+                <TextInput
+                  placeholder='原价'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({originalPrice: text})}
+                  value={this.state.originalPrice}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(100),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>元</Text>
+              </View>
+              <View style={{width: PAGE_WIDTH-100, height: normalizeH(50), padding: 0, flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, borderColor: '#F5F5F5'}}>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.setState({showPriceModal: false})}>
+                    <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex: 1}}>
+                  <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                                    onPress={() => this.setState({showPriceModal: false})}>
+                    <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    )
   }
 
   render() {
@@ -275,37 +351,24 @@ class PublishShopGood extends Component {
                       showClear={false}
                     />
                   </View>
-                  <View style={styles.priceBox}>
+                  <TouchableOpacity style={styles.priceBox} onPress={() => {this.openPriceModal()}}>
                     <View style={styles.promotingPriceBox}>
                       <Text style={styles.priceLabel}>价格</Text>
                       <Text style={{color:'#F56A23',marginLeft:3}}>￥</Text>
-                      <CommonTextInput
-                        {...price}
-                        placeholder='0.00'
-                        placeholderTextColor="#F56A23"
-                        maxLength={4}
-                        keyboardType="numeric"
-                        outerContainerStyle={[styles.promotingPriceInput, {backgroundColor: '#fff', borderWidth: 0}]}
-                        inputStyle={{backgroundColor: '#fff', color: '#FF7819'}}
-                        showClear={false}
-                      />
+
+                      <Text>
+                        {this.state.price}
+                      </Text>
                     </View>
 
                     <View style={styles.originalPriceBox}>
                       <Text style={styles.priceLabel}>原价</Text>
                       <Text style={{color:'#aaa',marginLeft:3}}>￥</Text>
-                      <CommonTextInput
-                        {...originalPrice}
-                        placeholder='0.00'
-                        placeholderTextColor="#aaa"
-                        maxLength={4}
-                        keyboardType="numeric"
-                        outerContainerStyle={[styles.originalPriceBox, {backgroundColor: '#fff', borderWidth: 0}]}
-                        inputStyle={{backgroundColor: '#fff'}}
-                        showClear={false}
-                      />
+                      <Text>
+                        {this.state.originalPrice}
+                      </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </View>
             </KeyboardAwareScrollView>
@@ -314,7 +377,7 @@ class PublishShopGood extends Component {
           {this.renderRichText()}
 
         </View>
-
+        {this.renderPriceModal()}
       </View>
     )
   }
@@ -380,6 +443,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingTop: normalizeH(10)
   },
   priceLabel: {
     fontSize: em(15),
