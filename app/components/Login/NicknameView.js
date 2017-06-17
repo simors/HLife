@@ -75,8 +75,8 @@ class NicknameView extends Component {
                   {...avatarInput}
                   containerStyle={styles.imageInputStyle}
                   addImage={require('../../assets/images/default_portrait.png')}
-                  choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(42), overflow: 'hidden', width: normalizeW(84), height: normalizeH(84), overlayColor: '#FFFFFF'}}
-                  addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0,borderRadius: normalizeW(42),}}
+                  choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(70), overflow: 'hidden', width: normalizeW(141), height: normalizeH(141), overlayColor: '#FFFFFF'}}
+                  addImageBtnStyle={{width: normalizeW(141), height: normalizeH(141), top: 0, left: 0,borderRadius: normalizeW(70),}}
                 />
               </View>
             </View>
