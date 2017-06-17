@@ -18,6 +18,7 @@ import THEME from '../../constants/themes/theme1'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
+import ImageInput from '../common/Input/ImageInput'
 
 let setNicknameForm = Symbol('setNicknameForm')
 const nicknameInput = {
@@ -25,16 +26,25 @@ const nicknameInput = {
   stateKey: Symbol('nicknameInput'),
   type: "nicknameInput"
 }
-
+const avatarInput = {
+  formKey: setNicknameForm,
+  stateKey: Symbol('avatarInput'),
+  type: "avatarInput",
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
+}
 class NicknameView extends Component {
   constructor(props) {
     super(props)
+    this.avatarUri=''
   }
 
   onButtonPress() {
     this.props.submitFormData({
       formKey: setNicknameForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.SET_NICKNAME,
+      avatarUri:this.avatarUri,
       success:this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -59,8 +69,19 @@ class NicknameView extends Component {
           title="设置昵称"
         />
         <View style={styles.body}>
-            <View style={{marginTop: 30}}>
-              <View style={{height: normalizeH(50), paddingLeft: normalizeW(17), paddingRight: normalizeW(17), marginBottom: normalizeW(25)}}>
+            <View style={{marginTop: 40}}>
+              <View style={styles.zonea}>
+                <ImageInput
+                  {...avatarInput}
+                  containerStyle={styles.imageInputStyle}
+                  addImage={require('../../assets/images/default_portrait.png')}
+                  choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(42), overflow: 'hidden', width: normalizeW(84), height: normalizeH(84), overlayColor: '#FFFFFF'}}
+                  addImageBtnStyle={{width: normalizeW(84), height: normalizeH(84), top: 0, left: 0,borderRadius: normalizeW(42),}}
+                />
+              </View>
+            </View>
+          <View style={{marginTop: 40}}>
+          <View style={{height: normalizeH(50), paddingLeft: normalizeW(17), paddingRight: normalizeW(17), marginBottom: normalizeW(25)}}>
                 <CommonTextInput {...nicknameInput} placeholder="取个响亮的名字吧" outerContainerStyle={{borderWidth: 0}}/>
               </View>
               <Button
@@ -95,6 +116,12 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(65),
     flex: 1,
   },
+  zonea: {
+    height: normalizeH(144),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
   btn: {
     height: normalizeH(50),
     marginLeft: normalizeW(17),
@@ -104,5 +131,11 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     marginBottom: normalizeW(25)
+  },
+  imageInputStyle: {
+    backgroundColor: '#FFFFFF',
+    width: normalizeW(141),
+    height: normalizeH(141),
+    borderWidth: 0,
   },
 })
