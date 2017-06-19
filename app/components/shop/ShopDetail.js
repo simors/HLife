@@ -894,13 +894,15 @@ class ShopDetail extends Component {
             />
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
-                <TouchableOpacity onPress={()=> {
+                { this.props.goodList&&this.props.goodList.length?<TouchableOpacity onPress={()=> {
                   Actions.SHOP_GOODSLIST_VIEW({
-                    id: this.props.id,
+                    id: this.props.shopDetail.id,
                   })
                 }}>
                   <Text style={styles.allCommentsLink}>查看全部商品</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>:<View style={styles.noDataContainer}>
+                  <Text style={{fontSize:12,color:'#5A5A5A'}}>暂无商品</Text>
+                </View>}
               </View>
             </View>
             <View style={styles.shopAnnouncementWrap}>
@@ -1585,5 +1587,13 @@ const styles = StyleSheet.create({
     height: normalizeH(42),
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
+  },
+  noDataContainer:{
+    flex: 1,
+    justifyContent:'center',
+    alignItems:'center',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#F5F5F5',
+    // height: normalizeH(40),
   },
 })

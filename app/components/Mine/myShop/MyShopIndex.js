@@ -454,17 +454,16 @@ class MyShopIndex extends Component {
                 this.showGoodDetail(value)
               }}/>
               <View style={styles.commentWrap}>
-                <View style={styles.commentFoot}>
-                  <TouchableOpacity onPress={()=> {
-                    Actions.SHOP_GOODSLIST_VIEW({
-                      goodList: this.props.goodList,
-                      id: this.props.userOwnedShopInfo.id,
-                      size: this.props.goodList.length,
-                      showGoodDetail: (value)=>this.showGoodDetail(value)
-                    })
-                  }}>
-                    <Text style={styles.allCommentsLink}>查看全部商品</Text>
-                  </TouchableOpacity>
+                <View style={styles.commentFoot}>{ this.props.goodList&&this.props.goodList.length?<TouchableOpacity onPress={()=> {
+                  Actions.SHOP_GOODSLIST_VIEW({
+                    id: this.props.userOwnedShopInfo.id,
+                  })
+                }}>
+                  <Text style={styles.allCommentsLink}>查看全部商品</Text>
+                </TouchableOpacity>:<View style={styles.noDataContainer}>
+                  <Text style={{fontSize:12,color:'#5A5A5A'}}>暂无商品</Text>
+                </View>}
+
                 </View>
               </View>
               <View style={styles.shopAnnouncementWrap}>
@@ -1203,5 +1202,13 @@ const styles = StyleSheet.create({
     height: normalizeH(42),
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
+  },
+  noDataContainer:{
+    flex: 1,
+    justifyContent:'center',
+    alignItems:'center',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#F5F5F5',
+    // height: normalizeH(40),
   },
 })
