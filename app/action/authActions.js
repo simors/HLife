@@ -203,8 +203,14 @@ function handleLoginWithPwd(payload, formData) {
 
 function handleSetNickname(payload, formData) {
   return (dispatch, getState) => {
+    let localImg = ''
+
+    if(formData.avatarInput && formData.avatarInput.text) {
+      localImg=formData.avatarInput.text
+    }
     let form = {
       userId: activeUserId(getState()),
+      avatarUri: localImg,
       nickname: formData.nicknameInput.text,
     }
     lcAuth.setUserNickname(form).then((result) => {

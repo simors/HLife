@@ -103,6 +103,21 @@ class ShopGoodsDetail extends Component {
     })
   }
 
+  onShare = () => {
+    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + this.props.goodInfo.id :
+    DEFAULT_SHARE_DOMAIN + "goodShare/" + this.props.goodInfo.id
+
+    console.log("shopShare url:", shareUrl)
+
+    Actions.SHARE({
+      title: this.props.goodInfo.goodsName || "汇邻优店",
+      url: shareUrl,
+      author: this.props.shopDetail.shopName || "邻家小二",
+      abstract: this.props.shopDetail.shopAddress || "未知地址",
+      cover: this.props.goodInfo.coverPhoto || '',
+    })
+  }
+
   renderMainHeader() {
     return (
       <Animated.View style={{
@@ -125,7 +140,13 @@ class ShopGoodsDetail extends Component {
             })
           }}
           title="商品详情"
-
+          rightComponent={()=> {
+            return (
+              <TouchableOpacity onPress={this.onShare} style={{marginRight: 10}}>
+                <Image source={require('../../assets/images/active_share.png')}/>
+              </TouchableOpacity>
+            )
+          }}
         />
       </Animated.View>
     )
@@ -287,21 +308,6 @@ class ShopGoodsDetail extends Component {
         </TouchableOpacity>
       </View>
     )
-  }
-
-  onShare = () => {
-    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id :
-    DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.shopDetail.id
-
-    console.log("shopShare url:", shareUrl)
-
-    Actions.SHARE({
-      title: this.props.shopDetail.shopName || "汇邻优店",
-      url: shareUrl,
-      author: this.props.shopDetail.shopName || "邻家小二",
-      abstract: this.props.shopDetail.shopAddress || "未知地址",
-      cover: this.props.shopDetail.coverUrl || '',
-    })
   }
 
   sendPrivateMessage() {

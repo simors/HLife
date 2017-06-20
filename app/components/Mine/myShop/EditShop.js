@@ -502,6 +502,7 @@ class EditShop extends Component {
                 outerContainerStyle={{position:'absolute',height:0,width:0}}
                 containerStyle={{height:0,width:0}}
                 inputStyle={{height:0,width:0}}
+                showClear={false}
               />
               <CommonTextInput
                 {...shopAddrInput}
@@ -509,6 +510,8 @@ class EditShop extends Component {
                 outerContainerStyle={{position:'absolute',height:0,width:0}}
                 containerStyle={{height:0,width:0}}
                 inputStyle={{height:0,width:0}}
+                showClear={false}
+
               />
               <CommonTextInput
                 {...shopGeoInput}
@@ -516,6 +519,8 @@ class EditShop extends Component {
                 outerContainerStyle={{position:'absolute',height:0,width:0}}
                 containerStyle={{height:0,width:0}}
                 inputStyle={{height:0,width:0}}
+                showClear={false}
+
               />
               <CommonTextInput
                 {...shopGeoCityInput}
@@ -523,6 +528,8 @@ class EditShop extends Component {
                 outerContainerStyle={{position:'absolute',height:0,width:0}}
                 containerStyle={{height:0,width:0}}
                 inputStyle={{height:0,width:0}}
+                showClear={false}
+
               />
               <CommonTextInput
                 {...shopGeoDistrictInput}
@@ -530,6 +537,8 @@ class EditShop extends Component {
                 outerContainerStyle={{position:'absolute',height:0,width:0}}
                 containerStyle={{height:0,width:0}}
                 inputStyle={{height:0,width:0}}
+                showClear={false}
+
               />
             </View>
             <View style={styles.inputsWrap}>
