@@ -30,9 +30,13 @@ const avatarInput = {
   formKey: setNicknameForm,
   stateKey: Symbol('avatarInput'),
   type: "avatarInput",
-  checkValid: (data)=>{
-    return {isVal: true, errMsg: '验证通过'}
+  checkValid:(data)=> {
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请上传头像'}
   },
+
 }
 class NicknameView extends Component {
   constructor(props) {
