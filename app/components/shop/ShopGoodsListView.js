@@ -87,8 +87,8 @@ class ShopGoodsListView extends Component {
   renderColumn(goodInfo, key) {
     //console.log('value====>',value)
     return (
-      <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
-        <View style={styles.channelWrap}>
+      <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)} style={styles.channelWrap}>
+        <View >
           <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: goodInfo.coverPhoto}}/>
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
           <Text style={ styles.channelText}>{goodInfo.goodsName}</Text>
@@ -145,7 +145,7 @@ class ShopGoodsListView extends Component {
 
   renderRows() {
     const imageStyle = {
-      flex: 1,
+      flex: 1
     }
     if (this.props.goodList && this.props.goodList.length) {
       let shopGoodsList = this.props.goodList.map((item, key) => {
@@ -332,6 +332,8 @@ const styles = StyleSheet.create({
     // width: normalizeW(35),
   },
   channelText: Platform.OS=='ios'?{
+    flex:1,
+    flexDirection:'row',
     marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
@@ -340,6 +342,8 @@ const styles = StyleSheet.create({
     color: '#5A5A5A'
     // textAlign: 'start',
   }:{
+    flex:1,
+    flexDirection:'row',
     marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
@@ -349,15 +353,16 @@ const styles = StyleSheet.create({
   },
   channelPrice: Platform.OS=='ios'?{
     // flexDirection:'row'
-    marginTop: normalizeH(8),
+    flex:1,
+    marginTop: normalizeH(6),
     width: normalizeW(144),
-    height: normalizeH(15),
+    height: 15,
     fontSize: em(15),
-    // textAlign: 'start',
+    // textAlign: 'center',
     // justifyContent:'flex-start'
     color: '#00BE96'
   }:{
-    marginTop: normalizeH(8),
+    marginTop: normalizeH(6),
     width: normalizeW(144),
     height: normalizeH(15),
     fontSize: em(14),
@@ -401,5 +406,6 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(64)
 
   },
+
 
 })
