@@ -18,6 +18,8 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import shallowequal from 'shallowequal'
+import {LazyloadView} from '../common/Lazyload'
+import {CachedImage} from "react-native-img-cache"
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -43,9 +45,9 @@ class NearbySalesView extends Component {
       promotionsView = this.props.shopPromotionList.map((item, index)=>{
         return (
           <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {Actions.SHOP_PROMOTION_DETAIL({id:item.id})}}>
-            <View style={styles.saleItemView}>
+            <LazyloadView host="homeList" style={styles.saleItemView}>
               <View style={styles.saleImg}>
-                <Image style={{flex: 1}}
+                <CachedImage mutable style={{flex: 1}}
                        resizeMode='contain'
                        source={{uri: item.coverUrl}}/>
               </View>
@@ -90,7 +92,7 @@ class NearbySalesView extends Component {
                   </View>
                 </View>
               </View>
-            </View>
+            </LazyloadView>
           </TouchableOpacity>
         )
       })

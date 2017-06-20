@@ -24,6 +24,7 @@ import FollowUser from '../../components/common/FollowUser'
 import {activeUserId} from '../../selector/authSelector'
 import shallowequal from 'shallowequal'
 import {CachedImage} from "react-native-img-cache"
+import {LazyloadView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -130,7 +131,7 @@ export class TopicShow extends Component {
   render() {
     if(this.props.topic) {
       return (
-        <View style={[styles.containerStyle, this.props.containerStyle]}>
+        <LazyloadView host="topicList" style={[styles.containerStyle, this.props.containerStyle]}>
 
           <View style={styles.introWrapStyle}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
@@ -168,7 +169,7 @@ export class TopicShow extends Component {
             <Text
               style={styles.commentTextStyle}>{"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}</Text>
           </View>
-        </View>
+        </LazyloadView>
 
       )
     }

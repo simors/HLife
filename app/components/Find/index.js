@@ -280,6 +280,7 @@ export class Find extends Component {
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
             <CommonListView
+              name="topicList"
               contentContainerStyle={{backgroundColor: '#FFF'}}
               dataSource={dataSrc}
               renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}

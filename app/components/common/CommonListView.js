@@ -16,6 +16,8 @@ import {
 } from "react-native"
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Immutable from 'immutable'
+import {LazyloadListView} from './Lazyload'
+
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class CommonListView extends Component {
@@ -61,8 +63,9 @@ export default class CommonListView extends Component {
 
   render() {
     return (
-      <ListView
+      <LazyloadListView
         ref="listView"
+        name={this.props.name}
         enableEmptySections={true}
         onContentSizeChange={(contentWidth, contentHeight) => {this.onContentSizeChange(contentWidth, contentHeight)}}
         automaticallyAdjustContentInsets={false}
@@ -80,6 +83,10 @@ export default class CommonListView extends Component {
           this.state.hideHeader ?
             null : this.showRefreshControl()
         }
+        scrollRenderAheadDistance={200}
+        renderDistance={100}
+        pageSize={1}
+        initialListSize={10}
         {...this.props}
       />
     )

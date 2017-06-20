@@ -48,6 +48,7 @@ import ScoreShow from '../common/ScoreShow'
 import ViewPager from 'react-native-viewpager'
 import {CachedImage} from "react-native-img-cache"
 import AV from 'leancloud-storage'
+import {LazyloadView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -125,9 +126,9 @@ class Local extends Component {
       <TouchableOpacity key={'shop_' + index} onPress={()=> {
         this.gotoShopDetailScene(shopInfo.id)
       }}>
-        <View style={[styles.shopInfoWrap]}>
+        <LazyloadView host="localShopList" style={[styles.shopInfoWrap]}>
           <View style={styles.coverWrap}>
-            <Image style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
+            <CachedImage mutable style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
           </View>
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
@@ -151,7 +152,7 @@ class Local extends Component {
               </View>
             </View>
           </View>
-        </View>
+        </LazyloadView>
       </TouchableOpacity>
     )
   }
@@ -283,6 +284,7 @@ class Local extends Component {
         <View style={styles.body}>
           <View style={{flex: 1}}>
             <CommonListView
+              name="localShopList"
               contentContainerStyle={{backgroundColor: '#fff'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}

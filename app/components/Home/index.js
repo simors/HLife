@@ -405,6 +405,7 @@ class Home extends Component {
           <View style={{flex:1}}>
             {/*<Text style={{fontSize:em(20)}}>看看能不能更新</Text>*/}
             <CommonListView
+              name="homeList"
               contentContainerStyle={{backgroundColor: '#F5F5F5'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
