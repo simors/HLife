@@ -24,7 +24,13 @@ let setNicknameForm = Symbol('setNicknameForm')
 const nicknameInput = {
   formKey: setNicknameForm,
   stateKey: Symbol('nicknameInput'),
-  type: "nicknameInput"
+  type: "nicknameInput",
+  checkValid:(data)=> {
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '请完善全部信息'}
+  },
 }
 const avatarInput = {
   formKey: setNicknameForm,
@@ -34,7 +40,7 @@ const avatarInput = {
     if (data && data.text && data.text.length > 0) {
       return {isVal: true, errMsg: '验证通过'}
     }
-    return {isVal: false, errMsg: '请上传头像'}
+    return {isVal: false, errMsg: '请完善全部信息'}
   },
 
 }
@@ -70,7 +76,7 @@ class NicknameView extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="设置昵称"
+          title="完善信息"
         />
         <View style={styles.body}>
             <View style={{marginTop: 40}}>

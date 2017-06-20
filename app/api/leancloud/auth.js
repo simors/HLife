@@ -982,29 +982,16 @@ export function setUserNickname(payload) {
   let params = {
     userId: payload.userId,
     nickname: payload.nickname,
-    avatarUri:''
+    avatarUri:payload.avatarUri
   }
-  let avatarUri=payload.avatarUri
+  // let avatarUri=payload.avatarUri
   // console.log('submitCompleteShopInfo.leanCoverImgUrl===', avatarUri)
-
-  if(avatarUri){
-    return ImageUtil.uploadImg2(avatarUri).then((leanCoverImgUrl)=>{
-       console.log('submitCompleteShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
-      params.avatarUri=  leanCoverImgUrl
-      return AV.Cloud.run('hLifeSetUserNickname', params).then((result) => {
-         return result
-       }, (err) => {
-         err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-         return err
-       })
-    })
-     }else{
     return AV.Cloud.run('hLifeSetUserNickname', params).then((result) => {
       return result
     }, (err) => {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
-  }
+
 
 }
