@@ -126,10 +126,10 @@ class Local extends Component {
       <TouchableOpacity key={'shop_' + index} onPress={()=> {
         this.gotoShopDetailScene(shopInfo.id)
       }}>
-        <LazyloadView host="localShopList" style={[styles.shopInfoWrap]}>
-          <View style={styles.coverWrap}>
+        <View style={[styles.shopInfoWrap]}>
+          <LazyloadView host="localShop" style={styles.coverWrap}>
             <CachedImage mutable style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
-          </View>
+          </LazyloadView>
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
               <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
@@ -152,7 +152,7 @@ class Local extends Component {
               </View>
             </View>
           </View>
-        </LazyloadView>
+        </View>
       </TouchableOpacity>
     )
   }
@@ -284,7 +284,7 @@ class Local extends Component {
         <View style={styles.body}>
           <View style={{flex: 1}}>
             <CommonListView
-              name="localShopList"
+              name="localShop"
               contentContainerStyle={{backgroundColor: '#fff'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}

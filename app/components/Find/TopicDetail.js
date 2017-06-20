@@ -53,7 +53,7 @@ import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
-
+import {LazyloadView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -512,12 +512,12 @@ export class TopicDetail extends Component {
   renderTopicCommentsColumn() {
     if (!this.state.loadComment) {
       return (
-        <View style={{flex:1}}>
+        <LazyloadView host="detailList" style={{flex:1}}>
           <View style={{flexDirection: 'row',padding:15,paddingTop:20,backgroundColor:'white'}}>
             <View style={styles.titleLine}/>
             <Text style={styles.titleTxt}>邻友点评</Text>
           </View>
-        </View>
+        </LazyloadView>
       )
     }
     return (
@@ -666,6 +666,7 @@ export class TopicDetail extends Component {
         <View style={styles.body}>
 
           <CommonListView
+            name="detailList"
             contentContainerStyle={{backgroundColor: '#fff'}}
             dataSource={this.props.ds}
             renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}

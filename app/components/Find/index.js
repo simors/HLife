@@ -29,6 +29,7 @@ import {bindActionCreators} from 'redux'
 import TopicShow from './TopicShow'
 import * as Toast from '../common/Toast'
 import shallowequal from 'shallowequal'
+import {LazyloadView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -280,7 +281,6 @@ export class Find extends Component {
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
             <CommonListView
-              name="topicList"
               contentContainerStyle={{backgroundColor: '#FFF'}}
               dataSource={dataSrc}
               renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
