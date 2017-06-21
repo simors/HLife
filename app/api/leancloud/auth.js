@@ -169,7 +169,7 @@ export function updateUserLocationInfo(payload) {
         district = position.district
         districtCode = Utils.getDistrictCode(provincesAndCities, district)
         latlng = {
-          latitude: position.latitude, 
+          latitude: position.latitude,
           longitude: position.longitude
         }
 
@@ -216,7 +216,7 @@ export function updateUserLocationInfo(payload) {
       throw err
     })
   }
-  
+
 }
 
 export function profileSubmit(payload) {
@@ -357,7 +357,7 @@ export function _submitCompleteShopInfo(shop, payload) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
-  
+
 }
 
 export function submitCompleteShopInfo(payload) {
@@ -425,7 +425,7 @@ export function submitCompleteShopInfo(payload) {
   })
 }
 
-export function _submitEditShopInfo(shop, payload) {
+export function _submitEditShopInfo( payload) {
   // let openTime = payload.openTime
   // let contactNumber = payload.contactNumber
   // let contactNumber2 = payload.contactNumber2
@@ -480,7 +480,7 @@ export function _submitEditShopInfo(shop, payload) {
   // console.log('_submitEditShopInfo.payload===', payload)
   // console.log('_submitEditShopInfo.shop===', shop)
   let params = {
-    shop:{...shop,geoProvince:geoProvince,geoProvinceCode:geoProvinceCode,geoCityCode:geoCityCode.toString(),geoDistrictCode:geoDistrictCode.toString()},
+    shop:{shopId:payload.shopId,album:payload.album,coverUrl:payload.coverUrl,geoProvince:geoProvince,geoProvinceCode:geoProvinceCode,geoCityCode:geoCityCode.toString(),geoDistrictCode:geoDistrictCode.toString()},
     payload:payload
   }
   return AV.Cloud.run('submitEditShopInfo',params).then((shopInfo)=>{
@@ -495,62 +495,11 @@ export function _submitEditShopInfo(shop, payload) {
 export function submitEditShopInfo(payload) {
   return new Promise((resolve, reject)=>{
     // console.log('submitEditShopInfo.payload===', payload)
-    let shopId = payload.shopId
-    let album = payload.album
-    let coverUrl = payload.coverUrl
-    // let shop = AV.Object.createWithoutData('Shop', shopId)
-    let shop = {
-      shopId:shopId,
-      album:[],
-      coverUrl:'',
-    }
-    if(coverUrl) {
-      ImageUtil.uploadImg2(coverUrl).then((leanCoverImgUrl)=>{
-        // console.log('submitEditShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
-        shop.coverUrl=leanCoverImgUrl
-        if(album && album.length) {
-          ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-            // console.log('submitEditShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
-            shop.album=leanAlbumImgUrls
-            _submitEditShopInfo(shop, payload).then((result)=>{
-              resolve(result)
-            }, (reason)=>{
-              reject(reason)
-            })
-          }, ()=>{
-            reject({message: '上传店铺相册失败'})
-          })
-        }else {
-          _submitEditShopInfo(shop, payload).then((result)=>{
-            resolve(result)
-          }, (reason)=>{
-            reject(reason)
-          })
-        }
-      }, ()=>{
-        reject({message: '上传店铺封面失败'})
-      })
-
-    }else {
-      if(album && album.length) {
-        ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-          shop.album=leanAlbumImgUrls
-          _submitEditShopInfo(shop, payload).then((result)=>{
-            resolve(result)
-          }, (reason)=>{
-            reject(reason)
-          })
-        }, ()=>{
-          reject({message: '上传店铺相册失败'})
-        })
-      }else {
-        _submitEditShopInfo(shop, payload).then((result)=>{
-          resolve(result)
-        }, (reason)=>{
-          reject(reason)
-        })
-      }
-    }
+    _submitEditShopInfo( payload).then((result)=>{
+      resolve(result)
+    }, (reason)=>{
+      reject(reason)
+    })
   })
 }
 
@@ -577,7 +526,7 @@ export function updateAnnouncement(payload) {
   let shopAnnouncementId = payload.shopAnnouncementId
   let announcementContent = payload.announcementContent
   let announcementCover = payload.announcementCover
-  
+
   let shopAnnouncement = AV.Object.createWithoutData('ShopAnnouncement', shopAnnouncementId)
   shopAnnouncement.set('coverUrl', announcementCover)
   shopAnnouncement.set('content', announcementContent)
