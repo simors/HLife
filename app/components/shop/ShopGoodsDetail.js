@@ -20,64 +20,34 @@ import {
   ListView,
   Modal,
   TextInput,
-  Animated
-
+  Animated,
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
-import ViewPager2 from '../common/ViewPager2'
 import ViewPager from '../common/ViewPager'
 import Gallery from 'react-native-gallery'
 
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopGoodCustiomTopView from './ChatroomShopGoodCustiomTopView'
-import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
+import {fetchUsers} from '../../action/authActions'
 import * as AVUtils from '../../util/AVUtils'
 import {
   selectUserOwnedShopInfo,
   selectShopDetail,
-  selectShopList,
-  selectGuessYouLikeShopList,
-  selectLatestShopAnnouncemment,
-  selectUserIsFollowShop,
-  selectShopComments,
-  selectShopCommentsTotalCount,
-  selectUserIsUpedShop,
-  selectGoodsList
 } from '../../selector/shopSelector'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import * as configSelector from '../../selector/configSelector'
 import GoodAlbumShow from './GoodAlbumShow'
-import dismissKeyboard from 'react-native-dismiss-keyboard'
-import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
-import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
-import {fetchOtherUserFollowersTotalCount} from '../../action/authActions'
-import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
-import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import * as authSelector from '../../selector/authSelector'
-import Icon from 'react-native-vector-icons/Ionicons'
-import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
-import {
-  fetchTopicLikesCount,
-  fetchTopicIsLiked,
-  likeTopic,
-  unLikeTopic,
-  fetchTopicLikeUsers,
-} from '../../action/topicActions'
-import ActionSheet from 'react-native-actionsheet'
-import CommonListView from '../common/CommonListView'
-import {fetchShareDomain} from '../../action/configAction'
-import {getShareDomain, getTopicCategoriesById} from '../../selector/configSelector'
-import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
-import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {BUY_GOODS} from '../../constants/appConfig'
+import {LazyloadScrollView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -440,12 +410,13 @@ class ShopGoodsDetail extends Component {
   // }
 
   render() {
-    // console.log('value',this.props.value)
+    let lazyHost = "goodsDetail"
     return (
       <View style={styles.containerStyle}>
         {this.renderMainHeader()}
         <View style={styles.body}>
-          <ScrollView
+          <LazyloadScrollView
+            name={lazyHost}
             contentContainerStyle={[styles.contentContainerStyle]}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
@@ -455,8 +426,8 @@ class ShopGoodsDetail extends Component {
             {this.props.goodInfo.goodsName?<View style={styles.titleStyle}>
               <Text style={styles.titleTextStyle}>{this.props.goodInfo.goodsName}</Text>
             </View>:null}
-            {this.props.goodInfo.detail ? <ArticleViewer artlcleContent={JSON.parse(this.props.goodInfo.detail)}/> : null}
-          </ScrollView>
+            {this.props.goodInfo.detail ? <ArticleViewer lazyHost={lazyHost} artlcleContent={JSON.parse(this.props.goodInfo.detail)}/> : null}
+          </LazyloadScrollView>
           {this.renderBottomView()}
         </View>
         {this.renderPaymentModal()}

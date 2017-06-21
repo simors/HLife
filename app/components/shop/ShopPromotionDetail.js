@@ -36,6 +36,7 @@ import {fetchShareDomain} from '../../action/configAction'
 import {getShareDomain} from '../../selector/configSelector'
 import {SHAREURL} from '../../util/global'
 import {BUY_GOODS} from '../../constants/appConfig'
+import {LazyloadScrollView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -201,6 +202,7 @@ class ShopPromotionDetail extends Component {
   render() {
     let shopPromotionDetail = this.props.shopPromotionDetail
     let targetShop = shopPromotionDetail.targetShop
+    let lazyHost = "promotionDetail"
 
     return (
       <View style={styles.container}>
@@ -218,7 +220,7 @@ class ShopPromotionDetail extends Component {
           }}
         />
         <View style={styles.body}>
-          <ScrollView>
+          <LazyloadScrollView name={lazyHost}>
             <View style={styles.headerWrap}>
               <View style={styles.titleBox}>
                 <Text style={styles.titleTxt}>{shopPromotionDetail.title}</Text>
@@ -247,9 +249,9 @@ class ShopPromotionDetail extends Component {
               </View>
             </View>
             {shopPromotionDetail.promotionDetailInfo &&
-              <ArticleViewer artlcleContent={JSON.parse(shopPromotionDetail.promotionDetailInfo)} />
+              <ArticleViewer lazyHost={lazyHost} artlcleContent={JSON.parse(shopPromotionDetail.promotionDetailInfo)} />
             }
-          </ScrollView>
+          </LazyloadScrollView>
           <View style={styles.footerWrap}>
             <View style={styles.priceBox}>
               <Text style={styles.priceTxt}>￥{shopPromotionDetail.promotingPrice}</Text>
