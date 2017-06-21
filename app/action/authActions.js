@@ -641,19 +641,86 @@ function handleCompleteShopInfo(payload, formData) {
       ourSpecial: formData.ourSpecialInput.text,
       tagIds: formData.tagsInput ? formData.tagsInput.text : '',
     }
-    lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
-      let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
-      dispatch(_action({}))
-      if (payload.success) {
-        payload.success()
+    let shopId = newPayload.shopId
+    let album = newPayload.album
+    let coverUrl = newPayload.coverUrl
+    // let shop = AV.Object.createWithoutData('Shop', shopId)
+    let shop = {
+      shopId:shopId,
+      album:[],
+      coverUrl:'',
+    }
+    if(coverUrl){
+      ImageUtil.uploadImg2(coverUrl).then((coverleaUri)=>{
+        shop.coverUrl=  coverleaUri
+        newPayload.coverUrl = undefined
+        if(album&&album.length){
+          ImageUtil.batchUploadImgs(album).then((albums)=>{
+            shop.album=  albums
+            newPayload.album = undefined
+            lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
+              let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+              dispatch(_action({}))
+              if (payload.success) {
+                payload.success()
+              }
+            }).catch((error) => {
+              // console.log('error=======', error)
+              // console.log('error=======', error.code)
+              if (payload.error) {
+                payload.error(error)
+              }
+            })
+          })
+        }else{
+          lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
+            let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+            dispatch(_action({}))
+            if (payload.success) {
+              payload.success()
+            }
+          }).catch((error) => {
+            // console.log('error=======', error)
+            // console.log('error=======', error.code)
+            if (payload.error) {
+              payload.error(error)
+            }
+          })
+        }
+      })
+    }else{
+      if(album&&album.length){
+        ImageUtil.batchUploadImgs(album).then((albums)=> {
+          shop.album = albums
+          newPayload.album = undefined
+          lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
+            let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+            dispatch(_action({}))
+            if (payload.success) {
+              payload.success()
+            }
+          }).catch((error) => {
+            if (payload.error) {
+              payload.error(error)
+            }
+          })
+        })
+      }else{
+        lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
+          let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+          dispatch(_action({}))
+          if (payload.success) {
+            payload.success()
+          }
+        }).catch((error) => {
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
       }
-    }).catch((error) => {
-      // console.log('error=======', error)
-      // console.log('error=======', error.code)
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
+
+    }
+
   }
 }
 

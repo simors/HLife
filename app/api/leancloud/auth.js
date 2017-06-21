@@ -360,68 +360,16 @@ export function _submitCompleteShopInfo(shop, payload) {
 
 }
 
-export function submitCompleteShopInfo(payload) {
-  return new Promise((resolve, reject)=>{
-    // console.log('submitCompleteShopInfo.payload===', payload)
-    let shopId = payload.shopId
-    let album = payload.album
-    let coverUrl = payload.coverUrl
-    // let shop = AV.Object.createWithoutData('Shop', shopId)
-    let shop = {
-      shopId:shopId,
-      album:[],
-      coverUrl:'',
-    }
-    if(coverUrl) {
-      ImageUtil.uploadImg2(coverUrl).then((leanCoverImgUrl)=>{
-        // console.log('submitCompleteShopInfo.leanCoverImgUrl===', leanCoverImgUrl)
-        shop.coverUrl=  leanCoverImgUrl
-        payload.coverUrl = undefined
-        if(album && album.length) {
-          ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-            // console.log('submitCompleteShopInfo.leanAlbumImgUrls===', leanAlbumImgUrls)
-            shop.album=  leanAlbumImgUrls
-            payload.album = undefined
-            _submitCompleteShopInfo(shop, payload).then((result)=>{
-              resolve(result)
-            }, (reason)=>{
-              reject(reason)
-            })
-          }, ()=>{
-            reject('上传店铺相册失败')
-          })
-        }else {
-          _submitCompleteShopInfo(shop, payload).then((result)=>{
-            resolve(result)
-          }, (reason)=>{
-            reject(reason)
-          })
-        }
-      }, ()=>{
-        reject('上传店铺封面失败')
-      })
-
-    }else {
-      if(album && album.length) {
-        ImageUtil.batchUploadImgs(album).then((leanAlbumImgUrls)=>{
-          shop.album=  leanAlbumImgUrls
-          payload.album = undefined
-          _submitCompleteShopInfo(shop, payload).then((result)=>{
-            resolve(result)
-          }, (reason)=>{
-            reject(reason)
-          })
-        }, ()=>{
-          reject('上传店铺相册失败')
-        })
-      }else {
-        _submitCompleteShopInfo(shop, payload).then((result)=>{
-          resolve(result)
-        }, (reason)=>{
-          reject(reason)
-        })
-      }
-    }
+export function submitCompleteShopInfo(shop,payload) {
+  let params = {
+    shop:shop,payload:payload
+  }
+  return AV.Cloud.run('submitCompleteShopInfo',params).then(function (result) {
+    return true
+  }, function (err) {
+    // console.log('_submitCompleteShopInfo.err====', err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
   })
 }
 
