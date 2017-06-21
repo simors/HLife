@@ -134,6 +134,7 @@ class LazyloadView extends Component{
             {this.state.visible ? this.props.children : null}
         </View> : <View
             ref={ele => this._root = ele}
+            style={[this.props.style, this.props.placeholderStyle]}
             {...this.props}
         />;
     }

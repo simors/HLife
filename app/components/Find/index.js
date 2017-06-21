@@ -16,6 +16,7 @@ import {
   StatusBar,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
+import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
 import {getCity} from '../../selector/locSelector'
@@ -141,13 +142,16 @@ export class Find extends Component {
     Toast.show(error.message)
   }
 
-  renderTopicItem(value, key) {
+  renderTopicItem(value, key, lazyName) {
     return (
-      <TopicShow key={key}
-                 containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
-                 topic={value}
-                 onLikeButton={(payload)=>this.onLikeButton(payload)}
-      />
+      <LazyloadView host={lazyName} placeholderStyle={{height: normalizeH(200)}}>
+        <TopicShow key={key}
+                   containerStyle={{borderBottomWidth: 1, borderColor: '#F5F5F5'}}
+                   topic={value}
+                   onLikeButton={(payload)=>this.onLikeButton(payload)}
+                   lazyHost={lazyName}
+        />
+      </LazyloadView>
     )
   }
 
@@ -277,13 +281,15 @@ export class Find extends Component {
             </View>
           )
         }
+        let lazyName = "homeTopic"+key
         return (
           <View key={key} tabLabel={value.title}
                 style={[styles.itemLayout, this.props.itemLayout && this.props.itemLayout]}>
             <CommonListView
+              name={lazyName}
               contentContainerStyle={{backgroundColor: '#FFF'}}
               dataSource={dataSrc}
-              renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId)}
+              renderRow={(rowData, rowId) => this.renderTopicItem(rowData, rowId, lazyName)}
               loadNewData={()=> {
                 this.refreshTopic()
               }}

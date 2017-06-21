@@ -110,7 +110,7 @@ export class TopicContent extends Component {
           </View>
         </View>
         {this.renderUserIntroView()}
-        <ArticleViewer artlcleContent={JSON.parse(topic.content)} />
+        <ArticleViewer lazyHost={this.props.lazyHost} artlcleContent={JSON.parse(topic.content)} />
         <View style={{paddingTop: normalizeH(10), paddingBottom: normalizeH(10), paddingLeft: normalizeW(15), paddingRight: normalizeW(15)}}>
           <Text style={{fontSize: em(15), color: '#AAAAAA'}}>特别声明：本文为{appConfig.APP_NAME}自媒体作者上传并发布，仅代表该作者观点。{appConfig.APP_NAME}仅提供信息发布平台。</Text>
         </View>
