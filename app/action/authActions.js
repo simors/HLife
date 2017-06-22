@@ -652,12 +652,47 @@ function handleCompleteShopInfo(payload, formData) {
     }
     if(coverUrl){
       ImageUtil.uploadImg2(coverUrl).then((coverleaUri)=>{
-        shop.coverUrl=  coverleaUri
-        newPayload.coverUrl = undefined
-        if(album&&album.length){
-          ImageUtil.batchUploadImgs(album).then((albums)=>{
-            shop.album=  albums
-            newPayload.album = undefined
+        if(coverleaUri==''){
+          if(payload.error){
+            payload.error({message: '更新店铺失败'})
+          }
+
+        }else{
+          shop.coverUrl=  coverleaUri
+          newPayload.coverUrl = undefined
+          if(album&&album.length){
+            ImageUtil.batchUploadImgs(album).then((albums)=>{
+              let upLoadSuccess = true
+              if(albums&&albums.length){
+                albums.forEach((item)=>{
+                  if(item==''){
+                    upLoadSuccess = false
+                  }
+                })
+              }
+              if(upLoadSuccess){
+                shop.album=  albums
+                newPayload.album = undefined
+                lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
+                  let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+                  dispatch(_action({}))
+                  if (payload.success) {
+                    payload.success()
+                  }
+                }).catch((error) => {
+                  // console.log('error=======', error)
+                  // console.log('error=======', error.code)
+                  if (payload.error) {
+                    payload.error(error)
+                  }
+                })
+              }else{
+                if(payload.error){
+                  payload.error({message: '更新店铺失败'})
+                }
+              }
+            })
+          }else{
             lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
               let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
               dispatch(_action({}))
@@ -671,39 +706,41 @@ function handleCompleteShopInfo(payload, formData) {
                 payload.error(error)
               }
             })
-          })
-        }else{
-          lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
-            let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
-            dispatch(_action({}))
-            if (payload.success) {
-              payload.success()
-            }
-          }).catch((error) => {
-            // console.log('error=======', error)
-            // console.log('error=======', error.code)
-            if (payload.error) {
-              payload.error(error)
-            }
-          })
+          }
         }
+
       })
     }else{
       if(album&&album.length){
         ImageUtil.batchUploadImgs(album).then((albums)=> {
-          shop.album = albums
-          newPayload.album = undefined
-          lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
-            let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
-            dispatch(_action({}))
-            if (payload.success) {
-              payload.success()
+          let upLoadSuccess = true
+          if(albums&&albums.length){
+            albums.forEach((item)=>{
+              if(item==''){
+                upLoadSuccess = false
+              }
+            })
+          }
+          if(upLoadSuccess){
+            shop.album = albums
+            newPayload.album = undefined
+            lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
+              let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+              dispatch(_action({}))
+              if (payload.success) {
+                payload.success()
+              }
+            }).catch((error) => {
+              if (payload.error) {
+                payload.error(error)
+              }
+            })
+          }else{
+            if(payload.error){
+              payload.error({message: '更新店铺失败'})
             }
-          }).catch((error) => {
-            if (payload.error) {
-              payload.error(error)
-            }
-          })
+          }
+
         })
       }else{
         lcAuth.submitCompleteShopInfo(shop,newPayload).then((result) => {
@@ -745,9 +782,78 @@ function handleEditShopInfo(payload, formData) {
     let coverUrl = newPayload.coverUrl
     if (coverUrl) {
       ImageUtil.uploadImg2(coverUrl).then((coverLeaUri)=> {
-        newPayload.coverUrl = coverLeaUri
-        if (album && album.length) {
-          ImageUtil.batchUploadImgs(album).then((albums)=>{
+        if(coverLeaUri==''){
+          payload.error({message: '更新店铺失败'})
+        }else {
+          newPayload.coverUrl = coverLeaUri
+          if (album && album.length) {
+            ImageUtil.batchUploadImgs(album).then((albums)=>{
+              let upLoadSuccess = true
+              if(albums&&albums.length){
+                albums.forEach((item)=>{
+                  if(item==''){
+                    upLoadSuccess = false
+                  }
+                })
+              }
+              if(upLoadSuccess){
+                newPayload.album = albums
+                lcAuth.submitEditShopInfo(newPayload).then((result) => {
+                  // console.log('submitEditShopInfo.result====', result)
+                  let _action = createAction(AuthTypes.EDIT_SHOP_INFO_SUCCESS)
+                  dispatch(_action({}))
+                  if (payload.success) {
+                    payload.success()
+                  }
+                }, (reason)=> {
+                  if (payload.error) {
+                    payload.error(reason || {message: '更新店铺失败'})
+                  }
+                })
+              }else{
+                if (payload.error) {
+                  payload.error( {message: '更新店铺失败'})
+                }
+              }
+
+            }, (reason)=> {
+              if (payload.error) {
+                payload.error(reason || {message: '更新店铺失败'})
+              }
+            })
+          } else {
+            lcAuth.submitEditShopInfo(newPayload).then((result) => {
+              // console.log('submitEditShopInfo.result====', result)
+              let _action = createAction(AuthTypes.EDIT_SHOP_INFO_SUCCESS)
+              dispatch(_action({}))
+              if (payload.success) {
+                payload.success()
+              }
+            }, (reason)=> {
+              if (payload.error) {
+                payload.error(reason || {message: '更新店铺失败'})
+              }
+            })
+          }
+        }
+
+      }, (reason)=> {
+        if (payload.error) {
+          payload.error(reason || {message: '更新店铺失败'})
+        }
+      })
+    } else {
+      if (album && album.length) {
+        ImageUtil.batchUploadImgs(album).then((albums)=>{
+          let upLoadSuccess = true
+          if(albums&&albums.length){
+            albums.forEach((item)=>{
+              if(item==''){
+                upLoadSuccess = false
+              }
+            })
+          }
+          if(upLoadSuccess){
             newPayload.album = albums
             lcAuth.submitEditShopInfo(newPayload).then((result) => {
               // console.log('submitEditShopInfo.result====', result)
@@ -761,46 +867,12 @@ function handleEditShopInfo(payload, formData) {
                 payload.error(reason || {message: '更新店铺失败'})
               }
             })
-          }, (reason)=> {
+          }else{
             if (payload.error) {
-              payload.error(reason || {message: '更新店铺失败'})
+              payload.error( {message: '更新店铺失败'})
             }
-          })
-        } else {
-          lcAuth.submitEditShopInfo(newPayload).then((result) => {
-            // console.log('submitEditShopInfo.result====', result)
-            let _action = createAction(AuthTypes.EDIT_SHOP_INFO_SUCCESS)
-            dispatch(_action({}))
-            if (payload.success) {
-              payload.success()
-            }
-          }, (reason)=> {
-            if (payload.error) {
-              payload.error(reason || {message: '更新店铺失败'})
-            }
-          })
-        }
-      }, (reason)=> {
-        if (payload.error) {
-          payload.error(reason || {message: '更新店铺失败'})
-        }
-      })
-    } else {
-      if (album && album.length) {
-        ImageUtil.batchUploadImgs(album).then((albums)=>{
-          newPayload.album = albums
-          lcAuth.submitEditShopInfo(newPayload).then((result) => {
-            // console.log('submitEditShopInfo.result====', result)
-            let _action = createAction(AuthTypes.EDIT_SHOP_INFO_SUCCESS)
-            dispatch(_action({}))
-            if (payload.success) {
-              payload.success()
-            }
-          }, (reason)=> {
-            if (payload.error) {
-              payload.error(reason || {message: '更新店铺失败'})
-            }
-          })
+          }
+
         }, (reason)=> {
           if (payload.error) {
             payload.error(reason || {message: '更新店铺失败'})

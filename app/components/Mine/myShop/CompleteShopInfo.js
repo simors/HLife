@@ -237,42 +237,46 @@ class CompleteShopInfo extends Component {
     if(this.isSubmiting) {
       return
     }
-    this.isSubmiting = true
-    this.loading = Loading.show()
+    if(this.localCoverImgUri){
+      this.isSubmiting = true
+      this.loading = Loading.show()
+      this.props.submitFormData({
+        formKey: commonForm,
+        shopId: this.props.userOwnedShopInfo.id,
+        canModifyShopCategory:true,
+        album: this.localAlbumList || [],
+        coverUrl: this.localCoverImgUri,
+        submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
+        success: ()=>{
+          this.isSubmiting = false
+          Loading.hide(this.loading)
+          this.props.fetchUserOwnedShopInfo()
+          Toast.show('更新店铺资料成功', {
+            duration: 1500,
+            onHidden: () =>{
+              AVUtils.switchTab('MINE')
+              // if(this.props.popNum && this.props.popNum > 1) {
+              //   Actions.pop({
+              //     popNum: this.props.popNum
+              //   })
+              // }else {
+              //   Actions.pop()
+              // }
+            }
+          })
+        },
+        error: (error)=>{
+          console.log('error=====', error)
+          this.isSubmiting = false
+          Loading.hide(this.loading)
+          Toast.show(error.message || '更新店铺资料失败')
+        }
+      })
+    }else{
+      Toast.show('请上传封面')
 
-    this.props.submitFormData({
-      formKey: commonForm,
-      shopId: this.props.userOwnedShopInfo.id,
-      canModifyShopCategory:true,
-      album: this.localAlbumList || [],
-      coverUrl: this.localCoverImgUri,
-      submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
-      success: ()=>{
-        this.isSubmiting = false
-        Loading.hide(this.loading)
-        this.props.fetchUserOwnedShopInfo()
-        Toast.show('更新店铺资料成功', {
-          duration: 1500,
-          onHidden: () =>{
-            AVUtils.switchTab('MINE')
+    }
 
-            // if(this.props.popNum && this.props.popNum > 1) {
-            //   Actions.pop({
-            //     popNum: this.props.popNum
-            //   })
-            // }else {
-            //   Actions.pop()
-            // }
-          }
-        })
-      },
-      error: (error)=>{
-        console.log('error=====', error)
-        this.isSubmiting = false
-        Loading.hide(this.loading)
-        Toast.show(error.message || '更新店铺资料失败')
-      }
-    })
   }
 
   _onSelectPress(e){

@@ -311,54 +311,6 @@ export function handleShopAlbum(payload) {
   })
 }
 
-export function _submitCompleteShopInfo(shop, payload) {
-  // let shopCategoryObjectId = payload.shopCategoryObjectId
-  // let openTime = payload.openTime
-  // let contactNumber = payload.contactNumber
-  // let contactNumber2 = payload.contactNumber2
-  // let ourSpecial = payload.ourSpecial
-  // let album = payload.album
-  // let coverUrl = payload.coverUrl
-  // let tagIds = payload.tagIds
-  // let targetShopCategory = null
-  // // console.log('_submitCompleteShopInfo...=shopCategoryObjectId====', shopCategoryObjectId)
-  // if(shopCategoryObjectId) {
-  //   targetShopCategory = AV.Object.createWithoutData('ShopCategory', shopCategoryObjectId)
-  //   shop.set('targetShopCategory', targetShopCategory)
-  // }
-  //
-  // let containedTag = []
-  // if(tagIds && tagIds.length) {
-  //   tagIds.forEach((tagId) =>{
-  //     containedTag.push(AV.Object.createWithoutData('ShopTag', tagId))
-  //   })
-  // }
-  // shop.set('containedTag', containedTag)
-  // if(coverUrl) {
-  //   shop.set('coverUrl', coverUrl)
-  // }
-  //
-  // if(album) {
-  //   shop.set('album', album)
-  // }
-  //
-  // shop.set('openTime', openTime)
-  // shop.set('contactNumber', contactNumber)
-  // shop.set('contactNumber2', contactNumber2)
-  // shop.set('ourSpecial', ourSpecial)
-  // // console.log('_submitCompleteShopInfo.shop====', shop)
-  let params = {
-    shop:shop,payload:payload
-  }
-  return AV.Cloud.run('submitCompleteShopInfo',params).then(function (result) {
-    return true
-  }, function (err) {
-    // console.log('_submitCompleteShopInfo.err====', err)
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-
-}
 
 export function submitCompleteShopInfo(shop,payload) {
   let params = {
