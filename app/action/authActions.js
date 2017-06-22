@@ -22,6 +22,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
   GET_SMS_CODE: 'GET_SMS_CODE',
   RESET_PWD_SMS_CODE: 'RESET_PWD_SMS_CODE',
+  LOGIN_SMS_CODE: 'LOGIN_SMS_CODE',
   LOGIN_WITH_SMS: 'LOGIN_WITH_SMS',
   LOGIN_WITH_PWD: 'LOGIN_WITH_PWD',
   SET_NICKNAME: 'SET_NICKNAME',
@@ -41,6 +42,7 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   UPDATE_ANNOUNCEMENT: 'UPDATE_ANNOUNCEMENT',
   GET_PAYMENT_SMS_CODE: 'GET_PAYMENT_SMS_CODE',
   PAYMENT_AUTH: 'PAYMENT_AUTH',
+  WX_SIGNIN_OR_BIND: "WX_SIGNIN_OR_BIND",
 }
 
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
@@ -60,6 +62,9 @@ export function submitFormData(payload) {
       switch (payload.submitType) {
         case INPUT_FORM_SUBMIT_TYPE.REGISTER:
           dispatch(handleRegister(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.WX_SIGNIN_OR_BIND:
+          dispatch(handleSupplementUserInfo(payload, formData))
           break
         case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
           dispatch(handleLoginWithPwd(payload, formData))
@@ -167,6 +172,9 @@ export function submitInputData(payload) {
       case INPUT_FORM_SUBMIT_TYPE.GET_PAYMENT_SMS_CODE:
         dispatch(handlePaymentSmsAuth(payload))
         break
+      case INPUT_FORM_SUBMIT_TYPE.LOGIN_SMS_CODE:
+        dispatch(handleLoginSmsCode(payload, data))
+        break
     }
   }
 }
@@ -198,6 +206,50 @@ function handleLoginWithPwd(payload, formData) {
         payload.error(error)
       }
     })
+  }
+}
+
+export function loginWithWeixin(payload) {
+  return (dispatch, getState) => {
+    let loginPayload = {
+      unionid: payload.wxUserInfo.unionid,
+      expiration: payload.wxUserInfo.expiration,
+      accessToken: payload.wxUserInfo.accessToken
+    }
+
+    lcAuth.isWXSignIn({unionid: payload.wxUserInfo.unionid}).then((isSignIn) => {
+      if(isSignIn) {
+        return lcAuth.loginWithWX(loginPayload).then((userInfo) => {
+          if (payload.success) {
+            payload.success(userInfo.userInfo.toJS())
+          }
+          let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+          dispatch(loginAction({...userInfo}))
+          return userInfo
+        }).then((user) => {
+          dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
+          dispatch(getCurrentPromoter())
+          dispatch(initMessageClient(payload))
+          AVUtils.updateDeviceUserInfo({
+            userId: user.userInfo.id
+          })
+        }).catch((error) => {
+          dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      } else {
+        if (payload.success) {
+          payload.success()
+        }
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+
   }
 }
 
@@ -263,6 +315,24 @@ function handleGetSmsCode(payload, data) {
   }
 }
 
+function handleLoginSmsCode(payload, data) {
+  return (dispatch, getState) => {
+    let getSmsPayload = {
+      phone: data.text,
+    }
+    lcAuth.requestLoginSmsCode(getSmsPayload).then(() => {
+      if (payload.success) {
+        let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
+        dispatch(succeedAction({stateKey: payload.stateKey}))
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
 
 function handlePaymentSmsAuth(payload) {
   console.log("handlePaymentSmsAuth ", payload)
@@ -304,6 +374,18 @@ function handleRegister(payload, formData) {
   }
 }
 
+function handleSupplementUserInfo(payload, formData) {
+  return (dispatch, getState) => {
+    if (__DEV__) {// in android and ios simulator ,__DEV__ is true
+      dispatch(registerWithWeixin(payload, formData))
+      dispatch(initMessageClient(payload))
+    } else {
+      dispatch(registerWithWeixin(payload, formData))
+    }
+  }
+}
+
+
 function handlePaymentAuth(payload, formData) {
   return (dispatch, getState) => {
     let verifyRegSmsPayload = {
@@ -337,6 +419,45 @@ function registerWithPhoneNum(payload, formData) {
       }
     }).catch((error) => {
       if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function registerWithWeixin(payload, formData) {
+  return (dispatch, getState) => {
+    let regPayload = {
+      phone: formData.phoneInput.text,
+      smsCode:  formData.smsAuthCodeInput.text,
+      unionid: payload.wxUserInfo.unionid,
+      accessToken: payload.wxUserInfo.accessToken,
+      expiration: payload.wxUserInfo.expiration,
+      name: payload.wxUserInfo.name,
+      avatar: payload.wxUserInfo.avatar,
+    }
+
+    return lcAuth.registerWithWX(regPayload).then((user) => {
+      let regAction = createAction(AuthTypes.REGISTER_SUCCESS)
+      dispatch(regAction(user))
+      if (payload.success) {
+        payload.success(user)
+      }
+    }).then(() => {
+      let user = activeUserInfo(getState())
+      lcAuth.become({token: user.token}).then((userInfo) => {
+        let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+        dispatch(loginAction({...userInfo}))
+        return userInfo
+      }).then((user) => {
+        dispatch(calUserRegist({userId: user.userInfo.id}))
+        dispatch(initMessageClient(payload))
+        AVUtils.updateDeviceUserInfo({
+          userId: user.userInfo.id
+        })
+      })
+    }).catch((error) => {
+      if(payload.error) {
         payload.error(error)
       }
     })

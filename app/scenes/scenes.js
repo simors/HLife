@@ -113,6 +113,7 @@ import PublishShopGood from '../components/shop/PublishShopGood'
 import EditShopGood from '../components/Mine/myShop/EditShopGood'
 import ShopGoodsListView from '../components/shop/ShopGoodsListView'
 import ShopGoodsDetail from '../components/shop/ShopGoodsDetail'
+import SupplementUserInfo from '../components/Login/SupplementUserInfo'
 
 const styles = StyleSheet.create({
   container: {
@@ -233,6 +234,7 @@ export const scenes = Actions.create(
       <Scene key="UPDATE_SHOP_GOOD_ALBUM" component={UpdateShopGoodAlbum}/>
       <Scene key="EDIT_SHOP_GOOD" component={EditShopGood}/>
       <Scene key="SHOP_GOODS_DETAIL" component={ShopGoodsDetail}/>
+      <Scene key="SUPPLEMENT_USERINFO" component={SupplementUserInfo}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

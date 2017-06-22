@@ -82,6 +82,56 @@ export function loginWithPwd(payload) {
 }
 
 /**
+ * 微信第三方登录
+ * @param payload
+ * @returns {IPromise<U>|*|AV.Promise}
+ */
+export function loginWithWX(payload) {
+  let authData = {
+    "openid": payload.unionid,
+    "access_token": payload.accessToken,
+    "expires_at": Date.parse(payload.expiration),
+  }
+  let platform = 'weixin'
+  return AV.User.signUpOrlogInWithAuthData(authData, platform).then((loginedUser) => {
+    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    userInfo = userInfo.set('token', loginedUser.getSessionToken())
+
+    if(!userInfo.get('geoProvinceCode')) {
+      updateUserLocationInfo({
+        userId: userInfo.get('id')
+      })
+    }
+    AV.Cloud.run('hLifeLogin', payload)//更新updatedAt时间
+    return {
+      userInfo: userInfo,
+    }
+
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+ * 判断微信用户是否已注册
+ * @param payload
+ * @returns {IPromise<U>|*|AV.Promise}
+ */
+export function isWXSignIn(payload) {
+  let params = {
+    unionid: payload.unionid,
+  }
+
+  return AV.Cloud.run("isWXUnionIdSignIn", params).then((result) => {
+    return result.isSignIn
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
  * 用户名和密码注册
  * @param payload
  * @returns {IPromise<U>|*|AV.Promise}
@@ -96,23 +146,6 @@ export function register(payload) {
     updateUserLocationInfo({
       userId: loginedUser.id
     })
-    let detail = {
-      objName: 'UserDetail',
-      args: {}
-    }
-    oPrs.createObj(detail).then((detail)=> {
-      const updatePayload = {
-        name: '_User',
-        objectId: loginedUser.id,
-        setArgs: {
-          nickname: numberUtils.hidePhoneNumberDetail(payload.phone),
-          mobilePhoneVerified: true,
-          detail: detail
-        },
-        increArgs: {}
-      }
-      oPrs.updateObj(updatePayload)
-    })
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
     let token = user.getSessionToken()
     userInfo = userInfo.set('token', token)
@@ -122,6 +155,54 @@ export function register(payload) {
       token: token,
     }
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+ * 微信第三方登录注册
+ * @param payload
+ * @returns {IPromise<U>|*|AV.Promise}
+ */
+export function registerWithWX(payload) {
+  let phone = payload.phone
+  let smsCode = payload.smsCode
+  let wx_name = payload.name
+  let avatar = payload.avatar
+
+  let authData = {
+    "openid": payload.unionid,
+    "access_token": payload.accessToken,
+    "expires_at": Date.parse(payload.expiration),
+  }
+  let platform = 'weixin'
+
+  return AV.User.signUpOrlogInWithMobilePhone(phone, smsCode).then((user) => {
+
+    return AV.User.associateWithAuthData(user, platform, authData)
+  }).then((authUser) => {
+    if(authUser && !authUser.attributes.nickname)
+      authUser.set('nickname', wx_name)
+    if(authUser && !authUser.attributes.avatar)
+      authUser.set('avatar', avatar)
+    return authUser.save()
+  }).then((loginedUser) => {
+    console.log("loginedUser", loginedUser)
+    updateUserLocationInfo({
+      userId: loginedUser.id
+    })
+
+    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+
+    let token = loginedUser.getSessionToken()
+    userInfo = userInfo.set('token', token)
+    modifyMobilePhoneVerified({id: loginedUser.id})
+    return {
+      userInfo: userInfo,
+      token: token,
+    }
+  }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -601,7 +682,17 @@ export function requestSmsAuthCode(payload) {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
-  }
+}
+
+export function requestLoginSmsCode(payload) {
+  let phone = payload.phone
+  return AV.Cloud.requestSmsCode(phone).then(function (success) {
+    // do nothing
+  }, function (err) {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
 
 
 export function verifySmsCode(payload) {

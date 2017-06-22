@@ -31,7 +31,9 @@ export const UserInfoRecord = Record({
   detail: {},
   enable: false,
   paymentPassword: undefined,
-  isVirtual:0
+  isVirtual:0,
+  authData: undefined,
+  openid: undefined,         //公众号对应的微信openid
 }, 'UserInfoRecord')
 
 export const HealthProfileRecord = Record({
@@ -63,7 +65,7 @@ export class UserInfo extends UserInfoRecord {
     }
 
     let info = new UserInfoRecord()
-    info = info.withMutations((record) => {
+    return info.withMutations((record) => {
       record.set('id', lcObj.id)
 
       if(lcObj.createdAt) {
@@ -76,7 +78,6 @@ export class UserInfo extends UserInfoRecord {
         record.set('updatedDate', numberUtils.formatLeancloudTime(updatedAt, 'YYYY-MM-DD HH:mm:SS'))
         record.set('lastLoginDuration', numberUtils.getConversationTime(updatedAt))
       }
-
       for(let key in attrs) {
         if('identity' == key) {
           record.set('identity', new List(attrs.identity))
@@ -88,7 +89,6 @@ export class UserInfo extends UserInfoRecord {
         }
       }
     })
-    return info
   }
 
   static fromLeancloudApi(lcObj) {

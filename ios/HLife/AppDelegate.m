@@ -82,9 +82,11 @@
 }
 
 // for iOS 9
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
-  return [Pingpp handleOpenURL:url withCompletion:nil];
-}
+//- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
+//  NSLog(@"openURL for Pingpp");
+//
+//  return [Pingpp handleOpenURL:url withCompletion:nil];
+//}
 
   // 支持所有iOS系统
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
@@ -93,6 +95,7 @@
     BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url sourceApplication:sourceApplication annotation:annotation];
     if (!result) {
       // 其他如支付等SDK的回调
+      result = [Pingpp handleOpenURL:url withCompletion:nil];
     }
     return result;
   }

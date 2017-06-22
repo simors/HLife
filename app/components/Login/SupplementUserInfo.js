@@ -22,12 +22,9 @@ import {isInputValid} from '../../selector/inputFormSelector'
 import * as Toast from '../common/Toast'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import PhoneInput from '../common/Input/PhoneInput'
-import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
-import THEME from '../../constants/themes/theme1'
 
-const PAGE_WIDTH=Dimensions.get('window').width
 
 let commonForm = Symbol('commonForm')
 const phoneInput = {
@@ -52,7 +49,7 @@ class SupplementUserInfo extends Component {
     this.props.submitFormData({
       formKey: commonForm,
       wxUserInfo: this.props.wxUserInfo,
-      submitType: INPUT_FORM_SUBMIT_TYPE.WX_OAUTH_SUPPLEMENT_USERINFO,
+      submitType: INPUT_FORM_SUBMIT_TYPE.WX_SIGNIN_OR_BIND,
       success:this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
@@ -60,6 +57,7 @@ class SupplementUserInfo extends Component {
 
   submitSuccessCallback(userInfos) {
     Toast.show('用户信息补充成功')
+    Actions.HOME({type: 'reset'})
   }
 
   submitErrorCallback(error) {

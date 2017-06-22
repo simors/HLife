@@ -31,6 +31,7 @@ import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
+
 let commonForm = Symbol('commonForm')
 const phoneInput = {
   formKey: commonForm,
@@ -99,7 +100,7 @@ class Login extends Component {
             </View>
             <CommonButton buttonStyle={{backgroundColor: THEME.base.deepColor}}
                           title="点我注册，打开一片新天地！" onPress={() => Actions.REGIST()}/>
-            {/*<SnsLogin />*/}
+            <SnsLogin />
           </ScrollView>
         </View>
       </View>

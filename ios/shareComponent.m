@@ -85,9 +85,41 @@
     }];
     
   }
-  
-  
-  
+
+  RCT_EXPORT_METHOD(loginWX:(RCTResponseSenderBlock)callback)
+  {
+    [[UMSocialManager defaultManager] getUserInfoWithPlatform: UMSocialPlatformType_WechatSession currentViewController:nil completion:^(id result, NSError *error) {
+      if (error) {
+        NSLog(@"Wechat fail");
+        callback(@[@(error.code)]);
+      } else {
+        UMSocialUserInfoResponse *resp = result;
+        // 授权信息
+//        NSLog(@"Wechat uid: %@", resp.uid);
+//        NSLog(@"Wechat openid: %@", resp.openid);
+//        NSLog(@"Wechat accessToken: %@", resp.accessToken);
+//        NSLog(@"Wechat refreshToken: %@", resp.refreshToken);
+//        NSLog(@"Wechat expiration: %@", resp.expiration);
+        
+        // 用户信息
+//        NSLog(@"Wechat name: %@", resp.name);
+//        NSLog(@"Wechat iconurl: %@", resp.iconurl);
+//        NSLog(@"Wechat gender: %@", resp.unionGender);
+        
+        // 第三方平台SDK源数据
+//        NSLog(@"Wechat originalResponse: %@", resp.originalResponse);
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+        NSString *expiration = [dateFormatter stringFromDate:resp.expiration];
+        
+        NSDictionary *data = @{@"uid": resp.uid, @"openid": resp.openid, @"accessToken": resp.accessToken, @"name": resp.name, @"iconurl": resp.iconurl, @"gender": resp.gender, @"expiration": expiration, @"originalResponse": resp.originalResponse};
+        callback(@[@(error.code), data]);
+        dateFormatter = nil;
+      }
+    }];
+  }
+
+
 //  RCT_EXPORT_METHOD(isInstall:(RCTResponseSenderBlock)callback){
 //    Boolean isQQInstall =  [QQApiInterface isQQInstalled];
 //    Boolean isWechatInstall =  [WXApi isWXAppInstalled];
