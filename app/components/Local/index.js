@@ -48,6 +48,7 @@ import ScoreShow from '../common/ScoreShow'
 import ViewPager from 'react-native-viewpager'
 import {CachedImage} from "react-native-img-cache"
 import AV from 'leancloud-storage'
+import {LazyloadView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -122,37 +123,39 @@ class Local extends Component {
     }
 
     return (
-      <TouchableOpacity key={'shop_' + index} onPress={()=> {
-        this.gotoShopDetailScene(shopInfo.id)
-      }}>
-        <View style={[styles.shopInfoWrap]}>
-          <View style={styles.coverWrap}>
-            <Image style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
-          </View>
-          <View style={styles.shopIntroWrap}>
-            <View style={styles.shopInnerIntroWrap}>
-              <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
-              <View style={{flex: 1, justifyContent: 'space-around'}}>
-                <ScoreShow
-                  score={shopInfo.score}
-                />
-                {this.renderShopPromotion(shopInfo)}
-              </View>
-              <View style={styles.subInfoWrap}>
-                {shopTag &&
-                <Text style={[styles.subTxt]}>{shopTag}</Text>
-                }
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+      <LazyloadView key={'shop_' + index} host="localShop" placeholderStyle={{height: 200, width: PAGE_WIDTH}}>
+        <TouchableOpacity onPress={()=> {
+          this.gotoShopDetailScene(shopInfo.id)
+        }}>
+          <View style={[styles.shopInfoWrap]}>
+            <View style={styles.coverWrap}>
+              <CachedImage mutable style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
+            </View>
+            <View style={styles.shopIntroWrap}>
+              <View style={styles.shopInnerIntroWrap}>
+                <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
+                <View style={{flex: 1, justifyContent: 'space-around'}}>
+                  <ScoreShow
+                    score={shopInfo.score}
+                  />
+                  {this.renderShopPromotion(shopInfo)}
                 </View>
-                {shopInfo.distance &&
-                <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
-                }
+                <View style={styles.subInfoWrap}>
+                  {shopTag &&
+                  <Text style={[styles.subTxt]}>{shopTag}</Text>
+                  }
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+                  </View>
+                  {shopInfo.distance &&
+                  <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
+                  }
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </LazyloadView>
     )
   }
 
@@ -283,6 +286,7 @@ class Local extends Component {
         <View style={styles.body}>
           <View style={{flex: 1}}>
             <CommonListView
+              name="localShop"
               contentContainerStyle={{backgroundColor: '#fff'}}
               dataSource={this.props.ds}
               renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}

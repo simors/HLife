@@ -16,6 +16,8 @@ import {
 } from "react-native"
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import Immutable from 'immutable'
+import {LazyloadListView} from './Lazyload'
+
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class CommonListView extends Component {
@@ -60,29 +62,60 @@ export default class CommonListView extends Component {
   }
 
   render() {
-    return (
-      <ListView
-        ref="listView"
-        enableEmptySections={true}
-        onContentSizeChange={(contentWidth, contentHeight) => {this.onContentSizeChange(contentWidth, contentHeight)}}
-        automaticallyAdjustContentInsets={false}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={true}
-        onEndReached={this.onLoadMore.bind(this)}
-        onEndReachedThreshold={1000}
-        contentContainerStyle={{backgroundColor: 'white'}}
-        renderSectionHeader={this.props.renderSectionHeader}
-        onScroll={this.props.onScroll}
-        renderSeparator={(sectionID, rowID) => this.state.hideSeparator ?
-          <View key={`${sectionID}-${rowID}`} style={this.state.separatorStyle}/> : null}
-        renderFooter={() => this.state.hideFooter ? null : this.showFootView() }
-        refreshControl={
-          this.state.hideHeader ?
-            null : this.showRefreshControl()
-        }
-        {...this.props}
-      />
-    )
+    if (this.props.name) {
+      return (
+        <LazyloadListView
+          ref="listView"
+          name={this.props.name}
+          enableEmptySections={true}
+          onContentSizeChange={(contentWidth, contentHeight) => {this.onContentSizeChange(contentWidth, contentHeight)}}
+          automaticallyAdjustContentInsets={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
+          onEndReached={this.onLoadMore.bind(this)}
+          onEndReachedThreshold={1000}
+          contentContainerStyle={{backgroundColor: 'white'}}
+          renderSectionHeader={this.props.renderSectionHeader}
+          onScroll={this.props.onScroll}
+          renderSeparator={(sectionID, rowID) => this.state.hideSeparator ?
+            <View key={`${sectionID}-${rowID}`} style={this.state.separatorStyle}/> : null}
+          renderFooter={() => this.state.hideFooter ? null : this.showFootView() }
+          refreshControl={
+            this.state.hideHeader ?
+              null : this.showRefreshControl()
+          }
+          scrollRenderAheadDistance={200}
+          renderDistance={100}
+          pageSize={1}
+          initialListSize={10}
+          {...this.props}
+        />
+      )
+    } else {
+      return (
+        <LazyloadListView
+          ref="listView"
+          enableEmptySections={true}
+          onContentSizeChange={(contentWidth, contentHeight) => {this.onContentSizeChange(contentWidth, contentHeight)}}
+          automaticallyAdjustContentInsets={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
+          onEndReached={this.onLoadMore.bind(this)}
+          onEndReachedThreshold={1000}
+          contentContainerStyle={{backgroundColor: 'white'}}
+          renderSectionHeader={this.props.renderSectionHeader}
+          onScroll={this.props.onScroll}
+          renderSeparator={(sectionID, rowID) => this.state.hideSeparator ?
+            <View key={`${sectionID}-${rowID}`} style={this.state.separatorStyle}/> : null}
+          renderFooter={() => this.state.hideFooter ? null : this.showFootView() }
+          refreshControl={
+            this.state.hideHeader ?
+              null : this.showRefreshControl()
+          }
+          {...this.props}
+        />
+      )
+    }
   }
 
   showRefreshControl() {

@@ -53,7 +53,7 @@ import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
-
+import {LazyloadView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -472,10 +472,10 @@ export class TopicDetail extends Component {
     }
   }
 
-  renderRow(rowData, rowId) {
+  renderRow(rowData, rowId, lazyHost) {
     switch (rowData.type) {
       case 'COLUMN_1':
-        return this.renderTopicContentColumn()
+        return this.renderTopicContentColumn(lazyHost)
       case 'COLUMN_2':
         return this.renderTopicCommentsColumn()
       default:
@@ -483,11 +483,12 @@ export class TopicDetail extends Component {
     }
   }
 
-  renderTopicContentColumn() {
+  renderTopicContentColumn(lazyHost) {
     let topic = this.props.topic
     return (
       <View style={{flex:1}}>
-        <TopicContent 
+        <TopicContent
+          lazyHost={lazyHost}
           topic={this.props.topic}
           userFollowersTotalCount={this.props.userFollowersTotalCount}
           isSelfTopic={this.isSelfTopic()}
@@ -512,12 +513,12 @@ export class TopicDetail extends Component {
   renderTopicCommentsColumn() {
     if (!this.state.loadComment) {
       return (
-        <View style={{flex:1}}>
+        <LazyloadView host="detailList" style={{flex:1}}>
           <View style={{flexDirection: 'row',padding:15,paddingTop:20,backgroundColor:'white'}}>
             <View style={styles.titleLine}/>
             <Text style={styles.titleTxt}>邻友点评</Text>
           </View>
-        </View>
+        </LazyloadView>
       )
     }
     return (
@@ -660,15 +661,16 @@ export class TopicDetail extends Component {
   }
 
   render() {
+    let lazyHost = "detailList" + this.props.topic.objectId
     return (
       <View style={styles.containerStyle}>
         {this.renderHeaderView()}
         <View style={styles.body}>
-
           <CommonListView
+            name={lazyHost}
             contentContainerStyle={{backgroundColor: '#fff'}}
             dataSource={this.props.ds}
-            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId, lazyHost)}
             loadNewData={()=> {
               this.refreshData()
             }}
@@ -676,7 +678,7 @@ export class TopicDetail extends Component {
               this.loadMoreData()
             }}
             ref={(listView) => this.listView = listView}
-          />  
+          />
 
           {this.state.hideBottomView
             ? null
@@ -851,7 +853,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(64),
     flex: 1,
     backgroundColor: '#E5E5E5',
-    paddingBottom: 50
+    paddingBottom: normalizeH(50),
   },
   topicLikesWrap: {
     flex:1,

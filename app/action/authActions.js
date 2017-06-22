@@ -203,34 +203,44 @@ function handleLoginWithPwd(payload, formData) {
 
 function handleSetNickname(payload, formData) {
   return (dispatch, getState) => {
-    let form = {
-      userId: activeUserId(getState()),
-      nickname: formData.nicknameInput.text,
+    let localImg = ''
+
+    if(formData.avatarInput && formData.avatarInput.text) {
+      localImg=formData.avatarInput.text
     }
-    lcAuth.setUserNickname(form).then((result) => {
-      if (result.errcode == 0) {
-        if (payload.success) {
-          payload.success()
-        }
-      } else {
-        if (payload.error) {
-          payload.error({message: '设置昵称失败，请重试'})
-        }
+
+    ImageUtil.uploadImg2(localImg).then((imgSource)=>{
+      let form = {
+        userId: activeUserId(getState()),
+        avatarUri: imgSource,
+        nickname: formData.nicknameInput.text,
       }
-    }).then(() => {
-      let user = activeUserInfo(getState())
-      lcAuth.become({token: user.token}).then((userInfo) => {
-        let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
-        dispatch(loginAction({...userInfo}))
-        return userInfo
-      }).then((user) => {
-        dispatch(calUserRegist({userId: user.userInfo.id}))
-        dispatch(initMessageClient(payload))
-        AVUtils.updateDeviceUserInfo({
-          userId: user.userInfo.id
+      lcAuth.setUserNickname(form).then((result) => {
+        if (result.errcode == 0) {
+          if (payload.success) {
+            payload.success()
+          }
+        } else {
+          if (payload.error) {
+            payload.error({message: '完善信息失败，请重试'})
+          }
+        }
+      }).then(() => {
+        let user = activeUserInfo(getState())
+        lcAuth.become({token: user.token}).then((userInfo) => {
+          let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+          dispatch(loginAction({...userInfo}))
+          return userInfo
+        }).then((user) => {
+          dispatch(calUserRegist({userId: user.userInfo.id}))
+          dispatch(initMessageClient(payload))
+          AVUtils.updateDeviceUserInfo({
+            userId: user.userInfo.id
+          })
         })
       })
     })
+
   }
 }
 

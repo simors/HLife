@@ -24,6 +24,7 @@ import FollowUser from '../../components/common/FollowUser'
 import {activeUserId} from '../../selector/authSelector'
 import shallowequal from 'shallowequal'
 import {CachedImage} from "react-native-img-cache"
+import {LazyloadView} from '../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -136,8 +137,10 @@ export class TopicShow extends Component {
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-                  <CachedImage mutable style={styles.avatarStyle}
-                         source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
+                  <LazyloadView host={this.props.lazyHost} style={{height: normalizeH(44), width: normalizeW(44),}}>
+                    <CachedImage mutable style={styles.avatarStyle}
+                           source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
+                  </LazyloadView>
                 </TouchableOpacity>
                 <View>
                   <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
@@ -158,7 +161,6 @@ export class TopicShow extends Component {
           </View>
 
           {this.renderContentImage()}
-          {/*{this.renderCommentAndLikeButton()}*/}
           <View style={styles.locationCommentStyle}>
             <CachedImage mutable style={styles.positionStyle} resizeMode="contain" source={require("../../assets/images/writer_loaction.png")}/>
             <Text
