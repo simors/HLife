@@ -283,6 +283,6 @@ export function getThumbUrl(uri, width, height) {
   }
   let filename = uri.split('/').pop()
   let file = AV.File.withURL(filename, uri)
-  let thumb = file.thumbnailURL(width, height)
+  let thumb = file.thumbnailURL(width*2, height*2)
   return thumb
 }
