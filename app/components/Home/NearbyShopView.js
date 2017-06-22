@@ -41,7 +41,7 @@ class NearbyShopView extends Component {
 
   gotoShopCategoryList(shopCategory) {
     Actions.SHOP_CATEGORY_LIST({
-      shopCategoryId: shopCategory.shopCategoryId,
+      shopCategoryId: shopCategory.id,
       shopCategoryName: shopCategory.text,
     })
   }
