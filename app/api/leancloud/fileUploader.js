@@ -21,10 +21,15 @@ export function uploadLocalFile(payload) {
   let file = new AV.File(payload.fileName, {blob: {uri}})
   return file.save().then(function (savedFile) {
     let saved = {
-      savedPos: savedFile.attributes.url
+      savedPos: savedFile.attributes.url,
+      thumb: file.thumbnailURL(150, 150)
     }
     return saved
   }, function (err) {
+    console.log(err)
+    throw err
+  }).catch((err) => {
+    console.log(err)
     throw err
   })
 }

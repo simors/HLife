@@ -18,6 +18,8 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import shallowequal from 'shallowequal'
+import {getThumbUrl} from '../../util/ImageUtil'
+import {CachedImage} from "react-native-img-cache"
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -64,7 +66,7 @@ class NearbyShopView extends Component {
                 </View>
               </View>
               <View style={{flex: 1}}>
-                <Image style={{flex: 1}} resizeMode='contain' source={{uri: item.showPictureSource}}></Image>
+                <CachedImage mutable style={{flex: 1}} source={{uri: getThumbUrl(item.showPictureSource, normalizeW(95), normalizeH(108))}}></CachedImage>
               </View>
             </View>
           </TouchableOpacity>
@@ -99,8 +101,8 @@ class NearbyShopView extends Component {
                 <Text style={styles.itemAbstract} numberOfLines={1}>{item.describe}</Text>
               </View>
               <View style={styles.secondShopImg}>
-                <Image style={{width: normalizeW(82), height: normalizeH(44)}} resizeMode='contain'
-                       source={{uri: item.showPictureSource}}></Image>
+                <CachedImage mutable style={{width: normalizeW(82), height: normalizeH(44)}} resizeMode='contain'
+                       source={{uri: getThumbUrl(item.showPictureSource, normalizeW(82), normalizeH(44))}}></CachedImage>
               </View>
             </View>
           </TouchableOpacity>

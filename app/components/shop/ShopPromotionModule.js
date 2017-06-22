@@ -17,6 +17,8 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
+import {CachedImage} from "react-native-img-cache"
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -34,9 +36,8 @@ class ShopPromotionModule extends Component {
             <View style={styles.saleItemView}>
               <View style={styles.saleItemInnerView}>
                 <View style={styles.saleImg}>
-                  <Image style={{flex: 1}}
-                         resizeMode='contain'
-                         source={{uri: item.coverUrl}}/>
+                  <CachedImage mutable style={{flex: 1}}
+                         source={{uri: getThumbUrl(item.coverUrl, normalizeW(100), normalizeH(100))}}/>
                 </View>
                 <View style={styles.saleContent}>
                   <View>

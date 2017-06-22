@@ -49,6 +49,7 @@ import ViewPager from 'react-native-viewpager'
 import {CachedImage} from "react-native-img-cache"
 import AV from 'leancloud-storage'
 import {LazyloadView} from '../common/Lazyload'
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -129,7 +130,7 @@ class Local extends Component {
         }}>
           <View style={[styles.shopInfoWrap]}>
             <View style={styles.coverWrap}>
-              <CachedImage mutable style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
+              <CachedImage mutable style={styles.cover} source={{uri: getThumbUrl(shopInfo.coverUrl, normalizeW(80), normalizeW(80))}}/>
             </View>
             <View style={styles.shopIntroWrap}>
               <View style={styles.shopInnerIntroWrap}>
@@ -193,7 +194,9 @@ class Local extends Component {
             return(
               <TouchableOpacity key={key} style={{width: PAGE_WIDTH/4, height: normalizeH(109), justifyContent: 'center', alignItems: 'center'}}
                                 onPress={() => {this.gotoShopCategoryList({shopCategoryId: value.id, shopCategoryName: value.text})}}>
-                <CachedImage mutable style={{width: normalizeW(50), height: normalizeW(50), marginBottom: normalizeH(8)}} source={{uri: value.imageSource}}/>
+                <CachedImage mutable
+                             style={{width: normalizeW(50), height: normalizeW(50), marginBottom: normalizeH(8)}}
+                             source={{uri: getThumbUrl(value.imageSource, normalizeW(50), normalizeW(50))}}/>
                 <Text numberOfLines={1} style={{}}>{value.text}</Text>
               </TouchableOpacity>
             )
@@ -401,8 +404,8 @@ const styles = StyleSheet.create({
     fontSize: em(12)
   },
   coverWrap: {
-    width: 80,
-    height: 80
+    width: normalizeW(80),
+    height: normalizeW(80)
   },
   cover: {
     flex: 1
