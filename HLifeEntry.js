@@ -63,16 +63,17 @@ AV.init(
     )
 
     AVUtils.appInit()
-    InteractionManager.runAfterInteractions(()=>{
 
     CodePush.allowRestart();//在加载完了可以允许重启
     // CodePush.notifyApplicationReady()
-    CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESTART})
-    })
+    this.codepushTimer = setTimeout(() => {
+      CodePush.sync({installMode: CodePush.InstallMode.ON_NEXT_RESTART})
+    }, 1000)
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', handleAppStateChange);
+    this.codepushTimer && clearTimeout(this.codepushTimer)
     // NetInfo.removeEventListener('change', this._handleConnectionInfoChange);
   }
 
