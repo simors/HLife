@@ -75,17 +75,24 @@ export class TopicDetail extends Component {
   }
 
   componentWillMount() {
+    this.refreshData()
     InteractionManager.runAfterInteractions(() => {
-      this.refreshData()
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
+    })
+    InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
+    })
+    InteractionManager.runAfterInteractions(() => {
       if (this.props.isLogin) {
         this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       }
-
+    })
+    InteractionManager.runAfterInteractions(() => {
       if(this.props.topic && this.props.topic.userId) {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
       }
+    })
+    InteractionManager.runAfterInteractions(() => {
       this.props.fetchShareDomain()
     })
   }
@@ -98,12 +105,9 @@ export class TopicDetail extends Component {
     } else {
       Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
       Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
-
     }
   }
   componentWillUnmount(){
-    // console.log('unmount component')
-
     if (Platform.OS == 'ios') {
       Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
       Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
@@ -567,7 +571,9 @@ export class TopicDetail extends Component {
       }
     }
 
-    this.props.fetchTopicCommentsByTopicId(payload)
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicCommentsByTopicId(payload)
+    })
   }
 
   onPaymentPress() {
