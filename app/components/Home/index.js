@@ -50,13 +50,12 @@ import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-nativ
 import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
 import ViewPager from '../common/ViewPager'
-// import ViewPager2 from '../common/ViewPager2'
-// import ViewPager from 'react-native-viewpager'
 import shallowequal from 'shallowequal'
 
 import SearchBar from '../common/SearchBar'
 import {CachedImage} from "react-native-img-cache"
 import AV from 'leancloud-storage'
+import {getThumbUrl} from '../../util/ImageUtil'
 
 
 const RNDeviceInfo = NativeModules.RNDeviceInfo
@@ -88,7 +87,6 @@ class Home extends Component {
 
 
   checkIosUpdate(){
-    // console.log('jhahahah',CommonNative)
     let platform = Platform.OS
     if(platform==='ios'){
       fetch('https://itunes.apple.com/lookup?id=1224852246',{
@@ -111,20 +109,12 @@ class Home extends Component {
       })
     }else if (platform==='android'){
       checkUpdate().then((result)=>{
-        // console.log('result',result)
-        // console.log('RNDeviceInfo.appVersion',RNDeviceInfo.appVersion)
 
         if(result.version>RNDeviceInfo.appVersion){
-          // console.log('what wronghahahahahhaha',result.version,this.props.noUpdateVersion)
 
           if(result.version>this.props.noUpdateVersion){
-            // console.log('what wrong',result.version,this.props.noUpdateVersion)
             this.isUpdate({trackViewUrl:result.fileUrl,version:result.version})
-          }else {
-            // console.log('here is right',result.version,this.props.noUpdateVersion)
-
           }
-
        }
       })
     }
@@ -148,7 +138,6 @@ class Home extends Component {
       cancel: {
         text: '以后',
         callback: ()=> {
-          // console.log('cancel',result.version)
           this.props.fetchAppNoUpdate({noUpdateVersion:result.version})
         }
       }
@@ -281,7 +270,7 @@ class Home extends Component {
               mutable
               style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
               resizeMode="stretch"
-              source={typeof(image) == 'string' ? {uri: image} : image}
+              source={typeof(image) == 'string' ? {uri: getThumbUrl(image, PAGE_WIDTH, normalizeH(223))} : image}
             />
           </TouchableOpacity>
         )
@@ -311,7 +300,6 @@ class Home extends Component {
   }
 
   _renderPage(data: Object, pageID) {
-     // console.log('_renderPage.data====', data)
     return (
       <View style={{flex:1}}>
         {data}

@@ -51,31 +51,29 @@ import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fet
 import {
   selectUserOwnedShopInfo,
   selectShopDetail,
-  selectShopList,
   selectGuessYouLikeShopList,
   selectLatestShopAnnouncemment,
   selectUserIsFollowShop,
   selectShopComments,
   selectShopCommentsTotalCount,
-  selectUserIsUpedShop,
   selectGoodsList
 } from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import * as configSelector from '../../selector/configSelector'
 import Comment from '../common/Comment'
-import ImageGallery from '../common/ImageGallery'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
 
 import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
-import * as ShopDetailTestData from './ShopDetailTestData'
 import ActionSheet from 'react-native-actionsheet'
 import TimerMixin from 'react-timer-mixin'
 import Loading from '../common/Loading'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {fetchShareDomain, fetchAppServicePhone} from '../../action/configAction'
 import ShopGoodsList from './ShopGoodsList'
+import {CachedImage} from "react-native-img-cache"
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -490,7 +488,7 @@ class ShopDetail extends Component {
       const commentsView = this.props.shopComments.map((item, index) => {
         if (index > 2) return
         if (item.user.avatar) {
-          avatar = {uri: item.user.avatar}
+          avatar = {uri: getThumbUrl(item.user.avatar, 50, 50)}
         }
         return (
           <View key={"shop_comment_" + index} style={styles.commentContainer}>
@@ -498,7 +496,7 @@ class ShopDetail extends Component {
               <TouchableOpacity onPress={()=> {
                 Actions.PERSONAL_HOMEPAGE({userId: item.user.id})
               }}>
-                <Image style={styles.commentAvatar} source={avatar}/>
+                <CachedImage mutable style={styles.commentAvatar} source={avatar}/>
               </TouchableOpacity>
             </View>
             <View style={styles.commentRight}>
@@ -700,8 +698,6 @@ class ShopDetail extends Component {
   }
 
   render() {
-    // console.log('this.props.shopDetail===', this.props.shopDetail)
-
     let shopDetail = this.props.shopDetail
 
     return (
@@ -814,8 +810,8 @@ class ShopDetail extends Component {
             <TouchableOpacity onPress={()=> {
               this.showShopAlbum()
             }} style={{flex: 1}}>
-              <Image style={{width: PAGE_WIDTH, height: normalizeH(200)}}
-                     source={{uri: this.props.shopDetail.coverUrl}}>
+              <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(200)}}
+                     source={{uri:getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
                 <View style={{
                   position: 'absolute',
                   right: 15,
@@ -828,7 +824,7 @@ class ShopDetail extends Component {
                 }}>
                   <Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>
                 </View>
-              </Image>
+              </CachedImage>
             </TouchableOpacity>
             <View style={styles.shopHead}>
               <View style={styles.shopHeadLeft}>
@@ -890,8 +886,7 @@ class ShopDetail extends Component {
                 <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
               </View>
             </View>
-            <ShopGoodsList shopGoodsList={this.props.goodList} size={6}
-            />
+            <ShopGoodsList shopGoodsList={this.props.goodList} size={6}/>
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
                 { this.props.goodList&&this.props.goodList.length?<TouchableOpacity onPress={()=> {
@@ -1013,9 +1008,7 @@ class ShopDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
-  // console.log('shopDetail=====>>>>>>', shopDetail)
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
-  // const shopList = selectShopList(state) || []
   const isUserLogined = authSelector.isUserLogined(state)
   const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
@@ -1024,11 +1017,6 @@ const mapStateToProps = (state, ownProps) => {
     isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   }
 
-
-  // const userFollowees = authSelector.selectUserFollowees(state)
-
-  // const userIsUpedShop = selectUserIsUpedShop(state, ownProps.id)
-
   const guessYouLikeList = selectGuessYouLikeShopList(state)
 
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
@@ -1036,20 +1024,6 @@ const mapStateToProps = (state, ownProps) => {
   const appServicePhone = configSelector.selectServicePhone(state)
   const goodList = selectGoodsList(state, ownProps.id, 1)
   let shareDomain = configSelector.getShareDomain(state)
-
-  // let shopDetail = ShopDetailTestData.shopDetail
-  // const shopComments = ShopDetailTestData.shopComments
-  // const shopCommentsTotalCount = 1368
-  // let latestShopAnnouncement = ShopDetailTestData.latestShopAnnouncement
-  // const shopList = ShopDetailTestData.shopList
-  // const isUserLogined = true
-  // const isFollowedShop = true
-  //   console.log('goodList',goodList)
-  // if(shopList.length > 3) {
-  //   shopList.splice(0, shopList.length-3)
-  // }
-
-  console.log('shopDetail', shopDetail)
 
   return {
     goodList: goodList,
@@ -1060,8 +1034,6 @@ const mapStateToProps = (state, ownProps) => {
     isFollowedShop: isFollowedShop,
     shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
-    // userFollowees: userFollowees,
-    // userIsUpedShop: userIsUpedShop,
     currentUser: authSelector.activeUserId(state),
     userOwnedShopInfo: userOwnedShopInfo,
     appServicePhone: appServicePhone,

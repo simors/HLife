@@ -32,44 +32,6 @@ export function clearShopList(payload) {
   }
 }
 
-export function fetchShopList(payload) {
-  return (dispatch ,getState) => {
-    lcShop.getShopList(payload).then((shopList) => {
-      let actionType = ShopActionTypes.UPDATE_SHOP_LIST
-      if(!payload.isRefresh) {
-        if(payload.isLocalQuering) {
-          actionType = ShopActionTypes.UPDATE_LOCAL_PAGING_SHOP_LIST
-        }else {
-          actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
-        }
-        let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
-        let limit = payload.limit || 5
-        dispatch(updateAction({isLastPage: shopList.size < limit}))
-      }else {
-        if(payload.isLocalQuering) {
-          actionType = ShopActionTypes.UPDATE_LOCAL_SHOP_LIST
-        }
-      }
-      // console.log('fetchShopList.payload.isRefresh===',payload.isRefresh)
-      // console.log('fetchShopList.shopList.size===',shopList.size)
-      // console.log('fetchShopList.shopList.size < 5===',(shopList.size < 5))
-
-      if(payload.isRefresh || shopList.size) {
-        let updateShopListAction = createAction(actionType)
-        dispatch(updateShopListAction({shopList: shopList}))
-      }
-
-      if(payload.success){
-        payload.success(shopList.isEmpty(), shopList.size)
-      }
-    }).catch((error) => {
-      if(payload.error){
-        payload.error(error)
-      }
-    })
-  }
-}
-
 export function getNearbyShopList(payload) {
   return (dispatch, getState) => {
     lcShop.fetchNearbyShops(payload).then((shopInfo) => {

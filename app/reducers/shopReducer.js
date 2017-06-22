@@ -6,12 +6,8 @@ import {
   ShopInfo,
   ShopAnnouncement,
   ShopComment,
-  ShopCommentUp4Cloud,
-  Up,
-  ShopCommentReply,
-  ShopCommentUp,
-  ShopTag,
   ShopGoods,
+  ShopPromotion,
 } from '../models/shopModel'
 import {UserInfo} from '../models/userModels'
 
@@ -602,6 +598,26 @@ function onRehydrate(state, action) {
     state = state.set('shopTagList', List(incoming.shopTagList))
     state = state.set('guessYouLikeShopList', List(incoming.guessYouLikeShopList))
     state = state.set('fetchShopListArrivedLastPage', incoming.fetchShopListArrivedLastPage)
+
+    let localShopList = incoming.localShopList
+    if (localShopList) {
+      let localShopListRec = []
+      localShopList.forEach((shop) => {
+        let shopRec = new ShopInfo({...shop})
+        localShopListRec.push(shopRec)
+      })
+      state = state.set('localShopList', List(localShopListRec))
+    }
+
+    let shopPromotionList = incoming.shopPromotionList
+    if (shopPromotionList) {
+      let shopPromotionListRec = []
+      shopPromotionList.forEach((promotion) => {
+        let promotionRec = new ShopPromotion({...promotion})
+        shopPromotionListRec.push(promotionRec)
+      })
+      state = state.set('shopPromotionList', List(shopPromotionListRec))
+    }
 
     let shopGoodsMap = Map(incoming.shopGoods)
     shopGoodsMap.map((goodsList, key) => {

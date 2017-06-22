@@ -14,16 +14,10 @@ import {
   TouchableHighlight
 } from 'react-native'
 import {CachedImage} from "react-native-img-cache"
-
-import AV from 'leancloud-storage'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import Icon from 'react-native-vector-icons/Ionicons'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
-import {getColumn} from '../../selector/configSelector'
-import {CommonModal} from '../common/CommonModal'
 import {Actions} from 'react-native-router-flux'
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -39,17 +33,16 @@ export default class ShopGoodsList extends Component {
   }
 
   showGoodDetail(goodInfo){
-    // this.props.showGoodDetail(value)
     Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})
   }
 
   renderColumn(goodInfo) {
-    //console.log('value====>',value)
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
         <View style={styles.channelWrap}>
           <View style={styles.defaultImageStyles}>
-          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={goodInfo.coverPhoto ? {uri: goodInfo.coverPhoto} : require("../../assets/images/default_goods_cover.png")}/>
+          <CachedImage mutable style={styles.defaultImageStyles}
+                       source={goodInfo.coverPhoto ? {uri: getThumbUrl(goodInfo.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../assets/images/default_goods_cover.png")}/>
           </View>
             {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
           <Text style={ styles.channelText} numberOfLines={1}>{goodInfo.goodsName}</Text>
@@ -63,12 +56,6 @@ export default class ShopGoodsList extends Component {
     const imageStyle = {
       flex: 1,
     }
-    // let shopGoodsList = []
-    // if(this.props.shopGoodsList.length>6){
-    //   shopGoodsList = this.props.shopGoodsList.splice(6,this.props.shopGoodsList.length)
-    // }else{
-    //   shopGoodsList=this.props.shopGoodsList
-    // }
     if(this.props.shopGoodsList&&this.props.shopGoodsList.length){
       let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
         if(key<6) {
@@ -125,27 +112,6 @@ export default class ShopGoodsList extends Component {
   }
 }
 
-// Categorys.defaultProps = {
-//   //visible: 'true'
-//   defaultContainer: {},
-//   defaultImageStyles: {},
-// }
-
-// const mapStateToProps = (state, ownProps) => {
-//   let column = getColumn(state).toJS()
-//   //console.log('susususususu<><><><><',column)
-//   return {
-//     column: column,
-//   }
-// }
-
-// const mapDispatchToProps = (dispatch) => bindActionCreators({
-//
-// }, dispatch)
-
-
-// export default connect(mapStateToProps)(Categorys)
-
 const styles = StyleSheet.create({
 
 
@@ -164,11 +130,6 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(7),
     borderWidth:normalizeBorder(0),
     backgroundColor:'#F5F5F5'
-    // marginBottom:normalizeH(10),
-    // marginLeft: normalizeW(20),
-    // marginRight:normalizeW(20),
-    // height: normalizeH(80),
-    // width: normalizeW(35),
   },
   channelText: {
     flex:1,
@@ -179,30 +140,19 @@ const styles = StyleSheet.create({
     fontSize: em(12),
     alignItems: 'flex-start',
     color: '#5A5A5A'
-    // textAlign: 'start',
   },
   channelPrice: {
-    // flexDirection:'row'
     flex:1,
     marginTop: normalizeH(6),
     width: normalizeW(144),
     height: 15,
     fontSize: em(15),
-    // textAlign: 'center',
-    // justifyContent:'flex-start'
     color: '#00BE96'
   },
   container: {
     backgroundColor: THEME.base.backgroundColor,
-    // borderBottomWidth: normalizeBorder(),
-    // borderBottomColor: THEME.colors.lighterA,
     width: PAGE_WIDTH,
     flexDirection: 'row',
-    //  flexWrap: 'wrap',
-    //justifyContent: 'center',
-    // borderColor: '#E6E6E6',
-    // borderTopWidth: normalizeBorder(1),
-    // paddingTop:normalizeH(10),
      paddingLeft:normalizeH(8),
     paddingRight:normalizeH(8),
 
@@ -211,12 +161,5 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.base.backgroundColor,
 
     flex: 1
-    //   borderBottomWidth:normalizeBorder(1),
-    //   width: PAGE_WIDTH,
-    //   flexDirection: 'row',
-    // //  flexWrap: 'wrap',
-    //   justifyContent: 'center',
-    //   borderColor:'#E6E6E6',
-    //   borderTopWidth:normalizeH(1),
   },
 })

@@ -54,6 +54,7 @@ import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -410,10 +411,6 @@ export class TopicDetail extends Component {
   renderTopicLikeUsersView() {
     let topicLikeUsers = this.props.topicLikeUsers
     let likesCount = this.props.likesCount
-    // likesCount = 5
-    // topicLikeUsers = [{},{},{},{},{}]
-    // console.log('likesCount====', likesCount)
-    // console.log('topicLikeUsers====', topicLikeUsers)
     if(likesCount && topicLikeUsers && topicLikeUsers.length) {
       let topicLikeUsersView = topicLikeUsers.map((item, index)=>{
         if(index > 2) {
@@ -421,7 +418,7 @@ export class TopicDetail extends Component {
         }
         let source = require('../../assets/images/default_portrait.png')
         if(item.avatar) {
-          source = {uri: item.avatar}
+          source = {uri: getThumbUrl(item.avatar, 20, 20)}
         }
 
         return (

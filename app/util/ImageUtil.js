@@ -11,6 +11,7 @@ import {
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadFile, batchedUploadFiles} from '../api/leancloud/fileUploader'
 import Loading from '../components/common/Loading'
+import AV from 'leancloud-storage'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -274,4 +275,14 @@ export async function uploadImg3(uri, hideLoading) {
   }catch(error){
     return false
   }
+}
+
+export function getThumbUrl(uri, width, height) {
+  if (!uri || uri.length == 0) {
+    return ""
+  }
+  let filename = uri.split('/').pop()
+  let file = AV.File.withURL(filename, uri)
+  let thumb = file.thumbnailURL(width*2, height*2)
+  return thumb
 }

@@ -49,6 +49,7 @@ import ViewPager from 'react-native-viewpager'
 import {CachedImage} from "react-native-img-cache"
 import AV from 'leancloud-storage'
 import {LazyloadView} from '../common/Lazyload'
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -123,37 +124,39 @@ class Local extends Component {
     }
 
     return (
-      <TouchableOpacity key={'shop_' + index} onPress={()=> {
-        this.gotoShopDetailScene(shopInfo.id)
-      }}>
-        <View style={[styles.shopInfoWrap]}>
-          <LazyloadView host="localShop" style={styles.coverWrap}>
-            <CachedImage mutable style={styles.cover} source={{uri: shopInfo.coverUrl}}/>
-          </LazyloadView>
-          <View style={styles.shopIntroWrap}>
-            <View style={styles.shopInnerIntroWrap}>
-              <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
-              <View style={{flex: 1, justifyContent: 'space-around'}}>
-                <ScoreShow
-                  score={shopInfo.score}
-                />
-                {this.renderShopPromotion(shopInfo)}
-              </View>
-              <View style={styles.subInfoWrap}>
-                {shopTag &&
-                <Text style={[styles.subTxt]}>{shopTag}</Text>
-                }
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+      <LazyloadView key={'shop_' + index} host="localShop" placeholderStyle={{height: 200, width: PAGE_WIDTH}}>
+        <TouchableOpacity onPress={()=> {
+          this.gotoShopDetailScene(shopInfo.id)
+        }}>
+          <View style={[styles.shopInfoWrap]}>
+            <View style={styles.coverWrap}>
+              <CachedImage mutable style={styles.cover} source={{uri: getThumbUrl(shopInfo.coverUrl, normalizeW(80), normalizeW(80))}}/>
+            </View>
+            <View style={styles.shopIntroWrap}>
+              <View style={styles.shopInnerIntroWrap}>
+                <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
+                <View style={{flex: 1, justifyContent: 'space-around'}}>
+                  <ScoreShow
+                    score={shopInfo.score}
+                  />
+                  {this.renderShopPromotion(shopInfo)}
                 </View>
-                {shopInfo.distance &&
-                <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
-                }
+                <View style={styles.subInfoWrap}>
+                  {shopTag &&
+                  <Text style={[styles.subTxt]}>{shopTag}</Text>
+                  }
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+                  </View>
+                  {shopInfo.distance &&
+                  <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
+                  }
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </LazyloadView>
     )
   }
 
@@ -191,7 +194,9 @@ class Local extends Component {
             return(
               <TouchableOpacity key={key} style={{width: PAGE_WIDTH/4, height: normalizeH(109), justifyContent: 'center', alignItems: 'center'}}
                                 onPress={() => {this.gotoShopCategoryList({shopCategoryId: value.id, shopCategoryName: value.text})}}>
-                <CachedImage mutable style={{width: normalizeW(50), height: normalizeW(50), marginBottom: normalizeH(8)}} source={{uri: value.imageSource}}/>
+                <CachedImage mutable
+                             style={{width: normalizeW(50), height: normalizeW(50), marginBottom: normalizeH(8)}}
+                             source={{uri: getThumbUrl(value.imageSource, normalizeW(50), normalizeW(50))}}/>
                 <Text numberOfLines={1} style={{}}>{value.text}</Text>
               </TouchableOpacity>
             )
@@ -399,8 +404,8 @@ const styles = StyleSheet.create({
     fontSize: em(12)
   },
   coverWrap: {
-    width: 80,
-    height: 80
+    width: normalizeW(80),
+    height: normalizeW(80)
   },
   cover: {
     flex: 1
