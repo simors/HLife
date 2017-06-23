@@ -199,10 +199,14 @@ class EditShop extends Component {
   }
 
   componentDidMount() {
+    console.log('shopInfo',this.props.userOwnedShopInfo)
+    this.localAlbumList=this.props.userOwnedShopInfo.album
+    this.localCoverImgUri = this .props.userOwnedShopInfo.coverUrl
     if(this.props.userOwnedShopInfo.containedTag && this.props.userOwnedShopInfo.containedTag.length) {
       this.setState({
         selectedShopTags: this.props.userOwnedShopInfo.containedTag
       })
+
     }
 
     let targetShopCategory = {}
