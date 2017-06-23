@@ -110,6 +110,11 @@ let isUploading = false
 
 export function batchUploadImgs(uris) {
   let uploadImgs = []
+  if (!uris || uris.length == 0) {
+    return new Promise((resolve) => {
+      resolve()
+    })
+  }
   uris.forEach((uri) => {
     let file = {}
     file.fileName = uri.split('/').pop()

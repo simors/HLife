@@ -312,11 +312,9 @@ export function handleShopAlbum(payload) {
 }
 
 
-export function submitCompleteShopInfo(shop,payload) {
-  let params = {
-    shop:shop,payload:payload
-  }
-  return AV.Cloud.run('submitCompleteShopInfo',params).then(function (result) {
+export function submitCompleteShopInfo(payload) {
+
+  return AV.Cloud.run('submitCompleteShopInfo',{payload:payload}).then(function (result) {
     return true
   }, function (err) {
     // console.log('_submitCompleteShopInfo.err====', err)
