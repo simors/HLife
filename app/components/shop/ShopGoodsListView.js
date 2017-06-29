@@ -191,11 +191,7 @@ class ShopGoodsListView extends Component {
   }
 
   refreshData(payload) {
-
-
         this.loadMoreData(true)
-
-
   }
 
   loadMoreData(isRefresh, isEndReached) {
