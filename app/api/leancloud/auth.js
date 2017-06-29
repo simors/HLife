@@ -188,7 +188,6 @@ export function registerWithWX(payload) {
       authUser.set('avatar', avatar)
     return authUser.save()
   }).then((loginedUser) => {
-    console.log("loginedUser", loginedUser)
     updateUserLocationInfo({
       userId: loginedUser.id
     })
@@ -202,6 +201,22 @@ export function registerWithWX(payload) {
       userInfo: userInfo,
       token: token,
     }
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+ * 现有账户绑定微信账户
+ * @param payload
+ * @returns {IPromise<U>|*|AV.Promise}
+ */
+export function bindWithWX(payload) {
+  console.log('bindWithWX:', payload)
+
+  return AV.Cloud.run('bindWithWeixin', payload).then((user) => {
+    return user
   }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err

@@ -4,6 +4,7 @@ import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as lcAuth from '../api/leancloud/auth'
 import * as lcShop from '../api/leancloud/shop'
+import * as lcPromoter from '../api/leancloud/promoter'
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import {UserInfo} from '../models/userModels'
 import * as msgAction from './messageAction'
@@ -455,7 +456,38 @@ function registerWithWeixin(payload, formData) {
         AVUtils.updateDeviceUserInfo({
           userId: user.userInfo.id
         })
+        return lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
       })
+    }).then((result) => {
+      //do something
+    }).catch((error) => {
+      if(payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function bindWithWeixin(payload) {
+  return (dispatch, getState) => {
+    let bindPayload = {
+      userId: payload.userId,
+      unionid: payload.wxUserInfo.unionid,
+      accessToken: payload.wxUserInfo.accessToken,
+      expiration: payload.wxUserInfo.expiration,
+      name: payload.wxUserInfo.name,
+      avatar: payload.wxUserInfo.avatar,
+    }
+
+    return lcAuth.bindWithWX(bindPayload).then((user) => {
+      return lcPromoter.syncPromoterInfo({userId: bindPayload.userId})
+    }).then(() => {
+      return lcPromoter.getPromoterQrcode({unionid: bindPayload.unionid})
+    }).then((result) => {
+      let qrcode = result.qrcode
+      if(payload.success) {
+        payload.success(qrcode)
+      }
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
@@ -612,7 +644,6 @@ function shopCertification4UploadCertiImg(payload, formData) {
 function shopCertification4Cloud(payload, formData) {
   return (dispatch, getState) =>{
     let shopInfo = {
-      inviteCode: formData.invitationCodeInput.text,
       // name: formData.nameInput.text,
       phone: formData.phoneInput.text,
       shopName: formData.shopNameInput.text,
