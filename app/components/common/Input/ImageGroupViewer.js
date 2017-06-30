@@ -84,7 +84,14 @@ export default class ImageGroupViewer extends Component {
               {/*initialPage={index}*/}
               {/*onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}*/}
             {/*/>*/}
-            <Swiper style={styles.wrapper} showsButtons={false} index={index} showsPagination={false} autoplay={false} loadMinimal={false} loop={true}>
+            <Swiper style={styles.wrapper}
+                    showsButtons={false}
+                    index={index}
+                    showsPagination={false}
+                    autoplay={false}
+                    loadMinimal={false}
+                    loop={true}
+            >
               {this.renderImageSwaper()}
             </Swiper>
           </View>
@@ -97,7 +104,6 @@ export default class ImageGroupViewer extends Component {
     if(this.props.images&&this.props.images.length){
       let imageViews = []
       imageViews = this.props.images.map((item,key)=>{
-        // console.log('item====>',item)
              return(
                <View  key={key} style={styles.slide1}>
          <TouchableWithoutFeedback  onPress={() => this.toggleModal(!this.state.imgModalShow, item)}>
