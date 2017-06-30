@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   StyleSheet,
   Dimensions,
@@ -76,7 +77,6 @@ export default class ImageGroupViewer extends Component {
             this.androidHardwareBackPress()
           }}
         >
-          <TouchableOpacity onPress={()=>{this.setState({imgModalShow:!this.state.imgModalShow})}}>
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             {/*<Gallery*/}
               {/*style={{flex: 1, backgroundColor: 'black'}}*/}
@@ -84,11 +84,10 @@ export default class ImageGroupViewer extends Component {
               {/*initialPage={index}*/}
               {/*onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}*/}
             {/*/>*/}
-            <Swiper autoplay={false} loop={true} style={{flex: 1, backgroundColor: 'black'}} index={index}>
+            <Swiper style={styles.wrapper} showsButtons={false} index={index} showsPagination={false} autoplay={false} loadMinimal={false} loop={true}>
               {this.renderImageSwaper()}
             </Swiper>
           </View>
-            </TouchableOpacity>
         </Modal>
       </View>
     )
@@ -98,11 +97,18 @@ export default class ImageGroupViewer extends Component {
     if(this.props.images&&this.props.images.length){
       let imageViews = []
       imageViews = this.props.images.map((item,key)=>{
-        console.log('item====>',item)
-             return(<View style={{flex:1}} key={key}>
+        // console.log('item====>',item)
+             return(
+               <View  key={key} style={styles.slide1}>
+         <TouchableWithoutFeedback  onPress={() => this.toggleModal(!this.state.imgModalShow, item)}>
+
                <CachedImage  source={{uri: item}} style={{flex:1,width:PAGE_WIDTH,maxHeight:normalizeH(400)}}/>
-             </View>)
+
+       </TouchableWithoutFeedback>
+        </View>
+        )
       })
+      // console.log('')
       return imageViews
     }
   }
@@ -259,5 +265,31 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 5,
   },
+  wrapper: {
+    backgroundColor:'black'
+  },
+  slide1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  slide2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5',
+  },
+  slide3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  }
 
 })
