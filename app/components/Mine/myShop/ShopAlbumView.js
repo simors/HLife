@@ -20,6 +20,7 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import Header from '../../common/Header'
 import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
+import {LazyloadView} from '../../common/Lazyload'
 
 
 class ShopAlbumView extends Component {
@@ -40,7 +41,7 @@ class ShopAlbumView extends Component {
         <View style={styles.body}>
           <ScrollView>
             <View style={{marginTop: normalizeH(10)}}>
-              <ImageGroupViewer images={this.props.album} imageLineCnt={3}/>
+              <ImageGroupViewer images={this.props.album} imageLineCnt={3} lazyName='shopAlbumList'/>
             </View>
           </ScrollView>
         </View>
