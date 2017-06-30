@@ -19,6 +19,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {LazyloadScrollView, LazyloadView} from '../../common/Lazyload'
+import Swiper from 'react-native-swiper';
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -74,17 +76,35 @@ export default class ImageGroupViewer extends Component {
             this.androidHardwareBackPress()
           }}
         >
+          <TouchableOpacity onPress={()=>{this.setState({imgModalShow:!this.state.imgModalShow})}}>
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
-            <Gallery
-              style={{flex: 1, backgroundColor: 'black'}}
-              images={this.props.images}
-              initialPage={index}
-              onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}
-            />
+            {/*<Gallery*/}
+              {/*style={{flex: 1, backgroundColor: 'black'}}*/}
+              {/*images={this.props.images}*/}
+              {/*initialPage={index}*/}
+              {/*onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}*/}
+            {/*/>*/}
+            <Swiper autoplay={false} loop={true} style={{flex: 1, backgroundColor: 'black'}} index={index}>
+              {this.renderImageSwaper()}
+            </Swiper>
           </View>
+            </TouchableOpacity>
         </Modal>
       </View>
     )
+  }
+
+  renderImageSwaper(){
+    if(this.props.images&&this.props.images.length){
+      let imageViews = []
+      imageViews = this.props.images.map((item,key)=>{
+        console.log('item====>',item)
+             return(<View style={{flex:1}} key={key}>
+               <CachedImage  source={{uri: item}} style={{flex:1,width:PAGE_WIDTH,maxHeight:normalizeH(400)}}/>
+             </View>)
+      })
+      return imageViews
+    }
   }
 
   toggleModal(isShow, src) {
