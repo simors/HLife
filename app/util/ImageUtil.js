@@ -116,10 +116,10 @@ export function batchUploadImgs(uris) {
     })
   }
   uris.forEach((uri) => {
-    let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
-    if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
-      let error={message:'禁止上传非图片文件，请重新上传！'}
-      throw error
+    let isImage = checkIsImage(uri)
+    if(!isImage){
+      let err={message:'禁止上传非图片文件，请上传图片文件'}
+      throw err
     }
     let file = {}
     file.fileName = uri.split('/').pop()
@@ -177,13 +177,12 @@ export function uploadImg(source) {
     fileUri = fileUri.concat('file://')
   }
 
-    let fileType = source.uri.substr(source.uri.lastIndexOf(".")).toLowerCase()
-    if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
-      if(typeof source.error == 'function') {
+    let isImage = checkIsImage(source.uri)
+      if(!isImage&&typeof source.error == 'function') {
         source.error('非图片文件无法上传，请重新上传图片！')
         return
       }
-    }
+
 
   fileUri = fileUri.concat(source.uri)
 
@@ -225,6 +224,11 @@ export function uploadImg(source) {
 
 export function uploadImg2(uri, hideLoading) {
   return new Promise((resolve, reject)=>{
+    let isImage = checkIsImage(uri)
+    if(!isImage) {
+      isUploading = false
+      reject({message:'禁止上传非图片文件，请重新上传文件！'})
+    }
     let fileUri = ''
     if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
       fileUri = fileUri.concat('file://')
@@ -306,4 +310,14 @@ export function getThumbUrl(uri, width, height) {
   let file = AV.File.withURL(filename, uri)
   let thumb = file.thumbnailURL(width*2, height*2)
   return thumb
+}
+
+export function checkIsImage(uri) {
+    if(uri&&uri!=''){
+      let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
+      if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+        return false
+      }
+    }
+  return true
 }

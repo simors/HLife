@@ -145,9 +145,9 @@ class ImageGroupInput extends Component {
     if(data&&data.text&&data.text.length){
       let isImage=true
       data.text.forEach((uri)=>{
-        let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
-        if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
-           isImage=false
+        let image = ImageUtil.checkIsImage(uri)
+        if(!image){
+          isImage = false
         }
       })
       if(!isImage){
