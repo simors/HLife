@@ -911,28 +911,45 @@ export function submitShopGood(payload) {
         payload.error({message: isFormValid.errMsg})
       }
       return
-    }else {
+    } else {
       const formData = getInputFormData(getState(), payload.formKey)
       let coverUrl = ''
       let album = []
       let leanRichTextImagesUrls = []
       let localCover = formData.shopGoodCover.text
+      if (!localCover || localCover.length == 0) {
+        if(payload.error) {
+          payload.error({message: '没有上传封面，请重传'})
+        }
+        return
+      }
 
       ImageUtil.uploadImg2(localCover).then((url) => {
         coverUrl = url
+        if (!url || url.length == 0) {
+          throw new Error('封面上传失败，请重传')
+        }
         return ImageUtil.batchUploadImgs(payload.albums)
       }).then((urls) => {
         album = urls
+        if (!urls) {
+          throw new Error('相册上传失败，请重传')
+        }
         return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
       }).then((urls) => {
-        leanRichTextImagesUrls = urls.reverse()
+        if (!urls) {
+          throw new Error('产品详情图片上传失败，请重新提交')
+        }
         let content = formData.shopGoodContent.text
-        if(content && content.length &&
-          leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
-          content.forEach((value) => {
-            if(value.type == 'COMP_IMG' && value.url)
-              value.url = leanRichTextImagesUrls.pop()
-          })
+        if (urls.length != 0) {
+          leanRichTextImagesUrls = urls.reverse()
+          if(content && content.length &&
+            leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
+            content.forEach((value) => {
+              if(value.type == 'COMP_IMG' && value.url)
+                value.url = leanRichTextImagesUrls.pop()
+            })
+          }
         }
 
         let shopGoodPayload = {
