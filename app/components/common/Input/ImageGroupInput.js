@@ -140,7 +140,22 @@ class ImageGroupInput extends Component {
   }
 
   validInput(data) {
-    return {isVal: true, errMsg: '验证通过'}
+    // console.log('data=======>',data)
+
+    if(data&&data.text&&data.text.length){
+      let isImage=true
+      data.text.forEach((uri)=>{
+        let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
+        if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+           isImage=false
+        }
+      })
+      if(!isImage){
+        return {isVal: false, errMsg: '禁止上传非图片文件，请重新上传！'}
+      }
+    }
+      return {isVal: true, errMsg: '验证通过'}
+
   }
 
   updateImageGroup(options) {

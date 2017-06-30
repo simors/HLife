@@ -116,6 +116,11 @@ export function batchUploadImgs(uris) {
     })
   }
   uris.forEach((uri) => {
+    let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
+    if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+      let error={message:'禁止上传非图片文件，请重新上传！'}
+      throw error
+    }
     let file = {}
     file.fileName = uri.split('/').pop()
     let fileUri = ''
@@ -168,9 +173,18 @@ export function batchUploadImgs2(uris) {
 
 export function uploadImg(source) {
   let fileUri = ''
-  if (Platform.OS === 'ios'  && !uri.startsWith('http://') && !uri.startsWith('https://')) {
+  if (Platform.OS === 'ios'  && !source.uri.startsWith('http://') && !source.uri.startsWith('https://')) {
     fileUri = fileUri.concat('file://')
   }
+
+    let fileType = source.uri.substr(source.uri.lastIndexOf(".")).toLowerCase()
+    if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+      if(typeof source.error == 'function') {
+        source.error('非图片文件无法上传，请重新上传图片！')
+        return
+      }
+    }
+
   fileUri = fileUri.concat(source.uri)
 
   let fileName = source.uri.split('/').pop()
