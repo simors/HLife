@@ -115,21 +115,28 @@ export function batchUploadImgs(uris) {
       resolve([])
     })
   }
-  uris.forEach((uri) => {
-    let isImage = checkIsImage(uri)
-    if(!isImage){
-      let err={message:'禁止上传非图片文件，请上传图片文件'}
-      throw err
-    }
-    let file = {}
-    file.fileName = uri.split('/').pop()
-    let fileUri = ''
-    if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
-      fileUri = fileUri.concat('file://')
-    }
-    file.fileUri = fileUri.concat(uri)
-    uploadImgs.push(file)
-  })
+  try {
+    uris.forEach((uri) => {
+      let isImage = checkIsImage(uri)
+      if(!isImage){
+        throw {message:'禁止上传非图片文件，请重新上传！'}
+      }
+      let file = {}
+      file.fileName = uri.split('/').pop()
+      let fileUri = ''
+      if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
+        fileUri = fileUri.concat('file://')
+      }
+      file.fileUri = fileUri.concat(uri)
+      uploadImgs.push(file)
+    })
+  } catch (err) {
+    console.log('batchUploadImgs', err)
+    return new Promise((resolve, reject) => {
+      reject(err)
+    })
+  }
+
   if(isUploading) {
     return new Promise((resolve) => {
       resolve()
@@ -164,6 +171,8 @@ export function batchUploadImgs2(uris) {
     }else{
       batchUploadImgs(uris).then(results=>{
         resolve(results)
+      },(err)=>{
+        reject(err)
       }).catch((error)=>{
         throw error
       })
@@ -313,11 +322,11 @@ export function getThumbUrl(uri, width, height) {
 }
 
 export function checkIsImage(uri) {
-    if(uri&&uri!=''){
-      let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
-      if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
-        return false
-      }
+  if(uri&&uri!=''){
+    let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
+    if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+      return false
     }
+  }
   return true
 }
