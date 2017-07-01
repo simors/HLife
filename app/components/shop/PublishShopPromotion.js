@@ -31,6 +31,7 @@ import {fetchUserOwnedShopInfo, submitShopPromotion} from '../../action/shopActi
 import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
+import * as ImageUtil from '../../util/ImageUtil'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ImageInput from '../common/Input/ImageInput'
@@ -614,10 +615,10 @@ class PublishShopPromotion extends Component {
           Actions.SHOP_DETAIL({id: this.state.form.shopId})
         }
       },
-      error: ()=>{
+      error: (err)=>{
         this.isPublishing = false
         Loading.hide(this.loading)
-        Toast.show('活动发布失败')
+        Toast.show(err.message ? err.message : '活动发布失败')
       }
     })
   }

@@ -27,6 +27,7 @@ import uuid from 'react-native-uuid'
 import {getTopicCategories} from '../../selector/configSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ModalBox from 'react-native-modalbox';
+import * as ImageUtil from '../../util/ImageUtil'
 import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
@@ -68,8 +69,8 @@ const topicContent = {
           textLen += content.text.length
         }
         if (content.type === 'COMP_IMG') {
-          let fileType = content.url.substr(content.url.lastIndexOf(".")).toLowerCase()
-          if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+          let fileType = ImageUtil.checkIsImage(content.url)
+          if (!fileType) {
             imgTypeBool = false
           }
         }

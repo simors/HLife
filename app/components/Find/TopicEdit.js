@@ -33,7 +33,7 @@ import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
 import uuid from 'react-native-uuid'
 import Icon from 'react-native-vector-icons/Ionicons'
-
+import * as ImageUtil from '../../util/ImageUtil'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -56,12 +56,22 @@ const topicContent = {
   type: 'topicContent',
   checkValid: (data) => {
     let textLen = 0
+    let imgTypeBool = true
     if (data && data.text) {
       data.text.forEach((content) => {
         if (content.type === 'COMP_TEXT') {
           textLen += content.text.length
         }
+        if (content.type === 'COMP_IMG') {
+          let fileType = ImageUtil.checkIsImage(content.uri)
+          if (!fileType) {
+            imgTypeBool = false
+          }
+        }
       })
+    }
+    if (!imgTypeBool) {
+      return {isVal: false, errMsg: '非图片文件无法上传，请重新上传图片！'}
     }
     if (textLen >= 20) {
       return {isVal: true, errMsg: '验证通过'}

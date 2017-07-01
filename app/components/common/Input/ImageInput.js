@@ -65,6 +65,13 @@ class ImageInput extends Component {
   }
 
   validInput(data) {
+    if(data&&data.text){
+      let isImage = ImageUtil.checkIsImage(data.text)
+      if(!isImage){
+        return {isVal: false, errMsg: '禁止上传非图片文件，请重新上传!'}
+
+      }
+    }
     return {isVal: true, errMsg: '验证通过'}
   }
 
