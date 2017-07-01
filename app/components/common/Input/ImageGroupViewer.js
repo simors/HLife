@@ -17,6 +17,8 @@ import {
 import Gallery from 'react-native-gallery'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import {CachedImage} from "react-native-img-cache"
+import {getThumbUrl} from '../../../util/ImageUtil'
+import {LazyloadScrollView, LazyloadView} from '../../common/Lazyload'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -28,7 +30,7 @@ export default class ImageGroupViewer extends Component {
       imgModalShow: false,
       showImg: '',
       marginSize: 5,
-      calImgSize: this.props.imgSize || 107
+      calImgSize: this.props.imgSize || 107,
     }
   }
 
@@ -39,12 +41,12 @@ export default class ImageGroupViewer extends Component {
 
   calculateImageWidth(containerWidth) {
     let calImgSize = 107
-    if('oneLine' != this.props.showMode) {
+    if ('oneLine' != this.props.showMode) {
       calImgSize = (containerWidth - (this.props.imageLineCnt - 1) * this.state.marginSize) / this.props.imageLineCnt
     }
     this.setState({
       ...this.state,
-      calImgSize : calImgSize
+      calImgSize: calImgSize
     })
   }
 
@@ -59,13 +61,18 @@ export default class ImageGroupViewer extends Component {
     if (index == -1) {
       index = 0
     }
+    // console.log('this.state.imageIndex',this.state.imageIndex)
+    // console.log('index',index)
+
     return (
       <View>
         <Modal
           visible={this.state.imgModalShow}
           transparent={false}
           animationType='fade'
-          onRequestClose={()=>{this.androidHardwareBackPress()}}
+          onRequestClose={()=> {
+            this.androidHardwareBackPress()
+          }}
         >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
@@ -81,24 +88,30 @@ export default class ImageGroupViewer extends Component {
   }
 
   toggleModal(isShow, src) {
-      this.setState({
-        ...this.state,
-        imgModalShow: isShow,
-        showImg: src
-      })
+    // console.log('this.props.images',this.props.images)
+    // console.log('src',src)
+    this.setState({
+      ...this.state,
+      imgModalShow: isShow,
+      showImg: src,
+      // imageIndex:key
+    })
   }
 
   renderImageBrowse(src) {
-    const imageStyle = {marginRight:this.state.marginSize, width: this.state.calImgSize, height: this.state.calImgSize}
+    let imageSize = Math.floor(this.state.calImgSize)
+    const imageStyle = {marginRight: this.state.marginSize, width: imageSize, height: imageSize}
     if (this.props.browse) {
       return (
-        <TouchableOpacity style={{flex:1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
-          <CachedImage mutable style={imageStyle} source={{uri: src}}/>
+        <TouchableOpacity style={{flex: 1}} onPress={() => this.toggleModal(!this.state.imgModalShow, src)}>
+          <CachedImage mutable style={imageStyle} source={{uri: getThumbUrl(src, imageSize, imageSize)}}/>
         </TouchableOpacity>
       )
     } else {
       return (
-        <CachedImage mutable style={imageStyle} source={{uri: src}}/>
+        <LazyloadView name={this.props.lazyName ? this.props.lazyName : 'cacheImageView'}>
+          <CachedImage mutable style={imageStyle} source={{uri: getThumbUrl(src, imageSize, imageSize)}}/>
+        </LazyloadView>
       )
     }
   }
@@ -109,7 +122,7 @@ export default class ImageGroupViewer extends Component {
         styles.defaultContainerStyle,
         {flex: 1},
         this.props.imageStyle
-        ]}>
+      ]}>
         {this.renderImageBrowse(src)}
       </View>
     )
@@ -132,9 +145,9 @@ export default class ImageGroupViewer extends Component {
     let compList = []
     let comp = []
 
-    if('oneLine' == this.props.showMode) {
+    if ('oneLine' == this.props.showMode) {
       compList.push(imgComp)
-    }else {
+    } else {
       for (let i = 0; i < imgComp.length; i++) {
         comp.push(imgComp[i])
         if ((i + 1) % this.props.imageLineCnt == 0) {
@@ -147,31 +160,54 @@ export default class ImageGroupViewer extends Component {
     return compList
   }
 
+  handleOnScroll(e) {
+    let offset = e.nativeEvent.contentOffset.y
+    let comHeight = normalizeH(200)
+    if (offset >= 0 && offset < 10) {
+      Animated.timing(this.state.fade, {
+        toValue: 0,
+        duration: 100,
+      }).start()
+    } else if (offset > 10 && offset < comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: (offset - 10) / comHeight,
+        duration: 100,
+      }).start()
+    } else if (offset >= comHeight) {
+      Animated.timing(this.state.fade, {
+        toValue: 1,
+        duration: 100,
+      }).start()
+    }
+  }
+
   renderImageShow() {
     let compList = this.renderImageCollect()
     const showMode = this.props.showMode || 'multiLine' //照片显示模式: multiLine-多行, oneLint-单行
 
-    if('oneLine' == showMode) {
+    if ('oneLine' == showMode) {
       return (
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[styles.contentContainerStyle, this.props.contentContainerStyle]}
+        <LazyloadScrollView
+          name={this.props.lazyName ? this.props.lazyName : 'cacheImageView'}
+          contentContainerStyle={[styles.contentContainerStyle]}
+          onScroll={e => this.handleOnScroll(e)}
+          scrollEventThrottle={80}
         >
           {compList.map((item, key) => {
             return (
-            <View key={key} style={[styles.container, this.props.containerStyle]}>
-            {item}
-            </View>
+              <View key={key} style={[styles.container, this.props.containerStyle]}>
+                {item}
+              </View>
             )
           })}
-        </ScrollView>
+        </LazyloadScrollView>
       )
-    }else {
+    } else {
       return (
         compList.map((item, key) => {
           return (
-            <View onLayout={this.imageContainerOnLayout.bind(this)} key={key} style={[styles.container, this.props.containerStyle]}>
+            <View onLayout={this.imageContainerOnLayout.bind(this)} key={key}
+                  style={[styles.container, this.props.containerStyle]}>
               {item}
             </View>
           )

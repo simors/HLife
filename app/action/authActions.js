@@ -58,7 +58,7 @@ export function submitFormData(payload) {
         payload.error({message: isFormValid.errMsg})
       }
       return
-    }else {
+    } else {
       const formData = getInputFormData(getState(), payload.formKey)
       switch (payload.submitType) {
         case INPUT_FORM_SUBMIT_TYPE.REGISTER:
@@ -117,7 +117,7 @@ export function submitFormData(payload) {
           break
       }
     }
-    
+
   }
 }
 
@@ -141,7 +141,7 @@ export function userLogOut(payload) {
         payload.success()
       }
     })
-    
+
   }
 }
 
@@ -151,7 +151,7 @@ export function submitInputData(payload) {
     let data = undefined
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
     dispatch(formCheck({formKey: payload.formKey}))
-    if(payload.stateKey) {
+    if (payload.stateKey) {
       let isValid = isInputValid(getState(), payload.formKey, payload.stateKey)
       if (!isValid.isValid) {
         if (payload.error) {
@@ -258,11 +258,11 @@ function handleSetNickname(payload, formData) {
   return (dispatch, getState) => {
     let localImg = ''
 
-    if(formData.avatarInput && formData.avatarInput.text) {
-      localImg=formData.avatarInput.text
+    if (formData.avatarInput && formData.avatarInput.text) {
+      localImg = formData.avatarInput.text
     }
 
-    ImageUtil.uploadImg2(localImg).then((imgSource)=>{
+    ImageUtil.uploadImg2(localImg).then((imgSource)=> {
       let form = {
         userId: activeUserId(getState()),
         avatarUri: imgSource,
@@ -535,7 +535,7 @@ function handleResetPwdSmsCode(payload, formData) {
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
 
-    if(formData.avatarInput && formData.avatarInput.text) {
+    if (formData.avatarInput && formData.avatarInput.text) {
       let localImgs = []
       localImgs.push(formData.avatarInput.text)
 
@@ -549,11 +549,11 @@ function handleProfileSubmit(payload, formData) {
           payload.error(error)
         }
       })
-    }else {
+    } else {
       payload.avatar = ''
       dispatch(_handleProfileSubmit(payload, formData))
     }
-    
+
   }
 }
 
@@ -608,7 +608,6 @@ function _handleProfileSubmit(payload, formData) {
 // }
 
 
-
 function handleShopCertification(payload, formData) {
   return (dispatch, getState) => {
     dispatch(shopCertification4UploadCertiImg(payload, formData))
@@ -616,9 +615,9 @@ function handleShopCertification(payload, formData) {
 }
 
 function shopCertification4UploadCertiImg(payload, formData) {
-  return (dispatch, getState) =>{
+  return (dispatch, getState) => {
     dispatch(shopCertification4Cloud(payload, formData))
-    
+
     // let localImgs = []
     // if(formData.certificationInput.text) {
     //   localImgs.push(formData.certificationInput.text)
@@ -642,15 +641,15 @@ function shopCertification4UploadCertiImg(payload, formData) {
 }
 
 function shopCertification4Cloud(payload, formData) {
-  return (dispatch, getState) =>{
+  return (dispatch, getState) => {
     let shopInfo = {
       // name: formData.nameInput.text,
       phone: formData.phoneInput.text,
       shopName: formData.shopNameInput.text,
-      shopAddress:formData.shopAddrInput && formData.shopAddrInput.text,
+      shopAddress: formData.shopAddrInput && formData.shopAddrInput.text,
       geo: formData.shopGeoInput && formData.shopGeoInput.text,
       geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
-      geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
+      geoDistrict: formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
       // certification: payload.certiImgLeanUris[0],
     }
     lcShop.shopCertification(shopInfo).then((shop) => {
@@ -775,14 +774,10 @@ function handleShopAlbum(payload, formData) {
 
 function handleCompleteShopInfo(payload, formData) {
   return (dispatch, getState) => {
-
-    // console.log('handleCompleteShopInfo.formData===', formData)
-
     let shopCategoryObjectId = ''
     if (payload.canModifyShopCategory) {
       shopCategoryObjectId = formData.shopCategoryInput.text
     }
-
     let newPayload = {
       shopId: payload.shopId,
       shopCategoryObjectId: shopCategoryObjectId,
@@ -794,23 +789,46 @@ function handleCompleteShopInfo(payload, formData) {
       ourSpecial: formData.ourSpecialInput.text,
       tagIds: formData.tagsInput ? formData.tagsInput.text : '',
     }
-    lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
-      let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
-      dispatch(_action({}))
-      if (payload.success) {
-        payload.success()
+    let album = newPayload.album
+    let coverUrl = newPayload.coverUrl
+    if (!coverUrl) {
+      payload.error({message: '请上传店铺封面'})
+      return
+    }
+    ImageUtil.uploadImg2(coverUrl).then((coverleaUri)=> {
+      if (!coverleaUri || coverleaUri == '') {
+        throw new Error('封面上传失败，请重传')
       }
-    }).catch((error) => {
-      // console.log('error=======', error)
-      // console.log('error=======', error.code)
+      newPayload.coverUrl = coverleaUri
+      ImageUtil.batchUploadImgs(album).then((albums)=> {
+        // shop.album=  albums
+        newPayload.album = albums
+        lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
+          let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
+          dispatch(_action({}))
+          if (payload.success) {
+            payload.success()
+          }
+        }, (error) => {
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      }, (err)=> {
+        if (payload.error) {
+          payload.error(err || {message: '更新店铺失败'})
+        }
+      })
+    }).catch((err)=> {
       if (payload.error) {
-        payload.error(error)
+        payload.error({message: err.message})
       }
     })
   }
 }
 
 function handleEditShopInfo(payload, formData) {
+  console.log('payload', payload)
   return (dispatch, getState) => {
     let newPayload = {
       shopId: payload.shopId,
@@ -825,18 +843,45 @@ function handleEditShopInfo(payload, formData) {
       tagIds: formData.tagsInput ? formData.tagsInput.text : '',
       geo: formData.shopGeoInput && formData.shopGeoInput.text,
       geoCity: formData.shopGeoCityInput && formData.shopGeoCityInput.text,
-      geoDistrict:formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
+      geoDistrict: formData.shopGeoDistrictInput && formData.shopGeoDistrictInput.text,
     }
-    lcAuth.submitEditShopInfo(newPayload).then((result) => {
-      // console.log('submitEditShopInfo.result====', result)
-      let _action = createAction(AuthTypes.EDIT_SHOP_INFO_SUCCESS)
-      dispatch(_action({}))
-      if (payload.success) {
-        payload.success()
+    let album = newPayload.album
+    let coverUrl = newPayload.coverUrl
+    if (!coverUrl) {
+      payload.error({message: '请上传店铺封面'})
+      return
+    }
+    ImageUtil.uploadImg2(coverUrl).then((coverLeaUri)=> {
+      if (!coverLeaUri || coverLeaUri == '') {
+        throw new Error('封面上传失败，请重传')
       }
-    }, (reason)=>{
+      newPayload.coverUrl = coverLeaUri
+      ImageUtil.batchUploadImgs(album).then((albums)=> {
+        newPayload.album = albums
+        lcAuth.submitEditShopInfo(newPayload).then((result) => {
+          let _action = createAction(AuthTypes.EDIT_SHOP_INFO_SUCCESS)
+          dispatch(_action({}))
+          if (payload.success) {
+            payload.success()
+          }
+        }, (reason)=> {
+          if (payload.error) {
+            payload.error(reason || {message: '更新店铺失败'})
+          }
+        })
+      }, (reason)=> {
+        if (payload.error) {
+          payload.error(reason || {message: '更新店铺失败'})
+        }
+      })
+    }, (reason)=> {
       if (payload.error) {
         payload.error(reason || {message: '更新店铺失败'})
+      }
+    }).catch((err) => {
+      console.log(err)
+      if (payload.error) {
+        payload.error({message: err.message})
       }
     })
   }
@@ -969,7 +1014,7 @@ export function getUserInfoById(payload) {
 
       const updateUserIdentityAction = createAction(AuthTypes.UPDATE_USER_IDENTITY)
       dispatch(updateUserIdentityAction({identity: userInfo.identity}))
-      
+
     }).catch(error => {
       if (payload.error) {
         payload.error(error)
@@ -1013,7 +1058,7 @@ export function fetchUserFollowees(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowees(payload).then((result)=> {
       let actionType = AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS
-      if(payload && !payload.isRefresh) {
+      if (payload && !payload.isRefresh) {
         actionType = AuthTypes.FETCH_USER_FOLLOWEES_PAGING_SUCCESS
       }
       let updateAction = createAction(actionType)
@@ -1080,7 +1125,7 @@ export function fetchUserFollowers(payload) {
   return (dispatch, getState) => {
     lcAuth.fetchUserFollowers(payload).then((result)=> {
       let actionType = AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = AuthTypes.FETCH_USER_FOLLOWERS_PAGING_SUCCESS
       }
       let updateAction = createAction(actionType)

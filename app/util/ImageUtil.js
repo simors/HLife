@@ -11,6 +11,7 @@ import {
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadFile, batchedUploadFiles} from '../api/leancloud/fileUploader'
 import Loading from '../components/common/Loading'
+import AV from 'leancloud-storage'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -109,6 +110,11 @@ let isUploading = false
 
 export function batchUploadImgs(uris) {
   let uploadImgs = []
+  if (!uris || uris.length == 0) {
+    return new Promise((resolve) => {
+      resolve([])
+    })
+  }
   uris.forEach((uri) => {
     let file = {}
     file.fileName = uri.split('/').pop()
@@ -138,7 +144,11 @@ export function batchUploadImgs(uris) {
     isUploading = false
     return leanImgUrls
   }, (error)=>{
+    isUploading = false
     return error
+  }).catch((err) => {
+    isUploading = false
+    throw err
   })
 }
 
@@ -178,11 +188,10 @@ export function uploadImg(source) {
     loading = Loading.show()
   }
   uploadFile(uploadPayload).then((saved) => {
+    isUploading = false
     if(!source.hideLoading) {
-      isUploading = false
       Loading.hide(loading)
     }
-    // console.log('uploadFile.saved===', saved.savedPos)
     let leanImgUrl = saved.savedPos
     if(typeof source.success == 'function') {
       source.leanImgUrl = leanImgUrl
@@ -190,8 +199,8 @@ export function uploadImg(source) {
     }
   }).catch((error) => {
     console.log('upload failed:', error)
+    isUploading = false
     if(!source.hideLoading) {
-      isUploading = false
       Loading.hide(loading)
     }
     if(typeof source.error == 'function') {
@@ -226,17 +235,16 @@ export function uploadImg2(uri, hideLoading) {
     // console.log('uploadImg2.uploadPayload===', uploadPayload)
     uploadFile(uploadPayload).then((saved)=>{
       if(!hideLoading) {
-        isUploading = false
         Loading.hide(loading)
       }
+      isUploading = false
       // console.log('uploadImg2.saved===', saved.savedPos)
       let leanImgUrl = saved.savedPos
       resolve(leanImgUrl)
     }, (reason)=>{
+      isUploading = false
       reject()
     })
-  }).catch((error)=>{
-    reject()
   })
 }
 
@@ -274,4 +282,14 @@ export async function uploadImg3(uri, hideLoading) {
   }catch(error){
     return false
   }
+}
+
+export function getThumbUrl(uri, width, height) {
+  if (!uri || uri.length == 0) {
+    return ""
+  }
+  let filename = uri.split('/').pop()
+  let file = AV.File.withURL(filename, uri)
+  let thumb = file.thumbnailURL(width*2, height*2)
+  return thumb
 }

@@ -23,6 +23,8 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {getConversationTime} from '../../util/numberUtils'
 import shallowequal from 'shallowequal'
+import {CachedImage} from "react-native-img-cache"
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -95,8 +97,8 @@ export class TopicComment extends Component {
 
         <View style={styles.avatarViewStyle}>
           <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
-            <Image style={styles.avatarStyle}
-                   source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
+            <CachedImage mutable style={styles.avatarStyle}
+                   source={this.props.topic.avatar ? {uri: getThumbUrl(this.props.topic.avatar, normalizeW(35), normalizeH(35))} : require("../../assets/images/default_portrait.png")}/>
           </TouchableOpacity>
         </View>
 

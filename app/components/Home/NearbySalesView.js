@@ -20,6 +20,7 @@ import THEME from '../../constants/themes/theme1'
 import shallowequal from 'shallowequal'
 import {LazyloadView} from '../common/Lazyload'
 import {CachedImage} from "react-native-img-cache"
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -48,8 +49,7 @@ class NearbySalesView extends Component {
             <LazyloadView host="homeList" style={styles.saleItemView}>
               <View style={styles.saleImg}>
                 <CachedImage mutable style={{flex: 1}}
-                       resizeMode='contain'
-                       source={{uri: item.coverUrl}}/>
+                       source={{uri: getThumbUrl(item.coverUrl, normalizeW(100), normalizeW(100))}}/>
               </View>
               <View style={styles.saleContent}>
                 <View>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   saleImg: {
     width: normalizeW(100),
-    height: normalizeH(100),
+    height: normalizeW(100),
     paddingLeft: normalizeW(5),
     paddingRight: normalizeW(5),
   },

@@ -40,6 +40,8 @@ import {
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {fetchShareDomain} from '../../action/configAction'
 import {getShareDomain} from '../../selector/configSelector'
+import {CachedImage} from "react-native-img-cache"
+import {getThumbUrl} from '../../util/ImageUtil'
 
 
 import TimerMixin from 'react-timer-mixin'
@@ -238,9 +240,9 @@ class Mine extends Component {
         <View style={{flexDirection: 'row', alignItems: 'center',}}>
           <View style={{marginLeft: normalizeW(57)}}>
             <TouchableOpacity onPress={() => Actions.PROFILE()}>
-              <Image style={styles.avatarStyle}
+              <CachedImage mutable style={styles.avatarStyle}
                      source={this.props.userInfo.avatar ?
-                     {uri: (this.props.userInfo.avatar)} : require('../../assets/images/default_portrait.png')} />
+                     {uri: getThumbUrl(this.props.userInfo.avatar, normalizeW(60), normalizeH(60))} : require('../../assets/images/default_portrait.png')} />
             </TouchableOpacity>
           </View>
           <View style={{marginLeft: normalizeW(17)}}>

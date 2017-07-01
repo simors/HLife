@@ -32,44 +32,6 @@ export function clearShopList(payload) {
   }
 }
 
-export function fetchShopList(payload) {
-  return (dispatch ,getState) => {
-    lcShop.getShopList(payload).then((shopList) => {
-      let actionType = ShopActionTypes.UPDATE_SHOP_LIST
-      if(!payload.isRefresh) {
-        if(payload.isLocalQuering) {
-          actionType = ShopActionTypes.UPDATE_LOCAL_PAGING_SHOP_LIST
-        }else {
-          actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
-        }
-        let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
-        let limit = payload.limit || 5
-        dispatch(updateAction({isLastPage: shopList.size < limit}))
-      }else {
-        if(payload.isLocalQuering) {
-          actionType = ShopActionTypes.UPDATE_LOCAL_SHOP_LIST
-        }
-      }
-      // console.log('fetchShopList.payload.isRefresh===',payload.isRefresh)
-      // console.log('fetchShopList.shopList.size===',shopList.size)
-      // console.log('fetchShopList.shopList.size < 5===',(shopList.size < 5))
-
-      if(payload.isRefresh || shopList.size) {
-        let updateShopListAction = createAction(actionType)
-        dispatch(updateShopListAction({shopList: shopList}))
-      }
-
-      if(payload.success){
-        payload.success(shopList.isEmpty(), shopList.size)
-      }
-    }).catch((error) => {
-      if(payload.error){
-        payload.error(error)
-      }
-    })
-  }
-}
-
 export function getNearbyShopList(payload) {
   return (dispatch, getState) => {
     lcShop.fetchNearbyShops(payload).then((shopInfo) => {
@@ -949,28 +911,45 @@ export function submitShopGood(payload) {
         payload.error({message: isFormValid.errMsg})
       }
       return
-    }else {
+    } else {
       const formData = getInputFormData(getState(), payload.formKey)
       let coverUrl = ''
       let album = []
       let leanRichTextImagesUrls = []
       let localCover = formData.shopGoodCover.text
+      if (!localCover || localCover.length == 0) {
+        if(payload.error) {
+          payload.error({message: '没有上传封面，请重传'})
+        }
+        return
+      }
 
       ImageUtil.uploadImg2(localCover).then((url) => {
         coverUrl = url
+        if (!url || url.length == 0) {
+          throw new Error('封面上传失败，请重传')
+        }
         return ImageUtil.batchUploadImgs(payload.albums)
       }).then((urls) => {
         album = urls
+        if (!urls) {
+          throw new Error('相册上传失败，请重传')
+        }
         return ImageUtil.batchUploadImgs(payload.localRichTextImagesUrls)
       }).then((urls) => {
-        leanRichTextImagesUrls = urls.reverse()
+        if (!urls) {
+          throw new Error('产品详情图片上传失败，请重新提交')
+        }
         let content = formData.shopGoodContent.text
-        if(content && content.length &&
-          leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
-          content.forEach((value) => {
-            if(value.type == 'COMP_IMG' && value.url)
-              value.url = leanRichTextImagesUrls.pop()
-          })
+        if (urls.length != 0) {
+          leanRichTextImagesUrls = urls.reverse()
+          if(content && content.length &&
+            leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
+            content.forEach((value) => {
+              if(value.type == 'COMP_IMG' && value.url)
+                value.url = leanRichTextImagesUrls.pop()
+            })
+          }
         }
 
         let shopGoodPayload = {

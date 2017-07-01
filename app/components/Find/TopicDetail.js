@@ -54,6 +54,7 @@ import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -74,17 +75,24 @@ export class TopicDetail extends Component {
   }
 
   componentWillMount() {
+    this.refreshData()
     InteractionManager.runAfterInteractions(() => {
-      this.refreshData()
       this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
+    })
+    InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
+    })
+    InteractionManager.runAfterInteractions(() => {
       if (this.props.isLogin) {
         this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
       }
-
+    })
+    InteractionManager.runAfterInteractions(() => {
       if(this.props.topic && this.props.topic.userId) {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
       }
+    })
+    InteractionManager.runAfterInteractions(() => {
       this.props.fetchShareDomain()
     })
   }
@@ -97,12 +105,9 @@ export class TopicDetail extends Component {
     } else {
       Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
       Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
-
     }
   }
   componentWillUnmount(){
-    // console.log('unmount component')
-
     if (Platform.OS == 'ios') {
       Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
       Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
@@ -410,10 +415,6 @@ export class TopicDetail extends Component {
   renderTopicLikeUsersView() {
     let topicLikeUsers = this.props.topicLikeUsers
     let likesCount = this.props.likesCount
-    // likesCount = 5
-    // topicLikeUsers = [{},{},{},{},{}]
-    // console.log('likesCount====', likesCount)
-    // console.log('topicLikeUsers====', topicLikeUsers)
     if(likesCount && topicLikeUsers && topicLikeUsers.length) {
       let topicLikeUsersView = topicLikeUsers.map((item, index)=>{
         if(index > 2) {
@@ -421,7 +422,7 @@ export class TopicDetail extends Component {
         }
         let source = require('../../assets/images/default_portrait.png')
         if(item.avatar) {
-          source = {uri: item.avatar}
+          source = {uri: getThumbUrl(item.avatar, 20, 20)}
         }
 
         return (
@@ -570,7 +571,9 @@ export class TopicDetail extends Component {
       }
     }
 
-    this.props.fetchTopicCommentsByTopicId(payload)
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicCommentsByTopicId(payload)
+    })
   }
 
   onPaymentPress() {
