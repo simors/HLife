@@ -32,7 +32,11 @@ android/app/gradle
 android/app/gradlew
 android/app/gradlew.bat
 android/build.gradle
-#android/app/src/main/res/*
+android/app/src/main/res/drawable-hdpi/app_assets_images*
+android/app/src/main/res/drawable-mdpi/app_assets_images*
+android/app/src/main/res/drawable-xhdpi/app_assets_images*
+android/app/src/main/res/drawable-xxhdpi/app_assets_images*
+
 !android/app/src/main/res/raw
 android/app/src/main/assets/index.android.bundle
 android/app/src/main/assets/index.android.bundle.meta
