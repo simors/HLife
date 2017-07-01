@@ -100,9 +100,12 @@ class Login extends Component {
             </View>
             <CommonButton buttonStyle={{backgroundColor: THEME.base.deepColor}}
                           title="点我注册，打开一片新天地！" onPress={() => Actions.REGIST()}/>
-            <SnsLogin />
           </ScrollView>
         </View>
+        <View style={{position: 'absolute', bottom: normalizeH(33), width: PAGE_WIDTH}}>
+          <SnsLogin />
+        </View>
+
       </View>
     )
   }
