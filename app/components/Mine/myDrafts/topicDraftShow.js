@@ -19,27 +19,44 @@ import {
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import ImageGroupViewer from '../../../components/common/Input/ImageGroupViewer'
-import {getLeancloudTimeToMonth, getLeancloudTimeToDay,getMonthToMounth} from '../../../util/numberUtils'
+import {getLeancloudTimeToMonth, getLeancloudTimeToDay, getMonthToMounth} from '../../../util/numberUtils'
 import {Actions} from 'react-native-router-flux'
-
+import * as ImageUtil from '../../../util/ImageUtil'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class TopicDraftShow extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      imgList: []
+    }
   }
 
   commentButtonPress() {
-     Actions.TOPIC_EDIT({topic: this.props.topic})
+    Actions.TOPIC_EDIT({topic: this.props.topic})
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let imgs = []
+    if (nextProps.topic.imgGroup && nextProps.topic.imgGroup.length) {
+      nextProps.topic.imgGroup.forEach((item)=> {
+        if (ImageUtil.checkIsImage(item)) {
+          imgs.push(item)
+        }
+
+      })
+      this.setState({
+        imgList: imgs
+      })
+    }
   }
 
   renderContentImage() {
     // console.log('asasasassssss',this.props.topic)
     //没有图片的显示规则
     if (this.props.topic) {
-      if ((!this.props.topic.imgGroup) || ((this.props.topic.imgGroup.length == 0))) {
+      if ((!this.state.imgList) || ((this.state.imgList.length == 0))) {
         // console.log('this.props.topic.topicContent.abstract',this.props.topic.topicContent.abstract)
         // console.log('this.props.topic.topicName.text',this.props.topic.topicName.text)
 
@@ -56,11 +73,11 @@ export default class TopicDraftShow extends Component {
       }
 
       //一张到2张图片的显示规则
-      else if (this.props.topic.imgGroup && (this.props.topic.imgGroup.length < 3)) {
+      else if (this.state.imgList && (this.state.imgList.length < 3)) {
         // console.log('asasasassssss',this.props.topic.images)
 
         let image = []
-        image.push(this.props.topic.imgGroup[0])
+        image.push(this.state.imgList[0])
         return (
           <TouchableOpacity style={[styles.contentWrapStyle, {flexDirection: 'row'}]}
                             onPress={()=>this.commentButtonPress()}>
@@ -81,11 +98,11 @@ export default class TopicDraftShow extends Component {
       }
 
       //3张以上图片的显示规则
-      else if (this.props.topic.imgGroup && (this.props.topic.imgGroup.length >= 3)) {
+      else if (this.state.imgList && (this.state.imgList.length >= 3)) {
         let image = []
-        image.push(this.props.topic.imgGroup[0])
-        image.push(this.props.topic.imgGroup[1])
-        image.push(this.props.topic.imgGroup[2])
+        image.push(this.state.imgList.imgGroup[0])
+        image.push(this.state.imgList.imgGroup[1])
+        image.push(this.state.imgList.imgGroup[2])
         return (
           <TouchableOpacity style={styles.contentWrapStyle} onPress={()=>this.commentButtonPress()}>
             <Text style={styles.contentTitleStyle} numberOfLines={1}>
@@ -127,10 +144,10 @@ export default class TopicDraftShow extends Component {
                      source={require("../../../assets/images/writer_loaction.png")}/>
               <Text style={styles.positionTextStyle}>{this.props.topic.city}</Text>
               {/*<Text style={styles.likeTextStyle}>*/}
-                {/*{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}*/}
+              {/*{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}*/}
               {/*</Text>*/}
               {/*<Text style={styles.commentTextStyle}>*/}
-                {/*{"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}*/}
+              {/*{"评论" + " " + (this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum)}*/}
               {/*</Text>*/}
             </View>
           </View>

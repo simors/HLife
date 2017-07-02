@@ -155,6 +155,8 @@ function handleUpdateTopic(payload, formData) {
     if(payload.images && payload.images.length > 0) {
       return ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
         return leanUris
+      },(err)=>{
+        throw err
       }).then((leanUris) => {
         if(formData.topicContent && formData.topicContent.text.length &&
           leanUris && leanUris.length) {
@@ -183,6 +185,8 @@ function handleUpdateTopic(payload, formData) {
             payload.error(error)
           }
         })
+      },(err)=>{
+        throw err
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
@@ -204,6 +208,7 @@ function handleUpdateTopic(payload, formData) {
         let updateAction = createAction(topicActionTypes.UPDATE_TOPIC)
         dispatch(updateAction({topic: result}))
       }).catch((error) => {
+        console.log('error',error)
         if (payload.error) {
           payload.error(error)
         }

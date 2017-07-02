@@ -30,7 +30,7 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import ArticleEditor from '../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../constants/themes/theme1'
-
+import * as ImageUtil from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -42,6 +42,23 @@ const adviseContent = {
   formKey: adviseForm,
   stateKey: Symbol('adviseContent'),
   type: 'adviseContent',
+  checkValid: (data) => {
+    let imgTypeBool = true
+    if (data && data.text) {
+      data.text.forEach((content) => {
+        if (content.type === 'COMP_IMG') {
+          let fileType = ImageUtil.checkIsImage(content.uri)
+          if (!fileType) {
+            imgTypeBool = false
+          }
+        }
+      })
+    }
+    if (!imgTypeBool) {
+      return {isVal: false, errMsg: '非图片文件无法上传，请重新上传图片！'}
+    }
+    return {isVal: true, errMsg: '验证通过'}
+  },
 }
 
 const rteHeight = {

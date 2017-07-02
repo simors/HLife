@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Image,
   StyleSheet,
   Dimensions,
@@ -19,6 +20,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {LazyloadScrollView, LazyloadView} from '../../common/Lazyload'
+import Swiper from 'react-native-swiper';
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -75,16 +78,45 @@ export default class ImageGroupViewer extends Component {
           }}
         >
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
-            <Gallery
-              style={{flex: 1, backgroundColor: 'black'}}
-              images={this.props.images}
-              initialPage={index}
-              onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}
-            />
+            {/*<Gallery*/}
+              {/*style={{flex: 1, backgroundColor: 'black'}}*/}
+              {/*images={this.props.images}*/}
+              {/*initialPage={index}*/}
+              {/*onSingleTapConfirmed={() => this.toggleModal(!this.state.imgModalShow)}*/}
+            {/*/>*/}
+            <Swiper style={styles.wrapper}
+                    showsButtons={false}
+                    index={index}
+                    showsPagination={false}
+                    autoplay={false}
+                    loadMinimal={false}
+                    loop={true}
+            >
+              {this.renderImageSwaper()}
+            </Swiper>
           </View>
         </Modal>
       </View>
     )
+  }
+
+  renderImageSwaper(){
+    if(this.props.images&&this.props.images.length){
+      let imageViews = []
+      imageViews = this.props.images.map((item,key)=>{
+             return(
+               <View  key={key} style={styles.slide1}>
+         <TouchableWithoutFeedback  onPress={() => this.toggleModal(!this.state.imgModalShow, item)}>
+
+               <CachedImage  source={{uri: item}} style={{flex:1,width:PAGE_WIDTH,maxHeight:normalizeH(400)}}/>
+
+       </TouchableWithoutFeedback>
+        </View>
+        )
+      })
+      // console.log('')
+      return imageViews
+    }
   }
 
   toggleModal(isShow, src) {
@@ -239,5 +271,31 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 5,
   },
+  wrapper: {
+    backgroundColor:'black'
+  },
+  slide1: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  slide2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5',
+  },
+  slide3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  }
 
 })

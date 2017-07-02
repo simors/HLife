@@ -26,6 +26,7 @@ import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
+import * as ImageUtil from '../../util/ImageUtil'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ImageInput from '../common/Input/ImageInput'
 import CommonTextInput from '../common/Input/CommonTextInput'
@@ -44,12 +45,22 @@ const shopGoodContent = {
   type: 'shopGoodContent',
   checkValid: (data) => {
     let textLen = 0
+    let imgTypeBool = true
     if (data && data.text) {
       data.text.forEach((content) => {
         if (content.type === 'COMP_TEXT') {
           textLen += content.text.length
         }
+        if (content.type === 'COMP_IMG') {
+          let fileType = ImageUtil.checkIsImage(content.uri)
+          if (!fileType) {
+            imgTypeBool = false
+          }
+        }
       })
+    }
+    if (!imgTypeBool) {
+      return {isVal: false, errMsg: '非图片文件无法上传，请重新上传图片！'}
     }
     if (textLen >= 20) {
       return {isVal: true, errMsg: '验证通过'}
