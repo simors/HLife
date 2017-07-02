@@ -87,7 +87,7 @@ class QrcodeView extends Component {
             <Text style={styles.tipText} numberOfLines={2}>我的二维码，随时随地邀请好友</Text>
           </View>
           <View style={{marginTop: normalizeH(43)}}>
-            <CachedImage mutable style={{width: 200, height: 200}} source={{uri: this.props.qrcodeUrl}}></CachedImage>
+            <CachedImage mutable style={{width: 250, height: 445}} source={{uri: this.props.qrcodeUrl}}></CachedImage>
           </View>
         </View>
         {this.renderActionSheet()}

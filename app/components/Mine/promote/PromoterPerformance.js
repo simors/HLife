@@ -144,6 +144,12 @@ class PromoterPerformance extends Component {
     )
   }
 
+  showQrCodeView() {
+    if(this.props.promoter && this.props.promoter.qrcode.url) {
+      Actions.QRCODE_VIEW({qrcodeUrl: this.props.promoter.qrcode.url})
+    }
+  }
+
 
   renderBodyView() {
     return (
@@ -151,7 +157,7 @@ class PromoterPerformance extends Component {
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           {this.renderTotalEarnings()}
           {this.renderInvitationStat()}
-          <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {Actions.QRCODE_VIEW({qrcodeUrl: this.props.promoter.qrcode.url})}}>
+          <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {this.showQrCodeView()}}>
             <Image style={{width: normalizeW(156), height: normalizeH(156)}}
                    resizeMode='contain'
                    source={require('../../../assets/images/generate_code.png')}/>

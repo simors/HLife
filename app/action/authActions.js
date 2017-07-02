@@ -234,6 +234,7 @@ export function loginWithWeixin(payload) {
           AVUtils.updateDeviceUserInfo({
             userId: user.userInfo.id
           })
+          lcPromoter.getPromoterQrcode({unionid: loginPayload.unionid})
         }).catch((error) => {
           dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
           if (payload.error) {
@@ -460,6 +461,7 @@ function registerWithWeixin(payload, formData) {
       })
     }).then((result) => {
       //do something
+      return lcPromoter.getPromoterQrcode({unionid: regPayload.unionid})
     }).catch((error) => {
       if(payload.error) {
         payload.error(error)
