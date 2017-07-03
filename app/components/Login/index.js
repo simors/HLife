@@ -11,6 +11,7 @@ import {
   Platform,
   ScrollView,
   StatusBar,
+  NativeModules
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -26,6 +27,8 @@ import * as Toast from '../common/Toast'
 import CommonButton from '../common/CommonButton'
 import THEME from '../../constants/themes/theme1'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
+
+const shareNative = NativeModules.shareComponent
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -47,6 +50,8 @@ const pwdInput = {
 class Login extends Component {
   constructor(props) {
     super(props)
+    this.wxUserInfo = undefined
+
   }
 
   onButtonPress = () => {
@@ -70,6 +75,39 @@ class Login extends Component {
 
   retrievePassword() {
     Actions.RETRIEVE_PWD()
+  }
+
+  submitSuccessCallback(userInfo) {
+    if(userInfo) {
+      Actions.HOME({type: 'reset'})
+    } else {
+      Actions.SUPPLEMENT_USERINFO({
+        wxUserInfo: this.wxUserInfo,
+      })
+    }
+  }
+
+  submitErrorCallback(error) {
+    Toast.show("微信登录失败")
+  }
+
+  loginCallback = (errorCode, data) => {
+    let wxUserInfo = {
+      accessToken: data.accessToken,
+      expiration: data.expiration,
+      unionid: data.uid,
+      name: data.name,
+      avatar: data.iconurl,
+    }
+
+    this.wxUserInfo = wxUserInfo
+
+    this.props.loginWithWeixin({
+      wxUserInfo: wxUserInfo,
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+
   }
 
   render() {
@@ -96,14 +134,19 @@ class Login extends Component {
             <CommonButton title="登   陆" onPress={() => this.onButtonPress()}/>
             <View style={styles.txtView}>
               <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
-              <Text style={[styles.forgetPwd, {paddingLeft: normalizeW(15)}]} onPress={() => Actions.REGIST()}>注册用户</Text>
             </View>
-            <CommonButton buttonStyle={{backgroundColor: THEME.base.deepColor}}
-                          title="点我注册，打开一片新天地！" onPress={() => Actions.REGIST()}/>
           </ScrollView>
         </View>
-        <View style={{position: 'absolute', bottom: normalizeH(33), width: PAGE_WIDTH}}>
-          <SnsLogin />
+
+        <View style={{flexDirection: 'row', position: 'absolute', bottom: normalizeH(50), width: PAGE_WIDTH}}>
+          <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(20)}} onPress={() => {shareNative.loginWX(this.loginCallback)}}>
+            <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn_weixin.png')}/>
+            <Text style={{fontSize: 17, color: '#09BB07'}}>微信登录</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(15)}} onPress={() => Actions.REGIST()}>
+            <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn.png')}/>
+            <Text style={{fontSize: 17, color: '#FF7819'}}>快速注册</Text>
+          </TouchableOpacity>
         </View>
 
       </View>
