@@ -55,6 +55,7 @@ import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
+import {fetchAllComments} from '../../action/newTopicAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -554,6 +555,7 @@ export class TopicDetail extends Component {
       isRefresh: !!isRefresh,
       lastCreatedAt: lastTopicCommentsCreatedAt,
       upType: 'topic',
+      more:false,
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -573,6 +575,7 @@ export class TopicDetail extends Component {
 
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicCommentsByTopicId(payload)
+      this.props.fetchAllComments(payload)
     })
   }
 
@@ -841,7 +844,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   likeTopic,
   unLikeTopic,
   fetchOtherUserFollowersTotalCount,
-  fetchShareDomain
+  fetchShareDomain,
+  fetchAllComments,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)
