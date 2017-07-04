@@ -619,6 +619,8 @@ export function submitShopPromotion(payload) {
         coverUrl: coverUrl,
         leanRichTextImagesUrls: leanRichTextImagesUrls,
       }
+    },(err)=>{
+      throw err
     }).then((results) => {
       if(payload.promotionDetailInfo && payload.promotionDetailInfo.length &&
           results.leanRichTextImagesUrls && results.leanRichTextImagesUrls.length) {
@@ -666,10 +668,10 @@ export function submitShopPromotion(payload) {
         // console.log('submitShopPromotion==error==>>>', error)
         if(payload.error){
           payload.error(error)
-        }
+        }x
       })
     }).catch((error) => {
-      // console.log('batchUploadImgs==error==>>>', error)
+      // console.log('batchUploadImgs==error==>>>', error.Error)
       if(payload.error){
         payload.error(error)
       }

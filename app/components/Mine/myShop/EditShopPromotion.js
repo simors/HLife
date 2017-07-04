@@ -682,10 +682,10 @@ class EditShopPromotion extends Component {
 
           }
         },
-        error: ()=>{
+        error: (err)=>{
           this.isPublishing = false
           Loading.hide(this.loading)
-          Toast.show('活动发布失败')
+          Toast.show(err.message ? err.message : '活动发布失败')
         }
       })
     }

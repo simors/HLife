@@ -18,6 +18,7 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import Symbol from 'es6-symbol'
 import Header from '../../common/Header'
+import * as ImageUtil from '../../../util/ImageUtil'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../../action/topicActions'
 import {fetchTopicDraft, handleDestroyTopicDraft} from '../../../action/draftAction'
@@ -43,6 +44,19 @@ const topicName = {
   type: "topicName",
   checkValid: (data) => {
     if (data && data.text) {
+      let isImage =true
+      data.text.forEach((content) => {
+
+        if (content.type === 'COMP_IMG') {
+          let fileType = ImageUtil.checkIsImage(content.uri)
+          if (!fileType) {
+            isImage = false
+          }
+        }
+      })
+      if(!isImage){
+        return {isVal: false, errMsg: '禁止上传非图片文件，请重新上传！'}
+      }
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '请输入标题'}

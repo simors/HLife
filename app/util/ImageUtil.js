@@ -115,16 +115,28 @@ export function batchUploadImgs(uris) {
       resolve([])
     })
   }
-  uris.forEach((uri) => {
-    let file = {}
-    file.fileName = uri.split('/').pop()
-    let fileUri = ''
-    if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
-      fileUri = fileUri.concat('file://')
-    }
-    file.fileUri = fileUri.concat(uri)
-    uploadImgs.push(file)
-  })
+  try {
+    uris.forEach((uri) => {
+      let isImage = checkIsImage(uri)
+      if(!isImage){
+        throw {message:'禁止上传非图片文件，请重新上传！'}
+      }
+      let file = {}
+      file.fileName = uri.split('/').pop()
+      let fileUri = ''
+      if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
+        fileUri = fileUri.concat('file://')
+      }
+      file.fileUri = fileUri.concat(uri)
+      uploadImgs.push(file)
+    })
+  } catch (err) {
+    console.log('batchUploadImgs', err)
+    return new Promise((resolve, reject) => {
+      reject(err)
+    })
+  }
+
   if(isUploading) {
     return new Promise((resolve) => {
       resolve()
@@ -159,6 +171,8 @@ export function batchUploadImgs2(uris) {
     }else{
       batchUploadImgs(uris).then(results=>{
         resolve(results)
+      },(err)=>{
+        reject(err)
       }).catch((error)=>{
         throw error
       })
@@ -168,9 +182,17 @@ export function batchUploadImgs2(uris) {
 
 export function uploadImg(source) {
   let fileUri = ''
-  if (Platform.OS === 'ios'  && !uri.startsWith('http://') && !uri.startsWith('https://')) {
+  if (Platform.OS === 'ios'  && !source.uri.startsWith('http://') && !source.uri.startsWith('https://')) {
     fileUri = fileUri.concat('file://')
   }
+
+    let isImage = checkIsImage(source.uri)
+      if(!isImage&&typeof source.error == 'function') {
+        source.error('非图片文件无法上传，请重新上传图片！')
+        return
+      }
+
+
   fileUri = fileUri.concat(source.uri)
 
   let fileName = source.uri.split('/').pop()
@@ -211,6 +233,11 @@ export function uploadImg(source) {
 
 export function uploadImg2(uri, hideLoading) {
   return new Promise((resolve, reject)=>{
+    let isImage = checkIsImage(uri)
+    if(!isImage) {
+      isUploading = false
+      reject({message:'禁止上传非图片文件，请重新上传文件！'})
+    }
     let fileUri = ''
     if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
       fileUri = fileUri.concat('file://')
@@ -292,4 +319,14 @@ export function getThumbUrl(uri, width, height) {
   let file = AV.File.withURL(filename, uri)
   let thumb = file.thumbnailURL(width*2, height*2)
   return thumb
+}
+
+export function checkIsImage(uri) {
+  if(uri&&uri!=''){
+    let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
+    if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+      return false
+    }
+  }
+  return true
 }

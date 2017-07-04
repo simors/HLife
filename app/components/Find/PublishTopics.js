@@ -27,6 +27,7 @@ import uuid from 'react-native-uuid'
 import {getTopicCategories} from '../../selector/configSelector'
 import CommonTextInput from '../common/Input/CommonTextInput'
 import ModalBox from 'react-native-modalbox';
+import * as ImageUtil from '../../util/ImageUtil'
 import {Actions} from 'react-native-router-flux'
 import * as Toast from '../common/Toast'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
@@ -61,12 +62,22 @@ const topicContent = {
   type: 'topicContent',
   checkValid: (data) => {
     let textLen = 0
+    let imgTypeBool = true
     if (data && data.text) {
       data.text.forEach((content) => {
         if (content.type === 'COMP_TEXT') {
           textLen += content.text.length
         }
+        if (content.type === 'COMP_IMG') {
+          let fileType = ImageUtil.checkIsImage(content.url)
+          if (!fileType) {
+            imgTypeBool = false
+          }
+        }
       })
+    }
+    if (!imgTypeBool) {
+      return {isVal: false, errMsg: '非图片文件无法上传，请重新上传图片！'}
     }
     if (textLen >= 20) {
       return {isVal: true, errMsg: '验证通过'}
@@ -93,8 +104,8 @@ class PublishTopics extends Component {
     };
     this.insertImages = []
     this.isPublishing = false
-    this.draftId=uuid.v1()
-    this.draftMonth=new Date().getMonth() + 1
+    this.draftId = uuid.v1()
+    this.draftMonth = new Date().getMonth() + 1
     this.draftDay = new Date().getDate()
   }
 
@@ -106,7 +117,7 @@ class PublishTopics extends Component {
     // Actions.FIND({categoryId: this.state.selectedTopic.objectId})
     AVUtils.switchTab('FIND', {categoryId: this.state.selectedTopic.objectId})
 
-    this.props.handleDestroyTopicDraft({id:this.draftId})
+    this.props.handleDestroyTopicDraft({id: this.draftId})
     this.props.inputFormOnDestroy({formKey: topicForm})
   }
 
@@ -114,7 +125,8 @@ class PublishTopics extends Component {
     this.isPublishing = false
     Toast.show(error.message)
   }
-  componentWillUnmount(){
+
+  componentWillUnmount() {
     // console.log('unmount')
     // this.timer&&clearInterval(this.timer)
   }
@@ -169,7 +181,7 @@ class PublishTopics extends Component {
         },
         cancel: {
           text: '取消',
-          callback: ()=>{
+          callback: ()=> {
             this.isPublishing = false
           }
         }
@@ -206,22 +218,22 @@ class PublishTopics extends Component {
         },
       })
     }
-    this.setInterval(()=>{
+    this.setInterval(()=> {
       this.props.fetchTopicDraft({
-        userId:this.props.userInfo.id,
-        draftId:this.draftId,
+        userId: this.props.userInfo.id,
+        draftId: this.draftId,
         formKey: topicForm,
         images: this.insertImages,
-        draftDay:this.draftDay,
-        draftMonth:this.draftMonth,
-        categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+        draftDay: this.draftDay,
+        draftMonth: this.draftMonth,
+        categoryId: this.state.selectedTopic ? this.state.selectedTopic.objectId : '',
       })
-    },5000)
+    }, 5000)
   }
 
   openModal() {
     Keyboard.dismiss()
-    setTimeout(()=>{
+    setTimeout(()=> {
       this.refs.modal3.open();
     }, 500)
   }
@@ -279,7 +291,9 @@ class PublishTopics extends Component {
   renderArticleEditorToolbar() {
     return (
       <View style={{width: normalizeW(64), backgroundColor: THEME.base.mainColor}}>
-        <TouchableOpacity onPress={() => {Keyboard.dismiss()}}
+        <TouchableOpacity onPress={() => {
+          Keyboard.dismiss()
+        }}
                           style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           <Text style={{fontSize: em(15), color: 'white'}}>收起</Text>
         </TouchableOpacity>
@@ -292,10 +306,16 @@ class PublishTopics extends Component {
       <ArticleEditor
         {...topicContent}
         wrapHeight={this.state.extraHeight}
-        renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
+        renderCustomToolbar={() => {
+          return this.renderArticleEditorToolbar()
+        }}
         getImages={(images) => this.getRichTextImages(images)}
-        onFocusEditor={() => {this.setState({headerHeight: 0})}}
-        onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
+        onFocusEditor={() => {
+          this.setState({headerHeight: 0})
+        }}
+        onBlurEditor={() => {
+          this.setState({headerHeight: wrapHeight})
+        }}
         placeholder="分享吃喝玩乐、共享周边生活信息"
       />
     )
@@ -310,15 +330,16 @@ class PublishTopics extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => {
             this.props.fetchTopicDraft({
-              userId:this.props.userInfo.id,
-              draftId:this.draftId,
+              userId: this.props.userInfo.id,
+              draftId: this.draftId,
               formKey: topicForm,
               images: this.insertImages,
-              draftDay:this.draftDay,
-              draftMonth:this.draftMonth,
-              categoryId: this.state.selectedTopic?this.state.selectedTopic.objectId:'',
+              draftDay: this.draftDay,
+              draftMonth: this.draftMonth,
+              categoryId: this.state.selectedTopic ? this.state.selectedTopic.objectId : '',
             })
-            Actions.pop({type:'refresh'})}}
+            Actions.pop({type: 'refresh'})
+          }}
           title="发布话题"
           rightType="text"
           rightText="发布"
@@ -329,7 +350,9 @@ class PublishTopics extends Component {
 
           <View>
             <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
-                  onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
+                  onLayout={(event) => {
+                    this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})
+                  }}>
               <View style={styles.toSelectContainer}>
                 <Text style={styles.topicTypeTitleStyle}>话题类别</Text>
                 <TouchableOpacity style={styles.selectBtnView} onPress={this.openModal.bind(this)}>
@@ -351,24 +374,25 @@ class PublishTopics extends Component {
             {this.renderRichText()}
           </View>
 
-          
 
         </View>
 
 
         <ModalBox style={styles.modalStyle} entry='top' position="top" ref={"modal3"}>
-            <View style={styles.modalTitleContainer}>
-              <Text style={styles.modalTitleTxt}>选择一个主题</Text>
-              <TouchableOpacity onPress={()=>{this.closeModal(this.state.selectedTopic)}} style={{position:'absolute',right:0,top:0}}>
-                <Icon name='ios-close' style={{fontSize:24,height:24}} />
-              </TouchableOpacity>
+          <View style={styles.modalTitleContainer}>
+            <Text style={styles.modalTitleTxt}>选择一个主题</Text>
+            <TouchableOpacity onPress={()=> {
+              this.closeModal(this.state.selectedTopic)
+            }} style={{position: 'absolute', right: 0, top: 0}}>
+              <Icon name='ios-close' style={{fontSize: 24, height: 24}}/>
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
+            <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
+              {this.renderTopicsSelected()}
             </View>
-            <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start'}}>
-                {this.renderTopicsSelected()}
-              </View>
-            </ScrollView>
-          </ModalBox>
+          </ScrollView>
+        </ModalBox>
       </View>
     );
   }
@@ -481,7 +505,7 @@ const styles = StyleSheet.create({
   modalTitleContainer: {
     height: 24,
     width: PAGE_WIDTH - 30,
-    margin:15,
+    margin: 15,
     marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
