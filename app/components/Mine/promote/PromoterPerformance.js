@@ -145,11 +145,10 @@ class PromoterPerformance extends Component {
   }
 
   showQrCodeView() {
-    if(this.props.promoter && this.props.promoter.qrcode.url) {
+    if(this.props.promoter && this.props.promoter.qrcode) {
       Actions.QRCODE_VIEW({qrcodeUrl: this.props.promoter.qrcode.url})
     }
   }
-
 
   renderBodyView() {
     return (
