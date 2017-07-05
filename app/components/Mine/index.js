@@ -413,7 +413,6 @@ const mapStateToProps = (state, ownProps) => {
   let identity = authSelector.getUserIdentity(state,currentUserId)
   let point = authSelector.getUserPoint(state, currentUserId)
   let isPaid = isPromoterPaid(state, currentPromoterId)
-  let promoterIdentity = selectPromoterIdentity(state, currentPromoterId)
   let promoter = getPromoterById(state, currentPromoterId)
   let shareDomain = getShareDomain(state)
   return {
@@ -425,7 +424,6 @@ const mapStateToProps = (state, ownProps) => {
     isPaid: isPaid,
     point: point,
     fee: getTenantFee(state),
-    promoterIdentity: promoterIdentity,
     promoter: promoter,
     shareDomain: shareDomain
   }
