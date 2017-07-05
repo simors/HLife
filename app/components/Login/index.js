@@ -120,7 +120,7 @@ class Login extends Component {
           title="登   陆"
         />
         <View style={styles.body}>
-          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
+          <ScrollView  keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
             <View style={{marginTop: 30}}>
               <View style={[styles.inputBox, {paddingLeft: normalizeW(17), paddingRight: normalizeW(17)}]}>
                 <PhoneInput {...phoneInput}
@@ -135,20 +135,20 @@ class Login extends Component {
             <View style={styles.txtView}>
               <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
             </View>
-          </ScrollView>
-        </View>
 
-        <View style={{flexDirection: 'row', position: 'absolute', bottom: normalizeH(50), width: PAGE_WIDTH}}>
-          <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(20)}} onPress={() => {shareNative.loginWX(this.loginCallback)}}>
-            <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn_weixin.png')}/>
-            <Text style={{fontSize: 17, color: '#09BB07'}}>微信登录</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(15)}} onPress={() => Actions.REGIST()}>
-            <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn.png')}/>
-            <Text style={{fontSize: 17, color: '#FF7819'}}>快速注册</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={{flexDirection: 'row', width: PAGE_WIDTH, marginTop: normalizeH(224)}}>
+              <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(20)}} onPress={() => {shareNative.loginWX(this.loginCallback)}}>
+                <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn_weixin.png')}/>
+                <Text style={{fontSize: 17, color: '#09BB07'}}>微信登录</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(15)}} onPress={() => Actions.REGIST()}>
+                <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn.png')}/>
+                <Text style={{fontSize: 17, color: '#FF7819'}}>快速注册</Text>
+              </TouchableOpacity>
+            </View>
 
+        </ScrollView>
+        </View>
       </View>
     )
   }
@@ -192,7 +192,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: normalizeH(18),
-    marginBottom: normalizeH(50),
   },
   forgetPwd: {
     fontSize: em(14),
