@@ -77,16 +77,27 @@ export class UserInfo extends UserInfoRecord {
         record.set('lastLoginDuration', numberUtils.getConversationTime(updatedAt))
       }
 
-      for(let key in attrs) {
-        if('identity' == key) {
-          record.set('identity', new List(attrs.identity))
-        }else if('mobilePhoneNumber' == key){
-          record.set(key, attrs[key])
-          record.set('phone', attrs[key])
-        }else {
-          record.set(key, attrs[key])
-        }
-      }
+      record.set('phone', attrs['mobilePhoneNumber'])
+      record.set('mobilePhoneNumber', attrs['mobilePhoneNumber'])
+      record.set('avatar', attrs['avatar'])
+      record.set('nickname', attrs['nickname'])
+      record.set('gender', attrs['gender'])
+      record.set('birthday', attrs['birthday'])
+      record.set('identity', new List(attrs.identity))
+      record.set('geo', attrs['geo'])
+      record.set('geoProvince', attrs['geoProvince'])
+      record.set('geoProvinceCode', attrs['geoProvinceCode'])
+      record.set('geoCity', attrs['geoCity'])
+      record.set('geoCityCode', attrs['geoCityCode'])
+      record.set('geoDistrict', attrs['geoDistrict'])
+      record.set('geoDistrictCode', attrs['geoDistrictCode'])
+      record.set('username', attrs['username'])
+      record.set('emailVerified', attrs['emailVerified'])
+      record.set('mobilePhoneVerified', attrs['mobilePhoneVerified'])
+      record.set('isVirtual', attrs['isVirtual'])
+      record.set('status', attrs['status'])
+      record.set('type', attrs['type'])
+      record.set('enable', attrs['enable'])
     })
     return info
   }
