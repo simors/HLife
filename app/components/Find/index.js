@@ -23,6 +23,8 @@ import {getCity} from '../../selector/locSelector'
 import {getTopics, getLocalTopics, getPickedTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
+import {fetchAllUserUps} from '../../action/newTopicAction'
+
 import CommonListView from '../common/CommonListView'
 import {TabScrollView} from '../common/TabScrollView'
 import {connect} from 'react-redux'
@@ -50,6 +52,7 @@ export class Find extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.refreshTopic()
+      this.props.fetchAllUserUps()
     })
   }
 
@@ -347,7 +350,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopics,
   likeTopic,
   unLikeTopic,
-  fetchUserFollowees
+  fetchUserFollowees,
+  fetchAllUserUps
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)

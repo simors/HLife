@@ -28,3 +28,11 @@ export function fetchAllComments(payload){
     return err
   })
 }
+
+export function fetchAllUserUps(){
+  let currentUser = AV.User.current()
+  let userId = currentUser.id
+  return AV.Cloud.run('hlifeTopicFetchUserUps',{userId:userId}).then((results)=>{
+    return {commentsUps:results.commentList,topicsUps:results.topicList}
+  })
+}

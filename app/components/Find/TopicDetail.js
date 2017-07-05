@@ -36,6 +36,7 @@ import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicAc
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import * as authSelector from '../../selector/authSelector'
 import Icon from 'react-native-vector-icons/Ionicons'
+import {getCommentsByTopicId} from '../../selector/newTopicSelector'
 import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
 import {
   fetchTopicLikesCount,
@@ -794,7 +795,8 @@ const mapStateToProps = (state, ownProps) => {
   let dataArray = []
   dataArray.push({type: 'COLUMN_1'})
   dataArray.push({type: 'COLUMN_2'})
-
+  const comments = getCommentsByTopicId(state,ownProps.topic.objectId)
+  console.log('selectComments====>',comments)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const allTopicComments = getTopicComments(state)

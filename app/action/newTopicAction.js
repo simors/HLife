@@ -3,6 +3,7 @@
  */
 import {createAction} from 'redux-actions'
 import * as topicActionTypes from '../constants/newTopicActionTypes'
+import {TopicCommentsItem} from '../models/NewTopicModel'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as lcTopics from '../api/leancloud/newTopics'
@@ -21,8 +22,14 @@ export function fetchAllComments(payload) {
       let commentList = result.commentList
       let allComments = result.comments
       if(allComments && allComments.length) {
-          let updateAction = createAction(topicActionTypes.FETCH_ALL_COMMENTS)
-          dispatch(updateAction({comments:allComments}))
+        let comments = []
+        allComments.forEach((item)=>{
+          let comment = TopicCommentsItem.fromLeancloudObject(item)
+          comments.push(comment)
+        })
+
+        let updateAction = createAction(topicActionTypes.FETCH_ALL_COMMENTS)
+          dispatch(updateAction({comments:comments}))
       }
 
       if(payload.commentId && payload.commentId!='') {
@@ -49,6 +56,31 @@ export function fetchAllComments(payload) {
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchAllUserUps(payload){
+  return(dispatch,getState)=>{
+    lcTopics.fetchAllUserUps().then((results)=>{
+      let commentsUps = results.commentsUps
+      let topicsUps = results.topicsUps
+      if(results.commentsUps&&results.commentsUps.length){
+        let updateAction = createAction(topicActionTypes.FETCH_MY_COMMENTS_UPS)
+        dispatch(updateAction({commentsUps:commentsUps}))
+      }
+      if(results.topicsUps&&results.topicsUps.length){
+        let updateAction = createAction(topicActionTypes.FETCH_MY_TOPICS_UPS)
+        dispatch(updateAction({topicsUps:topicsUps}))
+      }
+      if(payload.success){
+        payload.success()
+      }
+    },(err)=>{
+      if(payload.error){
+        payload.error(err)
+
       }
     })
   }

@@ -3,7 +3,7 @@
  */
 import * as TopicTypes from '../constants/newTopicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {NewTopics} from '../models/NewTopicModel'
+import {NewTopics,TopicCommentsItem} from '../models/NewTopicModel'
 import Immutable, {Map, List,Record} from 'immutable'
 
 const initialState = NewTopics()
@@ -20,6 +20,10 @@ export default function topicReducer(state = initialState, action) {
       return handleSetCommentsForTopic(state,action)
     case TopicTypes.FETCH_ALL_COMMENTS:
       return handleFetchAllComments(state,action)
+    case TopicTypes.FETCH_MY_COMMENTS_UPS:
+      return handleFetchMyCommentsUps(state,action)
+    case TopicTypes.FETCH_MY_TOPICS_UPS:
+      return handleFetchMyTopicsUps(state,action)
     // case TopicTypes.DISABLE_TOPIC:
     //   return handleDisableTopic(state,action)
     case REHYDRATE:
@@ -34,11 +38,8 @@ function handleFetchAllComments(state,action){
   let comments = payload.comments
   let _map = state.get('allComments')
   comments.forEach((item)=>{
-    let comment = Record(item)
-    console.log('comment=====<',comment)
-    state = state.setIn(['allComments', item.commentId], comment)
+    state = state.setIn(['allComments', item.commentId], item)
   })
-  // state = state.setIn('allComments', _map)
   return state
 }
 
@@ -70,6 +71,27 @@ function handleSetCommentsForTopic(state,action){
   let payload = action.payload
   let comments = payload.comments
   state = state.setIn(['commentsForTopic',payload.topicId], new List(comments))
+  return state
+}
+
+function handleFetchMyCommentsUps(state,action) {
+  let payload =action.payload
+
+  let commentsUps = []
+  payload.commentsUps.forEach((item)=>{
+    commentsUps.push(item)
+  })
+  state = state.set('myCommentsUps',List(commentsUps))
+  return state
+}
+
+function handleFetchMyTopicsUps(state,action) {
+  let payload =action.payload
+  let topicsUps = []
+  payload.topicsUps.forEach((item)=>{
+    topicsUps.push(item)
+  })
+  state = state.set('myTopicsUps',  List(topicsUps))
   return state
 }
 
