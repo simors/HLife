@@ -86,6 +86,34 @@
     
   }
 
+  RCT_EXPORT_METHOD(shareImage:(NSInteger)index thumbnail: (NSString *)thumbnail){
+    
+    NSURL *url = [NSURL URLWithString:thumbnail];
+
+    NSData *imageData = [NSData dataWithContentsOfURL:url];
+    //创建分享消息对象
+    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+    //创建图片内容对象
+    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
+    //如果有缩略图，则设置缩略图
+    shareObject.thumbImage = [UIImage imageNamed:@"icon"];
+    [shareObject setShareImage: imageData];
+    //分享消息对象设置分享内容对象
+    messageObject.shareObject = shareObject;
+    //调用分享接口
+    [[UMSocialManager defaultManager] shareToPlatform:index messageObject:messageObject currentViewController:nil completion:^(id data, NSError *error) {
+      if (error) {
+        NSLog(@"************Share fail with error %@*********",error);
+      }else{
+        NSLog(@"response data is %@",data);
+      }
+    }];
+    url = nil;
+    imageData = nil;
+    messageObject = nil;
+    shareObject = nil;
+  }
+
   RCT_EXPORT_METHOD(loginWX:(RCTResponseSenderBlock)callback)
   {
     // 每次登录前，删除已保存的认证信息
