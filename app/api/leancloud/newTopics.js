@@ -23,8 +23,11 @@ export function fetchAllComments(payload){
     lastCreatedAt: payload.lastCreatedAt
   }
   return AV.Cloud.run('hlifeTopicFetchComments',params).then((results)=>{
+    console.log('results',results)
     return {comments:results.allComments,commentList:results.commentList}
   },(err)=>{
+    // console.log('err====>',err)
+
     return err
   })
 }
@@ -34,5 +37,8 @@ export function fetchAllUserUps(){
   let userId = currentUser.id
   return AV.Cloud.run('hlifeTopicFetchUserUps',{userId:userId}).then((results)=>{
     return {commentsUps:results.commentList,topicsUps:results.topicList}
+  },(err)=>{
+    console.log(err)
+    return err
   })
 }

@@ -15,3 +15,14 @@ export function getCommentsByTopicId(state,topicId){
   })
   return commentList
 }
+
+export function isCommentLiked(state,commentId){
+  let commentUps = state.NEWTOPIC.get('myCommentsUps')||[]
+  let isLiked = false
+  commentUps.forEach((item)=>{
+    if(item==commentId){
+      isLiked = true
+    }
+  })
+  return isLiked
+}

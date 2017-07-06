@@ -16,6 +16,7 @@ import * as numberUtils from '../util/numberUtils'
 import {trim} from '../util/Utils'
 
 export function fetchAllComments(payload) {
+  // console.log('hahahahahahahahahah')
   return (dispatch, getState) => {
     let more = payload.more
     lcTopics.fetchAllComments(payload).then((result) => {
@@ -64,6 +65,8 @@ export function fetchAllComments(payload) {
 export function fetchAllUserUps(payload){
   return(dispatch,getState)=>{
     lcTopics.fetchAllUserUps().then((results)=>{
+
+      console.log('results====>',results)
       let commentsUps = results.commentsUps
       let topicsUps = results.topicsUps
       if(results.commentsUps&&results.commentsUps.length){

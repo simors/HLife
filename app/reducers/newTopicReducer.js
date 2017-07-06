@@ -87,6 +87,7 @@ function handleFetchMyCommentsUps(state,action) {
 
 function handleFetchMyTopicsUps(state,action) {
   let payload =action.payload
+  console.log('topicsUps',payload)
   let topicsUps = []
   payload.topicsUps.forEach((item)=>{
     topicsUps.push(item)

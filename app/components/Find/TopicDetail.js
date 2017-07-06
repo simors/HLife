@@ -26,7 +26,7 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import TopicComment from './TopicComment'
+import TopicComment from './NewTopicComment'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import TopicContent from './TopicContent'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
@@ -181,9 +181,10 @@ export class TopicDetail extends Component {
   renderTopicCommentPage() {
     let commentsView = <View/>
     let topicComments = this.props.topicComments
+    let allTopicComments = this.props.allTopicComments
     let commentsTotalCount = this.props.commentsTotalCount
-    if (commentsTotalCount && topicComments && topicComments.length) {
-      commentsView = topicComments.map((value, key)=> {
+    if (commentsTotalCount && allTopicComments && allTopicComments.length) {
+      commentsView = allTopicComments.map((value, key)=> {
             return (
               this.renderTopicCommentItem(value, key)
             )
@@ -219,7 +220,7 @@ export class TopicDetail extends Component {
   renderTopicCommentItem(value, key) {
     return (
       <TopicComment key={key}
-                    topic={value}
+                    comment={value}
                     onCommentButton={this.onCommentButton.bind(this)}
                     onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
       />
@@ -829,6 +830,7 @@ const mapStateToProps = (state, ownProps) => {
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
+    allTopicComments : comments,
     commentsTotalCount: commentsTotalCount,
     userFollowersTotalCount: userFollowersTotalCount,
     lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt,
