@@ -24,6 +24,7 @@ export const PromoterRecord = Record({
   street: undefined,              // 代理控制的街道或乡镇
   createdAt: undefined,
   updatedAt: undefined,
+  qrcode: undefined,              // 公众号推广二维码
 }, 'PromoterRecord')
 
 export const PromoterStatisticsRecord = Record({
@@ -97,6 +98,7 @@ export class PromoterInfo extends PromoterRecord {
       record.set('street', lcObj.street)
       record.set('createdAt', lcObj.createdAt)
       record.set('updatedAt', lcObj.updatedAt)
+      record.set('qrcode', lcObj.qrcode)
     })
     return promoter
   }

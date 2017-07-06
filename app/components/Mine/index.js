@@ -14,6 +14,7 @@ import {
   Platform,
   InteractionManager,
   StatusBar,
+  NativeModules
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
@@ -22,7 +23,7 @@ import {connect} from 'react-redux'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import LinearGradient from 'react-native-linear-gradient'
-import {fetchUserFollowees} from '../../action/authActions'
+import {fetchUserFollowees, bindWithWeixin} from '../../action/authActions'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {fetchUserPoint} from '../../action/pointActions'
@@ -42,7 +43,10 @@ import {getShareDomain} from '../../selector/configSelector'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
 
+
 import TimerMixin from 'react-timer-mixin'
+
+const shareNative = NativeModules.shareComponent
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -64,26 +68,18 @@ class Mine extends Component {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
         // this.props.fetchUserPoint()
-        // this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
-        // this.props.getCurrentPromoter({})
-        // this.props.getPromoterTenant()
         this.props.fetchShareDomain()
       }
     })
   }
 
   shopManage() {
-    // Actions.COMPLETE_SHOP_INFO()
-    // Actions.SHOPR_EGISTER()
-    // return
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      // console.log('this.props.identity=====', this.props.identity)
       if (this.props.identity && this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
         let userOwnedShopInfo = this.props.userOwnedShopInfo
-        // console.log('this.props.userOwnedShopInfo==1==', userOwnedShopInfo)
         if(userOwnedShopInfo.status == 1) {
           if(userOwnedShopInfo.payment == 1) { //已注册，已支付
             if(!userOwnedShopInfo.coverUrl) {
@@ -120,7 +116,6 @@ class Mine extends Component {
           Toast.show('您的店铺目前处于异常状态，请联系客服')
         }
       }else {
-        // console.log('this.props.identity==2===')
         Actions.SHOPR_EGISTER()
       }
 
@@ -145,24 +140,42 @@ class Mine extends Component {
     })
   }
 
-  promoterManage() {
-    if (this.props.identity && this.props.identity.includes(IDENTITY_PROMOTER)) {
-      if (this.props.isPaid) {
-        if (this.props.promoterIdentity && this.props.promoterIdentity > 0 && this.props.promoter) {
-          Actions.AGENT_PROMOTER({promoter: this.props.promoter})
-        } else {
-          Actions.PROMOTER_PERFORMANCE()
-        }
-      } else {
-        Actions.PAYMENT({
-          title: '支付推广员注册费',
-          price: this.props.fee,
-          metadata: {'promoterId': this.props.promoter.id, 'user': this.props.userInfo.id},
-          subject: '汇邻优店推广员入驻费',
-        })
+  submitSuccessCallback = (result) => {
+    console.log('submitSuccessCallback', result)
+    this.props.getCurrentPromoter({
+      error: (err) => {
+        Toast.show(err.message)
       }
+    })
+  }
+
+  submitErrorCallback = (error) => {
+    console.log('submitErrorCallback', error)
+  }
+
+  loginCallback = (errorCode, data) => {
+    let wxUserInfo = {
+      accessToken: data.accessToken,
+      expiration: data.expiration,
+      unionid: data.uid,
+      name: data.name,
+      avatar: data.iconurl,
+    }
+
+    this.props.bindWithWeixin({
+      userId: this.props.currentUserId,
+      wxUserInfo: wxUserInfo,
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+
+  }
+
+  promoterManage() {
+    if (this.props.promoter) {
+      Actions.PROMOTER_PERFORMANCE()
     } else {
-      Actions.PROMOTER_AUTH()
+      shareNative.loginWX(this.loginCallback)
     }
   }
 
@@ -293,18 +306,6 @@ class Mine extends Component {
     }
   }
 
-  renderPromoterBtnText() {
-    if (this.props.identity.includes(IDENTITY_PROMOTER)) {
-      return (
-        <Text style={styles.menuName}>推广联盟</Text>
-      )
-    } else {
-      return (
-        <Text style={styles.menuName}>推广注册</Text>
-      )
-    }
-  }
-
   renderBodyView() {
     return (
       <View style={{marginTop: normalizeH(15)}}>
@@ -330,7 +331,7 @@ class Mine extends Component {
               <Image style={styles.menuImg} resizeMode="contain" source={require('../../assets/images/my_push.png')} />
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {this.renderPromoterBtnText()}
+              <Text style={styles.menuName}>推广联盟</Text>
               <Image style={{marginLeft: 5, width: normalizeW(20), height: normalizeH(20)}} resizeMode='contain'
                      source={require('../../assets/images/hot_20.png')}/>
             </View>
@@ -403,10 +404,10 @@ const mapStateToProps = (state, ownProps) => {
   let identity = authSelector.getUserIdentity(state,currentUserId)
   let point = authSelector.getUserPoint(state, currentUserId)
   let isPaid = isPromoterPaid(state, currentPromoterId)
-  let promoterIdentity = selectPromoterIdentity(state, currentPromoterId)
   let promoter = getPromoterById(state, currentPromoterId)
   let shareDomain = getShareDomain(state)
   return {
+    currentUserId: currentUserId,
     userInfo: userInfo,
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
@@ -414,7 +415,6 @@ const mapStateToProps = (state, ownProps) => {
     isPaid: isPaid,
     point: point,
     fee: getTenantFee(state),
-    promoterIdentity: promoterIdentity,
     promoter: promoter,
     shareDomain: shareDomain
   }
@@ -427,7 +427,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   getCurrentPromoter,
   getPromoterTenant,
   getShopTenant,
-  fetchShareDomain
+  fetchShareDomain,
+  bindWithWeixin
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Mine)

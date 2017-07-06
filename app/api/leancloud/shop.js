@@ -962,7 +962,6 @@ export function submitShopPromotion(payload) {
 export function shopCertification(payload) {
   // console.log('shopCertification.payload====', payload)
   let params = {
-    inviteCode: payload.inviteCode,
     // name: payload.name,
     phone: payload.phone,
     shopName: payload.shopName,

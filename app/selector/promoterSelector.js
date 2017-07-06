@@ -15,6 +15,9 @@ export function activePromoter(state) {
 }
 
 export function getPromoterById(state, id) {
+  if (!id) {
+    return undefined
+  }
   let promoter = state.PROMOTER.getIn(['promoters', id])
   if (promoter) {
     return promoter.toJS()

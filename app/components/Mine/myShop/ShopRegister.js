@@ -98,18 +98,6 @@ const shopGeoDistrictInput = {
   checkValid: ()=>{return {isVal: true}},
   initValue: {text: '未知'}
 }
-const invitationCodeInput = {
-  formKey: commonForm,
-  stateKey: Symbol('invitationCodeInput'),
-  type: "invitationCodeInput",
-  checkValid: (data)=>{
-    if (data && data.text && data.text.length > 0 && (data.text !== '-1')) {
-      return {isVal: true, errMsg: '验证通过'}
-    }
-    return {isVal: false, errMsg: '邀请码为空'}
-  },
-  initValue: {text: '-1'}
-}
 
 class ShopRegister extends Component {
   constructor(props) {
@@ -182,16 +170,6 @@ class ShopRegister extends Component {
 
       
     }
-    // if(nextProps.qRCode) {
-    //   this.setState({
-    //     qRCode: nextProps.qRCode
-    //   })
-    //   nextProps.inputFormUpdate({
-    //     formKey: invitationCodeInput.formKey,
-    //     stateKey: invitationCodeInput.stateKey,
-    //     data: {text:nextProps.qRCode},
-    //   })
-    // }
 
   }
 
@@ -231,12 +209,6 @@ class ShopRegister extends Component {
     this.isSubmiting = false
     Loading.hide(this.loading)
     Toast.show(error.message || '店铺注册失败')
-
-    this.props.inputFormUpdate({
-      formKey: invitationCodeInput.formKey,
-      stateKey: invitationCodeInput.stateKey,
-      data: {text: ''}
-    })
   }
 
   onButtonPress = () => {
@@ -382,72 +354,6 @@ class ShopRegister extends Component {
                   inputStyle={{height:0,width:0}}
                 />
               </View>
-
-              <View style={styles.inputWrap}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>邀请码</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <CommonTextInput
-                    {...invitationCodeInput}
-                    placeholder="输入邀请码"
-                    autoCorrect={false}
-                    outerContainerStyle={{borderWidth: 0, backgroundColor: '#FFF'}}
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                    initValue={this.state.qRCode}
-                  />
-                </View>
-                <TouchableOpacity style={{marginTop: normalizeH(16), marginRight: normalizeW(62), alignItems: 'flex-end'}}
-                                  onPress= {()=> {
-                                    Actions.QRCODEREADER({
-                                      readQRSuccess: (code) => {
-                                        this.setState({
-                                          qRCode: code
-                                        })
-                                        this.props.inputFormUpdate({
-                                          formKey: invitationCodeInput.formKey,
-                                          stateKey: invitationCodeInput.stateKey,
-                                          data: {text:code},
-                                        })
-                                        Actions.pop()
-                                      },
-                                      readQRError: (errMessage) => {
-                                        Actions.pop()
-                                        this.setTimeout(() => {
-                                          Toast.show(errMessage)
-                                        }, 1500)
-                                      }
-                                    })
-                                  }}>
-                  <Image style={{width: 20, height: 20}}  source={require('../../../assets/images/scan_red.png')} />
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.inputWrap}>
-                <TouchableOpacity style={styles.getInvitationWrap} onPress= {()=> {
-                  Actions.HOW_GET_INVITATION_CODE()
-                }}>
-                  <Image style={{width: 12, height: 12}} source={require('../../../assets/images/question_code.png')}/>
-                  <Text style={{marginLeft: normalizeW(5), color:THEME.colors.green,fontSize: 12}}>如何获取邀请码？</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/*
-              <View style={[styles.inputWrap, {marginTop: normalizeH(8)}]}>
-                <View style={{flex: 1}}>
-                  <Text style={[styles.inputLabel, {marginTop: normalizeH(33)}]}>店铺认证</Text>
-                  <Text style={{marginTop: normalizeH(15), fontSize: em(12), color: '#B2B2B2'}}>请上传有效营业执照</Text>
-                </View>
-                <ImageInput
-                  {...certificationInput}
-                  containerStyle={{width: 115, height: 90, marginTop: normalizeH(10), marginBottom: normalizeH(30), marginRight: normalizeW(15)}}
-                  addImageBtnStyle={{top:0, left: 0, width: 115, height: 90}}
-                  choosenImageStyle={{width: 115, height: 90}}
-                  addImage={require('../../../assets/images/upload_certificate.png')}
-                />
-              </View>
-              */}
 
             </View>
 

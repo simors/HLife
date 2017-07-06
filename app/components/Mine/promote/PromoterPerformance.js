@@ -23,8 +23,12 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import PromoterLevelIcon from './PromoterLevelIcon'
 import {getPromoterById, activePromoter} from '../../../selector/promoterSelector'
 
+
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+
+
 
 class PromoterPerformance extends Component {
   constructor(props) {
@@ -140,13 +144,19 @@ class PromoterPerformance extends Component {
     )
   }
 
+  showQrCodeView() {
+    if(this.props.promoter && this.props.promoter.qrcode) {
+      Actions.QRCODE_VIEW({qrcodeUrl: this.props.promoter.qrcode.url})
+    }
+  }
+
   renderBodyView() {
     return (
       <View>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           {this.renderTotalEarnings()}
           {this.renderInvitationStat()}
-          <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {Actions.INVITE_CODE_VIEWER()}}>
+          <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {this.showQrCodeView()}}>
             <Image style={{width: normalizeW(156), height: normalizeH(156)}}
                    resizeMode='contain'
                    source={require('../../../assets/images/generate_code.png')}/>

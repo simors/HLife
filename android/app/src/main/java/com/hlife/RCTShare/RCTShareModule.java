@@ -1,16 +1,22 @@
 package com.hlife.RCTShare;
 
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import java.util.ArrayList;
+import java.util.Map;
+
 import android.text.TextUtils;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.content.Context;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import android.app.Activity;
 import android.net.Uri;
@@ -108,4 +114,46 @@ public class RCTShareModule extends ReactContextBaseJavaModule {
                 )
                 .share();
     }
+
+    @ReactMethod
+    public void loginWX(final Callback resultCallback) {
+        SHARE_MEDIA shareMedia = SHARE_MEDIA.WEIXIN;
+        // 每次登录前，删除已保存的认证信息
+        UMShareAPI.get(ma).deleteOauth(ma, shareMedia, null);
+        UMShareAPI.get(ma).getPlatformInfo(ma, shareMedia, new UMAuthListener() {
+            @Override
+            public void onStart(SHARE_MEDIA platform) {
+                //授权开始的回调
+            }
+            @Override
+            public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+                WritableMap result = Arguments.createMap();
+
+                result.putString("uid", data.get("uid"));
+                result.putString("openid", data.get("openid"));
+                result.putString("gender", data.get("gender"));
+                result.putString("accessToken", data.get("accessToken"));
+                result.putString("refreshToken", data.get("refreshToken"));
+                result.putString("expiration", data.get("expiration"));
+                result.putString("name", data.get("name"));
+                result.putString("iconurl", data.get("iconurl"));
+
+                resultCallback.invoke(0, result);
+            }
+
+            @Override
+            public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+
+
+            }
+
+            @Override
+            public void onCancel(SHARE_MEDIA platform, int action) {
+
+            }
+        });
+
+    }
+
+
 }
