@@ -118,6 +118,8 @@ public class RCTShareModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void loginWX(final Callback resultCallback) {
         SHARE_MEDIA shareMedia = SHARE_MEDIA.WEIXIN;
+        // 每次登录前，删除已保存的认证信息
+        UMShareAPI.get(ma).deleteOauth(ma, shareMedia, null);
         UMShareAPI.get(ma).getPlatformInfo(ma, shareMedia, new UMAuthListener() {
             @Override
             public void onStart(SHARE_MEDIA platform) {

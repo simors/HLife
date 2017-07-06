@@ -88,6 +88,8 @@
 
   RCT_EXPORT_METHOD(loginWX:(RCTResponseSenderBlock)callback)
   {
+    // 每次登录前，删除已保存的认证信息
+    [[UMSocialManager defaultManager] cancelAuthWithPlatform: UMSocialPlatformType_WechatSession completion:nil];
     [[UMSocialManager defaultManager] getUserInfoWithPlatform: UMSocialPlatformType_WechatSession currentViewController:nil completion:^(id result, NSError *error) {
       if (error) {
         NSLog(@"Wechat fail");
