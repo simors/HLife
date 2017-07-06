@@ -86,13 +86,52 @@ export default class Share extends Component {
           style={styles.shareLayoutItem}
           key={index}
           onPress={() => {
-            this.openShareChannel(index)
+            this.props.shareType == 'image'?
+              this.openShareImage(index)
+              :
+              this.openShareChannel(index)
           }}>
           <Image style={styles.shareIcon} source={share.icon}/>
           <Text style={styles.shareText}>{share.text}</Text>
         </TouchableOpacity>
       )
     })
+  }
+
+  openShareImage = (index) => {
+    switch (index) {
+      case 0:
+        Platform.OS == 'android'?
+          shareNative.shareImage('QQ', this.props.imageUrl)
+          :
+          shareNative.shareImage(4, this.props.imageUrl)
+        break
+      case 1:
+        Platform.OS == 'android'?
+          shareNative.shareImage('QZONE', this.props.imageUrl)
+          :
+          shareNative.shareImage(5, this.props.imageUrl)
+        break
+      case 2:
+        Platform.OS == 'android'?
+          shareNative.shareImage('WEIXIN', this.props.imageUrl)
+          :
+          shareNative.shareImage(1, this.props.imageUrl)
+        break
+      case 3:
+        Platform.OS == 'android'?
+          shareNative.shareImage('WEIXIN_CIRCLE', this.props.imageUrl)
+          :
+          shareNative.shareImage(2, this.props.imageUrl)
+        break
+      case 4:
+        Platform.OS == 'android'?
+          shareNative.shareImage('SINA', this.props.imageUrl)
+          :
+          shareNative.shareImage(0, this.props.imageUrl)
+        break
+
+    }
   }
 
   openShareChannel = (index) => {

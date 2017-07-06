@@ -37,17 +37,9 @@ class QrcodeView extends Component {
   _handleActionSheetPress(index) {
     if(0 == index) { //分享
 
-      let shareUrl = this.props.shareDomain ? this.props.shareDomain + "inviteCodeShare/" + this.props.code :
-      DEFAULT_SHARE_DOMAIN + "inviteCodeShare/" + this.props.code
-
-      console.log("shopShare url:", shareUrl)
-
       Actions.SHARE({
-        title: "汇邻优店邀请码",
-        url: shareUrl,
-        author: '邻家小二',
-        abstract: "邻里互动，同城交易",
-        cover: "https://simors.github.io/ljyd_blog/ic_launcher.png",
+        shareType: 'image',
+        imageUrl: this.props.qrcodeUrl,
       })
     } else if(1 == index) { //说明
       Actions.INVITE_EXPLAIN()
