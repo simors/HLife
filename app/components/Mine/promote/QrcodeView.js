@@ -83,11 +83,11 @@ class QrcodeView extends Component {
                 }}
         />
         <View style={styles.body}>
-          <View style={{marginTop: normalizeH(30), width: normalizeW(247)}}>
-            <Text style={styles.tipText} numberOfLines={2}>我的二维码，随时随地邀请好友</Text>
+          <View style={{marginTop: normalizeH(10), width: normalizeW(247)}}>
+            <Text style={styles.tipText} numberOfLines={2}>扫一扫下方二维码或者分享到微信自动添加推广好友</Text>
           </View>
-          <View style={{marginTop: normalizeH(43)}}>
-            <CachedImage mutable style={{width: 250, height: 445}} source={{uri: this.props.qrcodeUrl}}></CachedImage>
+          <View style={{marginTop: normalizeH(10)}}>
+            <CachedImage mutable style={{width: normalizeW(280), height: normalizeH(499)}} source={{uri: this.props.qrcodeUrl}}></CachedImage>
           </View>
         </View>
         {this.renderActionSheet()}
