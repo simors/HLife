@@ -22,7 +22,7 @@ import PhoneInput from '../common/Input/PhoneInput'
 import Header from '../common/Header'
 import PasswordInput from '../common/Input/PasswordInput'
 import Symbol from 'es6-symbol'
-import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitFormData, loginWithWeixin, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import CommonButton from '../common/CommonButton'
 import THEME from '../../constants/themes/theme1'
@@ -92,6 +92,7 @@ class Login extends Component {
   }
 
   loginCallback = (errorCode, data) => {
+    console.log("loginCallback: data", data)
     let wxUserInfo = {
       accessToken: data.accessToken,
       expiration: data.expiration,
@@ -165,7 +166,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
-  fetchUserOwnedShopInfo
+  fetchUserOwnedShopInfo,
+  loginWithWeixin
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
