@@ -4,11 +4,12 @@
 
 
 import {hidePhoneNumberDetail, formatLeancloudTime, getConversationTime} from '../util/numberUtils'
-import {Map, Record,List} from 'immutable'
+import {Map, Record,List,Set} from 'immutable'
 
 export const TopicCommentsConfig = Record({
   commentId : undefined,
   topicId : undefined,
+  content : undefined,
   parentCommentContent : undefined,
   parentCommentUserName : undefined,
   parentCommentNickname : undefined,
@@ -38,6 +39,7 @@ export class TopicCommentsItem extends TopicCommentsConfig {
     return topicCommentsConfig.withMutations((record)=> {
       record.set('commentId', lcObj.commentId)
       record.set('topicId', lcObj.topicId)
+      record.set('content', lcObj.content)
       record.set('parentCommentContent', lcObj.parentCommentContent)
       record.set('parentCommentUserName', lcObj.parentCommentUserName)
       record.set('parentCommentId', lcObj.parentCommentId)
@@ -72,6 +74,6 @@ export const NewTopics = Record({
   allComments : Map(),
   commentsForTopic : Map(),
   commentsForComment : Map(),
-  myCommentsUps : List(),
-  myTopicsUps : List(),
+  myCommentsUps : Set(),
+  myTopicsUps : Set(),
 }, 'NewTopic')

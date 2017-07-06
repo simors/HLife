@@ -25,6 +25,7 @@ import {getConversationTime} from '../../util/numberUtils'
 import shallowequal from 'shallowequal'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
+import {fetchUpItem} from '../../action/newTopicAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -32,12 +33,17 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 export class TopicComment extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      upCount:0,
+    }
   }
 
   componentDidMount() {
     console.log('hahahahahahahahahah')
     InteractionManager.runAfterInteractions(() => {
+      this.setState({
+        upCount:this.props.comment.upCount
+      })
       // this.props.fetchTopicLikesCount({topicId: this.props.comment.objectId, upType:'topicComment'})
       // if( this.props.isLogin ) {
       //   this.props.fetchTopicIsLiked({topicId: this.props.comment.objectId, upType: 'topicComment'})
@@ -73,16 +79,15 @@ export class TopicComment extends Component {
   }
 
   successCallback() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.comment.commentId, upType:'topicComment'})
-      this.props.fetchTopicIsLiked({topicId: this.props.comment.commentId, upType:'topicComment'})
-    })
+
+        this.setState({upCount:this.state.upCount+1})
+
   }
 
   onLikeCommentButton() {
     if (this.props.isLogin) {
       this.props.onLikeCommentButton({
-        topic: this.props.comment,
+        comment: this.props.comment,
         isLiked: this.props.isLiked,
         success: this.successCallback.bind(this)
       })
@@ -93,42 +98,47 @@ export class TopicComment extends Component {
   }
 
   render() {
+    let comment = this.props.comment
+    console.log('comment====>',comment)
+    if (!comment) {
+      return <View/>
+    }
     return (
       <View style={[styles.containerStyle, this.props.containerStyle]}>
 
         <View style={styles.avatarViewStyle}>
-          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.authorId})}>
+          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: comment.authorId})}>
             <CachedImage mutable style={styles.avatarStyle}
-                         source={this.props.comment.authorAvatar ? {uri: getThumbUrl(this.props.comment.authorAvatar, normalizeW(35), normalizeH(35))} : require("../../assets/images/default_portrait.png")}/>
+                         source={comment.authorAvatar ? {uri: getThumbUrl(comment.authorAvatar, normalizeW(35), normalizeH(35))} : require("../../assets/images/default_portrait.png")}/>
           </TouchableOpacity>
         </View>
 
         <View style={styles.commentContainerStyle}>
 
-          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.comment.authorId})}>
-            <Text style={styles.userNameStyle}>{this.props.comment.authorNickname}</Text>
+          <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: comment.authorId})}>
+            <Text style={styles.userNameStyle}>{comment.authorNickname}</Text>
           </TouchableOpacity>
 
           {this.renderParentComment()}
 
           <Text style={styles.contentStyle}>
-            {this.props.comment.content}
+            {comment.content}
           </Text>
 
           <View style={styles.timeLocationStyle}>
-            <Text style={styles.timeTextStyle}>{getConversationTime(this.props.comment.createdAt)}</Text>
+            <Text style={styles.timeTextStyle}>{getConversationTime(new Date(comment.createdAt))}</Text>
             <Image style={styles.positionStyle} resizeMode='contain' source={require("../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.timeTextStyle}>{this.props.comment.position? this.props.comment.position.city:"未知"}</Text>
+            <Text style={styles.timeTextStyle}>{comment.city? comment.city:"未知"}</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
               <Image style={styles.likeImageStyle}
                      resizeMode='contain'
                      source={this.props.isLiked ?
                        require("../../assets/images/like_selected.png") :
                        require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>{this.props.comment.upCount?this.props.comment.upCount:0}</Text>
+              <Text style={styles.commentTextStyle}>{this.state.upCount?this.state.upCount:0}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentStyle} onPress={()=> {
-              this.props.onCommentButton(this.props.comment)
+              this.props.onCommentButton(comment)
             }}>
               <Image style={styles.commentImageStyle} resizeMode='contain' source={require("../../assets/images/comments_unselect.png")}/>
               <Text style={styles.commentTextStyle}>回复</Text>
@@ -165,7 +175,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  fetchUpItem
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicComment)

@@ -56,7 +56,7 @@ import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
-import {fetchAllComments} from '../../action/newTopicAction'
+import {fetchAllComments,fetchUpItem} from '../../action/newTopicAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -201,7 +201,7 @@ export class TopicDetail extends Component {
       <View style={{flex:1}}>
         <View style={{flexDirection: 'row',padding:15,paddingTop:20,backgroundColor:'white'}}>
           <View style={styles.titleLine}/>
-          <Text style={styles.titleTxt}>邻友点评·{commentsTotalCount > 999 ? '999+' : commentsTotalCount}</Text>
+          <Text style={styles.titleTxt}>邻友点评·{this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum}</Text>
         </View>
         <View style={{flex:1}}>
           {commentsView}
@@ -278,22 +278,13 @@ export class TopicDetail extends Component {
 
   onLikeCommentButton(payload) {
     if (this.props.isLogin) {
-      if (payload.isLiked) {
-        this.props.unLikeTopic({
-          topicId: payload.topic.objectId,
+        this.props.fetchUpItem({
+          targetId: payload.comment.commentId,
           upType: 'topicComment',
           success: payload.success,
           error: this.likeErrorCallback
         })
-      }
-      else {
-        this.props.likeTopic({
-          topicId: payload.topic.objectId,
-          upType: 'topicComment',
-          success: payload.success,
-          error: this.likeErrorCallback
-        })
-      }
+
     }
     else {
       Actions.LOGIN()
@@ -557,7 +548,7 @@ export class TopicDetail extends Component {
       isRefresh: !!isRefresh,
       lastCreatedAt: lastTopicCommentsCreatedAt,
       upType: 'topic',
-      more:false,
+      more:!isRefresh,
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -850,6 +841,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchOtherUserFollowersTotalCount,
   fetchShareDomain,
   fetchAllComments,
+  fetchUpItem,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)

@@ -28,7 +28,7 @@ export function fetchAllComments(payload){
   },(err)=>{
     // console.log('err====>',err)
 
-    return err
+    throw err
   })
 }
 
@@ -38,7 +38,25 @@ export function fetchAllUserUps(){
   return AV.Cloud.run('hlifeTopicFetchUserUps',{userId:userId}).then((results)=>{
     return {commentsUps:results.commentList,topicsUps:results.topicList}
   },(err)=>{
-    console.log(err)
-    return err
+    throw err
   })
+}
+
+export function likeTopic(payload) {
+  console.log('payload',payload)
+  let targetId = payload.targetId
+  let upType = payload.upType
+  let upItem = undefined
+
+
+  let currentUser = AV.User.current()
+  let userId = currentUser.id
+  // console.log('likeTopic.topicId===', topicId)
+
+    return AV.Cloud.run('hlifeTopicUpByUser',{...payload,userId:userId}).then((result)=>{
+      return result
+    },(err)=>{
+      throw err
+    })
+
 }

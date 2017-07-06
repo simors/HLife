@@ -19,9 +19,14 @@ export function fetchAllComments(payload) {
   // console.log('hahahahahahahahahah')
   return (dispatch, getState) => {
     let more = payload.more
+    if (!more) {
+      more = false
+    }
     lcTopics.fetchAllComments(payload).then((result) => {
       let commentList = result.commentList
+
       let allComments = result.comments
+
       if(allComments && allComments.length) {
         let comments = []
         allComments.forEach((item)=>{
@@ -84,6 +89,27 @@ export function fetchAllUserUps(payload){
       if(payload.error){
         payload.error(err)
 
+      }
+    })
+  }
+}
+
+export function fetchUpItem(payload){
+  return(dispatch,getState)=>{
+    lcTopics.likeTopic(payload).then((result)=>{
+      if(payload.upType=='topicComment'){
+        let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
+        dispatch(updateAction({targetId:result}))
+      }else if(payload.upType=='topic'){
+        let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
+        dispatch(updateAction({targetId:result}))
+      }
+      if(payload.success){
+        payload.success()
+      }
+    },(err)=>{
+      if(payload.error){
+        payload.error(err)
       }
     })
   }
