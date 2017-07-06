@@ -27,16 +27,18 @@ export function openPicker(options) {
     compressImageQuality: 1,
     multiple: false,//拍照必须传false,否则没有返回(ResultCollector类notifySuccess方法waitCounter为null)
     openType: 'camera', //enum('gallery', 'camera')
-    success: () =>{},
-    fail: () =>{},
+    success: () => {
+    },
+    fail: () => {
+    },
   }
   Object.assign(defaultOptions, options)
 
   //文件过大,会导致Modal加载图片报错(E_GET_SIZE_FAILURE)
   //限制图片文件1M以内
-  if('camera' == defaultOptions.openType) {
+  if ('camera' == defaultOptions.openType) {
     ImagePicker.openCamera(defaultOptions).then(response => {
-      if(parseInt(response.size) >= 1024 * 1024) {
+      if (parseInt(response.size) >= 1024 * 1024) {
         defaultOptions.fail({
           message: '图片尺寸必须小于1M'
         })
@@ -44,7 +46,7 @@ export function openPicker(options) {
       }
       defaultOptions.success(response)
     }, (error)=> {
-      if('E_PICKER_CANCELLED' != error.code) { //用户取消
+      if ('E_PICKER_CANCELLED' != error.code) { //用户取消
         defaultOptions.fail({
           message: '获取照片信息失败,请稍候再试'
         })
@@ -54,12 +56,12 @@ export function openPicker(options) {
         message: '获取信息失败,请稍候再试'
       })
     })
-  }else {
+  } else {
     ImagePicker.openPicker(defaultOptions).then(response => {
-      if(defaultOptions.multiple) {
-        if(response && response.length) {
-          for(let i = 0; i < response.length; i++) {
-            if(parseInt(response[i].size) >= 1024 * 1024) {
+      if (defaultOptions.multiple) {
+        if (response && response.length) {
+          for (let i = 0; i < response.length; i++) {
+            if (parseInt(response[i].size) >= 1024 * 1024) {
               defaultOptions.fail({
                 message: '图片尺寸必须小于1M'
               })
@@ -68,8 +70,8 @@ export function openPicker(options) {
           }
           defaultOptions.success(response)
         }
-      }else {
-        if(parseInt(response.size) >= 1024 * 1024) {
+      } else {
+        if (parseInt(response.size) >= 1024 * 1024) {
           defaultOptions.fail({
             message: '图片尺寸必须小于1M'
           })
@@ -78,7 +80,7 @@ export function openPicker(options) {
         defaultOptions.success(response)
       }
     }, (error)=> {
-      if('E_PICKER_CANCELLED' != error.code) { //用户取消
+      if ('E_PICKER_CANCELLED' != error.code) { //用户取消
         defaultOptions.fail({
           message: '照片类型不支持,请重新选择'
         })
@@ -100,7 +102,7 @@ export function getImageSize(options) {
       imgWidth = maxWidth
       imgHeight = Math.floor((imgWidth / width) * height)
     }
-    if(typeof options.success == 'function') {
+    if (typeof options.success == 'function') {
       options.success(imgWidth, imgHeight)
     }
   })
@@ -118,8 +120,8 @@ export function batchUploadImgs(uris) {
   try {
     uris.forEach((uri) => {
       let isImage = checkIsImage(uri)
-      if(!isImage){
-        throw {message:'禁止上传非图片文件，请重新上传！'}
+      if (!isImage) {
+        throw {message: '禁止上传非图片文件，请重新上传！'}
       }
       let file = {}
       file.fileName = uri.split('/').pop()
@@ -137,7 +139,7 @@ export function batchUploadImgs(uris) {
     })
   }
 
-  if(isUploading) {
+  if (isUploading) {
     return new Promise((resolve) => {
       resolve()
     })
@@ -155,7 +157,7 @@ export function batchUploadImgs(uris) {
     Loading.hide(loading)
     isUploading = false
     return leanImgUrls
-  }, (error)=>{
+  }, (error)=> {
     isUploading = false
     return error
   }).catch((err) => {
@@ -165,15 +167,15 @@ export function batchUploadImgs(uris) {
 }
 
 export function batchUploadImgs2(uris) {
-  return new Promise((resolve, reject)=>{
-    if(!uris || !uris.length) {
+  return new Promise((resolve, reject)=> {
+    if (!uris || !uris.length) {
       resolve([])
-    }else{
-      batchUploadImgs(uris).then(results=>{
+    } else {
+      batchUploadImgs(uris).then(results=> {
         resolve(results)
-      },(err)=>{
+      }, (err)=> {
         reject(err)
-      }).catch((error)=>{
+      }).catch((error)=> {
         throw error
       })
     }
@@ -182,15 +184,15 @@ export function batchUploadImgs2(uris) {
 
 export function uploadImg(source) {
   let fileUri = ''
-  if (Platform.OS === 'ios'  && !source.uri.startsWith('http://') && !source.uri.startsWith('https://')) {
+  if (Platform.OS === 'ios' && !source.uri.startsWith('http://') && !source.uri.startsWith('https://')) {
     fileUri = fileUri.concat('file://')
   }
 
-    let isImage = checkIsImage(source.uri)
-      if(!isImage&&typeof source.error == 'function') {
-        source.error('非图片文件无法上传，请重新上传图片！')
-        return
-      }
+  let isImage = checkIsImage(source.uri)
+  if (!isImage && typeof source.error == 'function') {
+    source.error('非图片文件无法上传，请重新上传图片！')
+    return
+  }
 
 
   fileUri = fileUri.concat(source.uri)
@@ -202,8 +204,8 @@ export function uploadImg(source) {
   }
   // console.log('uploadFile.uploadPayload===', uploadPayload)
   let loading = null
-  if(!source.hideLoading) {
-    if(isUploading) {
+  if (!source.hideLoading) {
+    if (isUploading) {
       return
     }
     isUploading = true
@@ -211,32 +213,32 @@ export function uploadImg(source) {
   }
   uploadFile(uploadPayload).then((saved) => {
     isUploading = false
-    if(!source.hideLoading) {
+    if (!source.hideLoading) {
       Loading.hide(loading)
     }
     let leanImgUrl = saved.savedPos
-    if(typeof source.success == 'function') {
+    if (typeof source.success == 'function') {
       source.leanImgUrl = leanImgUrl
       source.success(source)
     }
   }).catch((error) => {
     console.log('upload failed:', error)
     isUploading = false
-    if(!source.hideLoading) {
+    if (!source.hideLoading) {
       Loading.hide(loading)
     }
-    if(typeof source.error == 'function') {
+    if (typeof source.error == 'function') {
       source.error(error)
     }
   })
 }
 
 export function uploadImg2(uri, hideLoading) {
-  return new Promise((resolve, reject)=>{
+  return new Promise((resolve, reject)=> {
     let isImage = checkIsImage(uri)
-    if(!isImage) {
+    if (!isImage) {
       isUploading = false
-      reject({message:'禁止上传非图片文件，请重新上传文件！'})
+      reject({message: '禁止上传非图片文件，请重新上传文件！'})
     }
     let fileUri = ''
     if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
@@ -251,8 +253,8 @@ export function uploadImg2(uri, hideLoading) {
     }
 
     let loading = null
-    if(!hideLoading) {
-      if(isUploading) {
+    if (!hideLoading) {
+      if (isUploading) {
         return
       }
       isUploading = true
@@ -260,15 +262,15 @@ export function uploadImg2(uri, hideLoading) {
     }
 
     // console.log('uploadImg2.uploadPayload===', uploadPayload)
-    uploadFile(uploadPayload).then((saved)=>{
-      if(!hideLoading) {
+    uploadFile(uploadPayload).then((saved)=> {
+      if (!hideLoading) {
         Loading.hide(loading)
       }
       isUploading = false
       // console.log('uploadImg2.saved===', saved.savedPos)
       let leanImgUrl = saved.savedPos
       resolve(leanImgUrl)
-    }, (reason)=>{
+    }, (reason)=> {
       isUploading = false
       reject()
     })
@@ -276,9 +278,9 @@ export function uploadImg2(uri, hideLoading) {
 }
 
 export async function uploadImg3(uri, hideLoading) {
-  try{
+  try {
     let fileUri = ''
-    if (Platform.OS === 'ios'  && !uri.startsWith('http://') && !uri.startsWith('https://')) {
+    if (Platform.OS === 'ios' && !uri.startsWith('http://') && !uri.startsWith('https://')) {
       fileUri = fileUri.concat('file://')
     }
     fileUri = fileUri.concat(uri)
@@ -290,8 +292,8 @@ export async function uploadImg3(uri, hideLoading) {
     }
 
     let loading = null
-    if(!hideLoading) {
-      if(isUploading) {
+    if (!hideLoading) {
+      if (isUploading) {
         return
       }
       isUploading = true
@@ -299,14 +301,14 @@ export async function uploadImg3(uri, hideLoading) {
     }
     let saved = await uploadFile(uploadPayload)
 
-    if(!hideLoading) {
+    if (!hideLoading) {
       isUploading = false
       Loading.hide(loading)
     }
     // console.log('uploadFile.saved===', saved.savedPos)
     let leanImgUrl = saved.savedPos
     return leanImgUrl
-  }catch(error){
+  } catch (error) {
     return false
   }
 }
@@ -317,15 +319,17 @@ export function getThumbUrl(uri, width, height) {
   }
   let filename = uri.split('/').pop()
   let file = AV.File.withURL(filename, uri)
-  let thumb = file.thumbnailURL(width*2, height*2)
+  let thumb = file.thumbnailURL(width * 2, height * 2)
   return thumb
 }
 
 export function checkIsImage(uri) {
-  if(uri&&uri!=''){
-    let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
-    if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
-      return false
+  if (uri && uri != '') {
+    if (!uri.startsWith('http://') && !uri.startsWith('https://')) {
+      let fileType = uri.substr(uri.lastIndexOf(".")).toLowerCase()
+      if (fileType != '.jpg' && fileType != '.png' && fileType != '.bmp' && fileType != '.gif' && fileType != '.jpeg') {
+        return false
+      }
     }
   }
   return true
