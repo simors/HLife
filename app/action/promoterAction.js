@@ -127,6 +127,7 @@ export function getCurrentPromoter(payload) {
       dispatch(updatePromoter({promoterId, promoter}))
       dispatch(setUserPromoterMap({userId: activeUserId(getState()), promoterId: promoterId}))
     }).catch((error) => {
+      dispatch(setActivePromoter({promoterId: undefined}))
       if (payload.error) {
         payload.error(error)
       }

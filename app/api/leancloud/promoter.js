@@ -268,3 +268,27 @@ export function finishPromoterPayment(payload) {
     throw err
   })
 }
+
+export function syncPromoterInfo(payload) {
+  let params = {
+    userId: payload.userId
+  }
+  return AV.Cloud.run('promoterSyncPromoterInfo', params).then((result) => {
+    return result
+  }, (err) => {
+    console.log('promoterSyncPromoterInfo', err)
+    throw err
+  })
+}
+
+export function getPromoterQrcode(payload) {
+  let params = {
+    unionid: payload.unionid
+  }
+
+  return AV.Cloud.run('promoterGetPromoterQrCode', params).then((result) => {
+    return result
+  }, (err) => {
+    throw err
+  })
+}

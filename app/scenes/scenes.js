@@ -39,7 +39,6 @@ import UpdateShopAlbum4EditShop from '../components/Mine/myShop/UpdateShopAlbum4
 import ShopAnnouncementsManage from '../components/Mine/myShop/ShopAnnouncementsManage'
 import PublishShopAnnouncement from '../components/Mine/myShop/PublishShopAnnouncement'
 import GetInvitationCode from '../components/Mine/myShop/GetInvitationCode'
-import HowGetInvitationCode from '../components/Mine/myShop/HowGetInvitationCode'
 import Chatroom from '../components/Chatroom'
 import ShopCategoryList from '../components/shop/ShopCategoryList'
 import ShopDetail from '../components/shop/ShopDetail'
@@ -113,6 +112,8 @@ import PublishShopGood from '../components/shop/PublishShopGood'
 import EditShopGood from '../components/Mine/myShop/EditShopGood'
 import ShopGoodsListView from '../components/shop/ShopGoodsListView'
 import ShopGoodsDetail from '../components/shop/ShopGoodsDetail'
+import SupplementUserInfo from '../components/Login/SupplementUserInfo'
+import QrcodeView from '../components/Mine/promote/QrcodeView'
 
 const styles = StyleSheet.create({
   container: {
@@ -161,7 +162,6 @@ export const scenes = Actions.create(
       <Scene key="SHOP_ANNOUNCEMENTS_MANAGE" component={ShopAnnouncementsManage}/>
       <Scene key="PUBLISH_SHOP_ANNOUNCEMENT" component={PublishShopAnnouncement}/>
       <Scene key="GET_INVITATION_CODE" component={GetInvitationCode}/>
-      <Scene key="HOW_GET_INVITATION_CODE" component={HowGetInvitationCode}/>
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SHOP_CATEGORY_LIST" component={ShopCategoryList} />
       <Scene key="SHOP_DETAIL" component={ShopDetail} />
@@ -233,6 +233,8 @@ export const scenes = Actions.create(
       <Scene key="UPDATE_SHOP_GOOD_ALBUM" component={UpdateShopGoodAlbum}/>
       <Scene key="EDIT_SHOP_GOOD" component={EditShopGood}/>
       <Scene key="SHOP_GOODS_DETAIL" component={ShopGoodsDetail}/>
+      <Scene key="SUPPLEMENT_USERINFO" component={SupplementUserInfo}/>
+      <Scene key="QRCODE_VIEW" component={QrcodeView}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
@@ -276,7 +278,7 @@ function tapActions(props) {
         InteractionManager.runAfterInteractions(()=>{
           store.dispatch(fetchUserOwnedShopInfo())
           store.dispatch(getCurrentPromoter({}))
-          store.dispatch(getPromoterTenant())
+          // store.dispatch(getPromoterTenant())    // 推广员不再需要缴费
         })
       }
     })

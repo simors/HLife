@@ -7,14 +7,56 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Dimensions
+  Dimensions,
+  NativeModules
 } from 'react-native'
+
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {loginWithWeixin} from '../../action/authActions'
+import * as Toast from '../common/Toast'
+const shareNative = NativeModules.shareComponent
 
-export default class SnsLogin extends Component {
+
+class SnsLogin extends Component {
   constructor(props) {
     super(props)
+    this.wxUserInfo = undefined
+  }
+
+  submitSuccessCallback(userInfo) {
+    if(userInfo) {
+      Actions.HOME({type: 'reset'})
+    } else {
+      Actions.SUPPLEMENT_USERINFO({
+        wxUserInfo: this.wxUserInfo,
+      })
+    }
+  }
+
+  submitErrorCallback(error) {
+    Toast.show("微信登录失败")
+  }
+
+  loginCallback = (errorCode, data) => {
+    let wxUserInfo = {
+      accessToken: data.accessToken,
+      expiration: data.expiration,
+      unionid: data.uid,
+      name: data.name,
+      avatar: data.iconurl,
+    }
+
+    this.wxUserInfo = wxUserInfo
+
+    this.props.loginWithWeixin({
+      wxUserInfo: wxUserInfo,
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+
   }
 
   render() {
@@ -22,15 +64,27 @@ export default class SnsLogin extends Component {
       <View style={styles.container}>
         <Text style={styles.snsTxt}>通过以下方式直接登录</Text>   
         <View style={styles.snsLoginBox}>
-          <Image source={require('../../assets/images/login_weixin@1x.png')} style={styles.snsIcon}></Image>
-          <Image source={require('../../assets/images/login_qq@1x.png')} style={styles.snsIcon}></Image>
-          <Image source={require('../../assets/images/login_sina@1x.png')} style={styles.snsIcon}></Image>
+          <TouchableOpacity onPress={() => {shareNative.loginWX(this.loginCallback)}}>
+            <Image source={require('../../assets/images/login_weixin@1x.png')} style={styles.snsIcon}></Image>
+          </TouchableOpacity>
         </View>
       </View>
     )
   }
 
 }
+
+
+const mapStateToProps = (state, ownProps) => {
+  return {}
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  loginWithWeixin,
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(SnsLogin)
+
 
 const styles = StyleSheet.create({
   container: {
