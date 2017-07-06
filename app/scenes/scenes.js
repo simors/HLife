@@ -278,7 +278,7 @@ function tapActions(props) {
         InteractionManager.runAfterInteractions(()=>{
           store.dispatch(fetchUserOwnedShopInfo())
           store.dispatch(getCurrentPromoter({}))
-          store.dispatch(getPromoterTenant())
+          // store.dispatch(getPromoterTenant())    // 推广员不再需要缴费
         })
       }
     })

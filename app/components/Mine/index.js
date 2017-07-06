@@ -68,26 +68,18 @@ class Mine extends Component {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isUserLogined) {
         // this.props.fetchUserPoint()
-        // this.props.fetchUserOwnedShopInfo()
         this.props.fetchUserFollowees()
-        // this.props.getCurrentPromoter({})
-        // this.props.getPromoterTenant()
         this.props.fetchShareDomain()
       }
     })
   }
 
   shopManage() {
-    // Actions.COMPLETE_SHOP_INFO()
-    // Actions.SHOPR_EGISTER()
-    // return
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      // console.log('this.props.identity=====', this.props.identity)
       if (this.props.identity && this.props.identity.includes(IDENTITY_SHOPKEEPER)) {
         let userOwnedShopInfo = this.props.userOwnedShopInfo
-        // console.log('this.props.userOwnedShopInfo==1==', userOwnedShopInfo)
         if(userOwnedShopInfo.status == 1) {
           if(userOwnedShopInfo.payment == 1) { //已注册，已支付
             if(!userOwnedShopInfo.coverUrl) {
@@ -124,7 +116,6 @@ class Mine extends Component {
           Toast.show('您的店铺目前处于异常状态，请联系客服')
         }
       }else {
-        // console.log('this.props.identity==2===')
         Actions.SHOPR_EGISTER()
       }
 
