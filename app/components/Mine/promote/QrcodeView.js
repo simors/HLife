@@ -13,20 +13,12 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import QRCode from 'react-native-qrcode'
 import {Actions} from 'react-native-router-flux'
 import Header from '../../common/Header'
 import THEME from '../../../constants/themes/theme1'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
-import {getInviteCode} from '../../../action/promoterAction'
-import {inviteCode} from '../../../selector/promoterSelector'
-import * as Toast from '../../common/Toast'
 import ActionSheet from 'react-native-actionsheet'
-import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
-import {fetchShareDomain} from '../../../action/configAction'
-import {getShareDomain} from '../../../selector/configSelector'
 import {CachedImage} from 'react-native-img-cache'
-
 
 
 class QrcodeView extends Component {
