@@ -7,17 +7,23 @@ export function getCommentsByTopicId(state,topicId){
   let topicComments = state.NEWTOPIC.get('commentsForTopic')||[]
 
   let comments = topicComments.get(topicId)||[]
+  console.log('comments',comments)
   let commentList = []
+  let commentIdList = []
   comments.forEach((item)=>{
     let allComments = state.NEWTOPIC.get('allComments')||[]
     let comment = allComments.get(item)
     commentList.push(comment.toJS())
+    commentIdList.push(item)
   })
-  return commentList
+  return {commentList:commentList,comments:commentIdList}
 }
+
+
 
 export function isCommentLiked(state,commentId){
   let commentUps = state.NEWTOPIC.get('myCommentsUps')||[]
+  console.log('commentUps',commentUps)
   let isLiked = false
   commentUps.forEach((item)=>{
     if(item==commentId){

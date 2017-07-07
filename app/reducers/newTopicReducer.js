@@ -80,7 +80,7 @@ function handleSetCommentsForTopic(state,action){
 
 function handleFetchMyCommentsUps(state,action) {
   let payload =action.payload
-
+  console.log('action.payload',payload)
   let commentsUps = []
   payload.commentsUps.forEach((item)=>{
     commentsUps.push(item)
@@ -91,7 +91,6 @@ function handleFetchMyCommentsUps(state,action) {
 
 function handleFetchMyTopicsUps(state,action) {
   let payload =action.payload
-  console.log('topicsUps',payload)
   let topicsUps = []
   payload.topicsUps.forEach((item)=>{
     topicsUps.push(item)
@@ -105,7 +104,7 @@ function handleFetchUpCommentSuccess(state,action){
   let targetId = payload.targetId
   let map = state.get('myCommentsUps').toJS()||[]
   map.push(targetId)
-  state = state.set('myCommentsUps',new Set(map))
+  state = state.set('myCommentsUps',new List(map))
   return state
 }
 
@@ -114,7 +113,7 @@ function handleFetchUpTopicSuccess(state,action){
   let targetId = payload.targetId
   let map = state.get('myTopicsUps').toJS()||[]
   map.push(targetId)
-  state = state.set('myTopicsUps',new Set(map))
+  state = state.set('myTopicsUps',new List(map))
   return state
 }
 

@@ -14,6 +14,8 @@ import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import * as numberUtils from '../util/numberUtils'
 import {trim} from '../util/Utils'
+import * as topicSelector from '../selector/newTopicSelector'
+import {store} from '../store/persistStore'
 
 export function fetchAllComments(payload) {
   // console.log('hahahahahahahahahah')
@@ -96,21 +98,32 @@ export function fetchAllUserUps(payload){
 
 export function fetchUpItem(payload){
   return(dispatch,getState)=>{
-    lcTopics.likeTopic(payload).then((result)=>{
-      if(payload.upType=='topicComment'){
-        let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
-        dispatch(updateAction({targetId:result}))
-      }else if(payload.upType=='topic'){
-        let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
-        dispatch(updateAction({targetId:result}))
+    let isLiked = false
+    if (payload.upType == 'topicComment') {
+      isLiked = topicSelector.isCommentLiked(store.getState(),payload.targetId)
+      if (isLiked) {
+        let err = {message: '您已经点赞过该评论!'}
+        if(payload.error){
+          payload.error(err)
+        }
       }
-      if(payload.success){
-        payload.success()
-      }
-    },(err)=>{
-      if(payload.error){
-        payload.error(err)
-      }
-    })
+    }else{
+      lcTopics.likeTopic(payload).then((result)=>{
+        if(payload.upType=='topicComment'){
+          let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
+          dispatch(updateAction({targetId:result}))
+        }else if(payload.upType=='topic'){
+          let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
+          dispatch(updateAction({targetId:result}))
+        }
+        if(payload.success){
+          payload.success()
+        }
+      },(err)=>{
+        if(payload.error){
+          payload.error(err)
+        }
+      })
+    }
   }
 }

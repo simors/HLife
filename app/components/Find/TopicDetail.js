@@ -57,6 +57,7 @@ import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
 import {fetchAllComments,fetchUpItem} from '../../action/newTopicAction'
+import shallowequal from 'shallowequal'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -97,6 +98,16 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchShareDomain()
     })
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props.commentsArray, nextProps.commentsArray)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
   componentDidMount() {
@@ -821,7 +832,8 @@ const mapStateToProps = (state, ownProps) => {
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
-    allTopicComments : comments,
+    allTopicComments : comments.commentList,
+    commentsArray : comments.comments,
     commentsTotalCount: commentsTotalCount,
     userFollowersTotalCount: userFollowersTotalCount,
     lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt,
