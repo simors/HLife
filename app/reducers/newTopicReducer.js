@@ -116,9 +116,35 @@ function handleFetchUpTopicSuccess(state,action){
   return state
 }
 
+function handlePublishCommentSuccess(state,action){
+  let payload = action.payload
+  let comment = payload.comment
+  let commentList = state.getIn(['commentsForTopic', comment.topicId])
+
+  if(commentList&&commentList.length){
+    commentList.insert(0,comment.commentId)
+    state = state.set('commentsForTopic',commentList)
+  }else{
+    let topicCommentList = [comment.commentId]
+    state = state.set(['commentsForTopic', comment.topicId],new List(topicCommentList))
+  }
+
+  if(comment.parentCommentId){
+    let ParentCommentList = state.getIn(['commentsForComment',comment.parentCommentId])
+    if(ParentCommentList&&ParentCommentList.length){
+      ParentCommentList.insert(0,comment.commentId)
+      state = state.set('commentsForComment',ParentCommentList)
+    }else {
+      let commentCommentList = [comment.commentId]
+      state = state.set(['commentsForComment', comment.parentCommentId],new List(commentCommentList))
+    }
+  }
+  state = state.setIn(['allComments', comment.commentId], comment)
+  return state
+}
+
 function onRehydrate(state, action) {
   var incoming = action.payload.NEWTOPIC
-  console.log('incoming==========>',incoming)
   if (incoming) {
     const allCommentMap = Map(incoming.allComments)
     allCommentMap.map((value, key)=> {
