@@ -51,7 +51,7 @@ function handleAddCommentsForComment(state,action){
   let payload = action.payload
   let comments = payload.comments
   let team = state.getIn(['commentsForComment', payload.commentId])
-  state = state.setIn(['commentsForComment', payload.commentId], team.concat(new Set(comments)))
+  state = state.setIn(['commentsForComment', payload.commentId], team.concat(new List(comments)))
   return state
 
 }
@@ -59,7 +59,7 @@ function handleAddCommentsForComment(state,action){
 function handleSetCommentsForComment(state,action){
   let payload = action.payload
   let comments = payload.comments
-  state = state.setIn(['commentsForComment',payload.commentId], new Set(comments))
+  state = state.setIn(['commentsForComment',payload.commentId], new List(comments))
   return state
 }
 
@@ -67,14 +67,14 @@ function handleAddCommentsForTopic(state,action){
   let payload = action.payload
   let comments = payload.comments
   let team = state.getIn(['commentsForTopic', payload.topicId])
-  state = state.setIn(['commentsForTopic', payload.topicId], team.concat(new Set(comments)))
+  state = state.setIn(['commentsForTopic', payload.topicId], team.concat(new List(comments)))
   return state
 }
 
 function handleSetCommentsForTopic(state,action){
   let payload = action.payload
   let comments = payload.comments
-  state = state.setIn(['commentsForTopic',payload.topicId], new Set(comments))
+  state = state.setIn(['commentsForTopic',payload.topicId], new List(comments))
   return state
 }
 
@@ -130,14 +130,14 @@ function onRehydrate(state, action) {
     const topicCommentsMap = Map(incoming.commentsForTopic)
     topicCommentsMap.map((value, key)=> {
       if (value && key) {
-        state = state.setIn(['commentsForTopic', key], Set(value))
+        state = state.setIn(['commentsForTopic', key], List(value))
       }
     })
 
     const commentCommentsMap = Map(incoming.commentsForComment)
     commentCommentsMap.map((value, key)=> {
       if (value && key) {
-        state = state.setIn(['commentsForComment', key], Set(value))
+        state = state.setIn(['commentsForComment', key], List(value))
       }
     })
   }

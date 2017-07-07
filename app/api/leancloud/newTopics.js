@@ -22,6 +22,7 @@ export function fetchAllComments(payload) {
     isRefresh: payload.isRefresh,
     lastCreatedAt: payload.lastCreatedAt
   }
+  console.log('lastCreatedAt',params.lastCreatedAt)
   return AV.Cloud.run('hlifeTopicFetchComments', params).then((results)=> {
     console.log('results', results)
     return {comments: results.allComments, commentList: results.commentList}

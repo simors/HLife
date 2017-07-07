@@ -99,7 +99,7 @@ export class TopicComment extends Component {
 
   render() {
     let comment = this.props.comment
-    console.log('comment====>',comment)
+    // console.log('comment====>',comment)
     if (!comment) {
       return <View/>
     }

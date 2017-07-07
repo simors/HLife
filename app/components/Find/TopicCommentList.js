@@ -38,23 +38,20 @@ export class TopicCommentList extends Component {
     this.state = {}
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (!shallowequal(this.props.commentsArray, nextProps.commentsArray)) {
-  //
-  //     return true;
-  //   }
-  //   if (!shallowequal(this.state, nextState)) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props.commentsArray, nextProps.commentsArray)) {
+
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
+  }
 
   renderTopicCommentPage() {
-    console.log('this.props.allTopicComments==========>',this.props.allTopicComments)
     let commentsView = <View/>
-    let topicComments = this.props.topicComments
     let allTopicComments = this.props.allTopicComments
-    let commentsTotalCount = this.props.commentsTotalCount
     if ( allTopicComments && allTopicComments.length) {
       commentsView = allTopicComments.map((value, key)=> {
         return (
@@ -104,14 +101,14 @@ export class TopicCommentList extends Component {
     Toast.show(error.message)
   }
   onCommentButton(topic) {
-
+    this.props.onCommentButton(topic)
   }
 
   renderTopicCommentItem(value, key) {
     return (
       <TopicComment key={key}
                     comment={value}
-                    onCommentButton={this.onCommentButton.bind(this)}
+                    onCommentButton={(payload)=>{this.onCommentButton(payload)}}
                     onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
       />
     )

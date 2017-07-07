@@ -526,6 +526,7 @@ export class TopicDetail extends Component {
         </LazyloadView>
       )
     }
+
     return (
       <View style={{flex:1}}>
         {/*{this.renderTopicCommentPage()}*/}
@@ -533,7 +534,7 @@ export class TopicDetail extends Component {
           allTopicComments={this.props.allTopicComments}
           commentsArray = {this.props.commentsArray}
           topic = {this.props.topic}
-          onCommentButton={()=>{return {}}}
+          onCommentButton={(payload)=>{this.onCommentButton(payload)}}
         />
       </View>
     )
@@ -720,7 +721,7 @@ export class TopicDetail extends Component {
                 onSend={(content) => {
                   this.sendReply(content)
                 }}
-                placeholder={(this.state.comment) ? "回复 " + this.state.comment.nickname + ": " : "回复 楼主: "}
+                placeholder={(this.state.comment) ? "回复 " + this.state.comment.authorNickname + ": " : "回复 楼主: "}
               />
             : null
           }
@@ -809,8 +810,8 @@ const mapStateToProps = (state, ownProps) => {
   const allTopicComments = getTopicComments(state)
   const topicComments = allTopicComments[ownProps.topic.objectId]
   let lastTopicCommentsCreatedAt = ''
-  if(topicComments && topicComments.length) {
-    lastTopicCommentsCreatedAt = topicComments[topicComments.length-1].createdAt
+  if(comments.commentList && comments.commentList.length) {
+    lastTopicCommentsCreatedAt = comments.commentList[comments.commentList.length-1].createdAt
   }
   const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
