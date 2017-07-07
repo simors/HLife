@@ -49,13 +49,13 @@ export function likeTopic(payload) {
   let upItem = undefined
   let isLiked = false
   let currentUser = AV.User.current()
-  let userId = currentUser.id
+  let userId = currentUser?currentUser.id:''
   // console.log('likeTopic.topicId===', topicId)
-
-  return AV.Cloud.run('hlifeTopicUpByUser', {...payload, userId: userId}).then((result)=> {
-    return result
-  }, (err)=> {
-    throw err
-  })
-
+  if(userId&&userId!=''){
+    return AV.Cloud.run('hlifeTopicUpByUser', {...payload, userId: userId}).then((result)=> {
+      return result
+    }, (err)=> {
+      throw err
+    })
+  }
 }

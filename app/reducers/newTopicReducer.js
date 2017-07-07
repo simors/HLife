@@ -8,7 +8,7 @@ import Immutable, {Map, List,Record,Set} from 'immutable'
 
 const initialState = NewTopics()
 
-export default function topicReducer(state = initialState, action) {
+export default function newTopicReducer(state = initialState, action) {
   switch (action.type) {
     case TopicTypes.FETCH_COMMENT_ADD_COMMENTS:
       return handleAddCommentsForComment(state,action)
@@ -26,7 +26,7 @@ export default function topicReducer(state = initialState, action) {
       return handleFetchMyTopicsUps(state,action)
     case TopicTypes.UP_COMMENT_SUCCESS:
       return handleFetchUpCommentSuccess(state,action)
-    case TopicTypes.P_TOPIC_SUCCESS:
+    case TopicTypes.UP_TOPIC_SUCCESS:
       return handleFetchUpTopicSuccess(state,action)
     // case TopicTypes.DISABLE_TOPIC:
     //   return handleDisableTopic(state,action)
@@ -80,7 +80,6 @@ function handleSetCommentsForTopic(state,action){
 
 function handleFetchMyCommentsUps(state,action) {
   let payload =action.payload
-  console.log('action.payload',payload)
   let commentsUps = []
   payload.commentsUps.forEach((item)=>{
     commentsUps.push(item)
@@ -119,6 +118,7 @@ function handleFetchUpTopicSuccess(state,action){
 
 function onRehydrate(state, action) {
   var incoming = action.payload.NEWTOPIC
+  console.log('incoming==========>',incoming)
   if (incoming) {
     const allCommentMap = Map(incoming.allComments)
     allCommentMap.map((value, key)=> {
@@ -140,6 +140,24 @@ function onRehydrate(state, action) {
         state = state.setIn(['commentsForComment', key], List(value))
       }
     })
+
+    const myCommentsUps = Map(incoming.myCommentsUps)
+    let myCommentUpList = []
+    myCommentsUps.forEach((item)=>{
+      myCommentUpList.push(item)
+    })
+    if(myCommentUpList&&myCommentUpList.length){
+      state = state.set('myCommentsUps', List(myCommentUpList))
+    }
+
+    const myTopicsUps = Map(incoming.myTopicsUps)
+    let myTopicUpList = []
+    myTopicsUps.forEach((item)=>{
+      myTopicUpList.push(item)
+    })
+    if(myTopicUpList&&myTopicUpList.length){
+      state = state.set('myTopicsUps', List(myTopicUpList))
+    }
   }
   return state
 }

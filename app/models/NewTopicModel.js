@@ -65,7 +65,6 @@ export class TopicCommentsItem extends TopicCommentsConfig {
         record.set('createdAt', lcObj.createdAt.valueOf())
         // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
       }
-      console.log('createdAt',lcObj.createdAt)
       //有父评论的情况下设置
     })
   }
