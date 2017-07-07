@@ -23,7 +23,6 @@ export function getCommentsByTopicId(state,topicId){
 
 export function isCommentLiked(state,commentId){
   let commentUps = state.NEWTOPIC.get('myCommentsUps')||[]
-  console.log('commentUps',commentUps)
   let isLiked = false
   commentUps.forEach((item)=>{
     if(item==commentId){

@@ -52,7 +52,7 @@ export class TopicComment extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!shallowequal(this.props, nextProps)) {
+    if (!shallowequal(this.props.comment, nextProps.comment)) {
       return true;
     }
     if (!shallowequal(this.state, nextState)) {

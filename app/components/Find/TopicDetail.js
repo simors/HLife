@@ -58,7 +58,7 @@ import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
 import {fetchAllComments,fetchUpItem} from '../../action/newTopicAction'
 import shallowequal from 'shallowequal'
-
+import TopicCommentList from './TopicCommentList'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -232,7 +232,6 @@ export class TopicDetail extends Component {
     return (
       <TopicComment key={key}
                     comment={value}
-                    onCommentButton={this.onCommentButton.bind(this)}
                     onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
       />
     )
@@ -529,7 +528,13 @@ export class TopicDetail extends Component {
     }
     return (
       <View style={{flex:1}}>
-        {this.renderTopicCommentPage()}
+        {/*{this.renderTopicCommentPage()}*/}
+        <TopicCommentList
+          allTopicComments={this.props.allTopicComments}
+          commentsArray = {this.props.commentsArray}
+          topic = {this.props.topic}
+          onCommentButton={()=>{return {}}}
+        />
       </View>
     )
   }
@@ -799,7 +804,6 @@ const mapStateToProps = (state, ownProps) => {
   dataArray.push({type: 'COLUMN_1'})
   dataArray.push({type: 'COLUMN_2'})
   const comments = getCommentsByTopicId(state,ownProps.topic.objectId)
-  console.log('selectComments====>',comments)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
   const allTopicComments = getTopicComments(state)

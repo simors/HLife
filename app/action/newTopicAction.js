@@ -107,23 +107,24 @@ export function fetchUpItem(payload){
           payload.error(err)
         }
       }
-    }else{
-      lcTopics.likeTopic(payload).then((result)=>{
-        if(payload.upType=='topicComment'){
-          let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
-          dispatch(updateAction({targetId:result}))
-        }else if(payload.upType=='topic'){
-          let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
-          dispatch(updateAction({targetId:result}))
-        }
-        if(payload.success){
-          payload.success()
-        }
-      },(err)=>{
-        if(payload.error){
-          payload.error(err)
-        }
-      })
+      else{
+        lcTopics.likeTopic(payload).then((result)=>{
+          if(payload.upType=='topicComment'){
+            let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
+            dispatch(updateAction({targetId:result}))
+          }else if(payload.upType=='topic'){
+            let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
+            dispatch(updateAction({targetId:result}))
+          }
+          if(payload.success){
+            payload.success()
+          }
+        },(err)=>{
+          if(payload.error){
+            payload.error(err)
+          }
+        })
+      }
     }
   }
 }
