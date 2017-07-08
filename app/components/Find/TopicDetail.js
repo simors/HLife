@@ -272,22 +272,14 @@ export class TopicDetail extends Component {
       }
 
       this.isSubmiting = true
-      if (this.props.isLiked) {
-        this.props.unLikeTopic({
-          topicId: this.props.topic.objectId,
-          upType: 'topic',
-          success: this.likeSuccessCallback.bind(this),
-          error: this.likeErrorCallback.bind(this)
-        })
-      }
-      else {
+
         this.props.likeTopic({
           topicId: this.props.topic.objectId,
           upType: 'topic',
           success: this.likeSuccessCallback.bind(this),
           error: this.likeErrorCallback.bind(this)
         })
-      }
+
     }
     else {
       Actions.LOGIN()

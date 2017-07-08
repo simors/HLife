@@ -75,6 +75,7 @@ export class TopicCommentDetail extends Component {
       loadComment: false,
       showPayModal: false,
       pay: '',
+      upCount:0
     }
     this.replyInput = null
     this.isReplying = false
@@ -96,7 +97,9 @@ export class TopicCommentDetail extends Component {
   }
 
   componentDidMount() {
-
+    this.setState({
+      upCount:this.props.comment.upCount
+    })
     if (Platform.OS == 'ios') {
       Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
       Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
@@ -176,52 +179,13 @@ export class TopicCommentDetail extends Component {
     }
   }
 
-  renderTopicCommentPage() {
-    let commentsView = <View/>
-    let topicComments = this.props.topicComments
-    let allTopicComments = this.props.allTopicComments
-    let commentsTotalCount = this.props.commentsTotalCount
-    if (commentsTotalCount && allTopicComments && allTopicComments.length) {
-      commentsView = allTopicComments.map((value, key)=> {
-        return (
-          this.renderTopicCommentItem(value, key)
-        )
-      })
-    }else {
-      commentsView = <View style={{padding:15,backgroundColor:'white',justifyContent:'center',alignItems:'center'}}>
-        <Text style={{}}>
-          目前没有评论，快来抢沙发吧！~~~
-        </Text>
-      </View>
-    }
 
-    return (
-      <View style={{flex:1}}>
-        <View style={{flexDirection: 'row',padding:15,paddingTop:20,backgroundColor:'white'}}>
-          <View style={styles.titleLine}/>
-          <Text style={styles.titleTxt}>邻友点评·{this.props.comment.commentNum > 999 ? '999+' : this.props.comment.commentNum}</Text>
-        </View>
-        <View style={{flex:1}}>
-          {commentsView}
-        </View>
-      </View>
-    )
-  }
 
   onCommentButton(topic) {
     this.setState({
       comment: topic
     })
     this.openModel()
-  }
-
-  renderTopicCommentItem(value, key) {
-    return (
-      <TopicComment key={key}
-                    comment={value}
-                    onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
-      />
-    )
   }
 
   renderNoComment() {
@@ -270,7 +234,7 @@ export class TopicCommentDetail extends Component {
       this.props.fetchUpItem({
         targetId: payload.comment.commentId,
         upType: 'topicComment',
-        success: payload.success,
+        success: this.upCommentSuccess(),
         error: this.likeErrorCallback
       })
 
@@ -278,6 +242,12 @@ export class TopicCommentDetail extends Component {
     else {
       Actions.LOGIN()
     }
+  }
+
+  upCommentSuccess(){
+    this.setState({
+      upCount:this.state.upCount+1
+    })
   }
 
   likeErrorCallback(error) {
@@ -546,7 +516,7 @@ export class TopicCommentDetail extends Component {
 
 
   render() {
-    let lazyHost = "detailList" + this.props.comment.topicId
+    let lazyHost = "commentList" + this.props.comment.topicId
     return (
       <View style={styles.containerStyle}>
         {this.renderHeaderView()}
@@ -599,6 +569,8 @@ export class TopicCommentDetail extends Component {
       </View>
     )
   }
+
+
 
   renderBottomView() {
       let isLiked = this.props.isLiked

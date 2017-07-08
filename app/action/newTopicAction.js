@@ -73,7 +73,6 @@ export function fetchAllUserUps(payload) {
   return (dispatch, getState)=> {
     lcTopics.fetchAllUserUps().then((results)=> {
 
-      console.log('results====>', results)
       let commentsUps = results.commentsUps
       let topicsUps = results.topicsUps
       if (results.commentsUps && results.commentsUps.length) {
@@ -109,6 +108,7 @@ export function fetchUpItem(payload) {
       }
       else {
         lcTopics.likeTopic(payload).then((result)=> {
+          console.log('result')
           if (payload.upType == 'topicComment') {
             let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
             dispatch(updateAction({targetId: result}))
@@ -117,10 +117,14 @@ export function fetchUpItem(payload) {
             dispatch(updateAction({targetId: result}))
           }
           if (payload.success) {
+            console.log('chenggongle a aa a a ')
+
             payload.success()
           }
         }, (err)=> {
           if (payload.error) {
+            console.log('shiabisdiasdadasdiiasdiasidiaisdiasdi a aa a a ')
+
             payload.error(err)
           }
         })

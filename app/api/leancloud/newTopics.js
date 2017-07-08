@@ -24,9 +24,7 @@ export function fetchAllComments(payload) {
     isRefresh: payload.isRefresh,
     lastCreatedAt: payload.lastCreatedAt
   }
-  console.log('lastCreatedAt',params.lastCreatedAt)
   return AV.Cloud.run('hlifeTopicFetchComments', params).then((results)=> {
-    console.log('results', results)
     return {comments: results.allComments, commentList: results.commentList}
   }, (err)=> {
     // console.log('err====>',err)
@@ -36,13 +34,13 @@ export function fetchAllComments(payload) {
 }
 
 export function fetchAllUserUps() {
-  let currentUser = AV.User.current()
-  let userId = currentUser.id
-  return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
-    return {commentsUps: results.commentList, topicsUps: results.topicList}
-  }, (err)=> {
-    throw err
-  })
+  let userId = authSelector.activeUserId()
+    return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
+      return {commentsUps: results.commentList, topicsUps: results.topicList}
+    }, (err)=> {
+      throw err
+    })
+
 }
 
 export function likeTopic(payload) {
@@ -50,8 +48,7 @@ export function likeTopic(payload) {
   let upType = payload.upType
   let upItem = undefined
   let isLiked = false
-  let currentUser = AV.User.current()
-  let userId = currentUser?currentUser.id:''
+  let userId = authSelector.activeUserId()
   // console.log('likeTopic.topicId===', topicId)
   if(userId&&userId!=''){
     return AV.Cloud.run('hlifeTopicUpByUser', {...payload, userId: userId}).then((result)=> {

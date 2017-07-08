@@ -9,11 +9,15 @@ export function getCommentsByTopicId(state,topicId){
   let comments = topicComments.get(topicId)||[]
   let commentList = []
   let commentIdList = []
+  console.log('comments========>',comments)
+
   comments.forEach((item)=>{
     let allComments = state.NEWTOPIC.get('allComments')||[]
     let comment = allComments.get(item)
-    commentList.push(comment.toJS())
-    commentIdList.push(item)
+    if(comment){
+      commentList.push(comment.toJS())
+      commentIdList.push(item)
+    }
   })
   return {commentList:commentList,comments:commentIdList}
 }
@@ -27,8 +31,10 @@ export function getCommentsByCommentId(state,commentId){
   comments.forEach((item)=>{
     let allComments = state.NEWTOPIC.get('allComments')||[]
     let comment = allComments.get(item)
-    commentList.push(comment.toJS())
-    commentIdList.push(item)
+    if(comment){
+      commentList.push(comment.toJS())
+      commentIdList.push(item)
+    }
   })
   return {commentList:commentList,comments:commentIdList}
 }

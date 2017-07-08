@@ -62,6 +62,7 @@ export class TopicComment extends Component {
   }
 
   renderParentComment() {
+    console.log('this.props.comment',this.props.comment)
     if (this.props.comment.replyCommentNickname&&this.props.comment.replyCommentContent) {
       return (
         <View style={styles.parentCommentStyle}>

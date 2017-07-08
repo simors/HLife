@@ -104,8 +104,10 @@ function handleFetchMyTopicsUps(state, action) {
 function handleFetchUpCommentSuccess(state, action) {
   let payload = action.payload
   let targetId = payload.targetId
+  console.log('targetId',targetId)
   let map = state.get('myCommentsUps').toJS() || []
   map.push(targetId)
+  console.log('map',map)
   state = state.set('myCommentsUps', new List(map))
   return state
 }
@@ -150,46 +152,48 @@ function handlePublishCommentSuccess(state, action) {
 
 function onRehydrate(state, action) {
   var incoming = action.payload.NEWTOPIC
-  // if (incoming) {
-  //   const allCommentMap = Map(incoming.allComments)
-  //   allCommentMap.map((value, key)=> {
-  //     if (value && key) {
-  //       state = state.setIn(['allComments', key], Record(value))
-  //     }
-  //   })
-  //
-  //   const topicCommentsMap = Map(incoming.commentsForTopic)
-  //   topicCommentsMap.map((value, key)=> {
-  //     if (value && key) {
-  //       state = state.setIn(['commentsForTopic', key], List(value))
-  //     }
-  //   })
-  //
-  //   const commentCommentsMap = Map(incoming.commentsForComment)
-  //   commentCommentsMap.map((value, key)=> {
-  //     if (value && key) {
-  //       state = state.setIn(['commentsForComment', key], List(value))
-  //     }
-  //   })
-  //
-  //   const myCommentsUps = Map(incoming.myCommentsUps)
-  //   let myCommentUpList = []
-  //   myCommentsUps.forEach((item)=>{
-  //     myCommentUpList.push(item)
-  //   })
-  //   if(myCommentUpList&&myCommentUpList.length){
-  //     state = state.set('myCommentsUps', List(myCommentUpList))
-  //   }
-  //
-  //   const myTopicsUps = Map(incoming.myTopicsUps)
-  //   let myTopicUpList = []
-  //   myTopicsUps.forEach((item)=>{
-  //     myTopicUpList.push(item)
-  //   })
-  //   if(myTopicUpList&&myTopicUpList.length){
-  //     state = state.set('myTopicsUps', List(myTopicUpList))
-  //   }
-  // }
+  if (incoming) {
+    const allCommentMap = Map(incoming.allComments)
+    allCommentMap.map((value, key)=> {
+      if (value && key) {
+        let commentInfo = TopicCommentsItem.fromLeancloudObject(value)
+        state = state.setIn(['allComments', key], commentInfo)
+      }
+    })
+
+    const topicCommentsMap = Map(incoming.commentsForTopic)
+    topicCommentsMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['commentsForTopic', key], new List(value))
+      }
+    })
+
+    const commentCommentsMap = Map(incoming.commentsForComment)
+    commentCommentsMap.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['commentsForComment', key], new List(value))
+      }
+    })
+
+    const myCommentsUps = incoming.myCommentsUps
+    let myCommentUpList = []
+    myCommentsUps.forEach((item)=>{
+      myCommentUpList.push(item)
+    })
+    if(myCommentUpList&&myCommentUpList.length){
+      state = state.set('myCommentsUps', List(myCommentUpList))
+    }
+
+    const myTopicsUps = incoming.myTopicsUps
+    let myTopicUpList = []
+    myTopicsUps.forEach((item)=>{
+      myTopicUpList.push(item)
+    })
+    if(myTopicUpList&&myTopicUpList.length){
+      state = state.set('myTopicsUps', List(myTopicUpList))
+    }
+
+  }
   return state
 }
 
