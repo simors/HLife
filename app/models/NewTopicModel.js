@@ -14,6 +14,10 @@ export const TopicCommentsConfig = Record({
   parentCommentUserName : undefined,
   parentCommentNickname : undefined,
   parentCommentId : undefined,
+  replyCommentContent : undefined,
+  replyCommentUserName : undefined,
+  replyCommentNickname : undefined,
+  replyCommentId : undefined,
   upCount : undefined,
   authorUsername : undefined,
   authorNickname : undefined,
@@ -44,6 +48,10 @@ export class TopicCommentsItem extends TopicCommentsConfig {
       record.set('parentCommentUserName', lcObj.parentCommentUserName)
       record.set('parentCommentId', lcObj.parentCommentId)
       record.set('parentCommentNickname', lcObj.parentCommentNickname)
+      record.set('replyCommentContent', lcObj.replyCommentContent)
+      record.set('replyCommentUserName', lcObj.replyCommentUserName)
+      record.set('replyCommentId', lcObj.replyCommentId)
+      record.set('replyCommentNickname', lcObj.replyCommentNickname)
       record.set('upCount', lcObj.upCount)
       record.set('authorUsername', lcObj.authorUsername)
       record.set('authorNickname', lcObj.authorNickname)

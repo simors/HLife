@@ -65,6 +65,7 @@ export function likeTopic(payload) {
 export function publishTopicComments(payload) {
   console.log('payload====>',payload)
   return AV.Cloud.run('hlifeTopicPubulishTopicComment',{payload:payload}).then(function (result) {
+    console.log('result========>',result)
     if (result) {
       let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
       let activeUser = authSelector.activeUserInfo(store.getState())

@@ -18,6 +18,20 @@ export function getCommentsByTopicId(state,topicId){
   return {commentList:commentList,comments:commentIdList}
 }
 
+export function getCommentsByCommentId(state,commentId){
+  let topicComments = state.NEWTOPIC.get('commentsForComment')||[]
+
+  let comments = topicComments.get(commentId)||[]
+  let commentList = []
+  let commentIdList = []
+  comments.forEach((item)=>{
+    let allComments = state.NEWTOPIC.get('allComments')||[]
+    let comment = allComments.get(item)
+    commentList.push(comment.toJS())
+    commentIdList.push(item)
+  })
+  return {commentList:commentList,comments:commentIdList}
+}
 
 
 export function isCommentLiked(state,commentId){

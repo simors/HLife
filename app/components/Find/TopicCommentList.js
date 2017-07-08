@@ -31,6 +31,7 @@ import {bindActionCreators} from 'redux'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import CommentForTopic from './NewCommentForTopic'
 
 export class TopicCommentList extends Component {
   constructor(props) {
@@ -69,11 +70,7 @@ export class TopicCommentList extends Component {
 
     return (
       <View style={{flex: 1}}>
-        <View style={{flexDirection: 'row', padding: 15, paddingTop: 20, backgroundColor: 'white'}}>
-          <View style={styles.titleLine}/>
-          <Text
-            style={styles.titleTxt}>邻友点评·{this.props.topic.commentNum > 999 ? '999+' : this.props.topic.commentNum}</Text>
-        </View>
+
         <View style={{flex: 1}}>
           {commentsView}
         </View>
@@ -105,13 +102,24 @@ export class TopicCommentList extends Component {
   }
 
   renderTopicCommentItem(value, key) {
-    return (
-      <TopicComment key={key}
-                    comment={value}
-                    onCommentButton={(payload)=>{this.onCommentButton(payload)}}
-                    onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
-      />
-    )
+
+     if(this.props.viewType=='topic'){
+       return (
+       <CommentForTopic key={key}
+                        comment={value}
+                        onCommentButton={(payload)=>{this.onCommentButton(payload)}}
+                        onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
+       />
+       )
+     }else if(this.props.viewType=='topicComment'){
+      return (
+        <TopicComment key={key}
+                         comment={value}
+                         onCommentButton={(payload)=>{this.onCommentButton(payload)}}
+                         onLikeCommentButton={(payload)=>this.onLikeCommentButton(payload)}
+        />
+      )
+    }
   }
 
   renderTopicCommentsColumn() {

@@ -1,4 +1,7 @@
 /**
+ * Created by lilu on 2017/7/8.
+ */
+/**
  * Created by lilu on 2017/7/6.
  */
 
@@ -34,7 +37,7 @@ export class TopicComment extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      upCount:0,
+      upCount: 0,
     }
   }
 
@@ -42,7 +45,7 @@ export class TopicComment extends Component {
     console.log('hahahahahahahahahah')
     InteractionManager.runAfterInteractions(() => {
       this.setState({
-        upCount:this.props.comment.upCount
+        upCount: this.props.comment.upCount
       })
       // this.props.fetchTopicLikesCount({topicId: this.props.comment.objectId, upType:'topicComment'})
       // if( this.props.isLogin ) {
@@ -62,25 +65,24 @@ export class TopicComment extends Component {
   }
 
   renderParentComment() {
-    if (this.props.comment.replyCommentNickname&&this.props.comment.replyCommentContent) {
+    if (this.props.comment.commentCount) {
       return (
-        <View style={styles.parentCommentStyle}>
-          <Text style={styles.parentCommentContentStyle}>
-            <Text style={styles.commentUserStyle}>
-              {'回复@'+this.props.comment.replyCommentNickname + ": "}
+        <TouchableOpacity onPress={() => Actions.TOPIC_COMMENT_DETAIL({comment:this.props.comment})}>
+          <View style={styles.parentCommentStyle}>
+            <Text style={styles.parentCommentContentStyle}>
+              <Text style={styles.commentUserStyle}>
+                {"全部回复·" + (this.props.comment.commentCount<999?this.props.comment.commentCount:999)}
+              </Text>
             </Text>
-            <Text style={styles.parentCommentTextStyle}>
-              {this.props.comment.replyCommentContent}
-            </Text>
-          </Text>
-        </View>
+          </View>
+        </TouchableOpacity>
       )
     }
   }
 
   successCallback() {
 
-        this.setState({upCount:this.state.upCount+1})
+    this.setState({upCount: this.state.upCount + 1})
 
   }
 
@@ -92,7 +94,7 @@ export class TopicComment extends Component {
         success: this.successCallback.bind(this)
       })
     }
-    else{
+    else {
       Actions.LOGIN()
     }
   }
@@ -119,7 +121,6 @@ export class TopicComment extends Component {
             <Text style={styles.userNameStyle}>{comment.authorNickname}</Text>
           </TouchableOpacity>
 
-          {this.renderParentComment()}
 
           <Text style={styles.contentStyle}>
             {comment.content}
@@ -127,23 +128,27 @@ export class TopicComment extends Component {
 
           <View style={styles.timeLocationStyle}>
             <Text style={styles.timeTextStyle}>{getConversationTime(new Date(comment.createdAt))}</Text>
-            <Image style={styles.positionStyle} resizeMode='contain' source={require("../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.timeTextStyle}>{comment.city? comment.city:"未知"}</Text>
+            <Image style={styles.positionStyle} resizeMode='contain'
+                   source={require("../../assets/images/writer_loaction.png")}/>
+            <Text style={styles.timeTextStyle}>{comment.city ? comment.city : "未知"}</Text>
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
               <Image style={styles.likeImageStyle}
                      resizeMode='contain'
                      source={this.props.isLiked ?
                        require("../../assets/images/like_selected.png") :
                        require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>{this.state.upCount?this.state.upCount:0}</Text>
+              <Text style={styles.commentTextStyle}>{this.state.upCount ? this.state.upCount : 0}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.commentStyle} onPress={()=> {
               this.props.onCommentButton(comment)
             }}>
-              <Image style={styles.commentImageStyle} resizeMode='contain' source={require("../../assets/images/comments_unselect.png")}/>
+              <Image style={styles.commentImageStyle} resizeMode='contain'
+                     source={require("../../assets/images/comments_unselect.png")}/>
               <Text style={styles.commentTextStyle}>回复</Text>
             </TouchableOpacity>
           </View>
+          {this.renderParentComment()}
+
         </View>
 
       </View>
@@ -170,7 +175,7 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   return {
     isLiked: isLiked,
-    isLogin:isLogin,
+    isLogin: isLogin,
   }
 }
 
@@ -191,8 +196,8 @@ const styles = StyleSheet.create({
     borderBottomColor: THEME.colors.lighterA,
   },
   commentUserStyle: {
-    fontSize: em(15),
-    color: "#ff7819"
+    fontSize: em(12),
+    color: "#5A5A5A"
   },
   avatarViewStyle: {
     width: normalizeW(57),
@@ -212,21 +217,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     marginRight: 8,
     marginTop: normalizeH(10),
+    marginBottom: normalizeH(15),
   },
 
   parentCommentContentStyle: {
     marginBottom: normalizeH(8),
-    marginTop: normalizeH(7),
-    marginLeft: normalizeW(5),
+    marginTop: normalizeH(6),
+    marginLeft: normalizeW(6),
     marginRight: normalizeW(4),
+    fontSize:em(12),
   },
   commentContainerStyle: {
     width: normalizeW(318),
   },
   userNameStyle: {
-    fontSize: em(15),
+    fontSize: em(12),
     marginTop: normalizeH(10),
-    color: "#ff7819"
+    color: "#5A5A5A"
   },
   parentCommentTextStyle: {
     color: '#000000',
@@ -252,13 +259,13 @@ const styles = StyleSheet.create({
     height: normalizeW(16),
     width: normalizeH(18),
     marginRight: 3,
-    resizeMode:'stretch'
+    resizeMode: 'stretch'
   },
   commentImageStyle: {
     height: normalizeH(16),
     width: normalizeW(16),
     marginRight: 3,
-    resizeMode:'stretch'
+    resizeMode: 'stretch'
   },
   commentTextStyle: {
     fontSize: em(12),

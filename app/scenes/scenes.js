@@ -114,6 +114,7 @@ import ShopGoodsListView from '../components/shop/ShopGoodsListView'
 import ShopGoodsDetail from '../components/shop/ShopGoodsDetail'
 import SupplementUserInfo from '../components/Login/SupplementUserInfo'
 import QrcodeView from '../components/Mine/promote/QrcodeView'
+import TopicCommentDetail from '../components/Find/TopicCommentDetail'
 
 const styles = StyleSheet.create({
   container: {
@@ -179,6 +180,8 @@ export const scenes = Actions.create(
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
       <Scene key="LIKE_USER_LIST" component={LikeUserList}/>
+      <Scene key="TOPIC_COMMENT_DETAIL" component={TopicCommentDetail}/>
+
       <Scene key="MYTOPIC" component={MyTopic}/>
       <Scene key="SHOP_GOODSLIST_VIEW"component={ShopGoodsListView}/>
       <Scene key="MYATTENTION" component={MyAttention}/>
