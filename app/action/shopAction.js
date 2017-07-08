@@ -485,6 +485,7 @@ export function fetchUserOwnedShopInfo(payload) {
         payload.success(result)
       }
     }).catch((error)=> {
+      console.log("fetchUserOwnedShopInfo", error)
       if(payload && payload.error){
         payload.error(error)
       }

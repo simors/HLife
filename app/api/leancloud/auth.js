@@ -177,6 +177,8 @@ export function isWXSignIn(payload) {
   return AV.Cloud.run("isWXUnionIdSignIn", params).then((result) => {
     return result.isSignIn
   }).catch((err) => {
+    console.log("isWXUnionIdSignIn", err)
+    console.log("isWXUnionIdSignIn err.code", err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -188,12 +190,25 @@ export function isWXSignIn(payload) {
  * @returns {IPromise<U>|*|AV.Promise}
  */
 export function register(payload) {
+  let authData = {
+    "openid": payload.wxUserInfo.unionid,
+    "access_token": payload.wxUserInfo.accessToken,
+    "expires_at": Date.parse(payload.wxUserInfo.expiration),
+  }
+  let platform = 'weixin'
+  let wxName = payload.wxUserInfo.name
+  let wxAvatar = payload.wxUserInfo.avatar
+
   let user = new AV.User()
   user.set('type', 'normal')
-  user.setUsername(payload.phone)
+  user.setUsername(wxName)
   user.setPassword(payload.password)
   user.setMobilePhoneNumber(payload.phone)
-  return user.signUp().then((loginedUser) => {
+  user.set('avatar', wxAvatar)
+  user.set('nickname', wxName)
+  return user.signUp().then((signedUser) => {
+    return AV.User.associateWithAuthData(signedUser, platform, authData)
+  }).then((loginedUser) => {
     updateUserLocationInfo({
       userId: loginedUser.id
     })
@@ -205,7 +220,8 @@ export function register(payload) {
       userInfo: userInfo,
       token: token,
     }
-  }, (err) => {
+  }).catch((err) => {
+    console.log("register err", err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
