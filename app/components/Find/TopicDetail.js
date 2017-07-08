@@ -56,7 +56,7 @@ import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
-import {fetchAllComments,fetchUpItem} from '../../action/newTopicAction'
+import {fetchAllComments,fetchUpItem,fetchPublishTopicComment} from '../../action/newTopicAction'
 import shallowequal from 'shallowequal'
 import TopicCommentList from './TopicCommentList'
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -101,7 +101,7 @@ export class TopicDetail extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (!shallowequal(this.props.commentsArray, nextProps.commentsArray)) {
+    if (!shallowequal(this.props, nextProps)) {
       return true;
     }
     if (!shallowequal(this.state, nextState)) {
@@ -138,6 +138,7 @@ export class TopicDetail extends Component {
   submitSuccessCallback() {
     this.setState({hideBottomView: false})
     // dismissKeyboard()
+    // console.log('publishCommentSuccesss=========>')
     Toast.show('评论成功', {duration: 1000})
     this.isReplying = false
   }
@@ -176,12 +177,12 @@ export class TopicDetail extends Component {
       Actions.LOGIN()
     } else {
       this.isReplying = true
-      this.props.publishTopicFormData({
+      this.props.fetchPublishTopicComment({
         content: content,
         topicId: this.props.topic.objectId,
         userId: this.props.userInfo.id,
-        replyTo: (this.state.comment) ? this.state.comment.userId : this.props.topic.userId,
-        commentId: (this.state.comment) ? this.state.comment.objectId : undefined,
+        replyTo: (this.state.comment&&this.state.comment.commentId) ? this.state.comment.authorId : this.props.topic.userId,
+        commentId: (this.state.comment) ? this.state.comment.commentId : undefined,
         submitType: TOPIC_FORM_SUBMIT_TYPE.PUBLISH_TOPICS_COMMENT,
         success: () => this.submitSuccessCallback(),
         error: (error) => this.submitErrorCallback(error)
@@ -584,7 +585,7 @@ export class TopicDetail extends Component {
     }
 
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicCommentsByTopicId(payload)
+      // this.props.fetchTopicCommentsByTopicId(payload)
       this.props.fetchAllComments(payload)
     })
   }
@@ -859,6 +860,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShareDomain,
   fetchAllComments,
   fetchUpItem,
+  fetchPublishTopicComment
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)

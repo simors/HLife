@@ -128,3 +128,56 @@ export function fetchUpItem(payload){
     }
   }
 }
+
+export function fetchPublishTopicComment(payload, formData) {
+  return (dispatch, getState) => {
+    let position = locSelector.getLocation(getState())
+    let province = locSelector.getProvince(getState())
+    let city = locSelector.getCity(getState())
+    let district = locSelector.getDistrict(getState())
+    let geoPoint = locSelector.getGeopoint(getState())
+    // if (geoPoint.latitude == 0 && geoPoint.longitude == 0) {
+    //   if (payload.error) {
+    //     payload.error({message: '请为应用打开地理位置权限！'})
+    //   }
+    //   return
+    // }
+    let publishTopicCommentPayload = {
+      position: position,
+      geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
+      province: province,
+      city: city,
+      district: district,
+      content: payload.content,
+      topicId: payload.topicId,
+      commentId: payload.commentId,
+      userId: payload.userId
+    }
+    if ( (!payload.content) || payload.content.length == 0) {
+      payload.error({message: "输入不能为空"})
+      return
+    }
+    lcTopics.publishTopicComments(publishTopicCommentPayload).then((result) => {
+      console.log('result===', result)
+      let comment = TopicCommentsItem.fromLeancloudObject(result)
+      if (payload.success) {
+        payload.success()
+      }
+
+      let publishCommentAction = createAction(topicActionTypes.PUBLISH_COMMENT_SUCCESS)
+      dispatch(publishCommentAction({comment:comment}))
+      dispatch(notifyTopicComment({
+        topicId: payload.topicId,
+        replyTo: payload.replyTo,
+        commentId: result.commentId,
+        content: payload.content,
+        commentTime:new Date(result.createdAt),
+      }))
+      dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

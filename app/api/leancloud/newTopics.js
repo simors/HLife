@@ -8,7 +8,9 @@ import {TopicCommentsItem} from '../../models/NewTopicModel'
 import {Up} from '../../models/shopModel'
 import {Geolocation} from '../../components/common/BaiduMap'
 import * as AVUtils from '../../util/AVUtils'
-import * as topicSelector from '../../selector/newTopicSelector'
+import * as newTopicSelector from '../../selector/newTopicSelector'
+import * as topicSelector from '../../selector/topicSelector'
+
 import * as authSelector from '../../selector/authSelector'
 import {store} from '../../store/persistStore'
 import * as locSelector from '../../selector/locSelector'
@@ -58,4 +60,30 @@ export function likeTopic(payload) {
       throw err
     })
   }
+}
+
+export function publishTopicComments(payload) {
+  console.log('payload====>',payload)
+  return AV.Cloud.run('hlifeTopicPubulishTopicComment',{payload:payload}).then(function (result) {
+    if (result) {
+      let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      let pushUserid = topicInfo && topicInfo.userId
+      if(pushUserid && activeUser.id != pushUserid) {
+        AVUtils.pushByUserList([pushUserid], {
+          alert: `${activeUser.nickname}评论了您,立即查看`,
+          sceneName: 'TOPIC_DETAIL',
+          sceneParams: {
+            topic: topicInfo
+          }
+        })
+      }
+      return result
+    }
+  },  (err) => {
+    console.log('err========>',err)
+
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }
