@@ -36,8 +36,8 @@ import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicAc
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import * as authSelector from '../../selector/authSelector'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {getCommentsByTopicId} from '../../selector/newTopicSelector'
-import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
+import {getCommentsByTopicId,isTopicLiked} from '../../selector/newTopicSelector'
+import {getTopicLikedTotalCount, getTopicComments, getTopicLikeUsers} from '../../selector/topicSelector'
 import {
   fetchTopicLikesCount,
   fetchTopicIsLiked,
@@ -85,11 +85,11 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
     })
-    InteractionManager.runAfterInteractions(() => {
-      if (this.props.isLogin) {
-        this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
-      }
-    })
+    // InteractionManager.runAfterInteractions(() => {
+    //   if (this.props.isLogin) {
+    //     this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+    //   }
+    // })
     InteractionManager.runAfterInteractions(() => {
       if(this.props.topic && this.props.topic.userId) {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
@@ -273,8 +273,8 @@ export class TopicDetail extends Component {
 
       this.isSubmiting = true
 
-        this.props.likeTopic({
-          topicId: this.props.topic.objectId,
+        this.props.fetchUpItem({
+          targetId: this.props.topic.objectId,
           upType: 'topic',
           success: this.likeSuccessCallback.bind(this),
           error: this.likeErrorCallback.bind(this)
@@ -308,7 +308,7 @@ export class TopicDetail extends Component {
 
   likeSuccessCallback() {
     this.isSubmiting = false
-    this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+    // this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
     // this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
     this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
   }
@@ -762,6 +762,7 @@ export class TopicDetail extends Component {
       )
     }else {
       let isLiked = this.props.isLiked
+      console.log('isliked=====>',isLiked)
       let likeImgSource = require("../../assets/images/like_unselect_main.png")
       if(isLiked) {
         likeImgSource = require("../../assets/images/like_selected.png")

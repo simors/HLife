@@ -16,6 +16,7 @@ import * as numberUtils from '../util/numberUtils'
 import {trim} from '../util/Utils'
 import * as topicSelector from '../selector/newTopicSelector'
 import {store} from '../store/persistStore'
+import * as authSelector from '../selector/authSelector'
 
 export function fetchAllComments(payload) {
   // console.log('hahahahahahahahahah')
@@ -71,27 +72,28 @@ export function fetchAllComments(payload) {
 
 export function fetchAllUserUps(payload) {
   return (dispatch, getState)=> {
-    lcTopics.fetchAllUserUps().then((results)=> {
-
-      let commentsUps = results.commentsUps
-      let topicsUps = results.topicsUps
-      if (results.commentsUps && results.commentsUps.length) {
-        let updateAction = createAction(topicActionTypes.FETCH_MY_COMMENTS_UPS)
-        dispatch(updateAction({commentsUps: commentsUps}))
-      }
-      if (results.topicsUps && results.topicsUps.length) {
-        let updateAction = createAction(topicActionTypes.FETCH_MY_TOPICS_UPS)
-        dispatch(updateAction({topicsUps: topicsUps}))
-      }
-      if (payload.success) {
-        payload.success()
-      }
-    }, (err)=> {
-      if (payload.error) {
-        payload.error(err)
-
-      }
-    })
+    let userId = authSelector.activeUserId(store.getState())
+    if(userId&&userId!=''){
+      lcTopics.fetchAllUserUps(userId).then((results)=> {
+        let commentsUps = results.commentsUps
+        let topicsUps = results.topicsUps
+        if (results.commentsUps && results.commentsUps.length) {
+          let updateAction = createAction(topicActionTypes.FETCH_MY_COMMENTS_UPS)
+          dispatch(updateAction({commentsUps: commentsUps}))
+        }
+        if (results.topicsUps && results.topicsUps.length) {
+          let updateAction = createAction(topicActionTypes.FETCH_MY_TOPICS_UPS)
+          dispatch(updateAction({topicsUps: topicsUps}))
+        }
+        if (payload.success) {
+          payload.success()
+        }
+      }, (err)=> {
+        if (payload.error) {
+          payload.error(err)
+        }
+      })
+    }
   }
 }
 
@@ -100,6 +102,9 @@ export function fetchUpItem(payload) {
     let isLiked = false
     if (payload.upType == 'topicComment') {
       isLiked = topicSelector.isCommentLiked(store.getState(), payload.targetId)
+    }else if (payload.upType == 'topic'){
+      isLiked = topicSelector.isTopicLiked(store.getState(), payload.targetId)
+    }
       if (isLiked) {
         let err = {message: '您已经点赞过!'}
         if (payload.error) {
@@ -108,17 +113,16 @@ export function fetchUpItem(payload) {
       }
       else {
         lcTopics.likeTopic(payload).then((result)=> {
-          console.log('result')
           if (payload.upType == 'topicComment') {
             let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
             dispatch(updateAction({targetId: result}))
           } else if (payload.upType == 'topic') {
             let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
             dispatch(updateAction({targetId: result}))
+            dispatch(notifyTopicLike({topicId: payload.targetId}))
+
           }
           if (payload.success) {
-            console.log('chenggongle a aa a a ')
-
             payload.success()
           }
         }, (err)=> {
@@ -129,7 +133,7 @@ export function fetchUpItem(payload) {
           }
         })
       }
-    }
+
   }
 }
 

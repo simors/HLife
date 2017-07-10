@@ -49,3 +49,17 @@ export function isCommentLiked(state,commentId){
   })
   return isLiked
 }
+
+export function isTopicLiked(state,topicId){
+  let topicUps = state.NEWTOPIC.get('myTopicsUps')||[]
+  let isLiked = false
+  console.log('topicId',topicId)
+  topicUps.forEach((item)=>{
+    if(item==topicId){
+      console.log('topicIdtrue')
+
+      isLiked = true
+    }
+  })
+  return isLiked
+}

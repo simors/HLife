@@ -33,10 +33,10 @@ export function fetchAllComments(payload) {
   })
 }
 
-export function fetchAllUserUps() {
-  let userId = authSelector.activeUserId(store.getState())
+export function fetchAllUserUps(userId) {
     if(userId&&userId!=''){
       return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
+        console.log('results======>',results)
         return {commentsUps: results.commentList, topicsUps: results.topicList}
       }, (err)=> {
         throw err
@@ -49,6 +49,18 @@ export function likeTopic(payload) {
   let userId = authSelector.activeUserId(store.getState())
   if(userId&&userId!=''){
     return AV.Cloud.run('hlifeTopicUpByUser', {...payload, userId: userId}).then((result)=> {
+      let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+      let activeUser = authSelector.activeUserInfo(store.getState())
+      let pushUserid = topicInfo && topicInfo.userId
+      if(pushUserid && activeUser.id != pushUserid) {
+        AVUtils.pushByUserList([pushUserid], {
+          alert: `${activeUser.nickname}点赞了您的评论,立即查看`,
+          sceneName: 'TOPIC_DETAIL',
+          sceneParams: {
+            topic: topicInfo
+          }
+        })
+      }
       return result
     }, (err)=> {
       throw err
