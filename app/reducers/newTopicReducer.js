@@ -104,10 +104,8 @@ function handleFetchMyTopicsUps(state, action) {
 function handleFetchUpCommentSuccess(state, action) {
   let payload = action.payload
   let targetId = payload.targetId
-  console.log('targetId',targetId)
   let map = state.get('myCommentsUps').toJS() || []
   map.push(targetId)
-  console.log('map',map)
   state = state.set('myCommentsUps', new List(map))
   return state
 }
@@ -128,8 +126,6 @@ function handlePublishCommentSuccess(state, action) {
   if (commentList && commentList.size) {
     commentList = commentList.insert(0, comment.commentId)
     state = state.setIn(['commentsForTopic', comment.topicId], commentList)
-    console.log('comment.commentId',comment.commentId)
-    console.log('commentList===>',commentList)
   } else {
     let topicCommentList = [comment.commentId]
     state = state.setIn(['commentsForTopic', comment.topicId], new List(topicCommentList))

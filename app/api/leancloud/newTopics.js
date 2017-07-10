@@ -34,7 +34,7 @@ export function fetchAllComments(payload) {
 }
 
 export function fetchAllUserUps() {
-  let userId = authSelector.activeUserId()
+  let userId = authSelector.activeUserId(store.getState())
     return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
       return {commentsUps: results.commentList, topicsUps: results.topicList}
     }, (err)=> {
@@ -44,12 +44,8 @@ export function fetchAllUserUps() {
 }
 
 export function likeTopic(payload) {
-  let targetId = payload.targetId
-  let upType = payload.upType
-  let upItem = undefined
-  let isLiked = false
-  let userId = authSelector.activeUserId()
-  // console.log('likeTopic.topicId===', topicId)
+
+  let userId = authSelector.activeUserId(store.getState())
   if(userId&&userId!=''){
     return AV.Cloud.run('hlifeTopicUpByUser', {...payload, userId: userId}).then((result)=> {
       return result
@@ -60,9 +56,7 @@ export function likeTopic(payload) {
 }
 
 export function publishTopicComments(payload) {
-  console.log('payload====>',payload)
   return AV.Cloud.run('hlifeTopicPubulishTopicComment',{payload:payload}).then(function (result) {
-    console.log('result========>',result)
     if (result) {
       let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
       let activeUser = authSelector.activeUserInfo(store.getState())
@@ -79,7 +73,6 @@ export function publishTopicComments(payload) {
       return result
     }
   },  (err) => {
-    console.log('err========>',err)
 
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
