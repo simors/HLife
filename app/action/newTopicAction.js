@@ -101,7 +101,7 @@ export function fetchUpItem(payload) {
     if (payload.upType == 'topicComment') {
       isLiked = topicSelector.isCommentLiked(store.getState(), payload.targetId)
       if (isLiked) {
-        let err = {message: '您已经点赞过该评论!'}
+        let err = {message: '您已经点赞过!'}
         if (payload.error) {
           payload.error(err)
         }

@@ -13,6 +13,7 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
 import {getCurrentPromoter} from './promoterAction'
+import {fetchAllUserUps} from './newTopicAction'
 
 import * as AVUtils from '../util/AVUtils'
 import {calUserRegist, calRegistShoper} from '../action/pointActions'
@@ -197,6 +198,8 @@ function handleLoginWithPwd(payload, formData) {
       dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
       dispatch(getCurrentPromoter())
       dispatch(initMessageClient(payload))
+      dispatch(fetchAllUserUps())
+
       // console.log('handleLoginWithPwd===', user.userInfo.id)
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
@@ -230,6 +233,7 @@ export function loginWithWeixin(payload) {
         }).then((user) => {
           dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
           dispatch(getCurrentPromoter())
+          dispatch(fetchAllUserUps())
           dispatch(initMessageClient(payload))
           AVUtils.updateDeviceUserInfo({
             userId: user.userInfo.id

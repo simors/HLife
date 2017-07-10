@@ -35,12 +35,13 @@ export function fetchAllComments(payload) {
 
 export function fetchAllUserUps() {
   let userId = authSelector.activeUserId(store.getState())
-    return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
-      return {commentsUps: results.commentList, topicsUps: results.topicList}
-    }, (err)=> {
-      throw err
-    })
-
+    if(userId&&userId!=''){
+      return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
+        return {commentsUps: results.commentList, topicsUps: results.topicList}
+      }, (err)=> {
+        throw err
+      })
+    }
 }
 
 export function likeTopic(payload) {
