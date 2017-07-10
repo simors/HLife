@@ -9,7 +9,6 @@ export function getCommentsByTopicId(state,topicId){
   let comments = topicComments.get(topicId)||[]
   let commentList = []
   let commentIdList = []
-  console.log('comments========>',comments)
 
   comments.forEach((item)=>{
     let allComments = state.NEWTOPIC.get('allComments')||[]

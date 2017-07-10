@@ -54,6 +54,7 @@ export class TopicCommentList extends Component {
     let commentsView = <View/>
     let allTopicComments = this.props.allTopicComments
     if ( allTopicComments && allTopicComments.length) {
+
       commentsView = allTopicComments.map((value, key)=> {
         return (
           this.renderTopicCommentItem(value, key)
@@ -70,7 +71,6 @@ export class TopicCommentList extends Component {
 
     return (
       <View style={{flex: 1}}>
-
         <View style={{flex: 1}}>
           {commentsView}
         </View>
@@ -120,24 +120,6 @@ export class TopicCommentList extends Component {
         />
       )
     }
-  }
-
-  renderTopicCommentsColumn() {
-    if (!this.state.loadComment) {
-      return (
-        <LazyloadView host="detailList" style={{flex: 1}}>
-          <View style={{flexDirection: 'row', padding: 15, paddingTop: 20, backgroundColor: 'white'}}>
-            <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评</Text>
-          </View>
-        </LazyloadView>
-      )
-    }
-    return (
-      <View style={{flex: 1}}>
-        {this.renderTopicCommentPage()}
-      </View>
-    )
   }
 
   render() {

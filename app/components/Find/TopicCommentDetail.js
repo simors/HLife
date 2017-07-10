@@ -83,7 +83,35 @@ export class TopicCommentDetail extends Component {
 
   componentWillMount() {
     this.refreshData()
-
+    // let lastTopicCommentsCreatedAt = this.props.lastTopicCommentsCreatedAt
+    // let payload = {
+    //   topicId: this.props.comment.topicId,
+    //   isRefresh: false,
+    //   lastCreatedAt: lastTopicCommentsCreatedAt,
+    //   commentId: this.props.comment.commentId,
+    //   more: false,
+    //   success: (isEmpty) => {
+    //     this.isQuering = false
+    //     if (!this.listView) {
+    //       return
+    //     }
+    //     if (isEmpty) {
+    //       this.listView.isLoadUp(false)
+    //     } else {
+    //       this.listView.isLoadUp(true)
+    //     }
+    //   },
+    //   error: (err)=> {
+    //     this.isQuering = false
+    //     Toast.show(err.message, {duration: 1000})
+    //   }
+    // }
+    //
+    // // InteractionManager.runAfterInteractions(() => {
+    //   // this.props.fetchTopicCommentsByTopicId(payload)
+    //   this.props.fetchAllComments(payload)
+    // // })
+  this.loadMoreData(true)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -118,10 +146,6 @@ export class TopicCommentDetail extends Component {
       Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
 
     }
-  }
-
-  onRightPress = () => {
-    this.ActionSheet.show()
   }
 
   submitSuccessCallback() {
@@ -313,8 +337,7 @@ export class TopicCommentDetail extends Component {
       return (
         <LazyloadView host="detailList" style={{flex: 1}}>
           <View style={{flexDirection: 'row', padding: 15, paddingTop: 20, backgroundColor: 'white'}}>
-            <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评</Text>
+            <Text style={styles.titleTxt}>全部回复</Text>
           </View>
         </LazyloadView>
       )
@@ -323,9 +346,8 @@ export class TopicCommentDetail extends Component {
       <View style={{flex: 1}}>
         {/*{this.renderTopicCommentPage()}*/}
         <View style={{flexDirection: 'row', padding: 15, paddingTop: 20, backgroundColor: 'white'}}>
-          <View style={styles.titleLine}/>
           <Text
-            style={styles.titleTxt}>邻友点评·{this.props.comment.commentNum > 999 ? '999+' : this.props.comment.commentNum}</Text>
+            style={[styles.titleTxt,{color:'#030303'}]}>全部回复</Text>
         </View>
         <TopicCommentList
           viewType='topicComment'
@@ -385,7 +407,7 @@ export class TopicCommentDetail extends Component {
   }
 
   render() {
-    let lazyHost = "commentList" + this.props.comment.topicId
+    let lazyHost = "commentList" + this.props.comment.commentId
     return (
       <View style={styles.containerStyle}>
         {this.renderHeaderView()}
@@ -468,7 +490,7 @@ export class TopicCommentDetail extends Component {
             <Text style={styles.contactedTxt}>评论</Text>
           </View>
         </TouchableOpacity>
-        
+
       </View>
     )
 
@@ -506,7 +528,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     ds: ds.cloneWithRows(dataArray),
     topicComments: topicComments,
-
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,

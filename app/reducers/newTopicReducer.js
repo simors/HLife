@@ -54,6 +54,7 @@ function handleAddCommentsForComment(state, action) {
   let payload = action.payload
   let comments = payload.comments
   let team = state.getIn(['commentsForComment', payload.commentId])
+  // if(team&&team.length>0)
   state = state.setIn(['commentsForComment', payload.commentId], team.concat(new List(comments)))
   return state
 
