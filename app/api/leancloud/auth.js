@@ -58,9 +58,7 @@ export function loginWithPwd(payload) {
   let password = payload.password
 
   return AV.User.logInWithMobilePhone(phone, password).then((loginedUser) => {
-    // console.log('loginWithPwd==loginedUser=', loginedUser)
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
-    // console.log('loginWithPwd==userInfo=', userInfo)
     userInfo = userInfo.set('token', loginedUser.getSessionToken())
 
     if(!userInfo.get('geoProvinceCode')) {
@@ -76,6 +74,59 @@ export function loginWithPwd(payload) {
       userInfo: userInfo,
     }
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+/**
+ * 用户名和密码登录&绑定微信信息
+ * @param payload
+ * @returns {IPromise<U>|*|AV.Promise}
+ */
+export function loginWithWXInfo(payload) {
+  let phone = payload.phone
+  let password = payload.password
+
+  let authData = {
+    "openid": payload.wxUserInfo.unionid,
+    "access_token": payload.wxUserInfo.accessToken,
+    "expires_at": Date.parse(payload.wxUserInfo.expiration),
+  }
+  let platform = 'weixin'
+
+  return AV.User.logInWithMobilePhone(phone, password).then((user) => {
+    return AV.User.associateWithAuthData(user, platform, authData)
+  }).then((loginedUser) => {
+    let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    userInfo = userInfo.set('token', loginedUser.getSessionToken())
+
+    if(!userInfo.get('geoProvinceCode')) {
+      updateUserLocationInfo({
+        userId: userInfo.get('id')
+      })
+    }
+
+    AV.Cloud.run('hLifeLogin', payload)//更新updatedAt时间
+
+    // console.log("loginWithPwd", userInfo)
+    return {
+      userInfo: userInfo,
+    }
+  }).catch((err) => {
+    console.log("loginWithWXInfo err", err)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function isWXBindByPhone(payload) {
+  let phone = payload.phone
+
+  return AV.Cloud.run('isWXBindByPhone', {phone: phone}).then((result) => {
+    return result.wxAuthed
+  }).catch((err) => {
+    console.log("isWXBindByPhone", err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -126,6 +177,8 @@ export function isWXSignIn(payload) {
   return AV.Cloud.run("isWXUnionIdSignIn", params).then((result) => {
     return result.isSignIn
   }).catch((err) => {
+    console.log("isWXUnionIdSignIn", err)
+    console.log("isWXUnionIdSignIn err.code", err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -137,12 +190,25 @@ export function isWXSignIn(payload) {
  * @returns {IPromise<U>|*|AV.Promise}
  */
 export function register(payload) {
+  let authData = {
+    "openid": payload.wxUserInfo.unionid,
+    "access_token": payload.wxUserInfo.accessToken,
+    "expires_at": Date.parse(payload.wxUserInfo.expiration),
+  }
+  let platform = 'weixin'
+  let wxName = payload.wxUserInfo.name
+  let wxAvatar = payload.wxUserInfo.avatar
+
   let user = new AV.User()
   user.set('type', 'normal')
-  user.setUsername(payload.phone)
+  user.setUsername(wxName)
   user.setPassword(payload.password)
   user.setMobilePhoneNumber(payload.phone)
-  return user.signUp().then((loginedUser) => {
+  user.set('avatar', wxAvatar)
+  user.set('nickname', wxName)
+  return user.signUp().then((signedUser) => {
+    return AV.User.associateWithAuthData(signedUser, platform, authData)
+  }).then((loginedUser) => {
     updateUserLocationInfo({
       userId: loginedUser.id
     })
@@ -154,7 +220,8 @@ export function register(payload) {
       userInfo: userInfo,
       token: token,
     }
-  }, (err) => {
+  }).catch((err) => {
+    console.log("register err", err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

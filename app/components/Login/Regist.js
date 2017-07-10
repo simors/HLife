@@ -14,7 +14,8 @@ import {
   Alert,
   Dimensions,
   Platform,
-  ScrollView
+  ScrollView,
+  NativeModules
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -32,6 +33,8 @@ import Header from '../common/Header'
 import THEME from '../../constants/themes/theme1'
 
 const PAGE_WIDTH=Dimensions.get('window').width
+const shareNative = NativeModules.shareComponent
+
 
 let commonForm = Symbol('commonForm')
 const phoneInput = {
@@ -58,18 +61,9 @@ class Regist extends Component {
     super(props)
   }
 
-  onButtonPress = () => {
-    this.props.submitFormData({
-      formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.REGISTER,
-      success:this.submitSuccessCallback,
-      error: this.submitErrorCallback
-    })
-  }
-
   submitSuccessCallback(userInfos) {
-    Toast.show('注册成功, 请登录')
-    Actions.NICKNAME_VIEW()
+    Toast.show('注册成功')
+    Actions.HOME({type:'reset'})
   }
 
   submitErrorCallback(error) {
@@ -86,6 +80,27 @@ class Regist extends Component {
         Toast.show(error.message)
       }
     })
+  }
+
+  wxLoginCallback = (errorCode, data) => {
+    if(errorCode ===0 && data){
+      let wxUserInfo = {
+        accessToken: data.accessToken,
+        expiration: data.expiration,
+        unionid: data.uid,
+        name: data.name,
+        avatar: data.iconurl,
+      }
+
+      this.props.submitFormData({
+        formKey: commonForm,
+        wxUserInfo: wxUserInfo,
+        submitType: INPUT_FORM_SUBMIT_TYPE.REGISTER,
+        success:this.submitSuccessCallback,
+        error: this.submitErrorCallback
+      })
+    }
+
   }
 
   render() {
@@ -110,7 +125,7 @@ class Regist extends Component {
               <PasswordInput {...passwordInput} containerStyle={styles.inputBox}/>
 
               <CommonButton
-                onPress={this.onButtonPress}
+                onPress={() => {shareNative.loginWX(this.wxLoginCallback)}}
                 title="确   定"
               />
               <View style={styles.agreementView}>

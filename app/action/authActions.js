@@ -69,7 +69,10 @@ export function submitFormData(payload) {
           dispatch(handleSupplementUserInfo(payload, formData))
           break
         case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
-          dispatch(handleLoginWithPwd(payload, formData))
+          if(payload.wxUserInfo)
+            dispatch(handleLoginWithWXInfo(payload, formData))
+          else
+            dispatch(handleLoginWithPwd(payload, formData))
           break
         case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
           dispatch(handleResetPwdSmsCode(payload, formData))
@@ -186,10 +189,56 @@ function handleLoginWithPwd(payload, formData) {
       phone: formData.phoneInput.text,
       password: formData.passwordInput.text,
     }
-    lcAuth.loginWithPwd(loginPayload).then((userInfo) => {
-      // console.log('handleLoginWithPwd===userInfo=', userInfo)
+
+    lcAuth.isWXBindByPhone(loginPayload).then((wxAuthed) => {
+      if(wxAuthed) {
+        lcAuth.loginWithPwd(loginPayload).then((userInfo) => {
+          // console.log('handleLoginWithPwd===userInfo=', userInfo)
+          if (payload.success) {
+            payload.success({
+              wxAuthed: true,
+            })
+          }
+          let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+          dispatch(loginAction({...userInfo}))
+          return userInfo
+        }).then((user) => {
+          dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
+          dispatch(getCurrentPromoter())
+          dispatch(initMessageClient(payload))
+          // console.log('handleLoginWithPwd===', user.userInfo.id)
+          AVUtils.updateDeviceUserInfo({
+            userId: user.userInfo.id
+          })
+        }).catch((error) => {
+          dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      } else {
+        if (payload.success) {
+          payload.success({
+            wxAuthed: false,
+          })
+        }
+      }
+    })
+
+  }
+}
+
+function handleLoginWithWXInfo(payload, formData) {
+  return (dispatch, getState) => {
+    let loginPayload = {
+      phone: formData.phoneInput.text,
+      password: formData.passwordInput.text,
+      wxUserInfo: payload.wxUserInfo,
+    }
+
+    lcAuth.loginWithWXInfo(loginPayload).then((userInfo) => {
       if (payload.success) {
-        payload.success(userInfo.userInfo.toJS())
+        payload.success()
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
@@ -240,6 +289,7 @@ export function loginWithWeixin(payload) {
           })
           lcPromoter.getPromoterQrcode({unionid: loginPayload.unionid})
         }).catch((error) => {
+          console.log("loginWithWX", error)
           dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
           if (payload.error) {
             payload.error(error)
@@ -251,6 +301,7 @@ export function loginWithWeixin(payload) {
         }
       }
     }).catch((error) => {
+      console.log("isWXSignIn", error)
       if (payload.error) {
         payload.error(error)
       }
@@ -367,7 +418,6 @@ function handleRegister(payload, formData) {
     }
     if (__DEV__) {// in android and ios simulator ,__DEV__ is true
       dispatch(registerWithPhoneNum(payload, formData))
-      dispatch(initMessageClient(payload))
     } else {
       lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
         dispatch(registerWithPhoneNum(payload, formData))
@@ -415,7 +465,8 @@ function registerWithPhoneNum(payload, formData) {
     let regPayload = {
       smsType: 'register',
       phone: formData.phoneInput.text,
-      password: formData.passwordInput.text
+      password: formData.passwordInput.text,
+      wxUserInfo: payload.wxUserInfo,
     }
     lcAuth.register(regPayload).then((user) => {
       let regAction = createAction(AuthTypes.REGISTER_SUCCESS)
@@ -423,6 +474,19 @@ function registerWithPhoneNum(payload, formData) {
       if (payload.success) {
         payload.success(user)
       }
+    }).then(() => {
+      let user = activeUserInfo(getState())
+      lcAuth.become({token: user.token}).then((userInfo) => {
+        let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+        dispatch(loginAction({...userInfo}))
+        return userInfo
+      }).then((user) => {
+        dispatch(calUserRegist({userId: user.userInfo.id}))
+        dispatch(initMessageClient({userId: user.userInfo.id, ...payload}))
+        AVUtils.updateDeviceUserInfo({
+          userId: user.userInfo.id
+        })
+      })
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -1073,6 +1137,7 @@ export function fetchUserFollowees(payload) {
         payload.success(result.followees.size <= 0)
       }
     }).catch((error) => {
+      console.log("fetchUserFollowees", error)
       if (payload && payload.error) {
         payload.error(error)
       }
@@ -1259,6 +1324,10 @@ export function fetchFavoriteArticles(payload) {
       }
     })
   }
+}
+
+export function bindWXInfo(payload) {
+
 }
 
 

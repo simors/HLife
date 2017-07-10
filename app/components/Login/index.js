@@ -58,8 +58,40 @@ class Login extends Component {
     this.props.submitFormData({
       formKey: commonForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
-      success: (userInfo) => {
-        // this.props.fetchUserOwnedShopInfo({userId: userInfo.id})
+      success: (result) => {
+        if(result.wxAuthed) {
+          Toast.show('登录成功!')
+          if (this.props.goHome) {
+            Actions.HOME()
+          } else {
+            Actions.pop()
+          }
+        } else {
+          shareNative.loginWX(this.phoneLoginCallback)
+        }
+      },
+      error: (error) => {
+        Toast.show(error.message)
+      }
+    })
+  }
+
+  phoneLoginCallback = (errorCode, data) => {
+    let wxUserInfo = {
+      accessToken: data.accessToken,
+      expiration: data.expiration,
+      unionid: data.uid,
+      name: data.name,
+      avatar: data.iconurl,
+    }
+
+    this.wxUserInfo = wxUserInfo
+
+    this.props.submitFormData({
+      formKey: commonForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
+      wxUserInfo: wxUserInfo,
+      success: () => {
         Toast.show('登录成功!')
         if (this.props.goHome) {
           Actions.HOME()
@@ -91,8 +123,7 @@ class Login extends Component {
     Toast.show("微信登录失败")
   }
 
-  loginCallback = (errorCode, data) => {
-    console.log("loginCallback: data", data)
+  wxLoginCallback = (errorCode, data) => {
     let wxUserInfo = {
       accessToken: data.accessToken,
       expiration: data.expiration,
@@ -138,7 +169,7 @@ class Login extends Component {
             </View>
 
             <View style={{flexDirection: 'row', width: PAGE_WIDTH, marginTop: normalizeH(224)}}>
-              <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(20)}} onPress={() => {shareNative.loginWX(this.loginCallback)}}>
+              <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(20)}} onPress={() => {shareNative.loginWX(this.wxLoginCallback)}}>
                 <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn_weixin.png')}/>
                 <Text style={{fontSize: 17, color: '#09BB07'}}>微信登录</Text>
               </TouchableOpacity>

@@ -116,6 +116,58 @@ public class RCTShareModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void shareImage(String platform, String thumbnail) {
+        SHARE_MEDIA shareMedia = SHARE_MEDIA.WEIXIN;
+        UMImage image = new UMImage(ma, thumbnail);
+
+        switch (platform)
+        {
+            case "WEIXIN":
+                shareMedia = SHARE_MEDIA.WEIXIN;
+                break;
+            case "WEIXIN_CIRCLE":
+                shareMedia = SHARE_MEDIA.WEIXIN_CIRCLE;
+                break;
+            case "QQ":
+                shareMedia = SHARE_MEDIA.QQ;
+                break;
+            case "QZONE":
+                shareMedia = SHARE_MEDIA.QZONE;
+                break;
+            case "SINA":
+                shareMedia = SHARE_MEDIA.SINA;
+                break;
+            default:
+                break;
+        }
+        new ShareAction(ma).setPlatform(shareMedia)
+                .withMedia(image)
+                .setCallback(new UMShareListener() {
+                    @Override
+                    public void onStart(SHARE_MEDIA share_media) {
+
+                    }
+
+                    @Override
+                    public void onResult(SHARE_MEDIA share_media) {
+
+                    }
+
+                    @Override
+                    public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onCancel(SHARE_MEDIA share_media) {
+
+                    }
+                })
+                .share();
+
+    }
+
+    @ReactMethod
     public void loginWX(final Callback resultCallback) {
         SHARE_MEDIA shareMedia = SHARE_MEDIA.WEIXIN;
         // 每次登录前，删除已保存的认证信息
