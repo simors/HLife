@@ -33,8 +33,7 @@ export function fetchAllComments(payload) {
   })
 }
 
-export function fetchAllUserUps() {
-  let userId = authSelector.activeUserId(store.getState())
+export function fetchAllUserUps(userId) {
     if(userId&&userId!=''){
       return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
         return {commentsUps: results.commentList, topicsUps: results.topicList}

@@ -16,6 +16,7 @@ import * as numberUtils from '../util/numberUtils'
 import {trim} from '../util/Utils'
 import * as topicSelector from '../selector/newTopicSelector'
 import {store} from '../store/persistStore'
+import * as authSelector from '../selector/authSelector'
 
 export function fetchAllComments(payload) {
   // console.log('hahahahahahahahahah')
@@ -71,27 +72,30 @@ export function fetchAllComments(payload) {
 
 export function fetchAllUserUps(payload) {
   return (dispatch, getState)=> {
-    lcTopics.fetchAllUserUps().then((results)=> {
+    let userId = authSelector.activeUserId(store.getState())
+    if(userId&&userId!=''){
+      lcTopics.fetchAllUserUps().then((results)=> {
 
-      let commentsUps = results.commentsUps
-      let topicsUps = results.topicsUps
-      if (results.commentsUps && results.commentsUps.length) {
-        let updateAction = createAction(topicActionTypes.FETCH_MY_COMMENTS_UPS)
-        dispatch(updateAction({commentsUps: commentsUps}))
-      }
-      if (results.topicsUps && results.topicsUps.length) {
-        let updateAction = createAction(topicActionTypes.FETCH_MY_TOPICS_UPS)
-        dispatch(updateAction({topicsUps: topicsUps}))
-      }
-      if (payload.success) {
-        payload.success()
-      }
-    }, (err)=> {
-      if (payload.error) {
-        payload.error(err)
+        let commentsUps = results.commentsUps
+        let topicsUps = results.topicsUps
+        if (results.commentsUps && results.commentsUps.length) {
+          let updateAction = createAction(topicActionTypes.FETCH_MY_COMMENTS_UPS)
+          dispatch(updateAction({commentsUps: commentsUps}))
+        }
+        if (results.topicsUps && results.topicsUps.length) {
+          let updateAction = createAction(topicActionTypes.FETCH_MY_TOPICS_UPS)
+          dispatch(updateAction({topicsUps: topicsUps}))
+        }
+        if (payload.success) {
+          payload.success()
+        }
+      }, (err)=> {
+        if (payload.error) {
+          payload.error(err)
 
-      }
-    })
+        }
+      })
+    }
   }
 }
 
