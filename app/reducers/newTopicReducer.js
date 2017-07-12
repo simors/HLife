@@ -30,7 +30,20 @@ export default function newTopicReducer(state = initialState, action) {
       return handleFetchUpTopicSuccess(state, action)
     case TopicTypes.PUBLISH_COMMENT_SUCCESS:
       return handlePublishCommentSuccess(state, action)
-
+    // case TopicTypes.FETCH_ALL_TOPICS:
+    //   return handleFetchAllTopics(state,action)
+    case TopicTypes.FETCH_ADD_CATE_TOPICS:
+      return handleAddCatTopis(state,action)
+    case TopicTypes.FETCH_SET_CATE_TOPICS:
+      return handleSetCatTopis(state,action)
+    case TopicTypes.FETCH_ADD_LOCAL_TOPICS:
+      return handleAddLocalTopis(state,action)
+    case TopicTypes.FETCH_SET_LOCAL_TOPICS:
+      return handleSetLocalTopis(state,action)
+    case TopicTypes.FETCH_ADD_PICKED_TOPICS:
+      return handleAddPickedTopis(state,action)
+    case TopicTypes.FETCH_SET_PICKED_TOPICS:
+      return handleSetPickedTopis(state,action)
     // case TopicTypes.DISABLE_TOPIC:
     //   return handleDisableTopic(state,action)
     case REHYDRATE:
@@ -40,10 +53,87 @@ export default function newTopicReducer(state = initialState, action) {
   }
 }
 
+
+function handleAddPickedTopis(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  let _topics = state.get('pickedTopics')|| new List()
+  if(_topics&&_topics.size>0){
+    state = state.set('pickedTopics', _topics.concat(topicList))
+  }
+  else{
+    state = state.set('pickedTopics', topicList)
+  }
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleSetPickedTopis(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  state = state.set('pickedTopics', topicList)
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleAddLocalTopis(state, action) {
+  let payload = action.payload
+  let topicList = new List(payload.topicList)
+  let _topics = state.get('localTopics')|| new List()
+  if(_topics&&_topics.size>0){
+    state = state.set('localTopics', _topics.concat(topicList))
+  }
+  else{
+    state = state.set('localTopics', topicList)
+  }
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleSetLocalTopis(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  state = state.set('localTopics', topicList)
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleAddCatTopis(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  let categoryId = payload.categoryId
+  let _topics = state.getIn(['cateTopics',categoryId])|| new List()
+  if(_topics&&_topics.size>0){
+    state = state.setIn(['cateTopics',categoryId], _topics.concat(topicList))
+  }
+  else{
+    state = state.setIn(['cateTopics',categoryId], topicList)
+  }
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleSetCatTopis(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  let categoryId = payload.categoryId
+  state = state.setIn(['cateTopics',categoryId], topicList)
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleFetchAllTopics(state, topics) {
+  // let payload = action.payload
+  // let topics = payload.topics
+  topics.forEach((item)=> {
+    state = state.setIn(['allTopics', item.objectId], item)
+  })
+  return state
+}
+
 function handleFetchAllComments(state, action) {
   let payload = action.payload
   let comments = payload.comments
-  let _map = state.get('allComments')
   comments.forEach((item)=> {
     state = state.setIn(['allComments', item.commentId], item)
   })
@@ -53,11 +143,10 @@ function handleFetchAllComments(state, action) {
 function handleAddCommentsForComment(state, action) {
   let payload = action.payload
   let comments = payload.comments
-  let team = state.getIn(['commentsForComment', payload.commentId])
+  let team = state.getIn(['commentsForComment', payload.commentId])|| new List()
   // if(team&&team.length>0)
   state = state.setIn(['commentsForComment', payload.commentId], team.concat(new List(comments)))
   return state
-
 }
 
 function handleSetCommentsForComment(state, action) {
@@ -70,7 +159,7 @@ function handleSetCommentsForComment(state, action) {
 function handleAddCommentsForTopic(state, action) {
   let payload = action.payload
   let comments = payload.comments
-  let team = state.getIn(['commentsForTopic', payload.topicId])
+  let team = state.getIn(['commentsForTopic', payload.topicId])|| new List()
   state = state.setIn(['commentsForTopic', payload.topicId], team.concat(new List(comments)))
   return state
 }

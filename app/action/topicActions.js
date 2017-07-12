@@ -10,6 +10,8 @@ import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import * as numberUtils from '../util/numberUtils'
 import {trim} from '../util/Utils'
+import * as newTopicActionTypes from '../constants/newTopicActionTypes'
+
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -277,6 +279,15 @@ export function fetchTopics(payload) {
         categoryId:payload.categoryId,
         type:payload.type,
         topics: result.topics,
+      }))
+      let topics = []
+      result.topics.forEach((item)=>{
+        topics.push(item.objectId)
+      })
+      let fetchLocalTopics = createAction(newTopicActionTypes.FETCH_ADD_LOCAL_TOPICS)
+      dispatch(fetchLocalTopics({
+        topics:result.topics,
+        topicList:topics,
       }))
       if(payload.success) {
         payload.success(result.topics.size==0)

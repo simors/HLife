@@ -79,6 +79,10 @@ export class TopicCommentsItem extends TopicCommentsConfig {
 }
 
 export const NewTopics = Record({
+  allTopics: Map(),
+  pickedTopics: List(),
+  localTopics: List(),
+  cateTopics: Map(),
   allComments : Map(),
   commentsForTopic : Map(),
   commentsForComment : Map(),

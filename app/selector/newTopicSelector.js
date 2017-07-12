@@ -2,6 +2,36 @@
  * Created by lilu on 2017/7/5.
  */
 
+export function getLocalTopics(state){
+  let topics = state.NEWTOPIC.get('localTopics')||[]
+  let topicList = []
+  topics.forEach((topicId)=>{
+    let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
+    topicList.push(topic.toJS())
+  })
+  return {localTopics:topics.toJS(),allTopics:topicList}
+}
+
+export function getPickedTopics(state){
+  let topics = state.NEWTOPIC.get('pickedTopics')||[]
+  let topicList = []
+  topics.forEach((topicId)=>{
+    let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
+    topicList.push(topic.toJS())
+  })
+  return {pickedTopics:topics.toJS(),allTopics:topicList}
+}
+
+
+export function getTopicsByCategoryId(state,categoryId){
+  let topics = state.NEWTOPIC.getIn(['pickedTopics',categoryId])||[]
+  let topicList = []
+  topics.forEach((topicId)=>{
+    let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
+    topicList.push(topic.toJS())
+  })
+  return {categoryTopics:topics.toJS(),allTopics:topicList}
+}
 
 export function getCommentsByTopicId(state,topicId){
   let topicComments = state.NEWTOPIC.get('commentsForTopic')||[]
@@ -53,10 +83,8 @@ export function isCommentLiked(state,commentId){
 export function isTopicLiked(state,topicId){
   let topicUps = state.NEWTOPIC.get('myTopicsUps')||[]
   let isLiked = false
-  console.log('topicId',topicId)
   topicUps.forEach((item)=>{
     if(item==topicId){
-      console.log('topicIdtrue')
 
       isLiked = true
     }
