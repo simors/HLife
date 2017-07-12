@@ -74,7 +74,8 @@ export function fetchAllUserUps(payload) {
   return (dispatch, getState)=> {
     let userId = authSelector.activeUserId(store.getState())
     if(userId&&userId!=''){
-      lcTopics.fetchAllUserUps().then((results)=> {
+      console.log('userId',userId)
+      lcTopics.fetchAllUserUps(userId).then((results)=> {
 
         let commentsUps = results.commentsUps
         let topicsUps = results.topicsUps

@@ -39,6 +39,12 @@ export const TopicCommentsConfig = Record({
 export class TopicCommentsItem extends TopicCommentsConfig {
   static fromLeancloudObject(lcObj) {
     let topicCommentsConfig = new TopicCommentsConfig()
+//用户昵称解析
+    let nickname = lcObj.authorNickname
+      if (!nickname) {
+        let phoneNumber = lcObj.authorUsername
+        nickname = hidePhoneNumberDetail(phoneNumber)
+      }
 
     return topicCommentsConfig.withMutations((record)=> {
       record.set('commentId', lcObj.commentId)

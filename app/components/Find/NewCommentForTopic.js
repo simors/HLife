@@ -42,7 +42,6 @@ export class TopicComment extends Component {
   }
 
   componentDidMount() {
-    console.log('hahahahahahahahahah')
     InteractionManager.runAfterInteractions(() => {
       this.setState({
         upCount: this.props.comment.upCount
