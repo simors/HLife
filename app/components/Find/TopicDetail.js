@@ -275,7 +275,7 @@ export class TopicDetail extends Component {
       this.isSubmiting = true
 
         this.props.fetchUpItem({
-          topicId: this.props.topic.objectId,
+          targetId: this.props.topic.objectId,
           upType: 'topic',
           success: this.likeSuccessCallback.bind(this),
           error: this.likeErrorCallback.bind(this)
@@ -309,7 +309,7 @@ export class TopicDetail extends Component {
 
   likeSuccessCallback() {
     this.isSubmiting = false
-    this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
+    // this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
     // this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
     this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
   }
