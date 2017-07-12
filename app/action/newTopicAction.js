@@ -73,9 +73,8 @@ export function fetchAllComments(payload) {
 export function fetchAllUserUps(payload) {
   return (dispatch, getState)=> {
     let userId = authSelector.activeUserId(store.getState())
-    if(userId&&userId!=''){
+    if (userId && userId != '') {
       lcTopics.fetchAllUserUps(userId).then((results)=> {
-
         let commentsUps = results.commentsUps
         let topicsUps = results.topicsUps
         if (results.commentsUps && results.commentsUps.length) {
@@ -103,37 +102,36 @@ export function fetchUpItem(payload) {
     let isLiked = false
     if (payload.upType == 'topicComment') {
       isLiked = topicSelector.isCommentLiked(store.getState(), payload.targetId)
-    }else if (payload.upType == 'topic'){
+    } else if (payload.upType == 'topic') {
       isLiked = topicSelector.isTopicLiked(store.getState(), payload.targetId)
     }
-      if (isLiked) {
-        let err = {message: '您已经点赞过!'}
+    if (isLiked) {
+      let err = {message: '您已经点赞过!'}
+      if (payload.error) {
+        payload.error(err)
+      }
+    } else {
+      lcTopics.likeTopic(payload).then((result)=> {
+        if (payload.upType == 'topicComment') {
+          let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
+          dispatch(updateAction({targetId: result}))
+        } else if (payload.upType == 'topic') {
+          let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
+          dispatch(updateAction({targetId: result}))
+          dispatch(notifyTopicLike({topicId: payload.targetId}))
+
+        }
+        if (payload.success) {
+          payload.success()
+        }
+      }, (err)=> {
         if (payload.error) {
+          console.log('shiabisdiasdadasdiiasdiasidiaisdiasdi a aa a a ')
+
           payload.error(err)
         }
-      }
-      else {
-        lcTopics.likeTopic(payload).then((result)=> {
-          if (payload.upType == 'topicComment') {
-            let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
-            dispatch(updateAction({targetId: result}))
-          } else if (payload.upType == 'topic') {
-            let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
-            dispatch(updateAction({targetId: result}))
-            dispatch(notifyTopicLike({topicId: payload.targetId}))
-
-          }
-          if (payload.success) {
-            payload.success()
-          }
-        }, (err)=> {
-          if (payload.error) {
-            console.log('shiabisdiasdadasdiiasdiasidiaisdiasdi a aa a a ')
-
-            payload.error(err)
-          }
-        })
-      }
+      })
+    }
 
   }
 }

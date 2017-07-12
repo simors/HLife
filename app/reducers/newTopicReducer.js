@@ -197,6 +197,12 @@ function handleFetchUpCommentSuccess(state, action) {
   let map = state.get('myCommentsUps').toJS() || []
   map.push(targetId)
   state = state.set('myCommentsUps', new List(map))
+  let comment = state.getIn(['allComments',targetId]).toJS()||{}
+  console.log('comment',comment)
+  comment.upCount = comment.upCount+1
+  let newComment = TopicCommentsItem.fromLeancloudObject(comment)
+  state = state.setIn(['allComments',targetId],newComment)
+  console.log('newComment',newComment)
   return state
 }
 
@@ -206,6 +212,10 @@ function handleFetchUpTopicSuccess(state, action) {
   let map = state.get('myTopicsUps').toJS() || []
   map.push(targetId)
   state = state.set('myTopicsUps', new List(map))
+  // let topic = state.getIn(['allTopics',targetId]).toJS()||{}
+  // topic.likeCount = topic.likeCount+1
+  // let newTopic =
+  // state = state.setIn(['allTopics',targetId],topic)
   return state
 }
 

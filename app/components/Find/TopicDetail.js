@@ -276,7 +276,6 @@ export class TopicDetail extends Component {
 
         this.props.fetchUpItem({
           targetId: this.props.topic.objectId,
-
           upType: 'topic',
           success: this.likeSuccessCallback.bind(this),
           error: this.likeErrorCallback.bind(this)

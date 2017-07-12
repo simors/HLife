@@ -85,7 +85,6 @@ export function isTopicLiked(state,topicId){
   let isLiked = false
   topicUps.forEach((item)=>{
     if(item==topicId){
-
       isLiked = true
     }
   })
