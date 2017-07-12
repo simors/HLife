@@ -98,6 +98,7 @@ export class TopicDetail extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchShareDomain()
     })
+    // this.loadMoreData(true)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -275,6 +276,7 @@ export class TopicDetail extends Component {
 
         this.props.fetchUpItem({
           targetId: this.props.topic.objectId,
+
           upType: 'topic',
           success: this.likeSuccessCallback.bind(this),
           error: this.likeErrorCallback.bind(this)
@@ -835,7 +837,6 @@ const mapStateToProps = (state, ownProps) => {
   let enableShare = topicCategory.enableShare
 
   let shareDomain = getShareDomain(state)
-
   return {
     ds: ds.cloneWithRows(dataArray),
     topicComments: topicComments,

@@ -34,14 +34,14 @@ export function fetchAllComments(payload) {
 }
 
 export function fetchAllUserUps(userId) {
-    if(userId&&userId!=''){
+
       return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
         console.log('results======>',results)
         return {commentsUps: results.commentList, topicsUps: results.topicList}
       }, (err)=> {
         throw err
       })
-    }
+
 }
 
 export function likeTopic(payload) {
