@@ -4,7 +4,7 @@
 import AV from 'leancloud-storage'
 import {List, Record, Map} from 'immutable'
 import ERROR from '../../constants/errorCode'
-import {TopicCommentsItem} from '../../models/NewTopicModel'
+import {TopicCommentsItem,TopicsItem} from '../../models/NewTopicModel'
 import {Up} from '../../models/shopModel'
 import {Geolocation} from '../../components/common/BaiduMap'
 import * as AVUtils from '../../util/AVUtils'
@@ -36,7 +36,7 @@ export function fetchAllComments(payload) {
 export function fetchAllUserUps(userId) {
 
       return AV.Cloud.run('hlifeTopicFetchUserUps', {userId: userId}).then((results)=> {
-        console.log('results======>',results)
+        // console.log('results======>',results)
         return {commentsUps: results.commentList, topicsUps: results.topicList}
       }, (err)=> {
         throw err
@@ -69,7 +69,7 @@ export function likeTopic(payload) {
 }
 
 export function publishTopicComments(payload) {
-  return AV.Cloud.run('hlifeTopicPubulishTopicComment',{payload:payload}).then(function (result) {
+  return AV.Cloud.run('hlifeTopicPubulishTopicComment',{payload:payload}).then( (result) => {
     if (result) {
       let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
       let activeUser = authSelector.activeUserInfo(store.getState())
@@ -88,6 +88,18 @@ export function publishTopicComments(payload) {
   },  (err) => {
 
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function fetchTopicList(payload){
+  console.log('payload==========>',payload)
+  return AV.Cloud.run('fetchTopicList',{payload:payload}).then((results)=>{
+    console.log('results=========>',results)
+    if(results){
+     return results
+    }
+  },(err)=>{
     throw err
   })
 }

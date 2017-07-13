@@ -33,17 +33,25 @@ export default function newTopicReducer(state = initialState, action) {
     // case TopicTypes.FETCH_ALL_TOPICS:
     //   return handleFetchAllTopics(state,action)
     case TopicTypes.FETCH_ADD_CATE_TOPICS:
-      return handleAddCatTopis(state,action)
+      return handleAddCatTopics(state,action)
     case TopicTypes.FETCH_SET_CATE_TOPICS:
-      return handleSetCatTopis(state,action)
+      return handleSetCatTopics(state,action)
     case TopicTypes.FETCH_ADD_LOCAL_TOPICS:
-      return handleAddLocalTopis(state,action)
+      return handleAddLocalTopics(state,action)
     case TopicTypes.FETCH_SET_LOCAL_TOPICS:
-      return handleSetLocalTopis(state,action)
+      return handleSetLocalTopics(state,action)
     case TopicTypes.FETCH_ADD_PICKED_TOPICS:
-      return handleAddPickedTopis(state,action)
+      return handleAddPickedTopics(state,action)
     case TopicTypes.FETCH_SET_PICKED_TOPICS:
-      return handleSetPickedTopis(state,action)
+      return handleSetPickedTopics(state,action)
+    case TopicTypes.FETCH_ADD_MAINPAGE_TOPICS:
+      return handleAddMainPageTopics(state,action)
+    case TopicTypes.FETCH_SET_MAINPAGE_TOPICS:
+      return handleSetMainPageTopics(state,action)
+    case TopicTypes.FETCH_ADD_USER_TOPICS:
+      return handleAddUserTopics(state,action)
+    case TopicTypes.FETCH_SET_USER_TOPICS:
+      return handleSetUserTopics(state,action)
     // case TopicTypes.DISABLE_TOPIC:
     //   return handleDisableTopic(state,action)
     case REHYDRATE:
@@ -54,7 +62,7 @@ export default function newTopicReducer(state = initialState, action) {
 }
 
 
-function handleAddPickedTopis(state, action) {
+function handleAddPickedTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
   let _topics = state.get('pickedTopics')|| new List()
@@ -68,7 +76,7 @@ function handleAddPickedTopis(state, action) {
   return state
 }
 
-function handleSetPickedTopis(state, action) {
+function handleSetPickedTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
   state = state.set('pickedTopics', topicList)
@@ -76,7 +84,7 @@ function handleSetPickedTopis(state, action) {
   return state
 }
 
-function handleAddLocalTopis(state, action) {
+function handleAddLocalTopics(state, action) {
   let payload = action.payload
   let topicList = new List(payload.topicList)
   let _topics = state.get('localTopics')|| new List()
@@ -90,7 +98,7 @@ function handleAddLocalTopis(state, action) {
   return state
 }
 
-function handleSetLocalTopis(state, action) {
+function handleSetLocalTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
   state = state.set('localTopics', topicList)
@@ -98,26 +106,72 @@ function handleSetLocalTopis(state, action) {
   return state
 }
 
-function handleAddCatTopis(state, action) {
+function handleAddCatTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
   let categoryId = payload.categoryId
   let _topics = state.getIn(['cateTopics',categoryId])|| new List()
   if(_topics&&_topics.size>0){
-    state = state.setIn(['cateTopics',categoryId], _topics.concat(topicList))
+    state = state.setIn(['cateTopics',categoryId], _topics.concat(new List(topicList)))
   }
   else{
-    state = state.setIn(['cateTopics',categoryId], topicList)
+    state = state.setIn(['cateTopics',categoryId], new List(topicList))
   }
   state = handleFetchAllTopics(state,payload.topics)
   return state
 }
 
-function handleSetCatTopis(state, action) {
+function handleSetCatTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
   let categoryId = payload.categoryId
-  state = state.setIn(['cateTopics',categoryId], topicList)
+  state = state.setIn(['cateTopics',categoryId], new List(topicList))
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleSetUserTopics(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  let userId = payload.userId
+  state = state.setIn(['userTopics',userId], new List(topicList))
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleAddUserTopics(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  let userId = payload.userId
+  let _topics = state.getIn(['userTopics',userId])|| new List()
+  if(_topics&&_topics.size>0){
+    state = state.setIn(['userTopics',userId], _topics.concat(new List(topicList)))
+  }
+  else{
+    state = state.setIn(['userTopics',userId], new List(topicList))
+  }
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleAddMainPageTopics(state, action) {
+  let payload = action.payload
+  let topicList = new List(payload.topicList)
+  let _topics = state.get('mainPagerTopics')|| new List()
+  if(_topics&&_topics.size>0){
+    state = state.set('mainPagerTopics', _topics.concat(new List(topicList)))
+  }
+  else{
+    state = state.set('mainPagerTopics', new List(topicList))
+  }
+  state = handleFetchAllTopics(state,payload.topics)
+  return state
+}
+
+function handleSetMainPageTopics(state, action) {
+  let payload = action.payload
+  let topicList = payload.topicList
+  state = state.set('mainPagerTopics', new List(topicList))
   state = handleFetchAllTopics(state,payload.topics)
   return state
 }
@@ -198,11 +252,9 @@ function handleFetchUpCommentSuccess(state, action) {
   map.push(targetId)
   state = state.set('myCommentsUps', new List(map))
   let comment = state.getIn(['allComments',targetId]).toJS()||{}
-  console.log('comment',comment)
   comment.upCount = comment.upCount+1
-  let newComment = TopicCommentsItem.fromLeancloudObject(comment)
+  let newComment = TopicCommentsItem.fromLeancloudApi(comment)
   state = state.setIn(['allComments',targetId],newComment)
-  console.log('newComment',newComment)
   return state
 }
 
@@ -214,7 +266,7 @@ function handleFetchUpTopicSuccess(state, action) {
   state = state.set('myTopicsUps', new List(map))
   // let topic = state.getIn(['allTopics',targetId]).toJS()||{}
   // topic.likeCount = topic.likeCount+1
-  // let newTopic =
+  //
   // state = state.setIn(['allTopics',targetId],topic)
   return state
 }
@@ -252,7 +304,7 @@ function onRehydrate(state, action) {
     const allCommentMap = Map(incoming.allComments)
     allCommentMap.map((value, key)=> {
       if (value && key) {
-        let commentInfo = TopicCommentsItem.fromLeancloudObject(value)
+        let commentInfo = TopicCommentsItem.fromLeancloudApi(value)
         state = state.setIn(['allComments', key], commentInfo)
       }
     })

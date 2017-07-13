@@ -3,34 +3,65 @@
  */
 
 export function getLocalTopics(state){
-  let topics = state.NEWTOPIC.get('localTopics')||[]
+  let topics = state.NEWTOPIC.get('localTopics').toJS()||[]
+  // console.log('localtopics======>',topics)
   let topicList = []
   topics.forEach((topicId)=>{
     let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
     topicList.push(topic.toJS())
   })
-  return {localTopics:topics.toJS(),allTopics:topicList}
+  return {localTopics:topics,allTopics:topicList}
 }
 
 export function getPickedTopics(state){
-  let topics = state.NEWTOPIC.get('pickedTopics')||[]
+  let topics = state.NEWTOPIC.get('pickedTopics').toJS()||[]
+  // console.log('pickedTopics======>',topics)
   let topicList = []
   topics.forEach((topicId)=>{
     let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
     topicList.push(topic.toJS())
   })
-  return {pickedTopics:topics.toJS(),allTopics:topicList}
+  return {pickedTopics:topics,allTopics:topicList}
 }
 
-
-export function getTopicsByCategoryId(state,categoryId){
-  let topics = state.NEWTOPIC.getIn(['pickedTopics',categoryId])||[]
+export function getMainPageTopics(state){
+  let topics = state.NEWTOPIC.get('mainPageTopics').toJS()||[]
   let topicList = []
   topics.forEach((topicId)=>{
     let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
     topicList.push(topic.toJS())
   })
-  return {categoryTopics:topics.toJS(),allTopics:topicList}
+  return {pickedTopics:topics,allTopics:topicList}
+}
+
+export function getTopicsByCategoryId(state,categoryId){
+  let topics = state.NEWTOPIC.getIn(['cateTopics',categoryId])||[]
+  // console.log('cateTOpics======>',topics)
+  let topicList = []
+  if(topics&&topics.length){
+    topics.forEach((topicId)=>{
+      let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
+      if(topic){
+        topicList.push(topic.toJS())
+      }
+    })
+  }
+  return {categoryTopics:topics,allTopics:topicList}
+}
+
+export function getCateTopics(state){
+  let topics = state.NEWTOPIC.toJS()||{}
+  return topics
+}
+
+export function getTopicsByUserId(state,categoryId){
+  let topics = state.NEWTOPIC.getIn(['userTopics',userId]).toJS()||[]
+  let topicList = []
+  topics.forEach((topicId)=>{
+    let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
+    topicList.push(topic.toJS())
+  })
+  return {categoryTopics:topics,allTopics:topicList}
 }
 
 export function getCommentsByTopicId(state,topicId){

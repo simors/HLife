@@ -280,15 +280,6 @@ export function fetchTopics(payload) {
         type:payload.type,
         topics: result.topics,
       }))
-      let topics = []
-      result.topics.forEach((item)=>{
-        topics.push(item.objectId)
-      })
-      let fetchLocalTopics = createAction(newTopicActionTypes.FETCH_ADD_LOCAL_TOPICS)
-      dispatch(fetchLocalTopics({
-        topics:result.topics,
-        topicList:topics,
-      }))
       if(payload.success) {
         payload.success(result.topics.size==0)
       }

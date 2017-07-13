@@ -33,11 +33,12 @@ export const TopicCommentsConfig = Record({
   street : undefined,
   province : undefined,
   country : undefined,
-  district : undefined
+  district : undefined,
+  createdDate : undefined
 }, 'TopicCommentsConfig')
 
 export class TopicCommentsItem extends TopicCommentsConfig {
-  static fromLeancloudObject(lcObj) {
+  static fromLeancloudApi(lcObj) {
     let topicCommentsConfig = new TopicCommentsConfig()
 //用户昵称解析
     let nickname = lcObj.authorNickname
@@ -73,6 +74,7 @@ export class TopicCommentsItem extends TopicCommentsConfig {
       record.set('province', lcObj.province)
       record.set('country', lcObj.country)
       record.set('district', lcObj.district)
+      record.set('createdDate', lcObj.createdDate)
 
       // record.set('createdAt', lcObj.createdAt.valueOf())
       if (lcObj.createdAt) {
@@ -84,11 +86,93 @@ export class TopicCommentsItem extends TopicCommentsConfig {
   }
 }
 
+
+export const TopicsConfig = Record({
+  content: undefined, //话题内容
+  title: undefined,
+  abstract:undefined,
+  imgGroup: undefined, //图片
+  objectId: undefined,  //话题id
+  categoryId: undefined,  //属于的分类
+  nickname: undefined, //所属用户昵称
+  userId:undefined,     // 所属用户的id
+  createdAt: undefined,  //创建时间
+  updatedAt: undefined,  //更新时间
+  avatar: undefined,  //所属用户头像
+  commentNum: undefined, //评论数
+  likeCount: undefined, //点赞数
+  address : undefined,
+  city : undefined,
+  longitude : undefined,
+  latitude : undefined,
+  streetNumber : undefined,
+  street : undefined,
+  province : undefined,
+  country : undefined,
+  district : undefined,
+  likedUsers: undefined,  //点赞用户列表
+  createdDate: undefined,
+  lastLoginDuration: undefined,
+  picked: undefined,
+}, 'TopicsConfig')
+
+export class TopicsItem extends TopicsConfig {
+  static fromLeancloudApi(lcObj) {
+    console.log('lcObjec+++++++++>',lcObj)
+    let topicConfig = new TopicsConfig()
+//用户昵称解析
+//     let nickname = lcObj.nickname
+//     if (!nickname) {
+//       let phoneNumber = lcObj.username
+//       nickname = hidePhoneNumberDetail(phoneNumber)
+//     }
+    let userUpdatedAt = lcObj.userUpdatedAt
+    return topicConfig.withMutations((record)=>{
+      record.set('content', lcObj.content)
+      record.set('title', lcObj.title)
+      record.set('abstract', lcObj.abstract)
+      record.set('imgGroup', lcObj.imgGroup)
+      record.set('objectId', lcObj.objectId)
+      record.set('categoryId', lcObj.categoryId)
+      record.set('nickname', lcObj.nickname)
+      record.set('userId', lcObj.userId)
+      // record.set('createdAt', lcObj.createdAt)
+      record.set('updatedAt', lcObj.updatedAt)
+      record.set('avatar', lcObj.avatar)
+      record.set('likeCount', lcObj.likeCount)
+      record.set('commentNum', lcObj.commentNum)
+      record.set('address', lcObj.address)
+      record.set('city', lcObj.city)
+      record.set('longitude', lcObj.longitude)
+      record.set('latitude', lcObj.latitude)
+      record.set('streetNumber', lcObj.streetNumber)
+      record.set('street', lcObj.street)
+      record.set('province', lcObj.province)
+      record.set('country', lcObj.country)
+
+      record.set('createdDate', lcObj.createdDate)
+      if(userUpdatedAt) {
+        record.set('lastLoginDuration', getConversationTime(userUpdatedAt.valueOf()))
+      }
+      record.set('picked', lcObj.picked)
+
+
+      // record.set('createdAt', lcObj.createdAt.valueOf())
+      if (lcObj.createdAt) {
+        record.set('createdAt', lcObj.createdAt.valueOf())
+        // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      }
+    })
+  }
+}
+
 export const NewTopics = Record({
   allTopics: Map(),
   pickedTopics: List(),
   localTopics: List(),
   cateTopics: Map(),
+  mainPageTopics: List(),
+  userTopics: Map(),
   allComments : Map(),
   commentsForTopic : Map(),
   commentsForComment : Map(),
