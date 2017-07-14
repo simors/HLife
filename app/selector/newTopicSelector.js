@@ -15,7 +15,6 @@ export function getLocalTopics(state){
 
 export function getPickedTopics(state){
   let topics = state.NEWTOPIC.get('pickedTopics')||[]
-  console.log('pickedTopics======>',topics)
   let topicList = []
   topics.forEach((topicId)=>{
     let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
@@ -37,9 +36,8 @@ export function getMainPageTopics(state){
 
 export function getTopicsByCategoryId(state,categoryId){
   let topics = state.NEWTOPIC.getIn(['cateTopics',categoryId])||[]
-  // console.log('cateTOpics======>',topics)
   let topicList = []
-  if(topics&&topics.length){
+  if(topics&&topics.size){
     topics.forEach((topicId)=>{
       let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
       if(topic){

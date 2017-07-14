@@ -201,7 +201,7 @@ export function fetchAllTopics (payload) {
       })
       // console.log('topics---==>',topics)
       // console.log('topicList---==>',topicList)
-      // console.log('payload.type---==>',payload.type)
+      console.log('payload---==>',payload)
 
 
       switch (payload.type){
@@ -213,6 +213,7 @@ export function fetchAllTopics (payload) {
             fetchCateTopics = createAction(topicActionTypes.FETCH_SET_CATE_TOPICS)
           }
           dispath(fetchCateTopics({topics: topics,topicList: topicList,categoryId: payload.categoryId}))
+          break
         case "mainPageTopics":
           let fetchMainPageTopics = undefined
           if(!payload.isRefresh){
@@ -221,6 +222,7 @@ export function fetchAllTopics (payload) {
             fetchMainPageTopics = createAction(topicActionTypes.FETCH_SET_MAINPAGE_TOPICS)
           }
           dispath(fetchMainPageTopics({topics:topics,topicList:topicList}))
+          break
         case "userTopics":
           let fetchUserTopics = undefined
           if(!payload.isRefresh){
@@ -229,6 +231,7 @@ export function fetchAllTopics (payload) {
             fetchUserTopics = createAction(topicActionTypes.FETCH_SET_USER_TOPICS)
           }
           dispath(fetchUserTopics({topics: topics,topicList: topicList,userId: userId}))
+          break
         case "localTopics":
           let fetchLocalTopics = undefined
           if(!payload.isRefresh){
@@ -237,6 +240,7 @@ export function fetchAllTopics (payload) {
             fetchLocalTopics = createAction(topicActionTypes.FETCH_SET_LOCAL_TOPICS)
           }
           dispath(fetchLocalTopics({topics: topics,topicList: topicList}))
+          break
         case "pickedTopics":
           let fetchPickedTopics = undefined
           if(!payload.isRefresh){
@@ -245,6 +249,14 @@ export function fetchAllTopics (payload) {
             fetchPickedTopics = createAction(topicActionTypes.FETCH_SET_PICKED_TOPICS)
           }
           dispath(fetchPickedTopics({topics: topics,topicList: topicList}))
+          break
+      }
+      if(payload.success){
+        payload.success(results.topics.length==0)
+      }
+    },(err)=>{
+      if(payload.error){
+        payload.error(err)
       }
     })
   }

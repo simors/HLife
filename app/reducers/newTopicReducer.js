@@ -3,7 +3,7 @@
  */
 import * as TopicTypes from '../constants/newTopicActionTypes'
 import {REHYDRATE} from 'redux-persist/constants'
-import {NewTopics, TopicCommentsItem} from '../models/NewTopicModel'
+import {NewTopics, TopicCommentsItem,TopicsItem} from '../models/NewTopicModel'
 import Immutable, {Map, List, Record, Set} from 'immutable'
 
 const initialState = NewTopics()
@@ -67,7 +67,7 @@ function handleAddPickedTopics(state, action) {
   let topicList = payload.topicList
   let _topics = state.get('pickedTopics')|| new List()
   if(_topics&&_topics.size>0){
-    state = state.set('pickedTopics', _topics.concat(topicList))
+    state = state.set('pickedTopics', _topics.concat(new List(topicList)))
   }
   else{
     state = state.set('pickedTopics', topicList)
@@ -79,7 +79,7 @@ function handleAddPickedTopics(state, action) {
 function handleSetPickedTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
-  state = state.set('pickedTopics', topicList)
+  state = state.set('pickedTopics', new List(topicList))
   state = handleFetchAllTopics(state,payload.topics)
   return state
 }
@@ -89,7 +89,7 @@ function handleAddLocalTopics(state, action) {
   let topicList = new List(payload.topicList)
   let _topics = state.get('localTopics')|| new List()
   if(_topics&&_topics.size>0){
-    state = state.set('localTopics', _topics.concat(topicList))
+    state = state.set('localTopics', _topics.concat(new List(topicList)))
   }
   else{
     state = state.set('localTopics', topicList)
@@ -101,7 +101,7 @@ function handleAddLocalTopics(state, action) {
 function handleSetLocalTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
-  state = state.set('localTopics', topicList)
+  state = state.set('localTopics', new List(topicList))
   state = handleFetchAllTopics(state,payload.topics)
   return state
 }
@@ -157,12 +157,12 @@ function handleAddUserTopics(state, action) {
 function handleAddMainPageTopics(state, action) {
   let payload = action.payload
   let topicList = new List(payload.topicList)
-  let _topics = state.get('mainPagerTopics')|| new List()
+  let _topics = state.get('mainPageTopics')|| new List()
   if(_topics&&_topics.size>0){
-    state = state.set('mainPagerTopics', _topics.concat(new List(topicList)))
+    state = state.set('mainPageTopics', _topics.concat(new List(topicList)))
   }
   else{
-    state = state.set('mainPagerTopics', new List(topicList))
+    state = state.set('mainPageTopics', new List(topicList))
   }
   state = handleFetchAllTopics(state,payload.topics)
   return state
@@ -171,7 +171,7 @@ function handleAddMainPageTopics(state, action) {
 function handleSetMainPageTopics(state, action) {
   let payload = action.payload
   let topicList = payload.topicList
-  state = state.set('mainPagerTopics', new List(topicList))
+  state = state.set('mainPageTopics', new List(topicList))
   state = handleFetchAllTopics(state,payload.topics)
   return state
 }
@@ -301,6 +301,7 @@ function handlePublishCommentSuccess(state, action) {
 function onRehydrate(state, action) {
   var incoming = action.payload.NEWTOPIC
   if (incoming) {
+    //恢复全部评论信息
     const allCommentMap = Map(incoming.allComments)
     allCommentMap.map((value, key)=> {
       if (value && key) {
@@ -309,6 +310,7 @@ function onRehydrate(state, action) {
       }
     })
 
+    //恢复话题的评论
     const topicCommentsMap = Map(incoming.commentsForTopic)
     topicCommentsMap.map((value, key)=> {
       if (value && key) {
@@ -316,6 +318,7 @@ function onRehydrate(state, action) {
       }
     })
 
+    //恢复评论的评论
     const commentCommentsMap = Map(incoming.commentsForComment)
     commentCommentsMap.map((value, key)=> {
       if (value && key) {
@@ -323,6 +326,7 @@ function onRehydrate(state, action) {
       }
     })
 
+    //恢复我点赞的评论
     const myCommentsUps = incoming.myCommentsUps
     let myCommentUpList = []
     myCommentsUps.forEach((item)=>{
@@ -332,6 +336,7 @@ function onRehydrate(state, action) {
       state = state.set('myCommentsUps', List(myCommentUpList))
     }
 
+    //恢复我点赞的话题
     const myTopicsUps = incoming.myTopicsUps
     let myTopicUpList = []
     myTopicsUps.forEach((item)=>{
@@ -341,6 +346,24 @@ function onRehydrate(state, action) {
       state = state.set('myTopicsUps', List(myTopicUpList))
     }
 
+    //恢复全部的话题
+    const allTopicsMap = Map(incoming.allTopics)
+    allTopicsMap.map((value, key)=> {
+      if (value && key) {
+        let topicInfo = TopicsItem.fromLeancloudApi(value)
+        state = state.setIn(['allComments', key], topicInfo)
+      }
+    })
+
+    //恢复主页话题
+    // const mainPageTopics = incoming.mainPageTopics
+    // let mainPageTopicList = []
+    // mainPageTopics.forEach((item)=>{
+    //   mainPageTopicList.push(item)
+    // })
+    // if(myCommentUpList&&myCommentUpList.length){
+    //   state = state.set('mainPageTopics',  List(mainPageTopicList))
+    // }
   }
   return state
 }
