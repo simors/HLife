@@ -250,6 +250,7 @@ export function fetchAllTopics (payload) {
           }
           dispath(fetchPickedTopics({topics: topics,topicList: topicList}))
           break
+
       }
       if(payload.success){
         payload.success(results.topics.length==0)

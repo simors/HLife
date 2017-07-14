@@ -351,19 +351,39 @@ function onRehydrate(state, action) {
     allTopicsMap.map((value, key)=> {
       if (value && key) {
         let topicInfo = TopicsItem.fromLeancloudApi(value)
-        state = state.setIn(['allComments', key], topicInfo)
+        state = state.setIn(['allTopics', key], topicInfo)
       }
     })
 
+    //恢复本地话题
+    const localTopics = incoming.localTopics
+    let localTopicList = []
+    localTopics.forEach((item)=>{
+      localTopicList.push(item)
+    })
+    if(localTopicList&&localTopicList.length){
+      state = state.set('localTopics',  List(localTopicList))
+    }
+
+    //恢复精选话题
+    const pickedTopics = incoming.pickedTopics
+    let pickedTopicList = []
+    pickedTopics.forEach((item)=>{
+      pickedTopicList.push(item)
+    })
+    if(pickedTopicList&&pickedTopicList.length){
+      state = state.set('pickedTopics',  List(pickedTopicList))
+    }
+
     //恢复主页话题
-    // const mainPageTopics = incoming.mainPageTopics
-    // let mainPageTopicList = []
-    // mainPageTopics.forEach((item)=>{
-    //   mainPageTopicList.push(item)
-    // })
-    // if(myCommentUpList&&myCommentUpList.length){
-    //   state = state.set('mainPageTopics',  List(mainPageTopicList))
-    // }
+    const mainPageTopics = incoming.mainPageTopics
+    let mainPageTopicList = []
+    mainPageTopics.forEach((item)=>{
+      mainPageTopicList.push(item)
+    })
+    if(mainPageTopicList&&mainPageTopicList.length){
+      state = state.set('mainPageTopics',  List(mainPageTopicList))
+    }
   }
   return state
 }

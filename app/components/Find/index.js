@@ -351,8 +351,6 @@ const mapStateToProps = (state, ownProps) => {
   // topics[1] = localTopics
   newTopics[0] = newPickedTopics.allTopics
   newTopics[1] = newLocalTopics.allTopics
-  console.log('newTopics+++++++++>',newTopics)
-
   return {
     dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,

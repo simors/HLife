@@ -49,7 +49,7 @@ class NearbyTopicView extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       // this.props.fetchMainPageTopics({limited: 10})
-      this.props.fetchAllTopics({type:'mainPageTopics',isRefresh:false})
+      this.props.fetchAllTopics({type:'mainPageTopics',isRefresh:true})
     })
   }
 
@@ -143,7 +143,7 @@ const mapStateToProps = (state, ownProps) => {
   let mainPageTopics = getMainPageTopics(state)
   let newMainPageTopics = getMainPageTopics(state)
   newProps.mainPageTopics = mainPageTopics.allTopics
-  // console.log('newProps',newProps)
+  console.log('newProps',newProps.mainPageTopics)
   return newProps
 }
 
