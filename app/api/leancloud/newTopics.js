@@ -96,6 +96,7 @@ export function fetchTopicList(payload){
   // console.log('payload==========>',payload)
   return AV.Cloud.run('fetchTopicList',{payload:payload}).then((results)=>{
     if(results){
+      console.log('results',results)
      return results
     }
   },(err)=>{

@@ -199,10 +199,7 @@ export function fetchAllTopics (payload) {
         topics.push(topic)
         topicList.push(item.objectId)
       })
-      // console.log('topics---==>',topics)
       // console.log('topicList---==>',topicList)
-      console.log('payload---==>',payload)
-
 
       switch (payload.type){
         case "topics":
@@ -225,12 +222,14 @@ export function fetchAllTopics (payload) {
           break
         case "userTopics":
           let fetchUserTopics = undefined
+
           if(!payload.isRefresh){
             fetchUserTopics = createAction(topicActionTypes.FETCH_ADD_USER_TOPICS)
           }else{
             fetchUserTopics = createAction(topicActionTypes.FETCH_SET_USER_TOPICS)
           }
-          dispath(fetchUserTopics({topics: topics,topicList: topicList,userId: userId}))
+
+          dispath(fetchUserTopics({topics: topics,topicList: topicList,userId: payload.userId}))
           break
         case "localTopics":
           let fetchLocalTopics = undefined

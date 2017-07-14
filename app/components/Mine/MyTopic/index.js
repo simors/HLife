@@ -19,6 +19,10 @@ import {
 import Header from '../../common/Header'
 import {getMyTopics} from '../../../selector/topicSelector'
 import {fetchTopics,disableTopic} from '../../../action/topicActions'
+import {fetchAllTopics} from '../../../action/newTopicAction'
+import {getUserTopics} from '../../../selector/newTopicSelector'
+import {activeUserId} from '../../../selector/authSelector'
+
 import CommonListView from '../../common/CommonListView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -29,6 +33,7 @@ import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view'
 import THEME from '../../../constants/themes/theme1'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as Toast from '../../../components/common/Toast'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -127,10 +132,11 @@ export class MyTopic extends Component {
     }
     // console.log('here is fetch')
     let payload = {
-      type: "myTopics",
+      type: "userTopics",
       lastUpdatedAt: lastUpdatedAt,
       lastCreatedAt: lastCreatedAt,
       isRefresh: !!isRefresh,
+      userId: this.props.userId,
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -153,7 +159,7 @@ export class MyTopic extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    this.props.fetchTopics(payload)
+    this.props.fetchAllTopics(payload)
   }
 
   render() {
@@ -209,18 +215,21 @@ export class MyTopic extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-
-  const topics = getMyTopics(state)
+  const userId =activeUserId(state)
+  const newTopics = getUserTopics(state,userId).allTopics
+  // const topics = getMyTopics(state)
   // console.log('topics',topics)
   return {
-    dataSrc: ds.cloneWithRows(topics),
-    topics: topics,
+    dataSrc: ds.cloneWithRows(newTopics),
+    topics: newTopics,
+    userId: userId,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopics,
   disableTopic,
+  fetchAllTopics,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyTopic)

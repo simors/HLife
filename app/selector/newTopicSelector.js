@@ -48,6 +48,21 @@ export function getTopicsByCategoryId(state,categoryId){
   return {categoryTopics:topics,allTopics:topicList}
 }
 
+export function getUserTopics(state,userId){
+  let topics = state.NEWTOPIC.getIn(['userTopics',userId])||[]
+  let topicList = []
+  console.log('topics====>',topics)
+  if(topics&&topics.size){
+    topics.forEach((topicId)=>{
+      let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
+      if(topic){
+        topicList.push(topic.toJS())
+      }
+    })
+  }
+  return {userTopicList:topics,allTopics:topicList}
+}
+
 export function getCateTopics(state){
   let topics = state.NEWTOPIC.toJS()||{}
   return topics

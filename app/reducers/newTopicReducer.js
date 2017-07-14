@@ -131,7 +131,9 @@ function handleSetCatTopics(state, action) {
 }
 
 function handleSetUserTopics(state, action) {
+
   let payload = action.payload
+  // console.log('payload=====>',payload)
   let topicList = payload.topicList
   let userId = payload.userId
   state = state.setIn(['userTopics',userId], new List(topicList))
@@ -140,7 +142,10 @@ function handleSetUserTopics(state, action) {
 }
 
 function handleAddUserTopics(state, action) {
+
   let payload = action.payload
+  // console.log('payload=====>',payload)
+
   let topicList = payload.topicList
   let userId = payload.userId
   let _topics = state.getIn(['userTopics',userId])|| new List()
@@ -360,6 +365,14 @@ function onRehydrate(state, action) {
     cateTopics.map((value, key)=> {
       if (value && key) {
         state = state.setIn(['cateTopics', key], new List(value))
+      }
+    })
+
+    //恢复用户话题
+    const userTopics = Map(incoming.userTopics)
+    userTopics.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['userTopics', key], new List(value))
       }
     })
 
