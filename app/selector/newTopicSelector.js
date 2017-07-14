@@ -51,7 +51,6 @@ export function getTopicsByCategoryId(state,categoryId){
 export function getUserTopics(state,userId){
   let topics = state.NEWTOPIC.getIn(['userTopics',userId])||[]
   let topicList = []
-  console.log('topics====>',topics)
   if(topics&&topics.size){
     topics.forEach((topicId)=>{
       let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
