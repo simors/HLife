@@ -355,6 +355,14 @@ function onRehydrate(state, action) {
       }
     })
 
+    //恢复分类话题
+    const cateTopics = Map(incoming.cateTopics)
+    cateTopics.map((value, key)=> {
+      if (value && key) {
+        state = state.setIn(['cateTopics', key], new List(value))
+      }
+    })
+
     //恢复本地话题
     const localTopics = incoming.localTopics
     let localTopicList = []
