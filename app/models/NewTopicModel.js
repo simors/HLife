@@ -75,7 +75,10 @@ export class TopicCommentsItem extends TopicCommentsConfig {
       record.set('country', lcObj.country)
       record.set('district', lcObj.district)
       record.set('createdDate', lcObj.createdDate)
-
+      if (lcObj.updatedAt) {
+        record.set('updatedAt', lcObj.updatedAt.valueOf())
+        // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      }
       // record.set('createdAt', lcObj.createdAt.valueOf())
       if (lcObj.createdAt) {
         record.set('createdAt', lcObj.createdAt.valueOf())
@@ -155,7 +158,10 @@ export class TopicsItem extends TopicsConfig {
         record.set('lastLoginDuration', getConversationTime(userUpdatedAt.valueOf()))
       }
       record.set('picked', lcObj.picked)
-
+      if (lcObj.updatedAt) {
+        record.set('updatedAt', lcObj.updatedAt.valueOf())
+        // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      }
 
       // record.set('createdAt', lcObj.createdAt.valueOf())
       if (lcObj.createdAt) {
