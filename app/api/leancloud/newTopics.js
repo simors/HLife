@@ -93,9 +93,8 @@ export function publishTopicComments(payload) {
 }
 
 export function fetchTopicList(payload){
-  console.log('payload==========>',payload)
+  // console.log('payload==========>',payload)
   return AV.Cloud.run('fetchTopicList',{payload:payload}).then((results)=>{
-    console.log('results=========>',results)
     if(results){
      return results
     }

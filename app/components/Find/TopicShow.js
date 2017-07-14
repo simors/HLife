@@ -148,7 +148,7 @@ export class TopicShow extends Component {
                   </TouchableOpacity>
                   <View style={styles.timeLocationStyle}>
                     <Text style={styles.timeTextStyle}>
-                      {getConversationTime(this.props.topic.createdAt)}
+                      {getConversationTime(new Date(this.props.topic.createdAt))}
                     </Text>
                   </View>
                 </View>
@@ -164,7 +164,7 @@ export class TopicShow extends Component {
           <View style={styles.locationCommentStyle}>
             <CachedImage mutable style={styles.positionStyle} resizeMode="contain" source={require("../../assets/images/writer_loaction.png")}/>
             <Text
-              style={styles.timeTextStyle}>{this.props.topic.position ? this.props.topic.position.city : "未知"}</Text>
+              style={styles.timeTextStyle}>{this.props.topic.city ? this.props.topic.city : "未知"}</Text>
             <Text
               style={styles.likeTextStyle}>{"点赞" + " " + (this.props.topic.likeCount > 999 ? '999+' : this.props.topic.likeCount)}</Text>
             <Text

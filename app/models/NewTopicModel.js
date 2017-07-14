@@ -118,7 +118,7 @@ export const TopicsConfig = Record({
 
 export class TopicsItem extends TopicsConfig {
   static fromLeancloudApi(lcObj) {
-    console.log('lcObjec+++++++++>',lcObj)
+    // console.log('lcObjec+++++++++>',lcObj)
     let topicConfig = new TopicsConfig()
 //用户昵称解析
 //     let nickname = lcObj.nickname

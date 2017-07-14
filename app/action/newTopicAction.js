@@ -194,14 +194,14 @@ export function fetchAllTopics (payload) {
       let topics =[]
       let topicList = []
       results.topics.forEach((item)=>{
-        console.log('item',item)
+        // console.log('item',item)
         let topic = TopicsItem.fromLeancloudApi(item)
         topics.push(topic)
         topicList.push(item.objectId)
       })
-      console.log('topics---==>',topics)
-      console.log('topicList---==>',topicList)
-      console.log('payload.type---==>',payload.type)
+      // console.log('topics---==>',topics)
+      // console.log('topicList---==>',topicList)
+      // console.log('payload.type---==>',payload.type)
 
 
       switch (payload.type){

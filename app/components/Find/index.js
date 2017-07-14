@@ -332,7 +332,7 @@ const mapStateToProps = (state, ownProps) => {
     let topicList = newTopicSelector.getTopicsByCategoryId(state,item.objectId).allTopics
     newTopics[item.objectId] = topicList
   })
-  // console.log('newTopics+++++++++>',newTopics)
+  console.log('newTopics+++++++++>',newTopics)
   const newLocalTopics = newTopicSelector.getLocalTopics(state)
   const newPickedTopics = newTopicSelector.getPickedTopics(state)
   const localTopics = getLocalTopics(state)
@@ -348,8 +348,8 @@ const mapStateToProps = (state, ownProps) => {
   topicCategories.unshift({title: "精选"})
   topics[0] = pickedTopic
   topics[1] = localTopics
-  newTopics[0] = newPickedTopics
-  newTopics[0] = newLocalTopics
+  newTopics[0] = newPickedTopics.allTopics
+  newTopics[1] = newLocalTopics.allTopics
 
   return {
     dataSrc: ds.cloneWithRows([]),
