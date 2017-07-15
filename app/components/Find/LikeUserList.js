@@ -28,6 +28,8 @@ import {
   fetchTopicLikesCount
 } from '../../action/topicActions'
 import {getTopicLikeUsers, getTopicLikedTotalCount} from '../../selector/topicSelector'
+import {getTopicUps} from '../../selector/newTopicSelector'
+import {fetchUpsByTopicId} from '../../action/newTopicAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -44,13 +46,13 @@ export class LikeUserList extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({
-        topicId: this.props.topicId,
-        upType: 'topic',
-        success: (likesTotalCount) => {
-          this.topicLikeUsersCount = likesTotalCount
-        }
-      })
+      // this.props.fetchTopicLikesCount({
+      //   topicId: this.props.topicId,
+      //   upType: 'topic',
+      //   success: (likesTotalCount) => {
+      //     this.topicLikeUsersCount = likesTotalCount
+      //   }
+      // })
       this.refreshData()
     })
   }
@@ -70,7 +72,7 @@ export class LikeUserList extends Component {
               </View>
               <View style={styles.timeLocationStyle}>
                 <Text style={styles.timeTextStyle}>
-                  {getConversationTime(value.createdAt.valueOf())}
+                  {getConversationTime(value.createdAt)}
                 </Text>
               </View>
             </View>
@@ -93,7 +95,7 @@ export class LikeUserList extends Component {
     let lastCreatedAt = this.props.lastCreatedAt
 
     let payload = {
-      topicId: this.props.topicId,
+      topicId: this.props.topic.objectId,
       isRefresh: !!isRefresh,
       lastCreatedAt: lastCreatedAt,
       success: (resLen) => {
@@ -148,7 +150,7 @@ export class LikeUserList extends Component {
       }
     }
 
-    this.props.fetchTopicLikeUsers(payload)
+    this.props.fetchUpsByTopicId(payload)
   }
 
   render() {
@@ -191,26 +193,27 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
-  const topicLikeUsers = getTopicLikeUsers(state, ownProps.topicId)
-
-  const topicLikeUsersLen = topicLikeUsers ? topicLikeUsers.length : 0
-  const topicLikeUsersCount = getTopicLikedTotalCount(state, ownProps.topicId)
-
+  const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
+  const upList = getTopicUps(state,ownProps.topic.objectId).allUps
+  // const topicLikeUsersLen = topicLikeUsers ? topicLikeUsers.length : 0
+  // const topicLikeUsersCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
+  console.log('upList===>',upList)
   let lastCreatedAt = ''
-  if(topicLikeUsers && topicLikeUsers.length) {
-    lastCreatedAt = topicLikeUsers[topicLikeUsers.length-1].createdAt
+  if(upList && upList.length) {
+    lastCreatedAt = upList[upList.length-1].createdAt
   }
 
   return {
-    ds: ds.cloneWithRows(topicLikeUsers),
-    topicLikeUsers: topicLikeUsers,
+    ds: ds.cloneWithRows(upList),
+    topicLikeUsers: upList,
     lastCreatedAt: lastCreatedAt,
-    topicLikeUsersCount: topicLikeUsersCount,
+    topicLikeUsersCount: ownProps.topic.likeCount,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicLikeUsers,
+  fetchUpsByTopicId,
   fetchTopicLikesCount
 }, dispatch)
 

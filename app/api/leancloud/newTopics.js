@@ -93,7 +93,6 @@ export function publishTopicComments(payload) {
 }
 
 export function fetchTopicList(payload){
-  // console.log('payload==========>',payload)
   return AV.Cloud.run('fetchTopicList',{payload:payload}).then((results)=>{
     if(results){
       console.log('results',results)
@@ -105,8 +104,15 @@ export function fetchTopicList(payload){
 }
 
 export function fetchTopicDetailInfo(payload){
-  console.log('payloadhahahahahahahahaha',payload)
   return AV.Cloud.run('fetchTopicDetailInfo',payload).then((results)=>{
+    return results
+  },(err)=>{
+    throw err
+  })
+}
+
+export function fetchUpsByTopicId(payload){
+  return AV.Cloud.run('fetchUpsByTopicId',payload).then((results)=>{
     return results
   },(err)=>{
     throw err

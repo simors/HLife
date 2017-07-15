@@ -113,19 +113,23 @@ export function fetchUpItem(payload) {
         payload.error(err)
       }
     } else {
+      console.log('payload',payload)
       lcTopics.likeTopic(payload).then((result)=> {
-        if (payload.upType == 'topicComment') {
-          let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
-          dispatch(updateAction({targetId: result}))
-        } else if (payload.upType == 'topic') {
-          let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
-          dispatch(updateAction({targetId: result}))
-          dispatch(notifyTopicLike({topicId: payload.targetId}))
-
-        }
+        let up = TopicUpInfoItem.fromLeancloudApi(result)
         if (payload.success) {
+          // console.log('success',payload.success)
           payload.success()
         }
+        if (payload.upType == 'topicComment') {
+          let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
+          dispatch(updateAction({targetId: up.targetId}))
+        } else if (payload.upType == 'topic') {
+          let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
+          dispatch(updateAction({upItem: up}))
+          dispatch(notifyTopicLike({topicId: payload.targetId}))
+        }
+        // console.log('success',payload.success)
+
       }, (err)=> {
         if (payload.error) {
           payload.error(err)
@@ -273,12 +277,39 @@ export function fetchTopicDetailInfo(payload){
         let up = TopicUpInfoItem.fromLeancloudApi(item)
         upList.push(up)
       })
-      let upAction = createAction(topicActionTypes.FETCH_TOPIC_UPS)
-      dispatch(upAction({topicId: payload.topicId,upList: upList}))
-      console.log('upList',upList)
+        let upAction = createAction(topicActionTypes.FETCH_SET_TOPIC_UPS)
+        dispatch(upAction({topicId: payload.topicId,upList: upList}))
+
+      // console.log('upList',upList)
       let followerAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
       dispatch(followerAction(results.followerCount))
 
+    },(err)=>{
+      console.log('err===>',err)
+    })
+  }
+}
+
+export function fetchUpsByTopicId(payload){
+  return (dispatch,getState)=>{
+    lcTopics.fetchUpsByTopicId(payload).then((results)=>{
+      // console.log('results==============>',results)
+      let upList = []
+      results.ups.forEach((item)=>{
+        let up = TopicUpInfoItem.fromLeancloudApi(item)
+        upList.push(up)
+      })
+      if(!!payload.isRefresh){
+        let upAction = createAction(topicActionTypes.FETCH_SET_TOPIC_UPS)
+        dispatch(upAction({topicId: payload.topicId,upList: upList}))
+      }else{
+        let upAction = createAction(topicActionTypes.FETCH_ADD_TOPIC_UPS)
+        dispatch(upAction({topicId: payload.topicId,upList: upList}))
+      }
+      if (payload.success) {
+        payload.success(results.ups.length)
+        // payload.success(topicLikeUsers.size <= 0)
+      }
     },(err)=>{
       console.log('err===>',err)
     })

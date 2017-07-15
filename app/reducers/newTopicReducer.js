@@ -52,8 +52,10 @@ export default function newTopicReducer(state = initialState, action) {
       return handleAddUserTopics(state,action)
     case TopicTypes.FETCH_SET_USER_TOPICS:
       return handleSetUserTopics(state,action)
-    case TopicTypes.FETCH_TOPIC_UPS:
-      return handleFetchTopicUps(state,action)
+    case TopicTypes.FETCH_ADD_TOPIC_UPS:
+      return handleFetchAddTopicUps(state,action)
+    case TopicTypes.FETCH_SET_TOPIC_UPS:
+      return handleFetchSetTopicUps(state,action)
     // case TopicTypes.DISABLE_TOPIC:
     //   return handleDisableTopic(state,action)
     case REHYDRATE:
@@ -267,10 +269,25 @@ function handleFetchUpCommentSuccess(state, action) {
 
 function handleFetchUpTopicSuccess(state, action) {
   let payload = action.payload
-  let targetId = payload.targetId
+  let upItem = payload.upItem
+  let upList = [upItem.upId]
+
   let map = state.get('myTopicsUps').toJS() || []
-  map.push(targetId)
+  map.push(upItem.targetId)
   state = state.set('myTopicsUps', new List(map))
+  state = state.setIn(['allUps',upItem.upId],upItem)
+  let topicUps = state.get(['topicUps',upItem.targetId])
+  console.log('upItem===<',upItem)
+  if(topicUps&&topicUps.size){
+    topicUps.insert(0,upItem.upId)
+
+    state = state.setIn(['topicUps',upItem.targetId],topicUps)
+  }else{
+    console.log('else===<')
+    state = state.setIn(['topicUps',upItem.targetId],new List(upList))
+  }
+  console.log('state===<')
+
   // let topic = state.getIn(['allTopics',targetId]).toJS()||{}
   // topic.likeCount = topic.likeCount+1
   //
@@ -305,7 +322,7 @@ function handlePublishCommentSuccess(state, action) {
   return state
 }
 
-function handleFetchTopicUps(state,action){
+function handleFetchSetTopicUps(state,action){
   let payload = action.payload
   let topicId = payload.topicId
   let ups = payload.upList
@@ -315,6 +332,20 @@ function handleFetchTopicUps(state,action){
   })
 
   state = state.setIn(['topicUps',topicId], new List(upList))
+  state = handleFetchAllUps(state,ups)
+  return state
+}
+
+function handleFetchAddTopicUps(state,action){
+  let payload = action.payload
+  let topicId = payload.topicId
+  let ups = payload.upList
+  let upList = []
+  ups.forEach((item)=>{
+    upList.push(item.upId)
+  })
+  let _ups = state.getIn(['topicUps',topicId])||new List()
+  state = state.setIn(['topicUps',topicId], _ups.concat(new List(upList)))
   state = handleFetchAllUps(state,ups)
   return state
 }

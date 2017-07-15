@@ -71,6 +71,7 @@ export class TopicDetail extends Component {
       hideBottomView: false,
       loadComment: false,
       showPayModal: false,
+      likeCount: 0,
       pay: '',
     }
     this.replyInput = null
@@ -79,28 +80,14 @@ export class TopicDetail extends Component {
 
   componentWillMount() {
     this.refreshData()
-    // InteractionManager.runAfterInteractions(() => {
-    //   this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-    // })
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
-    })
-    // InteractionManager.runAfterInteractions(() => {
-    //   if (this.props.isLogin) {
-    //     this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
-    //   }
-    // })
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicDetailInfo({topicId: this.props.topic.objectId, userId: this.props.topic.userId})
-    })
-
-    InteractionManager.runAfterInteractions(() => {
-      if(this.props.topic && this.props.topic.userId) {
-        this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
-      }
+      this.props.fetchTopicDetailInfo({topicId: this.props.topic.objectId, userId: this.props.topic.userId,isRefresh:true})
     })
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchShareDomain()
+    })
+    this.setState({
+      likeCount: this.props.topic.likeCount
     })
     // this.loadMoreData(true)
   }
@@ -315,7 +302,12 @@ export class TopicDetail extends Component {
     this.isSubmiting = false
     // this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
     // this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-    this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
+    // this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
+    this.setState({
+      likeCount : this.state.likeCount+1
+    })
+    console.log('likeCount',this.state.likeCount)
+
   }
 
   renderTopicLikeOneUser(value, key) {
@@ -422,9 +414,11 @@ export class TopicDetail extends Component {
 
   renderTopicLikeUsersView() {
     let topicLikeUsers = this.props.topicLikeUsers
-    let likesCount = this.props.likesCount
-    if(likesCount && topicLikeUsers && topicLikeUsers.length) {
-      let topicLikeUsersView = topicLikeUsers.map((item, index)=>{
+    // console.log('topicLikeUsers===>',topicLikeUsers)
+    let likesCount = this.state.likeCount
+    if(likesCount && this.props.topicLikeUsers && this.props.topicLikeUsers.length) {
+      let topicLikeUsersView = this.props.topicLikeUsers.map((item, index)=>{
+
         if(index > 2) {
           return null
         }
@@ -504,11 +498,11 @@ export class TopicDetail extends Component {
         />
         <TouchableOpacity style={styles.likeStyle}
                           onLayout={this.measureMyComponent.bind(this)}
-                          onPress={()=>Actions.LIKE_USER_LIST({topicId: topic.objectId})}>
+                          onPress={()=>Actions.LIKE_USER_LIST({topic: topic})}>
           <View style={styles.topicLikesWrap}>
             <View style={{flexDirection:'row'}}>
               <View style={styles.titleLine}/>
-              <Text style={styles.titleTxt}>点赞·{this.props.likesCount}</Text>
+              <Text style={styles.titleTxt}>点赞·{this.state.likeCount}</Text>
             </View>
             <View style={{flexDirection:'row'}}>
               {this.renderTopicLikeUsersView()}
@@ -823,33 +817,35 @@ const mapStateToProps = (state, ownProps) => {
   if(comments.commentList && comments.commentList.length) {
     lastTopicCommentsCreatedAt = comments.commentList[comments.commentList.length-1].createdAt
   }
-  const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
+  // const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
   const allUps = getTopicUps(state,ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
-  const commentsTotalCount = topicComments ? topicComments.length : undefined
+  // const commentsTotalCount = topicComments ? topicComments.length : undefined
 
 
   let userFollowersTotalCount = 0
   if(ownProps.topic && ownProps.topic.userId) {
     userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.topic.userId)
   }
-
+  // console.log('looooooooootopic',ownProps.topic)
   let topicCategory = getTopicCategoriesById(state, ownProps.topic.categoryId)
   let enableShare = topicCategory.enableShare
 
   let shareDomain = getShareDomain(state)
+  console.log('this.props.allups',allUps.allUps)
+  console.log('this.props.topic',ownProps.topic.likeCount)
   return {
     ds: ds.cloneWithRows(dataArray),
     topicComments: topicComments,
     topicLikeUsers: allUps.allUps,
-    likesCount: likesCount,
+    // likesCount: likesCount,
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
     allTopicComments : comments.commentList,
     commentsArray : comments.comments,
-    commentsTotalCount: commentsTotalCount,
+    // commentsTotalCount: commentsTotalCount,
     userFollowersTotalCount: userFollowersTotalCount,
     lastTopicCommentsCreatedAt: lastTopicCommentsCreatedAt,
     shareDomain: shareDomain,
@@ -858,14 +854,14 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchTopicCommentsByTopicId,
+  // fetchTopicCommentsByTopicId,
   publishTopicFormData,
-  fetchTopicIsLiked,
-  fetchTopicLikeUsers,
-  fetchTopicLikesCount,
-  likeTopic,
-  unLikeTopic,
-  fetchOtherUserFollowersTotalCount,
+  // fetchTopicIsLiked,
+  // fetchTopicLikeUsers,
+  // fetchTopicLikesCount,
+  // likeTopic,
+  // unLikeTopic,
+  // fetchOtherUserFollowersTotalCount,
   fetchShareDomain,
   fetchAllComments,
   fetchUpItem,

@@ -10,7 +10,7 @@ export function getLocalTopics(state){
     let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
     topicList.push(topic.toJS())
   })
-  return {localTopics:topics.toJS()||[],allTopics:topicList}
+  return {localTopics:topics||[],allTopics:topicList}
 }
 
 export function getPickedTopics(state){
@@ -31,7 +31,7 @@ export function getMainPageTopics(state){
     let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
     topicList.push(topic.toJS())
   })
-  return {pickedTopics:topics.toJS()||[],allTopics:topicList}
+  return {pickedTopics:topics||[],allTopics:topicList}
 }
 
 export function getTopicsByCategoryId(state,categoryId){
@@ -74,7 +74,7 @@ export function getTopicsByUserId(state,categoryId){
     let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
     topicList.push(topic.toJS())
   })
-  return {categoryTopics:topics.toJS()||[],allTopics:topicList}
+  return {categoryTopics:topics||[],allTopics:topicList}
 }
 
 export function getCommentsByTopicId(state,topicId){
@@ -146,5 +146,5 @@ export function getTopicUps(state,topicId){
       }
     })
   }
-  return {upList:ups.toJS(),allUps:upList}
+  return {upList:ups,allUps:upList}
 }

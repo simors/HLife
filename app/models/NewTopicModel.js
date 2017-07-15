@@ -186,6 +186,7 @@ export const TopicUpInfoConfig = Record({
 export class TopicUpInfoItem extends TopicUpInfoConfig {
   static fromLeancloudApi(lcObj) {
     let topicUpInfoConfig = new TopicUpInfoConfig()
+    // console.log('lcObj.user=====>',lcObj.user?lcObj.user.id:'hahha')
     return topicUpInfoConfig.withMutations((record)=> {
       record.set('upId',lcObj.id)
       record.set('targetId',lcObj.targetId)
