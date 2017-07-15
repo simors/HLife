@@ -284,7 +284,9 @@ export function fetchTopicDetailInfo(payload) {
       dispatch(followerAction(results.followerCount))
 
     }, (err)=> {
-      console.log('err===>', err)
+      if (payload.error) {
+        payload.error(err)
+      }
     })
   }
 }
@@ -310,7 +312,9 @@ export function fetchUpsByTopicId(payload) {
         // payload.success(topicLikeUsers.size <= 0)
       }
     }, (err)=> {
-      console.log('err===>', err)
+      if (payload.error) {
+        payload.error(err)
+      }
     })
   }
 }
