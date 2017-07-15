@@ -949,7 +949,6 @@ function handleEditShopInfo(payload, formData) {
         payload.error(reason || {message: '更新店铺失败'})
       }
     }).catch((err) => {
-      console.log(err)
       if (payload.error) {
         payload.error({message: err.message})
       }
