@@ -3,7 +3,7 @@
  */
 import {createAction} from 'redux-actions'
 import * as topicActionTypes from '../constants/newTopicActionTypes'
-import {TopicCommentsItem,TopicsItem,TopicUpInfoItem} from '../models/NewTopicModel'
+import {TopicCommentsItem, TopicsItem, TopicUpInfoItem} from '../models/NewTopicModel'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as lcTopics from '../api/leancloud/newTopics'
@@ -113,13 +113,9 @@ export function fetchUpItem(payload) {
         payload.error(err)
       }
     } else {
-      console.log('payload',payload)
       lcTopics.likeTopic(payload).then((result)=> {
         let up = TopicUpInfoItem.fromLeancloudApi(result)
-        if (payload.success) {
-          // console.log('success',payload.success)
-          payload.success()
-        }
+
         if (payload.upType == 'topicComment') {
           let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
           dispatch(updateAction({targetId: up.targetId}))
@@ -128,8 +124,9 @@ export function fetchUpItem(payload) {
           dispatch(updateAction({upItem: up}))
           dispatch(notifyTopicLike({topicId: payload.targetId}))
         }
-        // console.log('success',payload.success)
-
+        if (payload.success) {
+          payload.success()
+        }
       }, (err)=> {
         if (payload.error) {
           payload.error(err)
@@ -195,13 +192,13 @@ export function fetchPublishTopicComment(payload, formData) {
   }
 }
 
-export function fetchAllTopics (payload) {
-  return (dispath,getState)=>{
-    lcTopics.fetchTopicList(payload).then((results)=>{
+export function fetchAllTopics(payload) {
+  return (dispath, getState)=> {
+    lcTopics.fetchTopicList(payload).then((results)=> {
 
-      let topics =[]
+      let topics = []
       let topicList = []
-      results.topics.forEach((item)=>{
+      results.topics.forEach((item)=> {
         // console.log('item',item)
         let topic = TopicsItem.fromLeancloudApi(item)
         topics.push(topic)
@@ -209,111 +206,111 @@ export function fetchAllTopics (payload) {
       })
       // console.log('topicList---==>',topicList)
 
-      switch (payload.type){
+      switch (payload.type) {
         case "topics":
           let fetchCateTopics = undefined
-          if(!payload.isRefresh){
+          if (!payload.isRefresh) {
             fetchCateTopics = createAction(topicActionTypes.FETCH_ADD_CATE_TOPICS)
-          }else{
+          } else {
             fetchCateTopics = createAction(topicActionTypes.FETCH_SET_CATE_TOPICS)
           }
-          dispath(fetchCateTopics({topics: topics,topicList: topicList,categoryId: payload.categoryId}))
+          dispath(fetchCateTopics({topics: topics, topicList: topicList, categoryId: payload.categoryId}))
           break
         case "mainPageTopics":
           let fetchMainPageTopics = undefined
-          if(!payload.isRefresh){
+          if (!payload.isRefresh) {
             fetchMainPageTopics = createAction(topicActionTypes.FETCH_ADD_MAINPAGE_TOPICS)
-          }else{
+          } else {
             fetchMainPageTopics = createAction(topicActionTypes.FETCH_SET_MAINPAGE_TOPICS)
           }
-          dispath(fetchMainPageTopics({topics:topics,topicList:topicList}))
+          dispath(fetchMainPageTopics({topics: topics, topicList: topicList}))
           break
         case "userTopics":
           let fetchUserTopics = undefined
 
-          if(!payload.isRefresh){
+          if (!payload.isRefresh) {
             fetchUserTopics = createAction(topicActionTypes.FETCH_ADD_USER_TOPICS)
-          }else{
+          } else {
             fetchUserTopics = createAction(topicActionTypes.FETCH_SET_USER_TOPICS)
           }
 
-          dispath(fetchUserTopics({topics: topics,topicList: topicList,userId: payload.userId}))
+          dispath(fetchUserTopics({topics: topics, topicList: topicList, userId: payload.userId}))
           break
         case "localTopics":
           let fetchLocalTopics = undefined
-          if(!payload.isRefresh){
+          if (!payload.isRefresh) {
             fetchLocalTopics = createAction(topicActionTypes.FETCH_ADD_LOCAL_TOPICS)
-          }else{
+          } else {
             fetchLocalTopics = createAction(topicActionTypes.FETCH_SET_LOCAL_TOPICS)
           }
-          dispath(fetchLocalTopics({topics: topics,topicList: topicList}))
+          dispath(fetchLocalTopics({topics: topics, topicList: topicList}))
           break
         case "pickedTopics":
           let fetchPickedTopics = undefined
-          if(!payload.isRefresh){
+          if (!payload.isRefresh) {
             fetchPickedTopics = createAction(topicActionTypes.FETCH_ADD_PICKED_TOPICS)
-          }else{
+          } else {
             fetchPickedTopics = createAction(topicActionTypes.FETCH_SET_PICKED_TOPICS)
           }
-          dispath(fetchPickedTopics({topics: topics,topicList: topicList}))
+          dispath(fetchPickedTopics({topics: topics, topicList: topicList}))
           break
 
       }
-      if(payload.success){
-        payload.success(results.topics.length==0)
+      if (payload.success) {
+        payload.success(results.topics.length == 0)
       }
-    },(err)=>{
-      if(payload.error){
+    }, (err)=> {
+      if (payload.error) {
         payload.error(err)
       }
     })
   }
 }
 
-export function fetchTopicDetailInfo(payload){
-  return (dispatch,getState)=>{
-    lcTopics.fetchTopicDetailInfo(payload).then((results)=>{
+export function fetchTopicDetailInfo(payload) {
+  return (dispatch, getState)=> {
+    lcTopics.fetchTopicDetailInfo(payload).then((results)=> {
       // console.log('results==============>',results)
       let upList = []
-      results.likeUsers.forEach((item)=>{
+      results.likeUsers.forEach((item)=> {
         let up = TopicUpInfoItem.fromLeancloudApi(item)
         upList.push(up)
       })
-        let upAction = createAction(topicActionTypes.FETCH_SET_TOPIC_UPS)
-        dispatch(upAction({topicId: payload.topicId,upList: upList}))
+      let upAction = createAction(topicActionTypes.FETCH_SET_TOPIC_UPS)
+      dispatch(upAction({topicId: payload.topicId, upList: upList}))
 
       // console.log('upList',upList)
       let followerAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
       dispatch(followerAction(results.followerCount))
 
-    },(err)=>{
-      console.log('err===>',err)
+    }, (err)=> {
+      console.log('err===>', err)
     })
   }
 }
 
-export function fetchUpsByTopicId(payload){
-  return (dispatch,getState)=>{
-    lcTopics.fetchUpsByTopicId(payload).then((results)=>{
+export function fetchUpsByTopicId(payload) {
+  return (dispatch, getState)=> {
+    lcTopics.fetchUpsByTopicId(payload).then((results)=> {
       // console.log('results==============>',results)
       let upList = []
-      results.ups.forEach((item)=>{
+      results.ups.forEach((item)=> {
         let up = TopicUpInfoItem.fromLeancloudApi(item)
         upList.push(up)
       })
-      if(!!payload.isRefresh){
+      if (!!payload.isRefresh) {
         let upAction = createAction(topicActionTypes.FETCH_SET_TOPIC_UPS)
-        dispatch(upAction({topicId: payload.topicId,upList: upList}))
-      }else{
+        dispatch(upAction({topicId: payload.topicId, upList: upList}))
+      } else {
         let upAction = createAction(topicActionTypes.FETCH_ADD_TOPIC_UPS)
-        dispatch(upAction({topicId: payload.topicId,upList: upList}))
+        dispatch(upAction({topicId: payload.topicId, upList: upList}))
       }
       if (payload.success) {
         payload.success(results.ups.length)
         // payload.success(topicLikeUsers.size <= 0)
       }
-    },(err)=>{
-      console.log('err===>',err)
+    }, (err)=> {
+      console.log('err===>', err)
     })
   }
 }
