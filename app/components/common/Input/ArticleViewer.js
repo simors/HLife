@@ -15,7 +15,7 @@ import {
 import Gallery from 'react-native-gallery'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import {CachedImage} from 'react-native-img-cache'
-import {LazyloadView} from '../../common/Lazyload'
+import {LazyloadView,LazyloadImage} from '../../common/Lazyload'
 import {getThumbUrl} from '../../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -116,9 +116,9 @@ export default class ArticleViewer extends Component {
       <View key={index} style={{justifyContent: 'center', alignItems: 'center'}}>
         <TouchableWithoutFeedback style={{flex:1}} onPress={() => this.toggleModal(!this.state.imgModalShow, url)}>
           <LazyloadView host={this.props.lazyHost} style={{width: imgWidth, height: imgHeight}}>
-            <CachedImage mutable style={[styles.imgInputStyle, {width: imgWidth, height: imgHeight}]}
+            <LazyloadImage host={this.props.lazyHost} mutable style={[styles.imgInputStyle, {width: imgWidth, height: imgHeight}]}
                    source={{uri: getThumbUrl(url, imgWidth, imgHeight)}}>
-            </CachedImage>
+            </LazyloadImage>
           </LazyloadView>
         </TouchableWithoutFeedback>
       </View>
