@@ -263,9 +263,7 @@ function handleFetchUpCommentSuccess(state, action) {
   let comment = state.getIn(['allComments',targetId]).toJS()||{}
   comment.upCount = comment.upCount+1
   let newComment = TopicCommentsItem.fromLeancloudApi(comment)
-
   state = state.setIn(['allComments',targetId],newComment)
-  console.log('targetId===>',targetId)
 
   return state
 }
