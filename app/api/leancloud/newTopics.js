@@ -103,3 +103,12 @@ export function fetchTopicList(payload){
     throw err
   })
 }
+
+export function fetchTopicDetailInfo(payload){
+  console.log('payloadhahahahahahahahaha',payload)
+  return AV.Cloud.run('fetchTopicDetailInfo',payload).then((results)=>{
+    return results
+  },(err)=>{
+    throw err
+  })
+}

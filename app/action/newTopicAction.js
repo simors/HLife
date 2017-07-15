@@ -3,7 +3,7 @@
  */
 import {createAction} from 'redux-actions'
 import * as topicActionTypes from '../constants/newTopicActionTypes'
-import {TopicCommentsItem,TopicsItem} from '../models/NewTopicModel'
+import {TopicCommentsItem,TopicsItem,TopicUpInfoItem} from '../models/NewTopicModel'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import * as lcTopics from '../api/leancloud/newTopics'
@@ -17,6 +17,8 @@ import {trim} from '../util/Utils'
 import * as topicSelector from '../selector/newTopicSelector'
 import {store} from '../store/persistStore'
 import * as authSelector from '../selector/authSelector'
+import * as AuthTypes from '../constants/authActionTypes'
+
 
 export function fetchAllComments(payload) {
   // console.log('hahahahahahahahahah')
@@ -258,6 +260,27 @@ export function fetchAllTopics (payload) {
       if(payload.error){
         payload.error(err)
       }
+    })
+  }
+}
+
+export function fetchTopicDetailInfo(payload){
+  return (dispatch,getState)=>{
+    lcTopics.fetchTopicDetailInfo(payload).then((results)=>{
+      // console.log('results==============>',results)
+      let upList = []
+      results.likeUsers.forEach((item)=>{
+        let up = TopicUpInfoItem.fromLeancloudApi(item)
+        upList.push(up)
+      })
+      let upAction = createAction(topicActionTypes.FETCH_TOPIC_UPS)
+      dispatch(upAction({topicId: payload.topicId,upList: upList}))
+      console.log('upList',upList)
+      let followerAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
+      dispatch(followerAction(results.followerCount))
+
+    },(err)=>{
+      console.log('err===>',err)
     })
   }
 }

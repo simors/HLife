@@ -34,7 +34,8 @@ export const TopicCommentsConfig = Record({
   province : undefined,
   country : undefined,
   district : undefined,
-  createdDate : undefined
+  createdDate : undefined,
+  updatedAt : undefined
 }, 'TopicCommentsConfig')
 
 export class TopicCommentsItem extends TopicCommentsConfig {
@@ -117,6 +118,7 @@ export const TopicsConfig = Record({
   createdDate: undefined,
   lastLoginDuration: undefined,
   picked: undefined,
+
 }, 'TopicsConfig')
 
 export class TopicsItem extends TopicsConfig {
@@ -172,6 +174,29 @@ export class TopicsItem extends TopicsConfig {
   }
 }
 
+export const TopicUpInfoConfig = Record({
+  upId: undefined,
+  targetId: undefined,
+  nickname: undefined, //所属用户昵称
+  userId:undefined,
+  createdAt: undefined,  //创建时间
+  avatar: undefined,  //用户头像
+}, 'TopicUpInfo')
+
+export class TopicUpInfoItem extends TopicUpInfoConfig {
+  static fromLeancloudApi(lcObj) {
+    let topicUpInfoConfig = new TopicUpInfoConfig()
+    return topicUpInfoConfig.withMutations((record)=> {
+      record.set('upId',lcObj.id)
+      record.set('targetId',lcObj.targetId)
+      record.set('createdAt', lcObj.createdAt)
+      record.set('nickname', lcObj.user?lcObj.user.nickname:'')
+      record.set('avatar', lcObj.user?lcObj.user.avatar:'')
+      record.set('userId', lcObj.user?lcObj.user.id:'')
+    })
+  }
+}
+
 export const NewTopics = Record({
   allTopics: Map(),
   pickedTopics: List(),
@@ -184,4 +209,7 @@ export const NewTopics = Record({
   commentsForComment : Map(),
   myCommentsUps : Set(),
   myTopicsUps : Set(),
+  allUps: Map(),
+  topicUps: Map(),
+
 }, 'NewTopic')

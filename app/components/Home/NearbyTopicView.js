@@ -143,7 +143,7 @@ const mapStateToProps = (state, ownProps) => {
   let mainPageTopics = getMainPageTopics(state)
   let newMainPageTopics = getMainPageTopics(state)
   newProps.mainPageTopics = mainPageTopics.allTopics
-  console.log('newProps',newProps.mainPageTopics)
+  // console.log('newProps',newProps.mainPageTopics)
   return newProps
 }
 

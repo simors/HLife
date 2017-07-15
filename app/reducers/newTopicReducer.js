@@ -52,6 +52,8 @@ export default function newTopicReducer(state = initialState, action) {
       return handleAddUserTopics(state,action)
     case TopicTypes.FETCH_SET_USER_TOPICS:
       return handleSetUserTopics(state,action)
+    case TopicTypes.FETCH_TOPIC_UPS:
+      return handleFetchTopicUps(state,action)
     // case TopicTypes.DISABLE_TOPIC:
     //   return handleDisableTopic(state,action)
     case REHYDRATE:
@@ -303,6 +305,29 @@ function handlePublishCommentSuccess(state, action) {
   return state
 }
 
+function handleFetchTopicUps(state,action){
+  let payload = action.payload
+  let topicId = payload.topicId
+  let ups = payload.upList
+  let upList = []
+  ups.forEach((item)=>{
+    upList.push(item.upId)
+  })
+
+  state = state.setIn(['topicUps',topicId], new List(upList))
+  state = handleFetchAllUps(state,ups)
+  return state
+}
+
+function handleFetchAllUps(state,ups) {
+
+  ups.forEach((up)=>{
+    state = state.setIn(['allUps',up.upId],up)
+  })
+  return state
+}
+
+
 function onRehydrate(state, action) {
   var incoming = action.payload.NEWTOPIC
   if (incoming) {
@@ -405,6 +430,8 @@ function onRehydrate(state, action) {
     if(mainPageTopicList&&mainPageTopicList.length){
       state = state.set('mainPageTopics',  List(mainPageTopicList))
     }
+
+
   }
   return state
 }

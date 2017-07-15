@@ -36,7 +36,7 @@ import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicAc
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import * as authSelector from '../../selector/authSelector'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {getCommentsByTopicId,isTopicLiked} from '../../selector/newTopicSelector'
+import {getCommentsByTopicId,isTopicLiked,getTopicUps} from '../../selector/newTopicSelector'
 import {getTopicLikedTotalCount, getTopicComments, getTopicLikeUsers} from '../../selector/topicSelector'
 import {
   fetchTopicLikesCount,
@@ -56,7 +56,7 @@ import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
-import {fetchAllComments,fetchUpItem,fetchPublishTopicComment} from '../../action/newTopicAction'
+import {fetchAllComments,fetchUpItem,fetchPublishTopicComment,fetchTopicDetailInfo} from '../../action/newTopicAction'
 import shallowequal from 'shallowequal'
 import TopicCommentList from './TopicCommentList'
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -79,9 +79,9 @@ export class TopicDetail extends Component {
 
   componentWillMount() {
     this.refreshData()
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
-    })
+    // InteractionManager.runAfterInteractions(() => {
+    //   this.props.fetchTopicLikesCount({topicId: this.props.topic.objectId, upType: 'topic'})
+    // })
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicLikeUsers({topicId: this.props.topic.objectId, isRefresh: true})
     })
@@ -90,6 +90,10 @@ export class TopicDetail extends Component {
     //     this.props.fetchTopicIsLiked({topicId: this.props.topic.objectId, upType: 'topic'})
     //   }
     // })
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchTopicDetailInfo({topicId: this.props.topic.objectId, userId: this.props.topic.userId})
+    })
+
     InteractionManager.runAfterInteractions(() => {
       if(this.props.topic && this.props.topic.userId) {
         this.props.fetchOtherUserFollowersTotalCount({userId: this.props.topic.userId})
@@ -376,7 +380,6 @@ export class TopicDetail extends Component {
       DEFAULT_SHARE_DOMAIN + "topicShare/" + this.props.topic.objectId
 
 
-    console.log("topicShare url:", shareUrl)
 
     Actions.SHARE({
       title: this.props.topic.title || "邻家话题",
@@ -763,7 +766,6 @@ export class TopicDetail extends Component {
       )
     }else {
       let isLiked = this.props.isLiked
-      console.log('isliked=====>',isLiked)
       let likeImgSource = require("../../assets/images/like_unselect_main.png")
       if(isLiked) {
         likeImgSource = require("../../assets/images/like_selected.png")
@@ -823,6 +825,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   const likesCount = getTopicLikedTotalCount(state, ownProps.topic.objectId)
   const topicLikeUsers = getTopicLikeUsers(state, ownProps.topic.objectId)
+  const allUps = getTopicUps(state,ownProps.topic.objectId)
   const isLiked = isTopicLiked(state, ownProps.topic.objectId)
   const commentsTotalCount = topicComments ? topicComments.length : undefined
 
@@ -839,7 +842,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     ds: ds.cloneWithRows(dataArray),
     topicComments: topicComments,
-    topicLikeUsers: topicLikeUsers,
+    topicLikeUsers: allUps.allUps,
     likesCount: likesCount,
     isLogin: isLogin,
     isLiked: isLiked,
@@ -866,7 +869,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShareDomain,
   fetchAllComments,
   fetchUpItem,
-  fetchPublishTopicComment
+  fetchPublishTopicComment,
+  fetchTopicDetailInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicDetail)
