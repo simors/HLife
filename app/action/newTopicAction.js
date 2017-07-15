@@ -119,10 +119,10 @@ export function fetchUpItem(payload) {
       lcTopics.likeTopic(payload).then((result)=> {
         if (payload.upType == 'topicComment') {
           let updateAction = createAction(topicActionTypes.UP_COMMENT_SUCCESS)
-          dispatch(updateAction({targetId: result}))
+          dispatch(updateAction({targetId: result.targetId}))
         } else if (payload.upType == 'topic') {
           let updateAction = createAction(topicActionTypes.UP_TOPIC_SUCCESS)
-          dispatch(updateAction({targetId: result}))
+          dispatch(updateAction({targetId: result.targetId}))
         }
         if (payload.success) {
 
