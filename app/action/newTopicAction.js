@@ -172,9 +172,7 @@ export function fetchPublishTopicComment(payload, formData) {
     lcTopics.publishTopicComments(publishTopicCommentPayload).then((result) => {
       console.log('result===', result)
       let comment = TopicCommentsItem.fromLeancloudApi(result)
-      if (payload.success) {
-        payload.success()
-      }
+
       let publishCommentAction = createAction(topicActionTypes.PUBLISH_COMMENT_SUCCESS)
       dispatch(publishCommentAction({comment: comment}))
       dispatch(notifyTopicComment({
@@ -184,7 +182,11 @@ export function fetchPublishTopicComment(payload, formData) {
         content: payload.content,
         commentTime: new Date(result.createdAt),
       }))
+
       dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
+      if (payload.success) {
+        payload.success()
+      }
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

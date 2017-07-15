@@ -306,7 +306,7 @@ export class TopicDetail extends Component {
     this.setState({
       likeCount : this.state.likeCount+1
     })
-    console.log('likeCount',this.state.likeCount)
+    // console.log('likeCount',this.state.likeCount)
 
   }
 
@@ -833,8 +833,6 @@ const mapStateToProps = (state, ownProps) => {
   let enableShare = topicCategory.enableShare
 
   let shareDomain = getShareDomain(state)
-  console.log('this.props.allups',allUps.allUps)
-  console.log('this.props.topic',ownProps.topic.likeCount)
   return {
     ds: ds.cloneWithRows(dataArray),
     topicComments: topicComments,

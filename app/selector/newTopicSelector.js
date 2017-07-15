@@ -148,3 +148,10 @@ export function getTopicUps(state,topicId){
   }
   return {upList:ups,allUps:upList}
 }
+
+export function getTopicByTopicId(state,topicId){
+  let topic = state.NEWTOPIC.get('allTopics',topicId)
+  if(topic){
+    return topic.toJS()
+  }
+}
