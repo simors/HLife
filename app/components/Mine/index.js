@@ -28,7 +28,7 @@ import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {fetchUserPoint} from '../../action/pointActions'
 import * as authSelector from '../../selector/authSelector'
-import {IDENTITY_SHOPKEEPER, IDENTITY_PROMOTER} from '../../constants/appConfig'
+import {IDENTITY_SHOPKEEPER, INVITE_SHOP} from '../../constants/appConfig'
 import {getCurrentPromoter, getPromoterTenant, getShopTenant} from '../../action/promoterAction'
 import {
   isPromoterPaid,
@@ -93,7 +93,12 @@ class Mine extends Component {
               city: userOwnedShopInfo.geoCity,
               success: (tenant) =>{
                 Actions.PAYMENT({
-                  metadata: {'shopId':userOwnedShopInfo.id, 'tenant': tenant, 'user': this.props.userInfo.id},
+                  metadata: {
+                    'shopId':userOwnedShopInfo.id,
+                    'tenant': tenant,
+                    'user': this.props.userInfo.id,
+                    'dealType': INVITE_SHOP
+                  },
                   price: tenant,
                   subject: '店铺入驻汇邻优店加盟费',
                   paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',

@@ -183,7 +183,12 @@ class ShopRegister extends Component {
         this.isSubmiting = false
         Loading.hide(this.loading)
         Actions.PAYMENT({
-          metadata: {'shopId':shopInfo.objectId, 'tenant': tenant, 'user': this.props.userInfo.id},
+          metadata: {
+            'shopId':shopInfo.objectId,
+            'tenant': tenant,
+            'user': this.props.userInfo.id,
+            'dealType': appConfig.INVITE_SHOP
+          },
           price: tenant,
           subject: '店铺入驻汇邻优店加盟费',
           popNum: 2,
