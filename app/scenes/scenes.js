@@ -53,7 +53,6 @@ import Popup from '../components/common/Popup'
 import TopicDetail from '../components/Find/TopicDetail'
 import PrivateMessageBox from '../components/Message/PrivateMessageBox'
 import ArticleInputTest from '../components/common/Input/ArticleInputTest'
-import PromoterAuth from '../components/Mine/promote/PromoterAuth'
 import GetInviteCode from '../components/Mine/promote/GetInviteCode'
 import PromoterAuthSuccess from '../components/Mine/promote/PromoterAuthSuccess'
 import FavoriteArticles from '../components/Mine/myFavorite/FavoriteArticles'
@@ -175,7 +174,6 @@ export const scenes = Actions.create(
       <Scene key="TEXTIMAGE" component={TextImageTest} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="ARTICLE_INPUT_TEST" component={ArticleInputTest} />
-      <Scene key="PROMOTER_AUTH" component={PromoterAuth} />
       <Scene key="GET_INVITE_CODE" component={GetInviteCode}/>
       <Scene key="PROMOTER_AUTH_SUCCESS" component={PromoterAuthSuccess}/>
       <Scene key="FAVORITE_ARTICLES" component={FavoriteArticles}/>
