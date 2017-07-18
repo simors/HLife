@@ -118,3 +118,27 @@ export function fetchUpsByTopicId(payload){
     throw err
   })
 }
+
+export function publishTopics(payload) {
+  console.log('payload==>',payload)
+  return AV.Cloud.run('topicPublishTopic',{payload:payload}).then( (result)=> {
+    // console.log('result===>',result)
+
+    return TopicsItem.fromLeancloudApi(result)
+  }, function (err) {
+    // console.log('err===>',err.message)
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function updateTopic(payload) {
+
+  return AV.Cloud.run('topicUpdateTopic',{payload:payload}).then(function (result) {
+
+    return TopicsItem.fromLeancloudApi(result)
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}

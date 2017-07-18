@@ -56,6 +56,10 @@ export default function newTopicReducer(state = initialState, action) {
       return handleFetchAddTopicUps(state,action)
     case TopicTypes.FETCH_SET_TOPIC_UPS:
       return handleFetchSetTopicUps(state,action)
+    case TopicTypes.FETCH_PUBLISH_TOPIC_SUCCESS:
+      return handlePublishTopicSuccess(state,action)
+    case TopicTypes.FETCH_UPDATE_TOPIC_SUCCESS:
+      return handleUpdateTopicSuccess(state,action)
     // case TopicTypes.DISABLE_TOPIC:
     //   return handleDisableTopic(state,action)
     case REHYDRATE:
@@ -356,6 +360,30 @@ function handleFetchAllUps(state,ups) {
   ups.forEach((up)=>{
     state = state.setIn(['allUps',up.upId],up)
   })
+  return state
+}
+
+function handlePublishTopicSuccess(state,action) {
+  console.log('action.payload==>',action.payload)
+
+  let topic = action.payload.topic
+  console.log('topiccategroyId==>',topic.categoryId)
+  state = state.setIn(['allTopics',topic.objectId],topic)
+  let _topicList = state.getIn(['cateTopics',topic.categoryId])|| new List()
+  if(_topicList&&_topicList.size){
+    _topicList.insert(0,topic.objectId)
+    console.log('_topicList==>',_topicList)
+    state = state.setIn(['cateTopics',topic.categoryId],_topicList)
+  }else{
+    let topics = [topic]
+    state = state.setIn(['cateTopics',topic.categoryId],new List(topics))
+  }
+  return state
+}
+
+function handleUpdateTopicSuccess(state,action) {
+  let topic = action.payload.topic
+  state = state.setIn(['allTopics',topic.objectId],topic)
   return state
 }
 

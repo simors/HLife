@@ -38,7 +38,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import * as AVUtils from '../../util/AVUtils'
 import {getGeopoint} from '../../selector/locSelector'
 import Popup from '@zzzkk2009/react-native-popup'
-
+import {fetchPublishTopic} from '../../action/newTopicAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -166,7 +166,7 @@ class PublishTopics extends Component {
           text: '确定',
           style: {color: THEME.base.mainColor},
           callback: ()=> {
-            this.props.publishTopicFormData({
+            this.props.fetchPublishTopic({
               formKey: topicForm,
               images: this.insertImages,
               categoryId: this.state.selectedTopic.objectId,
@@ -187,7 +187,7 @@ class PublishTopics extends Component {
         }
       })
     } else {
-      this.props.publishTopicFormData({
+      this.props.fetchPublishTopic({
         formKey: topicForm,
         images: this.insertImages,
         categoryId: this.state.selectedTopic.objectId,
@@ -415,7 +415,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishTopicFormData,
   fetchTopicDraft,
   handleDestroyTopicDraft,
-  inputFormOnDestroy
+  inputFormOnDestroy,
+  fetchPublishTopic
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishTopics)

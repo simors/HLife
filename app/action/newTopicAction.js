@@ -318,3 +318,132 @@ export function fetchUpsByTopicId(payload) {
     })
   }
 }
+
+export function fetchPublishTopic(payload, formData) {
+  return (dispatch, getState) => {
+    let formData = undefined
+    if (payload.formKey) {
+      let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+      dispatch(formCheck({formKey: payload.formKey}))
+      let isFormValid = isInputFormValid(getState(), payload.formKey)
+      if (isFormValid && !isFormValid.isValid) {
+        if (payload.error) {
+          payload.error({message: isFormValid.errMsg})
+        }
+        return
+      }
+      formData = getInputFormData(getState(), payload.formKey)
+    }
+    let position = locSelector.getLocation(getState())
+    let province = locSelector.getProvince(getState())
+    let city = locSelector.getCity(getState())
+    let district = locSelector.getDistrict(getState())
+    let geoPoint = locSelector.getGeopoint(getState())
+    ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
+      // if (!leanUris || leanUris == '') {
+      //   throw new Error('话题发布失败，请重新发布！')
+      // }
+      if(leanUris.length!=0){
+        if (formData.topicContent && formData.topicContent.text.length &&
+          leanUris && leanUris.length) {
+          let contentImgs = leanUris.concat([]).reverse()
+          formData.topicContent.text.forEach((value) => {
+            if (value.type == 'COMP_IMG' && value.url)
+              value.url = contentImgs.pop()
+          })
+        }
+      }
+
+      let publishTopicPayload = {
+        position: position,
+        geoPoint: new AV.GeoPoint(geoPoint.latitude, geoPoint.longitude),
+        province: province,
+        city: city,
+        district: district,
+        title: trim(formData.topicName.text),
+        content: JSON.stringify(formData.topicContent.text),
+        abstract: trim(formData.topicContent.abstract),
+        imgGroup: leanUris,
+        categoryId: payload.categoryId,
+        userId: payload.userId,
+      }
+      return lcTopics.publishTopics(publishTopicPayload).then((result) => {
+
+        let publishAction = createAction(topicActionTypes.FETCH_PUBLISH_TOPIC_SUCCESS)
+        dispatch(publishAction({topic: result, stateKey: payload.stateKey}))
+        dispatch(pointAction.calPublishTopic({userId: payload.userId}))        // 计算发布话题积分
+        if (payload.success) {
+          payload.success()
+        }
+      }).catch((error) => {
+        console.log("error: ", error)
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error({message: error.message})
+      }
+    })
+  }
+}
+
+export function fetchUpdateTopic(payload, formData) {
+  return (dispatch, getState) => {
+    let formData = undefined
+    if (payload.formKey) {
+      let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
+      dispatch(formCheck({formKey: payload.formKey}))
+      let isFormValid = isInputFormValid(getState(), payload.formKey)
+      if (isFormValid && !isFormValid.isValid) {
+        if (payload.error) {
+          payload.error({message: isFormValid.errMsg})
+        }
+        return
+      }
+      formData = getInputFormData(getState(), payload.formKey)
+    }
+      ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
+        if (!leanUris || leanUris == '') {
+          throw new Error('话题发布失败，请重新发布！')
+        }
+        if(leanUris.length!=0){
+          if (formData.topicContent && formData.topicContent.text.length &&
+            leanUris && leanUris.length) {
+            let contentImgs = leanUris.concat([]).reverse()
+            formData.topicContent.text.forEach((value) => {
+              if (value.type == 'COMP_IMG' && value.url)
+                value.url = contentImgs.pop()
+            })
+          }
+        }
+        let updateTopicPayload = {
+          title: trim(formData.topicName.text),
+          content: JSON.stringify(formData.topicContent.text),
+          abstract: trim(formData.topicContent.abstract),
+          imgGroup: leanUris,
+          categoryId: payload.categoryId,
+          topicId: payload.topicId,
+        }
+        return lcTopics.updateTopic(updateTopicPayload).then((result) => {
+          if (payload.success) {
+            payload.success()
+          }
+          let updateAction = createAction(topicActionTypes.FETCH_UPDATE_TOPIC_SUCCESS)
+          dispatch(updateAction({topic: result}))
+        }).catch((error) => {
+          if (payload.error) {
+            payload.error(error)
+          }
+        })
+      }, (err)=> {
+        throw err
+      }).catch((error) => {
+        if (payload.error) {
+          payload.error(error)
+        }
+      })
+
+  }
+}
