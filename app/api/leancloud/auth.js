@@ -236,7 +236,7 @@ export function registerWithWX(payload) {
   let phone = payload.phone
   let smsCode = payload.smsCode
   let wx_name = payload.name
-  let avatar = payload.avatar
+  let wx_avatar = payload.avatar
 
   let authData = {
     "openid": payload.unionid,
@@ -249,11 +249,19 @@ export function registerWithWX(payload) {
 
     return AV.User.associateWithAuthData(user, platform, authData)
   }).then((authUser) => {
-    if(authUser && !authUser.attributes.nickname)
-      authUser.set('nickname', wx_name)
-    if(authUser && !authUser.attributes.avatar)
-      authUser.set('avatar', avatar)
-    return authUser.save()
+    var user = AV.Object.createWithoutData('_User', authUser.id)
+    var nickname = undefined
+    var avatar = undefined
+    return user.fetch().then((userInfo) => {
+      nickname = userInfo.attributes.nickname
+      avatar = userInfo.attributes.avatar
+      if(!nickname)
+        user.set('nickname', wx_name)
+      if(!avatar)
+        user.set('avatar', wx_avatar)
+      return user.save()
+    })
+
   }).then((loginedUser) => {
     updateUserLocationInfo({
       userId: loginedUser.id
