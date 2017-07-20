@@ -364,15 +364,15 @@ function handleFetchAllUps(state,ups) {
 }
 
 function handlePublishTopicSuccess(state,action) {
-  console.log('action.payload==>',action.payload)
+  // console.log('action.payload==>',action.payload)
 
   let topic = action.payload.topic
-  console.log('topiccategroyId==>',topic.categoryId)
+  // console.log('topiccategroyId==>',topic.categoryId)
   state = state.setIn(['allTopics',topic.objectId],topic)
   let _topicList = state.getIn(['cateTopics',topic.categoryId])|| new List()
   if(_topicList&&_topicList.size){
     _topicList.insert(0,topic.objectId)
-    console.log('_topicList==>',_topicList)
+    // console.log('_topicList==>',_topicList)
     state = state.setIn(['cateTopics',topic.categoryId],_topicList)
   }else{
     let topics = [topic]

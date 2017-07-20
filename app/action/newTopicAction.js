@@ -405,9 +405,9 @@ export function fetchUpdateTopic(payload, formData) {
       formData = getInputFormData(getState(), payload.formKey)
     }
       ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
-        if (!leanUris || leanUris == '') {
-          throw new Error('话题发布失败，请重新发布！')
-        }
+        // if (!leanUris || leanUris == '') {
+        //   throw new Error('话题发布失败，请重新发布！')
+        // }
         if(leanUris.length!=0){
           if (formData.topicContent && formData.topicContent.text.length &&
             leanUris && leanUris.length) {
