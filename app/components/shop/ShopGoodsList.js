@@ -52,6 +52,22 @@ export default class ShopGoodsList extends Component {
     )
   }
 
+  renderLastColumn(goodInfo){
+    return (
+      <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
+        <View style={[styles.channelWrap,{width:normalizeW(348)}]}>
+          <View style={[styles.defaultImageStyles,{width:normalizeW(348)}]}>
+            <CachedImage mutable style={[styles.defaultImageStyles,{width:normalizeW(348)}]}
+                         source={goodInfo.coverPhoto ? {uri: getThumbUrl(goodInfo.coverPhoto, normalizeW(348), normalizeH(169))} : require("../../assets/images/default_goods_cover.png")}/>
+          </View>
+          {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
+          <Text style={ styles.channelText} numberOfLines={1}>{goodInfo.goodsName}</Text>
+          <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + goodInfo.price}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
   renderRows() {
     const imageStyle = {
       flex: 1,
@@ -59,6 +75,13 @@ export default class ShopGoodsList extends Component {
     if(this.props.shopGoodsList&&this.props.shopGoodsList.length){
       let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
         if(key<6) {
+          if(this.props.shopGoodsList.length==1||3||5){
+            if(key == this.props.shopGoodsList.length-1){
+              return <View key={key} style={imageStyle}>
+                {this.renderLastColumn(item)}
+              </View>
+            }
+          }
           return (
             <View key={key} style={imageStyle}>
               {this.renderColumn(item)}
@@ -121,8 +144,8 @@ const styles = StyleSheet.create({
   },
   channelWrap: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     height: normalizeH(224),
     width: normalizeW(169),
     overflow: 'hidden',
@@ -134,19 +157,22 @@ const styles = StyleSheet.create({
   channelText: {
     flex:1,
     flexDirection:'row',
+    marginLeft:normalizeW(10),
+
     marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
-    fontSize: em(12),
+    fontSize: em(13),
     alignItems: 'flex-start',
     color: '#5A5A5A'
   },
   channelPrice: {
     flex:1,
-    marginTop: normalizeH(6),
+    marginBottom: normalizeH(6),
+    marginLeft:normalizeW(10),
     width: normalizeW(144),
     height: 15,
-    fontSize: em(15),
+    fontSize: em(17),
     color: '#00BE96'
   },
   container: {
