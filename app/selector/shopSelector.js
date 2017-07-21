@@ -13,7 +13,7 @@ export function selectShopList(state) {
 }
 
 export function selectLocalShopList(state) {
-  return selectShop(state).localShopList
+  return selectShop(state).localShopList || []
 }
 
 export function selectShopPromotionList(state) {

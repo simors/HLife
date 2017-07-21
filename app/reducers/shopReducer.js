@@ -159,14 +159,14 @@ function handleUpdatePagingShopList(state, action) {
 
 function handleUpdateLocalShopList(state, action) {
   let payload = action.payload
-  state = state.set('localShopList',  payload.shopList)
+  state = state.set('localShopList',  new List(payload.shopList))
   return state
 }
 
 function handleUpdateLocalPagingShopList(state, action) {
   let payload = action.payload
   let shopList = state.get('localShopList')
-  shopList = shopList.concat(payload.shopList)
+  shopList = shopList.concat(new List(payload.shopList))
   state = state.set('localShopList',  shopList)
   return state
 }
