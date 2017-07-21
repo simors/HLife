@@ -145,7 +145,7 @@ function handleFetchUserFollowedShopPagingListSuccess(state, action) {
 
 function handleUpdateShopList(state, action) {
   let payload = action.payload
-  state = state.set('shopList',  payload.shopList)
+  state = state.set('shopList',  new List(payload.shopList))
   return state
 }
 
