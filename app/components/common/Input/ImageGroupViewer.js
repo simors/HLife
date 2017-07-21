@@ -43,7 +43,7 @@ export default class ImageGroupViewer extends Component {
   }
 
   calculateImageWidth(containerWidth) {
-    let calImgSize = 107
+    let calImgSize = this.state.calImgSize
     if ('oneLine' != this.props.showMode) {
       calImgSize = (containerWidth - (this.props.imageLineCnt - 1) * this.state.marginSize) / this.props.imageLineCnt
     }
