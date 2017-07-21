@@ -35,6 +35,7 @@ export function fetchUserTopicsTotalCount(payload) {
   }
 }
 
+//已弃用
 export function publishTopicFormData(payload) {
   return (dispatch, getState) => {
     let formData = undefined
