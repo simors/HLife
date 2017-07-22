@@ -481,6 +481,23 @@ class ShopDetail extends Component {
     Actions.PUBLISH_SHOP_COMMENT({id: this.props.id, shopOwnerId: this.props.shopDetail.owner.id})
   }
 
+  renderOwnerBanner() {
+    let avatar = require('../../assets/images/default_portrait.png')
+    if (this.props.shopDetail.owner.avatar) {
+      avatar = {uri: getThumbUrl(this.props.shopDetail.owner.avatar, 32, 32)}
+    }
+    return (
+      <View style={styles.ownerWrap}>
+        <View style={styles.ownerLeft}>
+        <Text style={styles.ownerTitle}>掌柜名</Text>
+        <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
+        <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
+          </View>
+        <CachedImage style={styles.ownerContact} mutable source={require('../../assets/images/service_24.png')}/>
+      </View>
+    )
+  }
+
   renderComments() {
     if (this.props.shopComments && this.props.shopComments.length) {
       let avatar = require('../../assets/images/default_portrait.png')
@@ -535,7 +552,7 @@ class ShopDetail extends Component {
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
             <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评·{this.props.shopCommentsTotalCount}</Text>
+            <Text style={styles.titleTxt}>留言板·{this.props.shopCommentsTotalCount}</Text>
           </View>
 
           {commentsView}
@@ -811,7 +828,7 @@ class ShopDetail extends Component {
               this.showShopAlbum()
             }} style={{flex: 1}}>
               <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(200)}}
-                     source={{uri:getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
+                           source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
                 <View style={{
                   position: 'absolute',
                   right: 15,
@@ -826,6 +843,7 @@ class ShopDetail extends Component {
                 </View>
               </CachedImage>
             </TouchableOpacity>
+            {this.renderOwnerBanner()}
             <View style={styles.shopHead}>
               <View style={styles.shopHeadLeft}>
                 <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
@@ -889,14 +907,14 @@ class ShopDetail extends Component {
             <ShopGoodsList shopGoodsList={this.props.goodList} size={6}/>
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
-                { this.props.goodList&&this.props.goodList.length?<TouchableOpacity onPress={()=> {
+                { this.props.goodList && this.props.goodList.length ? <TouchableOpacity onPress={()=> {
                   Actions.SHOP_GOODSLIST_VIEW({
                     id: this.props.shopDetail.id,
                   })
                 }}>
                   <Text style={styles.allCommentsLink}>查看全部商品</Text>
-                </TouchableOpacity>:<View style={styles.noDataContainer}>
-                  <Text style={{fontSize:12,color:'#5A5A5A'}}>暂无商品</Text>
+                </TouchableOpacity> : <View style={styles.noDataContainer}>
+                  <Text style={{fontSize: 12, color: '#5A5A5A'}}>暂无商品</Text>
                 </View>}
               </View>
             </View>
@@ -1560,12 +1578,53 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
   },
-  noDataContainer:{
+  noDataContainer: {
     flex: 1,
-    justifyContent:'center',
-    alignItems:'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     // borderBottomWidth: 1,
     // borderBottomColor: '#F5F5F5',
     // height: normalizeH(40),
   },
+  ownerWrap: {
+    width: normalizeW(360),
+    marginTop: normalizeH(10),
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    flex: 1,
+    flexDirection: 'row',
+    borderBottomRightRadius: 50,
+    borderTopRightRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
+  },
+  ownerTitle: {
+    marginLeft: normalizeW(15),
+    fontSize: em(15),
+    color: '#000000',
+    // fontFamily: 'FZZYJS--GB1-0'
+  },
+  ownerAvatar: {
+    width: normalizeW(32),
+    height: normalizeH(32),
+    borderRadius: 15,
+    marginLeft: normalizeW(5)
+  },
+  ownerName: {
+    color: '#000000',
+    fontSize: em(15),
+    marginLeft: normalizeW(10)
+
+  },
+  ownerLeft:{
+    flex:1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ownerContact: {
+    height: normalizeH(32),
+    width: normalizeW(32),
+    marginRight: normalizeW(10)
+
+  }
 })

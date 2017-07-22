@@ -219,6 +219,7 @@ class ShopGoodsDetail extends Component {
       )
     }
   }
+
   _renderPage(data: Object, pageID) {
     // console.log('_renderPage.data====', data)
     return (

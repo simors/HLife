@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43 (38999) - http://www.bohemiancoding.com/sketch -->
+    <title>comments_unselect</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M9.00004999,16.6248813 C8.42436194,16.6248813 7.86349599,16.570003 7.3176771,16.4747841 L3.37501872,19 L3.37501875,14.7961702 C1.31919348,13.2724817 0,10.9363582 0,8.31244063 C0,3.72156108 4.0294915,0 9.00004999,0 C13.9703085,0 18,3.72166661 18,8.31244063 C18,12.9037687 13.9702086,16.6248813 9.00004999,16.6248813 L9.00004999,16.6248813 L9.00004999,16.6248813 Z M9.00004999,1.18740107 C13.3495043,1.18740107 16.8749938,4.37761963 16.8750188,8.31244061 C16.8750188,12.2479476 13.3495293,15.4376121 9.000075,15.4376121 C8.34295277,15.4376121 7.70850112,15.3569042 7.09851974,15.2195503 L4.45058461,16.8999319 L4.4860527,14.145705 C2.4556475,12.8571486 1.12500623,10.7268975 1.12500623,8.31244063 C1.12500623,4.37764603 4.65069569,1.18740107 9.00004999,1.18740107 Z M5.5,10 C6.32842712,10 7,9.32842712 7,8.5 C7,7.67157288 6.32842712,7 5.5,7 C4.67157288,7 4,7.67157288 4,8.5 C4,9.32842712 4.67157288,10 5.5,10 Z M12.5,10 C13.3284271,10 14,9.32842712 14,8.5 C14,7.67157288 13.3284271,7 12.5,7 C11.6715729,7 11,7.67157288 11,8.5 C11,9.32842712 11.6715729,10 12.5,10 Z" id="path-1"></path>
+        <filter x="-1.4%" y="-1.3%" width="102.8%" height="102.6%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="-0.5" in="SourceAlpha" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0.709803922   0 0 0 0 0.709803922   0 0 0 0 0.709803922  0 0 0 1 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="comments_unselect">
+            <g transform="translate(7.000000, 7.000000)" id="Shape">
+                <g>
+                    <use fill="#C9C9CE" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

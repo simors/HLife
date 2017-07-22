@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43 (38999) - http://www.bohemiancoding.com/sketch -->
+    <title>upload_picture</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="80" height="80"></rect>
+    </defs>
+    <g id="02_shop_0714" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="10_留言" transform="translate(-15.000000, -180.000000)">
+            <g id="upload_picture" transform="translate(15.000000, 180.000000)">
+                <g id="Group-2">
+                    <g id="Rectangle">
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <rect stroke="#E8E8E8" stroke-width="1" x="0.5" y="0.5" width="79" height="79"></rect>
+                    </g>
+                    <text id="上传图片" font-family=".PingFangSC-Regular, .PingFang SC" font-size="12" font-weight="normal" letter-spacing="-0.299999982" fill="#BEBEBE">
+                        <tspan x="16.096" y="69">上传图片</tspan>
+                    </text>
+                    <g id="上传-2" transform="translate(23.000000, 10.000000)" fill="#E6E6E6">
+                        <g id="Group">
+                            <polygon id="Shape" points="31.1110974 27.22223 31.1110974 31.111115 3.88890233 31.111115 3.88890233 27.22223 1.73291014e-05 27.22223 1.73291014e-05 31.111115 1.73291014e-05 35 34.9999824 35 34.9999824 31.111115 34.9999824 27.22223"></polygon>
+                            <polygon id="Shape" points="7.77778736 27.22223 27.2222124 27.22223 27.2222124 17.5 34.9586711 17.5 17.4793268 0 1.73291014e-05 17.5 7.77778736 17.5"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
