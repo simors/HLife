@@ -719,6 +719,21 @@ class ShopDetail extends Component {
     )
   }
 
+  renderShopAbstract(){
+    return (<View style={{
+      position: 'absolute',
+      left: 0,
+      top: 240,
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: PAGE_WIDTH
+    }}>
+      <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
+      {this.renderFollowShop()}
+    </View>)
+  }
+
   render() {
     let shopDetail = this.props.shopDetail
 
@@ -849,18 +864,7 @@ class ShopDetail extends Component {
                   </View>
                 </CachedImage>
               </TouchableOpacity>
-              <View style={{
-                position: 'absolute',
-                left: 0,
-                top: 240,
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: PAGE_WIDTH
-              }}>
-                <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
-                {this.renderFollowShop()}
-              </View>
+              {this.renderShopAbstract()}
             </View>
             {this.renderOwnerBanner()}
             <View style={styles.shopHead}>
@@ -1035,8 +1039,8 @@ class ShopDetail extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
-          <Image style={{}} source={require('../../assets/images/contacted.png')}/>
-          <Text style={[styles.contactedTxt]}>私信</Text>
+          <Svg size={normalizeH(32)} icon="service" style={{marginTop:normalizeH(8)}} fill='#FFFFFF' color='#FFFFFF'/>
+          <Text style={[styles.contactedTxt]}>联系客服</Text>
         </TouchableOpacity>
       </View>
     )
