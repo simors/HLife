@@ -1,16 +1,10 @@
-/**
- * Created by lilu on 2017/7/24.
- */
 export const camelCase = value => value.replace(/-([a-z])/g, g => g[1].toUpperCase());
 
 export const camelCaseNodeName = ({nodeName, nodeValue}) => ({nodeName: camelCase(nodeName), nodeValue});
 
-export const removePixelsFromNodeValue = ({nodeName, nodeValue}) => ({
-  nodeName,
-  nodeValue: nodeValue.replace('px', '')
-});
+export const removePixelsFromNodeValue = ({nodeName, nodeValue}) => ({nodeName, nodeValue: nodeValue.replace('px', '')});
 
-export const transformStyle = (nodeName, nodeValue, fillProp) => {
+export const transformStyle = ({nodeName, nodeValue, fillProp}) => {
   if (nodeName === 'style') {
     return nodeValue.split(';')
       .reduce((acc, attribute) => {
@@ -24,4 +18,4 @@ export const transformStyle = (nodeName, nodeValue, fillProp) => {
   return null;
 };
 
-export const getEnabledAttributes = enabledAttributes => ({nodeName}) => enabledAttributes.includes(nodeName);
+export const getEnabledAttributes = enabledAttributes => ({nodeName}) => enabledAttributes.includes(camelCase(nodeName));

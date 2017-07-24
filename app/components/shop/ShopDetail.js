@@ -75,7 +75,7 @@ import ShopGoodsList from './ShopGoodsList'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
 import Svg from '../common/Svgs';
-
+import svgs from '../../assets/svgs'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -496,7 +496,7 @@ class ShopDetail extends Component {
           <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
         </View>
         <View style={styles.ownerContact}>
-          <Svg color='white' key={this.props.shopDetail.owner.objectId} size={normalizeH(32)}
+          <Svg  key={this.props.shopDetail.owner.objectId} size={normalizeH(32)}
                icon='service'/>
         </View>
       </View>
@@ -576,7 +576,7 @@ class ShopDetail extends Component {
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
             <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评·0</Text>
+            <Text style={styles.titleTxt}>留言板·0</Text>
           </View>
 
           <View style={{

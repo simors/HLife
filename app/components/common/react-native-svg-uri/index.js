@@ -1,16 +1,13 @@
-/**
- * Created by lilu on 2017/7/24.
- */
 'use strict';
 import React, {Component, PropTypes} from "react";
 import {View} from 'react-native';
 import xmldom from 'xmldom';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 
-import Svg, {
+import Svg,{
   Circle,
   Ellipse,
-  G,
+  G ,
   LinearGradient,
   RadialGradient,
   Line,
@@ -32,6 +29,7 @@ const ACEPTED_SVG_ELEMENTS = [
   'circle',
   'path',
   'rect',
+  'defs',
   'linearGradient',
   'radialGradient',
   'stop',
@@ -42,30 +40,36 @@ const ACEPTED_SVG_ELEMENTS = [
 // Attributes from SVG elements that are mapped directly.
 const SVG_ATTS = ['viewBox'];
 const G_ATTS = ['id'];
-const CIRCLE_ATTS = ['cx', 'cy', 'r', 'fill', 'stroke'];
-const PATH_ATTS = ['d', 'fill', 'stroke'];
-const RECT_ATTS = ['width', 'height', 'fill', 'stroke', 'x', 'y'];
-const LINEARG_ATTS = ['id', 'x1', 'y1', 'x2', 'y2'];
-const RADIALG_ATTS = ['id', 'cx', 'cy', 'r'];
+
+const CIRCLE_ATTS = ['cx', 'cy', 'r'];
+const PATH_ATTS = ['d'];
+const RECT_ATTS = ['width', 'height'];
+const LINEARG_ATTS = ['id', 'x1', 'y1', 'x2', 'y2', 'gradientUnits'];
+const RADIALG_ATTS = ['id', 'cx', 'cy', 'r', 'gradientUnits'];
 const STOP_ATTS = ['offset'];
-const ELLIPSE_ATTS = ['fill', 'cx', 'cy', 'rx', 'ry'];
+const ELLIPSE_ATTS = ['cx', 'cy', 'rx', 'ry'];
+
 const POLYGON_ATTS = ['points'];
+const POLYLINE_ATTS = ['points'];
+
+const COMMON_ATTS = ['fill', 'fillOpacity', 'stroke', 'strokeWidth', 'strokeOpacity', 'strokeLinecap', 'strokeLinejoin',
+  'strokeDasharray', 'strokeDashoffset', 'x', 'y', 'rotate', 'scale', 'origin', 'originX', 'originY'];
 
 let ind = 0;
 
-class SvgUri extends Component {
+class SvgUri extends Component{
 
-  constructor(props) {
+  constructor(props){
     super(props);
 
     this.state = {svgXmlData: props.svgXmlData};
 
-    this.createSVGElement = this.createSVGElement.bind(this);
-    this.obtainComponentAtts = this.obtainComponentAtts.bind(this);
-    this.inspectNode = this.inspectNode.bind(this);
-    this.fecthSVGData = this.fecthSVGData.bind(this);
+    this.createSVGElement     = this.createSVGElement.bind(this);
+    this.obtainComponentAtts  = this.obtainComponentAtts.bind(this);
+    this.inspectNode          = this.inspectNode.bind(this);
+    this.fecthSVGData         = this.fecthSVGData.bind(this);
 
-    this.isComponentMounted = false;
+    this.isComponentMounted   = false;
 
     // Gets the image data from an URL or a static file
     if (props.source) {
@@ -82,33 +86,33 @@ class SvgUri extends Component {
     this.isComponentMounted = false
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps){
     if (nextProps.source) {
       const source = resolveAssetSource(nextProps.source) || {};
       const oldSource = resolveAssetSource(this.props.source) || {};
-      if (source.uri !== oldSource.uri) {
+      if(source.uri !== oldSource.uri){
         this.fecthSVGData(source.uri);
       }
     }
   }
 
-  async fecthSVGData(uri) {
+  async fecthSVGData(uri){
     let responseXML = null;
     try {
       let response = await fetch(uri);
       responseXML = await response.text();
-    } catch (e) {
+    } catch(e) {
       console.error("ERROR SVG", e);
-    } finally {
+    }finally {
       if (this.isComponentMounted) {
-        this.setState({svgXmlData: responseXML});
+        this.setState({svgXmlData:responseXML});
       }
     }
 
     return responseXML;
   }
 
-  createSVGElement(node, childs) {
+  createSVGElement(node, childs){
     let componentAtts = {};
     let i = ind++;
     switch (node.nodeName) {
@@ -132,12 +136,14 @@ class SvgUri extends Component {
       case 'rect':
         componentAtts = this.obtainComponentAtts(node, RECT_ATTS);
         return <Rect key={i} {...componentAtts}>{childs}</Rect>;
+      case 'defs':
+        return <Defs key={i}>{childs}</Defs>;
       case 'linearGradient':
         componentAtts = this.obtainComponentAtts(node, LINEARG_ATTS);
-        return <Defs key={i}><LinearGradient {...componentAtts}>{childs}</LinearGradient></Defs>;
+        return <LinearGradient key={i} {...componentAtts}>{childs}</LinearGradient>;
       case 'radialGradient':
         componentAtts = this.obtainComponentAtts(node, RADIALG_ATTS);
-        return <Defs key={i}><RadialGradient {...componentAtts}>{childs}</RadialGradient></Defs>;
+        return <RadialGradient key={i} {...componentAtts}>{childs}</RadialGradient>;
       case 'stop':
         componentAtts = this.obtainComponentAtts(node, STOP_ATTS);
         return <Stop key={i} {...componentAtts}>{childs}</Stop>;
@@ -147,6 +153,9 @@ class SvgUri extends Component {
       case 'polygon':
         componentAtts = this.obtainComponentAtts(node, POLYGON_ATTS);
         return <Polygon key={i} {...componentAtts}>{childs}</Polygon>;
+      case 'polyline':
+        componentAtts = this.obtainComponentAtts(node, POLYLINE_ATTS);
+        return <Polyline key={i} {...componentAtts}>{childs}</Polyline>;
       default:
         return null;
     }
@@ -155,13 +164,13 @@ class SvgUri extends Component {
   obtainComponentAtts({attributes}, enabledAttributes) {
     let styleAtts = {};
     Array.from(attributes).forEach(({nodeName, nodeValue}) => {
-      Object.assign(styleAtts, utils.transformStyle(nodeName, nodeValue, this.props.fill));
+      Object.assign(styleAtts, utils.transformStyle({nodeName, nodeValue, fillProp: this.props.fill}));
     });
 
-    let componentAtts = Array.from(attributes)
+    let componentAtts =  Array.from(attributes)
       .map(utils.camelCaseNodeName)
       .map(utils.removePixelsFromNodeValue)
-      .filter(utils.getEnabledAttributes(enabledAttributes))
+      .filter(utils.getEnabledAttributes(enabledAttributes.concat(COMMON_ATTS)))
       .reduce((acc, {nodeName, nodeValue}) => ({
         ...acc,
         [nodeName]: this.props.fill && nodeName === 'fill' ? this.props.fill : nodeValue,
@@ -171,7 +180,7 @@ class SvgUri extends Component {
     return componentAtts;
   }
 
-  inspectNode(node) {
+  inspectNode(node){
     //Process the xml node
     let arrayElements = [];
 
@@ -181,8 +190,8 @@ class SvgUri extends Component {
     // if have children process them.
 
     // Recursive function.
-    if (node.childNodes && node.childNodes.length > 0) {
-      for (let i = 0; i < node.childNodes.length; i++) {
+    if (node.childNodes && node.childNodes.length > 0){
+      for (let i = 0; i < node.childNodes.length; i++){
         let nodo = this.inspectNode(node.childNodes[i]);
         if (nodo != null)
           arrayElements.push(nodo);
@@ -192,8 +201,8 @@ class SvgUri extends Component {
     return element;
   }
 
-  render() {
-    try {
+  render(){
+    try{
       if (this.state.svgXmlData == null)
         return null;
 
@@ -203,12 +212,12 @@ class SvgUri extends Component {
 
       let rootSVG = this.inspectNode(doc.childNodes[0]);
 
-      return (
+      return(
         <View style={this.props.style}>
           {rootSVG}
         </View>
       );
-    } catch (e) {
+    }catch(e){
       console.error("ERROR SVG", e);
       return null;
     }
