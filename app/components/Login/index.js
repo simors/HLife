@@ -16,7 +16,6 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import PhoneInput from '../common/Input/PhoneInput'
 import Header from '../common/Header'
