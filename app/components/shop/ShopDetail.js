@@ -824,10 +824,11 @@ class ShopDetail extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
           >
+            <View style={{flex:1}}>
             <TouchableOpacity onPress={()=> {
               this.showShopAlbum()
             }} style={{flex: 1}}>
-              <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(200)}}
+              <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                            source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
                 <View style={{
                   position: 'absolute',
@@ -843,6 +844,18 @@ class ShopDetail extends Component {
                 </View>
               </CachedImage>
             </TouchableOpacity>
+              <View style={{position: 'absolute',
+                left: 0,
+                top: 240,
+                flex:1,
+                flexDirection:'row',
+                justifyContent:'space-between',
+                width:PAGE_WIDTH
+              }}>
+                <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
+                {this.renderFollowShop()}
+              </View>
+              </View>
             {this.renderOwnerBanner()}
             <View style={styles.shopHead}>
               <View style={styles.shopHeadLeft}>
