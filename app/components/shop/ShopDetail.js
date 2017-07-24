@@ -74,6 +74,8 @@ import {fetchShareDomain, fetchAppServicePhone} from '../../action/configAction'
 import ShopGoodsList from './ShopGoodsList'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
+import Svg from '../common/Svgs';
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -489,11 +491,14 @@ class ShopDetail extends Component {
     return (
       <View style={styles.ownerWrap}>
         <View style={styles.ownerLeft}>
-        <Text style={styles.ownerTitle}>掌柜名</Text>
-        <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
-        <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
-          </View>
-        <CachedImage style={styles.ownerContact} mutable source={require('../../assets/images/service_24.png')}/>
+          <Text style={styles.ownerTitle}>掌柜名</Text>
+          <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
+          <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
+        </View>
+        <View style={styles.ownerContact}>
+          <Svg  color='white' key={this.props.shopDetail.owner.objectId} size={normalizeH(32)}
+               icon='service'/>
+        </View>
       </View>
     )
   }
@@ -824,38 +829,39 @@ class ShopDetail extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
           >
-            <View style={{flex:1}}>
-            <TouchableOpacity onPress={()=> {
-              this.showShopAlbum()
-            }} style={{flex: 1}}>
-              <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
-                           source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
-                <View style={{
-                  position: 'absolute',
-                  right: 15,
-                  bottom: 15,
-                  padding: 3,
-                  paddingLeft: 6,
-                  paddingRight: 6,
-                  backgroundColor: 'gray',
-                  borderRadius: 2,
-                }}>
-                  <Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>
-                </View>
-              </CachedImage>
-            </TouchableOpacity>
-              <View style={{position: 'absolute',
+            <View style={{flex: 1}}>
+              <TouchableOpacity onPress={()=> {
+                this.showShopAlbum()
+              }} style={{flex: 1}}>
+                <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
+                             source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
+                  <View style={{
+                    position: 'absolute',
+                    right: 15,
+                    bottom: 15,
+                    padding: 3,
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    backgroundColor: 'gray',
+                    borderRadius: 2,
+                  }}>
+                    <Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>
+                  </View>
+                </CachedImage>
+              </TouchableOpacity>
+              <View style={{
+                position: 'absolute',
                 left: 0,
                 top: 240,
-                flex:1,
-                flexDirection:'row',
-                justifyContent:'space-between',
-                width:PAGE_WIDTH
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: PAGE_WIDTH
               }}>
                 <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
                 {this.renderFollowShop()}
               </View>
-              </View>
+            </View>
             {this.renderOwnerBanner()}
             <View style={styles.shopHead}>
               <View style={styles.shopHeadLeft}>
@@ -1621,7 +1627,9 @@ const styles = StyleSheet.create({
     width: normalizeW(32),
     height: normalizeH(32),
     borderRadius: 15,
-    marginLeft: normalizeW(5)
+    marginLeft: normalizeW(5),
+    marginTop: normalizeH(4),
+    marginBottom: normalizeH(4)
   },
   ownerName: {
     color: '#000000',
@@ -1629,15 +1637,16 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(10)
 
   },
-  ownerLeft:{
-    flex:1,
+  ownerLeft: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
   ownerContact: {
     height: normalizeH(32),
     width: normalizeW(32),
-    marginRight: normalizeW(10)
-
+    marginRight: normalizeW(10),
+    paddingTop: normalizeH(4),
+    paddingBottom: normalizeH(4),
   }
 })

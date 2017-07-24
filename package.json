@@ -63,6 +63,8 @@
     "react-native-scrollable-tab-view": "^0.7.0",
     "react-native-send-intent": "^1.0.14",
     "react-native-sound": "^0.9.1",
+    "react-native-svg": "^4.4.0",
+    "react-native-svg-uri": "^1.2.0",
     "react-native-swipe-list-view": "^0.4.1",
     "react-native-swiper": "^1.5.4",
     "react-native-uuid": "^1.4.9",

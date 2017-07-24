@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43 (38999) - http://www.bohemiancoding.com/sketch -->
+    <title>shop_call</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-1.9%" y="-1.9%" width="111.5%" height="115.4%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="0.5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feComposite in="shadowOffsetOuter1" in2="SourceAlpha" operator="out" result="shadowOffsetOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.4 0" type="matrix" in="shadowOffsetOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <path d="M12.6887086,9.83255565 C13.2003043,10.4464408 12.9672144,11.3750456 12.7906419,11.5554621 C12.6140397,11.7386689 12.6268036,11.8265915 11.7802738,12.5946975 C10.9282822,13.3691112 9.22426925,12.8395569 8.45056796,12.5946975 C7.67682214,12.3489326 5.57414453,11.0041647 3.62979889,9.15603822 C1.65999961,7.28342284 0.641483386,4.95022291 0.224533636,3.68249857 C-0.191466237,2.41112315 0.0689028642,1.95227509 0.224533636,1.52242786 C0.380223769,1.09262514 0.665066959,0.728081672 1.50892528,0.243779974 C2.35088386,-0.241352848 2.65580795,0.127776725 2.87245321,0.243779974 C3.08823767,0.358120943 4.03120931,1.18329348 4.35802501,1.96318381 C4.68300032,2.74301475 4.52824523,3.24447352 4.27698896,3.48115518 C4.02672709,3.71783684 3.84829937,3.93460084 3.64073726,4.08147496 C3.43320484,4.22567757 3.38952551,4.43513942 3.4204706,4.83956271 C3.44961983,5.24492105 4.9124095,6.82640033 5.20091861,7.11841209 C5.48858173,7.41126984 7.39282491,9.38093553 8.05365458,9.53235124 C8.71544896,9.68106574 8.95483182,9.39361041 9.02674017,9.31563176 C9.09867822,9.23855847 9.35900281,8.88397382 9.65392355,8.63731849 C9.95068468,8.39244418 10.7425968,8.45958833 10.9382558,8.59742383 C11.1339742,8.73531868 12.1771278,9.21590992 12.6887086,9.83255565 Z" id="path-2"></path>
+        <filter x="-1.9%" y="-1.9%" width="103.8%" height="107.7%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="0.5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feComposite in="shadowOffsetOuter1" in2="SourceAlpha" operator="out" result="shadowOffsetOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.4 0" type="matrix" in="shadowOffsetOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="02_shop_0714" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="03_店铺详情" transform="translate(-15.000000, -385.000000)">
+            <g id="shop_call" filter="url(#filter-1)" transform="translate(20.000000, 390.000000)">
+                <g id="Shape">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                    <use fill-opacity="0.600000024" fill="#000000" fill-rule="evenodd" xlink:href="#path-2"></use>
+                    <use fill-opacity="0.100000001" fill="#000000" fill-rule="evenodd" style="mix-blend-mode: soft-light;" xlink:href="#path-2"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
