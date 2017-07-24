@@ -2,7 +2,10 @@ export const camelCase = value => value.replace(/-([a-z])/g, g => g[1].toUpperCa
 
 export const camelCaseNodeName = ({nodeName, nodeValue}) => ({nodeName: camelCase(nodeName), nodeValue});
 
-export const removePixelsFromNodeValue = ({nodeName, nodeValue}) => ({nodeName, nodeValue: nodeValue.replace('px', '')});
+export const removePixelsFromNodeValue = ({nodeName, nodeValue}) => ({
+  nodeName,
+  nodeValue: nodeValue.replace('px', '')
+});
 
 export const transformStyle = ({nodeName, nodeValue, fillProp}) => {
   if (nodeName === 'style') {

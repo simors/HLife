@@ -4,10 +4,10 @@ import {View} from 'react-native';
 import xmldom from 'xmldom';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 
-import Svg,{
+import Svg, {
   Circle,
   Ellipse,
-  G ,
+  G,
   LinearGradient,
   RadialGradient,
   Line,
@@ -57,19 +57,19 @@ const COMMON_ATTS = ['fill', 'fillOpacity', 'stroke', 'strokeWidth', 'strokeOpac
 
 let ind = 0;
 
-class SvgUri extends Component{
+class SvgUri extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {svgXmlData: props.svgXmlData};
 
-    this.createSVGElement     = this.createSVGElement.bind(this);
-    this.obtainComponentAtts  = this.obtainComponentAtts.bind(this);
-    this.inspectNode          = this.inspectNode.bind(this);
-    this.fecthSVGData         = this.fecthSVGData.bind(this);
+    this.createSVGElement = this.createSVGElement.bind(this);
+    this.obtainComponentAtts = this.obtainComponentAtts.bind(this);
+    this.inspectNode = this.inspectNode.bind(this);
+    this.fecthSVGData = this.fecthSVGData.bind(this);
 
-    this.isComponentMounted   = false;
+    this.isComponentMounted = false;
 
     // Gets the image data from an URL or a static file
     if (props.source) {
@@ -86,33 +86,33 @@ class SvgUri extends Component{
     this.isComponentMounted = false
   }
 
-  componentWillReceiveProps (nextProps){
+  componentWillReceiveProps(nextProps) {
     if (nextProps.source) {
       const source = resolveAssetSource(nextProps.source) || {};
       const oldSource = resolveAssetSource(this.props.source) || {};
-      if(source.uri !== oldSource.uri){
+      if (source.uri !== oldSource.uri) {
         this.fecthSVGData(source.uri);
       }
     }
   }
 
-  async fecthSVGData(uri){
+  async fecthSVGData(uri) {
     let responseXML = null;
     try {
       let response = await fetch(uri);
       responseXML = await response.text();
-    } catch(e) {
+    } catch (e) {
       console.error("ERROR SVG", e);
-    }finally {
+    } finally {
       if (this.isComponentMounted) {
-        this.setState({svgXmlData:responseXML});
+        this.setState({svgXmlData: responseXML});
       }
     }
 
     return responseXML;
   }
 
-  createSVGElement(node, childs){
+  createSVGElement(node, childs) {
     let componentAtts = {};
     let i = ind++;
     switch (node.nodeName) {
@@ -167,7 +167,7 @@ class SvgUri extends Component{
       Object.assign(styleAtts, utils.transformStyle({nodeName, nodeValue, fillProp: this.props.fill}));
     });
 
-    let componentAtts =  Array.from(attributes)
+    let componentAtts = Array.from(attributes)
       .map(utils.camelCaseNodeName)
       .map(utils.removePixelsFromNodeValue)
       .filter(utils.getEnabledAttributes(enabledAttributes.concat(COMMON_ATTS)))
@@ -180,7 +180,7 @@ class SvgUri extends Component{
     return componentAtts;
   }
 
-  inspectNode(node){
+  inspectNode(node) {
     //Process the xml node
     let arrayElements = [];
 
@@ -190,8 +190,8 @@ class SvgUri extends Component{
     // if have children process them.
 
     // Recursive function.
-    if (node.childNodes && node.childNodes.length > 0){
-      for (let i = 0; i < node.childNodes.length; i++){
+    if (node.childNodes && node.childNodes.length > 0) {
+      for (let i = 0; i < node.childNodes.length; i++) {
         let nodo = this.inspectNode(node.childNodes[i]);
         if (nodo != null)
           arrayElements.push(nodo);
@@ -201,8 +201,8 @@ class SvgUri extends Component{
     return element;
   }
 
-  render(){
-    try{
+  render() {
+    try {
       if (this.state.svgXmlData == null)
         return null;
 
@@ -212,12 +212,12 @@ class SvgUri extends Component{
 
       let rootSVG = this.inspectNode(doc.childNodes[0]);
 
-      return(
+      return (
         <View style={this.props.style}>
           {rootSVG}
         </View>
       );
-    }catch(e){
+    } catch (e) {
       console.error("ERROR SVG", e);
       return null;
     }
