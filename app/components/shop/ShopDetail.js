@@ -496,7 +496,7 @@ class ShopDetail extends Component {
           <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
         </View>
         <View style={styles.ownerContact}>
-          <Svg  color='white' key={this.props.shopDetail.owner.objectId} size={normalizeH(32)}
+          <Svg color='white' key={this.props.shopDetail.owner.objectId} size={normalizeH(32)}
                icon='service'/>
         </View>
       </View>
