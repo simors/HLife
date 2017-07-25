@@ -76,6 +76,8 @@ import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
 import Svg from '../common/Svgs';
 import svgs from '../../assets/svgs'
+import SvgUri from '../common/react-native-svg-uri/index'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -719,6 +721,26 @@ class ShopDetail extends Component {
     )
   }
 
+  renderShopTags(){
+    let tags = this.props.shopDetail.containedTag
+    if(tags&&tags.length){
+      let showTags = tags.map((item,key)=>{
+        if(key<5){
+          return <View style={styles.shopTagBadge}>
+            <Text style={styles.shopTagBadgeTxt}>{item.name}</Text>
+          </View>
+        }
+      })
+      return <View  style={styles.shopTagBox}>
+        {showTags }
+      </View>
+    }else{
+      return <View/>
+    }
+
+
+  }
+
   renderShopAbstract(){
     return (<View style={{
       position: 'absolute',
@@ -729,8 +751,14 @@ class ShopDetail extends Component {
       justifyContent: 'space-between',
       width: PAGE_WIDTH
     }}>
-      <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
-      {this.renderFollowShop()}
+      <View style={{flex: 1,marginLeft: normalizeW(15)}}>
+        <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
+        {this.renderShopTags()}
+      </View>
+      <View style={styles.shopAbstractLikeWrap}>
+        <Svg icon='follow_shop' size={normalizeH(25)}/>
+        <Text style={styles.shopAbstractLike}>关注</Text>
+      </View>
     </View>)
   }
 
@@ -867,25 +895,27 @@ class ShopDetail extends Component {
               {this.renderShopAbstract()}
             </View>
             {this.renderOwnerBanner()}
-            <View style={styles.shopHead}>
-              <View style={styles.shopHeadLeft}>
-                <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
-                <View style={styles.shopOtherInfo}>
-                  <ScoreShow
-                    containerStyle={{flex: 1}}
-                    score={this.props.shopDetail.score}
-                  />
-                  {this.props.shopDetail.distance &&
-                  <Text
-                    style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
-                  }
-                  {this.props.shopDetail.pv
-                    ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
-                    : null
-                  }
-                </View>
-              </View>
-            </View>
+
+
+            {/*<View style={styles.shopHead}>*/}
+              {/*<View style={styles.shopHeadLeft}>*/}
+                {/*<Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>*/}
+                {/*<View style={styles.shopOtherInfo}>*/}
+                  {/*<ScoreShow*/}
+                    {/*containerStyle={{flex: 1}}*/}
+                    {/*score={this.props.shopDetail.score}*/}
+                  {/*/>*/}
+                  {/*{this.props.shopDetail.distance &&*/}
+                  {/*<Text*/}
+                    {/*style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>*/}
+                  {/*}*/}
+                  {/*{this.props.shopDetail.pv*/}
+                    {/*? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>*/}
+                    {/*: null*/}
+                  {/*}*/}
+                {/*</View>*/}
+              {/*</View>*/}
+            {/*</View>*/}
 
             <View style={styles.shopXYZWrap}>
               <View style={styles.shopXYZLeft}>
@@ -911,16 +941,16 @@ class ShopDetail extends Component {
                 </View>
               </View>
 
-              <View style={styles.shopXYZRight}>
-                {this.renderFollowShop()}
-              </View>
+              {/*<View style={styles.shopXYZRight}>*/}
+                {/*{this.renderFollowShop()}*/}
+              {/*</View>*/}
             </View>
 
-            <ShopPromotionModule
-              title="近期活动"
-              noDistance={true}
-              shopPromotionList={this.props.shopDetail.containedPromotions}
-            />
+            {/*<ShopPromotionModule*/}
+              {/*title="近期活动"*/}
+              {/*noDistance={true}*/}
+              {/*shopPromotionList={this.props.shopDetail.containedPromotions}*/}
+            {/*/>*/}
             <View style={styles.headerView}>
               <View style={styles.headerItem}>
                 <Image source={require('../../assets/images/activity.png')} width={12} height={14}></Image>
@@ -1033,8 +1063,8 @@ class ShopDetail extends Component {
           this.openCommentScene()
         }}>
           <View style={[styles.vItem]}>
-            <Image style={{}} source={require('../../assets/images/message.png')}/>
-            <Text style={[styles.vItemTxt, styles.shopCommentInput]}>点评</Text>
+            <Svg size={normalizeH(32)} icon="message" style={{}} />
+            <Text style={[styles.vItemTxt, styles.shopCommentInput]}>留言</Text>
           </View>
         </TouchableOpacity>
 
@@ -1179,6 +1209,25 @@ const styles = StyleSheet.create({
   shopName: {
     fontSize: em(17),
     color: '#030303'
+  },
+  shopAbstractName:{
+    fontSize: em(17),
+    color: '#FFFFFF'
+  },
+  shopAbstractLike:{
+    fontSize: em(14),
+    color: '#FFFFFF'
+  },
+  shopAbstractLikeWrap: {
+    height: normalizeH(25),
+    width: normalizeW(60),
+    borderRadius: normalizeH(12),
+    backgroundColor:'#FF9D4E',
+    // flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: normalizeW(15)
   },
   shopOtherInfo: {
     flexDirection: 'row'
@@ -1652,5 +1701,22 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(10),
     paddingTop: normalizeH(4),
     paddingBottom: normalizeH(4),
+  },
+  shopTagBadge: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 2.5,
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(6),
+  },
+  shopTagBadgeTxt: {
+    color: '#AAAAAA',
+    fontSize: em(11),
+  },
+  shopTagBox:{
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: normalizeH(11)
   }
 })
