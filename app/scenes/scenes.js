@@ -114,6 +114,7 @@ import ShopGoodsDetail from '../components/shop/ShopGoodsDetail'
 import SupplementUserInfo from '../components/Login/SupplementUserInfo'
 import QrcodeView from '../components/Mine/promote/QrcodeView'
 import TopicCommentDetail from '../components/Find/TopicCommentDetail'
+import SetMobilePhoneNumber from '../components/Login/SetMobilePhoneNumber'
 
 const styles = StyleSheet.create({
   container: {
@@ -236,6 +237,7 @@ export const scenes = Actions.create(
       <Scene key="SHOP_GOODS_DETAIL" component={ShopGoodsDetail}/>
       <Scene key="SUPPLEMENT_USERINFO" component={SupplementUserInfo}/>
       <Scene key="QRCODE_VIEW" component={QrcodeView}/>
+      <Scene key="SET_MOBILE_PHONE_NUMBER" component={SetMobilePhoneNumber}/>
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

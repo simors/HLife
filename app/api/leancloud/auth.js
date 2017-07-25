@@ -580,6 +580,21 @@ export function requestLoginSmsCode(payload) {
   })
 }
 
+export function requestVerifySmsCode(payload) {
+  let phone = payload.phone
+  let currentUser = AV.User.current()
+  currentUser.setMobilePhoneNumber(phone)
+
+
+  return currentUser.save().then(() => {
+    return  AV.User.requestMobilePhoneVerify(phone)
+  }).then(() => {
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 
 export function verifySmsCode(payload) {
   let smsAuthCode = payload.smsAuthCode
@@ -969,6 +984,14 @@ export function setUserNickname(payload) {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
+}
 
+export function setUserMobilePhoneNumber(payload) {
 
+  return AV.User.verifyMobilePhone(payload.smsCode).then((result) => {
+    return undefined
+  }).catch((err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
 }

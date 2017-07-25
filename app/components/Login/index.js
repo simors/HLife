@@ -16,7 +16,6 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-import SnsLogin from '../common/SnsLogin'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import PhoneInput from '../common/Input/PhoneInput'
 import Header from '../common/Header'
@@ -111,7 +110,12 @@ class Login extends Component {
 
   submitSuccessCallback(userInfo) {
     if(userInfo) {
-      Actions.HOME({type: 'reset'})
+      console.log("userInfo:", userInfo)
+      if(!userInfo.mobilePhoneNumber || !userInfo.mobilePhoneVerified) {
+        Actions.SET_MOBILE_PHONE_NUMBER()
+      } else {
+        Actions.HOME({type: 'reset'})
+      }
     } else {
       Actions.SUPPLEMENT_USERINFO({
         wxUserInfo: this.wxUserInfo,
