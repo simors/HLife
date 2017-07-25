@@ -110,7 +110,12 @@ class Login extends Component {
 
   submitSuccessCallback(userInfo) {
     if(userInfo) {
-      Actions.HOME({type: 'reset'})
+      console.log("userInfo:", userInfo)
+      if(!userInfo.mobilePhoneNumber || !userInfo.mobilePhoneVerified) {
+        Actions.SET_MOBILE_PHONE_NUMBER()
+      } else {
+        Actions.HOME({type: 'reset'})
+      }
     } else {
       Actions.SUPPLEMENT_USERINFO({
         wxUserInfo: this.wxUserInfo,

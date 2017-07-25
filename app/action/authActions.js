@@ -45,6 +45,8 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   GET_PAYMENT_SMS_CODE: 'GET_PAYMENT_SMS_CODE',
   PAYMENT_AUTH: 'PAYMENT_AUTH',
   WX_SIGNIN_OR_BIND: "WX_SIGNIN_OR_BIND",
+  VERIFY_SMS_CODE: "VERIFY_SMS_CODE",
+  SET_MOBILE_PHONE_NUMBER: "SET_MOBILE_PHONE_NUMBER"
 }
 
 const addIdentity = createAction(AuthTypes.ADD_PERSONAL_IDENTITY)
@@ -67,6 +69,9 @@ export function submitFormData(payload) {
           break
         case INPUT_FORM_SUBMIT_TYPE.WX_SIGNIN_OR_BIND:
           dispatch(handleSupplementUserInfo(payload, formData))
+          break
+        case INPUT_FORM_SUBMIT_TYPE.SET_MOBILE_PHONE_NUMBER:
+          dispatch(handleSetMobilePhoneNumber(payload, formData))
           break
         case INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD:
           if(payload.wxUserInfo)
@@ -180,6 +185,9 @@ export function submitInputData(payload) {
       case INPUT_FORM_SUBMIT_TYPE.LOGIN_SMS_CODE:
         dispatch(handleLoginSmsCode(payload, data))
         break
+      case INPUT_FORM_SUBMIT_TYPE.VERIFY_SMS_CODE:
+        dispatch(handleVerifySmsCode(payload, data))
+        break
     }
   }
 }
@@ -281,12 +289,14 @@ export function loginWithWeixin(payload) {
           return userInfo
         }).then((user) => {
           dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
-          dispatch(getCurrentPromoter())
           dispatch(fetchAllUserUps())
           dispatch(initMessageClient(payload))
           AVUtils.updateDeviceUserInfo({
             userId: user.userInfo.id
           })
+          return lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
+        }).then(() => {
+          dispatch(getCurrentPromoter())
           lcPromoter.getPromoterQrcode({unionid: loginPayload.unionid})
         }).catch((error) => {
           console.log("loginWithWX", error)
@@ -391,6 +401,25 @@ function handleLoginSmsCode(payload, data) {
   }
 }
 
+function handleVerifySmsCode(payload, data) {
+  return (dispatch, getState) => {
+    let getSmsPayload = {
+      phone: data.text,
+    }
+    lcAuth.requestVerifySmsCode(getSmsPayload).then(() => {
+      if (payload.success) {
+        let succeedAction = createAction(AuthTypes.GET_SMS_CODE_SUCCESS)
+        dispatch(succeedAction({stateKey: payload.stateKey}))
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 function handlePaymentSmsAuth(payload) {
   console.log("handlePaymentSmsAuth ", payload)
   return (dispatch, getState) => {
@@ -441,6 +470,23 @@ function handleSupplementUserInfo(payload, formData) {
   }
 }
 
+function handleSetMobilePhoneNumber(payload, formData) {
+  return (dispatch, getState) => {
+    let phonePayload = {
+      phone: formData.phoneInput.text,
+      smsCode:  formData.smsAuthCodeInput.text,
+    }
+    lcAuth.setUserMobilePhoneNumber(phonePayload).then(() => {
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
 
 function handlePaymentAuth(payload, formData) {
   return (dispatch, getState) => {
@@ -486,6 +532,7 @@ function registerWithPhoneNum(payload, formData) {
         AVUtils.updateDeviceUserInfo({
           userId: user.userInfo.id
         })
+        return lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
       })
     }).catch((error) => {
       if (payload.error) {
