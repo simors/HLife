@@ -23,7 +23,8 @@ import {getCity} from '../../selector/locSelector'
 import {getTopics, getLocalTopics, getPickedTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
-import {fetchAllUserUps} from '../../action/newTopicAction'
+import {fetchAllUserUps,fetchAllTopics} from '../../action/newTopicAction'
+import * as newTopicSelector from '../../selector/newTopicSelector'
 
 import CommonListView from '../common/CommonListView'
 import {TabScrollView} from '../common/TabScrollView'
@@ -164,7 +165,7 @@ export class Find extends Component {
 
   loadMoreData(isRefresh) {
     if(this.isQuering) {
-      return
+      // return
     }
     this.isQuering = true
 
@@ -256,8 +257,10 @@ export class Find extends Component {
         }
       }
     }
+    console.log('payload.type===>',payload.type)
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopics(payload)
+      // this.props.fetchTopics(payload)
+      this.props.fetchAllTopics(payload)
     })
   }
 
@@ -308,6 +311,7 @@ export class Find extends Component {
   }
 
   render() {
+    console.log('this.quering',this.isQuering)
     return (
       <View style={styles.container}>
         <TabScrollView topics={this.props.topicCategories}
@@ -321,10 +325,20 @@ export class Find extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const topicCategories = getTopicCategories(state)
-  const topics = getTopics(state)
-  const localTopics = getLocalTopics(state)
+  // const topics = getTopics(state)
+  const newTopics = {}
+  // console.log('topics+++++++++>',topics)
+  topicCategories.forEach((item)=>{
+    // console.log('item',item.objectId)
+    let topicList = newTopicSelector.getTopicsByCategoryId(state,item.objectId).allTopics
+    // console.log('topicList======>',topicList)
+    newTopics[item.objectId] = topicList
+  })
+  const newLocalTopics = newTopicSelector.getLocalTopics(state)
+  const newPickedTopics = newTopicSelector.getPickedTopics(state)
+  // const localTopics = getLocalTopics(state)
   const isLogin = isUserLogined(state)
-  const pickedTopic = getPickedTopics(state)
+  // const pickedTopic = getPickedTopics(state)
   const userInfo = activeUserInfo(state)
   const localCity = getCity(state)
   if (!localCity)
@@ -333,13 +347,15 @@ const mapStateToProps = (state, ownProps) => {
     topicCategories.unshift({title: localCity})
   }
   topicCategories.unshift({title: "精选"})
-  topics[0] = pickedTopic
-  topics[1] = localTopics
-
+  // topics[0] = pickedTopic
+  // topics[1] = localTopics
+  newTopics[0] = newPickedTopics.allTopics
+  newTopics[1] = newLocalTopics.allTopics
+  // console.log('newTopics=======>',newTopics)
   return {
     dataSrc: ds.cloneWithRows([]),
     topicCategories: topicCategories,
-    topics: topics,
+    topics: newTopics,
     isLogin: isLogin,
     userInfo: userInfo,
     localCity: localCity,
@@ -351,7 +367,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   likeTopic,
   unLikeTopic,
   fetchUserFollowees,
-  fetchAllUserUps
+  fetchAllUserUps,
+  fetchAllTopics
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Find)

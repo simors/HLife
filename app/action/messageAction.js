@@ -24,6 +24,8 @@ import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
 import {selectShopDetail} from '../selector/shopSelector'
 import {getTopicById} from '../selector/topicSelector'
+import {getTopicByTopicId} from '../selector/newTopicSelector'
+
 import * as lcShop from '../api/leancloud/shop'
 import * as AVUtils from '../util/AVUtils'
 import {KM_FIN} from '../../app/util/global'
@@ -696,7 +698,7 @@ function createTypedMessage(msgType) {
 export function notifyTopicComment(payload) {
   return (dispatch, getState) => {
     let toPeers = []
-    let topicInfo = getTopicById(getState(), payload.topicId)
+    let topicInfo = getTopicByTopicId(getState(), payload.topicId)
     console.log('topicInfo:', topicInfo)
 
     let topicCover = ''

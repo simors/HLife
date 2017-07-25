@@ -90,7 +90,9 @@ export class TopicComment extends Component {
       this.props.onLikeCommentButton({
         comment: this.props.comment,
         isLiked: this.props.isLiked,
+        upType:'topicComment',
         success: this.successCallback.bind(this)
+
       })
     }
     else {

@@ -33,7 +33,7 @@ import ArticleEditor from '../../common/Input/ArticleEditor'
 import TimerMixin from 'react-timer-mixin'
 import THEME from '../../../constants/themes/theme1'
 import uuid from 'react-native-uuid'
-
+import {fetchUpdateTopic} from '../../../action/newTopicAction'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -144,7 +144,7 @@ class EditTopicDraft extends Component {
   }
 
   publishTopic() {
-    this.props.publishTopicFormData({
+    this.props.fetchUpdateTopic({
       formKey: updateTopicForm,
       images: this.insertImages,
       topicId: this.props.topic.objectId,
@@ -316,7 +316,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishTopicFormData,
   handleDestroyTopicDraft,
-  fetchTopicDraft
+  fetchTopicDraft,
+  fetchUpdateTopic
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditTopicDraft)

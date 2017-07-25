@@ -31,6 +31,7 @@ import dismissKeyboard from 'react-native-dismiss-keyboard'
 import * as Toast from '../common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as AVUtils from '../../util/AVUtils'
+import {fetchPublishTopicComment} from '../../action/newTopicAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -51,7 +52,7 @@ class TopicNotifyView extends Component {
   }
 
   sendReply(content) {
-    this.props.publishTopicFormData({
+    this.props.fetchPublishTopicComment({
       content: content,
       topicId: this.state.topicId,
       userId: this.props.userInfo.id,
@@ -273,7 +274,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   enterTypedNotify,
   publishTopicFormData,
-  clearNotifyMsg
+  clearNotifyMsg,
+  fetchPublishTopicComment
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicNotifyView)

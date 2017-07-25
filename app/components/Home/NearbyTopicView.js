@@ -19,8 +19,10 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import Swiper from 'react-native-swiper'
 import {fetchMainPageTopics} from '../../action/topicActions'
-import {getMainPageTopics} from '../../selector/topicSelector'
+// import {getMainPageTopics} from '../../selector/topicSelector'
 import shallowequal from 'shallowequal'
+import {fetchAllTopics} from '../../action/newTopicAction'
+import {getMainPageTopics} from '../../selector/newTopicSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -46,7 +48,8 @@ class NearbyTopicView extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchMainPageTopics({limited: 10})
+      // this.props.fetchMainPageTopics({limited: 10})
+      this.props.fetchAllTopics({type:'mainPageTopics',isRefresh:true})
     })
   }
 
@@ -138,11 +141,14 @@ class NearbyTopicView extends Component {
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let mainPageTopics = getMainPageTopics(state)
-  newProps.mainPageTopics = mainPageTopics
+  let newMainPageTopics = getMainPageTopics(state)
+  newProps.mainPageTopics = mainPageTopics.allTopics
+  // console.log('newProps',newProps.mainPageTopics)
   return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchAllTopics,
   fetchMainPageTopics,
 }, dispatch)
 

@@ -114,7 +114,7 @@ export default class MyTopicShow extends Component {
             <View style={styles.locationCommentStyle}>
               <Image style={styles.positionPicStyle} resizeMode="contain"
                      source={require("../../../assets/images/writer_loaction.png")}/>
-              <Text style={styles.positionTextStyle}>{(topic.position && topic.position.city) ? topic.position.city : '未知'}</Text>
+              <Text style={styles.positionTextStyle}>{ topic.city ? topic.city : '未知'}</Text>
               <Text style={styles.likeTextStyle}>
                 {"点赞" + " " + (topic.likeCount > 999 ? '999+' : topic.likeCount)}
               </Text>

@@ -36,6 +36,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import * as ImageUtil from '../../util/ImageUtil'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
+import {fetchUpdateTopic} from '../../action/newTopicAction'
 
 let updateTopicForm = Symbol('updateTopicForm')
 const topicName = {
@@ -143,7 +144,7 @@ class TopicEdit extends Component {
 
   publishTopic() {
     if(this.props.topic&&this.props.topic.objectId){
-      this.props.publishTopicFormData({
+      this.props.fetchUpdateTopic({
         formKey: updateTopicForm,
         images: this.insertImages,
         topicId: this.props.topic.objectId,
@@ -153,7 +154,7 @@ class TopicEdit extends Component {
         error: (err) => this.submitErrorCallback(err)
       })
     }else{
-      this.props.publishTopicFormData({
+      this.props.fetchUpdateTopic({
         formKey: updateTopicForm,
         images: this.insertImages,
         categoryId: this.state.selectedTopic.objectId,
@@ -358,6 +359,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishTopicFormData,
   handleDestroyTopicDraft,
+  fetchUpdateTopic,
   fetchTopicDraft
 }, dispatch)
 

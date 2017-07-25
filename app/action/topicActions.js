@@ -10,6 +10,8 @@ import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import * as numberUtils from '../util/numberUtils'
 import {trim} from '../util/Utils'
+import * as newTopicActionTypes from '../constants/newTopicActionTypes'
+
 
 export const TOPIC_FORM_SUBMIT_TYPE = {
   PUBLISH_TOPICS: 'PUBLISH_TOPICS',
@@ -33,6 +35,7 @@ export function fetchUserTopicsTotalCount(payload) {
   }
 }
 
+//已弃用
 export function publishTopicFormData(payload) {
   return (dispatch, getState) => {
     let formData = undefined

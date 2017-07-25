@@ -39,6 +39,8 @@ import * as AVUtils from '../../util/AVUtils'
 import {getPromoterById, activePromoter, selectPromoterByUserId} from '../../selector/promoterSelector'
 import {getPromoterByUserId} from '../../action/promoterAction'
 import {CachedImage} from 'react-native-img-cache'
+import {getUserTopics} from '../../selector/newTopicSelector'
+import {fetchAllTopics} from '../../action/newTopicAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -287,7 +289,7 @@ class PersonalHomePage extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
-    this.props.fetchTopicsByUserid(payload)
+    this.props.fetchAllTopics(payload)
   }
 
   handleOnScroll(e) {
@@ -508,6 +510,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.selectUserInfoById(state, ownProps.userId)
+
   const activeUserInfo = authSelector.selectActiveUserInfo(state)
   let distance = undefined
   let distanceUnit = 'km'
@@ -529,7 +532,7 @@ const mapStateToProps = (state, ownProps) => {
   const userFollowersTotalCount = authSelector.selectUserFollowersTotalCount(state, ownProps.userId)
 
   const userFollowees = authSelector.selectUserFollowees(state)
-
+  const newUserTopics = getUserTopics(state,ownProps.userId)
   const userTopics = selectUserTopics(state, ownProps.userId)
   const userTopicsTotalCount = selectUserTopicsTotalCount(state, ownProps.userId)
 
@@ -547,7 +550,7 @@ const mapStateToProps = (state, ownProps) => {
     userFollowers: userFollowers,
     userFollowersTotalCount: userFollowersTotalCount,
     userOwnedShopInfo: userOwnedShopInfo,
-    userTopics: userTopics,
+    userTopics: newUserTopics.allTopics,
     userTopicsTotalCount: userTopicsTotalCount,
     distance: distance,
     distanceUnit: distanceUnit,
@@ -567,7 +570,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   unFollowUser, 
   fetchUserFollowees,
   userIsFollowedTheUser,
-  getPromoterByUserId
+  getPromoterByUserId,
+  fetchAllTopics,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)
