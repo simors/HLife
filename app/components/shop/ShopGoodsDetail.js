@@ -420,7 +420,7 @@ class ShopGoodsDetail extends Component {
         <View style={styles.shopAction}>
           <Text style={styles.shopActionText}>进入店铺</Text>
           <View style={styles.shopActionSvg}>
-            <Svg icon="arrow_right" size={normalizeW(32)}/>
+            <Svg icon="arrow_right" size={normalizeW(32)} style={{}} />
           </View>
         </View>
       </View>
@@ -746,6 +746,10 @@ const styles = StyleSheet.create({
   shopActionSvg:{
     // flex:1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingLeft:normalizeW(10),
+    paddingTop: normalizeH(8),
+    height:normalizeH(32),
+    width:normalizeW(32)
   }
 })
