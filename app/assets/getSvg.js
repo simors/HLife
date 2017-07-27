@@ -1,13 +1,18 @@
 //  getSvg.js
 var fs = require('fs');
 var path = require('path');
+var cleanSketch = require('clean-sketch');
+
 const svgDir = path.resolve(__dirname, './SVG');
+
 
 // 读取单个文件
 function readfile(filename) {
   return new Promise((resolve, reject) => {
     fs.readFile(path.join(svgDir, filename), 'utf8', function (err, data) {
       if (err) reject(err);
+      // console.log('data========>',data)
+      // console.log('filename========>',filename)
       resolve({
         [filename.slice(0, filename.lastIndexOf('.'))]: data,
       });

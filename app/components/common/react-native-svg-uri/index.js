@@ -176,7 +176,7 @@ class SvgUri extends Component {
         [nodeName]: this.props.fill && nodeName === 'fill' ? this.props.fill : nodeValue,
       }), {});
     Object.assign(componentAtts, styleAtts);
-
+    console.log('this.props.fill',this.props.fill)
     return componentAtts;
   }
 
@@ -213,7 +213,7 @@ class SvgUri extends Component {
       let rootSVG = this.inspectNode(doc.childNodes[0]);
 
       return (
-        <View style={this.props.style}>
+        <View style={[this.props.style,{alignItems: 'center',justifyContent: 'center'}]}>
           {rootSVG}
         </View>
       );

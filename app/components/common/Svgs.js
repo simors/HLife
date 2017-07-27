@@ -25,7 +25,7 @@ export default class Svg extends Component {
         height={size}
         svgXmlData={svgXmlData}
         fill={color}
-        style={style}
+        style={[style,{alignItems: 'center',justifyContent: 'center'}]}
       />
     )
   }

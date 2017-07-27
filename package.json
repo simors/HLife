@@ -89,9 +89,10 @@
   },
   "devDependencies": {
     "babel-jest": "17.0.2",
+    "babel-plugin-transform-remove-console": "^6.8.1",
     "babel-preset-react-native": "1.9.0",
+    "clean-sketch": "^1.0.1",
     "jest": "17.0.3",
-    "react-test-renderer": "15.4.1",
-    "babel-plugin-transform-remove-console": "^6.8.1"
+    "react-test-renderer": "15.4.1"
   }
 }

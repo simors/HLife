@@ -417,6 +417,7 @@ class ShopGoodsDetail extends Component {
           <Text style={styles.shopName}>{this.props.shopDetail.shopName}</Text>
           <Text style={styles.shopLocation}>{this.props.shopDetail.distance+'公里'}</Text>
         </View>
+
         <View style={styles.shopAction}>
           <Text style={styles.shopActionText}>进入店铺</Text>
           <View style={styles.shopActionSvg}>
@@ -748,7 +749,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingLeft:normalizeW(10),
-    paddingTop: normalizeH(8),
+    paddingTop: normalizeH(10),
     height:normalizeH(32),
     width:normalizeW(32)
   }

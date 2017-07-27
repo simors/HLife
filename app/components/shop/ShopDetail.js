@@ -76,7 +76,7 @@ import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
 import Svg from '../common/Svgs';
 import svgs from '../../assets/svgs'
-import SvgUri from '../common/react-native-svg-uri/index'
+import SvgUri from '../common/react-native-svg-uri'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -498,7 +498,7 @@ class ShopDetail extends Component {
           <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
         </View>
         <View style={styles.ownerContact}>
-          <Svg  key={this.props.shopDetail.owner.objectId} size={normalizeH(32)}
+          <Svg  key={this.props.shopDetail.owner.objectId} size={normalizeH(32)} color="#FF9D4E"
                icon='service'/>
         </View>
       </View>
@@ -756,7 +756,7 @@ class ShopDetail extends Component {
         {this.renderShopTags()}
       </View>
       <View style={styles.shopAbstractLikeWrap}>
-        <Svg icon='follow_shop' size={normalizeH(25)}/>
+        <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
         <Text style={styles.shopAbstractLike}>关注</Text>
       </View>
     </View>)
@@ -1063,13 +1063,13 @@ class ShopDetail extends Component {
           this.openCommentScene()
         }}>
           <View style={[styles.vItem]}>
-            <Svg size={normalizeH(32)} icon="message" style={{}} />
+            <Svg size={normalizeH(32)} color="#FF9D4E" icon="message"  />
             <Text style={[styles.vItemTxt, styles.shopCommentInput]}>留言</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
-          <Svg size={normalizeH(32)} icon="service" style={{marginTop:normalizeH(8)}} fill='#FFFFFF' color='#FFFFFF'/>
+          <Svg size={normalizeH(32)} color="#FFFFFF" icon="payment_weixin_36"  />
           <Text style={[styles.contactedTxt]}>联系客服</Text>
         </TouchableOpacity>
       </View>
