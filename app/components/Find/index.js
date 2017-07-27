@@ -19,7 +19,7 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
-import {getCity} from '../../selector/locSelector'
+import {getCity,getProvince} from '../../selector/locSelector'
 import {getTopics, getLocalTopics, getPickedTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
@@ -214,6 +214,8 @@ export class Find extends Component {
     } else if (this.state.selectedTab == 1) {
       payload = {
         type: "localTopics",
+        city: this.props.localCity,
+        province: this.props.localProvince,
         lastCreatedAt: lastCreatedAt,
         lastUpdatedAt: lastUpdatedAt,
         isRefresh: !!isRefresh,
@@ -341,6 +343,8 @@ const mapStateToProps = (state, ownProps) => {
   // const pickedTopic = getPickedTopics(state)
   const userInfo = activeUserInfo(state)
   const localCity = getCity(state)
+  const localProvince = getProvince(state)
+
   if (!localCity)
     topicCategories.unshift({title: "全国"})
   else {
@@ -359,6 +363,7 @@ const mapStateToProps = (state, ownProps) => {
     isLogin: isLogin,
     userInfo: userInfo,
     localCity: localCity,
+    localProvince:localProvince,
   }
 }
 
