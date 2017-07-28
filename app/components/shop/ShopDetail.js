@@ -497,10 +497,9 @@ class ShopDetail extends Component {
           <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
           <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
         </View>
-        <View style={styles.ownerContact}>
-          <Svg  key={this.props.shopDetail.owner.objectId} size={normalizeH(32)} color="#FF9D4E"
-               icon='service'/>
-        </View>
+        <Svg key={this.props.shopDetail.owner.objectId} style={{marginRight: normalizeW(15)}} size={normalizeH(32)}
+             color="#FF9D4E"
+             icon='service'/>
       </View>
     )
   }
@@ -721,27 +720,27 @@ class ShopDetail extends Component {
     )
   }
 
-  renderShopTags(){
+  renderShopTags() {
     let tags = this.props.shopDetail.containedTag
-    if(tags&&tags.length){
-      let showTags = tags.map((item,key)=>{
-        if(key<5){
+    if (tags && tags.length) {
+      let showTags = tags.map((item, key)=> {
+        if (key < 5) {
           return <View style={styles.shopTagBadge}>
             <Text style={styles.shopTagBadgeTxt}>{item.name}</Text>
           </View>
         }
       })
-      return <View  style={styles.shopTagBox}>
+      return <View style={styles.shopTagBox}>
         {showTags }
       </View>
-    }else{
+    } else {
       return <View/>
     }
 
 
   }
 
-  renderShopAbstract(){
+  renderShopAbstract() {
     return (<View style={{
       position: 'absolute',
       left: 0,
@@ -751,7 +750,7 @@ class ShopDetail extends Component {
       justifyContent: 'space-between',
       width: PAGE_WIDTH
     }}>
-      <View style={{flex: 1,marginLeft: normalizeW(15)}}>
+      <View style={{flex: 1, marginLeft: normalizeW(15)}}>
         <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
         {this.renderShopTags()}
       </View>
@@ -898,23 +897,23 @@ class ShopDetail extends Component {
 
 
             {/*<View style={styles.shopHead}>*/}
-              {/*<View style={styles.shopHeadLeft}>*/}
-                {/*<Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>*/}
-                {/*<View style={styles.shopOtherInfo}>*/}
-                  {/*<ScoreShow*/}
-                    {/*containerStyle={{flex: 1}}*/}
-                    {/*score={this.props.shopDetail.score}*/}
-                  {/*/>*/}
-                  {/*{this.props.shopDetail.distance &&*/}
-                  {/*<Text*/}
-                    {/*style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>*/}
-                  {/*}*/}
-                  {/*{this.props.shopDetail.pv*/}
-                    {/*? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>*/}
-                    {/*: null*/}
-                  {/*}*/}
-                {/*</View>*/}
-              {/*</View>*/}
+            {/*<View style={styles.shopHeadLeft}>*/}
+            {/*<Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>*/}
+            {/*<View style={styles.shopOtherInfo}>*/}
+            {/*<ScoreShow*/}
+            {/*containerStyle={{flex: 1}}*/}
+            {/*score={this.props.shopDetail.score}*/}
+            {/*/>*/}
+            {/*{this.props.shopDetail.distance &&*/}
+            {/*<Text*/}
+            {/*style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>*/}
+            {/*}*/}
+            {/*{this.props.shopDetail.pv*/}
+            {/*? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>*/}
+            {/*: null*/}
+            {/*}*/}
+            {/*</View>*/}
+            {/*</View>*/}
             {/*</View>*/}
 
             <View style={styles.shopXYZWrap}>
@@ -942,14 +941,14 @@ class ShopDetail extends Component {
               </View>
 
               {/*<View style={styles.shopXYZRight}>*/}
-                {/*{this.renderFollowShop()}*/}
+              {/*{this.renderFollowShop()}*/}
               {/*</View>*/}
             </View>
 
             {/*<ShopPromotionModule*/}
-              {/*title="近期活动"*/}
-              {/*noDistance={true}*/}
-              {/*shopPromotionList={this.props.shopDetail.containedPromotions}*/}
+            {/*title="近期活动"*/}
+            {/*noDistance={true}*/}
+            {/*shopPromotionList={this.props.shopDetail.containedPromotions}*/}
             {/*/>*/}
             <View style={styles.headerView}>
               <View style={styles.headerItem}>
@@ -1059,17 +1058,26 @@ class ShopDetail extends Component {
 
     return (
       <View style={styles.shopCommentWrap}>
-        <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
-          this.openCommentScene()
-        }}>
-          <View style={[styles.vItem]}>
-            <Svg size={normalizeH(32)} color="#FF9D4E" icon="message"  />
-            <Text style={[styles.vItemTxt, styles.shopCommentInput]}>留言</Text>
-          </View>
-        </TouchableOpacity>
-
+        <View style={{width: normalizeW(241), flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
+            this.openCommentScene()
+          }}>
+            <View style={[styles.vItem]}>
+              <Svg size={normalizeH(32)} color="#FF9D4E" icon="message"/>
+              <Text style={[styles.vItemTxt, styles.shopCommentInput]}>留言</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
+            this.openCommentScene()
+          }}>
+            <View style={[styles.vItem]}>
+              <Svg size={normalizeH(32)} color="#FF9D4E" icon="call"/>
+              <Text style={[styles.vItemTxt, styles.shopCommentInput]}>电话</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
-          <Svg size={normalizeH(32)} color="#FFFFFF" icon="payment_weixin_36"  />
+          <Svg size={normalizeH(32)} color="#FFFFFF" icon="service"/>
           <Text style={[styles.contactedTxt]}>联系客服</Text>
         </TouchableOpacity>
       </View>
@@ -1210,11 +1218,11 @@ const styles = StyleSheet.create({
     fontSize: em(17),
     color: '#030303'
   },
-  shopAbstractName:{
+  shopAbstractName: {
     fontSize: em(17),
     color: '#FFFFFF'
   },
-  shopAbstractLike:{
+  shopAbstractLike: {
     fontSize: em(14),
     color: '#FFFFFF'
   },
@@ -1222,7 +1230,7 @@ const styles = StyleSheet.create({
     height: normalizeH(25),
     width: normalizeW(60),
     borderRadius: normalizeH(12),
-    backgroundColor:'#FF9D4E',
+    backgroundColor: '#FF9D4E',
     // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -1562,7 +1570,7 @@ const styles = StyleSheet.create({
     color: '#aaa'
   },
   shopCommentInputBox: {
-    flex: 1,
+    // flex: 1,
   },
   contactedWrap: {
     width: normalizeW(135),
@@ -1696,11 +1704,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ownerContact: {
-    height: normalizeH(32),
-    width: normalizeW(32),
-    marginRight: normalizeW(10),
-    paddingTop: normalizeH(4),
-    paddingBottom: normalizeH(4),
+    // height: normalizeH(32),
+    // width: normalizeW(32),
   },
   shopTagBadge: {
     backgroundColor: '#F5F5F5',
@@ -1714,7 +1719,7 @@ const styles = StyleSheet.create({
     color: '#AAAAAA',
     fontSize: em(11),
   },
-  shopTagBox:{
+  shopTagBox: {
     flex: 1,
     flexDirection: 'row',
     marginTop: normalizeH(11)
