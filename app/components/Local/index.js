@@ -161,6 +161,7 @@ class Local extends Component {
       <ShopShow
         shopInfo = {shopInfo}
         index = {index}
+        key = {shopInfo.objectId}
       />
     )
   }
