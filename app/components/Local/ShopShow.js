@@ -58,7 +58,7 @@ export default class ShopShow extends Component {
     return (
         <TouchableOpacity onPress={()=> {
           this.gotoShopDetailScene(shopInfo.id)
-        }}>
+        }} >
           <View style={[styles.shopInfoWrap]}>
             <View style={styles.coverWrap}>
               <CachedImage mutable style={styles.cover}
@@ -92,7 +92,7 @@ export default class ShopShow extends Component {
   renderShopTags(tags){
     let showTags = tags.map((item,key)=>{
       if(key<5){
-        return <View style={styles.shopTagBadge}>
+        return <View style={styles.shopTagBadge} key={key}>
           <Text style={styles.shopTagBadgeTxt}>{item.name}</Text>
         </View>
       }

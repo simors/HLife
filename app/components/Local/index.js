@@ -106,7 +106,7 @@ class Local extends Component {
       })
     }
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1}} key='shop_list'>
         {shopListView}
       </View>
     )
@@ -161,7 +161,7 @@ class Local extends Component {
       <ShopShow
         shopInfo = {shopInfo}
         index = {index}
-        key = {shopInfo.objectId}
+        key = {shopInfo.id}
       />
     )
   }
