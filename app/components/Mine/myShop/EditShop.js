@@ -440,10 +440,10 @@ class EditShop extends Component {
     return (
       <View style={styles.container}>
         <Header
-          leftType="text"
-          leftText="取消"
+          leftType="icon"
+          leftIconName="ios-arrow-back"
           leftPress={() => this.goBack()}
-          title="编辑店铺"
+          title="店铺管理"
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightType="text"
@@ -475,7 +475,7 @@ class EditShop extends Component {
                     flexDirection:'row',
                     justifyContent:'flex-end',
                     alignItems:'center',
-                    backgroundColor: THEME.base.mainColor,
+                    backgroundColor: 'rgb(245,245,245,0.5)',
                     opacity: 0.6,
                   }}>
                     <Text style={{fontSize:15,color: '#FFF'}}>{`编辑相册·${albumLen}`}</Text>
@@ -493,10 +493,10 @@ class EditShop extends Component {
                 shopAddress:this.state.shopAddress
               })} style={styles.shopBaseInfoLeftWrap}>
                 <Text numberOfLines={1} style={styles.shopBaseInfoLeftTitle}>{this.state.shopName}</Text>
-                <View style={styles.shopBaseInfoLeftLocBox}>
-                  <Image resizeMode='contain' source={require("../../../assets/images/shop_loaction.png")}/>
-                  <Text numberOfLines={2} style={styles.shopBaseInfoLeftLocTxt}>{this.state.shopAddress}</Text>
-                </View>
+                {/*<View style={styles.shopBaseInfoLeftLocBox}>*/}
+                  {/*<Image resizeMode='contain' source={require("../../../assets/images/shop_loaction.png")}/>*/}
+                  {/*<Text numberOfLines={2} style={styles.shopBaseInfoLeftLocTxt}>{this.state.shopAddress}</Text>*/}
+                {/*</View>*/}
               </TouchableOpacity>
             </View>
             <View style={{height:0,width:0}}>
@@ -546,6 +546,19 @@ class EditShop extends Component {
               />
             </View>
             <View style={styles.inputsWrap}>
+              <View style={styles.inputWrap}>
+                <View style={styles.inputLabelBox}>
+                  <Text style={styles.inputLabel}>店铺类型</Text>
+                </View>
+                <View style={[styles.inputBox, styles.tagsBox]}>
+                  <TagsInput
+                    {...tagsInput}
+                    onPress={()=>{this.toggleShopTagsSelectShow()}}
+                    tags={this.state.selectedShopTags}
+                    noCheckInput={true}
+                  />
+                </View>
+              </View>
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺标签</Text>
@@ -627,7 +640,9 @@ class EditShop extends Component {
                   />
                 </View>
               </View>
-
+              <TouchableOpacity style={styles.submitBtnWrap} onPress={() => this.onEditShopBtnPress()}>
+                <Text style={styles.submitBtn}>完成</Text>
+              </TouchableOpacity>
             </View>
 
           </KeyboardAwareScrollView>
@@ -763,7 +778,8 @@ const styles = StyleSheet.create({
   },
   shopBaseInfoLeftTitle: {
     color: '#030303',
-    fontSize: em(17)
+    fontSize: em(17),
+    // fontStyle: 'boil'
   },
   shopBaseInfoLeftLocBox: {
     flexDirection: 'row',
@@ -819,6 +835,24 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 10,
     backgroundColor: '#fff'
+  },
+  submitBtnWrap:{
+    flex:1,
+    marginTop:normalizeH(15),
+    backgroundColor:'#FF7819',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: normalizeH(16),
+    paddingBottom: normalizeH(16),
+    marginLeft: normalizeW(15),
+    marginRight: normalizeW(15),
+
+
+  },
+  submitBtn:{
+    fontSize: em(18),
+    letterSpacing: -normalizeW(0.4),
+    color:'#FFFFFF',
   },
 
 

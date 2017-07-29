@@ -28,6 +28,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
+import ShopCommentList from './ShopCommentList'
+
 import ShopPromotionModule from './ShopPromotionModule'
 // import from '../../action/shopAction'
 import {
@@ -507,53 +509,6 @@ class ShopDetail extends Component {
   renderComments() {
     if (this.props.shopComments && this.props.shopComments.length) {
       let avatar = require('../../assets/images/default_portrait.png')
-
-      const commentsView = this.props.shopComments.map((item, index) => {
-        if (index > 2) return
-        if (item.user.avatar) {
-          avatar = {uri: getThumbUrl(item.user.avatar, 50, 50)}
-        }
-        return (
-          <View key={"shop_comment_" + index} style={styles.commentContainer}>
-            <View style={styles.commentAvatarBox}>
-              <TouchableOpacity onPress={()=> {
-                Actions.PERSONAL_HOMEPAGE({userId: item.user.id})
-              }}>
-                <CachedImage mutable style={styles.commentAvatar} source={avatar}/>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.commentRight}>
-              <TouchableOpacity onPress={()=> {
-                Actions.PERSONAL_HOMEPAGE({userId: item.user.id})
-              }}>
-                <View style={[styles.commentLine, styles.commentHeadLine]}>
-                  <Text style={styles.commentTitle}>{item.user.nickname}</Text>
-                  <Text style={styles.commentTime}>{item.createdDate}</Text>
-                </View>
-              </TouchableOpacity>
-              <View style={[styles.commentLine, {marginBottom: 10}]}>
-                <ScoreShow score={item.score}/>
-              </View>
-              <View style={[styles.commentLine, {marginBottom: 10}]}>
-                <Text numberOfLines={2} style={styles.comment}>{item.content}</Text>
-              </View>
-
-              {
-                item.blueprints && item.blueprints.length
-                  ? <View style={[styles.commentLine, {marginBottom: 10}]}>
-                  <ImageGroupViewer
-                    images={item.blueprints}
-                    containerStyle={{marginLeft: 0, marginRight: 0}}
-                    imageStyle={{margin: 0, marginRight: 2}}
-                  />
-                </View>
-                  : null
-              }
-            </View>
-          </View>
-        )
-      })
-
       return (
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
@@ -561,15 +516,8 @@ class ShopDetail extends Component {
             <Text style={styles.titleTxt}>留言板·{this.props.shopCommentsTotalCount}</Text>
           </View>
 
-          {commentsView}
+          <ShopCommentList shopId = {this.props.id}/>
 
-          <View style={styles.commentFoot}>
-            <TouchableOpacity onPress={()=> {
-              Actions.SHOP_COMMENT_LIST({shopId: this.props.id})
-            }}>
-              <Text style={styles.allCommentsLink}>查看全部评价</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       )
     } else {
@@ -877,18 +825,18 @@ class ShopDetail extends Component {
               }} style={{flex: 1}}>
                 <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                              source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
-                  <View style={{
-                    position: 'absolute',
-                    right: 15,
-                    bottom: 15,
-                    padding: 3,
-                    paddingLeft: 6,
-                    paddingRight: 6,
-                    backgroundColor: 'gray',
-                    borderRadius: 2,
-                  }}>
-                    <Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>
-                  </View>
+                  {/*<View style={{*/}
+                    {/*position: 'absolute',*/}
+                    {/*right: 15,*/}
+                    {/*bottom: 15,*/}
+                    {/*padding: 3,*/}
+                    {/*paddingLeft: 6,*/}
+                    {/*paddingRight: 6,*/}
+                    {/*backgroundColor: 'gray',*/}
+                    {/*borderRadius: 2,*/}
+                  {/*}}>*/}
+                    {/*<Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>*/}
+                  {/*</View>*/}
                 </CachedImage>
               </TouchableOpacity>
               {this.renderShopAbstract()}
@@ -990,7 +938,6 @@ class ShopDetail extends Component {
             </View>
 
             {this.renderComments()}
-
             {/*{this.renderGuessYouLike()}*/}
 
           </ScrollView>
