@@ -30,6 +30,7 @@ import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopCommentList from './ShopCommentList'
 import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import ShopPromotionModule from './ShopPromotionModule'
 // import from '../../action/shopAction'
@@ -91,6 +92,7 @@ class ShopDetail extends Component {
     this.state = {
       modalVisible: false,
       fade: new Animated.Value(0),
+      height: 0,
     }
   }
 
@@ -617,6 +619,9 @@ class ShopDetail extends Component {
   handleOnScroll(e) {
     let offset = e.nativeEvent.contentOffset.y
     let comHeight = normalizeH(200)
+    this.setState({
+      height: offset
+    })
     if (offset >= 0 && offset < 10) {
       Animated.timing(this.state.fade, {
         toValue: 0,
@@ -635,6 +640,49 @@ class ShopDetail extends Component {
     }
   }
 
+  renderShopLeftHeader(){
+    return (
+      <Animated.View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: 24,
+        left: 9,
+        zIndex: 10,
+        flex:1 ,
+        borderRadius:normalizeH(18)
+      }}
+      >
+        <TouchableOpacity onPress={() => {
+          AVUtils.pop({
+            backSceneName: this.props.backSceneName,
+            backSceneParams: this.props.backSceneParams
+          })}} style={{borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
+          <Icon name="ios-arrow-back" style={{fontSize:em(28), color:'#FAFAFA'}}/>
+          </TouchableOpacity>
+      </Animated.View>
+    )
+  }
+  renderShopRightHeader(){
+    return (
+      <Animated.View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: 24,
+        left: 330,
+        zIndex: 10,
+        flex:1 ,
+        borderRadius:normalizeH(18)
+      }}
+      >
+        <TouchableOpacity onPress={this.onShare} style={{borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
+          <Icon name="md-more" style={{fontSize:em(28), color:'#FAFAFA'}}/>
+        </TouchableOpacity>
+      </Animated.View>
+
+    )
+  }
   renderMainHeader() {
     return (
       <Animated.View style={{
@@ -830,45 +878,14 @@ class ShopDetail extends Component {
               }} style={{flex: 1}}>
                 <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                              source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
-                  {/*<View style={{*/}
-                    {/*position: 'absolute',*/}
-                    {/*right: 15,*/}
-                    {/*bottom: 15,*/}
-                    {/*padding: 3,*/}
-                    {/*paddingLeft: 6,*/}
-                    {/*paddingRight: 6,*/}
-                    {/*backgroundColor: 'gray',*/}
-                    {/*borderRadius: 2,*/}
-                  {/*}}>*/}
-                    {/*<Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>*/}
-                  {/*</View>*/}
                 </CachedImage>
               </TouchableOpacity>
+              {this.state.height<100?this.renderShopLeftHeader():null}
+              {this.state.height<100?this.renderShopRightHeader():null}
+
               {this.renderShopAbstract()}
             </View>
             {this.renderOwnerBanner()}
-
-
-            {/*<View style={styles.shopHead}>*/}
-            {/*<View style={styles.shopHeadLeft}>*/}
-            {/*<Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>*/}
-            {/*<View style={styles.shopOtherInfo}>*/}
-            {/*<ScoreShow*/}
-            {/*containerStyle={{flex: 1}}*/}
-            {/*score={this.props.shopDetail.score}*/}
-            {/*/>*/}
-            {/*{this.props.shopDetail.distance &&*/}
-            {/*<Text*/}
-            {/*style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>*/}
-            {/*}*/}
-            {/*{this.props.shopDetail.pv*/}
-            {/*? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>*/}
-            {/*: null*/}
-            {/*}*/}
-            {/*</View>*/}
-            {/*</View>*/}
-            {/*</View>*/}
-
             <View style={styles.shopXYZWrap}>
               <View style={styles.shopXYZLeft}>
                 <View style={styles.locationWrap}>
@@ -892,7 +909,6 @@ class ShopDetail extends Component {
                   </TouchableOpacity>
                 </View>
               </View>
-
               {/*<View style={styles.shopXYZRight}>*/}
               {/*{this.renderFollowShop()}*/}
               {/*</View>*/}
