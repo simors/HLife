@@ -29,6 +29,7 @@ import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
 import ShopCommentList from './ShopCommentList'
+import LinearGradient from 'react-native-linear-gradient';
 
 import ShopPromotionModule from './ShopPromotionModule'
 // import from '../../action/shopAction'
@@ -689,15 +690,18 @@ class ShopDetail extends Component {
   }
 
   renderShopAbstract() {
-    return (<View style={{
-      position: 'absolute',
-      left: 0,
-      top: 240,
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: PAGE_WIDTH
-    }}>
+    return (
+      <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']} style={{
+        position: 'absolute',
+        left: 0,
+        top: normalizeH(185),
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: PAGE_WIDTH,
+        height:normalizeH(115),
+        paddingTop: normalizeH(64)
+      }}>
       <View style={{flex: 1, marginLeft: normalizeW(15)}}>
         <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
         {this.renderShopTags()}
@@ -706,7 +710,8 @@ class ShopDetail extends Component {
         <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
         <Text style={styles.shopAbstractLike}>关注</Text>
       </View>
-    </View>)
+        </LinearGradient>
+    )
   }
 
   render() {
@@ -1655,7 +1660,7 @@ const styles = StyleSheet.create({
     // width: normalizeW(32),
   },
   shopTagBadge: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'rgba(245,245,245,0.3)',
     borderRadius: 2.5,
     padding: 3,
     justifyContent: 'center',
@@ -1663,8 +1668,9 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(6),
   },
   shopTagBadgeTxt: {
-    color: '#AAAAAA',
+    color: '#FFFFFF',
     fontSize: em(11),
+    height: normalizeH(11),
   },
   shopTagBox: {
     flex: 1,
