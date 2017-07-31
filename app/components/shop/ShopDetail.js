@@ -1032,7 +1032,7 @@ class ShopDetail extends Component {
             this.openCommentScene()
           }}>
             <View style={[styles.vItem]}>
-              <Svg size={normalizeH(32)} color="#FF9D4E" icon="message"/>
+              <Svg size={normalizeH(32)} icon="message"/>
               <Text style={[styles.vItemTxt, styles.shopCommentInput]}>留言</Text>
             </View>
           </TouchableOpacity>
@@ -1040,7 +1040,7 @@ class ShopDetail extends Component {
             this.openCommentScene()
           }}>
             <View style={[styles.vItem]}>
-              <Svg size={normalizeH(32)} color="#FF9D4E" icon="call"/>
+              <Svg size={normalizeH(32)}  icon="call"/>
               <Text style={[styles.vItemTxt, styles.shopCommentInput]}>电话</Text>
             </View>
           </TouchableOpacity>
