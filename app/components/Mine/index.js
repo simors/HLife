@@ -132,9 +132,7 @@ class Mine extends Component {
   }
 
   shareToFriend() {
-    let shareUrl = this.props.shareDomain + "appDownload/"
-
-    console.log("shopShare url:", shareUrl)
+    let shareUrl = this.props.shareDomain + "appDownload?userId=" + this.props.currentUserId
 
     Actions.SHARE({
       title: "汇邻优店",
