@@ -909,6 +909,7 @@ class ShopDetail extends Component {
                   </TouchableOpacity>
                 </View>
               </View>
+
               {/*<View style={styles.shopXYZRight}>*/}
               {/*{this.renderFollowShop()}*/}
               {/*</View>*/}
@@ -1691,6 +1692,7 @@ const styles = StyleSheet.create({
   shopTagBox: {
     flex: 1,
     flexDirection: 'row',
-    marginTop: normalizeH(11)
+    marginTop: normalizeH(9),
+    marginBottom: normalizeH(9)
   }
 })
