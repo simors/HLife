@@ -642,13 +642,12 @@ class ShopDetail extends Component {
 
   renderShopLeftHeader(){
     return (
-      <Animated.View style={{
+      <View style={{
         backgroundColor: 'rgba(0,0,0,0.3)',
         opacity: 30,
         position: 'absolute',
-        top: 24,
-        left: 9,
-        zIndex: 10,
+        top: normalizeH(24),
+        left: normalizeW(9),
         flex:1 ,
         borderRadius:normalizeH(18)
       }}
@@ -657,29 +656,30 @@ class ShopDetail extends Component {
           AVUtils.pop({
             backSceneName: this.props.backSceneName,
             backSceneParams: this.props.backSceneParams
-          })}} style={{borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
+          })}} style={{paddingTop:normalizeH(3),borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
           <Icon name="ios-arrow-back" style={{fontSize:em(28), color:'#FAFAFA'}}/>
           </TouchableOpacity>
-      </Animated.View>
+      </View>
     )
   }
   renderShopRightHeader(){
     return (
-      <Animated.View style={{
+      <View style={{
         backgroundColor: 'rgba(0,0,0,0.3)',
         opacity: 30,
         position: 'absolute',
-        top: 24,
-        left: 330,
-        zIndex: 10,
+        top: normalizeH(24),
+        left: normalizeW(330),
         flex:1 ,
-        borderRadius:normalizeH(18)
+        borderRadius:normalizeH(18),
+        width:normalizeW(36),
+        height:normalizeH(36)
       }}
       >
         <TouchableOpacity onPress={this.onShare} style={{borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
           <Icon name="md-more" style={{fontSize:em(28), color:'#FAFAFA'}}/>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
 
     )
   }
@@ -1683,6 +1683,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: normalizeW(6),
+
   },
   shopTagBadgeTxt: {
     color: '#FFFFFF',
@@ -1692,7 +1693,7 @@ const styles = StyleSheet.create({
   shopTagBox: {
     flex: 1,
     flexDirection: 'row',
-    marginTop: normalizeH(9),
-    marginBottom: normalizeH(9)
+    marginTop: normalizeH(6),
+    marginBottom: normalizeH(6)
   }
 })
