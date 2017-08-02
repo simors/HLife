@@ -486,10 +486,16 @@ class MyShopIndex extends Component {
                 this.showGoodDetail(value)
               }}/>:<View style={{flex: 1,width: PAGE_WIDTH,alignItems:'center',backgroundColor:'white',
               }}>
+                <TouchableOpacity
+                  onPress={()=>{
+                    Actions.PUBLISH_SHOP_GOOD({shopId: this.props.shopDetail.id})
+                  }}
+                >
                 <Image
                   style={{height:normalizeH(175)}}
                   source={require('../../../assets/images/background_shop_copy.png')}
                 />
+                  </TouchableOpacity>
               </View>}
 
               <View style={styles.shopAnnouncementWrap}>
