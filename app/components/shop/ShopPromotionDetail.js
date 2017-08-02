@@ -121,10 +121,8 @@ class ShopPromotionDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopPromotionShare/" + this.props.id:
-      DEFAULT_SHARE_DOMAIN + "shopPromotionShare/" + this.props.id
-
-    console.log("shopPromotionShare url:", shareUrl)
+    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopPromotionShare/" + this.props.id + '?userId=' + this.props.currentUser:
+      DEFAULT_SHARE_DOMAIN + "shopPromotionShare/" + this.props.id + '?userId=' + this.props.currentUser
 
     Actions.SHARE({
       title: this.props.shopPromotionDetail.title,

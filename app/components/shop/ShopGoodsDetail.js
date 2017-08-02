@@ -74,10 +74,8 @@ class ShopGoodsDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + this.props.goodInfo.id :
-    DEFAULT_SHARE_DOMAIN + "goodShare/" + this.props.goodInfo.id
-
-    console.log("shopShare url:", shareUrl)
+    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + this.props.goodInfo.id + '?userId=' + this.props.currentUser:
+    DEFAULT_SHARE_DOMAIN + "goodShare/" + this.props.goodInfo.id + '?userId=' + this.props.currentUser
 
     Actions.SHARE({
       title: this.props.goodInfo.goodsName || "汇邻优店",

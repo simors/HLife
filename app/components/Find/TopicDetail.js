@@ -368,10 +368,8 @@ export class TopicDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = this.props.shareDomain? this.props.shareDomain + "topicShare/" + this.props.topic.objectId:
-      DEFAULT_SHARE_DOMAIN + "topicShare/" + this.props.topic.objectId
-
-
+    let shareUrl = this.props.shareDomain? this.props.shareDomain + "topicShare/" + this.props.topic.objectId + '?userId=' + this.props.userInfo.id:
+      DEFAULT_SHARE_DOMAIN + "topicShare/" + this.props.topic.objectId + '?userId=' + this.props.userInfo.id
 
     Actions.SHARE({
       title: this.props.topic.title || "邻家话题",
