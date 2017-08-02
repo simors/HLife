@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     width: normalizeW(300),
     backgroundColor: '#f2f2f2',
     marginRight: 8,
-    marginTop: normalizeH(10),
+    // marginTop: normalizeH(10),
     marginBottom: normalizeH(15),
   },
 

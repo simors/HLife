@@ -23,7 +23,7 @@ import {
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
 import {selectShopDetail} from '../selector/shopSelector'
-import {getTopicById} from '../selector/topicSelector'
+// import {getTopicById} from '../selector/topicSelector'
 import {getTopicByTopicId} from '../selector/newTopicSelector'
 
 import * as lcShop from '../api/leancloud/shop'
@@ -842,7 +842,7 @@ export function notifyShopComment(payload) {
 
 export function notifyTopicLike(payload) {
   return (dispatch, getState) => {
-    let topicInfo = getTopicById(getState(), payload.topicId)
+    let topicInfo = getTopicByTopicId(getState(), payload.topicId)
     let currentUser = activeUserInfo(getState())
     let notifyConv = {
       members: [topicInfo.userId],   // 可以是一个数组

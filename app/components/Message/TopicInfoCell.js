@@ -14,8 +14,10 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
-import {fetchTopicById} from '../../action/topicActions'
-import {getTopicById} from '../../selector/topicSelector'
+// import {fetchTopicById} from '../../action/topicActions'
+// import {getTopicById} from '../../selector/topicSelector'
+import {getTopicByTopicId} from '../../selector/newTopicSelector'
+
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 
 class ShopInfoCell extends Component {
@@ -24,9 +26,9 @@ class ShopInfoCell extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchTopicById({topicId: this.props.topicId})
-    })
+    // InteractionManager.runAfterInteractions(() => {
+    //   this.props.fetchTopicById({topicId: this.props.topicId})
+    // })
   }
 
   renderCoverImage() {
@@ -65,12 +67,12 @@ class ShopInfoCell extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
-  let topicInfo = getTopicById(state, ownProps.topicId)
+  let topicInfo = getTopicByTopicId(state, ownProps.topicId)
   newProps.topicInfo = topicInfo
   return newProps
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchTopicById,
+  // fetchTopicById,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopInfoCell)
