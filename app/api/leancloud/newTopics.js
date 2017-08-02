@@ -49,7 +49,7 @@ export function likeTopic(payload) {
   let userId = authSelector.activeUserId(store.getState())
   if(userId&&userId!=''){
     return AV.Cloud.run('hlifeTopicUpByUser', {...payload, userId: userId}).then((result)=> {
-      let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+      let topicInfo = newTopicSelector.getTopicByTopicId(store.getState(), payload.topicId)
       let activeUser = authSelector.activeUserInfo(store.getState())
       let pushUserid = topicInfo && topicInfo.userId
       if(pushUserid && activeUser.id != pushUserid) {
@@ -71,7 +71,7 @@ export function likeTopic(payload) {
 export function publishTopicComments(payload) {
   return AV.Cloud.run('hlifeTopicPubulishTopicComment',{payload:payload}).then( (result) => {
     if (result) {
-      let topicInfo = topicSelector.getTopicById(store.getState(), payload.topicId)
+      let topicInfo = newTopicSelector.getTopicByTopicId(store.getState(), payload.topicId)
       let activeUser = authSelector.activeUserInfo(store.getState())
       let pushUserid = topicInfo && topicInfo.userId
       if(pushUserid && activeUser.id != pushUserid) {
