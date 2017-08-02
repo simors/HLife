@@ -542,14 +542,14 @@ class MyShopIndex extends Component {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.manageShopGoods()}}>
+            <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=>{this.activityManage()}}>
               <View style={[styles.vItem, {marginLeft: 19}]}>
                 <Svg size={normalizeH(32)} color="#FF9D4E" icon="activity_edite"/>
                 <Text style={[styles.vItemTxt, styles.shopCommentInput]}>活动管理</Text>
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.activityManage()}>
+            <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.manageShopGoods()}>
               <Svg size={normalizeH(32)} color="#FFFFFF" icon="goods_20"/>
               <Text style={[styles.contactedTxt]}>商品管理</Text>
             </TouchableOpacity>
