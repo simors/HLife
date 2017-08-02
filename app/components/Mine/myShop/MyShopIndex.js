@@ -482,22 +482,16 @@ class MyShopIndex extends Component {
                   <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
                 </View>
               </View>
-              <ShopGoodsList shopGoodsList={this.props.goodList} size={6} showGoodDetail={(value)=> {
+              {this.props.goodList&&this.props.goodList.length?<ShopGoodsList shopGoodsList={this.props.goodList} size={6} showGoodDetail={(value)=> {
                 this.showGoodDetail(value)
-              }}/>
-              <View style={styles.commentWrap}>
-                <View style={styles.commentFoot}>{ this.props.goodList&&this.props.goodList.length?<TouchableOpacity onPress={()=> {
-                  Actions.SHOP_GOODSLIST_VIEW({
-                    id: this.props.userOwnedShopInfo.id,
-                  })
-                }}>
-                  <Text style={styles.allCommentsLink}>查看全部商品</Text>
-                </TouchableOpacity>:<View style={styles.noDataContainer}>
-                  <Text style={{fontSize:12,color:'#5A5A5A'}}>暂无商品</Text>
-                </View>}
+              }}/>:<View style={{flex: 1,width: PAGE_WIDTH,alignItems:'center',backgroundColor:'white',
+              }}>
+                <Image
+                  style={{height:normalizeH(175)}}
+                  source={require('../../../assets/images/background_shop_copy.png')}
+                />
+              </View>}
 
-                </View>
-              </View>
               <View style={styles.shopAnnouncementWrap}>
                 <View style={styles.titleWrap}>
                   <View style={styles.titleLine}/>
@@ -551,7 +545,7 @@ class MyShopIndex extends Component {
 
             <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.activityManage()}>
               <Svg size={normalizeH(32)} color="#FFFFFF" icon="goods_20"/>
-              <Text style={[styles.contactedTxt]}>活动管理</Text>
+              <Text style={[styles.contactedTxt]}>商品管理</Text>
             </TouchableOpacity>
           </View>
 
