@@ -15,6 +15,11 @@ import {
   InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
+import {
+  SelectInput,
+  Option,
+  OptionList
+} from '../../common/CommonSelect'
 import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
 import {Actions} from 'react-native-router-flux'
@@ -54,6 +59,17 @@ const serviceTimeInput = {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '服务时间为空'}
+  },
+}
+const shopCategoryInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopCategoryInput'),
+  type: "shopCategoryInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺类型为空'}
   },
 }
 const servicePhoneInput = {
@@ -154,7 +170,7 @@ class EditShop extends Component {
       this.state = {
         selectShow: false,
         shopTagsSelectShow: false,
-        optionListPos: 179,
+        optionListPos: 319,
         shopTagsSelectTop: 379,
         selectedShopTags: [],
         shopCategoryContainedTag: [],
@@ -167,7 +183,7 @@ class EditShop extends Component {
       this.state = {
         selectShow: false,
         shopTagsSelectShow: false,
-        optionListPos: 159,
+        optionListPos: 299,
         shopTagsSelectTop: 359,
         selectedShopTags: [],
         shopCategoryContainedTag: [],
@@ -228,6 +244,37 @@ class EditShop extends Component {
       this.localAlbumList = []
     }
 
+  }
+
+  _onSelectPress(e){
+    this.setState({
+      selectShow: !this.state.selectShow,
+    })
+  }
+
+  _getOptionList(OptionListRef) {
+    return this.refs[OptionListRef]
+  }
+
+  _onSelectShopCategory(shopCategoryId) {
+    // console.log('_onSelectShopCategory.shopCategoryId=', shopCategoryId)
+    this.updateShopCategoryContainedTags(shopCategoryId)
+    this.setState({
+      selectShow: !this.state.selectShow,
+      selectedShopTags: []
+    })
+  }
+
+  renderShopCategoryOptions() {
+    let optionsView = <View />
+    if(this.props.allShopCategories) {
+      optionsView = this.props.allShopCategories.map((item, index) => {
+        return (
+          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.id}>{item.text}</Option>
+        )
+      })
+    }
+    return optionsView
   }
 
   componentWillReceiveProps(nextProps) {
@@ -424,6 +471,10 @@ class EditShop extends Component {
     if(userOwnedShopInfo.coverUrl) {
       shopCover = {uri: userOwnedShopInfo.coverUrl}
     }
+    let targetShopCategory = {}
+    if(userOwnedShopInfo.targetShopCategory) {
+      targetShopCategory = userOwnedShopInfo.targetShopCategory
+    }
 
     if(this.localCoverImgUri) {
       shopCover = {uri: this.localCoverImgUri}
@@ -475,7 +526,7 @@ class EditShop extends Component {
                     flexDirection:'row',
                     justifyContent:'flex-end',
                     alignItems:'center',
-                    backgroundColor: 'rgb(245,245,245,0.5)',
+                    backgroundColor: 'rgba(245,245,245,0.5)',
                     opacity: 0.6,
                   }}>
                     <Text style={{fontSize:15,color: '#FFF'}}>{`编辑相册·${albumLen}`}</Text>
@@ -550,13 +601,23 @@ class EditShop extends Component {
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺类型</Text>
                 </View>
-                <View style={[styles.inputBox, styles.tagsBox]}>
-                  <TagsInput
-                    {...tagsInput}
-                    onPress={()=>{this.toggleShopTagsSelectShow()}}
-                    tags={this.state.selectedShopTags}
-                    noCheckInput={true}
-                  />
+                <View style={[styles.inputBox, styles.selectBox]}>
+                  <SelectInput
+                    {...shopCategoryInput}
+                    show={this.state.selectShow}
+                    onPress={(e)=>this._onSelectPress(e)}
+                    style={{}}
+                    styleOption={{height:50}}
+                    selectRef="SELECT"
+                    overlayPageX={0}
+                    overlayPageY={this.state.optionListPos}
+                    optionListHeight={240}
+                    optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
+                    defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
+                    defaultValue={targetShopCategory.id}
+                    onSelect={this._onSelectShopCategory.bind(this)}>
+                    {this.renderShopCategoryOptions()}
+                  </SelectInput>
                 </View>
               </View>
               <View style={styles.inputWrap}>
@@ -650,7 +711,7 @@ class EditShop extends Component {
           {this.state.shopTagsSelectShow &&
             <ShopTagsSelect
               show={this.state.shopTagsSelectShow}
-              containerStyle={{top: this.state.shopTagsSelectTop}}
+              containerStyle={{top: this.state.shopTagsSelectTop+normalizeH(60)}}
               scrollViewStyle={{height:150}}
               onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
               tags={this.state.shopCategoryContainedTag}
@@ -658,6 +719,7 @@ class EditShop extends Component {
               onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
             />
           }
+          <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
 
         </View>
       </View>
