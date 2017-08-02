@@ -24,6 +24,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from '../Toast'
 import Popup from '@zzzkk2009/react-native-popup'
+import Svg from '../../common/Svgs'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -280,10 +281,10 @@ class ImageGroupInput extends Component {
   }
   renderDetele(src){
     if(this.state.cancelState){
-      return( <View style={{position: 'absolute', top: 0, right: 0}}>
+      return( <View style={{position: 'absolute', top: 0, right: 0,borderRadius: 15,}}>
         <TouchableOpacity onPress={() => this.deleteImage(src)}>
-          <Image style={{width: 30, height: 30, borderRadius: 15, overflow: 'hidden'}}
-                 source={require('../../../assets/images/delete.png')}/>
+          <Svg size='40'
+                icon="delete_40"/>
         </TouchableOpacity>
       </View>)
     }else

@@ -765,7 +765,7 @@ const styles = StyleSheet.create({
   },
   headerLeftStyle: {
     color: '#fff',
-    fontSize: em(17)
+    fontSize: em(28)
   },
   headerTitleStyle: {
     color: '#fff',
