@@ -290,9 +290,8 @@ class MyShopIndex extends Component {
   }
 
   onShare = () => {
-    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopShare/" + this.props.userOwnedShopInfo.id:
-      DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.userOwnedShopInfo.id
-    console.log("shopShare url:", shareUrl)
+    let shareUrl = this.props.shareDomain? this.props.shareDomain + "shopShare/" + this.props.userOwnedShopInfo.id + '?userId=' + this.props.currentUser:
+      DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.userOwnedShopInfo.id + '?userId=' + this.props.currentUser
 
     Actions.SHARE({
       title: this.props.userOwnedShopInfo.shopName || "汇邻优店",

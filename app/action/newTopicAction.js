@@ -167,9 +167,7 @@ export function fetchPublishTopicComment(payload, formData) {
       return
     }
     lcTopics.publishTopicComments(publishTopicCommentPayload).then((result) => {
-      console.log('result===', result)
       let comment = TopicCommentsItem.fromLeancloudApi(result)
-
       let publishCommentAction = createAction(topicActionTypes.PUBLISH_COMMENT_SUCCESS)
       dispatch(publishCommentAction({comment: comment}))
       dispatch(notifyTopicComment({
