@@ -36,6 +36,7 @@ import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../a
 import {fetchShopAnnouncements, } from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
+import MyShopGoodListForChoose from './MyShopGoodListForChoose'
 import {selectUserOwnedShopInfo,
   selectShopFollowers,
   selectShopFollowersTotalCount,
@@ -49,21 +50,25 @@ import {selectUserOwnedShopInfo,
   selectUserIsUpedShop,
   selectGoodsList
 } from '../../../selector/shopSelector'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let commonForm = Symbol('commonForm')
-const announcementContentInput = {
-  formKey: commonForm,
-  stateKey: Symbol('announcementContentInput'),
-  type: 'announcementContentInput'
+let shopPromotionForm = Symbol('shopPromotionForm')
+let chooseGoodInput = {
+  formKey: shopPromotionForm,
+  stateKey: Symbol('chooseGoodInput'),
+  type: 'chooseGoodInput',
+  data: '',
 }
 
-const announcementCoverInput = {
-  formKey: commonForm,
-  stateKey: Symbol('announcementCoverInput'),
-  type: 'announcementCoverInput'
+let promotionPriceInput = {
+  formKey: shopPromotionForm,
+  stateKey: Symbol('promotionPriceInput'),
+  type: 'promotionPriceInput',
+  data: ''
 }
 
 
@@ -72,7 +77,8 @@ class PublishShopAnnouncement extends Component {
     super(props)
 
     this.state = {
-      shouldUploadImage: false
+      shouldUploadImage: false,
+      chooseGoodId:undefined,
     }
   }
 
@@ -82,7 +88,25 @@ class PublishShopAnnouncement extends Component {
     })
   }
 
+  unChooseGood(goodInfo){
+    // this.setState({
+    //   chooseGoodId: undefined
+    // })
+     chooseGoodInput.data=undefined
 
+    this.props.inputFormUpdate(chooseGoodInput)
+    // this.props.inputFormUpdate()
+    console.log('I  UN CHOOOSE=========?>',chooseGoodInput.data)
+  }
+
+  chooseGood(goodInfo){
+    chooseGoodInput.data= {text: goodInfo.id}
+    this.props.inputFormUpdate(chooseGoodInput)
+    // this.setState({
+    //   chooseGoodId: goodInfo.id
+    // })
+    console.log('I   CHOOOSE=========?>',chooseGoodInput.data)
+  }
 
   componentDidMount() {
 
@@ -112,7 +136,7 @@ class PublishShopAnnouncement extends Component {
 
   renderGoodList(){
     return(
-      <View><Text>zhelishigoodzhelishigood</Text></View>
+            <MyShopGoodListForChoose id={this.props.shopId} chooseGoodId={this.props.chooseGoodId} chooseGood={(goodInfo)=>{this.chooseGood(goodInfo)}} unChooseGood={(goodInfo)=>{this.unChooseGood(goodInfo)}}/>
     )
   }
 
@@ -159,8 +183,8 @@ class PublishShopAnnouncement extends Component {
   }
 
   renderGoods(){
-    // return this.props.goodList&&this.props.goodList.length?this.renderGoodList():this.renderNoGood()
-    return this.renderNoGood()
+    return this.props.goodList&&this.props.goodList.length?this.renderGoodList():this.renderNoGood()
+    // return this.renderNoGood()
   }
   render() {
 
@@ -191,17 +215,25 @@ const mapStateToProps = (state, ownProps) => {
   let goodList = []
   if(userOwnedShopInfo.id) {
     goodList = selectGoodsList(state, userOwnedShopInfo.id, 1)
-
   }
+  let chooseGoodId = getInputData(state,chooseGoodInput.formKey,chooseGoodInput.stateKey)
+  // console.log('chooseGoodId=============>',chooseGoodId)
+  let priceInput = getInputData(state,'shopPromotionForm','promotionPriceInput')
+
   return {
-    goodList: goodList
+    goodList: goodList,
+    shopId: userOwnedShopInfo.id,
+    chooseGoodId: chooseGoodId.text,
+    priceInput: priceInput.text
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
   submitInputData,
-  fetchShopAnnouncements
+  fetchShopAnnouncements,
+  initInputForm,
+  inputFormUpdate,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishShopAnnouncement)
