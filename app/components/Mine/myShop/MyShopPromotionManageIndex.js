@@ -358,7 +358,7 @@ class MyShopPromotionManageIndex extends Component {
                     Toast.show('您的店铺活动已达最大数量')
                     return
                   }
-                  Actions.PUBLISH_SHOP_PROMOTION({isPop:true})
+                  Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD({isPop:true})
                 }}
               >
                 <View style={{
