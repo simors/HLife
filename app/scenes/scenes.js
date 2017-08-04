@@ -97,6 +97,8 @@ import Share from '../components/common/Share'
 import PromoterPaymentOk from '../components/Payment/PromoterPaymentOk'
 import EarningRecord from '../components/Mine/promote/EarningRecord'
 import PublishShopPromotionChooseGood from '../components/Mine/myShop/PublishShopPromotionChooseGood'
+import PublishShopPromotionChooseType from '../components/Mine/myShop/PublishShopPromotionChooseType'
+
 import Contact from '../components/Mine/Contact'
 import Search from '../components/Search'
 import SearchUser from '../components/Search/SearchUser'
@@ -240,6 +242,8 @@ export const scenes = Actions.create(
       <Scene key="QRCODE_VIEW" component={QrcodeView}/>
       <Scene key="SET_MOBILE_PHONE_NUMBER" component={SetMobilePhoneNumber}/>
       <Scene key="PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD" component={PublishShopPromotionChooseGood}/>
+      <Scene key="PUBLISH_SHOP_PROMOTION_CHOOSE_TYPE" component={PublishShopPromotionChooseType}/>
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

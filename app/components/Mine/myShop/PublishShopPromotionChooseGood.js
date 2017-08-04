@@ -12,6 +12,7 @@ import {
   Dimensions,
   ScrollView,
   ListView,
+  Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
@@ -19,6 +20,10 @@ import {
   InteractionManager,
   TextInput
 } from 'react-native'
+import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
+import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
+import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
+
 import {connect} from 'react-redux'
 import {CachedImage} from "react-native-img-cache"
 import {bindActionCreators} from 'redux'
@@ -72,14 +77,17 @@ let promotionPriceInput = {
 }
 
 
-class PublishShopAnnouncement extends Component {
+class PublishShopPromotionChooseGood extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       shouldUploadImage: false,
       chooseGoodId:undefined,
+      hideBottomView: false,
     }
+    this.replyInput = null
+
   }
 
   componentWillMount() {
@@ -106,10 +114,34 @@ class PublishShopAnnouncement extends Component {
     //   chooseGoodId: goodInfo.id
     // })
     console.log('I   CHOOOSE=========?>',chooseGoodInput.data)
+    this.openModel()
   }
 
   componentDidMount() {
 
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
+  }
+  componentWillUnmount(){
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
+  }
+
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   hideBottomView: true
+    // })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -140,54 +172,49 @@ class PublishShopAnnouncement extends Component {
     )
   }
 
-  uploadImageCallback() {
-    this.publishAnnouncement()
-  }
+  openModel(callback) {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    }
+    else {
+      this.setState({
+        hideBottomView: true
+      }, ()=>{
+        // console.log('openModel===', this.replyInput)
+        if (this.replyInput) {
+          this.replyInput.focus()
+        }
+        if (callback && typeof callback == 'function') {
+          callback()
+        }
+      })
 
-  publishAnnouncement() {
-    if(this.props.shopAnnouncementId) {
-      this.props.submitFormData({
-        formKey: commonForm,
-        shopAnnouncementId: this.props.shopAnnouncementId,
-        submitType: INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT,
-        success: ()=>{this.submitSuccessCallback(this, '更新成功')},
-        error: (error)=>{this.submitErrorCallback(this, error.message || '更新失败')}
-      })
-    }else {
-      this.props.submitFormData({
-        formKey: commonForm,
-        id: this.props.id,
-        submitType: INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT,
-        success: ()=>{this.submitSuccessCallback(this, '发布成功')},
-        error: (error)=>{this.submitErrorCallback(this, error.message || '发布失败')}
-      })
     }
   }
 
-  submitSuccessCallback(context, message) {
-    dismissKeyboard()
-    context.props.fetchShopAnnouncements({
-      id: context.props.id,
-      isRefresh: true
+  onKeyboardWillHide = (e) => {
+    // console.log('onKeyboardWillHide')
+    this.setState({
+      hideBottomView: false
     })
-    Toast.show(message, {
-      duration: 1000,
-      onHidden: ()=>{
-        Actions.pop()
-      }
-    })
-  }
-
-  submitErrorCallback(context, message) {
-    Toast.show(message, {duration: 1000})
   }
 
   renderGoods(){
     return this.props.goodList&&this.props.goodList.length?this.renderGoodList():this.renderNoGood()
     // return this.renderNoGood()
   }
-  render() {
 
+  sendReply(content){
+    this.setState({hideBottomView: false})
+    promotionPriceInput.data= {text: content}
+    this.props.inputFormUpdate(promotionPriceInput)
+    Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_TYPE()
+  }
+
+  render() {
+    let textInputProps={
+
+    }
     return (
       <View style={styles.container}>
         <Header
@@ -203,7 +230,32 @@ class PublishShopAnnouncement extends Component {
           <KeyboardAwareScrollView>
             {this.renderGoods()}
           </KeyboardAwareScrollView>
-
+          {this.state.hideBottomView
+            ? <TouchableOpacity style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} onPress={()=>{dismissKeyboard()}}>
+            <View style={{flex: 1}}/>
+          </TouchableOpacity>
+            : null
+          }
+          <KeyboardAwareToolBar
+            initKeyboardHeight={-normalizeH(50)}
+            hideOverlay={true}
+          >
+            {this.state.hideBottomView
+              ? <ToolBarContent
+              initValue={this.props.priceInput?this.props.priceInput:0}
+              replyInputRefCallBack={(input)=> {
+                this.replyInput = input
+              }}
+              onSend={(content) => {
+                this.sendReply(content)
+              }}
+              placeholder='设置活动价格'
+              label="下一步"
+              keyboardType="numeric"
+            />
+              : null
+            }
+          </KeyboardAwareToolBar>
         </View>
       </View>
     )
@@ -213,18 +265,21 @@ class PublishShopAnnouncement extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   let goodList = []
+  const isLogin = isUserLogined(state)
+
   if(userOwnedShopInfo.id) {
     goodList = selectGoodsList(state, userOwnedShopInfo.id, 1)
   }
   let chooseGoodId = getInputData(state,chooseGoodInput.formKey,chooseGoodInput.stateKey)
-  // console.log('chooseGoodId=============>',chooseGoodId)
-  let priceInput = getInputData(state,'shopPromotionForm','promotionPriceInput')
+  let priceInput = getInputData(state,promotionPriceInput.formKey,promotionPriceInput.stateKey)
+  console.log('priceInput=============>',priceInput.text)
 
   return {
     goodList: goodList,
     shopId: userOwnedShopInfo.id,
     chooseGoodId: chooseGoodId.text,
-    priceInput: priceInput.text
+    priceInput: priceInput.text,
+    isLogin: isLogin
   }
 }
 
@@ -236,7 +291,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormUpdate,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishShopAnnouncement)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionChooseGood)
 
 const styles = StyleSheet.create({
   container: {
