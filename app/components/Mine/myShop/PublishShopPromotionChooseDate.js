@@ -1,6 +1,7 @@
 /**
- * Created by lilu on 2017/8/4.
+ * Created by lilu on 2017/8/5.
  */
+
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -20,7 +21,7 @@ import {
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
-
+import {DateDiff} from '../../../util/dateUtils'
 import {connect} from 'react-redux'
 import {CachedImage} from "react-native-img-cache"
 import {bindActionCreators} from 'redux'
@@ -39,6 +40,7 @@ import {fetchShopAnnouncements,} from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import MyShopGoodListForChoose from './MyShopGoodListForChoose'
+import DateTimeInput from '../../common/Input/DateTimeInput'
 import {
   selectUserOwnedShopInfo,
   selectShopFollowers,
@@ -60,15 +62,20 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 let shopPromotionForm = Symbol('shopPromotionForm')
-let chooseTypeInput = {
+const chooseStartDateInput = {
   formKey: shopPromotionForm,
-  stateKey: Symbol('chooseTypeInput'),
-  type: 'chooseTypeInput',
-  data: {},
+  stateKey: Symbol('chooseStartDateInput'),
+  type: 'chooseStartDateInput',
+}
+
+const chooseEndDateInput = {
+  formKey: shopPromotionForm,
+  stateKey: Symbol('chooseEndDateInput'),
+  type: 'chooseEndDateInput',
 }
 
 
-class PublishShopPromotionChooseType extends Component {
+class PublishShopPromotionChooseDate extends Component {
   constructor(props) {
     super(props)
 
@@ -76,40 +83,6 @@ class PublishShopPromotionChooseType extends Component {
       shouldUploadImage: false,
       chooseTypeId: undefined,
       hideBottomView: false,
-      types: [
-        {
-          id: 0,
-          type: '折扣',
-          typeDesc: '',
-          containerStyle: 'activeType',
-          textStyle: 'activeTypeTxt',
-          placeholderText: '例:店庆活动,全场七折起(15字内)'
-        },
-        {
-          id: 1,
-          type: '预售',
-          typeDesc: '',
-          containerStyle: 'defaultType',
-          textStyle: 'defaultTypeTxt',
-          placeholderText: '例:3月15号到货(15字内)'
-        },
-        {
-          id: 2,
-          type: '限时购',
-          typeDesc: '',
-          containerStyle: 'defaultType',
-          textStyle: 'defaultTypeTxt',
-          placeholderText: '例:每天下午18:00~22:00(15字内)'
-        },
-        {
-          id: 3,
-          type: '自定义',
-          typePlaceholderText: '',
-          containerStyle: 'customType',
-          textStyle: 'customTypeTxt',
-          placeholderText: '用简短的文字描述活动(15字内)'
-        },
-      ]
     }
     this.replyInput = null
 
@@ -126,68 +99,44 @@ class PublishShopPromotionChooseType extends Component {
     this.props.inputFormUpdate(chooseTypeInput)
   }
 
-  renderTypes(start,end) {
-    return this.state.types.map((item, index) => {
-      if (index>=start&&index<=end){
-        if (this.props.chooseTypeId && this.props.chooseTypeId == item.id) {
-          return (
-            <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
-              this.unChooseType(index)
-            }}>
-              <View style={styles.typeBox}>
-                <Text style={styles.chooseTypeText}>{item.type}</Text>
-                <View style={styles.typeSvg}>
-                  <Svg size={normalizeW(165)} height={normalizeH(69)} color={'#FF7819'} icon="selected_act"/>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          )
-        } else if (index == 3) {
-          return (
-            <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
-              this.changeType(index)
-            }}>
-              <View style={styles.typeBox}>
-                <Text style={styles.unChoose4TypeText}>{item.type}</Text>
-                <View style={styles.typeSvg}>
-                  <Svg size={normalizeW(165)} height={normalizeH(69)} icon="custom_act"/>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          )
-        } else {
-          return (
-            <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
-              this.changeType(index)
-            }}>
-              <View style={styles.typeBox}>
-                <Text style={styles.unChooseTypeText}>{item.type}</Text>
-                <View style={styles.typeSvg}>
-                  <Svg size={normalizeW(165)} height={normalizeH(69)} icon="unselect_act@2x"/>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          )
-        }
-      }
-    })
-  }
+  renderDatePicker(){
+    return(
+      <View style={styles.chooseDateBox}>
+        <View style={styles.chooseDateWrap}>
+          <Text style={styles.chooseText}>开始时间</Text>
+          <DateTimeInput
+            {...chooseStartDateInput}
+            mode="datetime"
+            PickerStyle={styles.pickerStyle}
+            maxDate='2017-12-12'
+            is24Hour={true}
+            format='YYYY-MM-DD HH:mm'
+            date = {this.props.startDate}
+            initValue={this.props.startDate}
+        />
 
-  changeType(index) {
-    chooseTypeInput.data = this.state.types[index]
-    this.props.inputFormUpdate(chooseTypeInput)
+        </View>
+        <View style={styles.chooseDateWrap}>
+          <Text style={styles.chooseText}>结束时间</Text>
+          <DateTimeInput
+            {...chooseEndDateInput}
+            mode="datetime"
+            PickerStyle={styles.pickerStyle}
+            maxDate=''
+            format='YYYY-MM-DD HH:mm'
+            is24Hour={true}
+            date = {this.props.endDate}
+            initValue={this.props.endDate}
+
+          />
+        </View>
+      </View>
+    )
+
   }
 
   componentWillReceiveProps(nextProps) {
 
-  }
-
-  onButtonPress() {
-    if (this.props.chooseTypeId && this.props.chooseTypeId != '') {
-      Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_DATE()
-    } else {
-      Toast.show('请选择一个类型')
-    }
   }
 
   renderSubmitButton() {
@@ -217,14 +166,7 @@ class PublishShopPromotionChooseType extends Component {
             <Text style={styles.showText}>选择活动类型</Text>
           </View>
           <KeyboardAwareScrollView>
-            <View style={{flexDirection:'row',}}>
-            {this.renderTypes(0,1)}
-
-            </View>
-            <View style={{flexDirection:'row',}}>
-              {this.renderTypes(2,4)}
-
-            </View>
+            {this.renderDatePicker()}
             {this.renderSubmitButton()}
           </KeyboardAwareScrollView>
         </View>
@@ -236,12 +178,14 @@ class PublishShopPromotionChooseType extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isLogin = isUserLogined(state)
-  let chooseTypeId = getInputData(state, chooseTypeInput.formKey, chooseTypeInput.stateKey)
-  console.log('chooseTypeId=============>', chooseTypeId.id)
-
+  let startDate = getInputData(state, chooseStartDateInput.formKey, chooseStartDateInput.stateKey)
+  let endDate = getInputData(state, chooseEndDateInput.formKey, chooseEndDateInput.stateKey)
+  let countDays = DateDiff(startDate.text,endDate.text)
+  console.log('countDays--->',countDays)
   return {
     shopId: userOwnedShopInfo.id,
-    chooseTypeId: chooseTypeId.id,
+    endDate: endDate.text,
+    startDate: startDate.text,
     isLogin: isLogin
   }
 }
@@ -254,7 +198,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormUpdate,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionChooseType)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionChooseDate)
 
 const styles = StyleSheet.create({
   container: {
@@ -379,5 +323,27 @@ const styles = StyleSheet.create({
     left: 0,
     height: normalizeH(69),
     width: normalizeW(165),
+  },
+  chooseText:{
+    fontSize: em(15),
+    color: '#000000',
+  },
+  chooseDateWrap:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  chooseDateBox:{
+    padding: normalizeH(10),
+    margin: normalizeW(15),
+    flex: 1,
+    borderWidth:normalizeBorder(1),
+    borderRadius: em(3),
+  },
+  pickerStyle:{
+    flex:1,
+    width:normalizeW(200),
+    height: normalizeH(42),
+    marginLeft:normalizeW(5),
   }
 })

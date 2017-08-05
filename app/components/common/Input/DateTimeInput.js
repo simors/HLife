@@ -65,6 +65,7 @@ class DateTimeInput extends Component {
           showIcon = {this.props.showIcon}
           onDateChange = {(date) => {this.dateChange(date)}}
           customStyles = {this.props.customStyles}
+          is24Hour = {this.props.is24Hour}
         />
       </View>
 

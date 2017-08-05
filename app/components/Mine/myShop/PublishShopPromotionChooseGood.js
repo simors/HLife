@@ -205,10 +205,15 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   sendReply(content){
-    this.setState({hideBottomView: false})
-    promotionPriceInput.data= {text: content}
-    this.props.inputFormUpdate(promotionPriceInput)
-    Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_TYPE()
+    if(this.props.chooseGoodId&&this.props.chooseGoodId!=''){
+      this.setState({hideBottomView: false})
+      promotionPriceInput.data= {text: content}
+      this.props.inputFormUpdate(promotionPriceInput)
+      Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_TYPE()
+    }else{
+      Toast.show('请选择一个商品')
+    }
+
   }
 
   render() {
