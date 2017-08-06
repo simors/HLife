@@ -56,24 +56,24 @@ import {selectUserOwnedShopInfo,
   selectGoodsList
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
-import {getInputData} from '../../../selector/inputFormSelector'
+import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let shopPromotionForm = Symbol('shopPromotionForm')
+let shopPromotionForm = 'shopPromotionForm'
 let chooseGoodInput = {
   formKey: shopPromotionForm,
   stateKey: Symbol('chooseGoodInput'),
-  type: 'chooseGoodInput',
-  data: '',
+  type: "chooseGoodInput",
+  data: {}
 }
 
 let promotionPriceInput = {
   formKey: shopPromotionForm,
   stateKey: Symbol('promotionPriceInput'),
-  type: 'promotionPriceInput',
-  data: ''
+  type: "promotionPriceInput",
+  data: {}
 }
 
 
@@ -95,6 +95,8 @@ class PublishShopPromotionChooseGood extends Component {
 
     })
   }
+
+
 
   unChooseGood(goodInfo){
     // this.setState({
@@ -118,7 +120,9 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   componentDidMount() {
+    this.props.initInputForm(promotionPriceInput)
 
+    this.props.initInputForm(chooseGoodInput)
     if (Platform.OS == 'ios') {
       Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
       Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
@@ -210,8 +214,6 @@ class PublishShopPromotionChooseGood extends Component {
       promotionPriceInput.data= {text: content}
       this.props.inputFormUpdate(promotionPriceInput)
       Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_TYPE()
-    }else{
-      Toast.show('请选择一个商品')
     }
 
   }
@@ -277,7 +279,9 @@ const mapStateToProps = (state, ownProps) => {
   }
   let chooseGoodId = getInputData(state,chooseGoodInput.formKey,chooseGoodInput.stateKey)
   let priceInput = getInputData(state,promotionPriceInput.formKey,promotionPriceInput.stateKey)
+  let formData = getInputFormData(state,shopPromotionForm)
   console.log('priceInput=============>',priceInput.text)
+  console.log('formData=============>',formData)
 
   return {
     goodList: goodList,

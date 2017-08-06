@@ -34,6 +34,8 @@ import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
+import TextAreaInput from '../../common/Input/TextAreaInput'
+
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {fetchShopAnnouncements,} from '../../../action/shopAction'
@@ -56,26 +58,17 @@ import {
   selectGoodsList
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
-import {getInputData} from '../../../selector/inputFormSelector'
+import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 let shopPromotionForm = 'shopPromotionForm'
-const chooseStartDateInput = {
-  formKey: shopPromotionForm,
-  stateKey: Symbol('chooseStartDateInput'),
-  type: 'chooseStartDateInput',
-}
-
-const chooseEndDateInput = {
-  formKey: shopPromotionForm,
-  stateKey: Symbol('chooseEndDateInput'),
-  type: 'chooseEndDateInput',
-}
 
 
-class PublishShopPromotionChooseDate extends Component {
+
+
+class PublishShopPromotionSubmit extends Component {
   constructor(props) {
     super(props)
 
@@ -94,47 +87,6 @@ class PublishShopPromotionChooseDate extends Component {
     })
   }
 
-  unChooseType(index){
-    chooseTypeInput.data = {}
-    this.props.inputFormUpdate(chooseTypeInput)
-  }
-
-  renderDatePicker(){
-    return(
-      <View style={styles.chooseDateBox}>
-        <View style={styles.chooseDateWrap}>
-          <Text style={styles.chooseText}>开始时间</Text>
-          <DateTimeInput
-            {...chooseStartDateInput}
-            mode="datetime"
-            PickerStyle={styles.pickerStyle}
-            maxDate='2017-12-12'
-            is24Hour={true}
-            format='YYYY-MM-DD HH:mm'
-            date = {this.props.startDate}
-            initValue={this.props.startDate}
-        />
-
-        </View>
-        <View style={styles.chooseDateWrap}>
-          <Text style={styles.chooseText}>结束时间</Text>
-          <DateTimeInput
-            {...chooseEndDateInput}
-            mode="datetime"
-            PickerStyle={styles.pickerStyle}
-            maxDate=''
-            format='YYYY-MM-DD HH:mm'
-            is24Hour={true}
-            date = {this.props.endDate}
-            initValue={this.props.endDate}
-
-          />
-        </View>
-      </View>
-    )
-
-  }
-
   componentWillReceiveProps(nextProps) {
 
   }
@@ -151,14 +103,6 @@ class PublishShopPromotionChooseDate extends Component {
     )
   }
 
-  onButtonPress(){
-    if(this.props.countDays){
-      Actions.PUBLISH_SHOP_PROMOTION_ABSTRACT()
-    }else{
-      Toast.show('请选择起止日期')
-    }
-  }
-
   render() {
 
     return (
@@ -167,19 +111,13 @@ class PublishShopPromotionChooseDate extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="发布活动"
+          title="活动确认"
         />
         <View style={styles.body}>
           <View style={styles.showTextBox}>
-            <Text style={styles.showText}>选择活动时间</Text>
+            <Text style={styles.showText}>活动说明</Text>
           </View>
           <KeyboardAwareScrollView>
-            {this.renderDatePicker()}
-            <View style={styles.countDaysBox}>
-              <Text style={styles.countDaysAbstract}>有效活动时长</Text>
-              <Text style={styles.countDaysText}>{this.props.countDays+'天'}</Text>
-
-            </View>
             {this.renderSubmitButton()}
           </KeyboardAwareScrollView>
         </View>
@@ -191,16 +129,12 @@ class PublishShopPromotionChooseDate extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isLogin = isUserLogined(state)
-  let startDate = getInputData(state, chooseStartDateInput.formKey, chooseStartDateInput.stateKey)
-  let endDate = getInputData(state, chooseEndDateInput.formKey, chooseEndDateInput.stateKey)
-  let countDays = DateDiff(startDate.text,endDate.text)
-  console.log('countDays--->',countDays)
+
+  let formData = getInputFormData(state,shopPromotionForm)
+  console.log('formData=====>',formData)
   return {
     shopId: userOwnedShopInfo.id,
-    endDate: endDate.text,
-    startDate: startDate.text,
-    isLogin: isLogin,
-    countDays: countDays
+  isLogin: isLogin,
   }
 }
 
@@ -212,7 +146,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   inputFormUpdate,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionChooseDate)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionSubmit)
 
 const styles = StyleSheet.create({
   container: {
@@ -317,5 +251,9 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     color: '#FF7819',
 
-  }
+  },
+  inputBox: {
+    justifyContent: 'center',
+    alignItems: 'flex-start'
+  },
 })

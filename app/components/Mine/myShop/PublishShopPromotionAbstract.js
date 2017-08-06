@@ -63,7 +63,7 @@ import {getInputData} from '../../../selector/inputFormSelector'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let shopPromotionForm = Symbol('shopPromotionForm')
+let shopPromotionForm = 'shopPromotionForm'
 
 const abstractInput = {
   formKey: shopPromotionForm,
@@ -119,6 +119,9 @@ class PublishShopPromotionAbstract extends Component {
     )
   }
 
+  onButtonPress(){
+    Actions.PUBLISH_SHOP_PROMOTION_SUBMIT()
+  }
   render() {
 
     return (

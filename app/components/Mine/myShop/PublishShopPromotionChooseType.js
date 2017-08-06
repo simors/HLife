@@ -59,12 +59,11 @@ import {getInputData} from '../../../selector/inputFormSelector'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-let shopPromotionForm = Symbol('shopPromotionForm')
+let shopPromotionForm = 'shopPromotionForm'
 let chooseTypeInput = {
   formKey: shopPromotionForm,
   stateKey: Symbol('chooseTypeInput'),
-  type: 'chooseTypeInput',
-  data: {},
+  type: "chooseTypeInput",
 }
 
 
@@ -113,6 +112,10 @@ class PublishShopPromotionChooseType extends Component {
     }
     this.replyInput = null
 
+  }
+
+  componentDidMount() {
+    this.props.initInputForm(chooseTypeInput)
   }
 
   componentWillMount() {
@@ -183,7 +186,7 @@ class PublishShopPromotionChooseType extends Component {
   }
 
   onButtonPress() {
-    if (this.props.chooseTypeId && this.props.chooseTypeId != '') {
+    if (this.props.chooseTypeId!=undefined && this.props.chooseTypeId != '') {
       Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_DATE()
     } else {
       Toast.show('请选择一个类型')
