@@ -129,7 +129,7 @@ class PublishShopPromotionChooseType extends Component {
   renderTypes(start,end) {
     return this.state.types.map((item, index) => {
       if (index>=start&&index<=end){
-        if (this.props.chooseTypeId && this.props.chooseTypeId == item.id) {
+        if ( this.props.chooseTypeId == item.id) {
           return (
             <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
               this.unChooseType(index)
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   unChoose4TypeText: {
     fontFamily: '.PingFangSC-Semibold',
     fontSize: em(20),
-    color: '#000000',
+    color: 'rgba(0,0,0,0.20)',
     letterSpacing: em(0.24),
   },
   chooseTypeText: {
