@@ -101,32 +101,37 @@ class PublishShopPromotionSubmit extends Component {
       abstract: this.props.abstract,
       startDate: this.props.startDate,
       endDate: this.props.endDate,
-      good: this.props.good,
+      goodId: this.props.good.id,
       type: this.props.type.type,
       price: this.props.price,
       typeId: this.props.type.id,
-      typeDes: this.props.type.typeDes,
+      typeDes: this.props.type.typeDesc,
       status: 1,
       success:()=>{
-        this.props.inputFormOnDestroy({formKey:shopPromotionForm})
         Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
+        this.props.inputFormOnDestroy({formKey:shopPromotionForm})
       },
       error:(err)=>{Toast.show(err.message)}
     }
     this.props.submitShopGoodPromotion(payload)
   }
   renderGoodShow(){
-    return(
-      <View style={styles.channelWrap}>
-        <View style={styles.defaultImageStyles}>
-          <CachedImage mutable style={styles.defaultImageStyles}
-                       source={this.props.good.coverPhoto ? {uri: getThumbUrl(this.props.good.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../../assets/images/default_goods_cover.png")}/>
+    if(this.props.good){
+      return(
+        <View style={styles.channelWrap}>
+          <View style={styles.defaultImageStyles}>
+            <CachedImage mutable style={styles.defaultImageStyles}
+                         source={this.props.good.coverPhoto ? {uri: getThumbUrl(this.props.good.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../../assets/images/default_goods_cover.png")}/>
+          </View>
+          {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
+          <Text style={ styles.channelText} numberOfLines={1}>{this.props.good.goodsName}</Text>
+          <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + this.props.good.price}</Text>
         </View>
-        {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-        <Text style={ styles.channelText} numberOfLines={1}>{this.props.good.goodsName}</Text>
-        <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + this.props.good.price}</Text>
-      </View>
-    )
+      )
+    }else{
+      return null
+    }
+
   }
   render() {
 
@@ -190,24 +195,24 @@ const mapStateToProps = (state, ownProps) => {
 
   let formData = getInputFormData(state,shopPromotionForm)
   // console.log('formData=====>',formData)
-  let abstract = formData.abstractInput
-  let startDate = formData.chooseStartDateInput
-  let endDate = formData.chooseEndDateInput
-  let goodId = formData.chooseGoodInput.text
+  let abstract = formData&&formData.abstractInput?formData.abstractInput.text:''
+  let startDate = formData&&formData.chooseStartDateInput?formData.chooseStartDateInput.text:''
+  let endDate = formData&&formData.chooseEndDateInput?formData.chooseEndDateInput.text:''
+  let goodId = formData&&formData.chooseGoodInput?formData.chooseGoodInput.text:''
   let good = selectGoodsById(state,userOwnedShopInfo.id,goodId)
-  let type = formData.chooseTypeInput
-  let price = formData.promotionPriceInput
-  let countDays = DateDiff(startDate.text,endDate.text)
+  let type = formData&&formData.chooseTypeInput?formData.chooseTypeInput:{}
+  let price = formData&&formData.promotionPriceInput?formData.promotionPriceInput.text:''
+  let countDays = DateDiff(startDate,endDate)
   return {
     shopId: userOwnedShopInfo.id,
     geo: userOwnedShopInfo.geo,
     isLogin: isLogin,
-    abstract: abstract.text,
-    startDate: startDate.text,
-    endDate: endDate.text,
+    abstract: abstract,
+    startDate: startDate,
+    endDate: endDate,
     good: good,
     type: type,
-    price: price.text,
+    price: price,
     countDays: countDays
   }
 }

@@ -77,7 +77,7 @@ class PublishShopPromotionChooseType extends Component {
       hideBottomView: false,
       types: [
         {
-          id: 0,
+          id: '0',
           type: '折扣',
           typeDesc: '',
           containerStyle: 'activeType',
@@ -85,7 +85,7 @@ class PublishShopPromotionChooseType extends Component {
           placeholderText: '例:店庆活动,全场七折起(15字内)'
         },
         {
-          id: 1,
+          id: '1',
           type: '预售',
           typeDesc: '',
           containerStyle: 'defaultType',
@@ -93,7 +93,7 @@ class PublishShopPromotionChooseType extends Component {
           placeholderText: '例:3月15号到货(15字内)'
         },
         {
-          id: 2,
+          id: '2',
           type: '限时购',
           typeDesc: '',
           containerStyle: 'defaultType',
@@ -101,7 +101,7 @@ class PublishShopPromotionChooseType extends Component {
           placeholderText: '例:每天下午18:00~22:00(15字内)'
         },
         {
-          id: 3,
+          id: '3',
           type: '自定义',
           typePlaceholderText: '',
           containerStyle: 'customType',
