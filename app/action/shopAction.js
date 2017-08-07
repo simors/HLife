@@ -993,6 +993,19 @@ export function submitShopGood(payload) {
   }
 }
 
+export function submitShopGoodPromotion(payload){
+  return(dispatch,getState)=>{
+     lcShop.submitShopGoodPromotion(payload).then((result)=>{
+       if(payload.success){
+         payload.success()
+       }
+     },(err)=>{
+       if(payload.error){
+         payload.error(err)
+       }
+     })
+  }
+}
 export function modifyShopGoods(payload) {
   return (dispatch, getState) => {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)

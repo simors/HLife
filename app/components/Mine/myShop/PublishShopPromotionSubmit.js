@@ -39,7 +39,7 @@ import {CachedImage} from "react-native-img-cache"
 
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import {fetchShopAnnouncements,} from '../../../action/shopAction'
+import {fetchShopAnnouncements,submitShopGoodPromotion} from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import MyShopGoodListForChoose from './MyShopGoodListForChoose'
@@ -48,7 +48,7 @@ import {
   selectUserOwnedShopInfo,
   selectGoodsById,
 } from '../../../selector/shopSelector'
-import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
+import {initInputForm, inputFormUpdate,inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -94,6 +94,27 @@ class PublishShopPromotionSubmit extends Component {
     )
   }
 
+
+  onButtonPress(){
+    let payload = {
+      shopId: this.props.shopId,
+      abstract: this.props.abstract,
+      startDate: this.props.startDate,
+      endDate: this.props.endDate,
+      good: this.props.good,
+      type: this.props.type.type,
+      price: this.props.price,
+      typeId: this.props.type.id,
+      typeDes: this.props.type.typeDes,
+      status: 1,
+      success:()=>{
+        this.props.inputFormOnDestroy({formKey:shopPromotionForm})
+        Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
+      },
+      error:(err)=>{Toast.show(err.message)}
+    }
+    this.props.submitShopGoodPromotion(payload)
+  }
   renderGoodShow(){
     return(
       <View style={styles.channelWrap}>
@@ -127,7 +148,7 @@ class PublishShopPromotionSubmit extends Component {
 
             <View style={styles.showInfoWrap}>
               <Text style={styles.showInfoAbs}>商品活动价格：</Text>
-              <Text style={styles.showInfoText}>{this.props.price}</Text>
+              <Text style={styles.showInfoText}>{this.props.price+'元'}</Text>
             </View>
 
             <View style={styles.showInfoWrap}>
@@ -179,6 +200,7 @@ const mapStateToProps = (state, ownProps) => {
   let countDays = DateDiff(startDate.text,endDate.text)
   return {
     shopId: userOwnedShopInfo.id,
+    geo: userOwnedShopInfo.geo,
     isLogin: isLogin,
     abstract: abstract.text,
     startDate: startDate.text,
@@ -192,9 +214,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
+  submitShopGoodPromotion,
   submitInputData,
   fetchShopAnnouncements,
   initInputForm,
+  inputFormOnDestroy,
   inputFormUpdate,
 }, dispatch)
 
@@ -357,8 +381,8 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(10)
   },
   showInfoAbs:{
-    width:normalizeW(106),
-    marginLeft:normalizeW(15),
+    width:normalizeW(110),
+    // marginLeft:normalizeW(15),
     fontSize: em(15),
     color: 'rgba(0,0,0,0.5)',
     alignItems: 'flex-start'

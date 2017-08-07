@@ -1257,3 +1257,14 @@ export function fetchShopGoodsList(payload) {
     throw err
   })
 }
+
+export function submitShopGoodPromotion(payload) {
+  let params = {
+   payload:payload
+  }
+  return AV.Cloud.run('submitShopPromotion', params).then((goodsInfo)=> {
+    return goodsInfo
+  }, (err) => {
+    throw err
+  })
+}
