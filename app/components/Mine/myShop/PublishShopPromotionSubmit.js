@@ -23,7 +23,6 @@ import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
 import {DateDiff} from '../../../util/dateUtils'
 import {connect} from 'react-redux'
-import {CachedImage} from "react-native-img-cache"
 import {bindActionCreators} from 'redux'
 import Svg from '../../common/Svgs'
 import {Actions} from 'react-native-router-flux'
@@ -35,6 +34,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import TextAreaInput from '../../common/Input/TextAreaInput'
+import {getThumbUrl} from '../../../util/ImageUtil'
+import {CachedImage} from "react-native-img-cache"
 
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
@@ -45,17 +46,7 @@ import MyShopGoodListForChoose from './MyShopGoodListForChoose'
 import DateTimeInput from '../../common/Input/DateTimeInput'
 import {
   selectUserOwnedShopInfo,
-  selectShopFollowers,
-  selectShopFollowersTotalCount,
-  selectSimilarShopList,
-  selectShopDetail, selectShopList,
-  selectGuessYouLikeShopList,
-  selectLatestShopAnnouncemment,
-  selectUserIsFollowShop,
-  selectShopComments,
-  selectShopCommentsTotalCount,
-  selectUserIsUpedShop,
-  selectGoodsList
+  selectGoodsById,
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
@@ -103,6 +94,19 @@ class PublishShopPromotionSubmit extends Component {
     )
   }
 
+  renderGoodShow(){
+    return(
+      <View style={styles.channelWrap}>
+        <View style={styles.defaultImageStyles}>
+          <CachedImage mutable style={styles.defaultImageStyles}
+                       source={this.props.good.coverPhoto ? {uri: getThumbUrl(this.props.good.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../../assets/images/default_goods_cover.png")}/>
+        </View>
+        {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
+        <Text style={ styles.channelText} numberOfLines={1}>{this.props.good.goodsName}</Text>
+        <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + this.props.good.price}</Text>
+      </View>
+    )
+  }
   render() {
 
     return (
@@ -114,10 +118,43 @@ class PublishShopPromotionSubmit extends Component {
           title="活动确认"
         />
         <View style={styles.body}>
-          <View style={styles.showTextBox}>
-            <Text style={styles.showText}>活动说明</Text>
-          </View>
           <KeyboardAwareScrollView>
+            {this.renderGoodShow()}
+            <View style={styles.showInfoWrap}>
+                <Text style={styles.showInfoAbs}>活动类型：</Text>
+                <Text style={styles.showInfoText}>{this.props.type.type}</Text>
+            </View>
+
+            <View style={styles.showInfoWrap}>
+              <Text style={styles.showInfoAbs}>商品活动价格：</Text>
+              <Text style={styles.showInfoText}>{this.props.price}</Text>
+            </View>
+
+            <View style={styles.showInfoWrap}>
+            <Text style={styles.showInfoAbs}>活动有效期：</Text>
+            <Text style={styles.showInfoText}>{this.props.startDate+' 至'}</Text>
+          </View>
+
+            <View style={styles.showInfoWrap}>
+              <Text style={styles.showInfoAbs}></Text>
+              <Text style={styles.showInfoText}>{this.props.endDate}</Text>
+            </View>
+
+            <View style={styles.showInfoWrap}>
+            <Text style={styles.showInfoAbs}>活动有效时长</Text>
+            <Text style={styles.showInfoText}>{this.props.countDays +'天'}</Text>
+          </View>
+
+            <View style={styles.showInfoWrap}>
+              <Text style={styles.showInfoAbs}>活动费用</Text>
+              <Text style={styles.showInfoText}>{0 +'元／天'}</Text>
+            </View>
+
+            <View style={styles.showInfoWrap}>
+              <Text style={styles.showInfoAbs}>活动说明</Text>
+              <Text style={styles.showInfoText}>{this.props.abstract}</Text>
+            </View>
+
             {this.renderSubmitButton()}
           </KeyboardAwareScrollView>
         </View>
@@ -131,10 +168,25 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
 
   let formData = getInputFormData(state,shopPromotionForm)
-  console.log('formData=====>',formData)
+  // console.log('formData=====>',formData)
+  let abstract = formData.abstractInput
+  let startDate = formData.chooseStartDateInput
+  let endDate = formData.chooseEndDateInput
+  let goodId = formData.chooseGoodInput.text
+  let good = selectGoodsById(state,userOwnedShopInfo.id,goodId)
+  let type = formData.chooseTypeInput
+  let price = formData.promotionPriceInput
+  let countDays = DateDiff(startDate.text,endDate.text)
   return {
     shopId: userOwnedShopInfo.id,
-  isLogin: isLogin,
+    isLogin: isLogin,
+    abstract: abstract.text,
+    startDate: startDate.text,
+    endDate: endDate.text,
+    good: good,
+    type: type,
+    price: price.text,
+    countDays: countDays
   }
 }
 
@@ -174,7 +226,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(64),
     flex: 1,
     paddingLeft: normalizeW(15),
-    paddingRight: normalizeW(15)
+    paddingRight: normalizeW(15),
   },
   scrollViewStyle: {
     flex: 1,
@@ -256,4 +308,64 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start'
   },
+  defaultImageStyles: {
+    height: normalizeH(169),
+    width: normalizeW(169),
+  },
+  channelWrap: {
+    flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    height: normalizeH(224),
+    width: normalizeW(169),
+    overflow: 'hidden',
+    marginTop: normalizeH(10),
+    marginLeft: normalizeW(88),
+    marginBottom: normalizeH(5),
+    borderWidth:normalizeBorder(0),
+    backgroundColor:'#F5F5F5'
+  },
+  channelText: {
+    flex:1,
+    flexDirection:'row',
+    marginLeft:normalizeW(10),
+
+    marginTop: normalizeH(10),
+    width: normalizeW(144),
+    height: normalizeH(12),
+    fontSize: em(13),
+    alignItems: 'flex-start',
+    color: '#5A5A5A'
+  },
+  channelPrice: {
+    flex:1,
+    marginBottom: normalizeH(6),
+    marginLeft:normalizeW(10),
+    width: normalizeW(144),
+    height: 15,
+    fontSize: em(17),
+    color: '#00BE96'
+  },
+  columnContainer: {
+    backgroundColor: THEME.base.backgroundColor,
+
+    flex: 1
+  },
+  showInfoWrap:{
+    flex:1,
+    flexDirection: 'row',
+    marginTop: normalizeH(10)
+  },
+  showInfoAbs:{
+    width:normalizeW(106),
+    marginLeft:normalizeW(15),
+    fontSize: em(15),
+    color: 'rgba(0,0,0,0.5)',
+    alignItems: 'flex-start'
+  },
+  showInfoText:{
+    fontSize: em(15),
+    color: '#000000'
+  }
+
 })
