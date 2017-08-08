@@ -1268,3 +1268,17 @@ export function submitShopGoodPromotion(payload) {
     throw err
   })
 }
+
+export function fetchNearbyShopGoodPromotion(payload) {
+  let params = {
+    geo: payload.geo,
+    lastDistance: payload.lastDistance,
+    limit: 30,
+  }
+  return AV.Cloud.run('fetchNearbyShopGoodPromotion', params).then((goods)=> {
+
+    return goods
+  }, (err) => {
+    throw err
+  })
+}

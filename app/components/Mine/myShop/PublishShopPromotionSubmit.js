@@ -106,6 +106,7 @@ class PublishShopPromotionSubmit extends Component {
       price: this.props.price,
       typeId: this.props.type.id,
       typeDes: this.props.type.typeDesc,
+      geo:this.props.geo,
       status: 1,
       success:()=>{
         Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()

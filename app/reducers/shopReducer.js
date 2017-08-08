@@ -91,6 +91,11 @@ export default function shopReducer(state = initialState, action) {
       return handleSetShopGoodsList(state, action)
     case ShopActionTypes.ADD_SHOP_GOODS_LIST:
       return handleAddShopGoodsList(state, action)
+    case ShopActionTypes.ADD_SHOP_LOCAL_PROMOTIONLIST:
+      return handleAddLocalGoodPromotions(state, action)
+    case ShopActionTypes.SET_SHOP_LOCAL_PROMOTIONLIST:
+      return handleSetLocalGoodPromotions(state, action)
+
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -482,6 +487,35 @@ function handleAddShopGoodsList(state, action) {
   let shopId = action.payload.shopId
   let oldGoodsList = state.getIn(['shopGoods', shopId])
   state = state.setIn(['shopGoods', shopId], oldGoodsList.concat(new List(goodsList)))
+  return state
+}
+
+function handleSetAllGoodPromotions(state, promotions) {
+  promotions.forEach((item)=> {
+    state = state.setIn(['allGoodPromotions', item.id], item)
+  })
+  return state
+}
+
+function handleSetLocalGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  state = state.set('localGoodPromotionList', new List(promotionList))
+  state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleAddLocalGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  let _promotions = state.get('localGoodPromotionList')|| new List()
+  if(_promotions&&_promotions.size>0){
+    state = state.set('localGoodPromotionList', _promotions.concat(new List(promotionList)))
+  }
+  else{
+    state = state.set('pickedTopics', promotionList)
+  }
+  state = handleSetAllGoodPromotions(state,payload.promotions)
   return state
 }
 

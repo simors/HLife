@@ -270,3 +270,16 @@ export function selectGoodsList(state, shopId, status) {
   }
   return retList
 }
+
+export function selectLocalGoodPromotion(state) {
+  let localPromotions = state.SHOP.get('localGoodPromotionList')||[]
+  let promotions = []
+  if(localPromotions&&localPromotions.size){
+    localPromotions.forEach((promotionId)=>{
+      let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
+      console.log('promotion===========>',promotion)
+      promotions.push(promotion.toJS())
+    })
+  }
+  return promotions
+}
