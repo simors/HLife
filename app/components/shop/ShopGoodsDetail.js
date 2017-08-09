@@ -410,6 +410,7 @@ class ShopGoodsDetail extends Component {
 
   renderGoToShop(){
     return(
+      <TouchableOpacity onPress={()=>{Actions.SHOP_DETAIL({id:this.props.shopDetail.id})}}>
       <View style={styles.shopWrap}>
         <View style={styles.shopInfo}>
           <Text style={styles.shopName}>{this.props.shopDetail.shopName}</Text>
@@ -423,6 +424,7 @@ class ShopGoodsDetail extends Component {
           </View>
         </View>
       </View>
+        </TouchableOpacity>
     )
   }
 
