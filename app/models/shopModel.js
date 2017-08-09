@@ -730,8 +730,9 @@ export const ShopGoodPromotionRecord = Record({
   updatedAt: undefined,
   distance: undefined,
   distanceUnit: undefined,
-  goodName:undefined
-
+  goodName:undefined,
+  startDate: undefined,
+  endDate: undefined,
 })
 
 export class ShopGoodPromotion extends ShopGoodPromotionRecord {
@@ -740,6 +741,8 @@ export class ShopGoodPromotion extends ShopGoodPromotionRecord {
     return shopGoodPromotion.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('coverPhoto', lcObj.coverPhoto)
+      record.set('startDate', lcObj.startDate)
+      record.set('endDate', lcObj.endDate)
       record.set('typeId', lcObj.typeId)
       record.set('type', lcObj.type)
       record.set('goodId', lcObj.goodId)
