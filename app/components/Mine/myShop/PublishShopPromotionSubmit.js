@@ -88,7 +88,7 @@ class PublishShopPromotionSubmit extends Component {
         this.onButtonPress()
       }}>
         <View style={styles.submitBtn}>
-          <Text style={styles.submitBtnText}>下一步</Text>
+          <Text style={styles.submitBtnText}>确认发布</Text>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -193,9 +193,8 @@ class PublishShopPromotionSubmit extends Component {
               <Text style={styles.showInfoAbs}>活动说明</Text>
               <Text style={styles.showInfoText}>{this.props.abstract}</Text>
             </View>
-
-            {this.renderSubmitButton()}
           </KeyboardAwareScrollView>
+          {this.renderSubmitButton()}
         </View>
       </View>
     )
@@ -293,10 +292,12 @@ const styles = StyleSheet.create({
     color: '#5A5A5A'
   },
   submitBtn: {
+    position:'absolute',
+    left:0,
+    bottom:0,
     backgroundColor: '#FF7819',
     height: normalizeH(50),
-    width: normalizeW(345),
-    marginLeft: normalizeW(15),
+    width: PAGE_WIDTH,
     marginTop: normalizeH(32),
     alignItems: 'center',
     justifyContent: 'center',
