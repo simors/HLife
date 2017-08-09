@@ -58,6 +58,9 @@ import {
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 
+const today = new Date()
+const TODAY_DATE= (today.toISOString()).slice(0, 10)
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -108,7 +111,8 @@ class PublishShopPromotionChooseDate extends Component {
             {...chooseStartDateInput}
             mode="datetime"
             PickerStyle={styles.pickerStyle}
-            maxDate='2017-12-12'
+            minDate={TODAY_DATE}
+            maxDate=''
             is24Hour={true}
             format='YYYY-MM-DD HH:mm'
             date = {this.props.startDate}
@@ -122,6 +126,7 @@ class PublishShopPromotionChooseDate extends Component {
             {...chooseEndDateInput}
             mode="datetime"
             PickerStyle={styles.pickerStyle}
+            minDate={this.props.startDate?this.props.startDate:undefined}
             maxDate=''
             format='YYYY-MM-DD HH:mm'
             is24Hour={true}
