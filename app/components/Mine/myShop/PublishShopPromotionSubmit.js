@@ -109,8 +109,20 @@ class PublishShopPromotionSubmit extends Component {
       geo:this.props.geo,
       status: 1,
       success:()=>{
-        Actions.MY_SHOP_PROMOTION_MANAGE_INDEX()
         this.props.inputFormOnDestroy({formKey:shopPromotionForm})
+
+        Toast.show('提交成功', {
+          duration: 1500,
+          onHidden: () =>{
+            if(this.props.popNum && this.props.popNum > 1) {
+              Actions.pop({
+                popNum: this.props.popNum
+              })
+            }else {
+              Actions.pop({popNum:5})
+            }
+          }
+        })
       },
       error:(err)=>{Toast.show(err.message)}
     }
