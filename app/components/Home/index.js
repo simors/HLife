@@ -366,6 +366,7 @@ class Home extends Component {
       geo: this.props.geoPoint ? [this.props.geoPoint.latitude, this.props.geoPoint.longitude] : [],
       lastDistance: lastDistance,
       isRefresh: !!isRefresh,
+      nowDate: new Date(),
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -434,7 +435,7 @@ const mapStateToProps = (state, ownProps) => {
   const banner = getBanner(state, 0)
 
   const shopPromotionList = selectLocalGoodPromotion(state) || []
-  console.log('shopPromotionList+====>',shopPromotionList)
+  // console.log('shopPromotionList+====>',shopPromotionList)
   let lastShopGeo = undefined
   if(shopPromotionList && shopPromotionList.length) {
     lastShopGeo = shopPromotionList[shopPromotionList.length-1].geo

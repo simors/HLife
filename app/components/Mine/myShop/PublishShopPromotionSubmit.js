@@ -99,8 +99,8 @@ class PublishShopPromotionSubmit extends Component {
     let payload = {
       shopId: this.props.shopId,
       abstract: this.props.abstract,
-      startDate: this.props.startDate,
-      endDate: this.props.endDate,
+      startDate: new Date(this.props.startDate),
+      endDate: new Date(this.props.endDate),
       goodId: this.props.good.id,
       type: this.props.type.type,
       price: this.props.price,

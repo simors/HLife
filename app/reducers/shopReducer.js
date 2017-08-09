@@ -513,7 +513,7 @@ function handleAddLocalGoodPromotions(state, action) {
     state = state.set('localGoodPromotionList', _promotions.concat(new List(promotionList)))
   }
   else{
-    state = state.set('pickedTopics', promotionList)
+    state = state.set('localGoodPromotionList', promotionList)
   }
   state = handleSetAllGoodPromotions(state,payload.promotions)
   return state
