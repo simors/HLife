@@ -47,7 +47,7 @@ class ShopGoodPromotionManage extends Component {
     this.state = {
       tabType: props.tabType ? 1 : 0,
     }
-    this.tabs = ['正在热卖', '已下架']
+    this.tabs = ['进行中', '预上线' , '已结束']
   }
 
   isExceededShopGoodsMaxNum(){
@@ -363,6 +363,7 @@ const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state,ownProps.shopId)
   let currentUser = activeUserId(state)
   let shareDomain = configSelector.getShareDomain(state)
+
 
   return {
     onlineGoodsList: ds.cloneWithRows(onlineGoodsList),
