@@ -25,15 +25,16 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import CommonListView from '../../common/CommonListView'
 import ScrollableTabView, {ScrollableTabBar} from '../../common/ScrollableTableView'
-import {selectGoodsList,selectShopDetail} from '../../../selector/shopSelector'
+import {selectGoodsList,selectShopDetail,selectOpenGoodPromotion,selectCloseGoodPromotion} from '../../../selector/shopSelector'
 import {activeUserId} from '../../../selector/authSelector'
 import * as configSelector from '../../../selector/configSelector'
 import {CachedImage} from "react-native-img-cache"
-import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList} from '../../../action/shopAction'
+import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList,getShopOpenPromotion,getShopClosePromotion} from '../../../action/shopAction'
 import * as Toast from '../../common/Toast'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
-
+import ShopGoodPromotionShow from './ShopGoodPromotionView'
+import * as numberUtils from '../../../util/numberUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -45,7 +46,7 @@ class ShopGoodPromotionManage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tabType: props.tabType ? 1 : 0,
+      tabType: props.tabType ? tabType : 0,
     }
     this.tabs = ['进行中', '预上线' , '已结束']
   }
@@ -63,117 +64,107 @@ class ShopGoodPromotionManage extends Component {
 
   refresh() {
     if(0 == this.state.tabType) {
-      this.refreshOnlineGoodsList()
+      this.refreshProPromotionList()
     } else if(1 == this.state.tabType) {
-      this.refreshOfflineGoodsList()
+      this.refreshPrePromotionList()
+    } else if(2 == this.state.tabType) {
+      this.refreshClosePromotionList()
     }
   }
 
   renderScrollTabsContent() {
     return this.tabs.map((item, index)=>{
-      return (
-        <View key={index} tabLabel={item}
-              style={[{flex:1}]}>
-          {index == 0 ? this.renderOnlineGoodsList() : this.renderOfflineGoodsList()}
-        </View>
-      )
+      if(index==0){
+        return (
+          <View key={index} tabLabel={item}
+                style={[{flex:1}]}>
+            {this.renderProPromotionList()}
+          </View>
+        )
+      }else if(index==1){
+        return (
+          <View key={index} tabLabel={item}
+                style={[{flex:1}]}>
+            {this.renderPrePromotionList()}
+          </View>
+        )
+      }else if(index==2){
+        return (
+          <View key={index} tabLabel={item}
+                style={[{flex:1}]}>
+            {this.renderCloPromotionList()}
+          </View>
+        )
+      }
+
     })
   }
 
-  renderOnlineGoodsList() {
+  renderCloPromotionList() {
     return(
       <CommonListView
-        dataSource={this.props.onlineGoodsList}
-        renderRow={(rowData, rowId) => this.renderOnlineGoodItem(rowData, rowId)}
+        dataSource={this.props.cloPromotionList}
+        renderRow={(rowData, rowId) => this.renderPromotionItem(rowData, rowId,'clo')}
         loadNewData={()=> {
-          this.refreshOnlineGoodsList()
+          this.refreshClosePromotionList()
         }}
         loadMoreData={()=> {
-          this.loadMoreGoodsListData(false, 1)
+          this.loadMoreGoodsListData(false, 3)
         }}
-        ref={(listView) => this.onlineGoodListView = listView}
+        ref={(listView) => this.cloPromotionListView = listView}
       />
     )
   }
 
-  renderOnlineGoodItem(value, key) {
+  renderPrePromotionList() {
     return(
-      <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
-        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}} onPress={() => {Actions.SHOP_GOODS_DETAIL({goodInfo: value})}}>
-          <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
-            <CachedImage mutable style={{width: normalizeH(75), height: normalizeH(75)}}
-                         source={value.coverPhoto? {uri: value.coverPhoto} : require('../../../assets/images/default_goods_cover.png')}>
-            </CachedImage>
-          </View>
-          <View>
-            <Text style={{marginTop: normalizeH(22), fontSize: 17, color: '#5A5A5A'}}>{value.goodsName}</Text>
-            <View style={{flexDirection: 'row', flex: 1, marginTop: normalizeH(13), marginBottom: normalizeH(13), alignItems: 'center'}}>
-              <Text style={{fontSize: 17, color: '#00BE96'}}>¥ {value.price}</Text>
-              <Text style={{fontSize: 10, color: '#AAAAAA', marginLeft: 6}}>原价：{value.originalPrice}</Text>
-            </View>
-            <Text style={{marginBottom: normalizeH(16), fontSize: 12, color: '#D8D8D8'}}>上架时间：{value.updatedAt.slice(0, 10)} </Text>
-          </View>
-        </TouchableOpacity>
-        <View style={{flexDirection: 'row', height: normalizeH(58), justifyContent: 'flex-end', alignItems: 'center'}}>
-          <TouchableOpacity style={styles.button} onPress={() => {this.onSetGoodOffline(value.id)}}>
-            <Text style={{fontSize: 17, color: 'black'}}>下架</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, {marginRight: normalizeW(15)}]} onPress={() => {this.onReEditorGood(value.id)}}>
-            <Text style={{fontSize: 17, color: 'black'}}>编辑</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, {marginRight: normalizeW(15),width: normalizeW(36)}]} onPress={() => {this.onShare(value)}}>
-            <Icon name="ios-more" style={{fontSize:em(26),height:normalizeH(26)}}/>
-          </TouchableOpacity>
-        </View>
+      <CommonListView
+        dataSource={this.props.prePromotionList}
+        renderRow={(rowData, rowId) => this.renderPromotionItem(rowData, rowId,'pre')}
+        loadNewData={()=> {
+          this.refreshPrePromotionList()
+        }}
+        loadMoreData={()=> {
+          this.loadMoreGoodsListData(false, 2)
+        }}
+        ref={(listView) => this.prePromotionListView = listView}
+      />
+    )
+  }
+
+  renderProPromotionList() {
+    return(
+      <CommonListView
+        dataSource={this.props.proPromotionList}
+        renderRow={(rowData, rowId) => this.renderPromotionItem(rowData, rowId,'pro')}
+        loadNewData={()=> {
+          this.refreshProPromotionList()
+        }}
+        loadMoreData={()=> {
+          this.loadMoreGoodsListData(false, 1)
+        }}
+        ref={(listView) => this.proPromotionListView = listView}
+      />
+    )
+  }
+
+  renderPromotionItem(value, key,status) {
+    return(
+      <View>
+        <ShopGoodPromotionShow promotion={value} key = {key} status={status}
+        />
       </View>
     )
   }
 
-
-  onShare = (goodInfo) => {
-    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + goodInfo.id + '?userId=' + this.props.currentUser:
-    DEFAULT_SHARE_DOMAIN + "goodShare/" + goodInfo.id + '?userId=' + this.props.currentUser
-
-    Actions.SHARE({
-      title: goodInfo.goodsName || "汇邻优店",
-      url: shareUrl,
-      author: this.props.shopDetail.shopName || "邻家小二",
-      abstract: this.props.shopDetail.shopAddress || "未知地址",
-      cover: goodInfo.coverPhoto || '',
-    })
-  }
-
-  onSetGoodOffline(GoodId) {
-    this.props.setShopGoodsOffline({
-      goodsId: GoodId,
-      shopId: this.props.shopId
-    })
-  }
-
-  onSetGoodOnline(GoodId) {
-    this.props.setShopGoodsOnline({
-      goodsId: GoodId,
-      shopId: this.props.shopId
-    })
-  }
-
-  onReEditorGood(GoodId) {
-    Actions.EDIT_SHOP_GOOD({
-      goodsId: GoodId,
-      shopId: this.props.shopId
-    })
-  }
-
-  onDeleteGood(GoodId) {
-    this.props.setShopGoodsDelete({
-      goodsId: GoodId,
-      shopId: this.props.shopId
-    })
-  }
-
-  refreshOnlineGoodsList() {
+   refreshProPromotionList() {
     this.loadMoreGoodsListData(true, 1)
   }
+
+  refreshPrePromotionList() {
+    this.loadMoreGoodsListData(true, 2)
+  }
+
 
   loadMoreGoodsListData(isRefresh, status) {
     if(this.isQuering) {
@@ -181,43 +172,54 @@ class ShopGoodPromotionManage extends Component {
     }
     this.isQuering = true
 
-    let lastUpdateTime = undefined
+    let lastCreatedAt = undefined
     if (isRefresh) {
-      lastUpdateTime = undefined
+      lastCreatedAt = undefined
     } else {
-      if(status === 1 && this.props.lastOnlineGood) {
-        lastUpdateTime = this.props.lastOnlineGood.updatedAt
-      } else if(status === 2 && this.props.lastOfflineGood) {
-        lastUpdateTime = this.props.lastOfflineGood.updatedAt
+      if(status === 1 && this.props.lastOpenPromotion) {
+        lastCreatedAt = this.props.lastOpenPromotion.createdAt
+      } else if(status === 2 && this.props.lastClosePromotion) {
+        lastCreatedAt = this.props.lastClosePromotion.createdAt
+      }else if(status === 3 && this.props.lastOpenPromotion) {
+        lastCreatedAt = this.props.lastOpenPromotion.createdAt
       }
     }
 
     let payload = {
-      more: !isRefresh,
+      isRefresh: !!isRefresh,
       shopId: this.props.shopId,
       status: status,
       limit: 6,
-      lastUpdateTime: lastUpdateTime,
+      lastCreatedAt: lastCreatedAt,
+      nowDate: new Date(),
       success: (isEmpty) => {
         this.isQuering = false
-
         if(status === 1 ) {
-          if(!this.onlineGoodListView) {
+          if(!this.proPromotionListView) {
             return
           }
           if(isEmpty) {
-            this.onlineGoodListView.isLoadUp(false)
+            this.proPromotionListView.isLoadUp(false)
           } else {
-            this.onlineGoodListView.isLoadUp(true)
+            this.proPromotionListView.isLoadUp(true)
           }
         } else if (status === 2) {
-          if(!this.offlineGoodListView) {
+          if(!this.prePromotionListView) {
             return
           }
           if(isEmpty) {
-            this.offlineGoodListView.isLoadUp(false)
+            this.prePromotionListView.isLoadUp(false)
           } else {
-            this.offlineGoodListView.isLoadUp(true)
+            this.prePromotionListView.isLoadUp(true)
+          }
+        }else if (status === 3) {
+          if(!this.cloPromotionListView) {
+            return
+          }
+          if(isEmpty) {
+            this.cloPromotionListView.isLoadUp(false)
+          } else {
+            this.cloPromotionListView.isLoadUp(true)
           }
         }
       },
@@ -226,61 +228,16 @@ class ShopGoodPromotionManage extends Component {
         Toast.show(err.message, {duration: 1000})
       }
     }
+    if(status===1||status===2){
+      this.props.getShopOpenPromotion(payload)
+    }else{
+      this.props.getShopClosePromotion(payload)
 
-    this.props.getShopGoodsList(payload)
+    }
   }
 
-  renderOfflineGoodsList() {
-    return(
-      <CommonListView
-        dataSource={this.props.offlineGoodsList}
-        renderRow={(rowData, rowId) => this.renderOfflineGoodItem(rowData, rowId)}
-        loadNewData={()=> {
-          this.refreshOfflineGoodsList()
-        }}
-        loadMoreData={()=> {
-          this.loadMoreGoodsListData(false, 2)
-        }}
-        ref={(listView) => this.offlineGoodListView = listView}
-      />
-    )
-  }
-
-  renderOfflineGoodItem(value, key) {
-    return(
-      <View key={key} style={{borderBottomWidth: 1, borderColor: '#F5F5F5',}}>
-        <TouchableOpacity style={{flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}} onPress={() => {Actions.SHOP_GOODS_DETAIL({goodInfo: value})}}>
-          <View style={{marginTop: normalizeH(21), marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
-            <CachedImage mutable style={{width: normalizeH(75), height: normalizeH(75)}}
-                         source={value.coverPhoto? {uri: value.coverPhoto} : require('../../../assets/images/default_goods_cover.png')}>
-            </CachedImage>
-          </View>
-          <View>
-            <Text style={{marginTop: normalizeH(22), fontSize: 17, color: '#5A5A5A'}}>{value.goodsName}</Text>
-            <View style={{flexDirection: 'row', flex: 1, marginTop: normalizeH(13), marginBottom: normalizeH(13), alignItems: 'center'}}>
-              <Text style={{fontSize: 17, color: '#00BE96'}}>¥ {value.price}</Text>
-              <Text style={{fontSize: 10, color: '#AAAAAA', marginLeft: 6}}>原价：{value.originalPrice}</Text>
-            </View>
-            <Text style={{marginBottom: normalizeH(16), fontSize: 12, color: '#D8D8D8'}}>上架时间：{value.updatedAt.slice(0, 10)} </Text>
-          </View>
-        </TouchableOpacity>
-        <View style={{flexDirection: 'row', height: normalizeH(58), justifyContent: 'flex-end', alignItems: 'center'}}>
-          <TouchableOpacity style={styles.button} onPress={() => {this.onSetGoodOnline(value.id)}}>
-            <Text style={{fontSize: 17, color: 'black'}}>上架</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => {this.onReEditorGood(value.id)}}>
-            <Text style={{fontSize: 17, color: 'black'}}>编辑</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, {marginRight: normalizeW(15)}]} onPress={() => {this.onDeleteGood(value.id)}}>
-            <Text style={{fontSize: 17, color: 'black'}}>删除</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  }
-
-  refreshOfflineGoodsList() {
-    this.loadMoreGoodsListData(true, 2)
+  refreshClosePromotionList() {
+    this.loadMoreGoodsListData(true, 3)
   }
 
   renderTabBar() {
@@ -304,7 +261,7 @@ class ShopGoodPromotionManage extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="商品管理"
+          title="活动管理"
           rightType="none"
         />
 
@@ -327,23 +284,19 @@ class ShopGoodPromotionManage extends Component {
           }}>
             <TouchableOpacity
               onPress={()=>{
-                if(this.isExceededShopGoodsMaxNum()) {
-                  Toast.show('您的店铺商品数已达最大数量')
-                  return
-                }
-                Actions.PUBLISH_SHOP_GOOD({shopId: this.props.shopId})
+                Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD({isPop:true})
               }}
             >
               <View style={{
-                height: normalizeH(49),
+                padding:15,
                 flexDirection:'row',
                 justifyContent:'center',
                 alignItems:'center',
                 borderTopWidth:normalizeBorder(),
                 borderTopColor: THEME.colors.lighterA,
               }}>
-                <Image style={{marginRight:10}} source={require('../../../assets/images/publish_goods.png')}/>
-                <Text style={{color:'#FF7819',fontSize:17}}>新品上架</Text>
+                <Image style={{marginRight:10}} source={require('../../../assets/images/publish_activity_4_mgr.png')}/>
+                <Text style={{color:'#FF7819',fontSize:17}}>发布活动</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -356,23 +309,33 @@ class ShopGoodPromotionManage extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-  const onlineGoodsList = selectGoodsList(state, ownProps.shopId, 1)  //status: 1--上架 2--下架  3--删除
-  const offlineGoodsList = selectGoodsList(state, ownProps.shopId, 2)
-  let lastOnlineGood = onlineGoodsList[onlineGoodsList.length - 1]
-  let lastOfflineGood = offlineGoodsList[offlineGoodsList.length - 1]
-  let shopDetail = selectShopDetail(state,ownProps.shopId)
+
+  let openPromotion = selectOpenGoodPromotion(state)
+  let proPromotion = []
+  let prePromotion = []
+  openPromotion.forEach((item)=>{
+    if(item.startDate>numberUtils.formatLeancloudTime(new Date())){
+      prePromotion.push(item)
+    }else{
+      proPromotion.push(item)
+    }
+  })
+  let cloPromotion = selectCloseGoodPromotion(state)
+   let shopDetail = selectShopDetail(state,ownProps.shopId)
   let currentUser = activeUserId(state)
   let shareDomain = configSelector.getShareDomain(state)
-
-
+  let lastClosePromotion = cloPromotion[cloPromotion.length - 1]
+  let lastOpenPromotion = openPromotion[openPromotion.length - 1]
+  console.log('prepromotion========>',prePromotion)
   return {
-    onlineGoodsList: ds.cloneWithRows(onlineGoodsList),
-    offlineGoodsList: ds.cloneWithRows(offlineGoodsList),
-    lastOnlineGood: lastOnlineGood,
-    lastOfflineGood: lastOfflineGood,
-    currentUser: currentUser,
+     currentUser: currentUser,
     shopDetail: shopDetail,
-    shareDomain: shareDomain
+    shareDomain: shareDomain,
+    prePromotionList: ds.cloneWithRows(prePromotion),
+    proPromotionList: ds.cloneWithRows(proPromotion),
+    cloPromotionList: ds.cloneWithRows(cloPromotion),
+    lastClosePromotion: lastClosePromotion,
+    lastOpenPromotion: lastOpenPromotion
   }
 }
 
@@ -381,7 +344,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   setShopGoodsOnline,
   setShopGoodsDelete,
   modifyShopGoods,
-  getShopGoodsList
+  getShopGoodsList,
+  getShopOpenPromotion,
+  getShopClosePromotion,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodPromotionManage)

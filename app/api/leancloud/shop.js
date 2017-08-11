@@ -1277,10 +1277,42 @@ export function fetchNearbyShopGoodPromotion(payload) {
     nowDate: payload.nowDate
   }
   console.log('params',params)
-  return AV.Cloud.run('fetchNearbyShopGoodPromotion', params).then((goods)=> {
+  return AV.Cloud.run('fetchNearbyShopGoodPromotion', params).then((promotions)=> {
 
-    return goods
+    return promotions
   }, (err) => {
     throw err
   })
 }
+
+export function fetchOpenShopGoodPromotions(payload) {
+  let params = {
+    limit: 10,
+    nowDate: payload.nowDate,
+    shopId: payload.shopId,
+    lastCreatedAt: payload.lastCreatedAt,
+
+  }
+  return AV.Cloud.run('fetchOpenPromotionsByShopId', params).then((promotions)=> {
+    return promotions
+  }, (err) => {
+    throw err
+  })
+}
+
+export function fetchCloseShopGoodPromotions(payload) {
+  let params = {
+    limit: 30,
+    nowDate: payload.nowDate,
+    shopId: payload.shopId,
+    lastCreatedAt: payload.lastCreatedAt,
+  }
+
+  return AV.Cloud.run('fetchCloPromotionsByShopId', params).then((promotions)=> {
+
+    return promotions
+  }, (err) => {
+    throw err
+  })
+}
+

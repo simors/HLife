@@ -283,3 +283,29 @@ export function selectLocalGoodPromotion(state) {
   }
   return promotions
 }
+
+export function selectOpenGoodPromotion(state) {
+  let localPromotions = state.SHOP.get('openGoodPromotionList')||[]
+  let promotions = []
+  if(localPromotions&&localPromotions.size){
+    localPromotions.forEach((promotionId)=>{
+      let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
+      console.log('promotion===========>',promotion)
+      promotions.push(promotion.toJS())
+    })
+  }
+  return promotions
+}
+
+export function selectCloseGoodPromotion(state) {
+  let localPromotions = state.SHOP.get('closeGoodPromotionList')||[]
+  let promotions = []
+  if(localPromotions&&localPromotions.size){
+    localPromotions.forEach((promotionId)=>{
+      let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
+      console.log('promotion===========>',promotion)
+      promotions.push(promotion.toJS())
+    })
+  }
+  return promotions
+}

@@ -101,6 +101,7 @@ import PublishShopPromotionChooseType from '../components/Mine/myShop/PublishSho
 import PublishShopPromotionChooseDate from '../components/Mine/myShop/PublishShopPromotionChooseDate'
 import PublishShopPromotionAbstract from '../components/Mine/myShop/PublishShopPromotionAbstract'
 import PublishShopPromotionSubmit from '../components/Mine/myShop/PublishShopPromotionSubmit'
+import ShopGoodPromotionManage from '../components/Mine/myShop/ShopGoodPromotionManage'
 
 import Contact from '../components/Mine/Contact'
 import Search from '../components/Search'
@@ -249,6 +250,7 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_SHOP_PROMOTION_CHOOSE_DATE" component={PublishShopPromotionChooseDate}/>
       <Scene key="PUBLISH_SHOP_PROMOTION_ABSTRACT" component={PublishShopPromotionAbstract}/>
       <Scene key="PUBLISH_SHOP_PROMOTION_SUBMIT" component={PublishShopPromotionSubmit}/>
+      <Scene key="SHOP_GOOD_PROMOTION_MANAGE" component={ShopGoodPromotionManage}/>
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>

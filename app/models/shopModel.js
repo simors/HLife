@@ -741,8 +741,8 @@ export class ShopGoodPromotion extends ShopGoodPromotionRecord {
     return shopGoodPromotion.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('coverPhoto', lcObj.coverPhoto)
-      record.set('startDate', lcObj.startDate)
-      record.set('endDate', lcObj.endDate)
+      record.set('startDate', numberUtils.formatLeancloudTime(new Date(lcObj.startDate)))
+      record.set('endDate', numberUtils.formatLeancloudTime(new Date(lcObj.endDate)))
       record.set('typeId', lcObj.typeId)
       record.set('type', lcObj.type)
       record.set('goodId', lcObj.goodId)
@@ -806,4 +806,6 @@ export const Shop = Record({
   shopGoods: Map(),         // 店铺商品列表，键为店铺id，值为ShopGoods组成的List
   allGoodPromotions: Map(),
   localGoodPromotionList: List(),
+  openGoodPromotionList: List(),
+  closeGoodPromotionList: List()
 }, 'Shop')

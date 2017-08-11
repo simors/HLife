@@ -101,6 +101,7 @@ export function getShopPromotion(payload) {
   }
 }
 
+
 export function fetchUserFollowShops(payload) {
   return (dispatch, getState) => {
     lcShop.fetchUserFollowShops(payload).then((results) =>{
@@ -1096,5 +1097,67 @@ export function modifyShopGoods(payload) {
         }
       })
     }
+  }
+}
+
+export function getShopOpenPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchOpenShopGoodPromotions(payload).then((promotionInfo) => {
+      let promotionList = []
+      let promotions=[]
+      promotionInfo.promotions.forEach((promp) => {
+        promotionList.push(promp.id)
+        promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
+      })
+      // console.log('=promotions=====>',promotions)
+      // console.log('=promotionList=====>',promotionList)
+
+      let actionType = ShopActionTypes.SET_SHOP_OPEN_PROMOTIONLIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.ADD_SHOP_OPEN_PROMOTIONLIST
+      }
+      if(promotionList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+      }
+      if(payload.success){
+        payload.success(promotionList.length == 0)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function getShopClosePromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchCloseShopGoodPromotions(payload).then((promotionInfo) => {
+      let promotionList = []
+      let promotions=[]
+      promotionInfo.promotions.forEach((promp) => {
+        promotionList.push(promp.id)
+        promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
+      })
+      // console.log('=promotions=====>',promotions)
+      // console.log('=promotionList=====>',promotionList)
+
+      let actionType = ShopActionTypes.SET_SHOP_CLOSE_PROMOTIONLIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST
+      }
+      if(promotionList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+      }
+      if(payload.success){
+        payload.success(promotionList.length == 0)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
   }
 }
