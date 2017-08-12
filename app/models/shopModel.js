@@ -741,8 +741,8 @@ export class ShopGoodPromotion extends ShopGoodPromotionRecord {
     return shopGoodPromotion.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('coverPhoto', lcObj.coverPhoto)
-      record.set('startDate', numberUtils.formatLeancloudTime(new Date(lcObj.startDate)))
-      record.set('endDate', numberUtils.formatLeancloudTime(new Date(lcObj.endDate)))
+      record.set('startDate', numberUtils.formatLeancloudTime(new Date(lcObj.startDate),'YYYY-MM-DD HH:mm'))
+      record.set('endDate', numberUtils.formatLeancloudTime(new Date(lcObj.endDate),'YYYY-MM-DD HH:mm'))
       record.set('typeId', lcObj.typeId)
       record.set('type', lcObj.type)
       record.set('goodId', lcObj.goodId)

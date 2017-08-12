@@ -102,15 +102,18 @@ class ShopGoodPromotionView extends Component {
   renderGoodShow(){
     if(this.props.promotion.goodId){
       return(
+        <View style={styles.wrapBox}>
         <View style={styles.channelWrap}>
-          <View style={styles.defaultImageStyles}>
+          <View style={styles.typeWrap}>
+          <Text style={styles.typeText}>{this.props.promotion.type}</Text>
+            </View>
             <CachedImage mutable style={styles.defaultImageStyles}
                          source={this.props.promotion.coverPhoto ? {uri: getThumbUrl(this.props.promotion.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../../assets/images/default_goods_cover.png")}/>
-          </View>
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
           <Text style={ styles.channelText} numberOfLines={1}>{this.props.promotion.goodName}</Text>
           <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + this.props.promotion.promotionPrice}</Text>
         </View>
+          </View>
       )
     }else{
       return null
@@ -125,24 +128,15 @@ class ShopGoodPromotionView extends Component {
           <KeyboardAwareScrollView>
             {this.renderGoodShow()}
             <View style={styles.showInfoWrap}>
-              <Text style={styles.showInfoAbs}>活动类型：</Text>
-              <Text style={styles.showInfoText}>{this.props.promotion.type}</Text>
-            </View>
-
-            <View style={styles.showInfoWrap}>
-              <Text style={styles.showInfoAbs}>商品活动价格：</Text>
-              <Text style={styles.showInfoText}>{this.props.promotion.price+'元'}</Text>
-            </View>
-
-            <View style={styles.showInfoWrap}>
-              <Text style={styles.showInfoAbs}>活动有效期：</Text>
+              <Text style={styles.showTitleText}>活动有效期：</Text>
             </View>
             <View style={styles.showInfoWrap}>
-              <Text style={styles.showInfoText}>{this.props.promotion.startDate+' 至'}</Text>
-              <Text style={styles.showInfoText}>{this.props.promotion.endDate}</Text>
+              <Text style={[styles.showInfoText,{backgroundColor:'rgba(0,0,0,0.05)'}]}>{this.props.promotion.startDate+' 至'+this.props.promotion.endDate}</Text>
             </View>
             <View style={styles.showInfoWrap}>
-              <Text style={styles.showInfoAbs}>活动说明</Text>
+              <Text style={styles.showTitleText}>活动说明</Text>
+            </View>
+            <View style={styles.showInfoWrap}>
               <Text style={styles.showInfoText}>{this.props.promotion.abstract}</Text>
             </View>
           </KeyboardAwareScrollView>
@@ -170,10 +164,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF'
   },
   body: {
-    marginTop: normalizeH(64),
     flex: 1,
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
+    alignItems: 'center'
 
   },
   scrollViewStyle: {
@@ -203,7 +197,7 @@ const styles = StyleSheet.create({
     height: normalizeH(40),
     width: normalizeW(169),
     marginTop: normalizeH(20),
-    marginLeft: normalizeW(103),
+    marginBottom: normalizeH(25),
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth:normalizeBorder(1),
@@ -258,6 +252,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start'
   },
+  wrapBox:{
+    paddingTop: normalizeH(15),
+    paddingBottom: normalizeH(15),
+    alignItems: 'center',
+    borderBottomColor:'#F5F5F5',
+    borderBottomWidth:normalizeBorder(1),
+  },
   defaultImageStyles: {
     height: normalizeH(169),
     width: normalizeW(169),
@@ -269,9 +270,6 @@ const styles = StyleSheet.create({
     height: normalizeH(224),
     width: normalizeW(169),
     overflow: 'hidden',
-    marginTop: normalizeH(10),
-    marginLeft: normalizeW(88),
-    marginBottom: normalizeH(5),
     borderWidth:normalizeBorder(0),
     backgroundColor:'#F5F5F5'
   },
@@ -304,7 +302,8 @@ const styles = StyleSheet.create({
   showInfoWrap:{
     flex:1,
     flexDirection: 'row',
-    marginTop: normalizeH(10)
+    marginTop: normalizeH(10),
+    width:normalizeW(345)
   },
   showInfoAbs:{
     width:normalizeW(110),
@@ -313,9 +312,34 @@ const styles = StyleSheet.create({
     color: 'rgba(0,0,0,0.5)',
     alignItems: 'flex-start'
   },
+  showTitleText:{
+    fontSize: em(12),
+    color: '#000000',
+    fontFamily: '.PingFangSC-Semibold'
+  },
   showInfoText:{
+    fontFamily: '.PingFangSC-Regular',
+    marginLeft: normalizeW(15),
     fontSize: em(15),
-    color: '#000000'
+    color: 'rgba(0,0,0,0.50)'
+  },
+  typeWrap:{
+    position: 'absolute',
+    top:20,
+    left: -30,
+    width: normalizeH(100),
+    height: normalizeH(30),
+    transform:[{rotate:'-45deg'}],
+    backgroundColor:'#FF9D4E',
+    zIndex: 5,
+    justifyContent:'center',
+    alignItems:'center'
+    },
+  typeText:{
+    fontSize:em(15),
+    color:'#FFFFFF',
+    fontFamily:'.PingFangSC-Semibold',
+
   }
 
 })

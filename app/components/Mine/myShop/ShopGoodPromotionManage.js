@@ -103,6 +103,8 @@ class ShopGoodPromotionManage extends Component {
   renderCloPromotionList() {
     return(
       <CommonListView
+        contentContainerStyle={{backgroundColor:'#F5F5F5'}}
+
         dataSource={this.props.cloPromotionList}
         renderRow={(rowData, rowId) => this.renderPromotionItem(rowData, rowId,'clo')}
         loadNewData={()=> {
@@ -119,6 +121,8 @@ class ShopGoodPromotionManage extends Component {
   renderPrePromotionList() {
     return(
       <CommonListView
+        contentContainerStyle={{backgroundColor:'#F5F5F5'}}
+
         dataSource={this.props.prePromotionList}
         renderRow={(rowData, rowId) => this.renderPromotionItem(rowData, rowId,'pre')}
         loadNewData={()=> {
@@ -135,6 +139,7 @@ class ShopGoodPromotionManage extends Component {
   renderProPromotionList() {
     return(
       <CommonListView
+        contentContainerStyle={{backgroundColor:'#F5F5F5'}}
         dataSource={this.props.proPromotionList}
         renderRow={(rowData, rowId) => this.renderPromotionItem(rowData, rowId,'pro')}
         loadNewData={()=> {
@@ -150,7 +155,7 @@ class ShopGoodPromotionManage extends Component {
 
   renderPromotionItem(value, key,status) {
     return(
-      <View>
+      <View style={{flex:1,marginBottom:normalizeH(8)}}>
         <ShopGoodPromotionShow promotion={value} key = {key} status={status}
         />
       </View>
@@ -314,7 +319,7 @@ const mapStateToProps = (state, ownProps) => {
   let proPromotion = []
   let prePromotion = []
   openPromotion.forEach((item)=>{
-    if(item.startDate>numberUtils.formatLeancloudTime(new Date())){
+    if(item.startDate>numberUtils.formatLeancloudTime(new Date(),'YYYY-MM-DD HH:mm')){
       prePromotion.push(item)
     }else{
       proPromotion.push(item)
