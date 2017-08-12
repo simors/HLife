@@ -52,3 +52,4 @@ buck-out/
 \.buckd/
 #android/app/libs
 
+yarn-error.log
