@@ -1016,6 +1016,17 @@ export function fetchShopPromotionMaxNum(payload) {
   })
 }
 
+export function fetchShopPromotionDayPay(payload) {
+  return AV.Cloud.run('getShopPromotionDayPay', payload).then(result=>{
+    if(result && result.errcode == '0') {
+      return result.message
+    }
+    return 3
+  }, reason=>{
+    return 3
+  })
+}
+
 export function fetchMyShopExpiredPromotionList(payload) {
   let isRefresh = payload.isRefresh
   let lastUpdatedAt = payload.lastUpdatedAt

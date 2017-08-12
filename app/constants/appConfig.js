@@ -25,6 +25,6 @@ export const INVITE_SHOP = 2           // 邀请店铺获得的收益
 export const BUY_GOODS = 3             // 购买商品
 export const REWARD = 4                // 打赏
 export const WITHDRAW = 5              // 取现
-
+export const PUBLISH_PROMOTION = 6     //发布活动
 //Ping ++
 export const  MERCHANT_CODE = '200586000001042'    //通联支付商户号

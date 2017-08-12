@@ -32,6 +32,10 @@ export function selectShopPromotionMaxNum(state){
   return selectShop(state).shopPromotionMaxNum
 }
 
+export function selectShopPromotionDayPay(state){
+  return selectShop(state).dayPay
+}
+
 export function selectUserFollowedShopList(state, userId) {
   let userFollowedShopList = state.SHOP.getIn(['userFollowedShops', userId])
   if(userFollowedShopList && userFollowedShopList.size) {
@@ -277,7 +281,6 @@ export function selectLocalGoodPromotion(state) {
   if(localPromotions&&localPromotions.size){
     localPromotions.forEach((promotionId)=>{
       let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
-      console.log('promotion===========>',promotion)
       promotions.push(promotion.toJS())
     })
   }
@@ -290,7 +293,6 @@ export function selectOpenGoodPromotion(state) {
   if(localPromotions&&localPromotions.size){
     localPromotions.forEach((promotionId)=>{
       let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
-      console.log('promotion===========>',promotion)
       promotions.push(promotion.toJS())
     })
   }
@@ -303,7 +305,6 @@ export function selectCloseGoodPromotion(state) {
   if(localPromotions&&localPromotions.size){
     localPromotions.forEach((promotionId)=>{
       let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
-      console.log('promotion===========>',promotion)
       promotions.push(promotion.toJS())
     })
   }

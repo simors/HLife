@@ -36,10 +36,11 @@ import * as Toast from '../../common/Toast'
 import TextAreaInput from '../../common/Input/TextAreaInput'
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {CachedImage} from "react-native-img-cache"
+import {PUBLISH_PROMOTION} from '../../../constants/appConfig'
 
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import {fetchShopAnnouncements,submitShopGoodPromotion} from '../../../action/shopAction'
+import {fetchShopAnnouncements,submitShopGoodPromotion,fetchShopPromotionDayPay} from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import MyShopGoodListForChoose from './MyShopGoodListForChoose'
@@ -47,6 +48,7 @@ import DateTimeInput from '../../common/Input/DateTimeInput'
 import {
   selectUserOwnedShopInfo,
   selectGoodsById,
+  selectShopPromotionDayPay
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate,inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
@@ -67,6 +69,7 @@ class PublishShopPromotionSubmit extends Component {
       shouldUploadImage: false,
       chooseTypeId: undefined,
       hideBottomView: false,
+      showPayModal: false,
     }
     this.replyInput = null
 
@@ -94,6 +97,11 @@ class PublishShopPromotionSubmit extends Component {
     )
   }
 
+  openPaymentModal() {
+
+      this.setState({showPayModal: true})
+
+  }
 
   onButtonPress(){
     let payload = {
@@ -128,6 +136,99 @@ class PublishShopPromotionSubmit extends Component {
     }
     this.props.submitShopGoodPromotion(payload)
   }
+
+  renderPaymentModal() {
+    return (
+      <View>
+        <Modal
+          visible={this.state.showPayModal}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={()=> {
+            this.setState({showPayModal: false})
+          }}
+        >
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+            <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
+              <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
+                <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置购买数量</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>数量：</Text>
+                <TextInput
+                  placeholder='输入数量'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({buyAmount: text})}
+                  value={this.state.buyAmount}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    textAlign: 'right',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(80),
+                    paddingRight: normalizeW(15),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>份</Text>
+              </View>
+              <View style={{
+                width: PAGE_WIDTH - 100,
+                height: normalizeH(50),
+                padding: 0,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderTopWidth: 1,
+                borderColor: '#F5F5F5'
+              }}>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.setState({showPayModal: false})}>
+                    <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex: 1}}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.onPaymentPress()}>
+                    <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    )
+  }
+
+  onPaymentPress() {
+    this.setState({showPayModal: false})
+    let amount = this.state.buyAmount
+    if (Math.floor(amount) != amount) {
+      Toast.show('购买数量只能是整数')
+      return
+    }
+    Actions.PAYMENT({
+      title: '商家活动支付',
+      price: 0.01,
+      metadata: {
+        'fromUser': this.props.currentUser,
+        'toUser': this.props.shopDetail.owner.id,
+        'dealType': PUBLISH_PROMOTION
+      },
+      subject: '购买汇邻优店活动费用',
+      paySuccessJumpScene: 'BUY_GOODS_OK',
+      paySuccessJumpSceneParams: {},
+      payErrorJumpBack: true,
+    })
+  }
+
+
   renderGoodShow(){
     if(this.props.good){
       return(
@@ -196,6 +297,8 @@ class PublishShopPromotionSubmit extends Component {
           </KeyboardAwareScrollView>
           {this.renderSubmitButton()}
         </View>
+        {this.renderPaymentModal()}
+
       </View>
     )
   }
@@ -204,7 +307,7 @@ class PublishShopPromotionSubmit extends Component {
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isLogin = isUserLogined(state)
-
+  let dayPay = selectShopPromotionDayPay(state)
   let formData = getInputFormData(state,shopPromotionForm)
   // console.log('formData=====>',formData)
   let abstract = formData&&formData.abstractInput?formData.abstractInput.text:''
@@ -225,7 +328,8 @@ const mapStateToProps = (state, ownProps) => {
     good: good,
     type: type,
     price: price,
-    countDays: countDays
+    countDays: countDays,
+    dayPay: dayPay
   }
 }
 
@@ -237,6 +341,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormOnDestroy,
   inputFormUpdate,
+  fetchShopPromotionDayPay
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionSubmit)

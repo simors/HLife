@@ -81,6 +81,8 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchUserFollowedShopPagingListSuccess(state, action)
     case ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS:
       return handleFetchShopPromotionMaxNumSuccess(state, action)
+    case ShopActionTypes.FETCH_SHOP_PROMOTION_DAY_PAY_SUCCESS:
+      return handleFetchShopPromotionDayPaySuccess(state, action)
     case ShopActionTypes.ADD_NEW_SHOP_GOODS:
       return handleAddShopGoods(state, action)
     case ShopActionTypes.UPDATE_SHOP_GOODS:
@@ -132,6 +134,13 @@ function handleFetchShopPromotionMaxNumSuccess(state, action){
   let payload = action.payload
   let shopPromotionMaxNum = payload.shopPromotionMaxNum
   state = state.set('shopPromotionMaxNum', shopPromotionMaxNum || 3)
+  return state
+}
+
+function handleFetchShopPromotionDayPaySuccess(state, action){
+  let payload = action.payload
+  let dayPay = payload.dayPay
+  state = state.set('dayPay', dayPay || 3)
   return state
 }
 

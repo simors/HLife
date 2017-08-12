@@ -397,6 +397,20 @@ class MyShopIndex extends Component {
     )
   }
 
+  renderNoGood(){
+    return(
+      <View>
+        <Text style={styles.noGoodText}>暂无商品</Text>
+        <View style={styles.addGoodBox}>
+          <Svg size={normalizeH(32)} icon="click_add"/>
+          <Text style={styles.addGoodText}>点击添加产品</Text>
+
+        </View>
+        <CachedImage source={require('../../../assets/images/background_shop_copy.png')}/>
+      </View>
+    )
+  }
+
   render() {
     // console.log('this.props.shopDetail===', this.props.shopDetail)
 
@@ -490,10 +504,7 @@ class MyShopIndex extends Component {
                     Actions.PUBLISH_SHOP_GOOD({shopId: this.props.shopDetail.id})
                   }}
                 >
-                <Image
-                  style={{height:normalizeH(175)}}
-                  source={require('../../../assets/images/background_shop_copy.png')}
-                />
+                  {this.renderNoGood()}
                   </TouchableOpacity>
               </View>}
 
@@ -691,7 +702,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
   let shareDomain = getShareDomain(state)
-
+  console.log('goodList=====>',goodList)
   return {
     goodList: goodList,
     shopDetail: userOwnedShopInfo,
@@ -1282,6 +1293,31 @@ const styles = StyleSheet.create({
     // marginTop: normalizeH(9),
     // marginBottom: normalizeH(9),
     alignItems: 'center',
+
+  },
+  noGoodText:{
+    position: 'absolute',
+    left: normalizeW(91),
+    top: normalizeH(52),
+    fontFamily:'.PingFangSC-Semibold',
+    fontSize: em(40),
+    color:'rgba(255,120,25,0.30)',
+    letterSpacing: em(0,48),
+    zIndex: 10,
+  },
+  addGoodBox:{
+    position: 'absolute',
+    left: normalizeW(108),
+    top: normalizeH(128),
+    flexDirection: 'row',
+    zIndex: 10,
+    alignItems: 'center'
+  },
+  addGoodText:{
+    fontFamily:'.PingFangSC-Medium',
+    fontSize: em(15),
+    color: '#FF7819',
+    letterSpacing: em(0.61),
 
   }
 })

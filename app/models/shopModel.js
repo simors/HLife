@@ -701,7 +701,7 @@ export class ShopGoods extends ShopGoodsRecord {
       record.set('album', new List(lcObj.album))
       record.set('status', lcObj.status)
       record.set('detail', lcObj.detail)
-      record.set('promotion', lcObj.promotion)
+      record.set('promotion', lcObj.promotion.attributes)
       record.set('updatedAt', lcObj.updatedAt)
     })
   }
@@ -803,6 +803,7 @@ export const Shop = Record({
   guessYouLikeShopList: List(),
   userFollowedShops: Map(),
   shopPromotionMaxNum: 3,
+  dayPay: 10,
   shopGoods: Map(),         // 店铺商品列表，键为店铺id，值为ShopGoods组成的List
   allGoodPromotions: Map(),
   localGoodPromotionList: List(),

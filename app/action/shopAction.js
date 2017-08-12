@@ -699,6 +699,22 @@ export function fetchShopPromotionMaxNum(payload) {
     })
   }
 }
+export function fetchShopPromotionDayPay(payload) {
+  return (dispatch, getState)=>{
+    lcShop.fetchShopPromotionDayPay(payload).then((dayPay)=>{
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
+      dispatch(updateAction({
+        dayPay: dayPay
+      }))
+    }, (dayPay)=>{
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
+      dispatch(updateAction({
+        dayPay: dayPay
+      }))
+    })
+  }
+}
+
 
 export function fetchMyShopExpiredPromotionList(payload) {
   return (dispatch ,getState) => {
