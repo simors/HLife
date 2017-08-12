@@ -102,7 +102,7 @@ class UpdateShopAlbum4EditShop extends Component {
                 cancelState ={this.state.cancelState}
 
                 number={20}
-                imageLineCnt={3}
+                imageLineCnt={2}
                 initValue={
                   this.props.localAlbumList && this.props.localAlbumList.length
                     ? this.props.localAlbumList

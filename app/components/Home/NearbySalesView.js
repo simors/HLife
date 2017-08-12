@@ -41,28 +41,47 @@ class NearbySalesView extends Component {
   }
 
   renderSaleItems() {
+
+
     let promotionsView = <View />
     if(this.props.shopPromotionList && this.props.shopPromotionList.length) {
       promotionsView = this.props.shopPromotionList.map((item, index)=>{
+        let goodInfo = {
+          id: item.goodId,
+          targetShop: item.shopId,
+          goodsName: item.goodName,
+          price: item.price,
+          originalPrice: item.originalPrice,
+          promotionPrice: item.promotionPrice,
+          coverPhoto: item.coverPhoto,
+          album: item.album,
+          status: item.goodStatus,
+          detail: item.detail,
+          promotion: item.id,
+          updatedAt: item.goodUpdatedAt,
+        }
+        // console.log('Date====>',new Date())
+        // console.log('startDate====>',new Date(item.startDate))
+
         return (
-          <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {Actions.SHOP_PROMOTION_DETAIL({id:item.id})}}>
+          <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})}}>
             <LazyloadView host="homeList" style={styles.saleItemView}>
               <View style={styles.saleImg}>
                 <CachedImage mutable style={{flex: 1}}
-                       source={{uri: getThumbUrl(item.coverUrl, normalizeW(100), normalizeW(100))}}/>
+                       source={{uri: getThumbUrl(item.coverPhoto, normalizeW(100), normalizeW(100))}}/>
               </View>
               <View style={styles.saleContent}>
                 <View>
-                  <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
+                  <Text style={styles.itemTitle} numberOfLines={1}>{item.goodName}</Text>
                 </View>
                 <View style={styles.addressTextView}>
                   <View style={{flexDirection: 'row', width: 180}}>
-                    <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>{item.targetShop.shopName}</Text>
+                    <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>{item.shopName}</Text>
                     <Text style={styles.itemText}> | </Text>
-                    <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>{item.targetShop.geoDistrict}</Text>
+                    <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>{item.geoDistrict}</Text>
                   </View>
                   <View>
-                    <Text style={styles.itemText}>{item.targetShop.distance + item.targetShop.distanceUnit}</Text>
+                    <Text style={styles.itemText}>{item.distance + item.distanceUnit}</Text>
                   </View>
                 </View>
                 <View style={styles.saleAbstract}>
@@ -76,7 +95,7 @@ class NearbySalesView extends Component {
                 <View style={styles.priceView}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Text style={styles.priceText}>¥</Text>
-                    <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotingPrice}</Text>
+                    <Text style={[styles.priceText, {marginLeft: normalizeW(5)}]}>{item.promotionPrice}</Text>
                     {item.originalPrice
                       ? <Text style={[styles.itemText, {marginLeft: normalizeW(5), textDecorationLine: 'line-through'}]}>
                           原价 {item.originalPrice}

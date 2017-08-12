@@ -37,6 +37,9 @@ import {fetchShopCategories} from '../../action/configAction'
 import {fetchShopTags, getNearbyShopList} from '../../action/shopAction'
 import TimerMixin from 'react-timer-mixin'
 import AV from 'leancloud-storage'
+import ShopShow from '../Local/ShopShow'
+import {CachedImage} from "react-native-img-cache"
+import {getThumbUrl} from '../../util/ImageUtil'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -274,67 +277,101 @@ class ShopCategoryList extends Component {
     }
   }
 
-  renderShop(rowData, customStyle) {
-    let shopTag = null
-    if(rowData.containedTag && rowData.containedTag.length) {
-      shopTag = rowData.containedTag[0].name
+  renderShopTags(tags){
+    if(tags&&tags.length>0){
+      let showTags = tags.map((item,key)=>{
+        if(key<5){
+          return <View style={styles.shopTagBadge}>
+            <Text style={styles.shopTagBadgeTxt}>{item.name}</Text>
+          </View>
+        }
+      })
+      return <View  style={styles.shopPromotionBox}>
+        {showTags }
+      </View>
+    }else{
+      return null
     }
 
+  }
+
+  renderShop(rowData, customStyle,index) {
+    let shopTag = null
+    if(rowData.containedTag && rowData.containedTag.length) {
+      shopTag = rowData.containedTag
+    }
     return (
-      <TouchableOpacity onPress={()=>{this.gotoShopDetailScene(rowData.id)}}>
-        <View style={[styles.shopInfoWrap, customStyle]}>
+      <TouchableOpacity onPress={()=> {
+        this.gotoShopDetailScene(rowData.id)
+      }}>
+        <View style={[styles.shopInfoWrap]}>
           <View style={styles.coverWrap}>
-            <Image style={styles.cover} source={{uri: rowData.coverUrl}}/>
+            <CachedImage mutable style={styles.cover}
+                         source={{uri: getThumbUrl(rowData.coverUrl, normalizeW(80), normalizeW(80))}}/>
           </View>
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
               <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
-              <ScoreShow
-                containerStyle={{flex:1}}
-                score={rowData.score}
-              />
+              <Text style={styles.shopSpecial} numberOfLines={1}>{rowData.ourSpecial}</Text>
+
+              <View style={{flex: 1, justifyContent: 'space-around',marginTop:normalizeH(11)}}>
+                {/*<ScoreShow*/}
+                {/*score={shopInfo.score}*/}
+                {/*/>*/}
+                {this.renderShopPromotion(rowData)}
+              </View>
               <View style={styles.subInfoWrap}>
-                {shopTag &&
-                <Text style={[styles.subTxt]}>{shopTag}</Text>
-                }
-                <View style={{flex:1,flexDirection:'row'}}>
-                  <Text style={styles.subTxt}>{rowData.geoDistrict && rowData.geoDistrict}</Text>
-                </View>
-                {rowData.distance &&
-                <Text style={[styles.subTxt]}>{rowData.distance + rowData.distanceUnit}</Text>
-                }
+                {this.renderShopTags(shopTag)}
               </View>
             </View>
-            {this.renderShopPromotion(rowData)}
           </View>
         </View>
       </TouchableOpacity>
     )
   }
 
+
   renderShopPromotion(shopInfo) {
+     console.log('promotion===>',shopInfo.containedPromotions)
+
     let containedPromotions = shopInfo.containedPromotions
-    if(containedPromotions && containedPromotions.length) {
-      let shopPromotionView = containedPromotions.map((promotion, index)=>{
-        return (
-          <View key={'promotion_' + index} style={styles.shopPromotionBox}>
-            <View style={styles.shopPromotionBadge}>
-              <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
-            </View>
-            <View style={styles.shopPromotionContent}>
-              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
-            </View>
-          </View>
-        )
-      })
+    if (containedPromotions && (containedPromotions.length > 0)) {
+
+      let promotion = containedPromotions[0]
       return (
-        <View style={styles.shopPromotionWrap}>
-          {shopPromotionView}
+        <View style={styles.shopPromotionBox}>
+          <View style={styles.shopPromotionBadge}>
+            <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
+          </View>
+          {containedPromotions[1]?<View style={styles.shopPromotionBadge}>
+            <Text style={styles.shopPromotionBadgeTxt}>{containedPromotions[1].type}</Text>
+          </View>:null}
+          {containedPromotions[2]?<View style={styles.shopPromotionBadge}>
+            <Text style={styles.shopPromotionBadgeTxt}>{containedPromotions[2].type}</Text>
+          </View>:null}
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+          </View>
+          {shopInfo.distance &&
+          <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
+          }
+        </View>
+      )
+    }else{
+      return(
+        <View style={styles.shopPromotionBox}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+          </View>
+          {shopInfo.distance &&
+          <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
+          }
         </View>
       )
     }
     return null
   }
+
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
     let tagsView = null
@@ -344,16 +381,9 @@ class ShopCategoryList extends Component {
       tagsView = this.renderTags()
       customStyle = {marginBottom: 0}
     }
-
     return (
       <View>
-        {tagsView
-          ? <View>
-              {this.renderShop(rowData, customStyle)}
-              {tagsView}
-            </View>
-          : this.renderShop(rowData)
-        }
+        { this.renderShop(rowData,customStyle,rowID)}
       </View>
     )
   }
@@ -607,29 +637,29 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f5f5f5'
   },
   shopInnerIntroWrap: {
-    height: 80,
+    height: 100,
   },
   shopPromotionWrap: {
     flex: 1,
     marginTop: 10,
-    borderTopWidth:normalizeBorder(),
+    borderTopWidth: normalizeBorder(),
     borderTopColor: '#f5f5f5'
   },
   shopPromotionBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
   },
   shopPromotionBadge: {
     backgroundColor: '#F6A623',
     borderRadius: 2,
     padding: 3,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginRight: normalizeW(6),
   },
   shopPromotionBadgeTxt: {
-    color:'white',
-    fontSize: em(12)
+    color: 'white',
+    fontSize: em(12),
   },
   shopPromotionContent: {
     flex: 1,
@@ -640,8 +670,8 @@ const styles = StyleSheet.create({
     fontSize: em(12)
   },
   coverWrap: {
-    width: 80,
-    height: 80
+    width: normalizeW(100),
+    height: normalizeW(100)
   },
   cover: {
     flex: 1
@@ -651,12 +681,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   shopName: {
-    lineHeight: em(20),
+    marginTop:normalizeH(10),
     fontSize: em(17),
-    color: '#8f8e94'
+    color: '#5a5a5a'
   },
   subInfoWrap: {
     flexDirection: 'row',
+    marginTop:normalizeH(7)
   },
   subTxt: {
     marginRight: normalizeW(10),
@@ -693,5 +724,22 @@ const styles = StyleSheet.create({
     height: 110,
     borderTopWidth:normalizeBorder(),
     borderTopColor: '#b2b2b2'
+  },
+  shopTagBadge: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 2.5,
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(6),
+  },
+  shopTagBadgeTxt: {
+    color: '#AAAAAA',
+    fontSize: em(11),
+  },
+  shopSpecial:{
+    color: '#AAAAAA',
+    fontSize: em(12),
+    marginTop:normalizeH(5),
   }
 })

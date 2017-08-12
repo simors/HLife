@@ -96,6 +96,13 @@ import Withdrawals from '../components/Payment/Withdrawals'
 import Share from '../components/common/Share'
 import PromoterPaymentOk from '../components/Payment/PromoterPaymentOk'
 import EarningRecord from '../components/Mine/promote/EarningRecord'
+import PublishShopPromotionChooseGood from '../components/Mine/myShop/PublishShopPromotionChooseGood'
+import PublishShopPromotionChooseType from '../components/Mine/myShop/PublishShopPromotionChooseType'
+import PublishShopPromotionChooseDate from '../components/Mine/myShop/PublishShopPromotionChooseDate'
+import PublishShopPromotionAbstract from '../components/Mine/myShop/PublishShopPromotionAbstract'
+import PublishShopPromotionSubmit from '../components/Mine/myShop/PublishShopPromotionSubmit'
+import ShopGoodPromotionManage from '../components/Mine/myShop/ShopGoodPromotionManage'
+
 import Contact from '../components/Mine/Contact'
 import Search from '../components/Search'
 import SearchUser from '../components/Search/SearchUser'
@@ -238,6 +245,13 @@ export const scenes = Actions.create(
       <Scene key="SUPPLEMENT_USERINFO" component={SupplementUserInfo}/>
       <Scene key="QRCODE_VIEW" component={QrcodeView}/>
       <Scene key="SET_MOBILE_PHONE_NUMBER" component={SetMobilePhoneNumber}/>
+      <Scene key="PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD" component={PublishShopPromotionChooseGood}/>
+      <Scene key="PUBLISH_SHOP_PROMOTION_CHOOSE_TYPE" component={PublishShopPromotionChooseType}/>
+      <Scene key="PUBLISH_SHOP_PROMOTION_CHOOSE_DATE" component={PublishShopPromotionChooseDate}/>
+      <Scene key="PUBLISH_SHOP_PROMOTION_ABSTRACT" component={PublishShopPromotionAbstract}/>
+      <Scene key="PUBLISH_SHOP_PROMOTION_SUBMIT" component={PublishShopPromotionSubmit}/>
+      <Scene key="SHOP_GOOD_PROMOTION_MANAGE" component={ShopGoodPromotionManage}/>
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
         <Scene key="HOME_INDEX" title="主页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

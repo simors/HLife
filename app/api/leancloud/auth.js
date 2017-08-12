@@ -510,7 +510,7 @@ export function submitEditShopInfo(payload) {
       shop:{shopId:payload.shopId,album:payload.album,coverUrl:payload.coverUrl,geoProvince:geoProvince,geoProvinceCode:geoProvinceCode,geoCityCode:geoCityCode.toString(),geoDistrictCode:geoDistrictCode.toString()},
       payload:payload
     }
-    // console.log('submitEditShopInfo.payload===', payload)
+     console.log('submitEditShopInfo.payload===', payload)
   return AV.Cloud.run('submitEditShopInfo',params).then((shopInfo)=>{
     // console.log('new ShopInfo:', shopInfo)
     return '更新店铺成功'

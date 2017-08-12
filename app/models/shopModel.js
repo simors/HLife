@@ -707,6 +707,81 @@ export class ShopGoods extends ShopGoodsRecord {
   }
 }
 
+export const ShopGoodPromotionRecord = Record({
+  id: undefined,
+  coverPhoto: undefined,
+  typeId: undefined,
+  type: undefined,
+  goodId: undefined,
+  abstract: undefined,
+  originalPrice: undefined,
+  promotionPrice: undefined,
+  price: undefined,
+  album: undefined,
+  detail: undefined,
+  goodStatus: undefined,
+  goodUpdatedAt: undefined,
+  status: undefined,
+  geo: undefined,
+  shopId: undefined,
+  shopName: undefined,
+  shopDistrict: undefined,
+  createdAt: undefined,
+  updatedAt: undefined,
+  distance: undefined,
+  distanceUnit: undefined,
+  goodName:undefined,
+  startDate: undefined,
+  endDate: undefined,
+})
+
+export class ShopGoodPromotion extends ShopGoodPromotionRecord {
+  static fromLeancloudApi(lcObj) {
+    let shopGoodPromotion = new ShopGoodPromotionRecord()
+    return shopGoodPromotion.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('coverPhoto', lcObj.coverPhoto)
+      record.set('startDate', numberUtils.formatLeancloudTime(new Date(lcObj.startDate),'YYYY-MM-DD HH:mm'))
+      record.set('endDate', numberUtils.formatLeancloudTime(new Date(lcObj.endDate),'YYYY-MM-DD HH:mm'))
+      record.set('typeId', lcObj.typeId)
+      record.set('type', lcObj.type)
+      record.set('goodId', lcObj.goodId)
+      record.set('abstract', lcObj.abstract)
+      record.set('originalPrice', lcObj.originalPrice)
+      record.set('promotionPrice', lcObj.promotionPrice)
+      record.set('price', lcObj.price)
+      record.set('album', lcObj.album&&lcObj.album.length?new List(lcObj.album):[])
+      record.set('detail', lcObj.detail)
+      record.set('goodStatus', lcObj.goodStatus)
+      record.set('goodName', lcObj.goodName)
+      record.set('goodUpdatedAt', lcObj.goodUpdatedAt)
+      record.set('status', lcObj.status)
+      record.set('geo', lcObj.geo)
+      record.set('shopId', lcObj.shopId)
+      record.set('shopName', lcObj.shopName)
+      record.set('shopDistrict', lcObj.shopDistrict)
+      record.set('createdAt', lcObj.createdAt)
+      record.set('updatedAt', lcObj.updatedAt)
+        if(lcObj.geo) {
+          let userCurGeo = locSelector.getGeopoint(store.getState())
+          let curGeoPoint = new AV.GeoPoint(userCurGeo)
+          let shopGeoPoint = new AV.GeoPoint(lcObj.geo)
+          let distance = shopGeoPoint.kilometersTo(curGeoPoint)
+          let distanceUnit = 'km'
+          if(distance > 1) {
+            distance = Number(distance).toFixed(1)
+          }else {
+            distance = Number(distance * 1000).toFixed(0)
+            distanceUnit = 'm'
+          }
+          record.set('distance', distance)
+          record.set('distanceUnit',distanceUnit)
+        }
+
+    })
+  }
+}
+
 export const Shop = Record({
   shopList: List(),
   localShopList: List(),
@@ -729,4 +804,8 @@ export const Shop = Record({
   userFollowedShops: Map(),
   shopPromotionMaxNum: 3,
   shopGoods: Map(),         // 店铺商品列表，键为店铺id，值为ShopGoods组成的List
+  allGoodPromotions: Map(),
+  localGoodPromotionList: List(),
+  openGoodPromotionList: List(),
+  closeGoodPromotionList: List()
 }, 'Shop')

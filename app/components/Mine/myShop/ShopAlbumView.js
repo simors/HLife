@@ -41,7 +41,7 @@ class ShopAlbumView extends Component {
         <View style={styles.body}>
           <ScrollView>
             <View style={{marginTop: normalizeH(10)}}>
-              <ImageGroupViewer images={this.props.album} imageLineCnt={3} lazyName='shopAlbumList'/>
+              <ImageGroupViewer images={this.props.album} imageLineCnt={2} lazyName='shopAlbumList' imgSize={165}/>
             </View>
           </ScrollView>
         </View>

@@ -945,9 +945,11 @@ function handleCompleteShopInfo(payload, formData) {
 }
 
 function handleEditShopInfo(payload, formData) {
-  console.log('payload', payload)
+  let shopCategoryObjectId = ''
+    shopCategoryObjectId = formData.shopCategoryInput.text
   return (dispatch, getState) => {
     let newPayload = {
+      shopCategoryObjectId: shopCategoryObjectId,
       shopId: payload.shopId,
       shopName: formData.shopNameInput.text,
       shopAddress: formData.shopAddrInput.text,

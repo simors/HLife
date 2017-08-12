@@ -15,6 +15,11 @@ import {
   InteractionManager
 } from 'react-native'
 import {connect} from 'react-redux'
+import {
+  SelectInput,
+  Option,
+  OptionList
+} from '../../common/CommonSelect'
 import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
 import {Actions} from 'react-native-router-flux'
@@ -54,6 +59,17 @@ const serviceTimeInput = {
       return {isVal: true, errMsg: '验证通过'}
     }
     return {isVal: false, errMsg: '服务时间为空'}
+  },
+}
+const shopCategoryInput = {
+  formKey: commonForm,
+  stateKey: Symbol('shopCategoryInput'),
+  type: "shopCategoryInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺类型为空'}
   },
 }
 const servicePhoneInput = {
@@ -154,7 +170,7 @@ class EditShop extends Component {
       this.state = {
         selectShow: false,
         shopTagsSelectShow: false,
-        optionListPos: 179,
+        optionListPos: 319,
         shopTagsSelectTop: 379,
         selectedShopTags: [],
         shopCategoryContainedTag: [],
@@ -167,7 +183,7 @@ class EditShop extends Component {
       this.state = {
         selectShow: false,
         shopTagsSelectShow: false,
-        optionListPos: 159,
+        optionListPos: 299,
         shopTagsSelectTop: 359,
         selectedShopTags: [],
         shopCategoryContainedTag: [],
@@ -228,6 +244,37 @@ class EditShop extends Component {
       this.localAlbumList = []
     }
 
+  }
+
+  _onSelectPress(e){
+    this.setState({
+      selectShow: !this.state.selectShow,
+    })
+  }
+
+  _getOptionList(OptionListRef) {
+    return this.refs[OptionListRef]
+  }
+
+  _onSelectShopCategory(shopCategoryId) {
+    // console.log('_onSelectShopCategory.shopCategoryId=', shopCategoryId)
+    this.updateShopCategoryContainedTags(shopCategoryId)
+    this.setState({
+      selectShow: !this.state.selectShow,
+      selectedShopTags: []
+    })
+  }
+
+  renderShopCategoryOptions() {
+    let optionsView = <View />
+    if(this.props.allShopCategories) {
+      optionsView = this.props.allShopCategories.map((item, index) => {
+        return (
+          <Option ref={"option_"+index} key={"shopCategoryOption_" + index} value={item.id}>{item.text}</Option>
+        )
+      })
+    }
+    return optionsView
   }
 
   componentWillReceiveProps(nextProps) {
@@ -424,6 +471,10 @@ class EditShop extends Component {
     if(userOwnedShopInfo.coverUrl) {
       shopCover = {uri: userOwnedShopInfo.coverUrl}
     }
+    let targetShopCategory = {}
+    if(userOwnedShopInfo.targetShopCategory) {
+      targetShopCategory = userOwnedShopInfo.targetShopCategory
+    }
 
     if(this.localCoverImgUri) {
       shopCover = {uri: this.localCoverImgUri}
@@ -440,10 +491,10 @@ class EditShop extends Component {
     return (
       <View style={styles.container}>
         <Header
-          leftType="text"
-          leftText="取消"
+          leftType="icon"
+          leftIconName="ios-arrow-back"
           leftPress={() => this.goBack()}
-          title="编辑店铺"
+          title="店铺管理"
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
           rightType="text"
@@ -475,7 +526,7 @@ class EditShop extends Component {
                     flexDirection:'row',
                     justifyContent:'flex-end',
                     alignItems:'center',
-                    backgroundColor: THEME.base.mainColor,
+                    backgroundColor: 'rgba(245,245,245,0.5)',
                     opacity: 0.6,
                   }}>
                     <Text style={{fontSize:15,color: '#FFF'}}>{`编辑相册·${albumLen}`}</Text>
@@ -493,10 +544,10 @@ class EditShop extends Component {
                 shopAddress:this.state.shopAddress
               })} style={styles.shopBaseInfoLeftWrap}>
                 <Text numberOfLines={1} style={styles.shopBaseInfoLeftTitle}>{this.state.shopName}</Text>
-                <View style={styles.shopBaseInfoLeftLocBox}>
-                  <Image resizeMode='contain' source={require("../../../assets/images/shop_loaction.png")}/>
-                  <Text numberOfLines={2} style={styles.shopBaseInfoLeftLocTxt}>{this.state.shopAddress}</Text>
-                </View>
+                {/*<View style={styles.shopBaseInfoLeftLocBox}>*/}
+                  {/*<Image resizeMode='contain' source={require("../../../assets/images/shop_loaction.png")}/>*/}
+                  {/*<Text numberOfLines={2} style={styles.shopBaseInfoLeftLocTxt}>{this.state.shopAddress}</Text>*/}
+                {/*</View>*/}
               </TouchableOpacity>
             </View>
             <View style={{height:0,width:0}}>
@@ -546,6 +597,29 @@ class EditShop extends Component {
               />
             </View>
             <View style={styles.inputsWrap}>
+              <View style={styles.inputWrap}>
+                <View style={styles.inputLabelBox}>
+                  <Text style={styles.inputLabel}>店铺类型</Text>
+                </View>
+                <View style={[styles.inputBox, styles.selectBox]}>
+                  <SelectInput
+                    {...shopCategoryInput}
+                    show={this.state.selectShow}
+                    onPress={(e)=>this._onSelectPress(e)}
+                    style={{}}
+                    styleOption={{height:50}}
+                    selectRef="SELECT"
+                    overlayPageX={0}
+                    overlayPageY={this.state.optionListPos}
+                    optionListHeight={240}
+                    optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
+                    defaultText={targetShopCategory.text ? targetShopCategory.text :'点击选择店铺类型'}
+                    defaultValue={targetShopCategory.id}
+                    onSelect={this._onSelectShopCategory.bind(this)}>
+                    {this.renderShopCategoryOptions()}
+                  </SelectInput>
+                </View>
+              </View>
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
                   <Text style={styles.inputLabel}>店铺标签</Text>
@@ -627,7 +701,9 @@ class EditShop extends Component {
                   />
                 </View>
               </View>
-
+              <TouchableOpacity style={styles.submitBtnWrap} onPress={() => this.onEditShopBtnPress()}>
+                <Text style={styles.submitBtn}>完成</Text>
+              </TouchableOpacity>
             </View>
 
           </KeyboardAwareScrollView>
@@ -635,7 +711,7 @@ class EditShop extends Component {
           {this.state.shopTagsSelectShow &&
             <ShopTagsSelect
               show={this.state.shopTagsSelectShow}
-              containerStyle={{top: this.state.shopTagsSelectTop}}
+              containerStyle={{top: this.state.shopTagsSelectTop+normalizeH(60)}}
               scrollViewStyle={{height:150}}
               onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
               tags={this.state.shopCategoryContainedTag}
@@ -643,6 +719,7 @@ class EditShop extends Component {
               onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
             />
           }
+          <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
 
         </View>
       </View>
@@ -688,7 +765,7 @@ const styles = StyleSheet.create({
   },
   headerLeftStyle: {
     color: '#fff',
-    fontSize: em(17)
+    fontSize: em(28)
   },
   headerTitleStyle: {
     color: '#fff',
@@ -763,7 +840,8 @@ const styles = StyleSheet.create({
   },
   shopBaseInfoLeftTitle: {
     color: '#030303',
-    fontSize: em(17)
+    fontSize: em(17),
+    // fontStyle: 'boil'
   },
   shopBaseInfoLeftLocBox: {
     flexDirection: 'row',
@@ -819,6 +897,24 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 10,
     backgroundColor: '#fff'
+  },
+  submitBtnWrap:{
+    flex:1,
+    marginTop:normalizeH(15),
+    backgroundColor:'#FF7819',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: normalizeH(16),
+    paddingBottom: normalizeH(16),
+    marginLeft: normalizeW(15),
+    marginRight: normalizeW(15),
+
+
+  },
+  submitBtn:{
+    fontSize: em(18),
+    letterSpacing: -normalizeW(0.4),
+    color:'#FFFFFF',
   },
 
 

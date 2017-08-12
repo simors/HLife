@@ -48,7 +48,7 @@ import {CachedImage} from "react-native-img-cache"
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {BUY_GOODS} from '../../constants/appConfig'
 import {LazyloadScrollView} from '../common/Lazyload'
-
+import Svg from '../common/Svgs'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -217,6 +217,7 @@ class ShopGoodsDetail extends Component {
       )
     }
   }
+
   _renderPage(data: Object, pageID) {
     // console.log('_renderPage.data====', data)
     return (
@@ -407,6 +408,26 @@ class ShopGoodsDetail extends Component {
   //   }
   // }
 
+  renderGoToShop(){
+    return(
+      <TouchableOpacity onPress={()=>{Actions.SHOP_DETAIL({id:this.props.shopDetail.id})}}>
+      <View style={styles.shopWrap}>
+        <View style={styles.shopInfo}>
+          <Text style={styles.shopName}>{this.props.shopDetail.shopName}</Text>
+          <Text style={styles.shopLocation}>{this.props.shopDetail.distance+'公里'}</Text>
+        </View>
+
+        <View style={styles.shopAction}>
+          <Text style={styles.shopActionText}>进入店铺</Text>
+          <View style={styles.shopActionSvg}>
+            <Svg icon="arrow_right" size={normalizeW(32)} style={{}} />
+          </View>
+        </View>
+      </View>
+        </TouchableOpacity>
+    )
+  }
+
   render() {
     let lazyHost = "goodsDetail"
     return (
@@ -424,6 +445,7 @@ class ShopGoodsDetail extends Component {
             {this.props.goodInfo.goodsName?<View style={styles.titleStyle}>
               <Text style={styles.titleTextStyle}>{this.props.goodInfo.goodsName}</Text>
             </View>:null}
+            {this.renderGoToShop()}
             {this.props.goodInfo.detail ? <ArticleViewer lazyHost={lazyHost} artlcleContent={JSON.parse(this.props.goodInfo.detail)}/> : null}
           </LazyloadScrollView>
           {this.renderBottomView()}
@@ -443,7 +465,7 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   let shareDomain = configSelector.getShareDomain(state)
-
+  console.log('shopDetail===>',shopDetail)
   let imageList = []
   if (ownProps.goodInfo.album && ownProps.goodInfo.album.length > 0)
     imageList = ownProps.goodInfo.album.map((item, key)=> {
@@ -684,6 +706,51 @@ const styles = StyleSheet.create({
     fontSize:em(17),
     fontWeight: 'bold',
     marginBottom:normalizeH(15),
-
+  },
+  shopWrap:{
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  shopInfo:{
+    marginTop: normalizeH(8),
+    marginBottom: normalizeH(8),
+    marginLeft: normalizeW(15),
+    // flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  shopName:{
+    color: '#8F8E94',
+    fontSize: em(12),
+  },
+  shopLocation:{
+    color: '#8F8E94',
+    fontSize: em(12),
+    marginLeft: normalizeW(15),
+  },
+  shopAction:{
+    // flex:1,
+    flexDirection: 'row',
+    backgroundColor: '#F5F5F5',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  shopActionText:{
+    marginTop: normalizeH(7),
+    marginBottom: normalizeH(7),
+    marginLeft: normalizeW(15),
+    color: '#FF7819'
+  },
+  shopActionSvg:{
+    // flex:1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft:normalizeW(10),
+    paddingTop: normalizeH(10),
+    height:normalizeH(32),
+    width:normalizeW(32)
   }
 })

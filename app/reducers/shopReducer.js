@@ -91,6 +91,18 @@ export default function shopReducer(state = initialState, action) {
       return handleSetShopGoodsList(state, action)
     case ShopActionTypes.ADD_SHOP_GOODS_LIST:
       return handleAddShopGoodsList(state, action)
+    case ShopActionTypes.ADD_SHOP_LOCAL_PROMOTIONLIST:
+      return handleAddLocalGoodPromotions(state, action)
+    case ShopActionTypes.SET_SHOP_LOCAL_PROMOTIONLIST:
+      return handleSetLocalGoodPromotions(state, action)
+    case ShopActionTypes.ADD_SHOP_OPEN_PROMOTIONLIST:
+      return handleAddOpenGoodPromotions(state, action)
+    case ShopActionTypes.SET_SHOP_OPEN_PROMOTIONLIST:
+      return handleSetOpenGoodPromotions(state, action)
+    case ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST:
+      return handleAddCloseGoodPromotions(state, action)
+    case ShopActionTypes.SET_SHOP_CLOSE_PROMOTIONLIST:
+      return handleSetCloseGoodPromotions(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -145,7 +157,7 @@ function handleFetchUserFollowedShopPagingListSuccess(state, action) {
 
 function handleUpdateShopList(state, action) {
   let payload = action.payload
-  state = state.set('shopList',  payload.shopList)
+  state = state.set('shopList',  new List(payload.shopList))
   return state
 }
 
@@ -159,14 +171,14 @@ function handleUpdatePagingShopList(state, action) {
 
 function handleUpdateLocalShopList(state, action) {
   let payload = action.payload
-  state = state.set('localShopList',  payload.shopList)
+  state = state.set('localShopList',  new List(payload.shopList))
   return state
 }
 
 function handleUpdateLocalPagingShopList(state, action) {
   let payload = action.payload
   let shopList = state.get('localShopList')
-  shopList = shopList.concat(payload.shopList)
+  shopList = shopList.concat(new List(payload.shopList))
   state = state.set('localShopList',  shopList)
   return state
 }
@@ -482,6 +494,79 @@ function handleAddShopGoodsList(state, action) {
   let shopId = action.payload.shopId
   let oldGoodsList = state.getIn(['shopGoods', shopId])
   state = state.setIn(['shopGoods', shopId], oldGoodsList.concat(new List(goodsList)))
+  return state
+}
+
+function handleSetAllGoodPromotions(state, promotions) {
+  promotions.forEach((item)=> {
+    state = state.setIn(['allGoodPromotions', item.id], item)
+  })
+  return state
+}
+
+function handleSetLocalGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  state = state.set('localGoodPromotionList', new List(promotionList))
+  state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleAddLocalGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  let _promotions = state.get('localGoodPromotionList')|| new List()
+  if(_promotions&&_promotions.size>0){
+    state = state.set('localGoodPromotionList', _promotions.concat(new List(promotionList)))
+  }
+  else{
+    state = state.set('localGoodPromotionList', promotionList)
+  }
+  state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleSetOpenGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  state = state.set('openGoodPromotionList', new List(promotionList))
+  state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleAddOpenGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  let _promotions = state.get('openGoodPromotionList')|| new List()
+  if(_promotions&&_promotions.size>0){
+    state = state.set('openGoodPromotionList', _promotions.concat(new List(promotionList)))
+  }
+  else{
+    state = state.set('openGoodPromotionList', promotionList)
+  }
+  state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleSetCloseGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  state = state.set('closeGoodPromotionList', new List(promotionList))
+  state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleAddCloseGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionList = payload.promotionList
+  let _promotions = state.get('closeGoodPromotionList')|| new List()
+  if(_promotions&&_promotions.size>0){
+    state = state.set('closeGoodPromotionList', _promotions.concat(new List(promotionList)))
+  }
+  else{
+    state = state.set('closeGoodPromotionList', promotionList)
+  }
+  state = handleSetAllGoodPromotions(state,payload.promotions)
   return state
 }
 

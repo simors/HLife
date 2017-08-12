@@ -63,6 +63,7 @@
     "react-native-scrollable-tab-view": "^0.7.0",
     "react-native-send-intent": "^1.0.14",
     "react-native-sound": "^0.9.1",
+    "react-native-svg": "4.4.0",
     "react-native-swipe-list-view": "^0.4.1",
     "react-native-swiper": "^1.5.4",
     "react-native-uuid": "^1.4.9",
@@ -87,9 +88,10 @@
   },
   "devDependencies": {
     "babel-jest": "17.0.2",
+    "babel-plugin-transform-remove-console": "^6.8.1",
     "babel-preset-react-native": "1.9.0",
+    "clean-sketch": "^1.0.1",
     "jest": "17.0.3",
-    "react-test-renderer": "15.4.1",
-    "babel-plugin-transform-remove-console": "^6.8.1"
+    "react-test-renderer": "15.4.1"
   }
 }

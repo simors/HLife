@@ -9,7 +9,7 @@ import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion, ShopGoods, ShopInfo} from '../models/shopModel'
+import {ShopPromotion, ShopGoods, ShopInfo,ShopGoodPromotion} from '../models/shopModel'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
@@ -72,23 +72,26 @@ export function getNearbyShopList(payload) {
 
 export function getShopPromotion(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchShopPromotion(payload).then((promotionInfo) => {
-      let promotions = promotionInfo.promotions
-      let prompList = []
-      promotions.forEach((promp) => {
-        prompList.push(ShopPromotion.fromLeancloudApi(promp))
+    lcShop.fetchNearbyShopGoodPromotion(payload).then((promotionInfo) => {
+      let promotionList = []
+      let promotions=[]
+      promotionInfo.promotions.forEach((promp) => {
+        promotionList.push(promp.id)
+        promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
       })
-      let actionType = ShopActionTypes.UPDATE_SHOP_PROMOTION_LIST
-      if(!payload.isRefresh) {
-        actionType = ShopActionTypes.UPDATE_PAGING_SHOP_PROMOTION_LIST
-      }
-      if(prompList.length) {
-        let updateAction = createAction(actionType)
-        dispatch(updateAction({shopPromotionList: prompList}))
-      }
+      // console.log('=promotions=====>',promotions)
+      // console.log('=promotionList=====>',promotionList)
 
+      let actionType = ShopActionTypes.SET_SHOP_LOCAL_PROMOTIONLIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.ADD_SHOP_LOCAL_PROMOTIONLIST
+      }
+      if(promotionList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+      }
       if(payload.success){
-        payload.success(prompList.length == 0)
+        payload.success(promotionList.length == 0)
       }
     }).catch((error) => {
       if(payload.error){
@@ -97,6 +100,7 @@ export function getShopPromotion(payload) {
     })
   }
 }
+
 
 export function fetchUserFollowShops(payload) {
   return (dispatch, getState) => {
@@ -993,6 +997,19 @@ export function submitShopGood(payload) {
   }
 }
 
+export function submitShopGoodPromotion(payload){
+  return(dispatch,getState)=>{
+     lcShop.submitShopGoodPromotion(payload).then((result)=>{
+       if(payload.success){
+         payload.success()
+       }
+     },(err)=>{
+       if(payload.error){
+         payload.error(err)
+       }
+     })
+  }
+}
 export function modifyShopGoods(payload) {
   return (dispatch, getState) => {
     let formCheck = createAction(uiTypes.INPUTFORM_VALID_CHECK)
@@ -1080,5 +1097,67 @@ export function modifyShopGoods(payload) {
         }
       })
     }
+  }
+}
+
+export function getShopOpenPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchOpenShopGoodPromotions(payload).then((promotionInfo) => {
+      let promotionList = []
+      let promotions=[]
+      promotionInfo.promotions.forEach((promp) => {
+        promotionList.push(promp.id)
+        promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
+      })
+      // console.log('=promotions=====>',promotions)
+      // console.log('=promotionList=====>',promotionList)
+
+      let actionType = ShopActionTypes.SET_SHOP_OPEN_PROMOTIONLIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.ADD_SHOP_OPEN_PROMOTIONLIST
+      }
+      if(promotionList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+      }
+      if(payload.success){
+        payload.success(promotionList.length == 0)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function getShopClosePromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.fetchCloseShopGoodPromotions(payload).then((promotionInfo) => {
+      let promotionList = []
+      let promotions=[]
+      promotionInfo.promotions.forEach((promp) => {
+        promotionList.push(promp.id)
+        promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
+      })
+      // console.log('=promotions=====>',promotions)
+      // console.log('=promotionList=====>',promotionList)
+
+      let actionType = ShopActionTypes.SET_SHOP_CLOSE_PROMOTIONLIST
+      if(!payload.isRefresh) {
+        actionType = ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST
+      }
+      if(promotionList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+      }
+      if(payload.success){
+        payload.success(promotionList.length == 0)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
   }
 }

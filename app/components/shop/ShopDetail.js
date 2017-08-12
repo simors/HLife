@@ -28,6 +28,10 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
+import ShopCommentList from './ShopCommentList'
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Ionicons'
+
 import ShopPromotionModule from './ShopPromotionModule'
 // import from '../../action/shopAction'
 import {
@@ -74,6 +78,10 @@ import {fetchShareDomain, fetchAppServicePhone} from '../../action/configAction'
 import ShopGoodsList from './ShopGoodsList'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
+import Svg from '../common/Svgs';
+import svgs from '../../assets/svgs'
+import SvgUri from '../common/react-native-svg-uri'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -84,6 +92,7 @@ class ShopDetail extends Component {
     this.state = {
       modalVisible: false,
       fade: new Animated.Value(0),
+      height: 0,
     }
   }
 
@@ -481,72 +490,37 @@ class ShopDetail extends Component {
     Actions.PUBLISH_SHOP_COMMENT({id: this.props.id, shopOwnerId: this.props.shopDetail.owner.id})
   }
 
+  renderOwnerBanner() {
+    let avatar = require('../../assets/images/default_portrait.png')
+    if (this.props.shopDetail.owner.avatar) {
+      avatar = {uri: getThumbUrl(this.props.shopDetail.owner.avatar, 32, 32)}
+    }
+    return (
+      <View style={styles.ownerWrap}>
+        <View style={styles.ownerLeft}>
+          <Text style={styles.ownerTitle}>掌柜名</Text>
+          <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
+          <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
+        </View>
+        <Svg key={this.props.shopDetail.owner.objectId} style={{marginRight: normalizeW(15)}} size={normalizeH(32)}
+             color="#FF9D4E"
+             icon='service'/>
+      </View>
+    )
+  }
+
   renderComments() {
     if (this.props.shopComments && this.props.shopComments.length) {
       let avatar = require('../../assets/images/default_portrait.png')
-
-      const commentsView = this.props.shopComments.map((item, index) => {
-        if (index > 2) return
-        if (item.user.avatar) {
-          avatar = {uri: getThumbUrl(item.user.avatar, 50, 50)}
-        }
-        return (
-          <View key={"shop_comment_" + index} style={styles.commentContainer}>
-            <View style={styles.commentAvatarBox}>
-              <TouchableOpacity onPress={()=> {
-                Actions.PERSONAL_HOMEPAGE({userId: item.user.id})
-              }}>
-                <CachedImage mutable style={styles.commentAvatar} source={avatar}/>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.commentRight}>
-              <TouchableOpacity onPress={()=> {
-                Actions.PERSONAL_HOMEPAGE({userId: item.user.id})
-              }}>
-                <View style={[styles.commentLine, styles.commentHeadLine]}>
-                  <Text style={styles.commentTitle}>{item.user.nickname}</Text>
-                  <Text style={styles.commentTime}>{item.createdDate}</Text>
-                </View>
-              </TouchableOpacity>
-              <View style={[styles.commentLine, {marginBottom: 10}]}>
-                <ScoreShow score={item.score}/>
-              </View>
-              <View style={[styles.commentLine, {marginBottom: 10}]}>
-                <Text numberOfLines={2} style={styles.comment}>{item.content}</Text>
-              </View>
-
-              {
-                item.blueprints && item.blueprints.length
-                  ? <View style={[styles.commentLine, {marginBottom: 10}]}>
-                  <ImageGroupViewer
-                    images={item.blueprints}
-                    containerStyle={{marginLeft: 0, marginRight: 0}}
-                    imageStyle={{margin: 0, marginRight: 2}}
-                  />
-                </View>
-                  : null
-              }
-            </View>
-          </View>
-        )
-      })
-
       return (
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
             <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评·{this.props.shopCommentsTotalCount}</Text>
+            <Text style={styles.titleTxt}>留言板·{this.props.shopCommentsTotalCount}</Text>
           </View>
 
-          {commentsView}
+          <ShopCommentList shopId = {this.props.id}/>
 
-          <View style={styles.commentFoot}>
-            <TouchableOpacity onPress={()=> {
-              Actions.SHOP_COMMENT_LIST({shopId: this.props.id})
-            }}>
-              <Text style={styles.allCommentsLink}>查看全部评价</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       )
     } else {
@@ -554,7 +528,7 @@ class ShopDetail extends Component {
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
             <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>邻友点评·0</Text>
+            <Text style={styles.titleTxt}>留言板·0</Text>
           </View>
 
           <View style={{
@@ -643,6 +617,9 @@ class ShopDetail extends Component {
   handleOnScroll(e) {
     let offset = e.nativeEvent.contentOffset.y
     let comHeight = normalizeH(200)
+    this.setState({
+      height: offset
+    })
     if (offset >= 0 && offset < 10) {
       Animated.timing(this.state.fade, {
         toValue: 0,
@@ -661,6 +638,49 @@ class ShopDetail extends Component {
     }
   }
 
+  renderShopLeftHeader(){
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(9),
+        flex:1 ,
+        borderRadius:normalizeH(18)
+      }}
+      >
+        <TouchableOpacity onPress={() => {
+          AVUtils.pop({
+            backSceneName: this.props.backSceneName,
+            backSceneParams: this.props.backSceneParams
+          })}} style={{paddingTop:normalizeH(3),borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
+          <Icon name="ios-arrow-back" style={{fontSize:em(28), color:'#FAFAFA'}}/>
+          </TouchableOpacity>
+      </View>
+    )
+  }
+  renderShopRightHeader(){
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(330),
+        flex:1 ,
+        borderRadius:normalizeH(18),
+        width:normalizeW(36),
+        height:normalizeH(36)
+      }}
+      >
+        <TouchableOpacity onPress={this.onShare} style={{borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
+          <Icon name="md-more" style={{fontSize:em(28), color:'#FAFAFA'}}/>
+        </TouchableOpacity>
+      </View>
+
+    )
+  }
   renderMainHeader() {
     return (
       <Animated.View style={{
@@ -692,6 +712,51 @@ class ShopDetail extends Component {
           }}
         />
       </Animated.View>
+    )
+  }
+
+  renderShopTags() {
+    let tags = this.props.shopDetail.containedTag
+    if (tags && tags.length) {
+      let showTags = tags.map((item, key)=> {
+        if (key < 5) {
+          return <View style={styles.shopTagBadge}>
+            <Text style={styles.shopTagBadgeTxt}>{item.name}</Text>
+          </View>
+        }
+      })
+      return <View style={styles.shopTagBox}>
+        {showTags }
+      </View>
+    } else {
+      return <View/>
+    }
+
+
+  }
+
+  renderShopAbstract() {
+    return (
+      <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']} style={{
+        position: 'absolute',
+        left: 0,
+        top: normalizeH(185),
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: PAGE_WIDTH,
+        height:normalizeH(115),
+        paddingTop: normalizeH(64)
+      }}>
+      <View style={{flex: 1, marginLeft: normalizeW(15)}}>
+        <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
+        {this.renderShopTags()}
+      </View>
+      <View style={styles.shopAbstractLikeWrap}>
+        <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
+        <Text style={styles.shopAbstractLike}>关注</Text>
+      </View>
+        </LinearGradient>
     )
   }
 
@@ -805,45 +870,20 @@ class ShopDetail extends Component {
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
           >
-            <TouchableOpacity onPress={()=> {
-              this.showShopAlbum()
-            }} style={{flex: 1}}>
-              <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(200)}}
-                     source={{uri:getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
-                <View style={{
-                  position: 'absolute',
-                  right: 15,
-                  bottom: 15,
-                  padding: 3,
-                  paddingLeft: 6,
-                  paddingRight: 6,
-                  backgroundColor: 'gray',
-                  borderRadius: 2,
-                }}>
-                  <Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>
-                </View>
-              </CachedImage>
-            </TouchableOpacity>
-            <View style={styles.shopHead}>
-              <View style={styles.shopHeadLeft}>
-                <Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
-                <View style={styles.shopOtherInfo}>
-                  <ScoreShow
-                    containerStyle={{flex: 1}}
-                    score={this.props.shopDetail.score}
-                  />
-                  {this.props.shopDetail.distance &&
-                  <Text
-                    style={styles.distance}>距你{this.props.shopDetail.distance + this.props.shopDetail.distanceUnit}</Text>
-                  }
-                  {this.props.shopDetail.pv
-                    ? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>
-                    : null
-                  }
-                </View>
-              </View>
-            </View>
+            <View style={{flex: 1}}>
+              <TouchableOpacity onPress={()=> {
+                this.showShopAlbum()
+              }} style={{flex: 1}}>
+                <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
+                             source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
+                </CachedImage>
+              </TouchableOpacity>
+              {this.state.height<100?this.renderShopLeftHeader():null}
+              {this.state.height<100?this.renderShopRightHeader():null}
 
+              {this.renderShopAbstract()}
+            </View>
+            {this.renderOwnerBanner()}
             <View style={styles.shopXYZWrap}>
               <View style={styles.shopXYZLeft}>
                 <View style={styles.locationWrap}>
@@ -868,16 +908,16 @@ class ShopDetail extends Component {
                 </View>
               </View>
 
-              <View style={styles.shopXYZRight}>
-                {this.renderFollowShop()}
-              </View>
+              {/*<View style={styles.shopXYZRight}>*/}
+              {/*{this.renderFollowShop()}*/}
+              {/*</View>*/}
             </View>
 
-            <ShopPromotionModule
-              title="近期活动"
-              noDistance={true}
-              shopPromotionList={this.props.shopDetail.containedPromotions}
-            />
+            {/*<ShopPromotionModule*/}
+            {/*title="近期活动"*/}
+            {/*noDistance={true}*/}
+            {/*shopPromotionList={this.props.shopDetail.containedPromotions}*/}
+            {/*/>*/}
             <View style={styles.headerView}>
               <View style={styles.headerItem}>
                 <Image source={require('../../assets/images/activity.png')} width={12} height={14}></Image>
@@ -887,14 +927,14 @@ class ShopDetail extends Component {
             <ShopGoodsList shopGoodsList={this.props.goodList} size={6}/>
             <View style={styles.commentWrap}>
               <View style={styles.commentFoot}>
-                { this.props.goodList&&this.props.goodList.length?<TouchableOpacity onPress={()=> {
+                { this.props.goodList && this.props.goodList.length ? <TouchableOpacity onPress={()=> {
                   Actions.SHOP_GOODSLIST_VIEW({
                     id: this.props.shopDetail.id,
                   })
                 }}>
                   <Text style={styles.allCommentsLink}>查看全部商品</Text>
-                </TouchableOpacity>:<View style={styles.noDataContainer}>
-                  <Text style={{fontSize:12,color:'#5A5A5A'}}>暂无商品</Text>
+                </TouchableOpacity> : <View style={styles.noDataContainer}>
+                  <Text style={{fontSize: 12, color: '#5A5A5A'}}>暂无商品</Text>
                 </View>}
               </View>
             </View>
@@ -918,7 +958,6 @@ class ShopDetail extends Component {
             </View>
 
             {this.renderComments()}
-
             {/*{this.renderGuessYouLike()}*/}
 
           </ScrollView>
@@ -986,18 +1025,27 @@ class ShopDetail extends Component {
 
     return (
       <View style={styles.shopCommentWrap}>
-        <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
-          this.openCommentScene()
-        }}>
-          <View style={[styles.vItem]}>
-            <Image style={{}} source={require('../../assets/images/message.png')}/>
-            <Text style={[styles.vItemTxt, styles.shopCommentInput]}>点评</Text>
-          </View>
-        </TouchableOpacity>
-
+        <View style={{width: normalizeW(241), flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
+            this.openCommentScene()
+          }}>
+            <View style={[styles.vItem]}>
+              <Svg size={normalizeH(32)} icon="message"/>
+              <Text style={[styles.vItemTxt, styles.shopCommentInput]}>留言</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
+            this.openCommentScene()
+          }}>
+            <View style={[styles.vItem]}>
+              <Svg size={normalizeH(32)}  icon="call"/>
+              <Text style={[styles.vItemTxt, styles.shopCommentInput]}>电话</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.sendPrivateMessage()}>
-          <Image style={{}} source={require('../../assets/images/contacted.png')}/>
-          <Text style={[styles.contactedTxt]}>私信</Text>
+          <Svg size={normalizeH(32)} color="#FFFFFF" icon="service"/>
+          <Text style={[styles.contactedTxt]}>联系客服</Text>
         </TouchableOpacity>
       </View>
     )
@@ -1136,6 +1184,25 @@ const styles = StyleSheet.create({
   shopName: {
     fontSize: em(17),
     color: '#030303'
+  },
+  shopAbstractName: {
+    fontSize: em(17),
+    color: '#FFFFFF'
+  },
+  shopAbstractLike: {
+    fontSize: em(14),
+    color: '#FFFFFF'
+  },
+  shopAbstractLikeWrap: {
+    height: normalizeH(25),
+    width: normalizeW(60),
+    borderRadius: normalizeH(12),
+    backgroundColor: '#FF9D4E',
+    // flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: normalizeW(15)
   },
   shopOtherInfo: {
     flexDirection: 'row'
@@ -1470,7 +1537,7 @@ const styles = StyleSheet.create({
     color: '#aaa'
   },
   shopCommentInputBox: {
-    flex: 1,
+    // flex: 1,
   },
   contactedWrap: {
     width: normalizeW(135),
@@ -1558,12 +1625,73 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
   },
-  noDataContainer:{
+  noDataContainer: {
     flex: 1,
-    justifyContent:'center',
-    alignItems:'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     // borderBottomWidth: 1,
     // borderBottomColor: '#F5F5F5',
     // height: normalizeH(40),
   },
+  ownerWrap: {
+    width: normalizeW(360),
+    marginTop: normalizeH(10),
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    flex: 1,
+    flexDirection: 'row',
+    borderBottomRightRadius: 50,
+    borderTopRightRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
+  },
+  ownerTitle: {
+    marginLeft: normalizeW(15),
+    fontSize: em(15),
+    color: '#000000',
+    // fontFamily: 'FZZYJS--GB1-0'
+  },
+  ownerAvatar: {
+    width: normalizeW(32),
+    height: normalizeH(32),
+    borderRadius: 15,
+    marginLeft: normalizeW(5),
+    marginTop: normalizeH(4),
+    marginBottom: normalizeH(4)
+  },
+  ownerName: {
+    color: '#000000',
+    fontSize: em(15),
+    marginLeft: normalizeW(10)
+
+  },
+  ownerLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ownerContact: {
+    // height: normalizeH(32),
+    // width: normalizeW(32),
+  },
+  shopTagBadge: {
+    backgroundColor: 'rgba(245,245,245,0.3)',
+    borderRadius: 2.5,
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: normalizeW(6),
+
+  },
+  shopTagBadgeTxt: {
+    color: '#FFFFFF',
+    fontSize: em(11),
+    height: normalizeH(11),
+  },
+  shopTagBox: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: normalizeH(6),
+    marginBottom: normalizeH(6)
+  }
 })

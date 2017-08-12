@@ -13,7 +13,7 @@ export function selectShopList(state) {
 }
 
 export function selectLocalShopList(state) {
-  return selectShop(state).localShopList
+  return selectShop(state).localShopList || []
 }
 
 export function selectShopPromotionList(state) {
@@ -269,4 +269,43 @@ export function selectGoodsList(state, shopId, status) {
     })
   }
   return retList
+}
+
+export function selectLocalGoodPromotion(state) {
+  let localPromotions = state.SHOP.get('localGoodPromotionList')||[]
+  let promotions = []
+  if(localPromotions&&localPromotions.size){
+    localPromotions.forEach((promotionId)=>{
+      let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
+      console.log('promotion===========>',promotion)
+      promotions.push(promotion.toJS())
+    })
+  }
+  return promotions
+}
+
+export function selectOpenGoodPromotion(state) {
+  let localPromotions = state.SHOP.get('openGoodPromotionList')||[]
+  let promotions = []
+  if(localPromotions&&localPromotions.size){
+    localPromotions.forEach((promotionId)=>{
+      let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
+      console.log('promotion===========>',promotion)
+      promotions.push(promotion.toJS())
+    })
+  }
+  return promotions
+}
+
+export function selectCloseGoodPromotion(state) {
+  let localPromotions = state.SHOP.get('closeGoodPromotionList')||[]
+  let promotions = []
+  if(localPromotions&&localPromotions.size){
+    localPromotions.forEach((promotionId)=>{
+      let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
+      console.log('promotion===========>',promotion)
+      promotions.push(promotion.toJS())
+    })
+  }
+  return promotions
 }

@@ -43,7 +43,7 @@ import NearbyShopView from './NearbyShopView'
 import NearbySalesView from './NearbySalesView'
 import {getCity, getGeopoint} from '../../selector/locSelector'
 import * as Toast from '../common/Toast'
-import {selectShopPromotionList} from '../../selector/shopSelector'
+import {selectShopPromotionList,selectLocalGoodPromotion} from '../../selector/shopSelector'
 import {getShopPromotion} from '../../action/shopAction'
 import * as DeviceInfo from 'react-native-device-info'
 import codePush from 'react-native-code-push'
@@ -366,6 +366,7 @@ class Home extends Component {
       geo: this.props.geoPoint ? [this.props.geoPoint.latitude, this.props.geoPoint.longitude] : [],
       lastDistance: lastDistance,
       isRefresh: !!isRefresh,
+      nowDate: new Date(),
       success: (isEmpty) => {
         this.isQuering = false
         if(!this.listView) {
@@ -433,7 +434,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const banner = getBanner(state, 0)
 
-  const shopPromotionList = selectShopPromotionList(state) || []
+  const shopPromotionList = selectLocalGoodPromotion(state) || []
+  // console.log('shopPromotionList+====>',shopPromotionList)
   let lastShopGeo = undefined
   if(shopPromotionList && shopPromotionList.length) {
     lastShopGeo = shopPromotionList[shopPromotionList.length-1].geo

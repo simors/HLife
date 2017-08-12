@@ -50,6 +50,7 @@ import {CachedImage} from "react-native-img-cache"
 import AV from 'leancloud-storage'
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
+import ShopShow from './ShopShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -105,7 +106,7 @@ class Local extends Component {
       })
     }
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1}} key='shop_list'>
         {shopListView}
       </View>
     )
@@ -124,39 +125,44 @@ class Local extends Component {
     }
 
     return (
-      <LazyloadView key={'shop_' + index} host="localShop" placeholderStyle={{height: 200, width: PAGE_WIDTH}}>
-        <TouchableOpacity onPress={()=> {
-          this.gotoShopDetailScene(shopInfo.id)
-        }}>
-          <View style={[styles.shopInfoWrap]}>
-            <View style={styles.coverWrap}>
-              <CachedImage mutable style={styles.cover} source={{uri: getThumbUrl(shopInfo.coverUrl, normalizeW(80), normalizeW(80))}}/>
-            </View>
-            <View style={styles.shopIntroWrap}>
-              <View style={styles.shopInnerIntroWrap}>
-                <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
-                <View style={{flex: 1, justifyContent: 'space-around'}}>
-                  <ScoreShow
-                    score={shopInfo.score}
-                  />
-                  {this.renderShopPromotion(shopInfo)}
-                </View>
-                <View style={styles.subInfoWrap}>
-                  {shopTag &&
-                  <Text style={[styles.subTxt]}>{shopTag}</Text>
-                  }
-                  <View style={{flex: 1, flexDirection: 'row'}}>
-                    <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
-                  </View>
-                  {shopInfo.distance &&
-                  <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
-                  }
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </LazyloadView>
+      // <LazyloadView key={'shop_' + index} host="localShop" placeholderStyle={{height: 200, width: PAGE_WIDTH}}>
+      //   <TouchableOpacity onPress={()=> {
+      //     this.gotoShopDetailScene(shopInfo.id)
+      //   }}>
+      //     <View style={[styles.shopInfoWrap]}>
+      //       <View style={styles.coverWrap}>
+      //         <CachedImage mutable style={styles.cover} source={{uri: getThumbUrl(shopInfo.coverUrl, normalizeW(80), normalizeW(80))}}/>
+      //       </View>
+      //       <View style={styles.shopIntroWrap}>
+      //         <View style={styles.shopInnerIntroWrap}>
+      //           <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
+      //           <View style={{flex: 1, justifyContent: 'space-around'}}>
+      //             <ScoreShow
+      //               score={shopInfo.score}
+      //             />
+      //             {this.renderShopPromotion(shopInfo)}
+      //           </View>
+      //           <View style={styles.subInfoWrap}>
+      //             {shopTag &&
+      //             <Text style={[styles.subTxt]}>{shopTag}</Text>
+      //             }
+      //             <View style={{flex: 1, flexDirection: 'row'}}>
+      //               <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+      //             </View>
+      //             {shopInfo.distance &&
+      //             <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
+      //             }
+      //           </View>
+      //         </View>
+      //       </View>
+      //     </View>
+      //   </TouchableOpacity>
+      // </LazyloadView>
+      <ShopShow
+        shopInfo = {shopInfo}
+        index = {index}
+        key = {shopInfo.id}
+      />
     )
   }
 
@@ -331,7 +337,7 @@ const mapStateToProps = (state, ownProps) => {
   if(shopList && shopList.length) {
     lastShopGeo = shopList[shopList.length-1].geo
   }
-
+  // console.log('shopList==>',shopList)
   let geoPoint = locSelector.getGeopoint(state)
 
   return {

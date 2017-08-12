@@ -219,13 +219,13 @@ class ShopCommentList extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
-          title="全部评价"
-          rightType="none"
-        />
+        {/*<Header*/}
+          {/*leftType="icon"*/}
+          {/*leftIconName="ios-arrow-back"*/}
+          {/*leftPress={() => Actions.pop()}*/}
+          {/*title="全部评价"*/}
+          {/*rightType="none"*/}
+        {/*/>*/}
         <View style={styles.body}>
           {this.props.lastCreatedAt
             ?  <CommonListView

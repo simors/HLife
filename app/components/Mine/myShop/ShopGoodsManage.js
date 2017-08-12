@@ -25,10 +25,14 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import CommonListView from '../../common/CommonListView'
 import ScrollableTabView, {ScrollableTabBar} from '../../common/ScrollableTableView'
-import {selectGoodsList} from '../../../selector/shopSelector'
+import {selectGoodsList,selectShopDetail} from '../../../selector/shopSelector'
+import {activeUserId} from '../../../selector/authSelector'
+import * as configSelector from '../../../selector/configSelector'
 import {CachedImage} from "react-native-img-cache"
 import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList} from '../../../action/shopAction'
 import * as Toast from '../../common/Toast'
+import Icon from 'react-native-vector-icons/Ionicons'
+import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -117,9 +121,26 @@ class ShopGoodsManage extends Component {
           <TouchableOpacity style={[styles.button, {marginRight: normalizeW(15)}]} onPress={() => {this.onReEditorGood(value.id)}}>
             <Text style={{fontSize: 17, color: 'black'}}>编辑</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, {marginRight: normalizeW(15),width: normalizeW(36)}]} onPress={() => {this.onShare(value)}}>
+            <Icon name="ios-more" style={{fontSize:em(26),height:normalizeH(26)}}/>
+          </TouchableOpacity>
         </View>
       </View>
     )
+  }
+
+
+  onShare = (goodInfo) => {
+    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + goodInfo.id + '?userId=' + this.props.currentUser:
+    DEFAULT_SHARE_DOMAIN + "goodShare/" + goodInfo.id + '?userId=' + this.props.currentUser
+
+    Actions.SHARE({
+      title: goodInfo.goodsName || "汇邻优店",
+      url: shareUrl,
+      author: this.props.shopDetail.shopName || "邻家小二",
+      abstract: this.props.shopDetail.shopAddress || "未知地址",
+      cover: goodInfo.coverPhoto || '',
+    })
   }
 
   onSetGoodOffline(GoodId) {
@@ -339,12 +360,18 @@ const mapStateToProps = (state, ownProps) => {
   const offlineGoodsList = selectGoodsList(state, ownProps.shopId, 2)
   let lastOnlineGood = onlineGoodsList[onlineGoodsList.length - 1]
   let lastOfflineGood = offlineGoodsList[offlineGoodsList.length - 1]
+  let shopDetail = selectShopDetail(state,ownProps.shopId)
+  let currentUser = activeUserId(state)
+  let shareDomain = configSelector.getShareDomain(state)
 
   return {
     onlineGoodsList: ds.cloneWithRows(onlineGoodsList),
     offlineGoodsList: ds.cloneWithRows(offlineGoodsList),
     lastOnlineGood: lastOnlineGood,
     lastOfflineGood: lastOfflineGood,
+    currentUser: currentUser,
+    shopDetail: shopDetail,
+    shareDomain: shareDomain
   }
 }
 
@@ -383,8 +410,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button: {
-    width: 68,
-    height: 28,
+    width: normalizeW(68),
+    height: normalizeH(28),
     borderWidth: 1,
     borderColor: 'black',
     justifyContent: 'center',
