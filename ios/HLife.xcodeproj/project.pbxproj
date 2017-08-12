@@ -318,13 +318,6 @@
 			remoteGlobalIDString = 2D2A28201D9B03D100D4039D;
 			remoteInfo = "RCTAnimation-tvOS";
 		};
-		DDDC40361E28D7AA00291C1B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D81C36501CDB667F00777FB9;
-			remoteInfo = AutoGrowTextInput;
-		};
 		DDDC40441E28D7AA00291C1B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9AEB9DCA635C4E12BEFA3CBD /* RCTRestart.xcodeproj */;
@@ -388,7 +381,6 @@
 		2C0346C91EA8F6D300AC1C48 /* jsVersionUpdate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jsVersionUpdate.h; sourceTree = "<group>"; };
 		2C0346CA1EA8F6FF00AC1C48 /* jsVersionUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = jsVersionUpdate.m; sourceTree = "<group>"; };
 		3C64BD212D8A4A58838EA436 /* imageCropPicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = imageCropPicker.xcodeproj; path = "../node_modules/react-native-image-crop-picker/ios/imageCropPicker.xcodeproj"; sourceTree = "<group>"; };
-		3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AutoGrowTextInput.xcodeproj; path = "../node_modules/react-native-autogrow-textinput/ios/AutoGrowTextInput.xcodeproj"; sourceTree = "<group>"; };
 		3FFC8626CB984754B04F9CF8 /* React-Native-Webview-Bridge.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = "React-Native-Webview-Bridge.xcodeproj"; path = "../node_modules/react-native-webview-bridge/ios/React-Native-Webview-Bridge.xcodeproj"; sourceTree = "<group>"; };
 		50343225606A4D92A8CCFC4A /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		530E8403591C427DB9B35BAE /* RNSound.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSound.xcodeproj; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; };
@@ -721,7 +713,6 @@
 				3FFC8626CB984754B04F9CF8 /* React-Native-Webview-Bridge.xcodeproj */,
 				C4A1116609ED4E198C3D104E /* RNImagePicker.xcodeproj */,
 				F8C4BAAD4C2B463F92A1EEAF /* RCTBEEPickerManager.xcodeproj */,
-				3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */,
 				9AEB9DCA635C4E12BEFA3CBD /* RCTRestart.xcodeproj */,
 				3C64BD212D8A4A58838EA436 /* imageCropPicker.xcodeproj */,
 				1E339AC295A5428D930C3AF0 /* RCTCamera.xcodeproj */,
@@ -947,14 +938,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DDDC40311E28D7A700291C1B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DDDC40371E28D7AA00291C1B /* libAutoGrowTextInput.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		DDDC40331E28D7A700291C1B /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1058,10 +1041,6 @@
 				{
 					ProductGroup = DDF5E16E1EAF406D00DBCC99 /* Products */;
 					ProjectRef = DDF5E16D1EAF406D00DBCC99 /* ART.xcodeproj */;
-				},
-				{
-					ProductGroup = DDDC40311E28D7A700291C1B /* Products */;
-					ProjectRef = 3FA76558425C488F95CE867B /* AutoGrowTextInput.xcodeproj */;
 				},
 				{
 					ProductGroup = DDA565691E6F99CA002EDCE1 /* Products */;
@@ -1405,13 +1384,6 @@
 			fileType = archive.ar;
 			path = "libRCTAnimation-tvOS.a";
 			remoteRef = DDC829D71E02300E00F15C42 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DDDC40371E28D7AA00291C1B /* libAutoGrowTextInput.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libAutoGrowTextInput.a;
-			remoteRef = DDDC40361E28D7AA00291C1B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		DDDC40451E28D7AA00291C1B /* libRCTRestart.a */ = {
