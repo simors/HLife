@@ -66,15 +66,11 @@ class MyShopIndex extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.getShopGoodsList({
-        shopId: this.props.userOwnedShopInfo.id,
-        status: 1,
-        limit: 6,
-        // lastUpdateTime: payload.lastUpdateTime,
-      })
+        // lastUpdateTime: payload.lastUpdateTime,})
       // this.props.fetchUserOwnedShopInfo()   // 已在组件外获取了店铺信息，不需要重新获取
       if(this.props.userOwnedShopInfo.id) {
-        this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
+        this.props.getShopGoodsList({shopId: this.props.userOwnedShopInfo.id, status: 1, limit: 6,more: false})
+          this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopCommentList({isRefresh: true, id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopCommentTotalCount({id: this.props.userOwnedShopInfo.id})
@@ -702,7 +698,6 @@ const mapStateToProps = (state, ownProps) => {
   }
   // console.log('shopFollowersTotalCount===', shopFollowersTotalCount)
   let shareDomain = getShareDomain(state)
-  console.log('goodList=====>',goodList)
   return {
     goodList: goodList,
     shopDetail: userOwnedShopInfo,

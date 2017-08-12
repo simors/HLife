@@ -16,11 +16,12 @@ import {
   Image,
   Platform,
   InteractionManager,
-  TextInput
+  TextInput,
+  Modal
 } from 'react-native'
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
-import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
+import {isUserLogined, activeUserInfo,activeUserId} from '../../../selector/authSelector'
 import {DateDiff} from '../../../util/dateUtils'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -88,7 +89,7 @@ class PublishShopPromotionSubmit extends Component {
   renderSubmitButton() {
     return (
       <TouchableWithoutFeedback onPress={()=> {
-        this.onButtonPress()
+        this.openPaymentModal()
       }}>
         <View style={styles.submitBtn}>
           <Text style={styles.submitBtnText}>确认发布</Text>
@@ -218,7 +219,7 @@ class PublishShopPromotionSubmit extends Component {
       price: 0.01,
       metadata: {
         'fromUser': this.props.currentUser,
-        'toUser': this.props.shopDetail.owner.id,
+        'toUser': this.props.currentUser,
         'dealType': PUBLISH_PROMOTION
       },
       subject: '购买汇邻优店活动费用',
@@ -306,6 +307,7 @@ class PublishShopPromotionSubmit extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  let currentUser = activeUserId(state)
   const isLogin = isUserLogined(state)
   let dayPay = selectShopPromotionDayPay(state)
   let formData = getInputFormData(state,shopPromotionForm)
@@ -329,7 +331,8 @@ const mapStateToProps = (state, ownProps) => {
     type: type,
     price: price,
     countDays: countDays,
-    dayPay: dayPay
+    dayPay: dayPay,
+    currentUser: currentUser
   }
 }
 

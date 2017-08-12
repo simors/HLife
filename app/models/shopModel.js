@@ -690,7 +690,7 @@ export const ShopGoodsRecord = Record({
 
 export class ShopGoods extends ShopGoodsRecord {
   static fromLeancloudApi(lcObj) {
-    let shopGoods = new ShopGoods()
+    let shopGoods = new ShopGoodsRecord()
     return shopGoods.withMutations((record) => {
       record.set('id', lcObj.objectId)
       record.set('targetShop', lcObj.targetShop.id)
@@ -701,7 +701,7 @@ export class ShopGoods extends ShopGoodsRecord {
       record.set('album', new List(lcObj.album))
       record.set('status', lcObj.status)
       record.set('detail', lcObj.detail)
-      record.set('promotion', lcObj.promotion.attributes)
+      record.set('promotion', lcObj.promotion)
       record.set('updatedAt', lcObj.updatedAt)
     })
   }

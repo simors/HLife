@@ -493,6 +493,7 @@ function handleUpdateShopGoodsStatus(state, action) {
 
 function handleSetShopGoodsList(state, action) {
   let goodsList = action.payload.goodsList
+  console.log('setGoodList======>',goodsList)
   let shopId = action.payload.shopId
   state = state.setIn(['shopGoods', shopId], new List(goodsList))
   return state

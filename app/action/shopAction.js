@@ -904,10 +904,13 @@ export function getShopGoodsList(payload) {
     }
     lcShop.fetchShopGoodsList(payload).then((result) => {
       let goods = result.goods
+      console.log('goods=========>',goods)
       let goodsList = []
       goods.forEach((item) => {
         goodsList.push(ShopGoods.fromLeancloudApi(item))
       })
+      console.log('goodsList=========>',goodsList)
+
       if (more) {
         dispatch(addShopGoodsList({shopId: payload.shopId, goodsList}))
       } else {
