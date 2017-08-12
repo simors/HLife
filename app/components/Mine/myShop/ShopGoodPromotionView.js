@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   },
   wrapBox:{
     paddingTop: normalizeH(15),
-    paddingBottom: normalizeH(15),
+    paddingBottom: normalizeH(20),
     alignItems: 'center',
     borderBottomColor:'#F5F5F5',
     borderBottomWidth:normalizeBorder(1),
@@ -325,9 +325,9 @@ const styles = StyleSheet.create({
   },
   typeWrap:{
     position: 'absolute',
-    top:20,
+    top:15,
     left: -30,
-    width: normalizeH(100),
+    width: normalizeH(120),
     height: normalizeH(30),
     transform:[{rotate:'-45deg'}],
     backgroundColor:'#FF9D4E',
