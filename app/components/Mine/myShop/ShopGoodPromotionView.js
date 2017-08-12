@@ -108,7 +108,7 @@ class ShopGoodPromotionView extends Component {
                          source={this.props.promotion.coverPhoto ? {uri: getThumbUrl(this.props.promotion.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../../assets/images/default_goods_cover.png")}/>
           </View>
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-          <Text style={ styles.channelText} numberOfLines={1}>{this.props.promotion.goodsName}</Text>
+          <Text style={ styles.channelText} numberOfLines={1}>{this.props.promotion.goodName}</Text>
           <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + this.props.promotion.promotionPrice}</Text>
         </View>
       )
@@ -167,30 +167,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodPromotionVie
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.05)'
-  },
-  headerContainerStyle: {
-    borderBottomWidth: 0,
-    backgroundColor: THEME.colors.green,
-    paddingTop: normalizeH(20),
-    height: normalizeH(64),
-  },
-  headerLeftStyle: {
-    color: '#fff',
-    fontSize: em(17)
-  },
-  headerTitleStyle: {
-    color: '#fff',
-  },
-  headerRightStyle: {
-    color: '#fff',
-    fontSize: em(17)
+    backgroundColor: '#FFFFFF'
   },
   body: {
     marginTop: normalizeH(64),
     flex: 1,
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
+
   },
   scrollViewStyle: {
     flex: 1,
