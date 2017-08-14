@@ -122,6 +122,7 @@ import SupplementUserInfo from '../components/Login/SupplementUserInfo'
 import QrcodeView from '../components/Mine/promote/QrcodeView'
 import TopicCommentDetail from '../components/Find/TopicCommentDetail'
 import SetMobilePhoneNumber from '../components/Login/SetMobilePhoneNumber'
+import WithdrawalTips from '../components/Payment/WithdrawalTips'
 
 const styles = StyleSheet.create({
   container: {
@@ -251,6 +252,7 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_SHOP_PROMOTION_ABSTRACT" component={PublishShopPromotionAbstract}/>
       <Scene key="PUBLISH_SHOP_PROMOTION_SUBMIT" component={PublishShopPromotionSubmit}/>
       <Scene key="SHOP_GOOD_PROMOTION_MANAGE" component={ShopGoodPromotionManage}/>
+      <Scene key="WITHDRAWAL_TIPS" component={WithdrawalTips} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>

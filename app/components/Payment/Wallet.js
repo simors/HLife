@@ -90,7 +90,7 @@ class Wallet extends Component {
           <View style={styles.cash}>
             <CommonButton
               buttonStyle={this.state.enableWithdrawals? styles.enableButton: styles.disableButton}
-              onPress={this.onWithdrawals}
+              onPress={() => Actions.WITHDRAWAL_TIPS()}
               title="提现"
               disabled={!this.state.enableWithdrawals}
               trip="（每月1号9：00-22：00可提现）"
