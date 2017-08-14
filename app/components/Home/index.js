@@ -164,8 +164,8 @@ class Home extends Component {
     switch (rowData.type) {
       case 'BANNER_COLUMN':
         return this.renderBannerColumn()
-      case 'NEARBY_TOPIC':
-        return this.renderNearbyTopic()
+      // case 'NEARBY_TOPIC':
+      //   return this.renderNearbyTopic()
       case 'NEARBY_SHOP':
         return this.renderNearbyShop()
       case 'NEARBY_SHOP_PROMOTION':
@@ -428,7 +428,7 @@ const mapStateToProps = (state, ownProps) => {
 
   let dataArray = []
   dataArray.push({type: 'BANNER_COLUMN'})
-  dataArray.push({type: 'NEARBY_TOPIC'})
+  // dataArray.push({type: 'NEARBY_TOPIC'})
   dataArray.push({type: 'NEARBY_SHOP'})
   dataArray.push({type: 'NEARBY_SHOP_PROMOTION'})
 

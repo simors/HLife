@@ -4854,9 +4854,9 @@ react-native-sound@^0.9.1:
   version "0.9.1"
   resolved "https://registry.npm.taobao.org/react-native-sound/download/react-native-sound-0.9.1.tgz#b14c1bc89ab3ce07655c152a3752355e389dc6e1"
 
-react-native-svg@4.4.0:
-  version "4.4.0"
-  resolved "http://registry.npm.taobao.org/react-native-svg/download/react-native-svg-4.4.0.tgz#418f55cab61ec8e18a03745605b317089ceb899a"
+react-native-svg@4.4.1:
+  version "4.4.1"
+  resolved "http://registry.npm.taobao.org/react-native-svg/download/react-native-svg-4.4.1.tgz#8c0f27c0236344b8c8a45ed3f6461dd89233be81"
   dependencies:
     color "^0.11.1"
     lodash "^4.0.0"
