@@ -87,15 +87,15 @@ export default class GoodShow extends Component {
       return (
         <View style={styles.wrapBox} key={this.props.key}>
           <View style={styles.channelWrap}>
-            {this.props.goodInfo.promotion && this.props.goodInfo.promotion.type ? <View style={styles.typeWrap}>
-              <Text style={styles.typeText}>{this.props.goodInfo.promotion.type}</Text>
+            {this.props.goodInfo.promotionId && this.props.goodInfo.promotionType ? <View style={styles.typeWrap}>
+              <Text style={styles.typeText}>{this.props.goodInfo.promotionType}</Text>
             </View> : null}
             <CachedImage mutable style={styles.defaultImageStyles}
                          source={this.props.goodInfo.coverPhoto ? {uri: getThumbUrl(this.props.goodInfo.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../assets/images/default_goods_cover.png")}/>
             {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
             <Text style={ styles.channelText} numberOfLines={1}>{this.props.goodInfo.goodsName}</Text>
             <Text style={ styles.channelPrice}
-                  numberOfLines={1}>{'¥' + (this.props.goodInfo.promotion && this.props.goodInfo.promotion.promotionPrice ? this.props.goodInfo.promotion.promotionPrice : this.props.goodInfo.price)}</Text>
+                  numberOfLines={1}>{'¥' + (this.props.goodInfo.promotionId && this.props.goodInfo.promotionPrice ? this.props.goodInfo.promotionPrice : this.props.goodInfo.price)}</Text>
           </View>
         </View>
       )

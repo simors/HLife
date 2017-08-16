@@ -684,7 +684,11 @@ export const ShopGoodsRecord = Record({
   album: undefined,
   status: undefined,
   detail: undefined,
-  promotion: undefined,
+  promotionId: undefined,
+  promotionType: undefined,
+  promotionPrice: undefined,
+  promotionStartDate: undefined,
+  promotionEndDate: undefined,
   updatedAt: undefined,
 })
 
@@ -701,7 +705,11 @@ export class ShopGoods extends ShopGoodsRecord {
       record.set('album', new List(lcObj.album))
       record.set('status', lcObj.status)
       record.set('detail', lcObj.detail)
-      record.set('promotion', lcObj.promotion)
+      record.set('promotionId', lcObj.promotionId)
+      record.set('promotionType', lcObj.promotionType)
+      record.set('promotionPrice', lcObj.promotionPrice)
+      record.set('promotionStartDate', lcObj.promotionStartDate)
+      record.set('promotionEndDate', lcObj.promotionEndDate)
       record.set('updatedAt', lcObj.updatedAt)
     })
   }

@@ -87,6 +87,20 @@ class PublishShopPromotionSubmit extends Component {
   }
 
   renderSubmitButton() {
+    Actions.PAYMENT({
+      title: '商家活动支付',
+      price: 0.01,
+      metadata: {
+        'fromUser': this.props.currentUser,
+        'toUser': 'platform',
+        'dealType': PUBLISH_PROMOTION
+      },
+      subject: '购买汇邻优店活动费用',
+      paySuccessJumpScene: 'BUY_GOODS_OK',
+      paySuccessJumpSceneParams: {},
+      payErrorJumpBack: true,
+      popNum:6,
+    })
     return (
       <TouchableWithoutFeedback onPress={()=> {
         this.openPaymentModal()
@@ -214,19 +228,7 @@ class PublishShopPromotionSubmit extends Component {
       Toast.show('购买数量只能是整数')
       return
     }
-    Actions.PAYMENT({
-      title: '商家活动支付',
-      price: 0.01,
-      metadata: {
-        'fromUser': this.props.currentUser,
-        'toUser': this.props.currentUser,
-        'dealType': PUBLISH_PROMOTION
-      },
-      subject: '购买汇邻优店活动费用',
-      paySuccessJumpScene: 'BUY_GOODS_OK',
-      paySuccessJumpSceneParams: {},
-      payErrorJumpBack: true,
-    })
+
   }
 
 
