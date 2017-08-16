@@ -29,7 +29,7 @@ import {selectGoodsList,selectShopDetail,selectOpenGoodPromotion,selectCloseGood
 import {activeUserId} from '../../../selector/authSelector'
 import * as configSelector from '../../../selector/configSelector'
 import {CachedImage} from "react-native-img-cache"
-import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList,getShopOpenPromotion,getShopClosePromotion,fetchShopPromotionMaxNum} from '../../../action/shopAction'
+import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList,getShopOpenPromotion,getShopClosePromotion,fetchShopPromotionMaxNum,closeShopPromotion} from '../../../action/shopAction'
 import * as Toast from '../../common/Toast'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
@@ -162,10 +162,23 @@ class ShopGoodPromotionManage extends Component {
   renderPromotionItem(value, key,status) {
     return(
       <View style={{flex:1,marginBottom:normalizeH(8)}}>
-        <ShopGoodPromotionShow promotion={value} key = {key} status={status}
+        <ShopGoodPromotionShow promotion={value} key = {key} status={status} closePromotion={(promotionId)=>{this.closePromotion(promotionId)}}
         />
       </View>
     )
+  }
+
+  closePromotion(promotionId){
+    let payload = {
+      promotionId: promotionId,
+      success:()=>{
+        this.refresh()
+      },
+      error:(err)=>{
+        Toast.show(err.message)
+      }
+    }
+    this.props.closeShopPromotion(payload)
   }
 
    refreshProPromotionList() {
@@ -189,10 +202,10 @@ class ShopGoodPromotionManage extends Component {
     } else {
       if(status === 1 && this.props.lastOpenPromotion) {
         lastCreatedAt = this.props.lastOpenPromotion.createdAt
-      } else if(status === 2 && this.props.lastClosePromotion) {
-        lastCreatedAt = this.props.lastClosePromotion.createdAt
-      }else if(status === 3 && this.props.lastOpenPromotion) {
+      } else if(status === 2 && this.props.lastOpenPromotion) {
         lastCreatedAt = this.props.lastOpenPromotion.createdAt
+      }else if(status === 3 && this.props.lastClosePromotion) {
+        lastCreatedAt = this.props.lastClosePromotion.createdAt
       }
     }
 
@@ -266,11 +279,11 @@ class ShopGoodPromotionManage extends Component {
   }
 
   publishPromotion(){
-    // if(this.props.openPromotion.length>=this.props.maxPromotionNum){
-    //   Toast.show('已经有三个启用的活动，仍想发布请手动关闭一个！')
-    // }else{
+    if(this.props.openPromotion.length>=this.props.maxPromotionNum){
+      Toast.show('已经有三个启用的活动，仍想发布请手动关闭一个！')
+    }else{
       Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD({isPop:true})
-    // }
+    }
   }
   render() {
     return (
@@ -368,6 +381,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   getShopOpenPromotion,
   getShopClosePromotion,
   fetchShopPromotionMaxNum,
+  closeShopPromotion
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodPromotionManage)

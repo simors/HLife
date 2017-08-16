@@ -1327,3 +1327,16 @@ export function fetchCloseShopGoodPromotions(payload) {
   })
 }
 
+export function closeShopPromotion(payload) {
+  let params = {
+    promotionId:payload.promotionId
+  }
+
+  return AV.Cloud.run('closeShopPromotion', params).then((promotion)=> {
+
+    return promotion
+  }, (err) => {
+    throw err
+  })
+}
+

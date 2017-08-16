@@ -22,6 +22,7 @@ import {
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import {isUserLogined, activeUserInfo,activeUserId} from '../../../selector/authSelector'
+import {selectShopPromotionDayPay,selectOpenGoodPromotion} from '../../../selector/shopSelector'
 import {DateDiff} from '../../../util/dateUtils'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -49,7 +50,6 @@ import DateTimeInput from '../../common/Input/DateTimeInput'
 import {
   selectUserOwnedShopInfo,
   selectGoodsById,
-  selectShopPromotionDayPay
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate,inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
@@ -78,7 +78,7 @@ class PublishShopPromotionSubmit extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=> {
-
+      this.props.fetchShopPromotionDayPay()
     })
   }
 
@@ -87,69 +87,78 @@ class PublishShopPromotionSubmit extends Component {
   }
 
   renderSubmitButton() {
-    Actions.PAYMENT({
-      title: '商家活动支付',
-      price: 0.01,
-      metadata: {
-        'fromUser': this.props.currentUser,
-        'toUser': 'platform',
-        'dealType': PUBLISH_PROMOTION
-      },
-      subject: '购买汇邻优店活动费用',
-      paySuccessJumpScene: 'BUY_GOODS_OK',
-      paySuccessJumpSceneParams: {},
-      payErrorJumpBack: true,
-      popNum:6,
-    })
-    return (
-      <TouchableWithoutFeedback onPress={()=> {
-        this.openPaymentModal()
-      }}>
-        <View style={styles.submitBtn}>
-          <Text style={styles.submitBtnText}>确认发布</Text>
-        </View>
-      </TouchableWithoutFeedback>
+    return(
+      <TouchableOpacity onPress={()=>{this.onButtonPress()}}>
+      <View style={styles.submitBtn}>
+        <Text style={styles.submitBtnText}>确认发布</Text>
+      </View>
+        </TouchableOpacity>
     )
-  }
-
-  openPaymentModal() {
-
-      this.setState({showPayModal: true})
 
   }
 
   onButtonPress(){
-    let payload = {
-      shopId: this.props.shopId,
-      abstract: this.props.abstract,
-      startDate: new Date(this.props.startDate),
-      endDate: new Date(this.props.endDate),
-      goodId: this.props.good.id,
-      type: this.props.type.type,
-      price: this.props.price,
-      typeId: this.props.type.id,
-      typeDes: this.props.type.typeDesc,
-      geo:this.props.geo,
-      status: 1,
-      success:()=>{
-        this.props.inputFormOnDestroy({formKey:shopPromotionForm})
-
-        Toast.show('提交成功', {
-          duration: 1500,
-          onHidden: () =>{
-            if(this.props.popNum && this.props.popNum > 1) {
-              Actions.pop({
-                popNum: this.props.popNum
-              })
-            }else {
-              Actions.pop({popNum:5})
-            }
+    if(this.props.proNum&&this.props.proNum>0){
+      Actions.PAYMENT({
+        title: '商家活动支付',
+        price: this.props.sumPay ,
+        metadata: {
+          'fromUser': this.props.currentUser,
+          'toUser': 'platform',
+          'dealType': PUBLISH_PROMOTION
+        },
+        subject: '购买汇邻优店活动费用',
+        paySuccessJumpScene: 'SHOP_GOOD_PROMOTION_MANAGE',
+        paySuccessJumpSceneParams: {},
+        payErrorJumpBack: true,
+        paySuccess:()=>{
+          let payload = {
+            shopId: this.props.shopId,
+            abstract: this.props.abstract,
+            startDate: new Date(this.props.startDate),
+            endDate: new Date(this.props.endDate),
+            goodId: this.props.good.id,
+            type: this.props.type.type,
+            price: this.props.price,
+            typeId: this.props.type.id,
+            typeDes: this.props.type.typeDesc,
+            geo:this.props.geo,
+            status: 1,
+            success:()=>{
+              this.props.inputFormOnDestroy({formKey:shopPromotionForm})
+            },
+            error:(err)=>{Toast.show(err.message)}
           }
-        })
-      },
-      error:(err)=>{Toast.show(err.message)}
+          this.props.submitShopGoodPromotion(payload)        }
+      })
+    }else{
+      let payload = {
+        shopId: this.props.shopId,
+        abstract: this.props.abstract,
+        startDate: new Date(this.props.startDate),
+        endDate: new Date(this.props.endDate),
+        goodId: this.props.good.id,
+        type: this.props.type.type,
+        price: this.props.price,
+        typeId: this.props.type.id,
+        typeDes: this.props.type.typeDesc,
+        geo:this.props.geo,
+        status: 1,
+        success:()=>{
+          this.props.inputFormOnDestroy({formKey:shopPromotionForm})
+          Toast.show('提交成功', {
+            duration: 1500,
+            onHidden: () =>{
+              Actions.SHOP_GOOD_PROMOTION_MANAGE()
+            }
+          })
+        },
+        error:(err)=>{Toast.show(err.message)}
+      }
+      this.props.submitShopGoodPromotion(payload)
     }
-    this.props.submitShopGoodPromotion(payload)
+
+
   }
 
   renderPaymentModal() {
@@ -290,7 +299,7 @@ class PublishShopPromotionSubmit extends Component {
 
             <View style={styles.showInfoWrap}>
               <Text style={styles.showInfoAbs}>活动费用</Text>
-              <Text style={styles.showInfoText}>{0 +'元／天'}</Text>
+              <Text style={styles.showInfoText}>{this.props.proNum&&this.props.proNum>0?this.props.dayPay +'元/天  '+ '(总计'+this.props.sumPay+'元)':0+'元'}</Text>
             </View>
 
             <View style={styles.showInfoWrap}>
@@ -298,9 +307,9 @@ class PublishShopPromotionSubmit extends Component {
               <Text style={styles.showInfoText}>{this.props.abstract}</Text>
             </View>
           </KeyboardAwareScrollView>
-          {this.renderSubmitButton()}
         </View>
-        {this.renderPaymentModal()}
+        {/*{this.renderPaymentModal()}*/}
+        {this.renderSubmitButton()}
 
       </View>
     )
@@ -312,6 +321,9 @@ const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
   const isLogin = isUserLogined(state)
   let dayPay = selectShopPromotionDayPay(state)
+  let openPromotionList = selectOpenGoodPromotion(state)
+  let proNum = openPromotionList.length
+  console.log('proNum=======>',proNum)
   let formData = getInputFormData(state,shopPromotionForm)
   // console.log('formData=====>',formData)
   let abstract = formData&&formData.abstractInput?formData.abstractInput.text:''
@@ -334,7 +346,9 @@ const mapStateToProps = (state, ownProps) => {
     price: price,
     countDays: countDays,
     dayPay: dayPay,
-    currentUser: currentUser
+    currentUser: currentUser,
+    proNum: proNum,
+    sumPay: dayPay*countDays,
   }
 }
 
@@ -411,6 +425,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(32),
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 10,
   },
   submitBtnText: {
     color: '#FFFFFF',

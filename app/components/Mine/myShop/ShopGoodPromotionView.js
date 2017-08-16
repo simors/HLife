@@ -97,16 +97,15 @@ class ShopGoodPromotionView extends Component {
 
 
   onButtonPress(){
-
+    this.props.closePromotion(this.props.promotion.id)
   }
 
   renderGoodShow(){
     if(this.props.promotion.goodId){
       let goodInfo={
-        promotion:{
-          promotionPrice:this.props.promotion.promotionPrice,
-          type:this.props.promotion.type,
-        },
+        promotionId: this.props.promotion.id,
+        promotionPrice:this.props.promotion.promotionPrice,
+        promotionType:this.props.promotion.type,
         coverPhoto: this.props.promotion.coverPhoto,
         price: this.props.promotion.price,
         originalPrice: this.props.promotion.originalPrice,

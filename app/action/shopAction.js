@@ -1180,3 +1180,32 @@ export function getShopClosePromotion(payload) {
     })
   }
 }
+
+export function closeShopPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.closeShopPromotion(payload).then((promotionInfo) => {
+      let promotionList = []
+      let promotions=[]
+        promotionList.push(promotionInfo.promotion.id)
+        promotions.push(ShopGoodPromotion.fromLeancloudApi(promotionInfo.promotion))
+
+      // console.log('=promotions=====>',promotions)
+      // console.log('=promotionList=====>',promotionList)
+
+
+        let actionType = ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST
+
+      if(promotionList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+      }
+      if(payload.success){
+        payload.success(promotionList.length == 0)
+      }
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}

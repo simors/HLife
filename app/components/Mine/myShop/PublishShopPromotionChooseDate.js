@@ -199,7 +199,7 @@ const mapStateToProps = (state, ownProps) => {
   let startDate = getInputData(state, chooseStartDateInput.formKey, chooseStartDateInput.stateKey)
   let endDate = getInputData(state, chooseEndDateInput.formKey, chooseEndDateInput.stateKey)
   let countDays = DateDiff(startDate.text,endDate.text)
-  console.log('countDays--->',countDays)
+  // console.log('countDays--->',countDays)
   return {
     shopId: userOwnedShopInfo.id,
     endDate: endDate.text,

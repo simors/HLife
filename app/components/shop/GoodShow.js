@@ -69,13 +69,16 @@ export default class GoodShow extends Component {
       <View style={styles.wrapBox}>
         <View style={[styles.channelWrap, {width: normalizeW(348)}]}>
           <View style={[styles.defaultImageStyles, {width: normalizeW(348)}]}>
+            {this.props.goodInfo.promotionId && this.props.goodInfo.promotionType ? <View style={styles.typeWrap}>
+              <Text style={styles.typeText}>{this.props.goodInfo.promotionType}</Text>
+            </View> : null}
             <CachedImage mutable style={[styles.defaultImageStyles, {width: normalizeW(348)}]}
                          source={this.props.goodInfo.coverPhoto ? {uri: getThumbUrl(this.props.goodInfo.coverPhoto, normalizeW(348), normalizeH(169))} : require("../../assets/images/default_goods_cover.png")}/>
           </View>
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
           <Text style={ styles.channelText} numberOfLines={1}>{this.props.goodInfo.goodsName}</Text>
           <Text style={ styles.channelPrice}
-                numberOfLines={1}>{'¥' + (this.props.goodInfo.promotion && this.props.goodInfo.promotion.promotionPrice ? this.props.goodInfo.promotion.promotionPrice : this.props.goodInfo.price)}</Text>
+                numberOfLines={1}>{'¥' + (this.props.goodInfo.promotionId && this.props.goodInfo.promotionPrice ? this.props.goodInfo.promotionPrice : this.props.goodInfo.price)}</Text>
 
         </View>
       </View>
@@ -96,6 +99,7 @@ export default class GoodShow extends Component {
             <Text style={ styles.channelText} numberOfLines={1}>{this.props.goodInfo.goodsName}</Text>
             <Text style={ styles.channelPrice}
                   numberOfLines={1}>{'¥' + (this.props.goodInfo.promotionId && this.props.goodInfo.promotionPrice ? this.props.goodInfo.promotionPrice : this.props.goodInfo.price)}</Text>
+
           </View>
         </View>
       )
