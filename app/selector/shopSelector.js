@@ -2,7 +2,7 @@
  * Created by zachary on 2016/12/14.
  */
 import {Record} from 'immutable'
-import {activeUserId} from './authSelector'
+import {activeUserId, userInfoById} from './authSelector'
 
 export function selectShop(state) {
   return state.SHOP.toJS()
@@ -68,6 +68,14 @@ export function selectShopDetail(state, id) {
   } else {
     return shopDetail
   }
+}
+
+export function selectShopDetailDirect(state, id) {
+  let shopDetail = state.SHOP.getIn(['shopDetails', id])
+  if (shopDetail) {
+    return shopDetail.toJS()
+  }
+  return undefined
 }
 
 export function selectShopPromotionDetail(state, id) {
@@ -305,4 +313,35 @@ export function selectCloseGoodPromotion(state) {
     })
   }
   return promotions
+}
+
+export function selectShopGoodsDetail(state, goodsId) {
+  let goodsDetail = state.SHOP.getIn(['shopGoodsDetail', goodsId])
+  if (goodsDetail) {
+    return goodsDetail.toJS()
+  }
+  return undefined
+}
+
+export function selectUserOrders(state, buyerId) {
+  let userOrders = []
+  let orderIds = state.SHOP.getIn(['userOrders', buyerId]) || []
+  orderIds.forEach((orderId) => {
+    let orderRec = state.SHOP.getIn(['orderDetail', orderId])
+    if (orderRec) {
+      let order = orderRec.toJS()
+      let vendorId = order.vendorId
+      let vendor = selectShopDetailDirect(state, vendorId)
+      let buyer = userInfoById(state, buyerId).toJS()
+      let goodsId = order.goodsId
+      let goods = selectShopGoodsDetail(state, goodsId)
+      userOrders.push({
+        ...order,
+        buyer,
+        vendor,
+        goods,
+      })
+    }
+  })
+  return userOrders
 }
