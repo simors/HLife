@@ -428,6 +428,19 @@ class ShopGoodsDetail extends Component {
     )
   }
 
+  renderPromotion(){
+    return(
+      <View style={styles.promotionWrap}>
+        <View style={styles.promotionTitle}>
+          <Text style={styles.promotionTitleText}>{this.props.goodInfo.promotionType}</Text>
+        </View>
+        <View style={styles.promotionAbstract}>
+          <Text style={styles.promotionAbstractText}>{this.props.goodInfo.promotionAbstract}</Text>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     let lazyHost = "goodsDetail"
     return (
@@ -445,6 +458,7 @@ class ShopGoodsDetail extends Component {
             {this.props.goodInfo.goodsName?<View style={styles.titleStyle}>
               <Text style={styles.titleTextStyle}>{this.props.goodInfo.goodsName}</Text>
             </View>:null}
+            {this.props.goodInfo.promotionType?this.renderPromotion():null}
             {this.renderGoToShop()}
             {this.props.goodInfo.detail ? <ArticleViewer lazyHost={lazyHost} artlcleContent={JSON.parse(this.props.goodInfo.detail)}/> : null}
           </LazyloadScrollView>
@@ -752,5 +766,31 @@ const styles = StyleSheet.create({
     paddingTop: normalizeH(10),
     height:normalizeH(32),
     width:normalizeW(32)
+  },
+  promotionWrap:{
+    flexDirection: 'row',
+  },
+  promotionTitle:{
+    marginLeft:normalizeW(15),
+    height:normalizeH(22),
+    width:normalizeW(70),
+    backgroundColor:'#FF7819',
+    borderBottomRightRadius:normalizeH(6),
+    borderTopLeftRadius:normalizeH(6),
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  promotionTitleText:{
+    fontSize:em(15),
+    color:'#FFFFFF',
+  },
+  promotionAbstract:{
+    marginLeft:normalizeW(15),
+
+  },
+  promotionAbstractText:{
+    color:'rgba(0,0,0,0.50)',
+    fontSize:em(15),
+    
   }
 })

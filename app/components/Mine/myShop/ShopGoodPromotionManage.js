@@ -172,7 +172,13 @@ class ShopGoodPromotionManage extends Component {
     let payload = {
       promotionId: promotionId,
       success:()=>{
-        this.refresh()
+        Toast.show('关闭成功')
+
+        this.setState({
+          tabType: 2
+        }, ()=>{
+          this.refresh()
+        })
       },
       error:(err)=>{
         Toast.show(err.message)

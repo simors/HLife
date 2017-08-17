@@ -108,15 +108,15 @@ class PublishShopPromotionSubmit extends Component {
           'dealType': PUBLISH_PROMOTION
         },
         subject: '购买汇邻优店活动费用',
-        paySuccessJumpScene: 'SHOP_GOOD_PROMOTION_MANAGE',
+        paySuccessJumpScene: 'MY_SHOP_INDEX',
         paySuccessJumpSceneParams: {},
         payErrorJumpBack: true,
         paySuccess:()=>{
           let payload = {
             shopId: this.props.shopId,
             abstract: this.props.abstract,
-            startDate: new Date(this.props.startDate),
-            endDate: new Date(this.props.endDate),
+            startDate: new Date(this.props.startDate.replace(/-/g,'/')),
+            endDate: new Date(this.props.endDate.replace(/-/g,'/')),
             goodId: this.props.good.id,
             type: this.props.type.type,
             price: this.props.price,
@@ -135,8 +135,8 @@ class PublishShopPromotionSubmit extends Component {
       let payload = {
         shopId: this.props.shopId,
         abstract: this.props.abstract,
-        startDate: new Date(this.props.startDate),
-        endDate: new Date(this.props.endDate),
+        startDate: new Date(this.props.startDate.replace(/-/g,'/')),
+        endDate: new Date(this.props.endDate.replace(/-/g,'/')),
         goodId: this.props.good.id,
         type: this.props.type.type,
         price: this.props.price,
@@ -149,7 +149,7 @@ class PublishShopPromotionSubmit extends Component {
           Toast.show('提交成功', {
             duration: 1500,
             onHidden: () =>{
-              Actions.SHOP_GOOD_PROMOTION_MANAGE()
+              Actions.MY_SHOP_INDEX()
             }
           })
         },

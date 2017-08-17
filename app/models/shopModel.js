@@ -689,6 +689,7 @@ export const ShopGoodsRecord = Record({
   promotionPrice: undefined,
   promotionStartDate: undefined,
   promotionEndDate: undefined,
+  promotionAbstract: undefined,
   updatedAt: undefined,
 })
 
@@ -710,6 +711,7 @@ export class ShopGoods extends ShopGoodsRecord {
       record.set('promotionPrice', lcObj.promotionPrice)
       record.set('promotionStartDate', lcObj.promotionStartDate)
       record.set('promotionEndDate', lcObj.promotionEndDate)
+      record.set('promotionAbstract', lcObj.promotionAbstract)
       record.set('updatedAt', lcObj.updatedAt)
     })
   }
