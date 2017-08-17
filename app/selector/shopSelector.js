@@ -277,7 +277,6 @@ export function selectLocalGoodPromotion(state) {
   if(localPromotions&&localPromotions.size){
     localPromotions.forEach((promotionId)=>{
       let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
-      console.log('promotion===========>',promotion)
       promotions.push(promotion.toJS())
     })
   }
@@ -290,7 +289,6 @@ export function selectOpenGoodPromotion(state) {
   if(localPromotions&&localPromotions.size){
     localPromotions.forEach((promotionId)=>{
       let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
-      console.log('promotion===========>',promotion)
       promotions.push(promotion.toJS())
     })
   }
@@ -303,7 +301,6 @@ export function selectCloseGoodPromotion(state) {
   if(localPromotions&&localPromotions.size){
     localPromotions.forEach((promotionId)=>{
       let promotion = state.SHOP.getIn(['allGoodPromotions',promotionId])
-      console.log('promotion===========>',promotion)
       promotions.push(promotion.toJS())
     })
   }

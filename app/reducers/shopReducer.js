@@ -103,6 +103,14 @@ export default function shopReducer(state = initialState, action) {
       return handleAddCloseGoodPromotions(state, action)
     case ShopActionTypes.SET_SHOP_CLOSE_PROMOTIONLIST:
       return handleSetCloseGoodPromotions(state, action)
+    case ShopActionTypes.SET_USER_ORDERS_LIST:
+      return handleSetUserShopOrders(state, action)
+    case ShopActionTypes.ADD_USER_ORDERS_LIST:
+      return handleAddUserShopOrders(state, action)
+    case ShopActionTypes.BATCH_ADD_ORDER_DETAIL:
+      return handleBatchAddOrdersDetail(state, action)
+    case ShopActionTypes.BATCH_ADD_SHOP_GOODS_DETAIL:
+      return handleBatchAddShopGoodsDetail(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -567,6 +575,39 @@ function handleAddCloseGoodPromotions(state, action) {
     state = state.set('closeGoodPromotionList', promotionList)
   }
   state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleSetUserShopOrders(state, action) {
+  let payload = action.payload
+  let buyerId = payload.buyerId
+  let shopOrdersList = payload.shopOrdersList
+  state = state.setIn(['userOrders', buyerId], new List(shopOrdersList))
+  return state
+}
+
+function handleAddUserShopOrders(state, action) {
+  let payload = action.payload
+  let buyerId = payload.buyerId
+  let shopOrdersList = payload.shopOrdersList
+  let oldOrderList = state.getIn(['userOrders', buyerId])
+  state = state.setIn(['userOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  return state
+}
+
+function handleBatchAddOrdersDetail(state, action) {
+  let orders = action.payload.shopOrders
+  orders.forEach((order) => {
+    state = state.setIn(['orderDetail', order.id], order)
+  })
+  return state
+}
+
+function handleBatchAddShopGoodsDetail(state, action) {
+  let goodsList = action.payload.goodsList
+  goodsList.forEach((goods) => {
+    state = state.setIn(['shopGoodsDetail', goods.id], goods)
+  })
   return state
 }
 

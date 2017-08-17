@@ -1316,3 +1316,17 @@ export function fetchCloseShopGoodPromotions(payload) {
   })
 }
 
+export function getUserOrders(payload) {
+  let params = {
+    buyerId: payload.buyerId,
+    orderStatus: payload.orderStatus,
+    lastTime: payload.lastTime,
+    limit: payload.limit,
+  }
+  return AV.Cloud.run('orderQueryOrders', params).then((result) => {
+    return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}

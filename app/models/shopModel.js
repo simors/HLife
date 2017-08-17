@@ -705,6 +705,22 @@ export class ShopGoods extends ShopGoodsRecord {
       record.set('updatedAt', lcObj.updatedAt)
     })
   }
+
+  static fromLeancloudApi2(lcObj) {
+    let shopGoods = new ShopGoods()
+    return shopGoods.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('targetShop', lcObj.targetShop.id)
+      record.set('goodsName', lcObj.goodsName)
+      record.set('price', lcObj.price)
+      record.set('originalPrice', lcObj.originalPrice)
+      record.set('coverPhoto', lcObj.coverPhoto)
+      record.set('album', new List(lcObj.album))
+      record.set('status', lcObj.status)
+      record.set('detail', lcObj.detail)
+      record.set('updatedAt', lcObj.updatedAt)
+    })
+  }
 }
 
 export const ShopGoodPromotionRecord = Record({
@@ -782,6 +798,39 @@ export class ShopGoodPromotion extends ShopGoodPromotionRecord {
   }
 }
 
+export const ShopOrdersRecord = Record({
+  id: undefined,
+  buyerId: undefined,
+  vendorId: undefined,
+  goodsId: undefined,
+  goodsAmount: undefined,
+  paid: undefined,
+  orderStatus: undefined,
+  receiver: undefined,
+  receiverAddr: undefined,
+  receiverPhone: undefined,
+  remark: undefined,
+}, 'ShopOrdersRecord')
+
+export class ShopOrders extends ShopOrdersRecord {
+  static fromLeancloudApi(lcObj) {
+    let shopOrders = new ShopOrdersRecord()
+    return shopOrders.withMutations((record) => {
+      record.set('id', lcObj.id)
+      record.set('buyerId', lcObj.buyer.id)
+      record.set('vendorId', lcObj.vendor.id)
+      record.set('goodsId', lcObj.goods.id)
+      record.set('goodsAmount', lcObj.goodsAmount)
+      record.set('paid', lcObj.paid)
+      record.set('orderStatus', lcObj.orderStatus)
+      record.set('receiver', lcObj.receiver)
+      record.set('receiverAddr', lcObj.receiverAddr)
+      record.set('receiverPhone', lcObj.receiverPhone)
+      record.set('remark', lcObj.remark)
+    })
+  }
+}
+
 export const Shop = Record({
   shopList: List(),
   localShopList: List(),
@@ -807,5 +856,9 @@ export const Shop = Record({
   allGoodPromotions: Map(),
   localGoodPromotionList: List(),
   openGoodPromotionList: List(),
-  closeGoodPromotionList: List()
+  closeGoodPromotionList: List(),
+  shopGoodsDetail: Map(),   // 店铺商品详细，键为商品id，值为店铺详细信息
+  orderDetail: Map(),     // 用户订单详情，键为订单id，值为订单详情
+  userOrders: Map(),      // 用户订单，键为用户id，值为订单id组成的List
+  shopOrders: Map(),      // 店铺管理订单，键为店铺的id，值为订单组成的List
 }, 'Shop')

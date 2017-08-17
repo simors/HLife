@@ -3,26 +3,32 @@
  */
 import {Map, List, Record} from 'immutable'
 import {createAction} from 'redux-actions'
-import {Actions} from 'react-native-router-flux'
 import * as ShopActionTypes from '../constants/shopActionTypes'
 import * as lcShop from '../api/leancloud/shop'
 import * as msgAction from './messageAction'
+import * as AuthTypes from '../constants/authActionTypes'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion, ShopGoods, ShopInfo,ShopGoodPromotion} from '../models/shopModel'
+import {ShopPromotion, ShopGoods, ShopInfo,ShopGoodPromotion, ShopOrders} from '../models/shopModel'
+import {UserInfo} from '../models/userModels'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 
-
+let addUserBatchProfile = createAction(AuthTypes.ADD_USER_PROFILES)
 
 let addShopGoods = createAction(ShopActionTypes.ADD_NEW_SHOP_GOODS)
 let updateShopGoodsStatus = createAction(ShopActionTypes.UPDATE_SHOP_GOODS_STATUS)
 let updateShopGoods = createAction(ShopActionTypes.UPDATE_SHOP_GOODS)
 let setShopGoodsList = createAction(ShopActionTypes.SET_SHOP_GOODS_LIST)
 let addShopGoodsList = createAction(ShopActionTypes.ADD_SHOP_GOODS_LIST)
+let setUserOrderList = createAction(ShopActionTypes.SET_USER_ORDERS_LIST)
+let addUserOrderList = createAction(ShopActionTypes.ADD_USER_ORDERS_LIST)
+let batchAddOrderDetail = createAction(ShopActionTypes.BATCH_ADD_ORDER_DETAIL)
+let addBatchShopDetail = createAction(ShopActionTypes.FETCH_BATCH_SHOP_DETAIL)
+let batchAddShopGoodsDetail = createAction(ShopActionTypes.BATCH_ADD_SHOP_GOODS_DETAIL)
 
 export function clearShopList(payload) {
   return (dispatch, getState) => {
@@ -1156,6 +1162,47 @@ export function getShopClosePromotion(payload) {
       }
     }).catch((error) => {
       if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchUserShopOrders(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcShop.getUserOrders(payload).then((results) => {
+      let shopOrders = []
+      let buyers = []
+      let vendors = []
+      let goods = []
+      let shopOrderIds = []
+      let orders = results.shopOrders
+      orders.forEach((order) => {
+        shopOrderIds.push(order.id)
+        shopOrders.push(ShopOrders.fromLeancloudApi(order))
+        buyers.push(UserInfo.fromLeancloudApi(order.buyer))
+        vendors.push(ShopInfo.fromLeancloudApi(order.vendor))
+        goods.push(ShopGoods.fromLeancloudApi2(order.goods))
+      })
+      if (more) {
+        dispatch(addUserOrderList({buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
+      } else {
+        dispatch(setUserOrderList({buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
+      }
+      dispatch(batchAddOrderDetail({shopOrders: shopOrders}))
+      dispatch(addUserBatchProfile({userProfiles: buyers}))
+      dispatch(addBatchShopDetail({shopInfos: vendors}))
+      dispatch(batchAddShopGoodsDetail({goodsList: goods}))
+
+      if(payload.success){
+        payload.success(shopOrders.length == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
         payload.error(error)
       }
     })

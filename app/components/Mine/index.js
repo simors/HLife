@@ -213,7 +213,7 @@ class Mine extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.menuItemView}>
-          <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => {Actions.USER_ORDERS_VIEWER()}}>
             <View style={{marginLeft: normalizeW(26), marginRight: normalizeW(35)}}>
               <Svg size={24} icon="my_order"/>
             </View>

@@ -123,6 +123,7 @@ import QrcodeView from '../components/Mine/promote/QrcodeView'
 import TopicCommentDetail from '../components/Find/TopicCommentDetail'
 import SetMobilePhoneNumber from '../components/Login/SetMobilePhoneNumber'
 import WithdrawalTips from '../components/Payment/WithdrawalTips'
+import UserOrdersViewer from '../components/Mine/myOrders/UserOrdersViewer'
 
 const styles = StyleSheet.create({
   container: {
@@ -253,6 +254,7 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_SHOP_PROMOTION_SUBMIT" component={PublishShopPromotionSubmit}/>
       <Scene key="SHOP_GOOD_PROMOTION_MANAGE" component={ShopGoodPromotionManage}/>
       <Scene key="WITHDRAWAL_TIPS" component={WithdrawalTips} />
+      <Scene key="USER_ORDERS_VIEWER" component={UserOrdersViewer} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
