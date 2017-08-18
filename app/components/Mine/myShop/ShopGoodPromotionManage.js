@@ -25,16 +25,17 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import CommonListView from '../../common/CommonListView'
 import ScrollableTabView, {ScrollableTabBar} from '../../common/ScrollableTableView'
-import {selectGoodsList,selectShopDetail,selectOpenGoodPromotion,selectCloseGoodPromotion} from '../../../selector/shopSelector'
+import {selectGoodsList,selectShopDetail,selectOpenGoodPromotion,selectCloseGoodPromotion,selectShopPromotionMaxNum} from '../../../selector/shopSelector'
 import {activeUserId} from '../../../selector/authSelector'
 import * as configSelector from '../../../selector/configSelector'
 import {CachedImage} from "react-native-img-cache"
-import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList,getShopOpenPromotion,getShopClosePromotion} from '../../../action/shopAction'
+import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList,getShopOpenPromotion,getShopClosePromotion,fetchShopPromotionMaxNum,closeShopPromotion} from '../../../action/shopAction'
 import * as Toast from '../../common/Toast'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
 import ShopGoodPromotionShow from './ShopGoodPromotionView'
 import * as numberUtils from '../../../util/numberUtils'
+import GoodShow from '../../shop/GoodShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
@@ -51,7 +52,11 @@ class ShopGoodPromotionManage extends Component {
     this.tabs = ['进行中', '预上线' , '已结束']
   }
 
-  isExceededShopGoodsMaxNum(){
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+    this.refreshProPromotionList()
+    this.props.fetchShopPromotionMaxNum()
+    })
   }
 
   onChangeTab(payload) {
@@ -61,6 +66,7 @@ class ShopGoodPromotionManage extends Component {
       this.refresh()
     })
   }
+
 
   refresh() {
     if(0 == this.state.tabType) {
@@ -156,10 +162,29 @@ class ShopGoodPromotionManage extends Component {
   renderPromotionItem(value, key,status) {
     return(
       <View style={{flex:1,marginBottom:normalizeH(8)}}>
-        <ShopGoodPromotionShow promotion={value} key = {key} status={status}
+        <ShopGoodPromotionShow promotion={value} key = {key} status={status} closePromotion={(promotionId)=>{this.closePromotion(promotionId)}}
         />
       </View>
     )
+  }
+
+  closePromotion(promotionId){
+    let payload = {
+      promotionId: promotionId,
+      success:()=>{
+        Toast.show('关闭成功')
+
+        this.setState({
+          tabType: 2
+        }, ()=>{
+          this.refresh()
+        })
+      },
+      error:(err)=>{
+        Toast.show(err.message)
+      }
+    }
+    this.props.closeShopPromotion(payload)
   }
 
    refreshProPromotionList() {
@@ -183,10 +208,10 @@ class ShopGoodPromotionManage extends Component {
     } else {
       if(status === 1 && this.props.lastOpenPromotion) {
         lastCreatedAt = this.props.lastOpenPromotion.createdAt
-      } else if(status === 2 && this.props.lastClosePromotion) {
-        lastCreatedAt = this.props.lastClosePromotion.createdAt
-      }else if(status === 3 && this.props.lastOpenPromotion) {
+      } else if(status === 2 && this.props.lastOpenPromotion) {
         lastCreatedAt = this.props.lastOpenPromotion.createdAt
+      }else if(status === 3 && this.props.lastClosePromotion) {
+        lastCreatedAt = this.props.lastClosePromotion.createdAt
       }
     }
 
@@ -259,6 +284,13 @@ class ShopGoodPromotionManage extends Component {
     )
   }
 
+  publishPromotion(){
+    if(this.props.openPromotion.length>=this.props.maxPromotionNum){
+      Toast.show('已经有三个启用的活动，仍想发布请手动关闭一个！')
+    }else{
+      Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD({isPop:true})
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -289,7 +321,7 @@ class ShopGoodPromotionManage extends Component {
           }}>
             <TouchableOpacity
               onPress={()=>{
-                Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD({isPop:true})
+                this.publishPromotion()
               }}
             >
               <View style={{
@@ -314,7 +346,7 @@ class ShopGoodPromotionManage extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 
-
+  let maxPromotionNum = selectShopPromotionMaxNum(state)
   let openPromotion = selectOpenGoodPromotion(state)
   let proPromotion = []
   let prePromotion = []
@@ -334,6 +366,8 @@ const mapStateToProps = (state, ownProps) => {
   console.log('prepromotion========>',prePromotion)
   return {
      currentUser: currentUser,
+    maxPromotionNum: maxPromotionNum,
+    openPromotion: openPromotion,
     shopDetail: shopDetail,
     shareDomain: shareDomain,
     prePromotionList: ds.cloneWithRows(prePromotion),
@@ -352,6 +386,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   getShopGoodsList,
   getShopOpenPromotion,
   getShopClosePromotion,
+  fetchShopPromotionMaxNum,
+  closeShopPromotion
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodPromotionManage)

@@ -16,11 +16,13 @@ import {
   Image,
   Platform,
   InteractionManager,
-  TextInput
+  TextInput,
+  Modal
 } from 'react-native'
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
-import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
+import {isUserLogined, activeUserInfo,activeUserId} from '../../../selector/authSelector'
+import {selectShopPromotionDayPay,selectOpenGoodPromotion} from '../../../selector/shopSelector'
 import {DateDiff} from '../../../util/dateUtils'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -36,10 +38,11 @@ import * as Toast from '../../common/Toast'
 import TextAreaInput from '../../common/Input/TextAreaInput'
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {CachedImage} from "react-native-img-cache"
+import {PUBLISH_PROMOTION} from '../../../constants/appConfig'
 
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import {fetchShopAnnouncements,submitShopGoodPromotion} from '../../../action/shopAction'
+import {fetchShopAnnouncements,submitShopGoodPromotion,fetchShopPromotionDayPay} from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import MyShopGoodListForChoose from './MyShopGoodListForChoose'
@@ -67,6 +70,7 @@ class PublishShopPromotionSubmit extends Component {
       shouldUploadImage: false,
       chooseTypeId: undefined,
       hideBottomView: false,
+      showPayModal: false,
     }
     this.replyInput = null
 
@@ -74,7 +78,7 @@ class PublishShopPromotionSubmit extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=> {
-
+      this.props.fetchShopPromotionDayPay()
     })
   }
 
@@ -83,51 +87,160 @@ class PublishShopPromotionSubmit extends Component {
   }
 
   renderSubmitButton() {
+    return(
+      <TouchableOpacity onPress={()=>{this.onButtonPress()}}>
+      <View style={styles.submitBtn}>
+        <Text style={styles.submitBtnText}>确认发布</Text>
+      </View>
+        </TouchableOpacity>
+    )
+
+  }
+
+  onButtonPress(){
+    if(this.props.proNum&&this.props.proNum>0){
+      Actions.PAYMENT({
+        title: '商家活动支付',
+        price: this.props.sumPay ,
+        metadata: {
+          'fromUser': this.props.currentUser,
+          'toUser': 'platform',
+          'dealType': PUBLISH_PROMOTION
+        },
+        subject: '购买汇邻优店活动费用',
+        paySuccessJumpScene: 'MY_SHOP_INDEX',
+        paySuccessJumpSceneParams: {},
+        payErrorJumpBack: true,
+        paySuccess:()=>{
+          let payload = {
+            shopId: this.props.shopId,
+            abstract: this.props.abstract,
+            startDate: new Date(this.props.startDate.replace(/-/g,'/')),
+            endDate: new Date(this.props.endDate.replace(/-/g,'/')),
+            goodId: this.props.good.id,
+            type: this.props.type.type,
+            price: this.props.price,
+            typeId: this.props.type.id,
+            typeDes: this.props.type.typeDesc,
+            geo:this.props.geo,
+            status: 1,
+            success:()=>{
+              this.props.inputFormOnDestroy({formKey:shopPromotionForm})
+            },
+            error:(err)=>{Toast.show(err.message)}
+          }
+          this.props.submitShopGoodPromotion(payload)        }
+      })
+    }else{
+      let payload = {
+        shopId: this.props.shopId,
+        abstract: this.props.abstract,
+        startDate: new Date(this.props.startDate.replace(/-/g,'/')),
+        endDate: new Date(this.props.endDate.replace(/-/g,'/')),
+        goodId: this.props.good.id,
+        type: this.props.type.type,
+        price: this.props.price,
+        typeId: this.props.type.id,
+        typeDes: this.props.type.typeDesc,
+        geo:this.props.geo,
+        status: 1,
+        success:()=>{
+          this.props.inputFormOnDestroy({formKey:shopPromotionForm})
+          Toast.show('提交成功', {
+            duration: 1500,
+            onHidden: () =>{
+              Actions.MY_SHOP_INDEX()
+            }
+          })
+        },
+        error:(err)=>{Toast.show(err.message)}
+      }
+      this.props.submitShopGoodPromotion(payload)
+    }
+
+
+  }
+
+  renderPaymentModal() {
     return (
-      <TouchableWithoutFeedback onPress={()=> {
-        this.onButtonPress()
-      }}>
-        <View style={styles.submitBtn}>
-          <Text style={styles.submitBtnText}>确认发布</Text>
-        </View>
-      </TouchableWithoutFeedback>
+      <View>
+        <Modal
+          visible={this.state.showPayModal}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={()=> {
+            this.setState({showPayModal: false})
+          }}
+        >
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+            <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
+              <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
+                <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置购买数量</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>数量：</Text>
+                <TextInput
+                  placeholder='输入数量'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({buyAmount: text})}
+                  value={this.state.buyAmount}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    textAlign: 'right',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(80),
+                    paddingRight: normalizeW(15),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>份</Text>
+              </View>
+              <View style={{
+                width: PAGE_WIDTH - 100,
+                height: normalizeH(50),
+                padding: 0,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderTopWidth: 1,
+                borderColor: '#F5F5F5'
+              }}>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.setState({showPayModal: false})}>
+                    <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex: 1}}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.onPaymentPress()}>
+                    <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
     )
   }
 
-
-  onButtonPress(){
-    let payload = {
-      shopId: this.props.shopId,
-      abstract: this.props.abstract,
-      startDate: new Date(this.props.startDate),
-      endDate: new Date(this.props.endDate),
-      goodId: this.props.good.id,
-      type: this.props.type.type,
-      price: this.props.price,
-      typeId: this.props.type.id,
-      typeDes: this.props.type.typeDesc,
-      geo:this.props.geo,
-      status: 1,
-      success:()=>{
-        this.props.inputFormOnDestroy({formKey:shopPromotionForm})
-
-        Toast.show('提交成功', {
-          duration: 1500,
-          onHidden: () =>{
-            if(this.props.popNum && this.props.popNum > 1) {
-              Actions.pop({
-                popNum: this.props.popNum
-              })
-            }else {
-              Actions.pop({popNum:5})
-            }
-          }
-        })
-      },
-      error:(err)=>{Toast.show(err.message)}
+  onPaymentPress() {
+    this.setState({showPayModal: false})
+    let amount = this.state.buyAmount
+    if (Math.floor(amount) != amount) {
+      Toast.show('购买数量只能是整数')
+      return
     }
-    this.props.submitShopGoodPromotion(payload)
+
   }
+
+
   renderGoodShow(){
     if(this.props.good){
       return(
@@ -186,7 +299,7 @@ class PublishShopPromotionSubmit extends Component {
 
             <View style={styles.showInfoWrap}>
               <Text style={styles.showInfoAbs}>活动费用</Text>
-              <Text style={styles.showInfoText}>{0 +'元／天'}</Text>
+              <Text style={styles.showInfoText}>{this.props.proNum&&this.props.proNum>0?this.props.dayPay +'元/天  '+ '(总计'+this.props.sumPay+'元)':0+'元'}</Text>
             </View>
 
             <View style={styles.showInfoWrap}>
@@ -194,8 +307,10 @@ class PublishShopPromotionSubmit extends Component {
               <Text style={styles.showInfoText}>{this.props.abstract}</Text>
             </View>
           </KeyboardAwareScrollView>
-          {this.renderSubmitButton()}
         </View>
+        {/*{this.renderPaymentModal()}*/}
+        {this.renderSubmitButton()}
+
       </View>
     )
   }
@@ -203,8 +318,12 @@ class PublishShopPromotionSubmit extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  let currentUser = activeUserId(state)
   const isLogin = isUserLogined(state)
-
+  let dayPay = selectShopPromotionDayPay(state)
+  let openPromotionList = selectOpenGoodPromotion(state)
+  let proNum = openPromotionList.length
+  console.log('proNum=======>',proNum)
   let formData = getInputFormData(state,shopPromotionForm)
   // console.log('formData=====>',formData)
   let abstract = formData&&formData.abstractInput?formData.abstractInput.text:''
@@ -225,7 +344,11 @@ const mapStateToProps = (state, ownProps) => {
     good: good,
     type: type,
     price: price,
-    countDays: countDays
+    countDays: countDays,
+    dayPay: dayPay,
+    currentUser: currentUser,
+    proNum: proNum,
+    sumPay: dayPay*countDays,
   }
 }
 
@@ -237,6 +360,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormOnDestroy,
   inputFormUpdate,
+  fetchShopPromotionDayPay
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionSubmit)
@@ -301,6 +425,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(32),
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 10,
   },
   submitBtnText: {
     color: '#FFFFFF',

@@ -50,6 +50,7 @@ import {
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate,inputFormOnDestroy} from '../../../action/inputFormActions'
 import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
+import GoodShow from '../../shop/GoodShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -96,23 +97,25 @@ class ShopGoodPromotionView extends Component {
 
 
   onButtonPress(){
-
+    this.props.closePromotion(this.props.promotion.id)
   }
 
   renderGoodShow(){
     if(this.props.promotion.goodId){
+      let goodInfo={
+        promotionId: this.props.promotion.id,
+        promotionPrice:this.props.promotion.promotionPrice,
+        promotionType:this.props.promotion.type,
+        coverPhoto: this.props.promotion.coverPhoto,
+        price: this.props.promotion.price,
+        originalPrice: this.props.promotion.originalPrice,
+        goodsName: this.props.promotion.goodName,
+      }
       return(
-        <View style={styles.wrapBox}>
-        <View style={styles.channelWrap}>
-          <View style={styles.typeWrap}>
-          <Text style={styles.typeText}>{this.props.promotion.type}</Text>
-            </View>
-            <CachedImage mutable style={styles.defaultImageStyles}
-                         source={this.props.promotion.coverPhoto ? {uri: getThumbUrl(this.props.promotion.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../../assets/images/default_goods_cover.png")}/>
-          {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-          <Text style={ styles.channelText} numberOfLines={1}>{this.props.promotion.goodName}</Text>
-          <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + this.props.promotion.promotionPrice}</Text>
-        </View>
+        <View style={{flex: 1,width:normalizeW(345),height:normalizeH(264),paddingTop:normalizeH(15),paddingBottom: normalizeH(15),borderBottomWidth:normalizeBorder(1),borderBottomColor:'#F5F5F5'}}>
+        <GoodShow
+          goodInfo={goodInfo}
+        />
           </View>
       )
     }else{
@@ -167,8 +170,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
-    alignItems: 'center'
-
+    alignItems: 'center',
+    paddingBottom: normalizeH(20)
   },
   scrollViewStyle: {
     flex: 1,
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
     height: normalizeH(40),
     width: normalizeW(169),
     marginTop: normalizeH(20),
-    marginBottom: normalizeH(25),
+    // marginBottom: normalizeH(25),
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth:normalizeBorder(1),
@@ -254,7 +257,7 @@ const styles = StyleSheet.create({
   },
   wrapBox:{
     paddingTop: normalizeH(15),
-    paddingBottom: normalizeH(15),
+    paddingBottom: normalizeH(20),
     alignItems: 'center',
     borderBottomColor:'#F5F5F5',
     borderBottomWidth:normalizeBorder(1),
@@ -325,9 +328,9 @@ const styles = StyleSheet.create({
   },
   typeWrap:{
     position: 'absolute',
-    top:20,
+    top:15,
     left: -30,
-    width: normalizeH(100),
+    width: normalizeH(120),
     height: normalizeH(30),
     transform:[{rotate:'-45deg'}],
     backgroundColor:'#FF9D4E',

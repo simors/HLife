@@ -9,7 +9,7 @@ import * as msgAction from './messageAction'
 import * as AuthTypes from '../constants/authActionTypes'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion, ShopGoods, ShopInfo,ShopGoodPromotion, ShopOrders} from '../models/shopModel'
+import {ShopPromotion, ShopGoods, ShopInfo, ShopGoodPromotion, ShopOrders} from '../models/shopModel'
 import {UserInfo} from '../models/userModels'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
@@ -46,30 +46,30 @@ export function getNearbyShopList(payload) {
         shopList.push(ShopInfo.fromLeancloudApi(shop))
       })
       let actionType = ShopActionTypes.UPDATE_SHOP_LIST
-      if(!payload.isRefresh) {
-        if(payload.isLocalQuering) {
+      if (!payload.isRefresh) {
+        if (payload.isLocalQuering) {
           actionType = ShopActionTypes.UPDATE_LOCAL_PAGING_SHOP_LIST
-        }else {
+        } else {
           actionType = ShopActionTypes.UPDATE_PAGING_SHOP_LIST
         }
         let updateAction = createAction(ShopActionTypes.FETCH_SHOP_LIST_ARRIVED_LAST_PAGE)
         dispatch(updateAction({isLastPage: shopList.length == 0}))
-      }else {
-        if(payload.isLocalQuering) {
+      } else {
+        if (payload.isLocalQuering) {
           actionType = ShopActionTypes.UPDATE_LOCAL_SHOP_LIST
         }
       }
 
-      if(payload.isRefresh || shopList.length) {
+      if (payload.isRefresh || shopList.length) {
         let updateShopListAction = createAction(actionType)
         dispatch(updateShopListAction({shopList: shopList}))
       }
-      if(payload.success){
+      if (payload.success) {
         payload.success(shopList.length == 0)
       }
     }).catch((error) => {
       console.log(error)
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -80,7 +80,7 @@ export function getShopPromotion(payload) {
   return (dispatch, getState) => {
     lcShop.fetchNearbyShopGoodPromotion(payload).then((promotionInfo) => {
       let promotionList = []
-      let promotions=[]
+      let promotions = []
       promotionInfo.promotions.forEach((promp) => {
         promotionList.push(promp.id)
         promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
@@ -89,18 +89,18 @@ export function getShopPromotion(payload) {
       // console.log('=promotionList=====>',promotionList)
 
       let actionType = ShopActionTypes.SET_SHOP_LOCAL_PROMOTIONLIST
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = ShopActionTypes.ADD_SHOP_LOCAL_PROMOTIONLIST
       }
-      if(promotionList.length) {
+      if (promotionList.length) {
         let updateAction = createAction(actionType)
-        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+        dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
       }
-      if(payload.success){
+      if (payload.success) {
         payload.success(promotionList.length == 0)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -110,18 +110,18 @@ export function getShopPromotion(payload) {
 
 export function fetchUserFollowShops(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchUserFollowShops(payload).then((results) =>{
+    lcShop.fetchUserFollowShops(payload).then((results) => {
       let actionType = ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_LIST_SUCCESS
-      if(payload && !payload.isRefresh) {
+      if (payload && !payload.isRefresh) {
         actionType = ShopActionTypes.FETCH_USER_FOLLOWED_SHOP_PAGING_LIST_SUCCESS
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction(results))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(results.userFollowedShops.size <= 0)
       }
     }).catch((error) => {
-      if(payload && payload.error){
+      if (payload && payload.error) {
         payload.error(error)
       }
     })
@@ -130,15 +130,15 @@ export function fetchUserFollowShops(payload) {
 
 export function fetchShopAnnouncements(payload) {
   return (dispatch, getState) => {
-    lcShop.getShopAnnouncement(payload).then((shopAnnouncements) =>{
+    lcShop.getShopAnnouncement(payload).then((shopAnnouncements) => {
       let actionType = ShopActionTypes.UPDATE_SHOP_ANNOUNCEMENT_LIST
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_PAGING_SHOP_ANNOUNCEMENT_LIST
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction({shopId: payload.id, shopAnnouncements: shopAnnouncements}))
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -147,14 +147,14 @@ export function fetchShopAnnouncements(payload) {
 
 export function deleteShopAnnouncement(payload) {
   return (dispatch, getState) => {
-    lcShop.deleteShopAnnouncement(payload).then((success) =>{
+    lcShop.deleteShopAnnouncement(payload).then((success) => {
       let updateAction = createAction(ShopActionTypes.DELETE_SHOP_ANNOUNCEMENT_SUCCESS)
       dispatch(updateAction({shopAnnouncementId: payload.shopAnnouncementId}))
-      if(payload.success){
+      if (payload.success) {
         payload.success()
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -163,15 +163,15 @@ export function deleteShopAnnouncement(payload) {
 
 export function userIsFollowedShop(payload) {
   return (dispatch, getState) => {
-    lcShop.isFollowedShop(payload).then((result)=>{
+    lcShop.isFollowedShop(payload).then((result)=> {
       let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
       dispatch(updateAction(result))
-      if(payload.success){
+      if (payload.success) {
         payload.success(result)
       }
       return result
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -180,25 +180,25 @@ export function userIsFollowedShop(payload) {
 
 export function followShop(payload) {
   return (dispatch, getState) => {
-    lcShop.followShop(payload).then((result) =>{
+    lcShop.followShop(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
       dispatch(updateAction(result))
-      if(result && '10002' == result.code) {
+      if (result && '10002' == result.code) {
         let params = {
           shopId: payload.id
         }
         // console.log('followShop==params==', params)
         dispatch(msgAction.notifyShopFollow(params))
-        if(payload.success){
+        if (payload.success) {
           payload.success(result)
         }
-      }else {
-        if(payload.error){
+      } else {
+        if (payload.error) {
           payload.error(result)
         }
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -207,20 +207,20 @@ export function followShop(payload) {
 
 export function unFollowShop(payload) {
   return (dispatch, getState) => {
-    lcShop.unFollowShop(payload).then((result) =>{
+    lcShop.unFollowShop(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.UPDATE_USER_FOLLOW_SHOPS_INFO)
       dispatch(updateAction(result))
-      if(result && '10003' == result.code) {
-        if(payload.success){
+      if (result && '10003' == result.code) {
+        if (payload.success) {
           payload.success(result)
         }
-      }else {
-        if(payload.error){
+      } else {
+        if (payload.error) {
           payload.error(result)
         }
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -245,11 +245,11 @@ export function submitShopComment(payload) {
       }
       dispatch(msgAction.notifyShopComment(params))
       dispatch(pointAction.calPublishComment({userId: activeUserId(getState())}))   // 计算评论积分
-      if(payload.success){
+      if (payload.success) {
         payload.success(result)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -258,18 +258,18 @@ export function submitShopComment(payload) {
 
 export function fetchShopCommentList(payload) {
   return (dispatch, getState) => {
-    lcShop.fetchShopCommentListByCloudFunc(payload).then((shopComments)=>{
+    lcShop.fetchShopCommentListByCloudFunc(payload).then((shopComments)=> {
       let actionType = ShopActionTypes.FETCH_SHOP_COMMENT_LIST_SUCCESS
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = ShopActionTypes.FETCH_PAGING_SHOP_COMMENT_LIST_SUCCESS
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction({shopId: payload.id, shopComments: shopComments}))
-      if(payload.success){
+      if (payload.success) {
         payload.success(shopComments)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -281,11 +281,11 @@ export function fetchShopCommentTotalCount(payload) {
     lcShop.fetchShopCommentTotalCount(payload).then((shopCommentTotalCount) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_COMMENT_TOTAL_COUNT_SUCCESS)
       dispatch(updateAction({shopId: payload.id, shopCommentTotalCount: shopCommentTotalCount}))
-      if(payload.success){
+      if (payload.success) {
         payload.success(shopCommentTotalCount)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -297,11 +297,11 @@ export function fetchUserUpShopInfo(payload) {
     lcShop.fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
       let updateAction = createAction(ShopActionTypes.UPDATE_USER_UP_SHOP_INFO)
       dispatch(updateAction(userUpShopInfo))
-      if(payload.success){
+      if (payload.success) {
         payload.success(result)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -311,23 +311,23 @@ export function fetchUserUpShopInfo(payload) {
 export function userUpShop(payload) {
   return (dispatch, getState) => {
     lcShop.userUpShop(payload).then((result) => {
-      if(result && '10008' == result.code) {
+      if (result && '10008' == result.code) {
         let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_SUCCESS)
         dispatch(updateAction(result))
         let params = {
           shopId: payload.id
         }
         dispatch(msgAction.notifyShopLike(params))
-        if(payload.success){
+        if (payload.success) {
           payload.success(result)
         }
-      }else {
-        if(payload.error){
+      } else {
+        if (payload.error) {
           payload.error(result)
         }
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -337,19 +337,19 @@ export function userUpShop(payload) {
 export function userUnUpShop(payload) {
   return (dispatch, getState) => {
     lcShop.userUnUpShop(payload).then((result) => {
-      if(result && '10010' == result.code) {
+      if (result && '10010' == result.code) {
         let updateAction = createAction(ShopActionTypes.USER_UNUP_SHOP_SUCCESS)
         dispatch(updateAction(result))
-        if(payload.success){
+        if (payload.success) {
           payload.success(result)
         }
-      }else {
-        if(payload.error){
+      } else {
+        if (payload.error) {
           payload.error(result)
         }
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -367,11 +367,11 @@ export function fetchShopCommentUpedUserList(payload) {
       params.shopCommentId = payload.shopCommentId
       params.shopCommentUpedUserList = shopCommentUpedUserList
       dispatch(updateAction(params))
-      if(payload.success){
+      if (payload.success) {
         payload.success(params)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -383,11 +383,11 @@ export function userUpShopComment(payload) {
     lcShop.userUpShopComment(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_COMMENT_SUCCESS)
       dispatch(updateAction(result))
-      if(payload.success){
+      if (payload.success) {
         payload.success(result)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -399,11 +399,11 @@ export function userUnUpShopComment(payload) {
     lcShop.userUnUpShopComment(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.USER_UNUP_SHOP_COMMENT_SUCCESS)
       dispatch(updateAction(result))
-      if(payload.success){
+      if (payload.success) {
         payload.success(result)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -417,12 +417,12 @@ export function reply(payload) {
       dispatch(updateAction(result))
 
       let replyTo = payload.replyShopCommentUserId
-      if(payload.replyId) {
+      if (payload.replyId) {
         replyTo = payload.replyUserId
       }
 
       let replyId = payload.replyId
-      if('SHOP_NOTIFY' == payload.from) {
+      if ('SHOP_NOTIFY' == payload.from) {
         replyId = result.id
       }
       let params = {
@@ -437,11 +437,11 @@ export function reply(payload) {
       dispatch(msgAction.notifyShopComment(params))
       dispatch(pointAction.calPublishComment({userId: activeUserId(getState())}))   // 计算评论积分
 
-      if(payload.success){
+      if (payload.success) {
         payload.success(result)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -458,11 +458,11 @@ export function fetchShopCommentReplyList(payload) {
         shopCommentReplyList: shopCommentReplyList
       }
       dispatch(updateAction(params))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(params)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -474,11 +474,11 @@ export function fetchShopTags(payload) {
     lcShop.fetchShopTags(payload).then((shopTags) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_TAGS_SUCCESS)
       dispatch(updateAction({shopTags: shopTags}))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(shopTags)
       }
     }).catch((error)=> {
-      if(payload && payload.error){
+      if (payload && payload.error) {
         payload.error(error)
       }
     })
@@ -491,12 +491,12 @@ export function fetchUserOwnedShopInfo(payload) {
       let updateAction = createAction(ShopActionTypes.FETCH_USER_OWNED_SHOP_INFO_SUCCESS)
       // console.log('fetchUserOwnedShopInfo==result===', result)
       dispatch(updateAction(result))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(result)
       }
     }).catch((error)=> {
       console.log("fetchUserOwnedShopInfo", error)
-      if(payload && payload.error){
+      if (payload && payload.error) {
         payload.error(error)
       }
     })
@@ -507,16 +507,16 @@ export function fetchShopFollowers(payload) {
   return (dispatch, getState) => {
     lcShop.fetchShopFollowers(payload).then((shopFollowers) => {
       let actionType = ShopActionTypes.FETCH_SHOP_FOLLOWERS_SUCCESS
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = ShopActionTypes.FETCH_SHOP_FOLLOWERS_PAGING_SUCCESS
       }
       let updateAction = createAction(actionType)
       dispatch(updateAction({id: payload.id, shopFollowers: shopFollowers}))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(shopFollowers)
       }
     }).catch((error)=> {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -528,11 +528,11 @@ export function fetchShopFollowersTotalCount(payload) {
     lcShop.fetchShopFollowersTotalCount(payload).then((shopFollowerTotalCount) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_FOLLOWERS_TOTAL_COUNT_SUCCESS)
       dispatch(updateAction({id: payload.id, shopFollowerTotalCount: shopFollowerTotalCount}))
-      if(payload.success){
+      if (payload.success) {
         payload.success(shopFollowerTotalCount)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -544,11 +544,11 @@ export function fetchSimilarShopList(payload) {
     lcShop.fetchSimilarShopList(payload).then((similarShopList) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SIMILAR_SHOP_LIST_SUCCESS)
       dispatch(updateAction({id: payload.id, similarShopList: similarShopList}))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(similarShopList)
       }
     }).catch((error)=> {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -560,11 +560,11 @@ export function fetchShopDetail(payload) {
     lcShop.fetchShopDetail(payload).then((shopInfo) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_DETAIL_SUCCESS)
       dispatch(updateAction({id: payload.id, shopInfo: shopInfo}))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(shopInfo)
       }
     }).catch((error)=> {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -576,11 +576,11 @@ export function fetchShopPromotionDetail(payload) {
     lcShop.fetchShopPromotionDetail(payload).then((shopPromotionInfo) => {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_DETAIL_SUCCESS)
       dispatch(updateAction({id: payload.id, shopPromotionInfo: shopPromotionInfo}))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(shopPromotionInfo)
       }
     }).catch((error)=> {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -592,11 +592,11 @@ export function fetchGuessYouLikeShopList(payload) {
     lcShop.fetchGuessYouLikeShopList(payload).then((shopList) => {
       let updateAction = createAction(ShopActionTypes.FETCH_GUESS_YOU_LIKE_SHOP_LIST_SUCCESS)
       dispatch(updateAction({shopList: shopList}))
-      if(payload && payload.success){
+      if (payload && payload.success) {
         payload.success(shopList)
       }
     }).catch((error)=> {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -606,38 +606,38 @@ export function fetchGuessYouLikeShopList(payload) {
 export function submitShopPromotion(payload) {
   return (dispatch, getState) => {
     let localImgs = []
-    if(payload.localCoverImgUri){
+    if (payload.localCoverImgUri) {
       localImgs.push(payload.localCoverImgUri)
     }
-    if(payload.localRichTextImagesUrls) {
+    if (payload.localRichTextImagesUrls) {
       localImgs = localImgs.concat(payload.localRichTextImagesUrls)
     }
 
     ImageUtil.batchUploadImgs(localImgs).then((leanUris) => {
       let coverUrl = ''
       let leanRichTextImagesUrls = []
-      
-      if(leanUris && leanUris.length) {
-        if(payload.localCoverImgUri) {
+
+      if (leanUris && leanUris.length) {
+        if (payload.localCoverImgUri) {
           coverUrl = leanUris.shift()
           leanRichTextImagesUrls = leanUris
         } else {
           leanRichTextImagesUrls = leanUris
         }
       }
-      
+
       return {
         coverUrl: coverUrl,
         leanRichTextImagesUrls: leanRichTextImagesUrls,
       }
-    },(err)=>{
+    }, (err)=> {
       throw err
     }).then((results) => {
-      if(payload.promotionDetailInfo && payload.promotionDetailInfo.length &&
-          results.leanRichTextImagesUrls && results.leanRichTextImagesUrls.length) {
+      if (payload.promotionDetailInfo && payload.promotionDetailInfo.length &&
+        results.leanRichTextImagesUrls && results.leanRichTextImagesUrls.length) {
         let leanRichTextImagesUrls = results.leanRichTextImagesUrls.reverse()
         payload.promotionDetailInfo.forEach((value) => {
-          if(value.type == 'COMP_IMG' && value.url)
+          if (value.type == 'COMP_IMG' && value.url)
             value.url = leanRichTextImagesUrls.pop()
         })
       }
@@ -663,7 +663,7 @@ export function submitShopPromotion(payload) {
         let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
         dispatch(updateAction(result))
         dispatch(pointAction.calPublishActivity({userId: activeUserId(getState())}))    // 计算发布活动的积分
-        if(payload.success){
+        if (payload.success) {
           payload.success(result)
         }
         let params = {
@@ -677,13 +677,14 @@ export function submitShopPromotion(payload) {
         dispatch(msgAction.notifyPublishShopPromotion(params))
       }).catch((error) => {
         // console.log('submitShopPromotion==error==>>>', error)
-        if(payload.error){
+        if (payload.error) {
           payload.error(error)
-        }x
+        }
+        x
       })
     }).catch((error) => {
       // console.log('batchUploadImgs==error==>>>', error.Error)
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -691,13 +692,13 @@ export function submitShopPromotion(payload) {
 }
 
 export function fetchShopPromotionMaxNum(payload) {
-  return (dispatch, getState)=>{
-    lcShop.fetchShopPromotionMaxNum(payload).then((maxNum)=>{
+  return (dispatch, getState)=> {
+    lcShop.fetchShopPromotionMaxNum(payload).then((maxNum)=> {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
       dispatch(updateAction({
         shopPromotionMaxNum: maxNum
       }))
-    }, (maxNum)=>{
+    }, (maxNum)=> {
       let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
       dispatch(updateAction({
         shopPromotionMaxNum: maxNum
@@ -705,26 +706,42 @@ export function fetchShopPromotionMaxNum(payload) {
     })
   }
 }
+export function fetchShopPromotionDayPay(payload) {
+  return (dispatch, getState)=> {
+    lcShop.fetchShopPromotionDayPay(payload).then((dayPay)=> {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
+      dispatch(updateAction({
+        dayPay: dayPay
+      }))
+    }, (dayPay)=> {
+      let updateAction = createAction(ShopActionTypes.FETCH_SHOP_PROMOTION_MAX_NUM_SUCCESS)
+      dispatch(updateAction({
+        dayPay: dayPay
+      }))
+    })
+  }
+}
+
 
 export function fetchMyShopExpiredPromotionList(payload) {
-  return (dispatch ,getState) => {
+  return (dispatch, getState) => {
     lcShop.fetchMyShopExpiredPromotionList(payload).then((result) => {
       let actionType = ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = ShopActionTypes.UPDATE_MY_SHOP_EXPIRED_PROMOTION_LIST_PAGING
       }
       const shopPromotionList = result.shopPromotionList
       const userId = result.userId
-      if(payload.isRefresh || shopPromotionList.size) {
+      if (payload.isRefresh || shopPromotionList.size) {
         let updateAction = createAction(actionType)
         dispatch(updateAction({userId: userId, shopPromotionList: shopPromotionList}))
       }
-      
-      if(payload.success){
+
+      if (payload.success) {
         payload.success(shopPromotionList.isEmpty())
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -733,12 +750,12 @@ export function fetchMyShopExpiredPromotionList(payload) {
 
 export function updateShopPromotion(payload) {
   return (dispatch, getState) => {
-    lcShop.updateShopPromotion(payload).then((result)=>{
-      if(payload.success){
+    lcShop.updateShopPromotion(payload).then((result)=> {
+      if (payload.success) {
         payload.success(result)
       }
-    }, (result)=>{
-      if(payload.error){
+    }, (result)=> {
+      if (payload.error) {
         payload.error(result)
       }
     })
@@ -747,12 +764,12 @@ export function updateShopPromotion(payload) {
 
 export function unregistShop(payload) {
   return (dispatch, getState) => {
-    lcShop.unregistShop(payload).then((result)=>{
-      if(payload.success){
+    lcShop.unregistShop(payload).then((result)=> {
+      if (payload.success) {
         payload.success(result)
       }
-    }).catch(error=>{
-      if(payload.error){
+    }).catch(error=> {
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -824,15 +841,19 @@ export function setShopGoodsOnline(payload) {
     lcShop.goodsOnline({goodsId: onlinePayload.goodsId}).then((goodsInfo) => {
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
-        dispatch(updateShopGoodsStatus({shopId: onlinePayload.shopId, goodsId: onlinePayload.goodsId, status: newStatus}))
+        dispatch(updateShopGoodsStatus({
+          shopId: onlinePayload.shopId,
+          goodsId: onlinePayload.goodsId,
+          status: newStatus
+        }))
       } else {
         console.log("goodsOffline fail, goodsInfo:", goodsInfo)
-        if(payload.error) {
+        if (payload.error) {
           payload.error()
         }
       }
     }).catch((error) => {
-      if(payload.error) {
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -848,15 +869,19 @@ export function setShopGoodsOffline(payload) {
     lcShop.goodsOffline({goodsId: offLinePayload.goodsId}).then((goodsInfo) => {
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
-        dispatch(updateShopGoodsStatus({shopId: offLinePayload.shopId, goodsId: offLinePayload.goodsId, status: newStatus}))
+        dispatch(updateShopGoodsStatus({
+          shopId: offLinePayload.shopId,
+          goodsId: offLinePayload.goodsId,
+          status: newStatus
+        }))
       } else {
         console.log("goodsOffline fail, goodsInfo:", goodsInfo)
-        if(payload.error) {
+        if (payload.error) {
           payload.error()
         }
       }
     }).catch((error) => {
-      if(payload.error) {
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -872,14 +897,18 @@ export function setShopGoodsDelete(payload) {
     lcShop.goodsDelete({goodsId: deletePayload.goodsId}).then((goodsInfo) => {
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
-        dispatch(updateShopGoodsStatus({shopId: deletePayload.shopId, goodsId: deletePayload.goodsId, status: newStatus}))
+        dispatch(updateShopGoodsStatus({
+          shopId: deletePayload.shopId,
+          goodsId: deletePayload.goodsId,
+          status: newStatus
+        }))
       } else {
-        if(payload.error) {
+        if (payload.error) {
           payload.error()
         }
       }
     }).catch((error) => {
-      if(payload.error) {
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -894,10 +923,13 @@ export function getShopGoodsList(payload) {
     }
     lcShop.fetchShopGoodsList(payload).then((result) => {
       let goods = result.goods
+      console.log('goods=========>', goods)
       let goodsList = []
       goods.forEach((item) => {
         goodsList.push(ShopGoods.fromLeancloudApi(item))
       })
+      console.log('goodsList=========>', goodsList)
+
       if (more) {
         dispatch(addShopGoodsList({shopId: payload.shopId, goodsList}))
       } else {
@@ -931,7 +963,7 @@ export function submitShopGood(payload) {
       let leanRichTextImagesUrls = []
       let localCover = formData.shopGoodCover.text
       if (!localCover || localCover.length == 0) {
-        if(payload.error) {
+        if (payload.error) {
           payload.error({message: '没有上传封面，请重传'})
         }
         return
@@ -956,10 +988,10 @@ export function submitShopGood(payload) {
         let content = formData.shopGoodContent.text
         if (urls.length != 0) {
           leanRichTextImagesUrls = urls.reverse()
-          if(content && content.length &&
+          if (content && content.length &&
             leanRichTextImagesUrls && leanRichTextImagesUrls.length) {
             content.forEach((value) => {
-              if(value.type == 'COMP_IMG' && value.url)
+              if (value.type == 'COMP_IMG' && value.url)
                 value.url = leanRichTextImagesUrls.pop()
             })
           }
@@ -982,19 +1014,19 @@ export function submitShopGood(payload) {
             let shopId = goodsObj.targetShop.id
             let goods = ShopGoods.fromLeancloudApi(goodsObj)
             dispatch(addShopGoods({shopId, goods}))
-            if(payload.success) {
+            if (payload.success) {
               payload.success()
             }
           } else {
             console.log("lcShop.addNewShopGoods fail, goodsInfo:", goodsInfo)
-            if(payload.error) {
+            if (payload.error) {
               payload.error()
             }
           }
         })
       }).catch((error) => {
         console.log("error", error)
-        if(payload.error) {
+        if (payload.error) {
           payload.error(error)
         }
       })
@@ -1003,17 +1035,17 @@ export function submitShopGood(payload) {
   }
 }
 
-export function submitShopGoodPromotion(payload){
-  return(dispatch,getState)=>{
-     lcShop.submitShopGoodPromotion(payload).then((result)=>{
-       if(payload.success){
-         payload.success()
-       }
-     },(err)=>{
-       if(payload.error){
-         payload.error(err)
-       }
-     })
+export function submitShopGoodPromotion(payload) {
+  return (dispatch, getState)=> {
+    lcShop.submitShopGoodPromotion(payload).then((result)=> {
+      if (payload.success) {
+        payload.success()
+      }
+    }, (err)=> {
+      if (payload.error) {
+        payload.error(err)
+      }
+    })
   }
 }
 export function modifyShopGoods(payload) {
@@ -1034,7 +1066,7 @@ export function modifyShopGoods(payload) {
       let leanRichTextImagesUrls = []
       let localCover = formData.shopGoodCover.text
       if (!localCover || localCover.length == 0) {
-        if(payload.error) {
+        if (payload.error) {
           payload.error({message: '没有上传封面，请重传'})
         }
         return
@@ -1086,19 +1118,19 @@ export function modifyShopGoods(payload) {
             let shopId = goodsObj.targetShop.id
             let goods = ShopGoods.fromLeancloudApi(goodsObj)
             dispatch(updateShopGoods({shopId, goodsId: payload.goodsId, goods}))
-            if(payload.success) {
+            if (payload.success) {
               payload.success()
             }
           } else {
             console.log("lcShop.modifyShopGoods fail, goodsInfo:", goodsInfo)
-            if(payload.error) {
+            if (payload.error) {
               payload.error()
             }
           }
         })
       }).catch((error) => {
         console.log("error", error)
-        if(payload.error) {
+        if (payload.error) {
           payload.error(error)
         }
       })
@@ -1110,7 +1142,7 @@ export function getShopOpenPromotion(payload) {
   return (dispatch, getState) => {
     lcShop.fetchOpenShopGoodPromotions(payload).then((promotionInfo) => {
       let promotionList = []
-      let promotions=[]
+      let promotions = []
       promotionInfo.promotions.forEach((promp) => {
         promotionList.push(promp.id)
         promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
@@ -1119,18 +1151,18 @@ export function getShopOpenPromotion(payload) {
       // console.log('=promotionList=====>',promotionList)
 
       let actionType = ShopActionTypes.SET_SHOP_OPEN_PROMOTIONLIST
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = ShopActionTypes.ADD_SHOP_OPEN_PROMOTIONLIST
       }
-      if(promotionList.length) {
+      if (promotionList.length) {
         let updateAction = createAction(actionType)
-        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+        dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
       }
-      if(payload.success){
+      if (payload.success) {
         payload.success(promotionList.length == 0)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -1141,7 +1173,7 @@ export function getShopClosePromotion(payload) {
   return (dispatch, getState) => {
     lcShop.fetchCloseShopGoodPromotions(payload).then((promotionInfo) => {
       let promotionList = []
-      let promotions=[]
+      let promotions = []
       promotionInfo.promotions.forEach((promp) => {
         promotionList.push(promp.id)
         promotions.push(ShopGoodPromotion.fromLeancloudApi(promp))
@@ -1150,18 +1182,18 @@ export function getShopClosePromotion(payload) {
       // console.log('=promotionList=====>',promotionList)
 
       let actionType = ShopActionTypes.SET_SHOP_CLOSE_PROMOTIONLIST
-      if(!payload.isRefresh) {
+      if (!payload.isRefresh) {
         actionType = ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST
       }
-      if(promotionList.length) {
+      if (promotionList.length) {
         let updateAction = createAction(actionType)
-        dispatch(updateAction({promotionList: promotionList,promotions:promotions}))
+        dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
       }
-      if(payload.success){
+      if (payload.success) {
         payload.success(promotionList.length == 0)
       }
     }).catch((error) => {
-      if(payload.error){
+      if (payload.error) {
         payload.error(error)
       }
     })
@@ -1198,8 +1230,36 @@ export function fetchUserShopOrders(payload) {
       dispatch(addBatchShopDetail({shopInfos: vendors}))
       dispatch(batchAddShopGoodsDetail({goodsList: goods}))
 
-      if(payload.success){
+      if (payload.success) {
         payload.success(shopOrders.length == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+export function closeShopPromotion(payload) {
+  return (dispatch, getState) => {
+    lcShop.closeShopPromotion(payload).then((promotionInfo) => {
+      let promotionList = []
+      let promotions = []
+      promotionList.push(promotionInfo.promotion.id)
+      promotions.push(ShopGoodPromotion.fromLeancloudApi(promotionInfo.promotion))
+
+      // console.log('=promotions=====>',promotions)
+      // console.log('=promotionList=====>',promotionList)
+
+
+      let actionType = ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST
+
+      if (promotionList.length) {
+        let updateAction = createAction(actionType)
+        dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
+      }
+      if (payload.success) {
+        payload.success(promotionList.length == 0)
       }
     }).catch((error) => {
       if (payload.error) {

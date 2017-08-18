@@ -21,21 +21,21 @@ export function getAgeFromBirthday(dateString) {
 
 export function  DateDiff(sDate1,  sDate2){//sDate1和sDate2是2006-12-18格式
   if(sDate1&&sDate2){
-    var  aDate,  oDate1,  oDate2,  iDays
-    // aDate  =  sDate1.split("-")
-    oDate1  =  new  Date(sDate1)    //转换为12-18-2006格式
+    let  aDate,  oDate1,  oDate2,  iDays
+    oDate1  =  new Date(sDate1.replace(/-/g,'/')).getTime()    //转换为12-18-2006格式
+    console.log('oDate1============>',oDate1)
 
-    aDate  =  sDate2.split("-")
-    oDate2  =  new  Date(sDate2)
-    console.log('oDate==========?',oDate1)
-    console.log('oDate==========?',oDate2)
+    oDate2  =  new Date(sDate2.replace(/-/g,'/')).getTime()
+    console.log('oDate2============>',oDate2)
 
-    iDays  =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24) //把相差的毫秒数转换为天数
-    var ilevel = Math.abs(oDate1  -  oDate2) % (1000*24*3600)
-    if(ilevel&&ilevel>0){
+    iDays  =  Math.floor((oDate2  -  oDate1)/(1000*3600*24)) //把相差的毫秒数转换为天数
+
+    let subDay = Math.abs((oDate2-oDate1)% (1000*24*3600))
+    if(subDay&&subDay>0){
       iDays = iDays+1
     }
-    return  iDays
+    // console.log('iDay============>',iDays)
+    return Number(iDays)
   }else{
     return 0
   }

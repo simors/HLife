@@ -84,6 +84,9 @@ class Payment extends Component {
     console.log("errorCode:", errorCode)
     console.log("result:", result)
     if(errorCode == 0 || errorCode == 'success'){
+      if(this.props.paySuccess){
+        this.props.paySuccess()
+      }
       Toast.show("支付成功")
       if(this.props.paySuccessJumpScene) {
         if(this.props.popNum) {

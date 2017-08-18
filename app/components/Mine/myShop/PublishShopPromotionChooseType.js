@@ -130,18 +130,17 @@ class PublishShopPromotionChooseType extends Component {
   }
 
   renderTypes(start,end) {
-    return this.state.types.map((item, index) => {
+    let renderType =  this.state.types.map((item, index) => {
       if (index>=start&&index<=end){
         if ( this.props.chooseTypeId == item.id) {
+          console.log('i m here is choose item',item)
           return (
             <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
               this.unChooseType(index)
             }}>
               <View style={styles.typeBox}>
                 <Text style={styles.chooseTypeText}>{item.type}</Text>
-                <View style={styles.typeSvg}>
-                  <Svg size={normalizeW(165)} height={normalizeH(69)} color={'#FF7819'} icon="selected_act"/>
-                </View>
+                  <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)}  icon="selected_act"/>
               </View>
             </TouchableWithoutFeedback>
           )
@@ -159,6 +158,7 @@ class PublishShopPromotionChooseType extends Component {
             </TouchableWithoutFeedback>
           )
         } else {
+          console.log('i m here is not choose item',item)
           return (
             <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
               this.changeType(index)
@@ -174,6 +174,7 @@ class PublishShopPromotionChooseType extends Component {
         }
       }
     })
+    return renderType
   }
 
   changeType(index) {

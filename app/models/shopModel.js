@@ -684,13 +684,18 @@ export const ShopGoodsRecord = Record({
   album: undefined,
   status: undefined,
   detail: undefined,
-  promotion: undefined,
+  promotionId: undefined,
+  promotionType: undefined,
+  promotionPrice: undefined,
+  promotionStartDate: undefined,
+  promotionEndDate: undefined,
+  promotionAbstract: undefined,
   updatedAt: undefined,
 })
 
 export class ShopGoods extends ShopGoodsRecord {
   static fromLeancloudApi(lcObj) {
-    let shopGoods = new ShopGoods()
+    let shopGoods = new ShopGoodsRecord()
     return shopGoods.withMutations((record) => {
       record.set('id', lcObj.objectId)
       record.set('targetShop', lcObj.targetShop.id)
@@ -701,7 +706,12 @@ export class ShopGoods extends ShopGoodsRecord {
       record.set('album', new List(lcObj.album))
       record.set('status', lcObj.status)
       record.set('detail', lcObj.detail)
-      record.set('promotion', lcObj.promotion)
+      record.set('promotionId', lcObj.promotionId)
+      record.set('promotionType', lcObj.promotionType)
+      record.set('promotionPrice', lcObj.promotionPrice)
+      record.set('promotionStartDate', lcObj.promotionStartDate)
+      record.set('promotionEndDate', lcObj.promotionEndDate)
+      record.set('promotionAbstract', lcObj.promotionAbstract)
       record.set('updatedAt', lcObj.updatedAt)
     })
   }
@@ -852,6 +862,7 @@ export const Shop = Record({
   guessYouLikeShopList: List(),
   userFollowedShops: Map(),
   shopPromotionMaxNum: 3,
+  dayPay: 10,
   shopGoods: Map(),         // 店铺商品列表，键为店铺id，值为ShopGoods组成的List
   allGoodPromotions: Map(),
   localGoodPromotionList: List(),

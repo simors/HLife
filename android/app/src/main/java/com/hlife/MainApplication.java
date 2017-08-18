@@ -31,7 +31,7 @@ import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;
 import com.zmxv.RNSound.RNSoundPackage;
-
+import com.horcrux.svg.SvgPackage;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,6 +68,7 @@ public class MainApplication extends Application implements ReactApplication {
                         new ReactNativeRestartPackage(),
                         new PickerViewPackage(),
                         new WebViewBridgePackage(),
+                        new SvgPackage(),
                         new RNFSPackage(),
                         new ImagePickerPackage(),
                         new BaiduMapPackage(getApplicationContext()),
