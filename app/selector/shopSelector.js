@@ -349,20 +349,15 @@ function constructUserOrdereList(state, orderIds, buyerId) {
   return userOrders
 }
 
-export function selectUserAllOrders(state, buyerId) {
-  let orderIds = state.SHOP.getIn(['userAllOrders', buyerId]) || []
-  let userOrders = constructUserOrdereList(state, orderIds, buyerId)
-  return userOrders
-}
-
-export function selectUserWaitOrders(state, buyerId) {
-  let orderIds = state.SHOP.getIn(['userWaitOrders', buyerId]) || []
-  let userOrders = constructUserOrdereList(state, orderIds, buyerId)
-  return userOrders
-}
-
-export function selectUserFinishOrders(state, buyerId) {
-  let orderIds = state.SHOP.getIn(['userFinishOrders', buyerId]) || []
+export function selectUserOrders(state, buyerId, type) {
+  let orderIds = []
+  if ('all' == type) {
+    orderIds = state.SHOP.getIn(['userAllOrders', buyerId]) || []
+  } else if ('waiting' == type) {
+    orderIds = state.SHOP.getIn(['userWaitOrders', buyerId]) || []
+  } else if ('finished' == type) {
+    orderIds = state.SHOP.getIn(['userFinishOrders', buyerId]) || []
+  }
   let userOrders = constructUserOrdereList(state, orderIds, buyerId)
   return userOrders
 }
