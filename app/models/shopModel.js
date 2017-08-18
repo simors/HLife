@@ -869,7 +869,12 @@ export const Shop = Record({
   openGoodPromotionList: List(),
   closeGoodPromotionList: List(),
   shopGoodsDetail: Map(),   // 店铺商品详细，键为商品id，值为店铺详细信息
-  orderDetail: Map(),     // 用户订单详情，键为订单id，值为订单详情
-  userOrders: Map(),      // 用户订单，键为用户id，值为订单id组成的List
-  shopOrders: Map(),      // 店铺管理订单，键为店铺的id，值为订单组成的List
+  orderDetail: Map(),       // 用户订单详情，键为订单id，值为订单详情
+  userAllOrders: Map(),     // 用户全部订单，键为用户id，值为订单id组成的List
+  userWaitOrders: Map(),    // 用户待收货订单，键为用户id，值为订单id组成的List
+  userFinishOrders: Map(),  // 用户已完成订单，键为用户id，值为订单id组成的List
+  shopAllOrders: Map(),     // 店铺管理所有订单，键为店铺的id，值为订单组成的List
+  shopNewOrders: Map(),     // 店铺管理新订单，键为用户id，值为订单id组成的List
+  shopDeliveredOrders: Map(), // 店铺管理已发货订单，键为用户id，值为订单id组成的List
+  shopFinishOrders: Map(),  // 店铺管理已完成订单，键为用户id，值为订单id组成的List
 }, 'Shop')

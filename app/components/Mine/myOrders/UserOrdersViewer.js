@@ -18,8 +18,7 @@ import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import {fetchUserShopOrders} from '../../../action/shopAction'
 import {activeUserId} from '../../../selector/authSelector'
-import {selectUserOrders} from '../../../selector/shopSelector'
-import {ORDER_STATUS} from '../../../constants/appConfig'
+import {selectUserAllOrders, selectUserWaitOrders, selectUserFinishOrders} from '../../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -30,6 +29,7 @@ class UserOrdersViewer extends Component {
     this.state = {
       tabType: 0,
     }
+    this.lastTime = undefined
   }
 
   componentWillMount() {
@@ -37,7 +37,40 @@ class UserOrdersViewer extends Component {
       this.props.fetchUserShopOrders({
         more: false,
         buyerId: this.props.currentUserId,
-        orderStatus: undefined,
+        type: 'all',
+        limit: 10,
+      })
+    })
+  }
+
+  fetchUserAllOrders() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchUserShopOrders({
+        more: false,
+        buyerId: this.props.currentUserId,
+        type: 'all',
+        limit: 10,
+      })
+    })
+  }
+
+  fetchUserWaitOrders() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchUserShopOrders({
+        more: false,
+        buyerId: this.props.currentUserId,
+        type: 'waiting',
+        limit: 10,
+      })
+    })
+  }
+
+  fetchUserFinishOrders() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchUserShopOrders({
+        more: false,
+        buyerId: this.props.currentUserId,
+        type: 'finish',
         limit: 10,
       })
     })
@@ -46,11 +79,14 @@ class UserOrdersViewer extends Component {
   toggleTab(type) {
     this.setState({tabType: type}, ()=> {
       if (0 == type) {
-
+        this.lastTime = undefined
+        this.fetchUserAllOrders()
       } else if (1 == type) {
-
+        this.lastTime = undefined
+        this.fetchUserWaitOrders()
       } else if (2 == type) {
-
+        this.lastTime = undefined
+        this.fetchUserFinishOrders()
       }
     })
   }
@@ -156,11 +192,17 @@ class UserOrdersViewer extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let currentUserId = activeUserId(state)
-  let userOrders = selectUserOrders(state, currentUserId)
-  console.log('userOrders:', userOrders)
+  let userAllOrders = selectUserAllOrders(state, currentUserId)
+  let userWaitOrders = selectUserWaitOrders(state, currentUserId)
+  let userFinishOrders = selectUserFinishOrders(state, currentUserId)
+  console.log('userAllOrders:', userAllOrders)
+  console.log('userWaitOrders:', userWaitOrders)
+  console.log('userFinishOrders:', userFinishOrders)
   return {
-    currentUserId: currentUserId,
-    userOrders: userOrders,
+    currentUserId,
+    userAllOrders,
+    userWaitOrders,
+    userFinishOrders,
   }
 }
 

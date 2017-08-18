@@ -327,9 +327,8 @@ export function selectShopGoodsDetail(state, goodsId) {
   return undefined
 }
 
-export function selectUserOrders(state, buyerId) {
+function constructUserOrdereList(state, orderIds, buyerId) {
   let userOrders = []
-  let orderIds = state.SHOP.getIn(['userOrders', buyerId]) || []
   orderIds.forEach((orderId) => {
     let orderRec = state.SHOP.getIn(['orderDetail', orderId])
     if (orderRec) {
@@ -347,5 +346,23 @@ export function selectUserOrders(state, buyerId) {
       })
     }
   })
+  return userOrders
+}
+
+export function selectUserAllOrders(state, buyerId) {
+  let orderIds = state.SHOP.getIn(['userAllOrders', buyerId]) || []
+  let userOrders = constructUserOrdereList(state, orderIds, buyerId)
+  return userOrders
+}
+
+export function selectUserWaitOrders(state, buyerId) {
+  let orderIds = state.SHOP.getIn(['userWaitOrders', buyerId]) || []
+  let userOrders = constructUserOrdereList(state, orderIds, buyerId)
+  return userOrders
+}
+
+export function selectUserFinishOrders(state, buyerId) {
+  let orderIds = state.SHOP.getIn(['userFinishOrders', buyerId]) || []
+  let userOrders = constructUserOrdereList(state, orderIds, buyerId)
   return userOrders
 }

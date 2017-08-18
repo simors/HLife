@@ -16,6 +16,7 @@ import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
+import {ORDER_STATUS} from '../constants/appConfig'
 
 let addUserBatchProfile = createAction(AuthTypes.ADD_USER_PROFILES)
 
@@ -1200,46 +1201,6 @@ export function getShopClosePromotion(payload) {
   }
 }
 
-export function fetchUserShopOrders(payload) {
-  return (dispatch, getState) => {
-    let more = payload.more
-    if (!more) {
-      more = false
-    }
-    lcShop.getUserOrders(payload).then((results) => {
-      let shopOrders = []
-      let buyers = []
-      let vendors = []
-      let goods = []
-      let shopOrderIds = []
-      let orders = results.shopOrders
-      orders.forEach((order) => {
-        shopOrderIds.push(order.id)
-        shopOrders.push(ShopOrders.fromLeancloudApi(order))
-        buyers.push(UserInfo.fromLeancloudApi(order.buyer))
-        vendors.push(ShopInfo.fromLeancloudApi(order.vendor))
-        goods.push(ShopGoods.fromLeancloudApi2(order.goods))
-      })
-      if (more) {
-        dispatch(addUserOrderList({buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
-      } else {
-        dispatch(setUserOrderList({buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
-      }
-      dispatch(batchAddOrderDetail({shopOrders: shopOrders}))
-      dispatch(addUserBatchProfile({userProfiles: buyers}))
-      dispatch(addBatchShopDetail({shopInfos: vendors}))
-      dispatch(batchAddShopGoodsDetail({goodsList: goods}))
-
-      if (payload.success) {
-        payload.success(shopOrders.length == 0)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
 export function closeShopPromotion(payload) {
   return (dispatch, getState) => {
     lcShop.closeShopPromotion(payload).then((promotionInfo) => {
@@ -1260,6 +1221,55 @@ export function closeShopPromotion(payload) {
       }
       if (payload.success) {
         payload.success(promotionList.length == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchUserShopOrders(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    let queryType = payload.type
+    if (queryType == 'all') {
+      payload.orderStatus = undefined
+    } else if (queryType == 'waiting') {
+      payload.orderStatus = [ORDER_STATUS.PAID_FINISHED, ORDER_STATUS.DELIVER_GOODS]
+    } else if (queryType == 'finished') {
+      payload.orderStatus = [ORDER_STATUS.ACCOMPLISH]
+    }
+    lcShop.getUserOrders(payload).then((results) => {
+      let shopOrders = []
+      let buyers = []
+      let vendors = []
+      let goods = []
+      let shopOrderIds = []
+      let orders = results.shopOrders
+      orders.forEach((order) => {
+        shopOrderIds.push(order.id)
+        shopOrders.push(ShopOrders.fromLeancloudApi(order))
+        buyers.push(UserInfo.fromLeancloudApi(order.buyer))
+        vendors.push(ShopInfo.fromLeancloudApi(order.vendor))
+        goods.push(ShopGoods.fromLeancloudApi2(order.goods))
+      })
+      if (more) {
+        dispatch(addUserOrderList({type: payload.type, buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
+      } else {
+        dispatch(setUserOrderList({type: payload.type, buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
+      }
+      dispatch(batchAddOrderDetail({shopOrders: shopOrders}))
+      dispatch(addUserBatchProfile({userProfiles: buyers}))
+      dispatch(addBatchShopDetail({shopInfos: vendors}))
+      dispatch(batchAddShopGoodsDetail({goodsList: goods}))
+
+      if (payload.success) {
+        payload.success(shopOrders.length == 0)
       }
     }).catch((error) => {
       if (payload.error) {

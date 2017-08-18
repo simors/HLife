@@ -591,17 +591,34 @@ function handleAddCloseGoodPromotions(state, action) {
 function handleSetUserShopOrders(state, action) {
   let payload = action.payload
   let buyerId = payload.buyerId
+  let type = payload.type
   let shopOrdersList = payload.shopOrdersList
-  state = state.setIn(['userOrders', buyerId], new List(shopOrdersList))
+  if ('all' == type) {
+    state = state.setIn(['userAllOrders', buyerId], new List(shopOrdersList))
+  } else if ('waiting' == type) {
+    state = state.setIn(['userWaitOrders', buyerId], new List(shopOrdersList))
+  } else if ('finished' == type) {
+    state = state.setIn(['userFinishOrders', buyerId], new List(shopOrdersList))
+  }
   return state
 }
 
 function handleAddUserShopOrders(state, action) {
   let payload = action.payload
   let buyerId = payload.buyerId
+  let type = payload.type
   let shopOrdersList = payload.shopOrdersList
-  let oldOrderList = state.getIn(['userOrders', buyerId])
-  state = state.setIn(['userOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  let oldOrderList = new List()
+  if ('all' == type) {
+    oldOrderList = state.getIn(['userAllOrders', buyerId])
+    state = state.setIn(['userAllOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('waiting' == type) {
+    oldOrderList = state.getIn(['userWaitOrders', buyerId])
+    state = state.setIn(['userWaitOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('finished' == type) {
+    oldOrderList = state.getIn(['userFinishOrders', buyerId])
+    state = state.setIn(['userFinishOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  }
   return state
 }
 
