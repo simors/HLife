@@ -25,6 +25,8 @@ export const INVITE_SHOP = 2           // 邀请店铺获得的收益
 export const BUY_GOODS = 3             // 购买商品
 export const REWARD = 4                // 打赏
 export const WITHDRAW = 5              // 取现
+export const PUBLISH_PROMOTION = 6     //发布活动
+
 
 // 订单状态定义
 export const ORDER_STATUS = {
@@ -33,6 +35,7 @@ export const ORDER_STATUS = {
   ACCOMPLISH: 3,    // 已完成
   DELETED: 4,       // 已删除
 }
+
 
 //Ping ++
 export const  MERCHANT_CODE = '200586000001042'    //通联支付商户号

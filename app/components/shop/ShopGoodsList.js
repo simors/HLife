@@ -18,6 +18,8 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import {Actions} from 'react-native-router-flux'
 import {getThumbUrl} from '../../util/ImageUtil'
+import GoodShow from './GoodShow'
+
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -39,15 +41,9 @@ export default class ShopGoodsList extends Component {
   renderColumn(goodInfo) {
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
-        <View style={styles.channelWrap}>
-          <View style={styles.defaultImageStyles}>
-          <CachedImage mutable style={styles.defaultImageStyles}
-                       source={goodInfo.coverPhoto ? {uri: getThumbUrl(goodInfo.coverPhoto, normalizeW(169), normalizeH(169))} : require("../../assets/images/default_goods_cover.png")}/>
+        <View style={{flex:1,paddingTop:normalizeH(5),paddingBottom:normalizeH(5)}}>
+       <GoodShow goodInfo={goodInfo} key={goodInfo.id}/>
           </View>
-            {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-          <Text style={ styles.channelText} numberOfLines={1}>{goodInfo.goodsName}</Text>
-          <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + goodInfo.price}</Text>
-        </View>
       </TouchableOpacity>
     )
   }
@@ -55,14 +51,8 @@ export default class ShopGoodsList extends Component {
   renderLastColumn(goodInfo){
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
-        <View style={[styles.channelWrap,{width:normalizeW(348)}]}>
-          <View style={[styles.defaultImageStyles,{width:normalizeW(348)}]}>
-            <CachedImage mutable style={[styles.defaultImageStyles,{width:normalizeW(348)}]}
-                         source={goodInfo.coverPhoto ? {uri: getThumbUrl(goodInfo.coverPhoto, normalizeW(348), normalizeH(169))} : require("../../assets/images/default_goods_cover.png")}/>
-          </View>
-          {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-          <Text style={ styles.channelText} numberOfLines={1}>{goodInfo.goodsName}</Text>
-          <Text style={ styles.channelPrice} numberOfLines={1}>{'¥' + goodInfo.price}</Text>
+        <View style={{flex:1,paddingTop:normalizeH(5),paddingBottom:normalizeH(5)}}>
+          <GoodShow goodInfo={goodInfo} key={goodInfo.id} showType = 'lastGood' />
         </View>
       </TouchableOpacity>
     )
@@ -75,11 +65,11 @@ export default class ShopGoodsList extends Component {
     if(this.props.shopGoodsList&&this.props.shopGoodsList.length){
       let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
         if(key<6) {
-          if(this.props.shopGoodsList.length==1||3||5){
+          if(this.props.shopGoodsList.length==1||this.props.shopGoodsList.length==3||this.props.shopGoodsList.length==5){
             if(key == this.props.shopGoodsList.length-1){
-              return <View key={key} style={imageStyle}>
+              return (<View key={key} style={imageStyle}>
                 {this.renderLastColumn(item)}
-              </View>
+              </View>)
             }
           }
           return (

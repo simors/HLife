@@ -32,6 +32,10 @@ export function selectShopPromotionMaxNum(state){
   return selectShop(state).shopPromotionMaxNum
 }
 
+export function selectShopPromotionDayPay(state){
+  return selectShop(state).dayPay
+}
+
 export function selectUserFollowedShopList(state, userId) {
   let userFollowedShopList = state.SHOP.getIn(['userFollowedShops', userId])
   if(userFollowedShopList && userFollowedShopList.size) {
