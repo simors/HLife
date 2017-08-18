@@ -49,6 +49,8 @@ import ArticleViewer from '../common/Input/ArticleViewer'
 import {BUY_GOODS} from '../../constants/appConfig'
 import {LazyloadScrollView} from '../common/Lazyload'
 import Svg from '../common/Svgs'
+
+
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
