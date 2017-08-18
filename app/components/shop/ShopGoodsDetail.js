@@ -435,12 +435,44 @@ class ShopGoodsDetail extends Component {
           <Text style={styles.promotionTitleText}>{this.props.goodInfo.promotionType}</Text>
         </View>
         <View style={styles.promotionAbstract}>
-          <Text style={styles.promotionAbstractText}>{this.props.goodInfo.promotionAbstract}</Text>
+          <Text style={styles.promotionAbstractText} numberOfLines={1}>{this.props.goodInfo.promotionAbstract}</Text>
         </View>
       </View>
     )
   }
 
+  renderPriceTitle(){
+    if(this.props.goodInfo.promotionPrice&&this.props.goodInfo.promotionType){
+      return(
+        <View style={styles.priceWrap}>
+          <View style={styles.priceTitleBox}>
+            <Text style={styles.priceTitleText}>{'¥'+this.props.goodInfo.promotionPrice}</Text>
+          </View>
+          <View style={styles.priceOriginBox}>
+          <Text style={styles.priceOriginText}>{this.props.goodInfo.originalPrice}</Text>
+            </View>
+          <Text style={styles.pricePromotionText}>{this.props.goodInfo.promotionType}</Text>
+
+          <View style={styles.pricePromotionBox}>
+          </View>
+        </View>
+      )
+    }else{
+      return(
+        <View style={styles.priceWrap}>
+          <View style={styles.priceTitleBox}>
+            <Text style={styles.priceTitleText}>{'¥'+this.props.goodInfo.price}</Text>
+          </View>
+          <View style={styles.priceOriginBox}>
+            <Text style={styles.priceOriginText}>{this.props.goodInfo.originalPrice}</Text>
+          </View>
+        </View>
+      )
+
+    }
+
+
+  }
   render() {
     let lazyHost = "goodsDetail"
     return (
@@ -455,6 +487,7 @@ class ShopGoodsDetail extends Component {
           >
             {/*{(this.props.imageList&&this.props.imageList.length)?this.renderBannerColumn():null}*/}
             {this.props.goodInfo.album&&this.props.goodInfo.album.length?this.renderBannerColumn():null}
+            {this.renderPriceTitle()}
             {this.props.goodInfo.goodsName?<View style={styles.titleStyle}>
               <Text style={styles.titleTextStyle}>{this.props.goodInfo.goodsName}</Text>
             </View>:null}
@@ -479,8 +512,9 @@ const mapStateToProps = (state, ownProps) => {
   const isUserLogined = authSelector.isUserLogined(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   let shareDomain = configSelector.getShareDomain(state)
-  console.log('shopDetail===>',shopDetail)
   let imageList = []
+  // console.log('goodInfo===>',ownProps.goodInfo)
+
   if (ownProps.goodInfo.album && ownProps.goodInfo.album.length > 0)
     imageList = ownProps.goodInfo.album.map((item, key)=> {
       return (
@@ -708,7 +742,6 @@ const styles = StyleSheet.create({
     flex:1,
     width:PAGE_WIDTH,
     alignItems:'flex-start',
-    marginBottom:normalizeH(15),
     borderBottomWidth:normalizeH(1),
     borderBottomColor:'#F5F5F5',
   },
@@ -725,7 +758,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderTopWidth:normalizeBorder(1),
+    borderTopColor:'#F5F5F5',
+    borderBottomWidth:normalizeBorder(1),
+    borderBottomColor:'#F5F5F5',
   },
   shopInfo:{
     marginTop: normalizeH(8),
@@ -769,6 +806,9 @@ const styles = StyleSheet.create({
   },
   promotionWrap:{
     flexDirection: 'row',
+    alignItems:'center',
+    paddingTop:normalizeH(10),
+    paddingBottom: normalizeH(10)
   },
   promotionTitle:{
     marginLeft:normalizeW(15),
@@ -791,6 +831,50 @@ const styles = StyleSheet.create({
   promotionAbstractText:{
     color:'rgba(0,0,0,0.50)',
     fontSize:em(15),
-    
+  },
+  priceWrap:{
+    width:PAGE_WIDTH,
+    backgroundColor:'#FF9d4e',
+    height:normalizeH(55),
+    flex: 1,
+    flexDirection: 'row'
+  },
+  priceTitleBox:{
+    marginLeft:normalizeH(15),
+  },
+  priceTitleText:{
+    color: '#FFFFFF',
+    fontSize: em(40),
+    marginTop:normalizeH(6)
+  },
+  priceOriginBox:{
+    marginLeft:normalizeH(15),
+  },
+  priceOriginText:{
+    color:'rgba(255,255,255,0.70)',
+    fontSize:em(20),
+    marginTop: normalizeH(25),
+    textDecorationLine:'line-through'
+  },
+  pricePromotionBox:{
+    right:0,
+    top:0,
+    width:normalizeW(125),
+    // height:normalizeH(55),
+    borderBottomWidth:normalizeW(55),
+    borderBottomColor:'#F3f800',
+    borderLeftWidth:normalizeH(23),
+    borderLeftColor:'transparent',
+    backgroundColor: '#FF9d4e',
+    position:'absolute'
+  },
+  pricePromotionText:{
+    fontSize: em(18),
+    color:'#FF7819',
+    position:'absolute',
+    zIndex: 10,
+    left: normalizeW(285),
+    top: normalizeH(20),
+    backgroundColor: '#F3f800',
   }
 })
