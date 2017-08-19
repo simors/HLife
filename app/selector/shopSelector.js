@@ -361,3 +361,23 @@ export function selectUserOrders(state, buyerId, type) {
   let userOrders = constructUserOrdereList(state, orderIds, buyerId)
   return userOrders
 }
+
+export function selectOrderDetail(state, orderId) {
+  let orderRec = state.SHOP.getIn(['orderDetail', orderId])
+  if (!orderRec) {
+    return undefined
+  }
+  let order = orderRec.toJS()
+  let vendorId = order.vendorId
+  let vendor = selectShopDetailDirect(state, vendorId)
+  let buyerId = order.buyerId
+  let buyer = userInfoById(state, buyerId).toJS()
+  let goodsId = order.goodsId
+  let goods = selectShopGoodsDetail(state, goodsId)
+  return {
+    ...order,
+    buyer,
+    vendor,
+    goods,
+  }
+}

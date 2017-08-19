@@ -1267,10 +1267,8 @@ export function fetchUserShopOrders(payload) {
       dispatch(addUserBatchProfile({userProfiles: buyers}))
       dispatch(addBatchShopDetail({shopInfos: vendors}))
       dispatch(batchAddShopGoodsDetail({goodsList: goods}))
-      console.log('payload', payload)
 
       if (payload.success) {
-        console.log('in action')
         payload.success(shopOrders.length == 0)
       }
     }).catch((error) => {

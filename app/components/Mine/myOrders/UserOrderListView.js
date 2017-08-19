@@ -18,6 +18,7 @@ import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import CommonListView from '../../common/CommonListView'
 import {LazyloadView} from '../../common/Lazyload'
+import Svg from '../../common/Svgs'
 import {selectUserOrders} from '../../../selector/shopSelector'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../../util/ImageUtil'
@@ -131,9 +132,12 @@ class UserOrderListView extends Component {
     this.lastTime = userOrder.createdAt
     return (
       <LazyloadView host="userOrderList" style={[styles.itemView, {height: this.getItemHeight(userOrder.orderStatus)}]} >
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => {Actions.USER_ORDER_DETAIL({orderId: userOrder.id})}}>
           <View style={styles.titleView} >
             <View style={styles.titleContent}>
+              <View style={{paddingRight: normalizeW(4)}}>
+                <Svg size={24} icon="shop_invite"/>
+              </View>
               <Text style={styles.titleText}>{vendor.shopName}</Text>
             </View>
             <View style={{paddingRight: normalizeW(15)}}>
