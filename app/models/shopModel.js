@@ -533,6 +533,8 @@ export class ShopComment extends ShopCommentRecord {
       record.set('id', lcJson.commentId)
       record.set('shopId', lcJson.shopId)
       record.set('content', lcJson.content)
+      record.set('blueprints', lcJson.blueprints)
+
       record.set('parentCommentContent', lcJson.parentCommentContent)
       record.set('parentCommentUserName', lcJson.parentCommentUserName)
       record.set('parentCommentId', lcJson.parentCommentId)

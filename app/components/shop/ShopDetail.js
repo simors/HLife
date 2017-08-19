@@ -69,7 +69,7 @@ import * as configSelector from '../../selector/configSelector'
 import Comment from '../common/Comment'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
-
+import ShopCommentListV2 from './ShopCommentListV2'
 import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
 import ActionSheet from 'react-native-actionsheet'
@@ -95,7 +95,9 @@ class ShopDetail extends Component {
       modalVisible: false,
       fade: new Animated.Value(0),
       height: 0,
-      showOverlay: false
+      showOverlay: false,
+      hideBottomView: false,
+      comment: undefined,
     }
   }
 
@@ -515,6 +517,33 @@ class ShopDetail extends Component {
     )
   }
 
+  onCommentButton(topic) {
+    this.setState({
+      comment: topic
+    })
+    this.openModel()
+  }
+
+  openModel(callback) {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    }
+    else {
+      this.setState({
+        hideBottomView: true
+      }, ()=>{
+        // console.log('openModel===', this.replyInput)
+        if (this.replyInput) {
+          this.replyInput.focus()
+        }
+        if (callback && typeof callback == 'function') {
+          callback()
+        }
+      })
+
+    }
+  }
+
   renderComments() {
     if (this.props.shopComments && this.props.shopComments.length) {
       let avatar = require('../../assets/images/default_portrait.png')
@@ -525,7 +554,11 @@ class ShopDetail extends Component {
             <Text style={styles.titleTxt}>留言板·{this.props.shopCommentsTotalCount}</Text>
           </View>
 
-          <ShopCommentList shopId = {this.props.id}/>
+          <ShopCommentListV2  viewType = 'shop'
+                              allShopComments={this.props.shopCommentList}
+                              commentsArray = {this.props.shopCommentIdList}
+                              onCommentButton={(payload)=>{this.onCommentButton(payload)}}
+          />
 
         </View>
       )
@@ -1093,6 +1126,8 @@ const mapStateToProps = (state, ownProps) => {
     userOwnedShopInfo: userOwnedShopInfo,
     appServicePhone: appServicePhone,
     shareDomain: shareDomain,
+    shopCommentList:shopCommentList.commentList,
+    shopCommentIdList:shopCommentList.commentIdList
   }
 }
 
