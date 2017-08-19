@@ -22,6 +22,7 @@ import {selectUserOrders} from '../../../selector/shopSelector'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {ORDER_STATUS} from '../../../constants/appConfig'
+import {fetchUserShopOrders} from '../../../action/shopAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -29,14 +30,48 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 class UserOrderListView extends Component {
   constructor(props) {
     super(props)
+    this.lastTime = undefined
+    this.isQuery = false
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.refreshData()
+    })
+  }
+
+  componentWillReceiveProps(newProps) {
   }
 
   refreshData() {
-
+    this.lastTime = undefined
+    this.loadMoreData(true)
   }
 
-  loadMoreData(more) {
-
+  loadMoreData(isRefresh) {
+    if (this.isQuery) {
+      return
+    }
+    this.isQuery = true
+    let payload = {
+      more: !isRefresh,
+      buyerId: this.props.buyerId,
+      type: this.props.type,
+      lastTime: this.lastTime,
+      limit: 10,
+      success: (isEmpty) => {
+        console.log('dfdasf')
+        this.isQuery = false
+        if(!this.listView) {
+          return
+        }
+        this.listView.isLoadUp(!isEmpty)
+      },
+      error: (err)=>{
+        this.isQuery = false
+      }
+    }
+    this.props.fetchUserShopOrders(payload)
   }
 
   tipsText(orderStatus) {
@@ -93,7 +128,7 @@ class UserOrderListView extends Component {
     if (!goods || !vendor) {
       return <View/>
     }
-    console.log('userOrder', userOrder)
+    this.lastTime = userOrder.createdAt
     return (
       <LazyloadView host="userOrderList" style={[styles.itemView, {height: this.getItemHeight(userOrder.orderStatus)}]} >
         <TouchableOpacity onPress={() => {}}>
@@ -170,6 +205,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchUserShopOrders,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOrderListView)
@@ -253,7 +289,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {
-    fontSize: em(17),
+    fontSize: em(15),
     color: THEME.base.mainColor,
   },
 })

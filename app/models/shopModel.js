@@ -820,6 +820,8 @@ export const ShopOrdersRecord = Record({
   receiverAddr: undefined,
   receiverPhone: undefined,
   remark: undefined,
+  createdAt: undefined,
+  updatedAt: undefined,
 }, 'ShopOrdersRecord')
 
 export class ShopOrders extends ShopOrdersRecord {
@@ -837,6 +839,8 @@ export class ShopOrders extends ShopOrdersRecord {
       record.set('receiverAddr', lcObj.receiverAddr)
       record.set('receiverPhone', lcObj.receiverPhone)
       record.set('remark', lcObj.remark)
+      record.set('createdAt', lcObj.createdAt)
+      record.set('updatedAt', lcObj.updatedAt)
     })
   }
 }

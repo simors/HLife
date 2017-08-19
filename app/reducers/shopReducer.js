@@ -611,12 +611,21 @@ function handleAddUserShopOrders(state, action) {
   let oldOrderList = new List()
   if ('all' == type) {
     oldOrderList = state.getIn(['userAllOrders', buyerId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
     state = state.setIn(['userAllOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
   } else if ('waiting' == type) {
     oldOrderList = state.getIn(['userWaitOrders', buyerId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
     state = state.setIn(['userWaitOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
   } else if ('finished' == type) {
     oldOrderList = state.getIn(['userFinishOrders', buyerId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
     state = state.setIn(['userFinishOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
   }
   return state

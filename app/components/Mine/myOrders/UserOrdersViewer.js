@@ -29,56 +29,22 @@ class UserOrdersViewer extends Component {
     this.state = {
       tabType: 0,
     }
-    this.lastTime = undefined
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUserShopOrders({
-        more: false,
-        buyerId: this.props.currentUserId,
-        type: 'all',
-        limit: 10,
-      })
-      this.props.fetchUserShopOrders({
-        more: false,
-        buyerId: this.props.currentUserId,
-        type: 'waiting',
-        limit: 10,
-      })
-      this.props.fetchUserShopOrders({
-        more: false,
-        buyerId: this.props.currentUserId,
-        type: 'finished',
-        limit: 10,
-      })
-    })
-  }
-
-  fetchUserAllOrders() {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUserShopOrders({
-        more: false,
-        buyerId: this.props.currentUserId,
-        type: 'all',
-        limit: 10,
-      })
-    })
-  }
-
-  fetchUserWaitOrders() {
-    InteractionManager.runAfterInteractions(() => {
+      // this.props.fetchUserShopOrders({
+      //   more: false,
+      //   buyerId: this.props.currentUserId,
+      //   type: 'all',
+      //   limit: 10,
+      // })
       this.props.fetchUserShopOrders({
         more: false,
         buyerId: this.props.currentUserId,
         type: 'waiting',
         limit: 10,
       })
-    })
-  }
-
-  fetchUserFinishOrders() {
-    InteractionManager.runAfterInteractions(() => {
       this.props.fetchUserShopOrders({
         more: false,
         buyerId: this.props.currentUserId,
@@ -89,15 +55,7 @@ class UserOrdersViewer extends Component {
   }
 
   toggleTab(type) {
-    this.setState({tabType: type}, ()=> {
-      if (0 == type) {
-        this.lastTime = undefined
-      } else if (1 == type) {
-        this.lastTime = undefined
-      } else if (2 == type) {
-        this.lastTime = undefined
-      }
-    })
+    this.setState({tabType: type})
   }
 
   renderTabBar() {
