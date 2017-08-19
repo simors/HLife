@@ -351,27 +351,29 @@ export function selectUserOrders(state, buyerId) {
 }
 
 export function selectCommentsForComment(state,commentId) {
-  let commentList = state.SHOP.getIn('shopCommentsForComment',commentId)||[]
+  let commentList = state.SHOP.get('shopCommentsForComment',commentId)||[]
   let comments = []
   if(commentList&&commentList.size){
     commentList.forEach((comment)=>{
-      let promotion = state.SHOP.getIn(['allShopComments',comment])
+      let promotion = state.SHOP.get(['allShopComments',comment])
       comments.push(promotion.toJS())
     })
   }
   return comments
 }
 
-export function selectCommentsForShop(state,commentId) {
-  let commentList = state.SHOP.getIn('shopCommentsForShop',commentId)||[]
-  let comments = []
-  if(commentList&&commentList.size){
-    commentList.forEach((comment)=>{
-      let promotion = state.SHOP.getIn(['allShopComments',comment])
-      comments.push(promotion.toJS())
+export function selectCommentsForShop(state,shopId) {
+  let shops = state.SHOP.getIn(['shopCommentsForShop',shopId])||[]
+  let commentList = []
+  if(shops&&shops.size){
+    shops.forEach((commentId)=>{
+      let comment = state.SHOP.getIn(['allShopComments',commentId])
+      if(comment){
+        commentList.push(comment.toJS())
+      }
     })
   }
-  return comments
+  return commentList
 }
 
 

@@ -123,6 +123,8 @@ export default function shopReducer(state = initialState, action) {
       return handleAddCommentsForShop(state, action)
     case ShopActionTypes.FETCH_MY_COMMENT_UPS:
       return handleFetchMyCommentsUps(state, action)
+    case ShopActionTypes.USER_UP_SHOP_COMMENT_SUCCESS:
+      return handleupShopCommentSuccess(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -662,7 +664,7 @@ function handleAddCommentsForShop(state, action) {
   let commentList = payload.commentList
   let team = state.getIn(['shopCommentsForShop', payload.shopId])|| new List()
   // if(team&&team.length>0)
-  state = state.setIn(['shopCommentsForComment', payload.commentId], team.concat(new List(commentList)))
+  state = state.setIn(['shopCommentsForComment', payload.shopId], team.concat(new List(commentList)))
   state = handleSetAllShopComments(state,payload.comments)
   return state
 }
@@ -683,6 +685,14 @@ function handleFetchMyCommentsUps(state, action) {
     commentsUps.push(item)
   })
   state = state.set('myCommentsUps', Set(commentsUps))
+  return state
+}
+
+function handleupShopCommentSuccess(state, action) {
+  let payload = action.payload
+  let commentsUps = [payload.up]
+  let team = state.get('myCommentsUps')|| new Set()
+  state = state.setIn('myCommentsUps', team.concat(new Set(commentsUps)))
   return state
 }
 

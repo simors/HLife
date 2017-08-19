@@ -9,7 +9,7 @@ import * as msgAction from './messageAction'
 import * as AuthTypes from '../constants/authActionTypes'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion, ShopGoods, ShopInfo, ShopGoodPromotion, ShopOrders} from '../models/shopModel'
+import {ShopPromotion, ShopGoods, ShopInfo, ShopGoodPromotion, ShopOrders,ShopComment} from '../models/shopModel'
 import {UserInfo} from '../models/userModels'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
@@ -1284,6 +1284,56 @@ export function fetchAllMyCommentUps(payload){
     },(err)=>{
       if(payload.error){
         payload.error(err)
+      }
+    })
+  }
+}
+
+
+export function fetchAllComments(payload) {
+  // console.log('hahahahahahahahahah')
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    lcShop.fetchShopCommentsByCloud(payload).then((result) => {
+      let commentList = result.commentList
+
+      let allComments = result.allComments
+      let comments = []
+      if (allComments && allComments.length) {
+        allComments.forEach((item)=> {
+          let comment = ShopComment.fromLeancloudApi(item)
+          comments.push(comment)
+        })
+      }
+
+      if (payload.commentId && payload.commentId != '') {
+        if (more) {
+          let updateAction = createAction(ShopActionTypes.ADD_SHOP_COMMENTS_FOR_COMMENT)
+          dispatch(updateAction({commentId: payload.commentId, comments: comments,commentList: commentList}))
+        } else {
+          let updateAction = createAction(ShopActionTypes.SET_SHOP_COMMENTS_FOR_COMMENT)
+          dispatch(updateAction({commentId: payload.commentId, comments: comments,commentList: commentList}))
+        }
+      } else if (payload.shopId && payload.shopId != '') {
+        if (more) {
+          let updateAction = createAction(ShopActionTypes.ADD_SHOP_COMMENTS_FOR_SHOP)
+          dispatch(updateAction({shopId: payload.shopId, comments: comments, commentList: commentList}))
+        } else {
+          let updateAction = createAction(ShopActionTypes.SET_SHOP_COMMENTS_FOR_SHOP)
+          dispatch(updateAction({shopId: payload.shopId, comments: comments, commentList: commentList}))
+        }
+      }
+
+      if (payload.success) {
+        payload.success(commentList.length == 0)
+      }
+    }).catch((error) => {
+      console.log('error====>',error)
+      if (payload.error) {
+        payload.error(error)
       }
     })
   }

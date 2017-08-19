@@ -31,6 +31,8 @@ import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} fro
 import {selectShopDetail, selectShopComments} from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import ShopComment from './ShopComment'
+import ShopCommentForShop from './ShopCommentForShop'
+
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from './ShopCommentReply/ToolBarContent'
 import * as ShopDetailTestData from './ShopDetailTestData'
@@ -90,21 +92,24 @@ class ShopCommentList extends Component {
   }
 
   renderRow(rowData, rowId) {
+    let comment={
+      shopId: this.props.shopId,
+    shopCommentId: rowData.id,
+    userId : rowData.user.id,
+      authorNickname: rowData.user.nickname,
+      authorAvatar: rowData.user.avatar,
+    score: rowData.score,
+    content: rowData.content,
+    shopCommentTime: rowData.shopCommentTime,
+    createdDate: rowData.createdDate,
+    blueprints:rowData.blueprints,
+    containedReply:rowData.containedReply,
+    containedUps:rowData.containedUps,
+    }
     return (
-      <ShopComment
-        shopId={this.props.shopId}
-        shopCommentId={rowData.id}
-        userId={rowData.user.id}
-        userNickname={rowData.user.nickname}
-        avatar={rowData.user.avatar}
-        score={rowData.score}
-        content={rowData.content}
-        shopCommentTime={rowData.shopCommentTime}
-        createdDate={rowData.createdDate}
-        blueprints={rowData.blueprints}
-        containedReply={rowData.containedReply}
-        containedUps={rowData.containedUps}
-        onReplyClick={this.onReplyClick.bind(this)}
+      <ShopCommentForShop
+        comment={comment}
+        onCommentButton={(payload)=>{this.onReplyClick(payload)}}
       />
     )
   }

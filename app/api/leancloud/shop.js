@@ -316,17 +316,20 @@ export function unFollowShop(payload) {
 
 export function submitShopComment(payload) {
   let shopId = payload.id
-  let score = payload.score
+  // let score = payload.score
   let content = payload.content
   let blueprints = payload.blueprints
-  let shop = AV.Object.createWithoutData('Shop', shopId)
+  // let shop = AV.Object.createWithoutData('Shop', shopId)
   let currentUser = AV.User.current()
+  let commentId = payload.commentId
+  let replyId = payload.replyId
   let params = {
     shopId: shopId,
     userId: currentUser.id,
     content: content,
     blueprints: blueprints,
-
+    replyId: replyId,
+    commentId: commentId
   }
   return AV.Cloud.run('pubulishShopComment',{payload: params}).then((results) => {
     // console.log('submitShopComment.results=', results)
@@ -1356,6 +1359,14 @@ export function fetchAllMyCommentUps(){
     return ups
   },(err)=>{
     throw(err)
+  })
+}
+
+export function fetchShopCommentsByCloud(payload){
+  return AV.Cloud.run('fetchShopComments',payload).then((result)=>{
+    return result
+  },(err)=>{
+    throw err
   })
 }
 

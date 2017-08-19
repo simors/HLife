@@ -50,6 +50,7 @@ import {
   userUnUpShop,
   fetchUserUpShopInfo,
   getShopGoodsList,
+  fetchAllComments,
 } from '../../action/shopAction'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 import {
@@ -60,7 +61,8 @@ import {
   selectUserIsFollowShop,
   selectShopComments,
   selectShopCommentsTotalCount,
-  selectGoodsList
+  selectGoodsList,
+  selectCommentsForShop
 } from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import * as configSelector from '../../selector/configSelector'
@@ -93,12 +95,16 @@ class ShopDetail extends Component {
       modalVisible: false,
       fade: new Animated.Value(0),
       height: 0,
+      showOverlay: false
     }
   }
 
   componentWillMount() {
     this.isFetchingShopDetail = true
     InteractionManager.runAfterInteractions(()=> {
+      this.props.fetchAllComments({
+        shopId: this.props.id,
+      })
       this.props.getShopGoodsList({
         shopId: this.props.id,
         status: 1,
@@ -1061,10 +1067,11 @@ const mapStateToProps = (state, ownProps) => {
   const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   let isFollowedShop = false
+  let shopCommentList = selectCommentsForShop(state,ownProps.id)
   if (isUserLogined) {
     isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   }
-
+  console.log('shopCommentList======>',shopCommentList)
   const guessYouLikeList = selectGuessYouLikeShopList(state)
 
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
@@ -1111,7 +1118,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserFollowShops,
   fetchUsers,
   fetchShareDomain,
-  getShopGoodsList
+  getShopGoodsList,
+  fetchAllComments
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopDetail)

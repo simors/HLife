@@ -447,7 +447,7 @@ export const ShopCommentRecord = Record({
   id: undefined, //店铺评论id
   content: '', //评论内容
   blueprints: [], //晒图
-  parantCommentContent : undefined,
+  parentCommentContent : undefined,
   parentCommentUserName : undefined,
   parentCommentNickname : undefined,
   parentCommentId : undefined,
@@ -461,7 +461,7 @@ export const ShopCommentRecord = Record({
   commentCount : undefined,
   authorId : undefined,
   authorAvatar : undefined,
-
+  shopId: undefined,
   containedReply: [], //回复列表
   containedUps: [], //点赞列表
   targetShop: {}, //目标店铺
@@ -548,6 +548,7 @@ export class ShopComment extends ShopCommentRecord {
       record.set('authorId', lcJson.authorId)
       record.set('authorAvatar', lcJson.authorAvatar)
       record.set('createdDate', lcJson.createdDate)
+      console.log('lcJson=====>',lcJson)
       if (lcJson.updatedAt) {
         record.set('updatedAt', lcJson.updatedAt.valueOf())
         // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
