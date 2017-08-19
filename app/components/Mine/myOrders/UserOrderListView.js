@@ -151,7 +151,7 @@ class UserOrderListView extends Component {
                             onPress={() => {this.setOrderStatus(order.buyerId, order.id, ORDER_STATUS.DELETED)}}>
             <Text style={[styles.btnText, {color: '#000'}]}>删除订单</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnStyle} onPress={() => {}}>
+          <TouchableOpacity style={styles.btnStyle} onPress={() => {Actions.SHOP_DETAIL({id: order.vendorId})}}>
             <Text style={styles.btnText}>评价</Text>
           </TouchableOpacity>
         </View>
