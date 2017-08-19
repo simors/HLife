@@ -321,20 +321,14 @@ export function submitShopComment(payload) {
   let blueprints = payload.blueprints
   let shop = AV.Object.createWithoutData('Shop', shopId)
   let currentUser = AV.User.current()
+  let params = {
+    shopId: shopId,
+    userId: currentUser.id,
+    content: content,
+    blueprints: blueprints,
 
-  let ShopComment = AV.Object.extend('ShopComment')
-  let shopComment = new ShopComment()
-  shopComment.set('user', currentUser)
-  shopComment.set('targetShop', shop)
-  if(score) {
-    shopComment.set('score', score)
   }
-  if(blueprints) {
-    shopComment.set('blueprints', blueprints)
-  }
-  shopComment.set('content', content)
-
-  return shopComment.save().then((results) => {
+  return AV.Cloud.run('pubulishShopComment',{payload: params}).then((results) => {
     // console.log('submitShopComment.results=', results)
     let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
     let activeUser = authSelector.activeUserInfo(store.getState())
@@ -348,7 +342,6 @@ export function submitShopComment(payload) {
         }
       })
     }
-    
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -1352,6 +1345,17 @@ export function closeShopPromotion(payload) {
     return promotion
   }, (err) => {
     throw err
+  })
+}
+
+export function fetchAllMyCommentUps(){
+  let payload = {
+    userId: authSelector.activeUserId(store.getState())
+  }
+  return AV.Cloud.run('fetchMyShopCommentsUps',payload).then((ups)=>{
+    return ups
+  },(err)=>{
+    throw(err)
   })
 }
 

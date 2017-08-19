@@ -349,3 +349,39 @@ export function selectUserOrders(state, buyerId) {
   })
   return userOrders
 }
+
+export function selectCommentsForComment(state,commentId) {
+  let commentList = state.SHOP.getIn('shopCommentsForComment',commentId)||[]
+  let comments = []
+  if(commentList&&commentList.size){
+    commentList.forEach((comment)=>{
+      let promotion = state.SHOP.getIn(['allShopComments',comment])
+      comments.push(promotion.toJS())
+    })
+  }
+  return comments
+}
+
+export function selectCommentsForShop(state,commentId) {
+  let commentList = state.SHOP.getIn('shopCommentsForShop',commentId)||[]
+  let comments = []
+  if(commentList&&commentList.size){
+    commentList.forEach((comment)=>{
+      let promotion = state.SHOP.getIn(['allShopComments',comment])
+      comments.push(promotion.toJS())
+    })
+  }
+  return comments
+}
+
+
+export function isCommentLiked(state,commentId){
+  let commentUps = state.SHOP.get('myCommentsUps')||[]
+  let isLiked = false
+  commentUps.forEach((item)=>{
+    if(item==commentId){
+      isLiked = true
+    }
+  })
+  return isLiked
+}

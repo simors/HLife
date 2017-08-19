@@ -1,4 +1,4 @@
-import {Map, List} from 'immutable'
+import {Map, List,Set} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as ShopActionTypes from '../constants/shopActionTypes'
 import {
@@ -113,6 +113,16 @@ export default function shopReducer(state = initialState, action) {
       return handleBatchAddOrdersDetail(state, action)
     case ShopActionTypes.BATCH_ADD_SHOP_GOODS_DETAIL:
       return handleBatchAddShopGoodsDetail(state, action)
+    case ShopActionTypes.SET_SHOP_COMMENTS_FOR_COMMENT:
+      return handleSetCommentsForComment(state, action)
+    case ShopActionTypes.ADD_SHOP_COMMENTS_FOR_COMMENT:
+      return handleAddCommentsForComment(state, action)
+    case ShopActionTypes.SET_SHOP_COMMENTS_FOR_SHOP:
+      return handleSetCommentsForShop(state, action)
+    case ShopActionTypes.ADD_SHOP_COMMENTS_FOR_SHOP:
+      return handleAddCommentsForShop(state, action)
+    case ShopActionTypes.FETCH_MY_COMMENT_UPS:
+      return handleFetchMyCommentsUps(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -618,6 +628,61 @@ function handleBatchAddShopGoodsDetail(state, action) {
   goodsList.forEach((goods) => {
     state = state.setIn(['shopGoodsDetail', goods.id], goods)
   })
+  return state
+}
+
+function handleSetAllShopComments(state, comments) {
+  comments.forEach((item)=> {
+    state = state.setIn(['allShopComments', item.id], item)
+  })
+  return state
+}
+
+function handleAddCommentsForComment(state, action) {
+  let payload = action.payload
+  let commentList = payload.commentList
+  let team = state.getIn(['shopCommentsForComment', payload.commentId])|| new List()
+  // if(team&&team.length>0)
+  state = state.setIn(['shopCommentsForComment', payload.commentId], team.concat(new List(commentList)))
+  state = handleSetAllShopComments(state,payload.comments)
+  return state
+}
+
+function handleSetCommentsForComment(state, action) {
+  let payload = action.payload
+  let commentList = payload.commentList
+  // if(team&&team.length>0)
+  state = state.setIn(['shopCommentsForComment', payload.commentId], new List(commentList))
+  state = handleSetAllShopComments(state,payload.comments)
+  return state
+}
+
+function handleAddCommentsForShop(state, action) {
+  let payload = action.payload
+  let commentList = payload.commentList
+  let team = state.getIn(['shopCommentsForShop', payload.shopId])|| new List()
+  // if(team&&team.length>0)
+  state = state.setIn(['shopCommentsForComment', payload.commentId], team.concat(new List(commentList)))
+  state = handleSetAllShopComments(state,payload.comments)
+  return state
+}
+
+function handleSetCommentsForShop(state, action) {
+  let payload = action.payload
+  let commentList = payload.commentList
+  // if(team&&team.length>0)
+  state = state.setIn(['shopCommentsForShop', payload.shopId], new List(commentList))
+  state = handleSetAllShopComments(state,payload.comments)
+  return state
+}
+
+function handleFetchMyCommentsUps(state, action) {
+  let payload = action.payload
+  let commentsUps = []
+  payload.commentsUps.forEach((item)=> {
+    commentsUps.push(item)
+  })
+  state = state.set('myCommentsUps', Set(commentsUps))
   return state
 }
 

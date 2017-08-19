@@ -42,7 +42,7 @@ import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
 import {selectLocalShopList} from '../../selector/shopSelector'
-import {clearShopList, getNearbyShopList} from '../../action/shopAction'
+import {clearShopList, getNearbyShopList,fetchAllMyCommentUps} from '../../action/shopAction'
 import SearchBar from '../common/SearchBar'
 import ScoreShow from '../common/ScoreShow'
 import ViewPager from 'react-native-viewpager'
@@ -64,6 +64,9 @@ class Local extends Component {
     InteractionManager.runAfterInteractions(() => {
       // console.log('componentWillMount.runAfterInteractions===', this.props)
       this.props.fetchShopCategories()
+      if(this.props.isUserLogined){
+        this.props.fetchAllMyCommentUps()
+      }
       this.refreshData()
     })
   }
@@ -353,7 +356,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
   clearShopList,
-  getNearbyShopList
+  getNearbyShopList,
+  fetchAllMyCommentUps
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)

@@ -1268,3 +1268,23 @@ export function closeShopPromotion(payload) {
     })
   }
 }
+
+export function fetchAllMyCommentUps(payload){
+  return (dispatch,getState)=>{
+    lcShop.fetchAllMyCommentUps().then((ups)=>{
+      let actionType = ShopActionTypes.FETCH_MY_COMMENT_UPS
+      if(ups.commentList&&ups.commentList.length>0){
+        let commentUpAction = createAction(actionType)
+        // console.log('ups===commentList===>',ups.commentList)
+        dispatch(commentUpAction({commentsUps: ups.commentList}))
+      }
+      if(payload.success){
+        payload.success()
+      }
+    },(err)=>{
+      if(payload.error){
+        payload.error(err)
+      }
+    })
+  }
+}

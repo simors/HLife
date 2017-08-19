@@ -752,10 +752,12 @@ class ShopDetail extends Component {
         <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
         {this.renderShopTags()}
       </View>
+        <TouchableOpacity onPress={()=>{this.followShop()}}>
       <View style={styles.shopAbstractLikeWrap}>
         <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
         <Text style={styles.shopAbstractLike}>关注</Text>
       </View>
+          </TouchableOpacity>
         </LinearGradient>
     )
   }

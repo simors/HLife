@@ -1,7 +1,7 @@
 /**
  * Created by zachary on 2016/12/20.
  */
-import {Map, List, Record} from 'immutable'
+import {Map, List, Record,Set} from 'immutable'
 import AV from 'leancloud-storage'
 import * as numberUtils from '../util/numberUtils'
 import * as locSelector from '../selector/locSelector'
@@ -447,6 +447,21 @@ export const ShopCommentRecord = Record({
   id: undefined, //店铺评论id
   content: '', //评论内容
   blueprints: [], //晒图
+  parantCommentContent : undefined,
+  parentCommentUserName : undefined,
+  parentCommentNickname : undefined,
+  parentCommentId : undefined,
+  replyCommentContent : undefined,
+  replyCommentUserName : undefined,
+  replyCommentNickname : undefined,
+  replyCommentId : undefined,
+  upCount : undefined,
+  authorUsername : undefined,
+  authorNickname : undefined,
+  commentCount : undefined,
+  authorId : undefined,
+  authorAvatar : undefined,
+
   containedReply: [], //回复列表
   containedUps: [], //点赞列表
   targetShop: {}, //目标店铺
@@ -509,6 +524,39 @@ export class ShopComment extends ShopCommentRecord {
       record.set('updatedAt', lcJson.updatedAt)
       record.set('containedReply', lcJson.replys)
       record.set('containedUps', lcJson.ups)
+    })
+  }
+
+  static fromLeancloudApi(lcJson) {
+    let shopComment = new ShopCommentRecord()
+    return shopComment.withMutations((record)=>{
+      record.set('id', lcJson.commentId)
+      record.set('shopId', lcJson.shopId)
+      record.set('content', lcJson.content)
+      record.set('parentCommentContent', lcJson.parentCommentContent)
+      record.set('parentCommentUserName', lcJson.parentCommentUserName)
+      record.set('parentCommentId', lcJson.parentCommentId)
+      record.set('parentCommentNickname', lcJson.parentCommentNickname)
+      record.set('replyCommentContent', lcJson.replyCommentContent)
+      record.set('replyCommentUserName', lcJson.replyCommentUserName)
+      record.set('replyCommentId', lcJson.replyCommentId)
+      record.set('replyCommentNickname', lcJson.replyCommentNickname)
+      record.set('upCount', lcJson.upCount)
+      record.set('authorUsername', lcJson.authorUsername)
+      record.set('authorNickname', lcJson.authorNickname)
+      record.set('commentCount', lcJson.commentCount)
+      record.set('authorId', lcJson.authorId)
+      record.set('authorAvatar', lcJson.authorAvatar)
+      record.set('createdDate', lcJson.createdDate)
+      if (lcJson.updatedAt) {
+        record.set('updatedAt', lcJson.updatedAt.valueOf())
+        // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      }
+      // record.set('createdAt', lcObj.createdAt.valueOf())
+      if (lcJson.createdAt) {
+        record.set('createdAt', lcJson.createdAt.valueOf())
+        // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
+      }
     })
   }
 }
@@ -845,6 +893,9 @@ export const Shop = Record({
   shopList: List(),
   localShopList: List(),
   shopPromotionList: List(),
+  allShopComments:Map(),
+  shopCommentsForComment:Map(),
+  shopCommentsForShop:Map(),
   myShopExpriredPromotionList: Map(),
   fetchShopListArrivedLastPage: false,
   shopAnnouncements: Map(),
@@ -872,4 +923,5 @@ export const Shop = Record({
   orderDetail: Map(),     // 用户订单详情，键为订单id，值为订单详情
   userOrders: Map(),      // 用户订单，键为用户id，值为订单id组成的List
   shopOrders: Map(),      // 店铺管理订单，键为店铺的id，值为订单组成的List
+  myCommentsUps: Set()
 }, 'Shop')
