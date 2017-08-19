@@ -113,6 +113,10 @@ export default function shopReducer(state = initialState, action) {
       return handleBatchAddOrdersDetail(state, action)
     case ShopActionTypes.BATCH_ADD_SHOP_GOODS_DETAIL:
       return handleBatchAddShopGoodsDetail(state, action)
+    case ShopActionTypes.UPDATE_SHOP_ORDER_STATUS:
+      return handleUpdateShopOrderStatus(state, action)
+    case ShopActionTypes.MOVE_USER_ORDER_TO_FINISH:
+      return handleMoveUserOrderToFinish(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -644,6 +648,37 @@ function handleBatchAddShopGoodsDetail(state, action) {
   goodsList.forEach((goods) => {
     state = state.setIn(['shopGoodsDetail', goods.id], goods)
   })
+  return state
+}
+
+function handleUpdateShopOrderStatus(state, action) {
+  let status = action.payload.status
+  let orderId = action.payload.orderId
+  let order = state.getIn(['orderDetail', orderId])
+  if (!order) {
+    return state
+  }
+  order = order.set('orderStatus', status)
+  state = state.setIn(['orderDetail', orderId], order)
+  return state
+}
+
+function handleMoveUserOrderToFinish(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let buyerId = payload.buyerId
+  let waitList = state.getIn(['userWaitOrders', buyerId])
+  if (!waitList) {
+    return state
+  }
+  waitList = waitList.filter((item) => (item != orderId))
+  state = state.setIn(['userWaitOrders', buyerId], waitList)
+  let finishList = state.getIn(['userFinishOrders', buyerId])
+  if (!finishList) {
+    finishList = new List()
+  }
+  finishList = finishList.insert(0, orderId)
+  state = state.setIn(['userFinishOrders', buyerId], finishList)
   return state
 }
 

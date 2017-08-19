@@ -16,6 +16,7 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
+import Popup from '@zzzkk2009/react-native-popup'
 import CommonListView from '../../common/CommonListView'
 import {LazyloadView} from '../../common/Lazyload'
 import Svg from '../../common/Svgs'
@@ -23,7 +24,8 @@ import {selectUserOrders} from '../../../selector/shopSelector'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {ORDER_STATUS} from '../../../constants/appConfig'
-import {fetchUserShopOrders} from '../../../action/shopAction'
+import {fetchUserShopOrders, modifyUserOrderStatus} from '../../../action/shopAction'
+import * as Toast from '../../../components/common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -41,7 +43,40 @@ class UserOrderListView extends Component {
     })
   }
 
-  componentWillReceiveProps(newProps) {
+  setOrderStatus(buyerId, orderId, status) {
+    let promption = "确定更新的订单？"
+    if (ORDER_STATUS.ACCOMPLISH == status) {
+      promption = "确定收货吗？"
+    } else if (ORDER_STATUS.DELETED == status) {
+      promption = "确定要删除订单？"
+    }
+    Popup.confirm({
+      title: '提示',
+      content: promption,
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=>{
+          this.props.modifyUserOrderStatus({
+            buyerId,
+            orderId,
+            orderStatus: status,
+            success: () => {
+              Toast.show('订单状态更新成功！')
+            },
+            error: () => {
+              Toast.show('订单状态更新失败！')
+            }
+          })
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
+      }
+    })
   }
 
   refreshData() {
@@ -61,7 +96,6 @@ class UserOrderListView extends Component {
       lastTime: this.lastTime,
       limit: 10,
       success: (isEmpty) => {
-        console.log('dfdasf')
         this.isQuery = false
         if(!this.listView) {
           return
@@ -95,7 +129,8 @@ class UserOrderListView extends Component {
     }
   }
 
-  renderItemBottom(orderStatus) {
+  renderItemBottom(order) {
+    let orderStatus = order.orderStatus
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
       return (
         <View style={{height: normalizeH(12)}}></View>
@@ -103,7 +138,8 @@ class UserOrderListView extends Component {
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
       return (
         <View style={styles.itemBottomView}>
-          <TouchableOpacity style={styles.btnStyle} onPress={() => {}}>
+          <TouchableOpacity style={styles.btnStyle}
+                            onPress={() => {this.setOrderStatus(order.buyerId, order.id, ORDER_STATUS.ACCOMPLISH)}}>
             <Text style={styles.btnText}>确认收货</Text>
           </TouchableOpacity>
         </View>
@@ -111,7 +147,8 @@ class UserOrderListView extends Component {
     } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
       return (
         <View style={styles.itemBottomView}>
-          <TouchableOpacity style={[styles.btnStyle, {marginRight: normalizeW(5), borderColor: '#000'}]} onPress={() => {}}>
+          <TouchableOpacity style={[styles.btnStyle, {marginRight: normalizeW(5), borderColor: '#000'}]}
+                            onPress={() => {this.setOrderStatus(order.buyerId, order.id, ORDER_STATUS.DELETED)}}>
             <Text style={[styles.btnText, {color: '#000'}]}>删除订单</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.btnStyle} onPress={() => {}}>
@@ -166,7 +203,7 @@ class UserOrderListView extends Component {
             <Text style={{fontSize: em(17), color: '#000'}}>¥{userOrder.paid}</Text>
           </View>
         </TouchableOpacity>
-        {this.renderItemBottom(userOrder.orderStatus)}
+        {this.renderItemBottom(userOrder)}
       </LazyloadView>
     )
   }
@@ -210,6 +247,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserShopOrders,
+  modifyUserOrderStatus,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOrderListView)

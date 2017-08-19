@@ -1278,3 +1278,29 @@ export function fetchUserShopOrders(payload) {
     })
   }
 }
+
+export function modifyUserOrderStatus(payload) {
+  return (dispatch, getState) => {
+    lcShop.setOrderStatus(payload).then((result) => {
+      if (result.errcode != 0) {
+        if (payload.error) {
+          payload.error(error)
+        }
+        return
+      }
+      let updateShopOrderStatus = createAction(ShopActionTypes.UPDATE_SHOP_ORDER_STATUS)
+      dispatch(updateShopOrderStatus({orderId: payload.orderId, status: payload.orderStatus}))
+      if (payload.orderStatus == ORDER_STATUS.ACCOMPLISH) {
+        let moveToFinish = createAction(ShopActionTypes.MOVE_USER_ORDER_TO_FINISH)
+        dispatch(moveToFinish({orderId: payload.orderId, buyerId: payload.buyerId}))
+      }
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

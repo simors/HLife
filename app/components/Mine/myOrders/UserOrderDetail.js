@@ -163,7 +163,6 @@ class UserOrderDetail extends Component {
 const mapStateToProps = (state, ownProps) => {
   let currentUserId = activeUserId(state)
   let orderDetail = selectOrderDetail(state, ownProps.orderId)
-  console.log('orderDetail', orderDetail)
   return {
     currentUserId,
     orderDetail,
