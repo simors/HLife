@@ -126,6 +126,7 @@ import WithdrawalTips from '../components/Payment/WithdrawalTips'
 import UserOrdersViewer from '../components/Mine/myOrders/UserOrdersViewer'
 import UserOrderDetail from '../components/Mine/myOrders/UserOrderDetail'
 import ShopOrdersViewer from '../components/Mine/myOrders/ShopOrdersViewer'
+import ShopOrderDetail from '../components/Mine/myOrders/ShopOrderDetail'
 
 const styles = StyleSheet.create({
   container: {
@@ -259,6 +260,7 @@ export const scenes = Actions.create(
       <Scene key="USER_ORDERS_VIEWER" component={UserOrdersViewer} />
       <Scene key="USER_ORDER_DETAIL" component={UserOrderDetail}/>
       <Scene key="SHOP_ORDERS_VIEWER" component={ShopOrdersViewer} />
+      <Scene key="SHOP_ORDER_DETAIL" component={ShopOrderDetail} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>

@@ -110,23 +110,17 @@ class ShopOrderListView extends Component {
     this.props.fetchShopperOrders(payload)
   }
 
-  tipsText(orderStatus) {
+  tipsText(order) {
+    let orderStatus = order.orderStatus
+    if (!order.receiver || order.receiver == "") {
+      return '请联系买家取货'
+    }
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
       return '请及时发货'
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
       return '已发货，等待买家确认'
     } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
       return '已完成'
-    }
-  }
-
-  getItemHeight(orderStatus) {
-    if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
-      return normalizeH(288)
-    } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
-      return normalizeH(244)
-    } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
-      return normalizeH(197)
     }
   }
 
@@ -146,6 +140,9 @@ class ShopOrderListView extends Component {
 
   renderAddressShow(order) {
     let orderStatus = order.orderStatus
+    if (!order.receiver || order.receiver == "") {
+      return <View/>
+    }
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
       return (
         <View style={{justifyContent: 'center', alignItems: 'center', padding: normalizeW(6)}}>
@@ -193,13 +190,13 @@ class ShopOrderListView extends Component {
     let goods = userOrder.goods
     let vendor = userOrder.vendor
     let buyer = userOrder.buyer
-    if (!goods || !vendor) {
+    if (!goods || !vendor || !buyer) {
       return <View/>
     }
     this.lastTime = userOrder.createdAt
     return (
-      <LazyloadView host="shopOrderList" style={[styles.itemView, {height: this.getItemHeight(userOrder.orderStatus)}]} >
-        <TouchableOpacity onPress={() => {Actions.USER_ORDER_DETAIL({orderId: userOrder.id})}}>
+      <LazyloadView host="shopOrderList" style={styles.itemView} >
+        <TouchableOpacity onPress={() => {Actions.SHOP_ORDER_DETAIL({orderId: userOrder.id})}}>
           <View style={styles.titleView} >
             <View style={styles.titleContent}>
               <View style={{paddingRight: normalizeW(4)}}>
@@ -208,7 +205,7 @@ class ShopOrderListView extends Component {
               <Text style={styles.titleText}>{buyer.nickname}</Text>
             </View>
             <View style={{paddingRight: normalizeW(15)}}>
-              <Text style={styles.titleTip}>{this.tipsText(userOrder.orderStatus)}</Text>
+              <Text style={styles.titleTip}>{this.tipsText(userOrder)}</Text>
             </View>
           </View>
           {this.renderAddressShow(userOrder)}
@@ -292,7 +289,6 @@ const styles = StyleSheet.create({
   },
   itemView: {
     marginBottom: normalizeH(10),
-    height: normalizeH(169),
     backgroundColor: '#FFF',
   },
   titleView: {
@@ -344,7 +340,7 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(15),
   },
   itemBottomView: {
-    flex: 1,
+    height: normalizeH(47),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
