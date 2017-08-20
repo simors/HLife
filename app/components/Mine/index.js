@@ -166,7 +166,7 @@ class Mine extends Component {
               <Text style={styles.menuText}>店铺管理</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.menuItem, {borderBottomWidth: 0}]} onPress={() => {}}>
+          <TouchableOpacity style={[styles.menuItem, {borderBottomWidth: 0}]} onPress={() => {Actions.SHOP_ORDERS_VIEWER()}}>
             <View style={{marginLeft: normalizeW(26), marginRight: normalizeW(35)}}>
               <Svg size={24} icon="shop_order"/>
             </View>

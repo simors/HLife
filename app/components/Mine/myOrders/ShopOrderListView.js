@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/8/18.
+ * Created by yangyang on 2017/8/20.
  */
 import React, {Component} from 'react'
 import {
@@ -15,22 +15,23 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
+import Avator from '../../common/Avatar'
 import THEME from '../../../constants/themes/theme1'
 import Popup from '@zzzkk2009/react-native-popup'
 import CommonListView from '../../common/CommonListView'
 import {LazyloadView} from '../../common/Lazyload'
 import Svg from '../../common/Svgs'
-import {selectUserOrders} from '../../../selector/shopSelector'
+import {selectVendorOrders} from '../../../selector/shopSelector'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {ORDER_STATUS} from '../../../constants/appConfig'
-import {fetchUserShopOrders, modifyUserOrderStatus} from '../../../action/shopAction'
+import {fetchShopperOrders, modifyUserOrderStatus} from '../../../action/shopAction'
 import * as Toast from '../../../components/common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class UserOrderListView extends Component {
+class ShopOrderListView extends Component {
   constructor(props) {
     super(props)
     this.lastTime = undefined
@@ -91,7 +92,7 @@ class UserOrderListView extends Component {
     this.isQuery = true
     let payload = {
       more: !isRefresh,
-      buyerId: this.props.buyerId,
+      vendorId: this.props.vendorId,
       type: this.props.type,
       lastTime: this.lastTime,
       limit: 10,
@@ -106,14 +107,14 @@ class UserOrderListView extends Component {
         this.isQuery = false
       }
     }
-    this.props.fetchUserShopOrders(payload)
+    this.props.fetchShopperOrders(payload)
   }
 
   tipsText(orderStatus) {
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
-      return '等待卖家发货'
+      return '请及时发货'
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
-      return '已发货'
+      return '已发货，等待买家确认'
     } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
       return '已完成'
     }
@@ -121,11 +122,44 @@ class UserOrderListView extends Component {
 
   getItemHeight(orderStatus) {
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
-      return normalizeH(181)
+      return normalizeH(288)
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
-      return normalizeH(218)
+      return normalizeH(244)
     } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
-      return normalizeH(218)
+      return normalizeH(197)
+    }
+  }
+
+  renderAddressView(order) {
+    return (
+      <View style={styles.addrView}>
+        <View style={{height: normalizeH(35), flexDirection: 'row', alignItems: 'center', marginLeft: normalizeW(15), marginRight: normalizeW(15)}}>
+          <Text style={[styles.addrText, {paddingRight: normalizeW(15)}]}>{order.receiver}</Text>
+          <Text style={styles.addrText}>{order.receiverPhone}</Text>
+        </View>
+        <View style={{flex: 1, paddingTop: normalizeH(8), marginLeft: normalizeW(15), marginRight: normalizeW(15), borderTopWidth: 1, borderColor: 'rgba(0,0,0,0.05)'}}>
+          <Text style={styles.addrText}>{order.receiverAddr}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  renderAddressShow(order) {
+    let orderStatus = order.orderStatus
+    if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
+      return (
+        <View style={{justifyContent: 'center', alignItems: 'center', padding: normalizeW(6)}}>
+          {this.renderAddressView(order)}
+        </View>
+      )
+    } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
+      return (
+        <View style={{justifyContent: 'center', alignItems: 'center', padding: normalizeW(6)}}>
+          {this.renderAddressView(order)}
+        </View>
+      )
+    } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
+      return <View/>
     }
   }
 
@@ -133,26 +167,21 @@ class UserOrderListView extends Component {
     let orderStatus = order.orderStatus
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
       return (
-        <View style={{height: normalizeH(12)}}></View>
-      )
-    } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
-      return (
         <View style={styles.itemBottomView}>
           <TouchableOpacity style={styles.btnStyle}
                             onPress={() => {this.setOrderStatus(order.buyerId, order.id, ORDER_STATUS.ACCOMPLISH)}}>
-            <Text style={styles.btnText}>确认收货</Text>
+            <Text style={styles.btnText}>已发货</Text>
           </TouchableOpacity>
         </View>
       )
+    } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
+      return <View/>
     } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
       return (
         <View style={styles.itemBottomView}>
-          <TouchableOpacity style={[styles.btnStyle, {marginRight: normalizeW(5), borderColor: '#000'}]}
+          <TouchableOpacity style={[styles.btnStyle, {borderColor: '#000'}]}
                             onPress={() => {this.setOrderStatus(order.buyerId, order.id, ORDER_STATUS.DELETED)}}>
             <Text style={[styles.btnText, {color: '#000'}]}>删除订单</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.btnStyle} onPress={() => {Actions.SHOP_DETAIL({id: order.vendorId})}}>
-            <Text style={styles.btnText}>评价</Text>
           </TouchableOpacity>
         </View>
       )
@@ -163,44 +192,49 @@ class UserOrderListView extends Component {
     let userOrder = rowData
     let goods = userOrder.goods
     let vendor = userOrder.vendor
+    let buyer = userOrder.buyer
     if (!goods || !vendor) {
       return <View/>
     }
     this.lastTime = userOrder.createdAt
     return (
-      <LazyloadView host="userOrderList" style={[styles.itemView, {height: this.getItemHeight(userOrder.orderStatus)}]} >
+      <LazyloadView host="shopOrderList" style={[styles.itemView, {height: this.getItemHeight(userOrder.orderStatus)}]} >
         <TouchableOpacity onPress={() => {Actions.USER_ORDER_DETAIL({orderId: userOrder.id})}}>
           <View style={styles.titleView} >
             <View style={styles.titleContent}>
               <View style={{paddingRight: normalizeW(4)}}>
-                <Svg size={24} icon="shop_invite"/>
+                <Avator size={24} src={buyer.avatar} />
               </View>
-              <Text style={styles.titleText}>{vendor.shopName}</Text>
+              <Text style={styles.titleText}>{buyer.nickname}</Text>
             </View>
             <View style={{paddingRight: normalizeW(15)}}>
               <Text style={styles.titleTip}>{this.tipsText(userOrder.orderStatus)}</Text>
             </View>
           </View>
+          {this.renderAddressShow(userOrder)}
           <View style={styles.goodsView}>
             <View style={{paddingRight: normalizeW(11)}}>
               <CachedImage mutable
-                           style={[{width: normalizeW(80),height: normalizeH(80)}]}
-                           source={{uri: getThumbUrl(goods.coverPhoto, normalizeW(80), normalizeH(80))}} />
+                           style={[{width: normalizeW(50),height: normalizeH(50)}]}
+                           source={{uri: getThumbUrl(goods.coverPhoto, normalizeW(50), normalizeH(50))}} />
             </View>
-            <View style={{flex: 1, paddingTop: normalizeH(6)}}>
+            <View style={{flex: 1, paddingTop: normalizeH(4), paddingRight: normalizeW(6)}}>
               <Text style={styles.goodsNameText} numberOfLines={2}>{goods.goodsName}</Text>
               <View style={styles.priceView}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text style={{fontSize: em(15), color: '#000', paddingRight: normalizeW(10)}}>¥{goods.price}</Text>
                   <Text style={{fontSize: em(12), color: 'rgba(0,0,0,0.3)', textDecorationLine: 'line-through'}}>¥{goods.originalPrice}</Text>
                 </View>
-                <Text style={{fontSize: em(12), color: 'rgba(0,0,0,0.3)'}}>x {userOrder.goodsAmount}</Text>
               </View>
             </View>
+            <View style={styles.paidView}>
+              <Text style={{fontSize: em(15), color: THEME.base.mainColor}}>x {userOrder.goodsAmount}</Text>
+              <Text style={{fontSize: em(12), color: '#000', paddingTop: normalizeH(11)}}>¥{userOrder.paid}</Text>
+            </View>
           </View>
-          <View style={styles.paidView}>
-            <Text style={{fontSize: em(14), color: '#4A4A4A'}}>共{userOrder.goodsAmount}件商品  实付款：</Text>
-            <Text style={{fontSize: em(17), color: '#000'}}>¥{userOrder.paid}</Text>
+          <View style={styles.remarkView}>
+            <Text style={{fontSize: em(14), color: '#4A4A4A'}}>备注信息：</Text>
+            <Text style={{fontSize: em(14), color: '#4A4A4A'}}>{userOrder.remark}</Text>
           </View>
         </TouchableOpacity>
         {this.renderItemBottom(userOrder)}
@@ -212,7 +246,7 @@ class UserOrderListView extends Component {
     return (
       <View>
         <CommonListView
-          name="userOrderList"
+          name="shopOrderList"
           contentContainerStyle={{backgroundColor: '#F5F5F5'}}
           dataSource={this.props.ds}
           renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
@@ -239,18 +273,18 @@ const mapStateToProps = (state, ownProps) => {
     })
   }
 
-  let userOrders = selectUserOrders(state, ownProps.buyerId, ownProps.type)
+  let userOrders = selectVendorOrders(state, ownProps.vendorId, ownProps.type)
   return {
     ds: ds.cloneWithRows(userOrders),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchUserShopOrders,
+  fetchShopperOrders,
   modifyUserOrderStatus,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserOrderListView)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopOrderListView)
 
 const styles = StyleSheet.create({
   container: {
@@ -281,7 +315,7 @@ const styles = StyleSheet.create({
     color: THEME.base.mainColor,
   },
   goodsView: {
-    height: normalizeH(100),
+    height: normalizeH(64),
     backgroundColor: 'rgba(0,0,0,0.03)',
     flexDirection: 'row',
     alignItems: 'center',
@@ -289,27 +323,25 @@ const styles = StyleSheet.create({
     paddingRight: normalizeW(15),
   },
   goodsNameText: {
-    fontSize: em(15),
-    color: '#000',
-    lineHeight: 25,
+    fontSize: em(12),
+    color: '#7B7B7B',
+    lineHeight: 16,
   },
   priceView: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: normalizeH(10),
+    justifyContent: 'flex-start',
+    marginTop: normalizeH(6),
     marginBottom: normalizeH(5),
   },
-  paidView: {
-    height: normalizeH(33),
+  remarkView: {
+    height: normalizeH(35),
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     marginLeft: normalizeW(15),
     marginRight: normalizeW(15),
-    // borderBottomWidth: 1,
-    // borderColor: 'rgba(0,0,0,0.05)'
   },
   itemBottomView: {
     flex: 1,
@@ -333,5 +365,25 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: em(15),
     color: THEME.base.mainColor,
+  },
+  addrView: {
+    width: normalizeW(345),
+    height: normalizeH(85),
+    borderWidth: 1,
+    borderRadius: normalizeW(5),
+    borderColor: '#E2E2E2',
+  },
+  addrText: {
+    fontSize: em(14),
+    color: '#000',
+    opacity: 0.8
+  },
+  paidView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: normalizeW(90),
+    height: normalizeH(52),
+    borderLeftWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
   },
 })

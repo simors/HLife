@@ -1355,6 +1355,21 @@ export function getUserOrders(payload) {
   })
 }
 
+export function getShopperOrders(payload) {
+  let params = {
+    vendorId: payload.vendorId,
+    orderStatus: payload.orderStatus,
+    lastTime: payload.lastTime,
+    limit: payload.limit,
+  }
+  return AV.Cloud.run('orderQueryOrders', params).then((result) => {
+    return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
 export function setOrderStatus(payload) {
   let params = {
     orderId: payload.orderId,

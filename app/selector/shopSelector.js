@@ -327,7 +327,7 @@ export function selectShopGoodsDetail(state, goodsId) {
   return undefined
 }
 
-function constructUserOrdereList(state, orderIds, buyerId) {
+function constructOrderList(state, orderIds) {
   let userOrders = []
   orderIds.forEach((orderId) => {
     let orderRec = state.SHOP.getIn(['orderDetail', orderId])
@@ -335,6 +335,7 @@ function constructUserOrdereList(state, orderIds, buyerId) {
       let order = orderRec.toJS()
       let vendorId = order.vendorId
       let vendor = selectShopDetailDirect(state, vendorId)
+      let buyerId = order.buyerId
       let buyer = userInfoById(state, buyerId).toJS()
       let goodsId = order.goodsId
       let goods = selectShopGoodsDetail(state, goodsId)
@@ -358,7 +359,22 @@ export function selectUserOrders(state, buyerId, type) {
   } else if ('finished' == type) {
     orderIds = state.SHOP.getIn(['userFinishOrders', buyerId]) || []
   }
-  let userOrders = constructUserOrdereList(state, orderIds, buyerId)
+  let userOrders = constructOrderList(state, orderIds)
+  return userOrders
+}
+
+export function selectVendorOrders(state, vendorId, type) {
+  let orderIds = []
+  if ('all' == type) {
+    orderIds = state.SHOP.getIn(['shopAllOrders', vendorId]) || []
+  } else if ('new' == type) {
+    orderIds = state.SHOP.getIn(['shopNewOrders', vendorId]) || []
+  } else if ('deliver' == type) {
+    orderIds = state.SHOP.getIn(['shopDeliveredOrders', vendorId]) || []
+  } else if ('finished' == type) {
+    orderIds = state.SHOP.getIn(['shopFinishOrders', vendorId]) || []
+  }
+  let userOrders = constructOrderList(state, orderIds)
   return userOrders
 }
 

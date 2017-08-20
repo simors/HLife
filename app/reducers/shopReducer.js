@@ -117,6 +117,10 @@ export default function shopReducer(state = initialState, action) {
       return handleUpdateShopOrderStatus(state, action)
     case ShopActionTypes.MOVE_USER_ORDER_TO_FINISH:
       return handleMoveUserOrderToFinish(state, action)
+    case ShopActionTypes.SET_VENDOR_ORDERS_LIST:
+      return handleSetShopperOrders(state, action)
+    case ShopActionTypes.ADD_VENDOR_ORDERS_LIST:
+      return handleAddShopperOrders(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -679,6 +683,57 @@ function handleMoveUserOrderToFinish(state, action) {
   }
   finishList = finishList.insert(0, orderId)
   state = state.setIn(['userFinishOrders', buyerId], finishList)
+  return state
+}
+
+function handleSetShopperOrders(state, action) {
+  let payload = action.payload
+  let vendorId = payload.vendorId
+  let type = payload.type
+  let shopOrdersList = payload.shopOrdersList
+  if ('all' == type) {
+    state = state.setIn(['shopAllOrders', vendorId], new List(shopOrdersList))
+  } else if ('new' == type) {
+    state = state.setIn(['shopNewOrders', vendorId], new List(shopOrdersList))
+  } else if ('deliver' == type) {
+    state = state.setIn(['shopDeliveredOrders', vendorId], new List(shopOrdersList))
+  } else if ('finished' == type) {
+    state = state.setIn(['shopFinishOrders', vendorId], new List(shopOrdersList))
+  }
+  return state
+}
+
+function handleAddShopperOrders(state, action) {
+  let payload = action.payload
+  let vendorId = payload.vendorId
+  let type = payload.type
+  let shopOrdersList = payload.shopOrdersList
+  let oldOrderList = new List()
+  if ('all' == type) {
+    oldOrderList = state.getIn(['shopAllOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopAllOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('new' == type) {
+    oldOrderList = state.getIn(['shopNewOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopNewOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('deliver' == type) {
+    oldOrderList = state.getIn(['shopDeliveredOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopDeliveredOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('finished' == type) {
+    oldOrderList = state.getIn(['shopFinishOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopFinishOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  }
   return state
 }
 
