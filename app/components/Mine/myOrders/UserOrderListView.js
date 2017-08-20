@@ -109,23 +109,17 @@ class UserOrderListView extends Component {
     this.props.fetchUserShopOrders(payload)
   }
 
-  tipsText(orderStatus) {
+  tipsText(order) {
+    let orderStatus = order.orderStatus
+    if (!order.receiver || order.receiver == "") {
+      return '请及时取货'
+    }
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
       return '等待卖家发货'
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
       return '已发货'
     } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
       return '已完成'
-    }
-  }
-
-  getItemHeight(orderStatus) {
-    if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
-      return normalizeH(181)
-    } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
-      return normalizeH(218)
-    } else if (orderStatus == ORDER_STATUS.ACCOMPLISH) {
-      return normalizeH(218)
     }
   }
 
@@ -168,7 +162,7 @@ class UserOrderListView extends Component {
     }
     this.lastTime = userOrder.createdAt
     return (
-      <LazyloadView host="userOrderList" style={[styles.itemView, {height: this.getItemHeight(userOrder.orderStatus)}]} >
+      <LazyloadView host="userOrderList" style={styles.itemView} >
         <TouchableOpacity onPress={() => {Actions.USER_ORDER_DETAIL({orderId: userOrder.id})}}>
           <View style={styles.titleView} >
             <View style={styles.titleContent}>
@@ -178,7 +172,7 @@ class UserOrderListView extends Component {
               <Text style={styles.titleText}>{vendor.shopName}</Text>
             </View>
             <View style={{paddingRight: normalizeW(15)}}>
-              <Text style={styles.titleTip}>{this.tipsText(userOrder.orderStatus)}</Text>
+              <Text style={styles.titleTip}>{this.tipsText(userOrder)}</Text>
             </View>
           </View>
           <View style={styles.goodsView}>
@@ -258,7 +252,6 @@ const styles = StyleSheet.create({
   },
   itemView: {
     marginBottom: normalizeH(10),
-    height: normalizeH(169),
     backgroundColor: '#FFF',
   },
   titleView: {
@@ -312,7 +305,7 @@ const styles = StyleSheet.create({
     // borderColor: 'rgba(0,0,0,0.05)'
   },
   itemBottomView: {
-    flex: 1,
+    height: normalizeH(47),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',

@@ -49,6 +49,9 @@ class UserOrderDetail extends Component {
     if (!order) {
       return <View/>
     }
+    if (!order.receiver || order.receiver == "") {
+      return <View/>
+    }
     return (
       <View style={styles.addressView}>
         <View style={{paddingRight: normalizeW(11)}}>
@@ -67,7 +70,11 @@ class UserOrderDetail extends Component {
     )
   }
 
-  renderTipsView(orderStatus) {
+  renderTipsView(order) {
+    let orderStatus = order.orderStatus
+    if (!order.receiver || order.receiver == "") {
+      return <Text style={styles.headerTipText}>请及时与卖家沟通取货</Text>
+    }
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
       return <Text style={styles.headerTipText}>等待卖家发货</Text>
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
@@ -105,11 +112,11 @@ class UserOrderDetail extends Component {
         <View style={styles.body}>
           <View>
             <Image style={styles.headerTipView} source={require('../../../assets/images/bg_order.png')}>
-              {this.renderTipsView(order.orderStatus)}
+              {this.renderTipsView(order)}
             </Image>
           </View>
           {this.renderAddressView()}
-          <View style={{marginTop: normalizeH(10), backgroundColor: '#FFF'}}>
+          <View style={{backgroundColor: '#FFF'}}>
             <View style={styles.titleView} >
               <View style={styles.titleContent}>
                 <View style={{paddingRight: normalizeW(4)}}>
@@ -199,6 +206,7 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
     backgroundColor: '#FFF',
+    marginBottom: normalizeH(10),
   },
   addrText: {
     fontSize: em(15),

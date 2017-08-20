@@ -51,7 +51,7 @@ class ShopOrderDetail extends Component {
       return <View/>
     }
     return (
-      <View style={{justifyContent: 'center', alignItems: 'center', padding: normalizeW(6)}}>
+      <View style={{justifyContent: 'center', alignItems: 'center', padding: normalizeW(6), backgroundColor: '#FFF',}}>
         {this.renderAddressView(order)}
       </View>
     )
@@ -136,7 +136,7 @@ class ShopOrderDetail extends Component {
             <Text style={{fontSize: em(14), color: '#4A4A4A'}}>备注信息：</Text>
             <Text style={{fontSize: em(14), color: '#4A4A4A'}}>{order.remark}</Text>
           </View>
-          <View style={{flexDirection: 'row', alignItems: 'center', height: normalizeH(43), paddingLeft: normalizeW(15)}}>
+          <View style={{flexDirection: 'row', alignItems: 'center', height: normalizeH(43), paddingLeft: normalizeW(15), backgroundColor: '#FFF',}}>
             <Text style={styles.commonText}>下单时间：</Text>
             <Text style={styles.commonText}>{formatLeancloudTime(new Date(order.createdAt))}</Text>
           </View>
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    backgroundColor: '#FFF',
   },
   titleContent: {
     flexDirection: 'row',
@@ -248,10 +249,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginLeft: normalizeW(15),
-    marginRight: normalizeW(15),
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
     borderBottomWidth: 1,
     borderColor: '#E2E2E2',
+    backgroundColor: '#FFF',
   },
   commonText: {
     fontSize: em(14),
