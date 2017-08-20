@@ -878,7 +878,7 @@ export const Shop = Record({
   userWaitOrders: Map(),    // 用户待收货订单，键为用户id，值为订单id组成的List
   userFinishOrders: Map(),  // 用户已完成订单，键为用户id，值为订单id组成的List
   shopAllOrders: Map(),     // 店铺管理所有订单，键为店铺的id，值为订单组成的List
-  shopNewOrders: Map(),     // 店铺管理新订单，键为用户id，值为订单id组成的List
-  shopDeliveredOrders: Map(), // 店铺管理已发货订单，键为用户id，值为订单id组成的List
-  shopFinishOrders: Map(),  // 店铺管理已完成订单，键为用户id，值为订单id组成的List
+  shopNewOrders: Map(),     // 店铺管理新订单，键为店铺的id，值为订单id组成的List
+  shopDeliveredOrders: Map(), // 店铺管理已发货订单，键为店铺的id，值为订单id组成的List
+  shopFinishOrders: Map(),  // 店铺管理已完成订单，键为店铺的id，值为订单id组成的List
 }, 'Shop')

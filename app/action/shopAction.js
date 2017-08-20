@@ -1240,7 +1240,7 @@ export function fetchUserShopOrders(payload) {
     }
     let queryType = payload.type
     if (queryType == 'all') {
-      payload.orderStatus = undefined
+      payload.orderStatus = [ORDER_STATUS.PAID_FINISHED, ORDER_STATUS.DELIVER_GOODS, ORDER_STATUS.ACCOMPLISH]
     } else if (queryType == 'waiting') {
       payload.orderStatus = [ORDER_STATUS.PAID_FINISHED, ORDER_STATUS.DELIVER_GOODS]
     } else if (queryType == 'finished') {
@@ -1295,6 +1295,9 @@ export function modifyUserOrderStatus(payload) {
       if (payload.orderStatus == ORDER_STATUS.ACCOMPLISH) {
         let moveToFinish = createAction(ShopActionTypes.MOVE_USER_ORDER_TO_FINISH)
         dispatch(moveToFinish({orderId: payload.orderId, buyerId: payload.buyerId}))
+      } else if (payload.orderStatus == ORDER_STATUS.DELETED) {
+        let deleteUserOrder = createAction(ShopActionTypes.DELETE_USER_ORDER)
+        dispatch(deleteUserOrder({orderId: payload.orderId, buyerId: payload.buyerId}))
       }
       if (payload.success) {
         payload.success()
@@ -1315,7 +1318,7 @@ export function fetchShopperOrders(payload) {
     }
     let queryType = payload.type
     if (queryType == 'all') {
-      payload.orderStatus = undefined
+      payload.orderStatus = [ORDER_STATUS.PAID_FINISHED, ORDER_STATUS.DELIVER_GOODS, ORDER_STATUS.ACCOMPLISH]
     } else if (queryType == 'new') {
       payload.orderStatus = [ORDER_STATUS.PAID_FINISHED]
     } else if (queryType == 'deliver') {
@@ -1349,6 +1352,35 @@ export function fetchShopperOrders(payload) {
 
       if (payload.success) {
         payload.success(shopOrders.length == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function modifyShopperOrderStatus(payload) {
+  return (dispatch, getState) => {
+    lcShop.setOrderStatus(payload).then((result) => {
+      if (result.errcode != 0) {
+        if (payload.error) {
+          payload.error(error)
+        }
+        return
+      }
+      let updateShopOrderStatus = createAction(ShopActionTypes.UPDATE_SHOP_ORDER_STATUS)
+      dispatch(updateShopOrderStatus({orderId: payload.orderId, status: payload.orderStatus}))
+      if (payload.orderStatus == ORDER_STATUS.DELIVER_GOODS) {
+        let moveToDeliver = createAction(ShopActionTypes.MOVE_VENDOR_ORDER_TO_DELIVER)
+        dispatch(moveToDeliver({orderId: payload.orderId, vendorId: payload.vendorId}))
+      } else if (payload.orderStatus == ORDER_STATUS.DELETED) {
+        let deleteVendorOrder = createAction(ShopActionTypes.DELETE_VENDOR_ORDER)
+        dispatch(deleteVendorOrder({orderId: payload.orderId, vendorId: payload.vendorId}))
+      }
+      if (payload.success) {
+        payload.success()
       }
     }).catch((error) => {
       if (payload.error) {

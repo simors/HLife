@@ -25,7 +25,7 @@ import {selectVendorOrders} from '../../../selector/shopSelector'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {ORDER_STATUS} from '../../../constants/appConfig'
-import {fetchShopperOrders, modifyUserOrderStatus} from '../../../action/shopAction'
+import {fetchShopperOrders, modifyShopperOrderStatus} from '../../../action/shopAction'
 import * as Toast from '../../../components/common/Toast'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -44,10 +44,10 @@ class ShopOrderListView extends Component {
     })
   }
 
-  setOrderStatus(buyerId, orderId, status) {
+  setOrderStatus(vendorId, orderId, status) {
     let promption = "确定更新的订单？"
     if (ORDER_STATUS.ACCOMPLISH == status) {
-      promption = "确定收货吗？"
+      promption = "确定订单已发货吗？"
     } else if (ORDER_STATUS.DELETED == status) {
       promption = "确定要删除订单？"
     }
@@ -58,8 +58,8 @@ class ShopOrderListView extends Component {
         text: '确定',
         style: {color: THEME.base.mainColor},
         callback: ()=>{
-          this.props.modifyUserOrderStatus({
-            buyerId,
+          this.props.modifyShopperOrderStatus({
+            vendorId,
             orderId,
             orderStatus: status,
             success: () => {
@@ -169,7 +169,7 @@ class ShopOrderListView extends Component {
       return (
         <View style={styles.itemBottomView}>
           <TouchableOpacity style={styles.btnStyle}
-                            onPress={() => {this.setOrderStatus(order.buyerId, order.id, ORDER_STATUS.ACCOMPLISH)}}>
+                            onPress={() => {this.setOrderStatus(order.vendorId, order.id, ORDER_STATUS.DELIVER_GOODS)}}>
             <Text style={styles.btnText}>已发货</Text>
           </TouchableOpacity>
         </View>
@@ -180,7 +180,7 @@ class ShopOrderListView extends Component {
       return (
         <View style={styles.itemBottomView}>
           <TouchableOpacity style={[styles.btnStyle, {borderColor: '#000'}]}
-                            onPress={() => {this.setOrderStatus(order.buyerId, order.id, ORDER_STATUS.DELETED)}}>
+                            onPress={() => {this.setOrderStatus(order.vendorId, order.id, ORDER_STATUS.DELETED)}}>
             <Text style={[styles.btnText, {color: '#000'}]}>删除订单</Text>
           </TouchableOpacity>
         </View>
@@ -281,7 +281,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopperOrders,
-  modifyUserOrderStatus,
+  modifyShopperOrderStatus,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopOrderListView)

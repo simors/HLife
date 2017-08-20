@@ -121,6 +121,12 @@ export default function shopReducer(state = initialState, action) {
       return handleSetShopperOrders(state, action)
     case ShopActionTypes.ADD_VENDOR_ORDERS_LIST:
       return handleAddShopperOrders(state, action)
+    case ShopActionTypes.MOVE_VENDOR_ORDER_TO_DELIVER:
+      return handleMoveVendorOrderToDelivered(state, action)
+    case ShopActionTypes.DELETE_USER_ORDER:
+      return handleDeleteUserOrder(state, action)
+    case ShopActionTypes.DELETE_VENDOR_ORDER:
+      return handleDeleteVendorOrder(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -683,6 +689,65 @@ function handleMoveUserOrderToFinish(state, action) {
   }
   finishList = finishList.insert(0, orderId)
   state = state.setIn(['userFinishOrders', buyerId], finishList)
+  return state
+}
+
+function handleMoveVendorOrderToDelivered(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let vendorId = payload.vendorId
+  let newOrderList = state.getIn(['shopNewOrders', vendorId])
+  if (!newOrderList) {
+    return state
+  }
+  newOrderList = newOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['shopNewOrders', vendorId], newOrderList)
+  let deliverList = state.getIn(['shopDeliveredOrders', vendorId])
+  if (!deliverList) {
+    deliverList = new List()
+  }
+  deliverList = deliverList.insert(0, orderId)
+  state = state.setIn(['shopDeliveredOrders', vendorId], deliverList)
+  return state
+}
+
+function handleDeleteUserOrder(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let buyerId = payload.buyerId
+  let finishOrderList = state.getIn(['userFinishOrders', buyerId])
+  if (!finishOrderList) {
+    return state
+  }
+  finishOrderList = finishOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['userFinishOrders', buyerId], finishOrderList)
+
+  let allOrderList = state.getIn(['userAllOrders', buyerId])
+  if (!allOrderList) {
+    return state
+  }
+  allOrderList = allOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['userAllOrders', buyerId], allOrderList)
+  return state
+}
+
+function handleDeleteVendorOrder(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let vendorId = payload.vendorId
+  let finishOrderList = state.getIn(['shopFinishOrders', vendorId])
+  if (!finishOrderList) {
+    return state
+  }
+  finishOrderList = finishOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['shopFinishOrders', vendorId], finishOrderList)
+
+  let allOrderList = state.getIn(['shopAllOrders', vendorId])
+  if (!allOrderList) {
+    return state
+  }
+  allOrderList = allOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['shopAllOrders', vendorId], allOrderList)
   return state
 }
 
