@@ -127,6 +127,7 @@ import UserOrdersViewer from '../components/Mine/myOrders/UserOrdersViewer'
 import UserOrderDetail from '../components/Mine/myOrders/UserOrderDetail'
 import ShopOrdersViewer from '../components/Mine/myOrders/ShopOrdersViewer'
 import ShopOrderDetail from '../components/Mine/myOrders/ShopOrderDetail'
+import BuyGoods from '../components/shop/BuyGoods'
 
 const styles = StyleSheet.create({
   container: {
@@ -261,6 +262,7 @@ export const scenes = Actions.create(
       <Scene key="USER_ORDER_DETAIL" component={UserOrderDetail}/>
       <Scene key="SHOP_ORDERS_VIEWER" component={ShopOrdersViewer} />
       <Scene key="SHOP_ORDER_DETAIL" component={ShopOrderDetail} />
+      <Scene key="BUY_GOODS" component={BuyGoods} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>
