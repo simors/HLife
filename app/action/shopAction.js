@@ -389,7 +389,14 @@ export function userUpShopComment(payload) {
       if (payload.success) {
         payload.success(result)
       }
+    },(err)=>{
+      console.log('i m error')
+
+      if (payload.error) {
+        payload.error(err)
+      }
     }).catch((error) => {
+      console.log('i m catch')
       if (payload.error) {
         payload.error(error)
       }

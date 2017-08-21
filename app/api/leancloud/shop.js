@@ -553,23 +553,16 @@ export function fetchShopCommentUpedUserListByCloudFunc(payload) {
 }
 
 export function userUpShopComment(payload) {
-  let shopCommentUpId = payload.shopCommentUpId
+  console.log('hahahahah==>',payload)
+  // let shopCommentUpId = payload.shopCommentUpId
   let shopCommentId = payload.shopCommentId
   let shopId = payload.shopId
-  let currentUser = AV.User.current()
-  let targetShopComment = AV.Object.createWithoutData('ShopComment', shopCommentId)
-
-  let shopCommentUp = null
-  if(shopCommentUpId) {
-    shopCommentUp = AV.Object.createWithoutData('ShopCommentUp', shopCommentUpId)
-    shopCommentUp.set('status', true)
-  }else {
-    let ShopCommentUp = AV.Object.extend('ShopCommentUp')
-    shopCommentUp = new ShopCommentUp()
-    shopCommentUp.set('targetShopComment', targetShopComment)
-    shopCommentUp.set('user', currentUser)
+  // let currentUser = AV.User.current()
+  let params = {
+    userId: authSelector.activeUserId(store.getState()),
+    shopCommentId: payload.shopCommentId
   }
-  return shopCommentUp.save().then((result)=>{
+  return AV.Cloud.run('userUpShopComment',{payload: params}).then((result)=>{
     let shopComment = shopSelector.selectShopCommentInfo(store.getState(), shopId, shopCommentId)
     // console.log('userUpShopComment.shopComment==', shopComment)
     let pushUserId = shopComment && shopComment.user && shopComment.user.id
@@ -586,10 +579,11 @@ export function userUpShopComment(payload) {
         })
       }
     }
-
+    // console.log('successs====>',result)
     return result
   }, (err)=>{
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    // console.log('err====>',err)
+
     throw err
   })
 }

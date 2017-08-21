@@ -84,10 +84,9 @@ export class ShopCommentListV2 extends Component {
   onLikeCommentButton(payload) {
     if (this.props.isLogin) {
       this.props.userUpShopComment({
-        targetId: payload.comment.commentId,
-        upType: 'topicComment',
+        shopCommentId: payload.comment.id,
         success: payload.success,
-        error: this.likeErrorCallback
+        error: (error)=>{this.likeErrorCallback(error)}
       })
 
     }
@@ -98,6 +97,7 @@ export class ShopCommentListV2 extends Component {
 
   likeErrorCallback(error) {
     this.isSubmiting = false
+    console.log('measssss====>',error.message)
     Toast.show(error.message)
   }
   onCommentButton(topic) {

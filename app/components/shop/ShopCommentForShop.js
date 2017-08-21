@@ -184,7 +184,7 @@ ShopCommentForShop.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const isLiked = isCommentLiked(state, ownProps.comment.commentId)
+  const isLiked = isCommentLiked(state, ownProps.comment.id)
   const isLogin = isUserLogined(state)
   return {
     isLiked: isLiked,
