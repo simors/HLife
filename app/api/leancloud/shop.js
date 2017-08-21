@@ -1323,6 +1323,19 @@ export function fetchCloseShopGoodPromotions(payload) {
   })
 }
 
+export function closeShopPromotion(payload) {
+  let params = {
+    promotionId:payload.promotionId
+  }
+
+  return AV.Cloud.run('closeShopPromotion', params).then((promotion)=> {
+
+    return promotion
+  }, (err) => {
+    throw err
+  })
+}
+
 export function getUserOrders(payload) {
   let params = {
     buyerId: payload.buyerId,
@@ -1338,15 +1351,17 @@ export function getUserOrders(payload) {
   })
 }
 
-export function closeShopPromotion(payload) {
+export function getShopperOrders(payload) {
   let params = {
-    promotionId:payload.promotionId
+    vendorId: payload.vendorId,
+    orderStatus: payload.orderStatus,
+    lastTime: payload.lastTime,
+    limit: payload.limit,
   }
-
-  return AV.Cloud.run('closeShopPromotion', params).then((promotion)=> {
-
-    return promotion
+  return AV.Cloud.run('orderQueryOrders', params).then((result) => {
+    return result
   }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
 }
@@ -1370,3 +1385,15 @@ export function fetchShopCommentsByCloud(payload){
   })
 }
 
+export function setOrderStatus(payload) {
+  let params = {
+    orderId: payload.orderId,
+    orderStatus: payload.orderStatus,
+  }
+  return AV.Cloud.run('orderModifyStatus', params).then((result) => {
+    return result
+  }, (err) => {
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}

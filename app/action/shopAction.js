@@ -16,6 +16,7 @@ import * as ImageUtil from '../util/ImageUtil'
 import {trim} from '../util/Utils'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
+import {ORDER_STATUS} from '../constants/appConfig'
 
 let addUserBatchProfile = createAction(AuthTypes.ADD_USER_PROFILES)
 
@@ -29,6 +30,8 @@ let addUserOrderList = createAction(ShopActionTypes.ADD_USER_ORDERS_LIST)
 let batchAddOrderDetail = createAction(ShopActionTypes.BATCH_ADD_ORDER_DETAIL)
 let addBatchShopDetail = createAction(ShopActionTypes.FETCH_BATCH_SHOP_DETAIL)
 let batchAddShopGoodsDetail = createAction(ShopActionTypes.BATCH_ADD_SHOP_GOODS_DETAIL)
+let setVendorOrderList = createAction(ShopActionTypes.SET_VENDOR_ORDERS_LIST)
+let addVendorOrderList = createAction(ShopActionTypes.ADD_VENDOR_ORDERS_LIST)
 
 export function clearShopList(payload) {
   return (dispatch, getState) => {
@@ -1200,46 +1203,6 @@ export function getShopClosePromotion(payload) {
   }
 }
 
-export function fetchUserShopOrders(payload) {
-  return (dispatch, getState) => {
-    let more = payload.more
-    if (!more) {
-      more = false
-    }
-    lcShop.getUserOrders(payload).then((results) => {
-      let shopOrders = []
-      let buyers = []
-      let vendors = []
-      let goods = []
-      let shopOrderIds = []
-      let orders = results.shopOrders
-      orders.forEach((order) => {
-        shopOrderIds.push(order.id)
-        shopOrders.push(ShopOrders.fromLeancloudApi(order))
-        buyers.push(UserInfo.fromLeancloudApi(order.buyer))
-        vendors.push(ShopInfo.fromLeancloudApi(order.vendor))
-        goods.push(ShopGoods.fromLeancloudApi2(order.goods))
-      })
-      if (more) {
-        dispatch(addUserOrderList({buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
-      } else {
-        dispatch(setUserOrderList({buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
-      }
-      dispatch(batchAddOrderDetail({shopOrders: shopOrders}))
-      dispatch(addUserBatchProfile({userProfiles: buyers}))
-      dispatch(addBatchShopDetail({shopInfos: vendors}))
-      dispatch(batchAddShopGoodsDetail({goodsList: goods}))
-
-      if (payload.success) {
-        payload.success(shopOrders.length == 0)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
 export function closeShopPromotion(payload) {
   return (dispatch, getState) => {
     lcShop.closeShopPromotion(payload).then((promotionInfo) => {
@@ -1260,6 +1223,164 @@ export function closeShopPromotion(payload) {
       }
       if (payload.success) {
         payload.success(promotionList.length == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchUserShopOrders(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    let queryType = payload.type
+    if (queryType == 'all') {
+      payload.orderStatus = [ORDER_STATUS.PAID_FINISHED, ORDER_STATUS.DELIVER_GOODS, ORDER_STATUS.ACCOMPLISH]
+    } else if (queryType == 'waiting') {
+      payload.orderStatus = [ORDER_STATUS.PAID_FINISHED, ORDER_STATUS.DELIVER_GOODS]
+    } else if (queryType == 'finished') {
+      payload.orderStatus = [ORDER_STATUS.ACCOMPLISH]
+    }
+    lcShop.getUserOrders(payload).then((results) => {
+      let shopOrders = []
+      let buyers = []
+      let vendors = []
+      let goods = []
+      let shopOrderIds = []
+      let orders = results.shopOrders
+      orders.forEach((order) => {
+        shopOrderIds.push(order.id)
+        shopOrders.push(ShopOrders.fromLeancloudApi(order))
+        buyers.push(UserInfo.fromLeancloudApi(order.buyer))
+        vendors.push(ShopInfo.fromLeancloudApi(order.vendor))
+        goods.push(ShopGoods.fromLeancloudApi2(order.goods))
+      })
+      if (more) {
+        dispatch(addUserOrderList({type: payload.type, buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
+      } else {
+        dispatch(setUserOrderList({type: payload.type, buyerId: payload.buyerId, shopOrdersList: shopOrderIds}))
+      }
+      dispatch(batchAddOrderDetail({shopOrders: shopOrders}))
+      dispatch(addUserBatchProfile({userProfiles: buyers}))
+      dispatch(addBatchShopDetail({shopInfos: vendors}))
+      dispatch(batchAddShopGoodsDetail({goodsList: goods}))
+
+      if (payload.success) {
+        payload.success(shopOrders.length == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function modifyUserOrderStatus(payload) {
+  return (dispatch, getState) => {
+    lcShop.setOrderStatus(payload).then((result) => {
+      if (result.errcode != 0) {
+        if (payload.error) {
+          payload.error(error)
+        }
+        return
+      }
+      let updateShopOrderStatus = createAction(ShopActionTypes.UPDATE_SHOP_ORDER_STATUS)
+      dispatch(updateShopOrderStatus({orderId: payload.orderId, status: payload.orderStatus}))
+      if (payload.orderStatus == ORDER_STATUS.ACCOMPLISH) {
+        let moveToFinish = createAction(ShopActionTypes.MOVE_USER_ORDER_TO_FINISH)
+        dispatch(moveToFinish({orderId: payload.orderId, buyerId: payload.buyerId}))
+      } else if (payload.orderStatus == ORDER_STATUS.DELETED) {
+        let deleteUserOrder = createAction(ShopActionTypes.DELETE_USER_ORDER)
+        dispatch(deleteUserOrder({orderId: payload.orderId, buyerId: payload.buyerId}))
+      }
+      if (payload.success) {
+        payload.success()
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function fetchShopperOrders(payload) {
+  return (dispatch, getState) => {
+    let more = payload.more
+    if (!more) {
+      more = false
+    }
+    let queryType = payload.type
+    if (queryType == 'all') {
+      payload.orderStatus = [ORDER_STATUS.PAID_FINISHED, ORDER_STATUS.DELIVER_GOODS, ORDER_STATUS.ACCOMPLISH]
+    } else if (queryType == 'new') {
+      payload.orderStatus = [ORDER_STATUS.PAID_FINISHED]
+    } else if (queryType == 'deliver') {
+      payload.orderStatus = [ORDER_STATUS.DELIVER_GOODS]
+    } else if (queryType == 'finished') {
+      payload.orderStatus = [ORDER_STATUS.ACCOMPLISH]
+    }
+    lcShop.getShopperOrders(payload).then((results) => {
+      let shopOrders = []
+      let buyers = []
+      let vendors = []
+      let goods = []
+      let shopOrderIds = []
+      let orders = results.shopOrders
+      orders.forEach((order) => {
+        shopOrderIds.push(order.id)
+        shopOrders.push(ShopOrders.fromLeancloudApi(order))
+        buyers.push(UserInfo.fromLeancloudApi(order.buyer))
+        vendors.push(ShopInfo.fromLeancloudApi(order.vendor))
+        goods.push(ShopGoods.fromLeancloudApi2(order.goods))
+      })
+      if (more) {
+        dispatch(addVendorOrderList({type: payload.type, vendorId: payload.vendorId, shopOrdersList: shopOrderIds}))
+      } else {
+        dispatch(setVendorOrderList({type: payload.type, vendorId: payload.vendorId, shopOrdersList: shopOrderIds}))
+      }
+      dispatch(batchAddOrderDetail({shopOrders: shopOrders}))
+      dispatch(addUserBatchProfile({userProfiles: buyers}))
+      dispatch(addBatchShopDetail({shopInfos: vendors}))
+      dispatch(batchAddShopGoodsDetail({goodsList: goods}))
+
+      if (payload.success) {
+        payload.success(shopOrders.length == 0)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function modifyShopperOrderStatus(payload) {
+  return (dispatch, getState) => {
+    lcShop.setOrderStatus(payload).then((result) => {
+      if (result.errcode != 0) {
+        if (payload.error) {
+          payload.error(error)
+        }
+        return
+      }
+      let updateShopOrderStatus = createAction(ShopActionTypes.UPDATE_SHOP_ORDER_STATUS)
+      dispatch(updateShopOrderStatus({orderId: payload.orderId, status: payload.orderStatus}))
+      if (payload.orderStatus == ORDER_STATUS.DELIVER_GOODS) {
+        let moveToDeliver = createAction(ShopActionTypes.MOVE_VENDOR_ORDER_TO_DELIVER)
+        dispatch(moveToDeliver({orderId: payload.orderId, vendorId: payload.vendorId}))
+      } else if (payload.orderStatus == ORDER_STATUS.DELETED) {
+        let deleteVendorOrder = createAction(ShopActionTypes.DELETE_VENDOR_ORDER)
+        dispatch(deleteVendorOrder({orderId: payload.orderId, vendorId: payload.vendorId}))
+      }
+      if (payload.success) {
+        payload.success()
       }
     }).catch((error) => {
       if (payload.error) {

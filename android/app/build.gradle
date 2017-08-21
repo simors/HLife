@@ -196,7 +196,6 @@ dependencies {
     compile files('libs/SocialSDK_QQ_Simplify.jar')
     compile files('libs/umeng_shareboard_widget.jar')
     compile project(':react-native-qrcode-local-image')
-    compile project(':react-native-svg')
 
 }
 

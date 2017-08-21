@@ -125,6 +125,20 @@ export default function shopReducer(state = initialState, action) {
       return handleFetchMyCommentsUps(state, action)
     case ShopActionTypes.USER_UP_SHOP_COMMENT_SUCCESS:
       return handleupShopCommentSuccess(state, action)
+    case ShopActionTypes.UPDATE_SHOP_ORDER_STATUS:
+      return handleUpdateShopOrderStatus(state, action)
+    case ShopActionTypes.MOVE_USER_ORDER_TO_FINISH:
+      return handleMoveUserOrderToFinish(state, action)
+    case ShopActionTypes.SET_VENDOR_ORDERS_LIST:
+      return handleSetShopperOrders(state, action)
+    case ShopActionTypes.ADD_VENDOR_ORDERS_LIST:
+      return handleAddShopperOrders(state, action)
+    case ShopActionTypes.MOVE_VENDOR_ORDER_TO_DELIVER:
+      return handleMoveVendorOrderToDelivered(state, action)
+    case ShopActionTypes.DELETE_USER_ORDER:
+      return handleDeleteUserOrder(state, action)
+    case ShopActionTypes.DELETE_VENDOR_ORDER:
+      return handleDeleteVendorOrder(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -603,17 +617,43 @@ function handleAddCloseGoodPromotions(state, action) {
 function handleSetUserShopOrders(state, action) {
   let payload = action.payload
   let buyerId = payload.buyerId
+  let type = payload.type
   let shopOrdersList = payload.shopOrdersList
-  state = state.setIn(['userOrders', buyerId], new List(shopOrdersList))
+  if ('all' == type) {
+    state = state.setIn(['userAllOrders', buyerId], new List(shopOrdersList))
+  } else if ('waiting' == type) {
+    state = state.setIn(['userWaitOrders', buyerId], new List(shopOrdersList))
+  } else if ('finished' == type) {
+    state = state.setIn(['userFinishOrders', buyerId], new List(shopOrdersList))
+  }
   return state
 }
 
 function handleAddUserShopOrders(state, action) {
   let payload = action.payload
   let buyerId = payload.buyerId
+  let type = payload.type
   let shopOrdersList = payload.shopOrdersList
-  let oldOrderList = state.getIn(['userOrders', buyerId])
-  state = state.setIn(['userOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  let oldOrderList = new List()
+  if ('all' == type) {
+    oldOrderList = state.getIn(['userAllOrders', buyerId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['userAllOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('waiting' == type) {
+    oldOrderList = state.getIn(['userWaitOrders', buyerId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['userWaitOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('finished' == type) {
+    oldOrderList = state.getIn(['userFinishOrders', buyerId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['userFinishOrders', buyerId], oldOrderList.concat(new List(shopOrdersList)))
+  }
   return state
 }
 
@@ -691,8 +731,149 @@ function handleFetchMyCommentsUps(state, action) {
 function handleupShopCommentSuccess(state, action) {
   let payload = action.payload
   let commentsUps = [payload.up]
-  let team = state.get('myCommentsUps')|| new Set()
+  let team = state.get('myCommentsUps') || new Set()
   state = state.setIn('myCommentsUps', team.concat(new Set(commentsUps)))
+  return state
+}
+
+function handleUpdateShopOrderStatus(state, action) {
+  let status = action.payload.status
+  let orderId = action.payload.orderId
+  let order = state.getIn(['orderDetail', orderId])
+  if (!order) {
+    return state
+  }
+  order = order.set('orderStatus', status)
+  state = state.setIn(['orderDetail', orderId], order)
+  return state
+}
+
+function handleMoveUserOrderToFinish(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let buyerId = payload.buyerId
+  let waitList = state.getIn(['userWaitOrders', buyerId])
+  if (!waitList) {
+    return state
+  }
+  waitList = waitList.filter((item) => (item != orderId))
+  state = state.setIn(['userWaitOrders', buyerId], waitList)
+  let finishList = state.getIn(['userFinishOrders', buyerId])
+  if (!finishList) {
+    finishList = new List()
+  }
+  finishList = finishList.insert(0, orderId)
+  state = state.setIn(['userFinishOrders', buyerId], finishList)
+  return state
+}
+
+function handleMoveVendorOrderToDelivered(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let vendorId = payload.vendorId
+  let newOrderList = state.getIn(['shopNewOrders', vendorId])
+  if (!newOrderList) {
+    return state
+  }
+  newOrderList = newOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['shopNewOrders', vendorId], newOrderList)
+  let deliverList = state.getIn(['shopDeliveredOrders', vendorId])
+  if (!deliverList) {
+    deliverList = new List()
+  }
+  deliverList = deliverList.insert(0, orderId)
+  state = state.setIn(['shopDeliveredOrders', vendorId], deliverList)
+  return state
+}
+
+function handleDeleteUserOrder(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let buyerId = payload.buyerId
+  let finishOrderList = state.getIn(['userFinishOrders', buyerId])
+  if (!finishOrderList) {
+    return state
+  }
+  finishOrderList = finishOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['userFinishOrders', buyerId], finishOrderList)
+
+  let allOrderList = state.getIn(['userAllOrders', buyerId])
+  if (!allOrderList) {
+    return state
+  }
+  allOrderList = allOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['userAllOrders', buyerId], allOrderList)
+  return state
+}
+
+function handleDeleteVendorOrder(state, action) {
+  let payload = action.payload
+  let orderId = payload.orderId
+  let vendorId = payload.vendorId
+  let finishOrderList = state.getIn(['shopFinishOrders', vendorId])
+  if (!finishOrderList) {
+    return state
+  }
+  finishOrderList = finishOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['shopFinishOrders', vendorId], finishOrderList)
+
+  let allOrderList = state.getIn(['shopAllOrders', vendorId])
+  if (!allOrderList) {
+    return state
+  }
+  allOrderList = allOrderList.filter((item) => (item != orderId))
+  state = state.setIn(['shopAllOrders', vendorId], allOrderList)
+  return state
+}
+
+function handleSetShopperOrders(state, action) {
+  let payload = action.payload
+  let vendorId = payload.vendorId
+  let type = payload.type
+  let shopOrdersList = payload.shopOrdersList
+  if ('all' == type) {
+    state = state.setIn(['shopAllOrders', vendorId], new List(shopOrdersList))
+  } else if ('new' == type) {
+    state = state.setIn(['shopNewOrders', vendorId], new List(shopOrdersList))
+  } else if ('deliver' == type) {
+    state = state.setIn(['shopDeliveredOrders', vendorId], new List(shopOrdersList))
+  } else if ('finished' == type) {
+    state = state.setIn(['shopFinishOrders', vendorId], new List(shopOrdersList))
+  }
+  return state
+}
+
+function handleAddShopperOrders(state, action) {
+  let payload = action.payload
+  let vendorId = payload.vendorId
+  let type = payload.type
+  let shopOrdersList = payload.shopOrdersList
+  let oldOrderList = new List()
+  if ('all' == type) {
+    oldOrderList = state.getIn(['shopAllOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopAllOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('new' == type) {
+    oldOrderList = state.getIn(['shopNewOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopNewOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('deliver' == type) {
+    oldOrderList = state.getIn(['shopDeliveredOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopDeliveredOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  } else if ('finished' == type) {
+    oldOrderList = state.getIn(['shopFinishOrders', vendorId])
+    if (!oldOrderList) {
+      oldOrderList = new List()
+    }
+    state = state.setIn(['shopFinishOrders', vendorId], oldOrderList.concat(new List(shopOrdersList)))
+  }
   return state
 }
 

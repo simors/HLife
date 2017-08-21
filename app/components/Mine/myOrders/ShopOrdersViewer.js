@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/8/17.
+ * Created by yangyang on 2017/8/20.
  */
 import React, {Component} from 'react'
 import {
@@ -16,14 +16,15 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../../common/Header'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
-import {fetchUserShopOrders} from '../../../action/shopAction'
+import {fetchShopperOrders} from '../../../action/shopAction'
 import {activeUserId} from '../../../selector/authSelector'
-import UserOrderListView from './UserOrderListView'
+import ShopOrderListView from './ShopOrderListView'
+import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class UserOrdersViewer extends Component {
+class ShopOrdersViewer extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -33,21 +34,21 @@ class UserOrdersViewer extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      // this.props.fetchUserShopOrders({
-      //   more: false,
-      //   buyerId: this.props.currentUserId,
-      //   type: 'all',
-      //   limit: 10,
-      // })
-      this.props.fetchUserShopOrders({
+      this.props.fetchShopperOrders({
         more: false,
-        buyerId: this.props.currentUserId,
-        type: 'waiting',
+        vendorId: this.props.vendor.id,
+        type: 'new',
         limit: 10,
       })
-      this.props.fetchUserShopOrders({
+      this.props.fetchShopperOrders({
         more: false,
-        buyerId: this.props.currentUserId,
+        vendorId: this.props.vendor.id,
+        type: 'deliver',
+        limit: 10,
+      })
+      this.props.fetchShopperOrders({
+        more: false,
+        vendorId: this.props.vendor.id,
         type: 'finished',
         limit: 10,
       })
@@ -67,7 +68,7 @@ class UserOrdersViewer extends Component {
             this.toggleTab(0)
           }}>
           <View style={[{
-            width: normalizeW(100),
+            width: normalizeW(69),
             height: normalizeH(44),
             justifyContent: 'flex-end',
             alignItems: 'center'
@@ -92,7 +93,7 @@ class UserOrdersViewer extends Component {
             this.toggleTab(1)
           }}>
           <View style={[{
-            width: normalizeW(100),
+            width: normalizeW(69),
             height: normalizeH(44),
             justifyContent: 'flex-end',
             alignItems: 'center'
@@ -108,7 +109,7 @@ class UserOrdersViewer extends Component {
                 color: THEME.base.mainColor,
                 fontWeight: 'bold',
               } : {color: '#4A4A4A'}]}
-            >待收货</Text>
+            >新订单</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -117,7 +118,7 @@ class UserOrdersViewer extends Component {
             this.toggleTab(2)
           }}>
           <View style={[{
-            width: normalizeW(100),
+            width: normalizeW(69),
             height: normalizeH(44),
             justifyContent: 'flex-end',
             alignItems: 'center'
@@ -129,6 +130,31 @@ class UserOrdersViewer extends Component {
             } : {}]}>
             <Text style={[{fontSize: em(15), paddingBottom: normalizeH(8)},
               this.state.tabType == 2 ?
+              {
+                color: THEME.base.mainColor,
+                fontWeight: 'bold',
+              } : {color: '#4A4A4A'}]}
+            >已发货</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+          onPress={()=> {
+            this.toggleTab(3)
+          }}>
+          <View style={[{
+            width: normalizeW(69),
+            height: normalizeH(44),
+            justifyContent: 'flex-end',
+            alignItems: 'center'
+          },
+            this.state.tabType == 3 ?
+            {
+              borderBottomWidth: 3,
+              borderColor: THEME.base.mainColor
+            } : {}]}>
+            <Text style={[{fontSize: em(15), paddingBottom: normalizeH(8)},
+              this.state.tabType == 3 ?
               {
                 color: THEME.base.mainColor,
                 fontWeight: 'bold',
@@ -147,12 +173,14 @@ class UserOrdersViewer extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="我的订单"
+          title="订单管理"
         />
         <View style={styles.body}>
           {this.renderTabBar()}
-          <UserOrderListView buyerId={this.props.currentUserId}
-                             type={this.state.tabType == 0 ? 'all' : this.state.tabType == 1 ? 'waiting' : 'finished'} />
+          <ShopOrderListView vendorId={this.props.vendor.id}
+                             type={this.state.tabType == 0 ? 'all' :
+                               this.state.tabType == 1 ? 'new' :
+                                 this.state.tabType == 2 ? 'deliver' : 'finished'} />
         </View>
       </View>
     )
@@ -161,16 +189,18 @@ class UserOrdersViewer extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let currentUserId = activeUserId(state)
+  let vendor = selectUserOwnedShopInfo(state)
   return {
     currentUserId,
+    vendor,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchUserShopOrders
+  fetchShopperOrders
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserOrdersViewer)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopOrdersViewer)
 
 const styles = StyleSheet.create({
   container: {
