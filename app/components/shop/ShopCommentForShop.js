@@ -119,7 +119,7 @@ export class ShopCommentForShop extends Component {
             <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: comment.authorId})}>
               <Text style={styles.userNameStyle}>{comment.authorNickname}</Text>
             </TouchableOpacity>
-            <View style={{justifyContent:'flex-end'}}>
+            <View style={{justifyContent: 'flex-end'}}>
               <Text style={styles.dateName}>{comment.createdDate}</Text>
             </View>
           </View>
@@ -140,24 +140,25 @@ export class ShopCommentForShop extends Component {
               : null
           }
           <View style={styles.timeLocationStyle}>
-            <Text style={styles.timeTextStyle}>{getConversationTime(new Date(comment.createdAt))}</Text>
-            <Image style={styles.positionStyle} resizeMode='contain'
-                   source={require("../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.timeTextStyle}>{comment.city ? comment.city : "未知"}</Text>
-            <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
-              <Image style={styles.likeImageStyle}
-                     resizeMode='contain'
-                     source={this.props.isLiked ?
-                       require("../../assets/images/like_selected.png") :
-                       require("../../assets/images/like_unselect.png")}/>
-              <Text style={styles.commentTextStyle}>{this.state.upCount ? this.state.upCount : 0}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.commentStyle} onPress={()=> {
-              this.props.onCommentButton(comment)
-            }}>
-              <Image style={styles.commentImageStyle} resizeMode='contain'
-                     source={require("../../assets/images/comments_unselect.png")}/>
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.commentTextStyle}>{'赞'+(this.state.upCount ? (this.state.upCount>999?'999+' : this.state.upCount): 0)}</Text>
+              <Text style={styles.commentTextStyle}>{'回复'+(this.state.commentCount ? (this.state.commentCount>999?'999+' : this.state.commentCount): 0)}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
+                <Image style={styles.likeImageStyle}
+                       resizeMode='contain'
+                       source={this.props.isLiked ?
+                         require("../../assets/images/like_selected.png") :
+                         require("../../assets/images/like_unselect.png")}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+                this.props.onCommentButton(comment)
+              }}>
+                <Image style={styles.commentImageStyle} resizeMode='contain'
+                       source={require("../../assets/images/comments_unselect.png")}/>
+              </TouchableOpacity>
+            </View>
           </View>
           {this.renderParentComment()}
 
@@ -212,16 +213,16 @@ const styles = StyleSheet.create({
     color: "#5A5A5A"
   },
   avatarViewStyle: {
-    width: normalizeW(57),
+    // width: normalizeW(57),
   },
   avatarStyle: {
-    height: normalizeH(35),
-    width: normalizeW(35),
-    borderRadius: 17.5,
-    borderWidth: 1,
+    height: normalizeH(32),
+    width: normalizeW(32),
+    borderRadius: normalizeW(16),
+    borderWidth: normalizeBorder(1),
     borderColor: 'transparent',
     marginTop: normalizeH(10),
-    marginLeft: normalizeW(12),
+    marginRight: normalizeW(12),
   },
 
   parentCommentStyle: {
@@ -261,15 +262,17 @@ const styles = StyleSheet.create({
     color: "#4a4a4a"
   },
   likeStyle: {
-    position: 'absolute',
-    left: normalizeW(189),
+    // position: 'absolute',
+    // left: normalizeW(189),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',
     flexDirection: 'row',
     borderWidth: normalizeBorder(1),
     borderColor: '#F5F5F5',
-
+    padding:normalizeH(5),
+    paddingLeft:normalizeW(10),
+    paddingRight: normalizeW(10),
   },
   likeImageStyle: {
     height: normalizeW(16),
@@ -289,12 +292,18 @@ const styles = StyleSheet.create({
     color: THEME.colors.lighter
   },
   commentStyle: {
-    position: 'absolute',
-    left: normalizeW(259),
+    // position: 'absolute',
+    // left: normalizeW(259),
     backgroundColor: '#FFFFFF',
     height: normalizeH(16),
     alignItems: 'center',
     flexDirection: 'row',
+    borderWidth: normalizeBorder(1),
+    borderColor: '#F5F5F5',
+    padding:normalizeH(5),
+    paddingLeft:normalizeW(10),
+    paddingRight: normalizeW(10),
+
   },
   attentionStyle: {
     position: "absolute",

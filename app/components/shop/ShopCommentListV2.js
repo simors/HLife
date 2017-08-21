@@ -33,6 +33,7 @@ const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import CommentForShop from './ShopCommentForShop'
+import {userUpShopComment} from '../../action/shopAction'
 
 export class ShopCommentListV2 extends Component {
   constructor(props) {
@@ -82,7 +83,7 @@ export class ShopCommentListV2 extends Component {
 
   onLikeCommentButton(payload) {
     if (this.props.isLogin) {
-      this.props.fetchUpItem({
+      this.props.userUpShopComment({
         targetId: payload.comment.commentId,
         upType: 'topicComment',
         success: payload.success,
@@ -142,7 +143,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  // fetchUpItem
+   userUpShopComment
 
 }, dispatch)
 
