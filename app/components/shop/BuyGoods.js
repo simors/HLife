@@ -18,8 +18,11 @@ import {connect} from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
+import * as Toast from '../common/Toast'
+import {BUY_GOODS} from '../../constants/appConfig'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
+import {isUserLogined, activeUserId} from '../../selector/authSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -36,6 +39,48 @@ class BuyGoods extends Component {
     }
   }
 
+  onPaymentPress() {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+      return
+    }
+    let amount = this.state.amount
+    if (Math.floor(amount) != amount) {
+      Toast.show('购买数量只能是整数')
+      return
+    }
+    let receiver = this.state.receiver
+    let receiverPhone = this.state.receiverPhone
+    let receiverAddr = this.state.receiverAddr
+    if (receiver || receiverPhone || receiverAddr) {
+      if (!(receiver.length > 1 && receiverPhone.length > 1 && receiverAddr.length > 1)) {
+        Toast.show('收件人、手机号和地址需要同时填写')
+        return
+      }
+    }
+    let shopGoodDetail = this.props.goods
+    let metadata = {
+      'fromUser': this.props.currentUser,
+      'toUser': this.props.shopOwner,
+      'dealType': BUY_GOODS,
+      'goodsId': shopGoodDetail.id,
+      'goodsAmount': amount,
+      'receiver': receiver,
+      'receiverPhone': receiverPhone,
+      'receiverAddr': receiverAddr,
+      'remark': this.state.remark,
+    }
+    Actions.PAYMENT({
+      title: '购买商品',
+      price: shopGoodDetail.price * Number(amount),
+      metadata: metadata,
+      subject: '购买汇邻优店商品费用',
+      paySuccessJumpScene: 'BUY_GOODS_OK',
+      paySuccessJumpSceneParams: {},
+      payErrorJumpBack: true,
+    })
+  }
+
   renderBottomBar() {
     return (
       <View style={styles.bottomBarView}>
@@ -45,7 +90,7 @@ class BuyGoods extends Component {
             ¥{this.state.amount * this.props.goods.price}元
           </Text>
         </View>
-        <TouchableOpacity onPress={() => {}} style={styles.subBtn}>
+        <TouchableOpacity onPress={() => {this.onPaymentPress()}} style={styles.subBtn}>
           <Text style={{fontSize: em(15), color: '#FFF'}}>提交订单</Text>
         </TouchableOpacity>
       </View>
@@ -54,7 +99,6 @@ class BuyGoods extends Component {
 
   render() {
     let goods = this.props.goods
-    console.log('goods:', goods)
     return (
       <View style={styles.container}>
         <Header
@@ -160,6 +204,8 @@ class BuyGoods extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    isLogin: isUserLogined(state),
+    currentUser: activeUserId(state),
   }
 }
 
