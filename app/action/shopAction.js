@@ -1418,7 +1418,6 @@ export function fetchAllMyCommentUps(payload){
 
 
 export function fetchAllComments(payload) {
-  console.log('hahahahahahahahahah')
   return (dispatch, getState) => {
     let more = payload.more
     if (!more) {
@@ -1426,6 +1425,7 @@ export function fetchAllComments(payload) {
     }
     lcShop.fetchShopCommentsByCloud(payload).then((result) => {
       let commentList = result.commentList
+      // console.log('result=====>',result)
 
       let allComments = result.allComments
       let comments = []
@@ -1435,6 +1435,8 @@ export function fetchAllComments(payload) {
           comments.push(comment)
         })
       }
+      // console.log('payload=====>',payload)
+      // console.log('comments=====>',comments)
 
       if (payload.commentId && payload.commentId != '') {
         if (more) {

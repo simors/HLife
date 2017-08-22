@@ -1373,13 +1373,10 @@ export function fetchAllMyCommentUps(){
 }
 
 export function fetchShopCommentsByCloud(payload){
-  console.log('payload======>',payload)
   return AV.Cloud.run('fetchShopComments',payload).then((result)=>{
-    console.log('result======>',result)
 
     return result
   },(err)=>{
-    console.log('err======>',err)
 
     throw err
   })

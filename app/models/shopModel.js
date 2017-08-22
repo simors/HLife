@@ -550,7 +550,7 @@ export class ShopComment extends ShopCommentRecord {
       record.set('authorId', lcJson.authorId)
       record.set('authorAvatar', lcJson.authorAvatar)
       record.set('createdDate', lcJson.createdDate)
-      console.log('lcJson=====>',lcJson)
+      // console.log('lcJson=====>',lcJson)
       if (lcJson.updatedAt) {
         record.set('updatedAt', lcJson.updatedAt.valueOf())
         // record.set('createdDate', formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))

@@ -1160,7 +1160,6 @@ const mapStateToProps = (state, ownProps) => {
   if (isUserLogined) {
     isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   }
-  console.log('shopCommentList======>',shopCommentList)
   const guessYouLikeList = selectGuessYouLikeShopList(state)
 
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)

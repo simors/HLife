@@ -369,12 +369,9 @@ export class ShopCommentDetail extends Component {
         </View>
         <ShopCommentListV2
           viewType='shopComment'
-          allTopicComments={this.props.allTopicComments}
-          commentsArray={this.props.commentsArray}
-          shop={this.props.shop}
-          onCommentButton={(payload)=> {
-            this.onCommentButton(payload)
-          }}
+          allShopComments={this.props.shopCommentList}
+          commentsArray = {this.props.shopCommentIdList}
+          onCommentButton={(payload)=>{this.onCommentButton(payload)}}
         />
       </View>
     )
@@ -393,6 +390,7 @@ export class ShopCommentDetail extends Component {
     if (this.isQuering) {
       return
     }
+    console.log('isrefresh===>',isRefresh)
     this.isQuering = true
     let lastShopCommentsCreatedAt = this.props.lastShopCommentsCreatedAt
     let payload = {
@@ -531,23 +529,25 @@ const mapStateToProps = (state, ownProps) => {
   let dataArray = []
   dataArray.push({type: 'COLUMN_1'})
   dataArray.push({type: 'COLUMN_2'})
-  const comments = selectCommentsForComment(state, ownProps.comment.commentId)
+  const comments = selectCommentsForComment(state, ownProps.comment.id)
   const isLogin = isUserLogined(state)
   const userInfo = activeUserInfo(state)
  let lastShopCommentsCreatedAt = ''
   if (comments.commentList && comments.commentList.length) {
     lastShopCommentsCreatedAt = comments.commentList[comments.commentList.length - 1].createdAt
   }
-  const isLiked = isCommentLiked(state, ownProps.comment.commentId)
+  console.log('commentId=====>',ownProps.comment)
 
+  const isLiked = isCommentLiked(state, ownProps.comment.id)
+  console.log('selectalltopiadada=====>',comments)
 
   return {
     ds: ds.cloneWithRows(dataArray),
     isLogin: isLogin,
     isLiked: isLiked,
     userInfo: userInfo,
-    allTopicComments: comments.commentList,
-    commentsArray: comments.comments,
+    shopCommentList: comments.commentList,
+    shopCommentIdList: comments.commentIdList,
     lastShopCommentsCreatedAt: lastShopCommentsCreatedAt,
   }
 }
