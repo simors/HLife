@@ -63,6 +63,7 @@ class BuyGoods extends Component {
       'fromUser': this.props.currentUser,
       'toUser': this.props.shopOwner,
       'dealType': BUY_GOODS,
+      'vendorId': this.props.shopId,
       'goodsId': shopGoodDetail.id,
       'goodsAmount': amount,
       'receiver': receiver,

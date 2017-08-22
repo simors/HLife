@@ -122,9 +122,6 @@ class ShopGoodsDetail extends Component {
     )
   }
 
-  bannerClickListener(banner) {
-
-  }
   toggleModal(isShow, src) {
     this.setState({
       ...this.state,
@@ -274,7 +271,8 @@ class ShopGoodsDetail extends Component {
         <TouchableOpacity style={styles.footerBtnBox}
                           onPress={()=> {Actions.BUY_GOODS({
                             goods: this.props.goodInfo,
-                            shopOwner: this.props.shopDetail.owner.id
+                            shopOwner: this.props.shopDetail.owner.id,
+                            shopId: this.props.shopDetail.id,
                           })}}>
           <Image source={require('../../assets/images/purchase_24.png')}/>
           <Text style={styles.footerBtnTxt}>立即购买</Text>
