@@ -227,7 +227,7 @@ export class TopicCommentDetail extends Component {
         targetId: payload.comment.commentId,
         upType: 'topicComment',
         success: this.upCommentSuccess(),
-        error: this.likeErrorCallback
+        error: (err)=>{this.likeErrorCallback(err)}
       })
 
     }

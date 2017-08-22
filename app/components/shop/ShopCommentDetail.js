@@ -39,6 +39,7 @@ import {
   fetchUserUpShopInfo,
   getShopGoodsList,
   fetchAllComments,
+  userUpShopComment
 } from '../../action/shopAction'
 import {
   selectUserOwnedShopInfo,
@@ -241,11 +242,10 @@ export class ShopCommentDetail extends Component {
 
   onLikeCommentButton(payload) {
     if (this.props.isLogin) {
-      this.props.fetchUpItem({
-        targetId: payload.comment.commentId,
-        upType: 'topicComment',
+      this.props.userUpShopComment({
+        shopCommentId: this.props.comment.id,
         success: this.upCommentSuccess(),
-        error: this.likeErrorCallback
+        error: (err)=>{this.likeErrorCallback(err)}
       })
 
     }
@@ -563,7 +563,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchOtherUserFollowersTotalCount,
   fetchShareDomain,
   fetchAllComments,
-  submitShopComment
+  submitShopComment,
+  userUpShopComment
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCommentDetail)
