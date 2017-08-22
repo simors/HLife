@@ -9,11 +9,13 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import THEME from '../../constants/themes/theme1'
 import Header from '../common/Header'
 import {CachedImage} from "react-native-img-cache"
@@ -61,7 +63,9 @@ class BuyGoods extends Component {
           leftPress={() => Actions.pop()}
           title="下单"
         />
-        <View style={styles.body}>
+        <KeyboardAwareScrollView style={styles.body}
+                                 contentContainerStyle={{backgroundColor: '#FFF'}}
+                                 resetScrollToCoords={{ x: 0, y: 0 }}>
           <View style={styles.goodsView}>
             <View style={{paddingRight: normalizeW(11)}}>
               <CachedImage mutable
@@ -136,7 +140,7 @@ class BuyGoods extends Component {
                 <Text style={styles.inputTipText}>备注信息</Text>
               </View>
             </View>
-            <View style={{height: normalizeH(100), borderWidth: 1, borderColor: '#E2E2E2', borderRadius: 5}}>
+            <View style={{height: normalizeH(100), borderWidth: 1, borderColor: '#E2E2E2', borderRadius: 5}} >
               <TextInput
                 style={[styles.textinputStyle, {textAlignVertical: 'top'}]}
                 onChangeText={(remark) => this.setState({remark})}
@@ -147,7 +151,7 @@ class BuyGoods extends Component {
               />
             </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
         {this.renderBottomBar()}
       </View>
     )
@@ -169,10 +173,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(BuyGoods)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFF',
   },
   body: {
     marginTop: normalizeH(64),
-    backgroundColor: 'rgba(0,0,0,0.03)',
+    backgroundColor: '#FFF',
+    marginBottom: normalizeH(49),
   },
   goodsView: {
     flexDirection: 'row',
@@ -194,15 +200,16 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(15),
   },
   inputArea: {
-    marginTop: normalizeH(5),
+    paddingTop: normalizeH(5),
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgba(0,0,0,0.03)',
   },
   inputView: {
     flexDirection: 'row',
     alignItems: 'center',
     height: normalizeH(47),
+    backgroundColor: '#FFF',
     borderBottomWidth: 1,
     borderColor: '#F5F5F5',
   },
