@@ -237,11 +237,13 @@ export function unFollowShop(payload) {
  */
 export function submitShopComment(payload) {
   return (dispatch, getState) => {
-    lcShop.submitShopComment(payload).then((result) => {
-      let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_COMMENT_SUCCESS)
-      dispatch(updateAction(result))
+      lcShop.submitShopComment(payload).then((result) => {
+      let updateAction = createAction(ShopActionTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
+      let comment = ShopComment.fromLeancloudApi(result)
+        // console.log('comment========>',comment)
+      dispatch(updateAction({comment:comment}))
       let params = {
-        shopId: payload.id,
+        shopId: payload.shopId,
         replyTo: '',
         commentId: payload.commentId,
         commentContent: payload.content,
@@ -390,13 +392,10 @@ export function userUpShopComment(payload) {
         payload.success(result)
       }
     },(err)=>{
-      console.log('i m error')
-
       if (payload.error) {
         payload.error(err)
       }
     }).catch((error) => {
-      console.log('i m catch')
       if (payload.error) {
         payload.error(error)
       }

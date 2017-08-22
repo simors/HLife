@@ -121,6 +121,8 @@ export default function shopReducer(state = initialState, action) {
       return handleSetCommentsForShop(state, action)
     case ShopActionTypes.ADD_SHOP_COMMENTS_FOR_SHOP:
       return handleAddCommentsForShop(state, action)
+    case ShopActionTypes.PUBLISH_SHOP_COMMENT_SUCCESS:
+      return handlePublishCommentSuccess(state, action)
     case ShopActionTypes.FETCH_MY_COMMENT_UPS:
       return handleFetchMyCommentsUps(state, action)
     case ShopActionTypes.USER_UP_SHOP_COMMENT_SUCCESS:
@@ -709,12 +711,42 @@ function handleAddCommentsForShop(state, action) {
   return state
 }
 
+
 function handleSetCommentsForShop(state, action) {
   let payload = action.payload
   let commentList = payload.commentList
   // if(team&&team.length>0)
   state = state.setIn(['shopCommentsForShop', payload.shopId], new List(commentList))
   state = handleSetAllShopComments(state,payload.comments)
+  return state
+}
+
+
+function handlePublishCommentSuccess(state, action) {
+  let payload = action.payload
+  let comment = payload.comment
+  let commentList = state.getIn(['shopCommentsForShop', comment.shopId])
+  if (commentList && commentList.size) {
+    commentList = commentList.insert(0, comment.id)
+    state = state.setIn(['shopCommentsForShop', comment.shopId], commentList)
+  } else {
+    let topicCommentList = [comment.commentId]
+    state = state.setIn(['shopCommentsForShop', comment.shopId], new List(topicCommentList))
+  }
+
+  if (comment.parentCommentId) {
+    let ParentCommentList = state.getIn(['shopCommentsForComment', comment.parentCommentId])
+    if (ParentCommentList && ParentCommentList.size) {
+      ParentCommentList = ParentCommentList.insert(0, comment.commentId)
+      state = state.setIn(['shopCommentsForComment', comment.parentCommentId], ParentCommentList)
+    } else {
+      let commentCommentList = [comment.commentId]
+      state = state.setIn(['shopCommentsForComment', comment.parentCommentId], new List(commentCommentList))
+    }
+  }
+  let comments = []
+  comments.push(comment)
+  state = handleSetAllShopComments(state,comments)
   return state
 }
 

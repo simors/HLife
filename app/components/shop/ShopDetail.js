@@ -52,6 +52,9 @@ import {
   getShopGoodsList,
   fetchAllComments,
 } from '../../action/shopAction'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
 import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees, fetchUsers} from '../../action/authActions'
 import {
   selectUserOwnedShopInfo,
@@ -99,6 +102,8 @@ class ShopDetail extends Component {
       hideBottomView: false,
       comment: undefined,
     }
+    this.replyInput = null
+    this.isReplying = false
   }
 
   componentWillMount() {
@@ -517,15 +522,15 @@ class ShopDetail extends Component {
     )
   }
 
-  onCommentButton(topic) {
+  onCommentButton(comment) {
     this.setState({
-      comment: topic
+      comment: comment
     })
     this.openModel()
   }
 
   openModel(callback) {
-    if (!this.props.isLogin) {
+    if (!this.props.isUserLogined) {
       Actions.LOGIN()
     }
     else {
@@ -872,6 +877,40 @@ class ShopDetail extends Component {
     return null
   }
 
+  sendReply(content) {
+    if (this.isReplying) {
+      Toast.show('正在发表评论，请稍后')
+      return
+    }
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+    } else {
+      this.isReplying = true
+      this.props.submitShopComment({
+        content: content,
+        shopId: this.props.id,
+        userId: this.props.currentUser,
+        replyTo: (this.state.comment&&this.state.comment.id) ? this.state.comment.authorId : this.props.shopDetail.owner.id,
+        commentId: this.state.comment ? this.state.comment.id : undefined,
+        success: () => this.submitSuccessCallback(),
+        error: (error) => this.submitErrorCallback(error)
+      })
+    }
+  }
+
+  submitSuccessCallback() {
+    this.setState({hideBottomView: false})
+    // dismissKeyboard()
+    // console.log('publishCommentSuccesss=========>')
+    Toast.show('评论成功', {duration: 1000})
+    this.isReplying = false
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+    this.isReplying = false
+  }
+
   renderFollowShop() {
     if (this.isSelfShop()) {
       return null
@@ -1005,14 +1044,29 @@ class ShopDetail extends Component {
         </View>
 
         {this.renderBottomView()}
-
-        <Comment
-          modalVisible={this.state.modalVisible}
-          modalTitle="写评论"
-          closeModal={() => this.closeModal()}
-          submitComment={this.submitComment.bind(this)}
-        />
-
+        {this.state.hideBottomView
+          ? <TouchableOpacity style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} onPress={()=>{dismissKeyboard()}}>
+          <View style={{flex: 1}}/>
+        </TouchableOpacity>
+          : null
+        }
+        <KeyboardAwareToolBar
+          initKeyboardHeight={-normalizeH(50)}
+          hideOverlay={true}
+        >
+          {this.state.hideBottomView
+            ? <ToolBarContent
+            replyInputRefCallBack={(input)=> {
+              this.replyInput = input
+            }}
+            onSend={(content) => {
+              this.sendReply(content)
+            }}
+            placeholder={(this.state.comment) ? "回复 " + this.state.comment.authorNickname + ": " : "回复 楼主: "}
+          />
+            : null
+          }
+        </KeyboardAwareToolBar>
         {this.renderServicePhoneAction()}
       </View>
 

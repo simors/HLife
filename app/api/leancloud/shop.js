@@ -331,6 +331,7 @@ export function submitShopComment(payload) {
     replyId: replyId,
     commentId: commentId
   }
+
   return AV.Cloud.run('pubulishShopComment',{payload: params}).then((results) => {
     // console.log('submitShopComment.results=', results)
     let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
