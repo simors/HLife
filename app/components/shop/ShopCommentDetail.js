@@ -211,7 +211,7 @@ export class ShopCommentDetail extends Component {
       this.isReplying = true
       this.props.submitShopComment({
         content: content,
-        topicId: this.props.comment.shopId,
+        shopId: this.props.comment.shopId,
         userId: this.props.userInfo.id,
         replyTo: (this.state.comment && this.state.comment.id) ? this.state.comment.authorId : this.props.comment.authorId,
         replyId: (this.state.comment) ? this.state.comment.id : undefined,
@@ -423,7 +423,7 @@ export class ShopCommentDetail extends Component {
   }
 
   render() {
-    let lazyHost = "commentList" + this.props.comment.commentId
+    let lazyHost = "commentList" + this.props.comment.id
     return (
       <View style={styles.containerStyle}>
         {this.renderHeaderView()}
@@ -481,7 +481,12 @@ export class ShopCommentDetail extends Component {
     )
   }
 
-
+  commentForComment(){
+    this.setState({
+      comment: undefined
+    })
+    this.openModel()
+  }
   renderBottomView() {
     let isLiked = this.props.isLiked
     let likeImgSource = require("../../assets/images/like_unselect_main.png")
@@ -500,7 +505,7 @@ export class ShopCommentDetail extends Component {
           </View>
         </TouchableOpacity>
         <View style={{flex: 1}}/>
-        <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.openModel()}>
+        <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.commentForComment()}>
           <View style={[styles.contactedBox]}>
             <CachedImage mutable style={{}} resizeMode='contain' source={require('../../assets/images/message.png')}/>
             <Text style={styles.contactedTxt}>评论</Text>
