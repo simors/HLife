@@ -64,7 +64,7 @@ export class ShopCommentForShop extends Component {
   renderParentComment() {
     if (this.props.comment.commentCount) {
       return (
-        <TouchableOpacity onPress={() => Actions.TOPIC_COMMENT_DETAIL({comment: this.props.comment})}>
+        <TouchableOpacity onPress={() => Actions.SHOP_COMMENT_DETAIL({comment: this.props.comment})}>
           <View style={styles.parentCommentStyle}>
             <Text style={styles.parentCommentContentStyle}>
               <Text style={styles.commentUserStyle}>
@@ -142,7 +142,7 @@ export class ShopCommentForShop extends Component {
           <View style={styles.timeLocationStyle}>
             <View style={{flexDirection: 'row'}}>
               <Text style={styles.commentTextStyle}>{'赞'+(this.state.upCount ? (this.state.upCount>999?'999+' : this.state.upCount): 0)}</Text>
-              <Text style={styles.commentTextStyle}>{'回复'+(this.state.commentCount ? (this.state.commentCount>999?'999+' : this.state.commentCount): 0)}</Text>
+              <Text style={styles.commentTextStyle}>{'回复'+(this.props.comment.commentCount ? (this.props.comment.commentCount>999?'999+' : this.props.comment.commentCount): 0)}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>

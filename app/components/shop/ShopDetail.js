@@ -15,7 +15,8 @@ import {
   Platform,
   InteractionManager,
   TextInput,
-  Animated
+  Animated,
+  Linking
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -383,6 +384,7 @@ class ShopDetail extends Component {
     }
     this.props.submitShopComment(payload)
   }
+
 
   makePhoneCall(contactNumber) {
     if (Platform.OS === 'android') {
@@ -1130,7 +1132,7 @@ class ShopDetail extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.shopCommentInputBox]} onPress={()=> {
-            this.openCommentScene()
+            this.handleServicePhoneCall()
           }}>
             <View style={[styles.vItem]}>
               <Svg size={normalizeH(32)}  icon="call"/>

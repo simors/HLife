@@ -102,7 +102,7 @@ import PublishShopPromotionChooseDate from '../components/Mine/myShop/PublishSho
 import PublishShopPromotionAbstract from '../components/Mine/myShop/PublishShopPromotionAbstract'
 import PublishShopPromotionSubmit from '../components/Mine/myShop/PublishShopPromotionSubmit'
 import ShopGoodPromotionManage from '../components/Mine/myShop/ShopGoodPromotionManage'
-
+import ShopCommentDetail from '../components/shop/ShopCommentDetail'
 import Contact from '../components/Mine/Contact'
 import Search from '../components/Search'
 import SearchUser from '../components/Search/SearchUser'
@@ -261,6 +261,7 @@ export const scenes = Actions.create(
       <Scene key="USER_ORDER_DETAIL" component={UserOrderDetail}/>
       <Scene key="SHOP_ORDERS_VIEWER" component={ShopOrdersViewer} />
       <Scene key="SHOP_ORDER_DETAIL" component={ShopOrderDetail} />
+      <Scene key="SHOP_COMMENT_DETAIL" component={ShopCommentDetail} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle} initial={true}>

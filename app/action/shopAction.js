@@ -1418,7 +1418,7 @@ export function fetchAllMyCommentUps(payload){
 
 
 export function fetchAllComments(payload) {
-  // console.log('hahahahahahahahahah')
+  console.log('hahahahahahahahahah')
   return (dispatch, getState) => {
     let more = payload.more
     if (!more) {

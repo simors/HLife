@@ -315,7 +315,7 @@ export function unFollowShop(payload) {
 }
 
 export function submitShopComment(payload) {
-  let shopId = payload.id
+  let shopId = payload.shopId
   // let score = payload.score
   let content = payload.content
   let blueprints = payload.blueprints
@@ -1373,9 +1373,14 @@ export function fetchAllMyCommentUps(){
 }
 
 export function fetchShopCommentsByCloud(payload){
+  console.log('payload======>',payload)
   return AV.Cloud.run('fetchShopComments',payload).then((result)=>{
+    console.log('result======>',result)
+
     return result
   },(err)=>{
+    console.log('err======>',err)
+
     throw err
   })
 }
