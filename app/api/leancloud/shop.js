@@ -1278,7 +1278,6 @@ export function fetchNearbyShopGoodPromotion(payload) {
     limit: 30,
     nowDate: payload.nowDate
   }
-  console.log('params',params)
   return AV.Cloud.run('fetchNearbyShopGoodPromotion', params).then((promotions)=> {
 
     return promotions

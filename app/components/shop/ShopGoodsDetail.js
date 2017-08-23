@@ -122,9 +122,6 @@ class ShopGoodsDetail extends Component {
     )
   }
 
-  bannerClickListener(banner) {
-
-  }
   toggleModal(isShow, src) {
     this.setState({
       ...this.state,
@@ -271,9 +268,12 @@ class ShopGoodsDetail extends Component {
             <Text style={{fontSize: em(10), color: '#aaa', paddingTop: normalizeH(5)}}>联系卖家</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerBtnBox} onPress={()=> {
-          this.openPaymentModal()
-        }}>
+        <TouchableOpacity style={styles.footerBtnBox}
+                          onPress={()=> {Actions.BUY_GOODS({
+                            goods: this.props.goodInfo,
+                            shopOwner: this.props.shopDetail.owner.id,
+                            shopId: this.props.shopDetail.id,
+                          })}}>
           <Image source={require('../../assets/images/purchase_24.png')}/>
           <Text style={styles.footerBtnTxt}>立即购买</Text>
         </TouchableOpacity>
