@@ -51,7 +51,8 @@ import {
   selectShopCommentsTotalCount,
   selectGoodsList,
   selectCommentsForShop,
-  selectCommentsForComment
+  selectCommentsForComment,
+  isCommentLiked,
 } from '../../selector/shopSelector'
 
 import THEME from '../../constants/themes/theme1'
@@ -67,7 +68,7 @@ import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicAc
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import * as authSelector from '../../selector/authSelector'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {getCommentsByTopicId, isCommentLiked, getCommentsByCommentId} from '../../selector/newTopicSelector'
+import {getCommentsByTopicId,getCommentsByCommentId} from '../../selector/newTopicSelector'
 import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
 import ShopCommentListV2 from './ShopCommentListV2'
 import ActionSheet from 'react-native-actionsheet'
@@ -95,7 +96,8 @@ export class ShopCommentDetail extends Component {
       loadComment: true,
       showPayModal: false,
       pay: '',
-      upCount: 0
+      upCount: 0,
+      isLike:false
     }
     this.replyInput = null
     this.isReplying = false
@@ -244,7 +246,7 @@ export class ShopCommentDetail extends Component {
     if (this.props.isLogin) {
       this.props.userUpShopComment({
         shopCommentId: this.props.comment.id,
-        success: this.upCommentSuccess(),
+        success: ()=>{this.upCommentSuccess()},
         error: (err)=>{this.likeErrorCallback(err)}
       })
 
@@ -257,7 +259,8 @@ export class ShopCommentDetail extends Component {
   upCommentSuccess() {
     this.isSubmiting = false
     this.setState({
-      upCount: this.state.upCount + 1
+      upCount: this.state.upCount + 1,
+      isLike:true
     })
   }
 
@@ -337,7 +340,7 @@ export class ShopCommentDetail extends Component {
               <TouchableOpacity style={styles.commentStyle} onPress={()=>this.onLikeCommentButton({comment: comment})}>
                 <Image style={styles.commentImageStyle}
                        resizeMode='contain'
-                       source={this.props.isLiked ?
+                       source={(this.props.isLiked||this.state.isLike) ?
                          require("../../assets/images/like_selected.png") :
                          require("../../assets/images/like_unselect.png")}/>
                 <Text style={styles.commentTextStyle}>{this.state.upCount ? this.state.upCount : 0}</Text>
@@ -488,7 +491,7 @@ export class ShopCommentDetail extends Component {
     this.openModel()
   }
   renderBottomView() {
-    let isLiked = this.props.isLiked
+    let isLiked = this.props.isLiked||this.state.isLike
     let likeImgSource = require("../../assets/images/like_unselect_main.png")
     if (isLiked) {
       likeImgSource = require("../../assets/images/like_selected.png")
@@ -541,10 +544,10 @@ const mapStateToProps = (state, ownProps) => {
   if (comments.commentList && comments.commentList.length) {
     lastShopCommentsCreatedAt = comments.commentList[comments.commentList.length - 1].createdAt
   }
-  console.log('commentId=====>',ownProps.comment)
 
   const isLiked = isCommentLiked(state, ownProps.comment.id)
-  console.log('selectalltopiadada=====>',comments)
+  console.log('ownProps.comment.id=====>',ownProps.comment.id)
+  console.log('isLiked=====>',isLiked)
 
   return {
     ds: ds.cloneWithRows(dataArray),

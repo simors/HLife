@@ -36,6 +36,7 @@ export class ShopCommentForShop extends Component {
     super(props)
     this.state = {
       upCount: 0,
+      isLike: false,
     }
   }
 
@@ -79,8 +80,8 @@ export class ShopCommentForShop extends Component {
 
   successCallback() {
 
-    this.setState({upCount: this.state.upCount + 1})
-
+    this.setState({upCount: this.state.upCount + 1,isLike:true})
+    console.log('this.state.isLike==>',this.state.isLike)
   }
 
   onLikeCommentButton() {
@@ -89,8 +90,7 @@ export class ShopCommentForShop extends Component {
         comment: this.props.comment,
         isLiked: this.props.isLiked,
         upType: 'topicComment',
-        success: this.successCallback.bind(this)
-
+        success: ()=>{this.successCallback()}
       })
     }
     else {
@@ -148,7 +148,7 @@ export class ShopCommentForShop extends Component {
               <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
                 <Image style={styles.likeImageStyle}
                        resizeMode='contain'
-                       source={this.props.isLiked ?
+                       source={(this.props.isLiked||this.state.isLike) ?
                          require("../../assets/images/like_selected.png") :
                          require("../../assets/images/like_unselect.png")}/>
               </TouchableOpacity>
@@ -185,6 +185,7 @@ ShopCommentForShop.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   const isLiked = isCommentLiked(state, ownProps.comment.id)
+  console.log('isLiked====>',isLiked)
   const isLogin = isUserLogined(state)
   return {
     isLiked: isLiked,
