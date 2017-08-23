@@ -58,7 +58,6 @@ export class ShopCommentListV2 extends Component {
     if ( allShopComments && allShopComments.length) {
 
       commentsView = allShopComments.map((value, key)=> {
-        console.log('value====>',value)
         return (
           this.renderTopicCommentItem(value, key)
         )

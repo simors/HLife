@@ -677,6 +677,7 @@ function handleBatchAddShopGoodsDetail(state, action) {
 
 function handleSetAllShopComments(state, comments) {
   comments.forEach((item)=> {
+    // console.log('item======>',item)
     state = state.setIn(['allShopComments', item.id], item)
   })
   return state
@@ -706,7 +707,9 @@ function handleAddCommentsForShop(state, action) {
   let commentList = payload.commentList
   let team = state.getIn(['shopCommentsForShop', payload.shopId])|| new List()
   // if(team&&team.length>0)
-  state = state.setIn(['shopCommentsForComment', payload.shopId], team.concat(new List(commentList)))
+  console.log('team====>',team)
+
+  state = state.setIn(['shopCommentsForShop', payload.shopId], team.concat(new List(commentList)))
   state = handleSetAllShopComments(state,payload.comments)
   return state
 }

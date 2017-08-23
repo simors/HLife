@@ -1435,7 +1435,6 @@ export function fetchAllComments(payload) {
           comments.push(comment)
         })
       }
-      // console.log('payload=====>',payload)
       // console.log('comments=====>',comments)
 
       if (payload.commentId && payload.commentId != '') {

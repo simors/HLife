@@ -111,9 +111,7 @@ class ShopDetail extends Component {
   componentWillMount() {
     this.isFetchingShopDetail = true
     InteractionManager.runAfterInteractions(()=> {
-      this.props.fetchAllComments({
-        shopId: this.props.id,
-      })
+
       this.props.getShopGoodsList({
         shopId: this.props.id,
         status: 1,
@@ -131,40 +129,8 @@ class ShopDetail extends Component {
       })
       // this.props.fetchShopAnnouncements({id: this.props.id})
 
-      this.setTimeout(() => {
-        this.isFetchingShopCommentList = true
-        this.props.fetchShopCommentList({
-          isRefresh: true, id: this.props.id,
-          success: () => {
-            this.isFetchingShopCommentList = false
-          },
-          error: () => {
-            this.isFetchingShopCommentList = false
-          }
-        })
 
-        this.isFetchingShopCommentTotalCount = true
-        this.props.fetchShopCommentTotalCount({
-          id: this.props.id,
-          success: () => {
-            this.isFetchingShopCommentTotalCount = false
-          },
-          error: () => {
-            this.isFetchingShopCommentTotalCount = false
-          }
-        })
-
-        // this.isFetchingGuessYouLikeShopList = true
-        // this.props.fetchGuessYouLikeShopList({
-        //   id: this.props.id,
-        //   success: () => {
-        //     this.isFetchingGuessYouLikeShopList = false
-        //   },
-        //   error: () => {
-        //     this.isFetchingGuessYouLikeShopList = false
-        //   }
-        // })
-      }, 1500)
+      this.refreshData()
 
       if (this.props.isUserLogined) {
         this.isFetchingUserIsFollowedShop = true
@@ -371,7 +337,6 @@ class ShopDetail extends Component {
       shopOwnerId: this.props.shopDetail.owner.id,
       ...commentData,
       success: () => {
-        that.props.fetchShopCommentList({isRefresh: true, id: that.props.id})
         that.props.fetchShopCommentTotalCount({id: that.props.id})
         that.closeModal(()=> {
           Toast.show('发布成功', {duration: 1000})
@@ -657,7 +622,7 @@ class ShopDetail extends Component {
   }
 
   renderComments() {
-    if (this.props.shopComments && this.props.shopComments.length) {
+    if (this.props.shopCommentList && this.props.shopCommentList.length) {
       let avatar = require('../../assets/images/default_portrait.png')
       return (
         <View style={styles.commentWrap}>
@@ -1074,6 +1039,7 @@ class ShopDetail extends Component {
       lastCreatedAt: this.props.lastCommentsCreatedAt,
       isRefresh: !!isRefresh,
       nowDate: new Date(),
+      more: !isRefresh,
       success: (isEmpty) => {
         this.isQuering = false
         if (!this.listView) {
@@ -1239,7 +1205,7 @@ const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
   const isUserLogined = authSelector.isUserLogined(state)
-  const shopComments = selectShopComments(state, ownProps.id)
+  // const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   let isFollowedShop = false
   let shopCommentList = selectCommentsForShop(state, ownProps.id)
@@ -1263,7 +1229,7 @@ const mapStateToProps = (state, ownProps) => {
   const guessYouLikeList = selectGuessYouLikeShopList(state)
 
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
-
+  // console.log('shopCommentList=========>',shopCommentList)
   const appServicePhone = configSelector.selectServicePhone(state)
   const goodList = selectGoodsList(state, ownProps.id, 1)
   let shareDomain = configSelector.getShareDomain(state)
@@ -1279,7 +1245,7 @@ const mapStateToProps = (state, ownProps) => {
     guessYouLikeList: guessYouLikeList,
     isUserLogined: isUserLogined,
     isFollowedShop: isFollowedShop,
-    shopComments: shopComments,
+    // shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
     currentUser: authSelector.activeUserId(state),
     userOwnedShopInfo: userOwnedShopInfo,
