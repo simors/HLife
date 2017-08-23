@@ -584,7 +584,7 @@ class ShopDetail extends Component {
       <View style={{flex: 1,backgroundColor:'#FFFFFF'}}>
         <View style={styles.ownerWrap}>
           <View style={styles.ownerLeft}>
-            <CachedImage style={styles.ownerTitle} source={require('../../assets/images/shopkeeper.png')}/>
+            <CachedImage  style = {{marginLeft:normalizeW(15),marginRight:normalizeW(15)}}source={require('../../assets/images/shopkeeper.png')}/>
             <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
             <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
           </View>
