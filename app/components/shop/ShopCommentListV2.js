@@ -84,7 +84,9 @@ export class ShopCommentListV2 extends Component {
     if (this.props.isLogin) {
       this.props.userUpShopComment({
         shopCommentId: payload.comment.id,
+        shopId: payload.comment.shopId,
         success: payload.success,
+        userId: payload.comment.authorId,
         error: (error)=>{this.likeErrorCallback(error)}
       })
 

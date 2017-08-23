@@ -581,15 +581,17 @@ class ShopDetail extends Component {
       avatar = {uri: getThumbUrl(this.props.shopDetail.owner.avatar, 32, 32)}
     }
     return (
-      <View style={styles.ownerWrap}>
-        <View style={styles.ownerLeft}>
-          <Text style={styles.ownerTitle}>掌柜名</Text>
-          <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
-          <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
+      <View style={{flex: 1,backgroundColor:'#FFFFFF'}}>
+        <View style={styles.ownerWrap}>
+          <View style={styles.ownerLeft}>
+            <CachedImage style={styles.ownerTitle} source={require('../../assets/images/shopkeeper.png')}/>
+            <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
+            <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
+          </View>
+          <Svg key={this.props.shopDetail.owner.objectId} style={{marginRight: normalizeW(15)}} size={normalizeH(32)}
+               color="#FF9D4E"
+               icon='service'/>
         </View>
-        <Svg key={this.props.shopDetail.owner.objectId} style={{marginRight: normalizeW(15)}} size={normalizeH(32)}
-             color="#FF9D4E"
-             icon='service'/>
       </View>
     )
   }
@@ -894,14 +896,28 @@ class ShopDetail extends Component {
           this.followShop()
         }}>
           <View style={styles.shopAbstractLikeWrap}>
-            <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
-            <Text style={styles.shopAbstractLike}>关注</Text>
+            {this.renderIsFollow()}
           </View>
         </TouchableOpacity>
       </LinearGradient>
     )
   }
+  renderIsFollow(){
+    if(this.props.isFollowedShop){
+      return(
+        <Text style={styles.shopAbstractLike}>已关注</Text>
+      )
+    }else{
+      return(
+        <View style={{flexDirection:'row'}}>
+      <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
+      <Text style={styles.shopAbstractLike}>关注</Text>
+          </View>
+      )
 
+    }
+
+  }
   render() {
     let shopDetail = this.props.shopDetail
 

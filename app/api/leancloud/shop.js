@@ -558,6 +558,7 @@ export function userUpShopComment(payload) {
   // let shopCommentUpId = payload.shopCommentUpId
   let shopCommentId = payload.shopCommentId
   let shopId = payload.shopId
+  let userId = payload.userId
   // let currentUser = AV.User.current()
   let params = {
     userId: authSelector.activeUserId(store.getState()),
@@ -565,8 +566,8 @@ export function userUpShopComment(payload) {
   }
   return AV.Cloud.run('userUpShopComment',{payload: params}).then((result)=>{
     let shopComment = shopSelector.selectShopCommentInfo(store.getState(), shopId, shopCommentId)
-    // console.log('userUpShopComment.shopComment==', shopComment)
-    let pushUserId = shopComment && shopComment.user && shopComment.user.id
+    console.log('result.result==', result)
+    let pushUserId = userId
     if(pushUserId) {
       let activeUser = authSelector.activeUserInfo(store.getState())
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)

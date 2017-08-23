@@ -387,7 +387,7 @@ export function userUpShopComment(payload) {
   return (dispatch, getState) => {
     lcShop.userUpShopComment(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_COMMENT_SUCCESS)
-      dispatch(updateAction(result))
+      dispatch(updateAction({up:result}))
       if (payload.success) {
         payload.success(result)
       }
