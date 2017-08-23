@@ -18,6 +18,7 @@ import {
   Animated,
   Linking
 } from 'react-native'
+import CommonListView from '../common/CommonListView'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
@@ -385,6 +386,110 @@ class ShopDetail extends Component {
     this.props.submitShopComment(payload)
   }
 
+  renderRow(rowData, rowId) {
+    switch (rowData.type) {
+      //   return this.renderNearbyTopic()
+      case 'SHOP_INFO':
+        return this.renderShopDetail()
+      case 'SHOP_COMMENTS':
+        return this.renderComments()
+      default:
+        return <View />
+    }
+  }
+
+  renderShopDetail() {
+    return (
+      <View style={{flex: 1}}>
+        <View style={{flex: 1}}>
+          <TouchableOpacity onPress={()=> {
+            this.showShopAlbum()
+          }} style={{flex: 1}}>
+            <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
+                         source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
+            </CachedImage>
+          </TouchableOpacity>
+          {this.state.height < 100 ? this.renderShopLeftHeader() : null}
+          {this.state.height < 100 ? this.renderShopRightHeader() : null}
+
+          {this.renderShopAbstract()}
+        </View>
+        {this.renderOwnerBanner()}
+        <View style={styles.shopXYZWrap}>
+          <View style={styles.shopXYZLeft}>
+            <View style={styles.locationWrap}>
+              <TouchableOpacity style={styles.locationContainer} onPress={()=> {
+              }}>
+                <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
+                <View style={styles.locationTxtWrap}>
+                  <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.contactNumberWrap}>
+              <TouchableOpacity style={styles.contactNumberContainer} onPress={()=> {
+                this.handleServicePhoneCall()
+              }}>
+                <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
+                <View style={styles.contactNumberTxtWrap}>
+                  <Text style={styles.contactNumberTxt}
+                        numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/*<View style={styles.shopXYZRight}>*/}
+          {/*{this.renderFollowShop()}*/}
+          {/*</View>*/}
+        </View>
+
+        {/*<ShopPromotionModule*/}
+        {/*title="近期活动"*/}
+        {/*noDistance={true}*/}
+        {/*shopPromotionList={this.props.shopDetail.containedPromotions}*/}
+        {/*/>*/}
+        <View style={styles.headerView}>
+          <View style={styles.headerItem}>
+            <Image source={require('../../assets/images/activity.png')} width={12} height={14}></Image>
+            <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
+          </View>
+        </View>
+        <ShopGoodsList shopGoodsList={this.props.goodList} size={6}/>
+        <View style={styles.commentWrap}>
+          <View style={styles.commentFoot}>
+            { this.props.goodList && this.props.goodList.length ? <TouchableOpacity onPress={()=> {
+              Actions.SHOP_GOODSLIST_VIEW({
+                id: this.props.shopDetail.id,
+              })
+            }}>
+              <Text style={styles.allCommentsLink}>查看全部商品</Text>
+            </TouchableOpacity> : <View style={styles.noDataContainer}>
+              <Text style={{fontSize: 12, color: '#5A5A5A'}}>暂无商品</Text>
+            </View>}
+          </View>
+        </View>
+        <View style={styles.shopAnnouncementWrap}>
+          <View style={styles.titleWrap}>
+            <View style={styles.titleLine}/>
+            <Text style={styles.titleTxt}>店铺公告</Text>
+          </View>
+          <View style={styles.serviceInfoContainer}>
+            <View style={styles.openTime}>
+              <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
+              <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
+            </View>
+            <View style={styles.shopSpecial}>
+              <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
+              <View style={{flex: 1, paddingRight: 10}}>
+                <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+  }
 
   makePhoneCall(contactNumber) {
     if (Platform.OS === 'android') {
@@ -538,7 +643,7 @@ class ShopDetail extends Component {
     else {
       this.setState({
         hideBottomView: true
-      }, ()=>{
+      }, ()=> {
         // console.log('openModel===', this.replyInput)
         if (this.replyInput) {
           this.replyInput.focus()
@@ -561,10 +666,12 @@ class ShopDetail extends Component {
             <Text style={styles.titleTxt}>留言板·{this.props.shopCommentsTotalCount}</Text>
           </View>
 
-          <ShopCommentListV2  viewType = 'shop'
-                              allShopComments={this.props.shopCommentList}
-                              commentsArray = {this.props.shopCommentIdList}
-                              onCommentButton={(payload)=>{this.onCommentButton(payload)}}
+          <ShopCommentListV2 viewType='shop'
+                             allShopComments={this.props.shopCommentList}
+                             commentsArray={this.props.shopCommentIdList}
+                             onCommentButton={(payload)=> {
+                               this.onCommentButton(payload)
+                             }}
           />
 
         </View>
@@ -648,7 +755,7 @@ class ShopDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id + '?userId=' + this.props.currentUser:
+    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "shopShare/" + this.props.shopDetail.id + '?userId=' + this.props.currentUser :
     DEFAULT_SHARE_DOMAIN + "shopShare/" + this.props.shopDetail.id + '?userId=' + this.props.currentUser
 
     Actions.SHARE({
@@ -684,7 +791,7 @@ class ShopDetail extends Component {
     }
   }
 
-  renderShopLeftHeader(){
+  renderShopLeftHeader() {
     return (
       <View style={{
         backgroundColor: 'rgba(0,0,0,0.3)',
@@ -692,21 +799,32 @@ class ShopDetail extends Component {
         position: 'absolute',
         top: normalizeH(24),
         left: normalizeW(9),
-        flex:1 ,
-        borderRadius:normalizeH(18)
+        flex: 1,
+        borderRadius: normalizeH(18)
       }}
       >
         <TouchableOpacity onPress={() => {
           AVUtils.pop({
             backSceneName: this.props.backSceneName,
             backSceneParams: this.props.backSceneParams
-          })}} style={{paddingTop:normalizeH(3),borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
-          <Icon name="ios-arrow-back" style={{fontSize:em(28), color:'#FAFAFA'}}/>
-          </TouchableOpacity>
+          })
+        }} style={{
+          paddingTop: normalizeH(3),
+          borderRadius: normalizeH(18),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(36),
+          height: normalizeH(36),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Icon name="ios-arrow-back" style={{fontSize: em(28), color: '#FAFAFA'}}/>
+        </TouchableOpacity>
       </View>
     )
   }
-  renderShopRightHeader(){
+
+  renderShopRightHeader() {
     return (
       <View style={{
         backgroundColor: 'rgba(0,0,0,0.3)',
@@ -714,19 +832,28 @@ class ShopDetail extends Component {
         position: 'absolute',
         top: normalizeH(24),
         left: normalizeW(330),
-        flex:1 ,
-        borderRadius:normalizeH(18),
-        width:normalizeW(36),
-        height:normalizeH(36)
+        flex: 1,
+        borderRadius: normalizeH(18),
+        width: normalizeW(36),
+        height: normalizeH(36)
       }}
       >
-        <TouchableOpacity onPress={this.onShare} style={{borderRadius:normalizeH(18),flex:1,backgroundColor: 'rgba(0,0,0,0.3)',width:normalizeW(36), height:normalizeH(36),justifyContent:'center', alignItems:'center'}}>
-          <Icon name="md-more" style={{fontSize:em(28), color:'#FAFAFA'}}/>
+        <TouchableOpacity onPress={this.onShare} style={{
+          borderRadius: normalizeH(18),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(36),
+          height: normalizeH(36),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Icon name="md-more" style={{fontSize: em(28), color: '#FAFAFA'}}/>
         </TouchableOpacity>
       </View>
 
     )
   }
+
   renderMainHeader() {
     return (
       <Animated.View style={{
@@ -791,20 +918,22 @@ class ShopDetail extends Component {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: PAGE_WIDTH,
-        height:normalizeH(115),
+        height: normalizeH(115),
         paddingTop: normalizeH(64)
       }}>
-      <View style={{flex: 1, marginLeft: normalizeW(15)}}>
-        <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
-        {this.renderShopTags()}
-      </View>
-        <TouchableOpacity onPress={()=>{this.followShop()}}>
-      <View style={styles.shopAbstractLikeWrap}>
-        <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
-        <Text style={styles.shopAbstractLike}>关注</Text>
-      </View>
-          </TouchableOpacity>
-        </LinearGradient>
+        <View style={{flex: 1, marginLeft: normalizeW(15)}}>
+          <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
+          {this.renderShopTags()}
+        </View>
+        <TouchableOpacity onPress={()=> {
+          this.followShop()
+        }}>
+          <View style={styles.shopAbstractLikeWrap}>
+            <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
+            <Text style={styles.shopAbstractLike}>关注</Text>
+          </View>
+        </TouchableOpacity>
+      </LinearGradient>
     )
   }
 
@@ -892,7 +1021,7 @@ class ShopDetail extends Component {
         content: content,
         shopId: this.props.id,
         userId: this.props.currentUser,
-        replyTo: (this.state.comment&&this.state.comment.id) ? this.state.comment.authorId : this.props.shopDetail.owner.id,
+        replyTo: (this.state.comment && this.state.comment.id) ? this.state.comment.authorId : this.props.shopDetail.owner.id,
         commentId: this.state.comment ? this.state.comment.id : undefined,
         success: () => this.submitSuccessCallback(),
         error: (error) => this.submitErrorCallback(error)
@@ -934,6 +1063,40 @@ class ShopDetail extends Component {
   }
 
 
+  loadMoreData(isRefresh) {
+    if (this.isQuering) {
+      return
+    }
+    this.isQuering = true
+
+    let payload = {
+      shopId: this.props.id,
+      lastCreatedAt: this.props.lastCommentsCreatedAt,
+      isRefresh: !!isRefresh,
+      nowDate: new Date(),
+      success: (isEmpty) => {
+        this.isQuering = false
+        if (!this.listView) {
+          return
+        }
+        if (isEmpty) {
+          this.listView.isLoadUp(false)
+        } else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=> {
+        this.isQuering = false
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchAllComments(payload)
+  }
+
+  refreshData(payload) {
+    this.loadMoreData(true)
+  }
+
   renderDetailContent() {
     let shopDetail = this.props.shopDetail
 
@@ -946,108 +1109,31 @@ class ShopDetail extends Component {
 
     return (
       <View style={{flex: 1}}>
-        <View style={detailWrapStyle}>
-          <ScrollView
-            contentContainerStyle={[styles.contentContainerStyle]}
+        <View style={styles.body}>
+          <CommonListView
+            name="shopDetail"
+            contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData(false)
+            }}
+            ref={(listView) => this.listView = listView}
             onScroll={e => this.handleOnScroll(e)}
             scrollEventThrottle={80}
-          >
-            <View style={{flex: 1}}>
-              <TouchableOpacity onPress={()=> {
-                this.showShopAlbum()
-              }} style={{flex: 1}}>
-                <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
-                             source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
-                </CachedImage>
-              </TouchableOpacity>
-              {this.state.height<100?this.renderShopLeftHeader():null}
-              {this.state.height<100?this.renderShopRightHeader():null}
-
-              {this.renderShopAbstract()}
-            </View>
-            {this.renderOwnerBanner()}
-            <View style={styles.shopXYZWrap}>
-              <View style={styles.shopXYZLeft}>
-                <View style={styles.locationWrap}>
-                  <TouchableOpacity style={styles.locationContainer} onPress={()=> {
-                  }}>
-                    <Image style={styles.locationIcon} source={require('../../assets/images/shop_loaction.png')}/>
-                    <View style={styles.locationTxtWrap}>
-                      <Text style={styles.locationTxt} numberOfLines={2}>{this.props.shopDetail.shopAddress}</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.contactNumberWrap}>
-                  <TouchableOpacity style={styles.contactNumberContainer} onPress={()=> {
-                    this.handleServicePhoneCall()
-                  }}>
-                    <Image style={styles.contactNumberIcon} source={require('../../assets/images/shop_call.png')}/>
-                    <View style={styles.contactNumberTxtWrap}>
-                      <Text style={styles.contactNumberTxt}
-                            numberOfLines={1}>{this.props.shopDetail.contactNumber}</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/*<View style={styles.shopXYZRight}>*/}
-              {/*{this.renderFollowShop()}*/}
-              {/*</View>*/}
-            </View>
-
-            {/*<ShopPromotionModule*/}
-            {/*title="近期活动"*/}
-            {/*noDistance={true}*/}
-            {/*shopPromotionList={this.props.shopDetail.containedPromotions}*/}
-            {/*/>*/}
-            <View style={styles.headerView}>
-              <View style={styles.headerItem}>
-                <Image source={require('../../assets/images/activity.png')} width={12} height={14}></Image>
-                <Text style={styles.headerText} numberOfLines={1}>{'热卖商品'}</Text>
-              </View>
-            </View>
-            <ShopGoodsList shopGoodsList={this.props.goodList} size={6}/>
-            <View style={styles.commentWrap}>
-              <View style={styles.commentFoot}>
-                { this.props.goodList && this.props.goodList.length ? <TouchableOpacity onPress={()=> {
-                  Actions.SHOP_GOODSLIST_VIEW({
-                    id: this.props.shopDetail.id,
-                  })
-                }}>
-                  <Text style={styles.allCommentsLink}>查看全部商品</Text>
-                </TouchableOpacity> : <View style={styles.noDataContainer}>
-                  <Text style={{fontSize: 12, color: '#5A5A5A'}}>暂无商品</Text>
-                </View>}
-              </View>
-            </View>
-            <View style={styles.shopAnnouncementWrap}>
-              <View style={styles.titleWrap}>
-                <View style={styles.titleLine}/>
-                <Text style={styles.titleTxt}>店铺公告</Text>
-              </View>
-              <View style={styles.serviceInfoContainer}>
-                <View style={styles.openTime}>
-                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>营业时间:</Text>
-                  <Text style={styles.serviceTxt}>{this.props.shopDetail.openTime}</Text>
-                </View>
-                <View style={styles.shopSpecial}>
-                  <Text style={[styles.serviceTxt, styles.serviceLabel]}>本店特色:</Text>
-                  <View style={{flex: 1, paddingRight: 10}}>
-                    <Text numberOfLines={5} style={styles.serviceTxt}>{this.props.shopDetail.ourSpecial}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {this.renderComments()}
-            {/*{this.renderGuessYouLike()}*/}
-
-          </ScrollView>
+          />
+          {this.renderBottomView()}
         </View>
 
-        {this.renderBottomView()}
         {this.state.hideBottomView
-          ? <TouchableOpacity style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} onPress={()=>{dismissKeyboard()}}>
+          ? <TouchableOpacity
+          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}
+          onPress={()=> {
+            dismissKeyboard()
+          }}>
           <View style={{flex: 1}}/>
         </TouchableOpacity>
           : null
@@ -1135,7 +1221,7 @@ class ShopDetail extends Component {
             this.handleServicePhoneCall()
           }}>
             <View style={[styles.vItem]}>
-              <Svg size={normalizeH(32)}  icon="call"/>
+              <Svg size={normalizeH(32)} icon="call"/>
               <Text style={[styles.vItemTxt, styles.shopCommentInput]}>电话</Text>
             </View>
           </TouchableOpacity>
@@ -1156,10 +1242,24 @@ const mapStateToProps = (state, ownProps) => {
   const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   let isFollowedShop = false
-  let shopCommentList = selectCommentsForShop(state,ownProps.id)
+  let shopCommentList = selectCommentsForShop(state, ownProps.id)
   if (isUserLogined) {
     isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   }
+  let ds = undefined
+  if (ownProps.ds) {
+    ds = ownProps.ds
+  } else {
+    ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 != r2,
+    })
+  }
+
+  let dataArray = []
+  dataArray.push({type: 'SHOP_INFO'})
+  // dataArray.push({type: 'NEARBY_TOPIC'})
+  dataArray.push({type: 'SHOP_COMMENTS'})
+
   const guessYouLikeList = selectGuessYouLikeShopList(state)
 
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
@@ -1167,9 +1267,13 @@ const mapStateToProps = (state, ownProps) => {
   const appServicePhone = configSelector.selectServicePhone(state)
   const goodList = selectGoodsList(state, ownProps.id, 1)
   let shareDomain = configSelector.getShareDomain(state)
-
+  let lastCommentsCreatedAt = ''
+  if (shopCommentList.commentList && shopCommentList.commentList.length) {
+    lastCommentsCreatedAt = shopCommentList.commentList[shopCommentList.commentList.length - 1].createdAt
+  }
   return {
     goodList: goodList,
+    ds: ds.cloneWithRows(dataArray),
     shopDetail: shopDetail,
     latestShopAnnouncement: latestShopAnnouncement,
     guessYouLikeList: guessYouLikeList,
@@ -1181,8 +1285,9 @@ const mapStateToProps = (state, ownProps) => {
     userOwnedShopInfo: userOwnedShopInfo,
     appServicePhone: appServicePhone,
     shareDomain: shareDomain,
-    shopCommentList:shopCommentList.commentList,
-    shopCommentIdList:shopCommentList.commentIdList
+    shopCommentList: shopCommentList.commentList,
+    shopCommentIdList: shopCommentList.commentIdList,
+    lastCommentsCreatedAt: lastCommentsCreatedAt
   }
 }
 
@@ -1227,7 +1332,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   detailWrap: {
-    marginBottom: 54
+    // marginBottom: 54
   },
   contentContainerStyle: {},
   shopHead: {
@@ -1287,7 +1392,8 @@ const styles = StyleSheet.create({
   },
   shopAbstractName: {
     fontSize: em(17),
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    backgroundColor: 'transparent'
   },
   shopAbstractLike: {
     fontSize: em(14),
