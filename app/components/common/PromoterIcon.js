@@ -20,12 +20,19 @@ export default class PromoterIcon extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, this.props.isSmall ? {} : {width: normalizeW(127), height: normalizeH(30)}]}>
+        {this.props.isSmall ? <View/> : <Text style={{fontSize: em(11), color: '#FFF', paddingLeft: normalizeW(8)}}>当前等级：</Text>}
         <Svg size={normalizeW(24)} icon="v"/>
-        <Text style={styles.levelName}>{level[this.props.level-1]}</Text>
+        <Text style={[styles.levelName, this.props.isSmall ? {} : {fontSize: em(15), fontWeight: 'bold'}]}>
+          {level[this.props.level-1]}
+        </Text>
       </View>
     )
   }
+}
+
+PromoterIcon.defaultProps = {
+  isSmall: true,
 }
 
 const styles = StyleSheet.create({

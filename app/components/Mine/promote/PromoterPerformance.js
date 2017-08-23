@@ -1,5 +1,5 @@
 /**
- * Created by yangyang on 2017/3/25.
+ * Created by yangyang on 2017/8/23.
  */
 import React, {Component} from 'react'
 import {
@@ -11,19 +11,16 @@ import {
   ScrollView,
   Platform,
   Image,
-  StatusBar,
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
-import LinearGradient from 'react-native-linear-gradient'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../../constants/themes/theme1'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
-import PromoterLevelIcon from './PromoterLevelIcon'
 import {getPromoterById, activePromoter} from '../../../selector/promoterSelector'
-
-
+import PromoterIcon from '../../common/PromoterIcon'
+import Svg from '../../common/Svgs'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -35,128 +32,96 @@ class PromoterPerformance extends Component {
     super(props)
   }
 
-  renderToolbar() {
-    return (
-      <View style={styles.toolView}>
-        <TouchableOpacity style={{width: normalizeW(35), height: normalizeH(35), justifyContent: 'center', alignItems: 'center'}}
-                          onPress={() => Actions.pop()} >
-          <Icon name="ios-arrow-back" style={styles.left} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {Actions.EARN_RECORD({promoterId: this.props.activePromoterId})}}>
-          <Image style={{width: normalizeW(20), height: normalizeH(20)}} source={require('../../../assets/images/revernue_details.png')}/>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  renderPromoterLevel() {
-    let promoter = this.props.promoter
-    if (!promoter) {
-      return <View/>
-    }
-    return (
-      <View style={{paddingTop: normalizeH(15), alignSelf: 'center'}}>
-        <PromoterLevelIcon level={promoter.level} />
-      </View>
-    )
-  }
-
-  renderCategoryEarnings() {
-    let promoter = this.props.promoter
-    if (!promoter) {
-      return <View/>
-    }
-    return (
-      <View style={styles.categoryEarningsView}>
-        <View style={{flex: 1, borderColor: 'rgba(255,255,255,0.50)', borderRightWidth: 1}}>
-          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
-            <Text style={styles.categoryTextStyle}>店铺收益 (元)</Text>
-            <Text style={styles.categoryEarningsText}>{Number(promoter.shopEarnings).toFixed(2)}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{flex: 1}}>
-          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => {}}>
-            <Text style={styles.categoryTextStyle}>分成收益 (元)</Text>
-            <Text style={styles.categoryEarningsText}>{Number(promoter.royaltyEarnings).toFixed(2)}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  }
-
-  renderHeaderView() {
-    return (
-      <LinearGradient colors={['#F77418', '#F5A623', '#F77418']} style={styles.header}>
-        <View style={{flex: 1, backgroundColor: 'transparent'}}>
-          {this.renderToolbar()}
-          {this.renderPromoterLevel()}
-          {this.renderCategoryEarnings()}
-        </View>
-      </LinearGradient>
-    )
-  }
-
-  renderTotalEarnings() {
-    let promoter = this.props.promoter
-    if (!promoter) {
-      return <View/>
-    }
-    return (
-      <View style={styles.totalEarningsView}>
-        <Text style={{fontSize: em(17), color: '#5A5A5A', paddingTop: normalizeH(25)}}>推广总收益 (元)</Text>
-        <Text style={{fontSize: em(38), color: THEME.base.mainColor, paddingTop: normalizeH(5)}}>
-          {Number(promoter.shopEarnings + promoter.royaltyEarnings).toFixed(2)}
-        </Text>
-      </View>
-    )
-  }
-
-  renderInvitationStat() {
-    let promoter = this.props.promoter
-    if (!promoter) {
-      return <View/>
-    }
-    return (
-      <View style={styles.invitationStatView}>
-        <TouchableOpacity style={[styles.statBtn, {borderColor: '#F5F5F5', borderRightWidth: 1}]} onPress={() => {Actions.INVITED_SHOPS()}}>
-          <View style={styles.statTitleStyle}>
-            <Image style={{width: normalizeW(25), height: normalizeH(23)}}
-                   source={require('../../../assets/images/shop_invite.png')}/>
-            <Text style={styles.statTitleText}>邀请店铺</Text>
-          </View>
-          <View style={styles.statNum}>
-            <Text style={{fontSize: em(36), color: THEME.base.mainColor, paddingRight: normalizeW(8)}}>{promoter.inviteShopNum}</Text>
-            <Text style={{fontSize: em(17), color: THEME.base.mainColor, alignSelf: 'flex-end'}}>家</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.statBtn} onPress={() => {Actions.DIRECT_TEAM()}}>
-          <View style={styles.statTitleStyle}>
-            <Image style={{width: normalizeW(25), height: normalizeH(21)}}
-                   source={require('../../../assets/images/my_team.png')}/>
-            <Text style={styles.statTitleText}>一级好友</Text>
-          </View>
-          <View style={styles.statNum}>
-            <Text style={{fontSize: em(36), color: THEME.base.mainColor, paddingRight: normalizeW(8)}}>{promoter.teamMemNum}</Text>
-            <Text style={{fontSize: em(17), color: THEME.base.mainColor, alignSelf: 'flex-end'}}>人</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
   showQrCodeView() {
     if(this.props.promoter && this.props.promoter.qrcode) {
       Actions.QRCODE_VIEW({qrcodeUrl: this.props.promoter.qrcode.url})
     }
   }
 
+  renderToolbar() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
+    return (
+      <View style={styles.toolView}>
+        <TouchableOpacity style={{width: normalizeW(35), height: normalizeH(35), justifyContent: 'center', alignItems: 'center'}}
+                          onPress={() => Actions.pop()} >
+          <Icon name="ios-arrow-back" style={styles.left} />
+        </TouchableOpacity>
+        <PromoterIcon isSmall={false} level={promoter.level}/>
+      </View>
+    )
+  }
+
+  renderHeaderView() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
+    return (
+      <View style={styles.header}>
+        {this.renderToolbar()}
+        <View style={{alignItems: 'center', marginTop: normalizeH(20)}}>
+          <Text style={styles.headerText}>推广总收益(元)</Text>
+        </View>
+        <View style={{alignItems: 'center', marginTop: normalizeH(15)}}>
+          <Text style={{fontSize: em(40), color: '#FFF'}}>{Number(promoter.shopEarnings + promoter.royaltyEarnings).toFixed(2)}</Text>
+        </View>
+        <View style={{alignItems: 'center', marginTop: normalizeH(20)}}>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => {Actions.EARN_RECORD({promoterId: this.props.activePromoterId})}}>
+            <Text style={styles.headerText}>收益记录</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   renderBodyView() {
+    let promoter = this.props.promoter
+    if (!promoter) {
+      return <View/>
+    }
     return (
       <View>
+        <TouchableOpacity style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}
+                          onPress={() => {Actions.INVITED_SHOPS()}}>
+          <View style={styles.statItemView}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Svg size={32} icon="shop_invite_promoter"/>
+              <Text style={styles.statTip}>邀请店铺</Text>
+            </View>
+            <View>
+              <Text style={styles.statValue}>{promoter.inviteShopNum}家</Text>
+            </View>
+          </View>
+          <View style={[styles.statItemView, {marginLeft: normalizeW(45), borderTopWidth: 1, borderColor: '#F7F7F7'}]}>
+            <Text style={styles.earnTip}>收益</Text>
+            <View>
+              <Text style={styles.statValue}>¥{promoter.shopEarnings}元</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={{borderBottomWidth: 1, borderColor: '#F7F7F7'}}
+                          onPress={() => {Actions.DIRECT_TEAM()}}>
+          <View style={styles.statItemView}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Svg size={32} icon="my_team" />
+              <Text style={styles.statTip}>团队成员</Text>
+            </View>
+            <View>
+              <Text style={styles.statValue}>{promoter.teamMemNum}人</Text>
+            </View>
+          </View>
+          <View style={[styles.statItemView, {marginLeft: normalizeW(45), borderTopWidth: 1, borderColor: '#F7F7F7'}]}>
+            <Text style={styles.earnTip}>收益</Text>
+            <View>
+              <Text style={styles.statValue}>¥{promoter.royaltyEarnings}元</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          {this.renderTotalEarnings()}
-          {this.renderInvitationStat()}
-          <TouchableOpacity style={{paddingTop: normalizeH(25)}} onPress={() => {this.showQrCodeView()}}>
+          <TouchableOpacity style={{paddingTop: normalizeH(40)}} onPress={() => {this.showQrCodeView()}}>
             <Image style={{width: normalizeW(156), height: normalizeH(156)}}
                    resizeMode='contain'
                    source={require('../../../assets/images/generate_code.png')}/>
@@ -169,7 +134,6 @@ class PromoterPerformance extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/*<StatusBar barStyle="light-content" />*/}
         <ScrollView style={{flex: 1, height: PAGE_HEIGHT}}>
           {this.renderHeaderView()}
           {this.renderBodyView()}
@@ -199,70 +163,53 @@ const styles = StyleSheet.create({
   },
   header: {
     width: PAGE_WIDTH,
-    height: normalizeH(217),
+    height: normalizeH(218),
+    backgroundColor: THEME.base.mainColor,
   },
   toolView: {
     marginTop: normalizeH(20),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingRight: normalizeW(20),
+    paddingRight: normalizeW(15),
   },
   left: {
-    fontSize: em(24),
+    fontSize: em(32),
     color: '#FFF',
   },
-  categoryEarningsView: {
+  headerText: {
+    fontSize: em(15),
+    color: '#FFF',
+  },
+  headerBtn: {
+    width: normalizeW(90),
+    height: normalizeH(30),
+    borderRadius: normalizeH(15),
+    borderWidth: 1,
+    borderColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statItemView: {
+    height: normalizeH(42),
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: normalizeH(40),
-    height: normalizeH(69),
-    borderTopWidth: 1,
-    borderColor: 'rgba(255,255,255,0.50)',
+    justifyContent: 'space-between',
+    paddingLeft: normalizeW(12),
+    paddingRight: normalizeW(12),
   },
-  categoryTextStyle: {
-    color: '#FFF',
-    fontSize: em(12),
-  },
-  categoryEarningsText: {
+  statTip: {
     fontSize: em(17),
+    color: '#000',
+    marginLeft: normalizeW(7),
+  },
+  statValue: {
+    fontSize: em(20),
     fontWeight: 'bold',
-    color: '#FFF',
-    paddingTop: normalizeH(10),
+    color: THEME.base.mainColor,
   },
-  totalEarningsView: {
-    flex: 1,
-    height: normalizeH(110),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  invitationStatView: {
-    flex: 1,
-    height: normalizeH(133),
-    flexDirection: 'row',
-    borderColor: '#F5F5F5',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-  },
-  statTitleStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statTitleText: {
-    fontSize: em(17),
-    color: '#5A5A5A',
-    paddingLeft: normalizeW(9),
-  },
-  statBtn: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  statNum: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: normalizeH(18),
+  earnTip: {
+    fontSize: em(15),
+    color: 'rgba(0,0,0,0.5)',
   },
 })
