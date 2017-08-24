@@ -232,11 +232,12 @@ export function register(payload) {
  * @param payload
  * @returns {IPromise<U>|*|AV.Promise}
  */
-export function registerWithWX(payload) {
+export function registerAndLoginWithWX(payload) {
   let phone = payload.phone
   let smsCode = payload.smsCode
   let wx_name = payload.name
   let wx_avatar = payload.avatar
+  let token = undefined
 
   let authData = {
     "openid": payload.unionid,
@@ -246,7 +247,7 @@ export function registerWithWX(payload) {
   let platform = 'weixin'
 
   return AV.User.signUpOrlogInWithMobilePhone(phone, smsCode).then((user) => {
-
+    token = user.getSessionToken()
     return AV.User.associateWithAuthData(user, platform, authData)
   }).then((authUser) => {
     var user = AV.Object.createWithoutData('_User', authUser.id)
@@ -269,7 +270,6 @@ export function registerWithWX(payload) {
 
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
 
-    let token = loginedUser.getSessionToken()
     userInfo = userInfo.set('token', token)
     modifyMobilePhoneVerified({id: loginedUser.id})
     return {

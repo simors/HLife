@@ -322,7 +322,7 @@ export class MyTopic extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          {this.renderTabBar()}
+          {/*{this.renderTabBar()}*/}
           {this.state.tabType == 0 ? this.renderTopicList() : this.renderShopList()}
         </View>
       </View>

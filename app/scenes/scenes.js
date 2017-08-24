@@ -316,15 +316,7 @@ function tapActions(props) {
     if (!props.isLogin) {
       Actions.LOGIN()
     } else {
-      let identity = props.identity
-      let shopPayment = props.shopPayment
-      let shopInfoComplete = props.shopInfoComplete
-      if (identity && identity.includes(IDENTITY_SHOPKEEPER) && shopPayment && shopInfoComplete) {
-        Actions.PUBLISH()
-      } else {
-        Actions.PUBLISH_TOPIC()
-      }
-
+      Actions.PUBLISH_TOPIC()
     }
   } else {
     switch (props.index) {

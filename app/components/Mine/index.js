@@ -125,25 +125,25 @@ class Mine extends Component {
   renderHeaderView() {
     let userInfo = this.props.userInfo
     let promoter = this.props.promoter
-    if (!userInfo || !promoter) {
+    if (!userInfo) {
       return <View/>
     }
     return (
       <View style={styles.header}>
         <View style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: normalizeH(20)}}>
           <TouchableOpacity onPress={()=> Actions.SETTING()} style={styles.setBtnStyle}>
-            <Svg height={45} width={32} icon="set"/>
+            <Svg height={normalizeH(45)} width={normalizeW(32)} icon="set"/>
             <Text style={styles.headerFont}>设置</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.headerMainView}>
           <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity onPress={() => Actions.PROFILE()}>
-              <Avatar size={60} src={userInfo.avatar} />
+              <Avatar size={normalizeW(60)} src={userInfo.avatar} />
             </TouchableOpacity>
             <View style={{marginLeft: normalizeW(9)}}>
               <Text style={[styles.headerFont, {paddingTop: normalizeH(3), paddingBottom: normalizeH(8)}]}>{userInfo.nickname}</Text>
-              <PromoterIcon level={promoter.level} />
+              {promoter ? <PromoterIcon level={promoter.level} /> : <View/>}
             </View>
           </View>
           <TouchableOpacity onPress={() => {this.showQrCodeView()}}>
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: normalizeW(19),
     paddingRight: normalizeW(29),
-    paddingBottom: normalizeH(12),
+    paddingBottom: normalizeH(9),
   },
   mainBtnView: {
     backgroundColor: '#FFF',

@@ -30,6 +30,7 @@ import uuid from 'react-native-uuid'
 import * as Toast from '../common/Toast'
 import Popup from '@zzzkk2009/react-native-popup'
 import {WXAppID} from '../../constants/appConfig'
+import {ENV} from '../../util/global'
 
 const PingPPModule = NativeModules.PingPPModule
 
@@ -133,10 +134,14 @@ class Payment extends Component {
     this.setState({
       enableButton: false
     })
+    let realPrice = this.props.price
+    if (__DEV__ || ENV == 'pre') {
+      realPrice = 0.01
+    }
     let paymentPayload = {
       subject: this.props.subject || '汇邻优店加盟费',
       order_no: order_no,
-      amount: this.props.price * 100,
+      amount: realPrice * 100,
       channel: this.state.selectedChannel,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
@@ -155,6 +160,10 @@ class Payment extends Component {
 
 
   render() {
+    let realPrice = this.props.price
+    if (__DEV__ || ENV == 'pre') {
+      realPrice = 0.01
+    }
     return (
       <View style={styles.container}>
         <Header
@@ -167,7 +176,7 @@ class Payment extends Component {
           <ScrollView>
             <View style={styles.amount}>
               <Text style={styles.amountText}>支付金额</Text>
-              <Text style={styles.price}>¥ {this.props.price}元</Text>
+              <Text style={styles.price}>¥ {realPrice}元</Text>
             </View>
             <Text style={styles.channelTrip}>选择支付方式</Text>
             <View style={styles.channel}>
@@ -255,7 +264,6 @@ const styles = StyleSheet.create({
     color: '#5A5A5A',
   },
   price: {
-    fontFamily: 'PingFangSC-Semibold',
     fontSize: 36,
     color: '#FF7819',
     marginBottom: normalizeH(42),
