@@ -927,8 +927,6 @@ export const Shop = Record({
   openGoodPromotionList: List(),
   closeGoodPromotionList: List(),
   shopGoodsDetail: Map(),   // 店铺商品详细，键为商品id，值为店铺详细信息
-  userOrders: Map(),      // 用户订单，键为用户id，值为订单id组成的List
-  shopOrders: Map(),      // 店铺管理订单，键为店铺的id，值为订单组成的List
   myCommentsUps: Set(),
   orderDetail: Map(),       // 用户订单详情，键为订单id，值为订单详情
   userAllOrders: Map(),     // 用户全部订单，键为用户id，值为订单id组成的List
