@@ -241,7 +241,7 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isLogin = isUserLogined(state)
   let chooseTypeId = getInputData(state, chooseTypeInput.formKey, chooseTypeInput.stateKey)
-  console.log('chooseTypeId=============>', chooseTypeId.id)
+  // console.log('chooseTypeId=============>', chooseTypeId.id)
 
   return {
     shopId: userOwnedShopInfo.id,

@@ -1263,7 +1263,19 @@ export function fetchShopGoodsList(payload) {
 
 export function submitShopGoodPromotion(payload) {
   let params = {
-   payload:payload
+   payload:{
+     shopId: payload.shopId,
+     abstract: payload.abstract,
+     startDate: payload.startDate,
+     endDate: payload.endDate,
+     goodId: payload.goodId,
+     type: payload.type,
+     price: Number(payload.price),
+     typeId: payload.typeId,
+     typeDes: payload.typeDesc,
+     geo:payload.geo,
+     status: 1,
+   }
   }
   return AV.Cloud.run('submitShopPromotion', params).then((goodsInfo)=> {
     return goodsInfo

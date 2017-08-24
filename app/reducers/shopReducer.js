@@ -99,6 +99,8 @@ export default function shopReducer(state = initialState, action) {
       return handleSetLocalGoodPromotions(state, action)
     case ShopActionTypes.ADD_SHOP_OPEN_PROMOTIONLIST:
       return handleAddOpenGoodPromotions(state, action)
+    case ShopActionTypes.DETELE_SHOP_OPEN_PROMOTIONLIST:
+      return handleDeleteOpenGoodPromotions(state, action)
     case ShopActionTypes.SET_SHOP_OPEN_PROMOTIONLIST:
       return handleSetOpenGoodPromotions(state, action)
     case ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST:
@@ -577,6 +579,26 @@ function handleSetOpenGoodPromotions(state, action) {
   let promotionList = payload.promotionList
   state = state.set('openGoodPromotionList', new List(promotionList))
   state = handleSetAllGoodPromotions(state,payload.promotions)
+  return state
+}
+
+function handleDeleteOpenGoodPromotions(state, action) {
+  let payload = action.payload
+  let promotionId = payload.promotionId
+  console.log('promotionId===>',promotionId)
+  let _promotions = state.get('openGoodPromotionList')|| new List()
+  if(_promotions&&_promotions.size>0){
+    _promotions.map((item,key)=>{
+      if(item==promotionId){
+        console.log('item===>',item)
+        console.log('key===>',key)
+
+        _promotions.delete(Number(key))
+      }
+    })
+    console.log('_promotions=>',_promotions)
+    state = state.set('openGoodPromotionList', _promotions)
+  }
   return state
 }
 

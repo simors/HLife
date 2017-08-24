@@ -60,6 +60,7 @@ class ShopGoodPromotionManage extends Component {
   }
 
   onChangeTab(payload) {
+    console.log('hahahahahahahahahahha',payload.i)
     this.setState({
       tabType: payload.i
     }, ()=>{
@@ -214,7 +215,7 @@ class ShopGoodPromotionManage extends Component {
         lastCreatedAt = this.props.lastClosePromotion.createdAt
       }
     }
-
+    console.log('isrefersss====>',isRefresh,status)
     let payload = {
       isRefresh: !!isRefresh,
       shopId: this.props.shopId,
