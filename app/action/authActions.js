@@ -243,24 +243,28 @@ function handleLoginWithWXInfo(payload, formData) {
       password: formData.passwordInput.text,
       wxUserInfo: payload.wxUserInfo,
     }
+    let userId = undefined
 
-    lcAuth.loginWithWXInfo(loginPayload).then((userInfo) => {
+    lcAuth.loginWithWXInfo(loginPayload).then((result) => {
+      userId = result.userInfo.id
       if (payload.success) {
         payload.success()
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
-      dispatch(loginAction({...userInfo}))
-      return userInfo
-    }).then((user) => {
-      dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
+      dispatch(loginAction({...result}))
+      return lcPromoter.syncPromoterInfo({userId: userId})
+
+    }).then(() => {
+      dispatch(shopAction.fetchUserOwnedShopInfo({userId: userId}))
       dispatch(getCurrentPromoter())
       dispatch(initMessageClient(payload))
       dispatch(fetchAllUserUps())
 
-      // console.log('handleLoginWithPwd===', user.userInfo.id)
       AVUtils.updateDeviceUserInfo({
-        userId: user.userInfo.id
+        userId: userId
       })
+      lcPromoter.getPromoterQrcode({unionid: loginPayload.wxUserInfo.unionid})
+
     }).catch((error) => {
       dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
       if (payload.error) {
