@@ -466,10 +466,10 @@ function handleRegister(payload, formData) {
 function handleSupplementUserInfo(payload, formData) {
   return (dispatch, getState) => {
     if (__DEV__) {// in android and ios simulator ,__DEV__ is true
-      dispatch(registerWithWeixin(payload, formData))
+      dispatch(registerAndLoginWithWeixin(payload, formData))
       dispatch(initMessageClient(payload))
     } else {
-      dispatch(registerWithWeixin(payload, formData))
+      dispatch(registerAndLoginWithWeixin(payload, formData))
     }
   }
 }
@@ -546,7 +546,7 @@ function registerWithPhoneNum(payload, formData) {
   }
 }
 
-function registerWithWeixin(payload, formData) {
+function registerAndLoginWithWeixin(payload, formData) {
   return (dispatch, getState) => {
     let regPayload = {
       phone: formData.phoneInput.text,
@@ -558,26 +558,20 @@ function registerWithWeixin(payload, formData) {
       avatar: payload.wxUserInfo.avatar,
     }
 
-    return lcAuth.registerWithWX(regPayload).then((user) => {
+    return lcAuth.registerAndLoginWithWX(regPayload).then((user) => {
       let regAction = createAction(AuthTypes.REGISTER_SUCCESS)
       dispatch(regAction(user))
       if (payload.success) {
         payload.success(user)
       }
-    }).then(() => {
-      let user = activeUserInfo(getState())
-      lcAuth.become({token: user.token}).then((userInfo) => {
-        let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
-        dispatch(loginAction({...userInfo}))
-        return userInfo
-      }).then((user) => {
-        dispatch(calUserRegist({userId: user.userInfo.id}))
-        dispatch(initMessageClient(payload))
-        AVUtils.updateDeviceUserInfo({
-          userId: user.userInfo.id
-        })
-        return lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
+      return user
+    }).then((user) => {
+      dispatch(calUserRegist({userId: user.userInfo.id}))
+      dispatch(initMessageClient(payload))
+      AVUtils.updateDeviceUserInfo({
+        userId: user.userInfo.id
       })
+      return lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
     }).then((result) => {
       //do something
       return lcPromoter.getPromoterQrcode({unionid: regPayload.unionid})
