@@ -36,6 +36,7 @@ export class ShopCommentForComment extends Component {
     super(props)
     this.state = {
       upCount:0,
+      isLike:false
     }
   }
 
@@ -80,7 +81,7 @@ export class ShopCommentForComment extends Component {
 
   successCallback() {
 
-    this.setState({upCount:this.state.upCount+1})
+    this.setState({upCount:this.state.upCount+1,isLike:true})
 
   }
 
@@ -89,7 +90,7 @@ export class ShopCommentForComment extends Component {
       this.props.onLikeCommentButton({
         comment: this.props.comment,
         isLiked: this.props.isLiked,
-        success: this.successCallback.bind(this)
+        success: ()=>{this.successCallback()}
       })
     }
     else{
@@ -132,7 +133,7 @@ export class ShopCommentForComment extends Component {
             <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
               <Image style={styles.likeImageStyle}
                      resizeMode='contain'
-                     source={this.props.isLiked ?
+                     source={(this.props.isLiked||this.state.isLike )?
                        require("../../assets/images/like_selected.png") :
                        require("../../assets/images/like_unselect.png")}/>
               <Text style={styles.commentTextStyle}>{this.state.upCount?this.state.upCount:0}</Text>

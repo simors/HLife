@@ -765,10 +765,11 @@ function handleFetchMyCommentsUps(state, action) {
 
 function handleupShopCommentSuccess(state, action) {
   let payload = action.payload
-  let commentsUps = [payload.up]
-  console.log('commentsUps====>',commentsUps)
   let team = state.get('myCommentsUps') || new Set()
-  state = state.setIn('myCommentsUps', team.concat(new Set(commentsUps)))
+  console.log('team==>',team)
+  team.add(payload.up)
+  console.log('team==>',team)
+  state = state.set('myCommentsUps', team)
   return state
 }
 

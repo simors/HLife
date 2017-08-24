@@ -85,7 +85,10 @@ export class ShopCommentListV2 extends Component {
       this.props.userUpShopComment({
         shopCommentId: payload.comment.id,
         shopId: payload.comment.shopId,
-        success: payload.success,
+        success: ()=>{
+          Toast.show('点赞成功')
+          payload.success()
+        },
         userId: payload.comment.authorId,
         error: (error)=>{this.likeErrorCallback(error)}
       })
