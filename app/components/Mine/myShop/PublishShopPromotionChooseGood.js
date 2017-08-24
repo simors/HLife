@@ -85,6 +85,7 @@ class PublishShopPromotionChooseGood extends Component {
       shouldUploadImage: false,
       chooseGoodId:undefined,
       hideBottomView: false,
+      goodPrice:0
     }
     this.replyInput = null
 
@@ -110,6 +111,7 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   chooseGood(goodInfo){
+    this.setState({goodPrice:goodInfo.price})
     chooseGoodInput.data= {text: goodInfo.id}
     this.props.inputFormUpdate(chooseGoodInput)
     // this.setState({
@@ -258,6 +260,7 @@ class PublishShopPromotionChooseGood extends Component {
               }}
               label="下一步"
               keyboardType="numeric"
+              price={this.state.goodPrice}
             />
               : null
             }

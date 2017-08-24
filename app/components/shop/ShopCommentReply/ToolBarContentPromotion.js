@@ -90,7 +90,7 @@ export default class ToolBarContentPromotion extends Component {
             <Text           style={[styles.priceTitle]}
             >元</Text>
             </View>
-          <Text style={styles.originalPriceText}>原价1元</Text>
+          <Text style={styles.originalPriceText}>{'原价'+this.props.price+'元'}</Text>
           </View>
 
         <TouchableOpacity

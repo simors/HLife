@@ -1166,7 +1166,7 @@ export function getShopOpenPromotion(payload) {
 
         let updateAction = createAction(actionType)
         dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
-      
+
       if (payload.success) {
         payload.success(promotionList.length == 0)
       }
