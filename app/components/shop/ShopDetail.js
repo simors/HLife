@@ -1715,7 +1715,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    // padding: 10,
     paddingBottom: 3,
     paddingLeft: 30
   },

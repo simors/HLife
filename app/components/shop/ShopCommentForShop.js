@@ -145,18 +145,23 @@ export class ShopCommentForShop extends Component {
               <Text style={styles.commentTextStyle}>{'回复'+(this.props.comment.commentCount ? (this.props.comment.commentCount>999?'999+' : this.props.comment.commentCount): 0)}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
+              <TouchableOpacity onPress={()=>this.onLikeCommentButton()}>
+                <View style={styles.likeStyle} >
                 <Image style={styles.likeImageStyle}
                        resizeMode='contain'
                        source={(this.props.isLiked||this.state.isLike) ?
                          require("../../assets/images/like_selected.png") :
                          require("../../assets/images/like_unselect.png")}/>
+                  </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+
+              <TouchableOpacity  onPress={()=> {
                 this.props.onCommentButton(comment)
               }}>
+                <View style={styles.commentStyle}>
                 <Image style={styles.commentImageStyle} resizeMode='contain'
                        source={require("../../assets/images/comments_unselect.png")}/>
+                  </View>
               </TouchableOpacity>
             </View>
           </View>
@@ -270,7 +275,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderWidth: normalizeBorder(1),
     borderColor: '#F5F5F5',
-    padding:normalizeH(5),
+    paddingTop:normalizeH(5),
+    paddingBottom:normalizeH(5),
     paddingLeft:normalizeW(10),
     paddingRight: normalizeW(10),
   },
@@ -300,7 +306,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderWidth: normalizeBorder(1),
     borderColor: '#F5F5F5',
-    padding:normalizeH(5),
+    paddingTop:normalizeH(5),
+    paddingBottom:normalizeH(5),
+
     paddingLeft:normalizeW(10),
     paddingRight: normalizeW(10),
 

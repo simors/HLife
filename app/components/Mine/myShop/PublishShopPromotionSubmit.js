@@ -149,7 +149,8 @@ class PublishShopPromotionSubmit extends Component {
           Toast.show('提交成功', {
             duration: 1500,
             onHidden: () =>{
-              Actions.MY_SHOP_INDEX()
+              // Actions.MY_SHOP_INDEX()
+              Actions.popTo('MY_SHOP_INDEX')
             }
           })
         },

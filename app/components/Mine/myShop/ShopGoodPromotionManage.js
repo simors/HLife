@@ -175,11 +175,9 @@ class ShopGoodPromotionManage extends Component {
       success:()=>{
         Toast.show('关闭成功')
 
-        this.setState({
-          tabType: 2
-        }, ()=>{
+
           this.refresh()
-        })
+
       },
       error:(err)=>{
         Toast.show(err.message)
@@ -215,7 +213,6 @@ class ShopGoodPromotionManage extends Component {
         lastCreatedAt = this.props.lastClosePromotion.createdAt
       }
     }
-    console.log('isrefersss====>',isRefresh,status)
     let payload = {
       isRefresh: !!isRefresh,
       shopId: this.props.shopId,
