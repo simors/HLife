@@ -20,7 +20,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1A4791078863403F97272F63 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F66B9CB97E874077B48688EE /* Entypo.ttf */; };
-		27CD059BF80E455D9A8ED127 /* libAutoGrowTextInput.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DEA029E5DD4B2C9F5F22FB /* libAutoGrowTextInput.a */; };
 		2C0346CB1EA8F6FF00AC1C48 /* jsVersionUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C0346CA1EA8F6FF00AC1C48 /* jsVersionUpdate.m */; };
 		3281026B7F0A46FEAAEEC070 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6481AB4090240EDA663BB5C /* libRNImagePicker.a */; };
 		373634DB2FA5B55BCDD62509 /* libPods-HLife.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4508DF7717BD0270E31CF83 /* libPods-HLife.a */; };
@@ -413,7 +412,6 @@
 		814F548B871447AE9DF6C561 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		833EA273CD1B4F39BA400B7B /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		83DEA029E5DD4B2C9F5F22FB /* libAutoGrowTextInput.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAutoGrowTextInput.a; sourceTree = "<group>"; };
 		89409FA3FBBE46EA9C711FF5 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		91A34A0BD71046149AB2DABA /* libCodePush.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCodePush.a; sourceTree = "<group>"; };
 		9AEB9DCA635C4E12BEFA3CBD /* RCTRestart.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTRestart.xcodeproj; path = "../node_modules/react-native-restart/ios/RCTRestart.xcodeproj"; sourceTree = "<group>"; };
@@ -517,7 +515,6 @@
 				80B87B9C05114176BE69F974 /* libReact-Native-Webview-Bridge.a in Frameworks */,
 				3281026B7F0A46FEAAEEC070 /* libRNImagePicker.a in Frameworks */,
 				729AE79448D546938744BBC4 /* libRCTBEEPickerManager.a in Frameworks */,
-				27CD059BF80E455D9A8ED127 /* libAutoGrowTextInput.a in Frameworks */,
 				5A6A280C24E740B89E8644AE /* libRCTRestart.a in Frameworks */,
 				3E8A097182AC4E3AB6FA68ED /* libRCTCamera.a in Frameworks */,
 				373634DB2FA5B55BCDD62509 /* libPods-HLife.a in Frameworks */,
@@ -1645,6 +1642,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				BAIDU_MAP_KEY = veyQHPX4y1dP7rGVPy5f4yxsLGWA6x19;
 				CODE_SIGN_ENTITLEMENTS = HLife/HLife.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
@@ -1911,7 +1909,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BAIDU_MAP_KEY = veyQHPX4y1dP7rGVPy5f4yxsLGWA6x19;
+				BAIDU_MAP_KEY = lM541vkXQcRP8poGBgi065mxEZjrVFQB;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
