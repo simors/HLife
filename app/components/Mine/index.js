@@ -125,7 +125,7 @@ class Mine extends Component {
   renderHeaderView() {
     let userInfo = this.props.userInfo
     let promoter = this.props.promoter
-    if (!userInfo || !promoter) {
+    if (!userInfo) {
       return <View/>
     }
     return (
@@ -143,7 +143,7 @@ class Mine extends Component {
             </TouchableOpacity>
             <View style={{marginLeft: normalizeW(9)}}>
               <Text style={[styles.headerFont, {paddingTop: normalizeH(3), paddingBottom: normalizeH(8)}]}>{userInfo.nickname}</Text>
-              <PromoterIcon level={promoter.level} />
+              {promoter ? <PromoterIcon level={promoter.level} /> : <View/>}
             </View>
           </View>
           <TouchableOpacity onPress={() => {this.showQrCodeView()}}>
