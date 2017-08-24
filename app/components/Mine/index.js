@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: normalizeW(19),
     paddingRight: normalizeW(29),
-    paddingBottom: normalizeH(12),
+    paddingBottom: normalizeH(9),
   },
   mainBtnView: {
     backgroundColor: '#FFF',
