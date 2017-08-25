@@ -114,6 +114,7 @@ class Login extends Component {
       if(!userInfo.mobilePhoneNumber || !userInfo.mobilePhoneVerified) {
         Actions.SET_MOBILE_PHONE_NUMBER()
       } else {
+        Toast.show("微信登录成功")
         Actions.HOME({type: 'reset'})
       }
     } else {
@@ -124,7 +125,7 @@ class Login extends Component {
   }
 
   submitErrorCallback(error) {
-    Toast.show("微信登录失败")
+    Toast.show("微信登录失败", error)
   }
 
   wxLoginCallback = (errorCode, data) => {
