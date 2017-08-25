@@ -160,7 +160,7 @@ export class ShopCommentForShop extends Component {
               }}>
                 <View style={styles.commentStyle}>
                 <Image style={styles.commentImageStyle} resizeMode='contain'
-                       source={require("../../assets/images/comments_unselect.png")}/>
+                       source={require("../../assets/images/artical_comments_unselect.png")}/>
                   </View>
               </TouchableOpacity>
             </View>
@@ -270,15 +270,18 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     // left: normalizeW(189),
     backgroundColor: '#FFFFFF',
-    height: normalizeH(16),
+    height: normalizeH(30),
     alignItems: 'center',
+    justifyContent:'center',
+
     flexDirection: 'row',
     borderWidth: normalizeBorder(1),
     borderColor: '#F5F5F5',
-    paddingTop:normalizeH(5),
-    paddingBottom:normalizeH(5),
-    paddingLeft:normalizeW(10),
-    paddingRight: normalizeW(10),
+    // paddingTop:normalizeH(5),
+    // paddingBottom:normalizeH(5),
+    // paddingLeft:normalizeW(10),
+    // paddingRight: normalizeW(10),
+    width:normalizeW(63),
   },
   likeImageStyle: {
     height: normalizeW(16),
@@ -301,16 +304,18 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     // left: normalizeW(259),
     backgroundColor: '#FFFFFF',
-    height: normalizeH(16),
+    height: normalizeH(30),
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent:'center',
     borderWidth: normalizeBorder(1),
     borderColor: '#F5F5F5',
-    paddingTop:normalizeH(5),
-    paddingBottom:normalizeH(5),
+    // paddingTop:normalizeH(5),
+    // paddingBottom:normalizeH(5),
 
-    paddingLeft:normalizeW(10),
-    paddingRight: normalizeW(10),
+    // paddingLeft:normalizeW(10),
+    // paddingRight: normalizeW(10),
+    width: normalizeW(63)
 
   },
   attentionStyle: {
@@ -321,11 +326,11 @@ const styles = StyleSheet.create({
     height: normalizeH(25)
   },
   timeLocationStyle: {
-    marginTop: normalizeH(14),
+    marginTop: normalizeH(10),
     marginBottom: normalizeH(15),
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   timeTextStyle: {
     marginRight: normalizeW(26),
