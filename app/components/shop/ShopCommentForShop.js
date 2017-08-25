@@ -145,18 +145,23 @@ export class ShopCommentForShop extends Component {
               <Text style={styles.commentTextStyle}>{'回复'+(this.props.comment.commentCount ? (this.props.comment.commentCount>999?'999+' : this.props.comment.commentCount): 0)}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity style={styles.likeStyle} onPress={()=>this.onLikeCommentButton()}>
+              <TouchableOpacity onPress={()=>this.onLikeCommentButton()}>
+                <View style={styles.likeStyle} >
                 <Image style={styles.likeImageStyle}
                        resizeMode='contain'
                        source={(this.props.isLiked||this.state.isLike) ?
                          require("../../assets/images/like_selected.png") :
                          require("../../assets/images/like_unselect.png")}/>
+                  </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.commentStyle} onPress={()=> {
+
+              <TouchableOpacity  onPress={()=> {
                 this.props.onCommentButton(comment)
               }}>
+                <View style={styles.commentStyle}>
                 <Image style={styles.commentImageStyle} resizeMode='contain'
-                       source={require("../../assets/images/comments_unselect.png")}/>
+                       source={require("../../assets/images/artical_comments_unselect.png")}/>
+                  </View>
               </TouchableOpacity>
             </View>
           </View>
@@ -185,7 +190,6 @@ ShopCommentForShop.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   const isLiked = isCommentLiked(state, ownProps.comment.id)
-  console.log('isLiked====>',isLiked)
   const isLogin = isUserLogined(state)
   return {
     isLiked: isLiked,
@@ -266,14 +270,18 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     // left: normalizeW(189),
     backgroundColor: '#FFFFFF',
-    height: normalizeH(16),
+    height: normalizeH(30),
     alignItems: 'center',
+    justifyContent:'center',
+
     flexDirection: 'row',
     borderWidth: normalizeBorder(1),
     borderColor: '#F5F5F5',
-    padding:normalizeH(5),
-    paddingLeft:normalizeW(10),
-    paddingRight: normalizeW(10),
+    // paddingTop:normalizeH(5),
+    // paddingBottom:normalizeH(5),
+    // paddingLeft:normalizeW(10),
+    // paddingRight: normalizeW(10),
+    width:normalizeW(63),
   },
   likeImageStyle: {
     height: normalizeW(16),
@@ -296,14 +304,18 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     // left: normalizeW(259),
     backgroundColor: '#FFFFFF',
-    height: normalizeH(16),
+    height: normalizeH(30),
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent:'center',
     borderWidth: normalizeBorder(1),
     borderColor: '#F5F5F5',
-    padding:normalizeH(5),
-    paddingLeft:normalizeW(10),
-    paddingRight: normalizeW(10),
+    // paddingTop:normalizeH(5),
+    // paddingBottom:normalizeH(5),
+
+    // paddingLeft:normalizeW(10),
+    // paddingRight: normalizeW(10),
+    width: normalizeW(63)
 
   },
   attentionStyle: {
@@ -314,11 +326,11 @@ const styles = StyleSheet.create({
     height: normalizeH(25)
   },
   timeLocationStyle: {
-    marginTop: normalizeH(14),
+    marginTop: normalizeH(10),
     marginBottom: normalizeH(15),
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   timeTextStyle: {
     marginRight: normalizeW(26),

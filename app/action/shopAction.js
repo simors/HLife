@@ -1163,10 +1163,10 @@ export function getShopOpenPromotion(payload) {
       if (!payload.isRefresh) {
         actionType = ShopActionTypes.ADD_SHOP_OPEN_PROMOTIONLIST
       }
-      if (promotionList.length) {
+
         let updateAction = createAction(actionType)
         dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
-      }
+
       if (payload.success) {
         payload.success(promotionList.length == 0)
       }
@@ -1222,10 +1222,12 @@ export function closeShopPromotion(payload) {
 
 
       let actionType = ShopActionTypes.ADD_SHOP_CLOSE_PROMOTIONLIST
-
+      // let deleteActionType = ShopActionTypes.DETELE_SHOP_OPEN_PROMOTIONLIST
       if (promotionList.length) {
         let updateAction = createAction(actionType)
         dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
+        // let deleteAction = createAction(deleteActionType)
+        // dispatch(deleteAction({promotionId:promotionInfo.promotion.id}))
       }
       if (payload.success) {
         payload.success(promotionList.length == 0)

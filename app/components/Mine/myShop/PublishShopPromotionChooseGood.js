@@ -20,7 +20,7 @@ import {
   InteractionManager,
   TextInput
 } from 'react-native'
-import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
+import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContentPromotion'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
 
@@ -85,6 +85,7 @@ class PublishShopPromotionChooseGood extends Component {
       shouldUploadImage: false,
       chooseGoodId:undefined,
       hideBottomView: false,
+      goodPrice:0
     }
     this.replyInput = null
 
@@ -110,6 +111,7 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   chooseGood(goodInfo){
+    this.setState({goodPrice:goodInfo.price})
     chooseGoodInput.data= {text: goodInfo.id}
     this.props.inputFormUpdate(chooseGoodInput)
     // this.setState({
@@ -249,16 +251,16 @@ class PublishShopPromotionChooseGood extends Component {
           >
             {this.state.hideBottomView
               ? <ToolBarContent
-              initValue={this.props.priceInput?this.props.priceInput:0}
+              initValue={this.props.priceInput}
               replyInputRefCallBack={(input)=> {
                 this.replyInput = input
               }}
               onSend={(content) => {
                 this.sendReply(content)
               }}
-              placeholder='设置活动价格'
               label="下一步"
               keyboardType="numeric"
+              price={this.state.goodPrice}
             />
               : null
             }
@@ -280,8 +282,6 @@ const mapStateToProps = (state, ownProps) => {
   let chooseGoodId = getInputData(state,chooseGoodInput.formKey,chooseGoodInput.stateKey)
   let priceInput = getInputData(state,promotionPriceInput.formKey,promotionPriceInput.stateKey)
   let formData = getInputFormData(state,shopPromotionForm)
-  console.log('priceInput=============>',priceInput.text)
-  console.log('formData=============>',formData)
 
   return {
     goodList: goodList,

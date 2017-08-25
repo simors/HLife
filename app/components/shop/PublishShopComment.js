@@ -128,12 +128,6 @@ class PublishShopComment extends Component {
         <View style={styles.body}>
           <ScrollView>
             <View style={styles.CommentWrap}>
-              <View style={styles.scoreWrap}>
-                <ScoreInput
-                  {...scoreInput}
-                  placeholder="对店铺的满意度"
-                />
-              </View>
               <View style={styles.contentWrap}>
                 <MultilineText
                   containerStyle={{backgroundColor: '#fff'}}

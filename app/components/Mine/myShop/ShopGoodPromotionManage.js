@@ -60,6 +60,7 @@ class ShopGoodPromotionManage extends Component {
   }
 
   onChangeTab(payload) {
+    console.log('hahahahahahahahahahha',payload.i)
     this.setState({
       tabType: payload.i
     }, ()=>{
@@ -174,11 +175,9 @@ class ShopGoodPromotionManage extends Component {
       success:()=>{
         Toast.show('关闭成功')
 
-        this.setState({
-          tabType: 2
-        }, ()=>{
+
           this.refresh()
-        })
+
       },
       error:(err)=>{
         Toast.show(err.message)
@@ -214,7 +213,6 @@ class ShopGoodPromotionManage extends Component {
         lastCreatedAt = this.props.lastClosePromotion.createdAt
       }
     }
-
     let payload = {
       isRefresh: !!isRefresh,
       shopId: this.props.shopId,
