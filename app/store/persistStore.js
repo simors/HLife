@@ -81,28 +81,32 @@ function verifyToken() {
       return user
     }).then((user) => {
       let phone = user.userInfo.phone
-      return isWXBindByPhone({phone: phone})
-    }).then((wxAuthed) => {
-      if(!wxAuthed) {
-        shareNative.loginWX(function (errorCode, data) {
-          if(errorCode ===0 && data) {
-            let wxUserInfo = {
-              accessToken: data.accessToken,
-              expiration: data.expiration,
-              unionid: data.uid,
-              name: data.name,
-              avatar: data.iconurl,
-            }
-            dispatch(bindWithWeixin({
-              userId: userInfo.id,
-              wxUserInfo: wxUserInfo,
-              success: () => {},
-              error: () => {}
-            }))
+      if(phone) {
+        return isWXBindByPhone({phone: phone}).then((wxAuthed) => {
+          if(!wxAuthed) {
+            shareNative.loginWX(function (errorCode, data) {
+              if(errorCode ===0 && data) {
+                let wxUserInfo = {
+                  accessToken: data.accessToken,
+                  expiration: data.expiration,
+                  unionid: data.uid,
+                  name: data.name,
+                  avatar: data.iconurl,
+                }
+                dispatch(bindWithWeixin({
+                  userId: userInfo.id,
+                  wxUserInfo: wxUserInfo,
+                  success: () => {},
+                  error: () => {}
+                }))
+              }
+            })
           }
+          return
         })
+      } else {
+        Actions.SET_MOBILE_PHONE_NUMBER()
       }
-      return
     }).then(() => {
       dispatch(initMessageClient())
       AVUtils.updateDeviceUserInfo({
