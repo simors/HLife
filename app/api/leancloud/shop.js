@@ -952,7 +952,6 @@ export function submitShopPromotion(payload) {
 }
 
 export function shopCertification(payload) {
-  // console.log('shopCertification.payload====', payload)
   let params = {
     // name: payload.name,
     phone: payload.phone,
@@ -961,21 +960,14 @@ export function shopCertification(payload) {
     geo: payload.geo,
     geoCity: payload.geoCity,
     geoDistrict: payload.geoDistrict,
-    // certification: payload.certification,
   }
 
   let provincesAndCities = configSelector.selectProvincesAndCities(store.getState())
-  // console.log('provincesAndCities====', provincesAndCities)
-
   let provinceInfo = Utils.getProvinceInfoByCityName(provincesAndCities, payload.geoCity)
-
   let province = provinceInfo.provinceName
-  // console.log('province====', province)
   let provinceCode = provinceInfo.provinceCode
-  // console.log('provinceCode====', provinceCode)
 
   let cityCode = Utils.getCityCode(provincesAndCities, payload.geoCity)
-  // console.log('cityCode====', cityCode)
 
   let districtCode = Utils.getDistrictCode(provincesAndCities, payload.geoDistrict)
 
@@ -987,12 +979,10 @@ export function shopCertification(payload) {
   let userId = authSelector.activeUserId(store.getState())
   params.userId = userId
 
-  // console.log('shopCertification.params====', params)
-  return AV.Cloud.run('hLifeShopCertificate', params).then((result) => {
-    // console.log('shopCertification.result====', result)
+  return AV.Cloud.run('shopCertificateWithoutInviteCode', params).then((result) => {
     return result && result.shopInfo
   }, (err) => {
-    console.log('hLifeShopCertificate.err=====', err)
+    console.log('shopCertification.err=====', err)
     throw err
   })
 }
