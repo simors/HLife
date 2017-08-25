@@ -749,7 +749,7 @@ export class ShopGoods extends ShopGoodsRecord {
     let shopGoods = new ShopGoodsRecord()
     return shopGoods.withMutations((record) => {
       record.set('id', lcObj.objectId)
-      record.set('targetShop', lcObj.targetShop.id)
+      record.set('targetShop', lcObj.targetShop)
       record.set('goodsName', lcObj.goodsName)
       record.set('price', lcObj.price)
       record.set('originalPrice', lcObj.originalPrice)
