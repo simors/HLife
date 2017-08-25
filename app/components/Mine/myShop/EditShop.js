@@ -497,9 +497,6 @@ class EditShop extends Component {
           title="店铺管理"
           leftStyle={styles.headerLeftStyle}
           titleStyle={styles.headerTitleStyle}
-          rightType="text"
-          rightText="完成"
-          rightPress={() => this.onEditShopBtnPress()}
         />
         <View style={styles.body}>
 
@@ -527,12 +524,11 @@ class EditShop extends Component {
                     justifyContent:'flex-end',
                     alignItems:'center',
                     backgroundColor: 'rgba(245,245,245,0.5)',
-                    opacity: 0.6,
                   }}>
-                    <Text style={{fontSize:15,color: '#FFF'}}>{`编辑相册·${albumLen}`}</Text>
+                    <Text style={{fontSize:15,color: '#FFFFFF',opacity: 1}}>{`编辑相册  `}</Text>
                     <Icon
                       name="ios-arrow-forward"
-                      style={{marginLeft:20,marginRight:15,color:'white',fontSize:17}}/>
+                      style={{marginLeft:20,marginRight:15,color:'#FFFFFF',fontSize:17,opacity: 1}}/>
                   </View>
                 </TouchableOpacity>
 
@@ -636,7 +632,7 @@ class EditShop extends Component {
 
               <View style={styles.inputWrap}>
                 <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>服务电话</Text>
+                  <Text style={styles.inputLabel}>联系电话</Text>
                 </View>
                 <View style={styles.inputBox}>
                   <PhoneInput
@@ -652,23 +648,23 @@ class EditShop extends Component {
                 </View>
               </View>
 
-              <View style={styles.inputWrap}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>备用电话</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <PhoneInput
-                    {...servicePhone2Input}
-                    placeholder="备用电话（选填）"
-                    maxLength={15}
-                    noFormatPhone={true}
-                    outContainerWrap={{borderWidth: 0}}
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                    initValue={this.props.userOwnedShopInfo.contactNumber2}
-                  />
-                </View>
-              </View>
+              {/*<View style={styles.inputWrap}>*/}
+                {/*<View style={styles.inputLabelBox}>*/}
+                  {/*<Text style={styles.inputLabel}>备用电话</Text>*/}
+                {/*</View>*/}
+                {/*<View style={styles.inputBox}>*/}
+                  {/*<PhoneInput*/}
+                    {/*{...servicePhone2Input}*/}
+                    {/*placeholder="备用电话（选填）"*/}
+                    {/*maxLength={15}*/}
+                    {/*noFormatPhone={true}*/}
+                    {/*outContainerWrap={{borderWidth: 0}}*/}
+                    {/*containerStyle={styles.containerStyle}*/}
+                    {/*inputStyle={styles.inputStyle}*/}
+                    {/*initValue={this.props.userOwnedShopInfo.contactNumber2}*/}
+                  {/*/>*/}
+                {/*</View>*/}
+              {/*</View>*/}
 
               <View style={[styles.inputWrap, styles.serviceTimeWrap]}>
                 <View style={styles.inputLabelBox}>
@@ -791,9 +787,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: '#F5F5F5',
+   
     paddingLeft: normalizeW(20),
+    borderBottomWidth:normalizeBorder(1),
+    borderTopWidth: normalizeBorder(1),
+    borderColor: 'rgba(0,0,0,0.05)'
   },
   inputLabelBox: {
     justifyContent: 'center',
@@ -833,7 +831,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     padding: 10,
-    marginBottom: 10
+    borderBottomWidth:normalizeBorder(1),
+    borderTopWidth: normalizeBorder(1),
+    borderColor: 'rgba(0,0,0,0.05)'
+    // marginBottom: 10
   },
   shopBaseInfoLeftWrap: {
     flex: 1,
@@ -842,6 +843,8 @@ const styles = StyleSheet.create({
     color: '#030303',
     fontSize: em(17),
     // fontStyle: 'boil'
+    fontFamily:'.PingFangSC-Semibold',
+
   },
   shopBaseInfoLeftLocBox: {
     flexDirection: 'row',
