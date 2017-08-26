@@ -68,11 +68,11 @@ export default class GoodShow extends Component {
     return (
       <View style={styles.wrapBox}>
         <View style={[styles.channelWrap, {width: normalizeW(348)}]}>
-          <View style={[styles.defaultImageStyles, {width: normalizeW(348)}]}>
+          <View style={[styles.defaultImageStyles, {width: normalizeW(348), height:normalizeH(169)}]}>
             {this.props.goodInfo.promotionId && this.props.goodInfo.promotionType ? <View style={styles.typeWrap}>
               <Text style={styles.typeText}>{this.props.goodInfo.promotionType}</Text>
             </View> : null}
-            <CachedImage mutable style={[styles.defaultImageStyles, {width: normalizeW(348)}]}
+            <CachedImage mutable style={[styles.defaultImageStyles, {width: normalizeW(348),height:normalizeH(169)}]}
                          source={this.props.goodInfo.coverPhoto ? {uri: getThumbUrl(this.props.goodInfo.coverPhoto, normalizeW(348), normalizeH(169))} : require("../../assets/images/default_goods_cover.png")}/>
           </View>
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
 
     marginTop: normalizeH(10),
     width: normalizeW(144),
-    height: normalizeH(12),
+    height: normalizeH(13),
     fontSize: em(13),
     alignItems: 'flex-start',
     color: '#5A5A5A'
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(6),
     marginLeft: normalizeW(10),
     width: normalizeW(144),
-    height: 15,
+    height: normalizeH(17),
     fontSize: em(17),
     color: '#00BE96'
   },

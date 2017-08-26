@@ -44,6 +44,7 @@ import {
 import {
   selectGoodsList
 } from '../../../selector/shopSelector'
+import GoodShow from '../../shop/GoodShow'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
@@ -93,23 +94,14 @@ class ShopGoodsListView extends Component {
           <View style={styles.channelWrapCover} >
             <Svg  size={normalizeH(48)} icon="select_good"/>
           </View>
-          <View style={{flex: 1}}>
-            <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: goodInfo.coverPhoto}}/>
-            {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-            <Text style={ styles.channelText}>{goodInfo.goodsName}</Text>
-            <Text style={ styles.channelPrice}>{'¥' + goodInfo.price}</Text>
-          </View>
+          <GoodShow goodInfo={goodInfo} key={key}/>
         </TouchableOpacity>
       )
     }else{
       return (
         <TouchableOpacity onPress={()=>this.chooseGood(goodInfo)} style={styles.channelWrap}>
-          <View >
-            <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: goodInfo.coverPhoto}}/>
-            {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
-            <Text style={ styles.channelText}>{goodInfo.goodsName}</Text>
-            <Text style={ styles.channelPrice}>{'¥' + goodInfo.price}</Text>
-          </View>
+          <GoodShow goodInfo={goodInfo} key={key}/>
+
         </TouchableOpacity>
       )
     }

@@ -750,6 +750,7 @@ function handleSetCommentsForShop(state, action) {
 function handlePublishCommentSuccess(state, action) {
   let payload = action.payload
   let comment = payload.comment
+  console.log('comment=======>',comment)
   let commentList = state.getIn(['shopCommentsForShop', comment.shopId])
   if (commentList && commentList.size) {
     commentList = commentList.insert(0, comment.id)

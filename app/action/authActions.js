@@ -1,5 +1,7 @@
 import {createAction} from 'redux-actions'
 import * as AuthTypes from '../constants/authActionTypes'
+import * as ShopTypes from '../constants/shopActionTypes'
+
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as lcAuth from '../api/leancloud/auth'
@@ -14,7 +16,7 @@ import {IDENTITY_SHOPKEEPER} from '../constants/appConfig'
 import {closeMessageClient} from './messageAction'
 import {getCurrentPromoter} from './promoterAction'
 import {fetchAllUserUps} from './newTopicAction'
-
+import {ShopComment} from '../models/shopModel'
 import * as AVUtils from '../util/AVUtils'
 import {calUserRegist, calRegistShoper} from '../action/pointActions'
 import {IDENTITY_PROMOTER} from '../constants/appConfig'
@@ -1030,7 +1032,7 @@ function handlePublishAnnouncement(payload, formData) {
 function handlePublishShopComment(payload, formData) {
   return (dispatch, getState) => {
     let newPayload = {}
-    newPayload.id = payload.id
+    newPayload.shopId = payload.id
     if (formData.content) {
       newPayload.content = formData.content.text
     } else {
@@ -1043,14 +1045,18 @@ function handlePublishShopComment(payload, formData) {
       return ImageUtil.batchUploadImgs(formData.imgGroup.text).then((leanUris) => {
         newPayload.blueprints = leanUris
         lcShop.submitShopComment(newPayload).then((result) => {
-          let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
-          dispatch(_action({}))
+          let _action = createAction(ShopTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
+          let comment = ShopComment.fromLeancloudApi(result)
+          console.log('comment========>',comment)
+          dispatch(_action({comment:comment}))
+
           let params = {
             shopId: payload.id,
             replyTo: payload.shopOwnerId,
             commentId: result.id,
             content: newPayload.content,
           }
+
           // console.log('handlePublishShopComment=====params=', params)
           dispatch(msgAction.notifyShopComment(params))
           if (payload.success) {
@@ -1069,14 +1075,19 @@ function handlePublishShopComment(payload, formData) {
     } else {
       newPayload.blueprints = []
       lcShop.submitShopComment(newPayload).then((result) => {
-        let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
-        dispatch(_action({}))
+
+        let _action = createAction(ShopTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
+        let comment = ShopComment.fromLeancloudApi(result)
+        dispatch(_action({comment:comment}))
+        console.log('comment========>',comment)
+
         let params = {
           shopId: payload.id,
           replyTo: payload.shopOwnerId,
           commentId: result.id,
           content: newPayload.content,
         }
+
         dispatch(msgAction.notifyShopComment(params))
         if (payload.success) {
           payload.success()

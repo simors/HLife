@@ -930,7 +930,7 @@ class ShopDetail extends Component {
     return (
       <View style={styles.container}>
         {this.renderMainHeader()}
-        <View style={styles.body}>
+        <View style={{flex:1}}>
           {this.renderDetailContent()}
         </View>
         {this.renderIllegal()}
@@ -1098,21 +1098,24 @@ class ShopDetail extends Component {
     return (
       <View style={{flex: 1}}>
         <View style={styles.body}>
-          <CommonListView
-            name="shopDetail"
-            contentContainerStyle={{backgroundColor: '#F5F5F5'}}
-            dataSource={this.props.ds}
-            renderRow={(rowData, rowId, lazyHost) => this.renderRow(rowData, rowId, lazyHost)}
-            loadNewData={()=> {
-              this.refreshData()
-            }}
-            loadMoreData={()=> {
-              this.loadMoreData(false)
-            }}
-            ref={(listView) => this.listView = listView}
-            onScroll={e => this.handleOnScroll(e)}
-            scrollEventThrottle={80}
-          />
+          <View style={detailWrapStyle}>
+
+            <CommonListView
+              name="shopDetail"
+              contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+              dataSource={this.props.ds}
+              renderRow={(rowData, rowId, lazyHost) => this.renderRow(rowData, rowId, lazyHost)}
+              loadNewData={()=> {
+                this.refreshData()
+              }}
+              loadMoreData={()=> {
+                this.loadMoreData(false)
+              }}
+              ref={(listView) => this.listView = listView}
+              onScroll={e => this.handleOnScroll(e)}
+              scrollEventThrottle={80}
+            />
+          </View>
           {this.renderBottomView()}
         </View>
 
@@ -1318,6 +1321,8 @@ const styles = StyleSheet.create({
   body: {
     // marginTop: normalizeH(64),
     flex: 1,
+    paddingBottom: normalizeH(50),
+
   },
   detailWrap: {
     // marginBottom: 54

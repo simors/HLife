@@ -362,6 +362,7 @@ const styles = StyleSheet.create({
     letterSpacing: em(0.24),
   },
   chooseTypeText: {
+    position:'relative',
     fontFamily: '.PingFangSC-Semibold',
     fontSize: em(20),
     color: '#FFFFFF',

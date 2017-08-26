@@ -78,6 +78,7 @@ class PublishShopComment extends Component {
       Toast.show('正在发表评论，请稍后')
       return
     }
+    console.log('test======>publish')
     this.isPublishing = true
     this.props.submitFormData({
       formKey: commonForm,
