@@ -110,7 +110,7 @@ function handlePublishTopic(payload, formData) {
           }
           let publishAction = createAction(topicActionTypes.ADD_TOPIC)
           dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
-          dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
+          // dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
         }).catch((error) => {
           console.log("error: ", error)
           if (payload.error) {
@@ -142,7 +142,7 @@ function handlePublishTopic(payload, formData) {
         }
         let publishAction = createAction(topicActionTypes.ADD_TOPIC)
         dispatch(publishAction({topic:result, stateKey: payload.stateKey}))
-        dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
+        // dispatch(pointAction.calPublishTopic({userId: payload.userId}))   // 计算发布话题积分
       }).catch((error) => {
         console.log("error: ", error)
         if (payload.error) {
@@ -262,7 +262,7 @@ function handlePublishTopicComment(payload, formData) {
         content: payload.content,
         commentTime:result.createdDate,
       }))
-      dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
+      // dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

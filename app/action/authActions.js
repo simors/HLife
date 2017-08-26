@@ -357,7 +357,7 @@ function handleSetNickname(payload, formData) {
           dispatch(loginAction({...userInfo}))
           return userInfo
         }).then((user) => {
-          dispatch(calUserRegist({userId: user.userInfo.id}))
+          // dispatch(calUserRegist({userId: user.userInfo.id}))
           dispatch(initMessageClient(payload))
           AVUtils.updateDeviceUserInfo({
             userId: user.userInfo.id
@@ -533,7 +533,7 @@ function registerWithPhoneNum(payload, formData) {
         dispatch(loginAction({...userInfo}))
         return userInfo
       }).then((user) => {
-        dispatch(calUserRegist({userId: user.userInfo.id}))
+        // dispatch(calUserRegist({userId: user.userInfo.id}))
         dispatch(initMessageClient({userId: user.userInfo.id, ...payload}))
         AVUtils.updateDeviceUserInfo({
           userId: user.userInfo.id
@@ -568,7 +568,7 @@ function registerAndLoginWithWeixin(payload, formData) {
       }
       return user
     }).then((user) => {
-      dispatch(calUserRegist({userId: user.userInfo.id}))
+      // dispatch(calUserRegist({userId: user.userInfo.id}))
       dispatch(initMessageClient(payload))
       AVUtils.updateDeviceUserInfo({
         userId: user.userInfo.id
@@ -770,8 +770,8 @@ function shopCertification4Cloud(payload, formData) {
       // certification: payload.certiImgLeanUris[0],
     }
     lcShop.shopCertification(shopInfo).then((shop) => {
-      let userId = activeUserId(getState())
-      dispatch(calRegistShoper({userId}))   // 计算注册成为店家的积分
+      // let userId = activeUserId(getState())
+      // dispatch(calRegistShoper({userId}))   // 计算注册成为店家的积分
       dispatch(addIdentity({identity: IDENTITY_SHOPKEEPER}))
       if (payload.success) {
         payload.success(shop)

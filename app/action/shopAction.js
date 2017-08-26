@@ -249,7 +249,7 @@ export function submitShopComment(payload) {
         commentContent: payload.content,
       }
       dispatch(msgAction.notifyShopComment(params))
-      dispatch(pointAction.calPublishComment({userId: activeUserId(getState())}))   // 计算评论积分
+      // dispatch(pointAction.calPublishComment({userId: activeUserId(getState())}))   // 计算评论积分
       if (payload.success) {
         payload.success(result)
       }
@@ -444,7 +444,7 @@ export function reply(payload) {
       }
       // console.log('shop.reply===params=', params)
       dispatch(msgAction.notifyShopComment(params))
-      dispatch(pointAction.calPublishComment({userId: activeUserId(getState())}))   // 计算评论积分
+      // dispatch(pointAction.calPublishComment({userId: activeUserId(getState())}))   // 计算评论积分
 
       if (payload.success) {
         payload.success(result)
@@ -671,7 +671,7 @@ export function submitShopPromotion(payload) {
       lcShop.submitShopPromotion(shopPromotionPayload).then((result) => {
         let updateAction = createAction(ShopActionTypes.SUBMIT_SHOP_PROMOTION)
         dispatch(updateAction(result))
-        dispatch(pointAction.calPublishActivity({userId: activeUserId(getState())}))    // 计算发布活动的积分
+        // dispatch(pointAction.calPublishActivity({userId: activeUserId(getState())}))    // 计算发布活动的积分
         if (payload.success) {
           payload.success(result)
         }
