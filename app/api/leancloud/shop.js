@@ -751,7 +751,8 @@ export function fetchUserOwnedShopInfo(payload) {
     // console.log('shopInfo=====', shopInfo)
     return {
       userId: userId,
-      shopInfo: new List([shopInfo])
+      shopInfo: new List([shopInfo]),
+      shopDetail: shopInfo
     }
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

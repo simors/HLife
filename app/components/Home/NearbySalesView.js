@@ -60,7 +60,6 @@ class NearbySalesView extends Component {
           promotion: item.id,
           updatedAt: item.goodUpdatedAt,
         }
-        // console.log('Date====>',new Date())
         // console.log('startDate====>',new Date(item.startDate))
 
         return (

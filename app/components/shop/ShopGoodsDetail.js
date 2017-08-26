@@ -32,6 +32,8 @@ import Gallery from 'react-native-gallery'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopGoodCustiomTopView from './ChatroomShopGoodCustiomTopView'
 import {fetchUsers} from '../../action/authActions'
+import {fetchShopDetail} from '../../action/shopAction'
+
 import * as AVUtils from '../../util/AVUtils'
 import {
   selectUserOwnedShopInfo,
@@ -71,7 +73,15 @@ class ShopGoodsDetail extends Component {
   componentDidMount() {
     this.props.goodInfo.album.map((item) => {
         this.images.push(item)
-
+      this.props.fetchShopDetail({
+        id: this.props.goodInfo.targetShop,
+        success: () => {
+          this.isFetchingShopDetail = false
+        },
+        error: () => {
+          this.isFetchingShopDetail = false
+        }
+      })
     })
   }
 
@@ -285,7 +295,7 @@ class ShopGoodsDetail extends Component {
     if (!this.props.isUserLogined) {
       Actions.LOGIN()
     } else {
-
+      console.log('')
       this.props.fetchUsers({userIds: [this.props.shopDetail.owner.id]})
 
       let payload = {
@@ -295,6 +305,7 @@ class ShopGoodsDetail extends Component {
         title: this.props.goodInfo.goodsName,
         customTopView: this.customTopView()
       }
+      console.log('payload=======>',payload)
       Actions.CHATROOM(payload)
     }
   }
@@ -523,7 +534,7 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   let shareDomain = configSelector.getShareDomain(state)
   let imageList = []
-  // console.log('goodInfo===>',ownProps.goodInfo)
+  console.log('goodInfo===>',ownProps.goodInfo)
 
   if (ownProps.goodInfo.album && ownProps.goodInfo.album.length > 0)
     imageList = ownProps.goodInfo.album.map((item, key)=> {
@@ -552,7 +563,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUsers,
-
+  fetchShopDetail
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopGoodsDetail)
@@ -711,7 +722,7 @@ const styles = StyleSheet.create({
     height: normalizeH(49),
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#FF9D4E',
+    backgroundColor: '#FF7819',
     paddingTop: normalizeH(8),
     paddingLeft: normalizeW(25),
     paddingRight: normalizeW(25),

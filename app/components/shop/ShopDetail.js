@@ -772,7 +772,8 @@ class ShopDetail extends Component {
   }
 
   handleOnScroll(e) {
-    let offset = e.nativeEvent.contentOffset.y
+    console.log('e---------->',e)
+    let offset = e.nativeEvent.contentOffset?e.nativeEvent.contentOffset.y:0
     let comHeight = normalizeH(200)
     this.setState({
       height: offset
@@ -929,13 +930,10 @@ class ShopDetail extends Component {
           <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
           {this.renderShopTags()}
         </View>
-        <TouchableOpacity onPress={()=> {
-          this.followShop()
-        }}>
+
           <View style={styles.shopAbstractLikeWrap}>
             {this.renderIsFollow()}
           </View>
-        </TouchableOpacity>
       </LinearGradient>
     )
   }
@@ -943,14 +941,22 @@ class ShopDetail extends Component {
   renderIsFollow() {
     if (this.props.isFollowedShop) {
       return (
+        <TouchableOpacity onPress={()=> {
+          this.unFollowShop()
+        }}>
         <Text style={styles.shopAbstractLike}>已关注</Text>
+          </TouchableOpacity>
       )
     } else {
       return (
+        <TouchableOpacity onPress={()=> {
+          this.followShop()
+        }}>
         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
           <Text style={styles.shopAbstractLike}>关注</Text>
         </View>
+          </TouchableOpacity>
       )
 
     }
@@ -1087,10 +1093,13 @@ class ShopDetail extends Component {
       return
     }
     this.isQuering = true
-
+    let lastCommentsCreatedAt = undefined
+    if(!isRefresh){
+      lastCommentsCreatedAt = this.props.lastCommentsCreatedAt
+    }
     let payload = {
       shopId: this.props.id,
-      lastCreatedAt: this.props.lastCommentsCreatedAt,
+      lastCreatedAt: lastCommentsCreatedAt,
       isRefresh: !!isRefresh,
       nowDate: new Date(),
       more: !isRefresh,

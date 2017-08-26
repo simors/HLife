@@ -192,6 +192,8 @@ export function fetchPublishTopicComment(payload, formData) {
 
 export function fetchAllTopics(payload) {
   return (dispath, getState)=> {
+    console.log('payload',payload)
+
     lcTopics.fetchTopicList(payload).then((results)=> {
 
       let topics = []
@@ -246,8 +248,11 @@ export function fetchAllTopics(payload) {
         case "pickedTopics":
           let fetchPickedTopics = undefined
           if (!payload.isRefresh) {
+            console.log('addTopic=================>',topics)
             fetchPickedTopics = createAction(topicActionTypes.FETCH_ADD_PICKED_TOPICS)
           } else {
+            console.log('setTopic=================>',topics)
+
             fetchPickedTopics = createAction(topicActionTypes.FETCH_SET_PICKED_TOPICS)
           }
           dispath(fetchPickedTopics({topics: topics, topicList: topicList}))

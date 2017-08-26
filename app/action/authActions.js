@@ -1151,8 +1151,10 @@ export function getUserInfoById(payload) {
 }
 
 export function fetchUsers(payload) {
+  console.log('fetchUser Payload= ====>',payload)
   return (dispatch, getState) => {
     lcAuth.getUsers(payload).then((user) => {
+      console.log('user------>',user)
       let code = user.error
       if (0 != code) {
         return
@@ -1163,6 +1165,7 @@ export function fetchUsers(payload) {
         let userInfo = UserInfo.fromLeancloudApi(lcUser)
         userProfiles.push(userInfo)
       })
+
       const action = createAction(AuthTypes.ADD_USER_PROFILES)
       dispatch(action({userProfiles}))
       if (payload.success) {
