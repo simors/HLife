@@ -16,7 +16,8 @@ import {
   InteractionManager,
   TextInput,
   Animated,
-  Linking
+  Linking,
+  Keyboard,
 } from 'react-native'
 import CommonListView from '../common/CommonListView'
 import {connect} from 'react-redux'
@@ -182,15 +183,46 @@ class ShopDetail extends Component {
     this.setInterval(() => {
       this.ifHideLoading()
     }, 1000)
-    // InteractionManager.runAfterInteractions(()=>{
-    //   if(!this.props.shopDetail.id) {
-    //     this.props.fetchShopDetail({id: this.props.id})
-    //   }
-    // })
+
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillUnmount(){
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
 
+    }
+  }
+
+  onKeyboardWillShow = (e) => {
+  }
+
+  onKeyboardWillHide = (e) => {
+    this.setState({
+      hideBottomView: false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
   }
 
   userUpShop() {
@@ -1096,37 +1128,33 @@ class ShopDetail extends Component {
 
   renderDetailContent() {
     let shopDetail = this.props.shopDetail
-
-    let detailWrapStyle = {}
-    if (!this.isSelfShop()) {
-      detailWrapStyle = styles.detailWrap
+    let selfStyle = {}
+    if (this.isSelfShop()) {
+      selfStyle = {marginBottom: 0}
     }
-
-    let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
-
     return (
       <View style={{flex: 1}}>
-        <View style={styles.body}>
-          <View style={detailWrapStyle}>
-
-            <CommonListView
-              name="shopDetail"
-              contentContainerStyle={{backgroundColor: '#F5F5F5'}}
-              dataSource={this.props.ds}
-              renderRow={(rowData, rowId, lazyHost) => this.renderRow(rowData, rowId, lazyHost)}
-              loadNewData={()=> {
-                this.refreshData()
-              }}
-              loadMoreData={()=> {
-                this.loadMoreData(false)
-              }}
-              ref={(listView) => this.listView = listView}
-              scrollEventThrottle={80}
-              onScroll = {(e)=>{this.handleOnScroll(e)}}
-            />
-          </View>
-          {this.renderBottomView()}
+        <View style={[styles.body, selfStyle]}>
+          <CommonListView
+            name="shopDetail"
+            contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+            dataSource={this.props.ds}
+            renderRow={(rowData, rowId, lazyHost) => this.renderRow(rowData, rowId, lazyHost)}
+            loadNewData={()=> {
+              this.refreshData()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData(false)
+            }}
+            ref={(listView) => this.listView = listView}
+            onScroll={e => this.handleOnScroll(e)}
+            scrollEventThrottle={80}
+          />
         </View>
+        {this.state.hideBottomView
+          ? null
+          : this.renderBottomView()
+        }
 
         {this.state.hideBottomView
           ? <TouchableOpacity
@@ -1328,10 +1356,8 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    // marginTop: normalizeH(64),
     flex: 1,
-    paddingBottom: normalizeH(50),
-
+    marginBottom: normalizeH(50),
   },
   detailWrap: {
     // marginBottom: 54
