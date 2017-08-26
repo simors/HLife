@@ -1047,6 +1047,7 @@ function handlePublishShopComment(payload, formData) {
         lcShop.submitShopComment(newPayload).then((result) => {
           let _action = createAction(ShopTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
           let comment = ShopComment.fromLeancloudApi(result)
+          console.log('comment========>',comment)
           dispatch(_action({comment:comment}))
 
           let params = {
@@ -1074,9 +1075,11 @@ function handlePublishShopComment(payload, formData) {
     } else {
       newPayload.blueprints = []
       lcShop.submitShopComment(newPayload).then((result) => {
+
         let _action = createAction(ShopTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
         let comment = ShopComment.fromLeancloudApi(result)
         dispatch(_action({comment:comment}))
+        console.log('comment========>',comment)
 
         let params = {
           shopId: payload.id,
@@ -1084,7 +1087,6 @@ function handlePublishShopComment(payload, formData) {
           commentId: result.id,
           content: newPayload.content,
         }
-        dispatch(_action(params))
 
         dispatch(msgAction.notifyShopComment(params))
         if (payload.success) {

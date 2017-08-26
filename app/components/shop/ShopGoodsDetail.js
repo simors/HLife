@@ -411,12 +411,20 @@ class ShopGoodsDetail extends Component {
   // }
 
   renderGoToShop(){
+    let distance = this.props.shopDetail.distance
+    let distanceTitle = '米'
+    if(distance>0){
+      if(distance>1000){
+        distance = Number(distance).toFixed(1)
+        distanceTitle='公里'
+      }
+    }
     return(
       <TouchableOpacity onPress={()=>{Actions.SHOP_DETAIL({id:this.props.shopDetail.id})}}>
       <View style={styles.shopWrap}>
         <View style={styles.shopInfo}>
           <Text style={styles.shopName}>{this.props.shopDetail.shopName}</Text>
-          <Text style={styles.shopLocation}>{this.props.shopDetail.distance+'公里'}</Text>
+          <Text style={styles.shopLocation}>{distance+distanceTitle}</Text>
         </View>
 
         <View style={styles.shopAction}>
