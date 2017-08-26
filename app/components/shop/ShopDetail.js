@@ -1119,6 +1119,7 @@ class ShopDetail extends Component {
               }}
               ref={(listView) => this.listView = listView}
               scrollEventThrottle={80}
+              onScroll = {(e)=>{this.handleOnScroll(e)}}
             />
           </View>
           {this.renderBottomView()}
