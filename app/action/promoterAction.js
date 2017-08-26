@@ -98,8 +98,8 @@ export function promoterCertification(payload) {
       dispatch(updatePromoter({promoterId, promoter}))
       return promoterId
     }).then((promoterId) => {
-      let userId = activeUserId(getState())
-      dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
+      // let userId = activeUserId(getState())
+      // dispatch(calRegistPromoter({userId}))   // 计算注册成为推广员的积分
       if (payload.success) {
         payload.success({promoterId})
       }

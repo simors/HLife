@@ -178,7 +178,7 @@ export function fetchPublishTopicComment(payload, formData) {
         commentTime: new Date(result.createdAt),
       }))
 
-      dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
+      // dispatch(pointAction.calPublishComment({userId: payload.userId}))   // 计算发布话题评论积分
       if (payload.success) {
         payload.success()
       }
@@ -369,7 +369,7 @@ export function fetchPublishTopic(payload, formData) {
 
         let publishAction = createAction(topicActionTypes.FETCH_PUBLISH_TOPIC_SUCCESS)
         dispatch(publishAction({topic: result, stateKey: payload.stateKey}))
-        dispatch(pointAction.calPublishTopic({userId: payload.userId}))        // 计算发布话题积分
+        // dispatch(pointAction.calPublishTopic({userId: payload.userId}))        // 计算发布话题积分
         if (payload.success) {
           payload.success()
         }
