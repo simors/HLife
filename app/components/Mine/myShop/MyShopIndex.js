@@ -640,23 +640,23 @@ class MyShopIndex extends Component {
             {/*</View>*/}
             {/*</View>*/}
             {/*</TouchableOpacity>*/}
-
+            <CommonListView
+              name="shopDetail"
+              contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+              dataSource={this.props.ds}
+              renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+              loadNewData={()=> {
+                this.refreshData()
+              }}
+              loadMoreData={()=> {
+                this.loadMoreData(false)
+              }}
+              ref={(listView) => this.listView = listView}
+              onScroll={e => this.handleOnScroll(e)}
+              scrollEventThrottle={80}
+            />
           </View>
-          <CommonListView
-            name="shopDetail"
-            contentContainerStyle={{backgroundColor: '#F5F5F5'}}
-            dataSource={this.props.ds}
-            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
-            loadNewData={()=> {
-              this.refreshData()
-            }}
-            loadMoreData={()=> {
-              this.loadMoreData(false)
-            }}
-            ref={(listView) => this.listView = listView}
-            onScroll={e => this.handleOnScroll(e)}
-            scrollEventThrottle={80}
-          />
+
           <View style={styles.shopCommentWrap}>
             <TouchableOpacity style={{}} onPress={()=> {
               this.editShop()

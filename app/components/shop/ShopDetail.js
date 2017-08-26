@@ -599,7 +599,7 @@ class ShopDetail extends Component {
 
   onCommentButton(comment) {
     if (this.isSelfShop()) {
-      Toast.('不允许评论自家店铺')
+      Toast.show('不允许评论自家店铺')
     } else {
       this.setState({
         comment: comment
