@@ -930,7 +930,7 @@ class ShopDetail extends Component {
     return (
       <View style={styles.container}>
         {this.renderMainHeader()}
-        <View style={styles.body}>
+        <View style={{flex:1}}>
           {this.renderDetailContent()}
         </View>
         {this.renderIllegal()}
@@ -1321,9 +1321,11 @@ const styles = StyleSheet.create({
   body: {
     // marginTop: normalizeH(64),
     flex: 1,
+    paddingBottom: normalizeH(50),
+
   },
   detailWrap: {
-    marginBottom: 54
+    // marginBottom: 54
   },
   contentContainerStyle: {},
   shopHead: {
