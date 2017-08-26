@@ -630,7 +630,7 @@ class ShopDetail extends Component {
         <View style={styles.commentWrap}>
           <View style={styles.titleWrap}>
             <View style={styles.titleLine}/>
-            <Text style={styles.titleTxt}>留言板·{this.props.shopCommentsTotalCount}</Text>
+            <Text style={styles.titleTxt}>留言板·{this.props.shopDetail.commentNum}</Text>
           </View>
 
           <ShopCommentListV2 viewType='shop'
@@ -902,6 +902,7 @@ class ShopDetail extends Component {
       </LinearGradient>
     )
   }
+
   renderIsFollow(){
     if(this.props.isFollowedShop){
       return(
@@ -909,15 +910,15 @@ class ShopDetail extends Component {
       )
     }else{
       return(
-        <View style={{flexDirection:'row'}}>
+        <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
       <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
       <Text style={styles.shopAbstractLike}>关注</Text>
           </View>
       )
 
     }
-
   }
+
   render() {
     let shopDetail = this.props.shopDetail
 
@@ -1096,7 +1097,7 @@ class ShopDetail extends Component {
             name="shopDetail"
             contentContainerStyle={{backgroundColor: '#F5F5F5'}}
             dataSource={this.props.ds}
-            renderRow={(rowData, rowId) => this.renderRow(rowData, rowId)}
+            renderRow={(rowData, rowId,lazyHost) => this.renderRow(rowData, rowId,lazyHost)}
             loadNewData={()=> {
               this.refreshData()
             }}

@@ -787,7 +787,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
-   
+
     paddingLeft: normalizeW(20),
     borderBottomWidth:normalizeBorder(1),
     borderTopWidth: normalizeBorder(1),

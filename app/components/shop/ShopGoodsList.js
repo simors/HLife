@@ -38,21 +38,22 @@ export default class ShopGoodsList extends Component {
     Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})
   }
 
-  renderColumn(goodInfo) {
+  renderColumn(key,goodInfo) {
+    // console.log('goodInfo=====>key',key,goodInfo)
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
         <View style={{flex:1,paddingTop:normalizeH(5),paddingBottom:normalizeH(5)}}>
-       <GoodShow goodInfo={goodInfo} key={goodInfo.id}/>
+       <GoodShow goodInfo={goodInfo} key={key}/>
           </View>
       </TouchableOpacity>
     )
   }
 
-  renderLastColumn(goodInfo){
+  renderLastColumn(key,goodInfo){
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
         <View style={{flex:1,paddingTop:normalizeH(5),paddingBottom:normalizeH(5)}}>
-          <GoodShow goodInfo={goodInfo} key={goodInfo.id} showType = 'lastGood' />
+          <GoodShow goodInfo={goodInfo} key={key} showType = 'lastGood' />
         </View>
       </TouchableOpacity>
     )
@@ -65,16 +66,18 @@ export default class ShopGoodsList extends Component {
     if(this.props.shopGoodsList&&this.props.shopGoodsList.length){
       let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
         if(key<6) {
+          // console.log('row=======key========>',key)
           if(this.props.shopGoodsList.length==1||this.props.shopGoodsList.length==3||this.props.shopGoodsList.length==5){
             if(key == this.props.shopGoodsList.length-1){
+
               return (<View key={key} style={imageStyle}>
-                {this.renderLastColumn(item)}
+                {this.renderLastColumn(key,item)}
               </View>)
             }
           }
           return (
             <View key={key} style={imageStyle}>
-              {this.renderColumn(item)}
+              {this.renderColumn(key,item)}
             </View>
           )
         }

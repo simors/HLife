@@ -41,7 +41,8 @@ export const ShopRecord = Record({
   nextSkipNum: 0, //分页查询,跳过条数
   status: -1, //0-后台关闭； 1-正常； 2-店主自己关闭
   payment: 0, // 记录店铺注册后是否已完成支付流程，0表示未支付，1表示已支付
-  tenant: 0,  // 记录店铺注册时缴纳的入驻费
+  tenant: 0,  // 记录店铺注册时缴纳的入驻费,
+  commentNum: 0,
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
@@ -160,6 +161,7 @@ export class ShopInfo extends ShopRecord {
         record.set('tenant', attrs.tenant)
         record.set('createdAt', lcObj.createdAt.valueOf())
         record.set('updatedAt', lcObj.updatedAt.valueOf())
+        record.set('commentNum',attrs.commentNum)
       })
     }catch(err) {
       console.log('shopModel.err=======', err)
@@ -181,7 +183,7 @@ export class ShopInfo extends ShopRecord {
         record.set('contactNumber2', lcObj.contactNumber2)
         // record.set('certification', lcObj.certification)
         record.set('status', lcObj.status && parseInt(lcObj.status))
-
+        record.set('commentNum',lcObj.commentNum)
         let targetShopCategory = {}
         if(lcObj.targetShopCategory) {
           let targetShopCategoryAttrs = lcObj.targetShopCategory

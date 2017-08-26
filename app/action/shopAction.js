@@ -1420,6 +1420,7 @@ export function fetchAllMyCommentUps(payload){
 
 
 export function fetchAllComments(payload) {
+  console.log('payload===>',payload)
   return (dispatch, getState) => {
     let more = payload.more
     if (!more) {
@@ -1427,7 +1428,7 @@ export function fetchAllComments(payload) {
     }
     lcShop.fetchShopCommentsByCloud(payload).then((result) => {
       let commentList = result.commentList
-      // console.log('result=====>',result)
+      console.log('result=====>',result)
 
       let allComments = result.allComments
       let comments = []

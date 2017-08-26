@@ -151,7 +151,7 @@ class ShopGoodsListView extends Component {
       let shopGoodsList = this.props.goodList.map((item, key) => {
         return (
           <View key={key} style={imageStyle}>
-            {this.renderColumn(item)}
+            {this.renderColumn(item,key)}
           </View>
         )
       })
