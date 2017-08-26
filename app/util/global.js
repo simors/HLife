@@ -33,7 +33,7 @@ const KM_ENV = {
   appKey: ENV == 'pro'? LC_CONFIG.LC_PRO_APP_KEY : LC_CONFIG.LC_STAGE_APP_KEY,
 }
 
-export const KM_FIN = __DEV__ ? KM_Dev : KM_ENV
+export const KM_FIN = __DEV__ ? KM_ENV : KM_ENV
 
 export const DEFAULT_SHARE_DOMAIN = KM_FIN.appId === LC_CONFIG.LC_DEV_APP_ID ?
   'http://hlyd-dev.leanapp.cn/' : KM_FIN.appId === LC_CONFIG.LC_STAGE_APP_ID ?
