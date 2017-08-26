@@ -68,7 +68,7 @@ class ShopGoodsListView extends Component {
         shopId: this.props.id,
         status: 1,
         limit: 6,
-        more:false
+        more: false
         // lastUpdateTime: payload.lastUpdateTime,
       })
     })
@@ -89,7 +89,8 @@ class ShopGoodsListView extends Component {
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)} style={styles.channelWrap}>
         <View >
-          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain" source={{uri: goodInfo.coverPhoto}}/>
+          <CachedImage mutable style={styles.defaultImageStyles} resizeMode="contain"
+                       source={{uri: goodInfo.coverPhoto}}/>
           {/*<Image style={styles.defaultImageStyles} source={{uri: value.coverPhoto}}/>*/}
           <Text style={ styles.channelText}>{goodInfo.goodsName}</Text>
           <Text style={ styles.channelPrice}>{'¥' + goodInfo.price}</Text>
@@ -101,7 +102,7 @@ class ShopGoodsListView extends Component {
 
   showGoodDetail(goodInfo) {
     // this.props.showGoodDetail(value)
-    Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})
+    Actions.SHOP_GOODS_DETAIL({goodInfo: goodInfo})
   }
 
   handleOnScroll(e) {
@@ -151,7 +152,7 @@ class ShopGoodsListView extends Component {
       let shopGoodsList = this.props.goodList.map((item, key) => {
         return (
           <View key={key} style={imageStyle}>
-            {this.renderColumn(item,key)}
+            {this.renderColumn(item, key)}
           </View>
         )
       })
@@ -191,7 +192,7 @@ class ShopGoodsListView extends Component {
   }
 
   refreshData(payload) {
-        this.loadMoreData(true)
+    this.loadMoreData(true)
   }
 
   loadMoreData(isRefresh, isEndReached) {
@@ -201,12 +202,12 @@ class ShopGoodsListView extends Component {
     }
     this.isQuering = true
 
-    let limit = this.props.limit?this.props.limit:6
+    let limit = this.props.limit ? this.props.limit : 6
     let payload = {
       shopId: this.props.id,
       status: 1,
-      lastUpdateTime: this.props.goodList[this.props.goodList.length-1].updatedAt,
-      more:true,
+      lastUpdateTime: this.props.goodList[this.props.goodList.length - 1].updatedAt,
+      more: true,
       isRefresh: !!isRefresh,
       limit: limit,
       isLocalQuering: true,
@@ -237,7 +238,7 @@ class ShopGoodsListView extends Component {
 
   renderListRow(rowData, rowId) {
 
-        return <View>{this.renderColumns()}</View>
+    return <View>{this.renderColumns()}</View>
 
   }
 
@@ -287,7 +288,7 @@ const mapStateToProps = (state, ownProps) => {
 
   // dataArray.push({type: 'SHOP_CATEGORY_COLUMN'})
   dataArray.push({type: 'LOCAL_SHOP_LIST_COLUMN'})
-  console.log('goodlist',goodList)
+  console.log('goodlist', goodList)
   return {
     ds: ds.cloneWithRows(dataArray),
     goodList: goodList
@@ -327,9 +328,9 @@ const styles = StyleSheet.create({
     // height: normalizeH(80),
     // width: normalizeW(35),
   },
-  channelText: Platform.OS=='ios'?{
-    flex:1,
-    flexDirection:'row',
+  channelText: Platform.OS == 'ios' ? {
+    flex: 1,
+    flexDirection: 'row',
     marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
@@ -337,9 +338,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     color: '#5A5A5A'
     // textAlign: 'start',
-  }:{
-    flex:1,
-    flexDirection:'row',
+  } : {
+    flex: 1,
+    flexDirection: 'row',
     marginTop: normalizeH(10),
     width: normalizeW(144),
     height: normalizeH(12),
@@ -347,9 +348,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     color: '#5A5A5A'
   },
-  channelPrice: Platform.OS=='ios'?{
+  channelPrice: Platform.OS == 'ios' ? {
     // flexDirection:'row'
-    flex:1,
+    flex: 1,
     marginTop: normalizeH(6),
     width: normalizeW(144),
     height: 15,
@@ -357,7 +358,7 @@ const styles = StyleSheet.create({
     // textAlign: 'center',
     // justifyContent:'flex-start'
     color: '#00BE96'
-  }:{
+  } : {
     marginTop: normalizeH(6),
     width: normalizeW(144),
     height: normalizeH(15),

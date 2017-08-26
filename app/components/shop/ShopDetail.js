@@ -581,10 +581,11 @@ class ShopDetail extends Component {
       avatar = {uri: getThumbUrl(this.props.shopDetail.owner.avatar, 32, 32)}
     }
     return (
-      <View style={{flex: 1,backgroundColor:'#FFFFFF'}}>
+      <View style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <View style={styles.ownerWrap}>
           <View style={styles.ownerLeft}>
-            <CachedImage  style = {{marginLeft:normalizeW(15),marginRight:normalizeW(15)}}source={require('../../assets/images/shopkeeper.png')}/>
+            <CachedImage style={{marginLeft: normalizeW(15), marginRight: normalizeW(15)}}
+                         source={require('../../assets/images/shopkeeper.png')}/>
             <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
             <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
           </View>
@@ -597,10 +598,14 @@ class ShopDetail extends Component {
   }
 
   onCommentButton(comment) {
-    this.setState({
-      comment: comment
-    })
-    this.openModel()
+    if (this.isSelfShop()) {
+      Toast.('不允许评论自家店铺')
+    } else {
+      this.setState({
+        comment: comment
+      })
+      this.openModel()
+    }
   }
 
   openModel(callback) {
@@ -903,17 +908,17 @@ class ShopDetail extends Component {
     )
   }
 
-  renderIsFollow(){
-    if(this.props.isFollowedShop){
-      return(
+  renderIsFollow() {
+    if (this.props.isFollowedShop) {
+      return (
         <Text style={styles.shopAbstractLike}>已关注</Text>
       )
-    }else{
-      return(
-        <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
-      <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
-      <Text style={styles.shopAbstractLike}>关注</Text>
-          </View>
+    } else {
+      return (
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>
+          <Text style={styles.shopAbstractLike}>关注</Text>
+        </View>
       )
 
     }
@@ -1097,7 +1102,7 @@ class ShopDetail extends Component {
             name="shopDetail"
             contentContainerStyle={{backgroundColor: '#F5F5F5'}}
             dataSource={this.props.ds}
-            renderRow={(rowData, rowId,lazyHost) => this.renderRow(rowData, rowId,lazyHost)}
+            renderRow={(rowData, rowId, lazyHost) => this.renderRow(rowData, rowId, lazyHost)}
             loadNewData={()=> {
               this.refreshData()
             }}

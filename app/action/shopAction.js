@@ -9,7 +9,7 @@ import * as msgAction from './messageAction'
 import * as AuthTypes from '../constants/authActionTypes'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {selectShopTags} from '../selector/shopSelector'
-import {ShopPromotion, ShopGoods, ShopInfo, ShopGoodPromotion, ShopOrders,ShopComment} from '../models/shopModel'
+import {ShopPromotion, ShopGoods, ShopInfo, ShopGoodPromotion, ShopOrders, ShopComment} from '../models/shopModel'
 import {UserInfo} from '../models/userModels'
 import * as pointAction from '../action/pointActions'
 import * as ImageUtil from '../util/ImageUtil'
@@ -237,11 +237,11 @@ export function unFollowShop(payload) {
  */
 export function submitShopComment(payload) {
   return (dispatch, getState) => {
-      lcShop.submitShopComment(payload).then((result) => {
+    lcShop.submitShopComment(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
       let comment = ShopComment.fromLeancloudApi(result)
-        // console.log('comment========>',comment)
-      dispatch(updateAction({comment:comment}))
+      // console.log('comment========>',comment)
+      dispatch(updateAction({comment: comment}))
       let params = {
         shopId: payload.shopId,
         replyTo: '',
@@ -387,11 +387,11 @@ export function userUpShopComment(payload) {
   return (dispatch, getState) => {
     lcShop.userUpShopComment(payload).then((result) => {
       let updateAction = createAction(ShopActionTypes.USER_UP_SHOP_COMMENT_SUCCESS)
-      dispatch(updateAction({up:result}))
+      dispatch(updateAction({up: result}))
       if (payload.success) {
         payload.success(result)
       }
-    },(err)=>{
+    }, (err)=> {
       if (payload.error) {
         payload.error(err)
       }
@@ -1164,8 +1164,8 @@ export function getShopOpenPromotion(payload) {
         actionType = ShopActionTypes.ADD_SHOP_OPEN_PROMOTIONLIST
       }
 
-        let updateAction = createAction(actionType)
-        dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
+      let updateAction = createAction(actionType)
+      dispatch(updateAction({promotionList: promotionList, promotions: promotions}))
 
       if (payload.success) {
         payload.success(promotionList.length == 0)
@@ -1398,20 +1398,20 @@ export function modifyShopperOrderStatus(payload) {
   }
 }
 
-export function fetchAllMyCommentUps(payload){
-  return (dispatch,getState)=>{
-    lcShop.fetchAllMyCommentUps().then((ups)=>{
+export function fetchAllMyCommentUps(payload) {
+  return (dispatch, getState)=> {
+    lcShop.fetchAllMyCommentUps().then((ups)=> {
       let actionType = ShopActionTypes.FETCH_MY_COMMENT_UPS
-      if(ups.commentList&&ups.commentList.length>0){
+      if (ups.commentList && ups.commentList.length > 0) {
         let commentUpAction = createAction(actionType)
         // console.log('ups===commentList===>',ups.commentList)
         dispatch(commentUpAction({commentsUps: ups.commentList}))
       }
-      if(payload.success){
+      if (payload.success) {
         payload.success()
       }
-    },(err)=>{
-      if(payload.error){
+    }, (err)=> {
+      if (payload.error) {
         payload.error(err)
       }
     })
@@ -1420,7 +1420,7 @@ export function fetchAllMyCommentUps(payload){
 
 
 export function fetchAllComments(payload) {
-  console.log('payload===>',payload)
+  console.log('payload===>', payload)
   return (dispatch, getState) => {
     let more = payload.more
     if (!more) {
@@ -1428,7 +1428,7 @@ export function fetchAllComments(payload) {
     }
     lcShop.fetchShopCommentsByCloud(payload).then((result) => {
       let commentList = result.commentList
-      console.log('result=====>',result)
+      console.log('result=====>', result)
 
       let allComments = result.allComments
       let comments = []
@@ -1443,10 +1443,10 @@ export function fetchAllComments(payload) {
       if (payload.commentId && payload.commentId != '') {
         if (more) {
           let updateAction = createAction(ShopActionTypes.ADD_SHOP_COMMENTS_FOR_COMMENT)
-          dispatch(updateAction({commentId: payload.commentId, comments: comments,commentList: commentList}))
+          dispatch(updateAction({commentId: payload.commentId, comments: comments, commentList: commentList}))
         } else {
           let updateAction = createAction(ShopActionTypes.SET_SHOP_COMMENTS_FOR_COMMENT)
-          dispatch(updateAction({commentId: payload.commentId, comments: comments,commentList: commentList}))
+          dispatch(updateAction({commentId: payload.commentId, comments: comments, commentList: commentList}))
         }
       } else if (payload.shopId && payload.shopId != '') {
         if (more) {
@@ -1462,7 +1462,7 @@ export function fetchAllComments(payload) {
         payload.success(commentList.length == 0)
       }
     }).catch((error) => {
-      console.log('error====>',error)
+      console.log('error====>', error)
       if (payload.error) {
         payload.error(error)
       }

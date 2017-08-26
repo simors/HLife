@@ -69,19 +69,18 @@ const abstractInput = {
   formKey: shopPromotionForm,
   stateKey: Symbol('abstractInput'),
   type: 'abstractInput',
-  checkValid: (data)=>{
-    if(data && data.text) {
+  checkValid: (data)=> {
+    if (data && data.text) {
       if (data.text.length > 0 && data.text.length <= 50) {
         return {isVal: true, errMsg: '验证通过'}
-      }else {
+      } else {
         return {isVal: false, errMsg: '字数必须小于100'}
       }
-    }else{
-      return {isVal: false, errMsg: '本店特色为空'}
+    } else {
+      return {isVal: false, errMsg: '活动介绍为空'}
     }
   }
 }
-
 
 
 class PublishShopPromotionAbstract extends Component {
@@ -119,9 +118,10 @@ class PublishShopPromotionAbstract extends Component {
     )
   }
 
-  onButtonPress(){
+  onButtonPress() {
     Actions.PUBLISH_SHOP_PROMOTION_SUBMIT()
   }
+
   render() {
 
     return (
@@ -137,16 +137,16 @@ class PublishShopPromotionAbstract extends Component {
             <Text style={styles.showText}>活动说明</Text>
           </View>
           <KeyboardAwareScrollView>
-              <View style={[styles.inputBox]}>
-                <TextAreaInput
-                  {...abstractInput}
-                  placeholder={"对活动进行简要介绍（50字以内）"}
-                  clearBtnStyle={{right: 10,top: 30}}
-                  inputStyle={{borderColor: '#bdc6cf', color: '#030303',paddingRight:30}}
-                  maxLength={50}
-                  initValue={this.props.abstract}
-                />
-              </View>
+            <View style={[styles.inputBox]}>
+              <TextAreaInput
+                {...abstractInput}
+                placeholder={"对活动进行简要介绍（50字以内）"}
+                clearBtnStyle={{right: 10, top: 30}}
+                inputStyle={{borderColor: '#bdc6cf', color: '#030303', paddingRight: 30}}
+                maxLength={50}
+                initValue={this.props.abstract}
+              />
+            </View>
             {this.renderSubmitButton()}
           </KeyboardAwareScrollView>
         </View>
@@ -240,42 +240,42 @@ const styles = StyleSheet.create({
     fontSize: em(18),
     letterSpacing: -em(0.45)
   },
-  chooseText:{
+  chooseText: {
     fontSize: em(15),
     color: '#000000',
   },
-  chooseDateWrap:{
+  chooseDateWrap: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    marginBottom:normalizeH(15)
+    marginBottom: normalizeH(15)
   },
-  chooseDateBox:{
+  chooseDateBox: {
     padding: normalizeH(10),
     paddingBottom: normalizeH(0),
     margin: normalizeW(15),
     flex: 1,
-    borderWidth:normalizeBorder(1),
+    borderWidth: normalizeBorder(1),
     borderRadius: em(3),
   },
-  pickerStyle:{
-    flex:1,
-    width:normalizeW(200),
+  pickerStyle: {
+    flex: 1,
+    width: normalizeW(200),
     height: normalizeH(42),
-    marginLeft:normalizeW(5),
+    marginLeft: normalizeW(5),
     backgroundColor: 'rgba(255,120,25,0.10)'
   },
-  countDaysBox:{
+  countDaysBox: {
     // marginTop: normalizeH(8),
     marginLeft: normalizeW(30),
     flexDirection: 'row',
     alignItems: 'center'
   },
-  countDaysAbstract:{
+  countDaysAbstract: {
     color: 'rgba(0,0,0,0.50)',
     fontSize: em(12),
   },
-  countDaysText:{
+  countDaysText: {
     fontSize: em(15),
     color: '#FF7819',
 
