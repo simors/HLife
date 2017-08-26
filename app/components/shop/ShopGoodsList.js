@@ -34,25 +34,26 @@ export default class ShopGoodsList extends Component {
     }
   }
 
-  showGoodDetail(goodInfo){
-    Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})
+  showGoodDetail(goodInfo) {
+    Actions.SHOP_GOODS_DETAIL({goodInfo: goodInfo})
   }
 
-  renderColumn(goodInfo) {
+  renderColumn(key, goodInfo) {
+    // console.log('goodInfo=====>key',key,goodInfo)
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
-        <View style={{flex:1,paddingTop:normalizeH(5),paddingBottom:normalizeH(5)}}>
-       <GoodShow goodInfo={goodInfo} key={goodInfo.id}/>
-          </View>
+        <View style={{flex: 1, paddingTop: normalizeH(5), paddingBottom: normalizeH(5)}}>
+          <GoodShow goodInfo={goodInfo} key={key}/>
+        </View>
       </TouchableOpacity>
     )
   }
 
-  renderLastColumn(goodInfo){
+  renderLastColumn(key, goodInfo) {
     return (
       <TouchableOpacity onPress={()=>this.showGoodDetail(goodInfo)}>
-        <View style={{flex:1,paddingTop:normalizeH(5),paddingBottom:normalizeH(5)}}>
-          <GoodShow goodInfo={goodInfo} key={goodInfo.id} showType = 'lastGood' />
+        <View style={{flex: 1, paddingTop: normalizeH(5), paddingBottom: normalizeH(5)}}>
+          <GoodShow goodInfo={goodInfo} key={key} showType='lastGood'/>
         </View>
       </TouchableOpacity>
     )
@@ -62,25 +63,27 @@ export default class ShopGoodsList extends Component {
     const imageStyle = {
       flex: 1,
     }
-    if(this.props.shopGoodsList&&this.props.shopGoodsList.length){
+    if (this.props.shopGoodsList && this.props.shopGoodsList.length) {
       let shopGoodsListView = this.props.shopGoodsList.map((item, key) => {
-        if(key<6) {
-          if(this.props.shopGoodsList.length==1||this.props.shopGoodsList.length==3||this.props.shopGoodsList.length==5){
-            if(key == this.props.shopGoodsList.length-1){
+        if (key < 6) {
+          // console.log('row=======key========>',key)
+          if (this.props.shopGoodsList.length == 1 || this.props.shopGoodsList.length == 3 || this.props.shopGoodsList.length == 5) {
+            if (key == this.props.shopGoodsList.length - 1) {
+
               return (<View key={key} style={imageStyle}>
-                {this.renderLastColumn(item)}
+                {this.renderLastColumn(key, item)}
               </View>)
             }
           }
           return (
             <View key={key} style={imageStyle}>
-              {this.renderColumn(item)}
+              {this.renderColumn(key, item)}
             </View>
           )
         }
       })
       return shopGoodsListView
-    }else{
+    } else {
       return <View/>
     }
 
@@ -141,13 +144,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginTop: normalizeH(10),
     marginLeft: normalizeW(7),
-    borderWidth:normalizeBorder(0),
-    backgroundColor:'#F5F5F5'
+    borderWidth: normalizeBorder(0),
+    backgroundColor: '#F5F5F5'
   },
   channelText: {
-    flex:1,
-    flexDirection:'row',
-    marginLeft:normalizeW(10),
+    flex: 1,
+    flexDirection: 'row',
+    marginLeft: normalizeW(10),
 
     marginTop: normalizeH(10),
     width: normalizeW(144),
@@ -157,9 +160,9 @@ const styles = StyleSheet.create({
     color: '#5A5A5A'
   },
   channelPrice: {
-    flex:1,
+    flex: 1,
     marginBottom: normalizeH(6),
-    marginLeft:normalizeW(10),
+    marginLeft: normalizeW(10),
     width: normalizeW(144),
     height: 15,
     fontSize: em(17),
@@ -169,8 +172,8 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.base.backgroundColor,
     width: PAGE_WIDTH,
     flexDirection: 'row',
-     paddingLeft:normalizeH(8),
-    paddingRight:normalizeH(8),
+    paddingLeft: normalizeH(8),
+    paddingRight: normalizeH(8),
 
   },
   columnContainer: {

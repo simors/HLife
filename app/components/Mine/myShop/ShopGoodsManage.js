@@ -175,6 +175,14 @@ class ShopGoodsManage extends Component {
     this.loadMoreGoodsListData(true, 1)
   }
 
+  publishPromotion(){
+    if(this.props.openPromotion.length>=this.props.maxPromotionNum){
+      Toast.show('已经有三个启用的活动，仍想发布请手动关闭一个！')
+    }else{
+      Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD({isPop:true})
+    }
+  }
+
   loadMoreGoodsListData(isRefresh, status) {
     if(this.isQuering) {
       return

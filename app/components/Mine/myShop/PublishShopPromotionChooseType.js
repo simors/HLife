@@ -124,23 +124,23 @@ class PublishShopPromotionChooseType extends Component {
     })
   }
 
-  unChooseType(index){
+  unChooseType(index) {
     chooseTypeInput.data = {}
     this.props.inputFormUpdate(chooseTypeInput)
   }
 
-  renderTypes(start,end) {
-    let renderType =  this.state.types.map((item, index) => {
-      if (index>=start&&index<=end){
-        if ( this.props.chooseTypeId == item.id) {
-          console.log('i m here is choose item',item)
+  renderTypes(start, end) {
+    let renderType = this.state.types.map((item, index) => {
+      if (index >= start && index <= end) {
+        if (this.props.chooseTypeId == item.id) {
+          console.log('i m here is choose item', item)
           return (
             <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
               this.unChooseType(index)
             }}>
               <View style={styles.typeBox}>
                 <Text style={styles.chooseTypeText}>{item.type}</Text>
-                  <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)}  icon="selected_act"/>
+                <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} icon="selected_act"/>
               </View>
             </TouchableWithoutFeedback>
           )
@@ -158,7 +158,7 @@ class PublishShopPromotionChooseType extends Component {
             </TouchableWithoutFeedback>
           )
         } else {
-          console.log('i m here is not choose item',item)
+          console.log('i m here is not choose item', item)
           return (
             <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
               this.changeType(index)
@@ -187,7 +187,7 @@ class PublishShopPromotionChooseType extends Component {
   }
 
   onButtonPress() {
-    if (this.props.chooseTypeId!=undefined && this.props.chooseTypeId != '') {
+    if (this.props.chooseTypeId != undefined && this.props.chooseTypeId != '') {
       Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_DATE()
     } else {
       Toast.show('请选择一个类型')
@@ -221,12 +221,12 @@ class PublishShopPromotionChooseType extends Component {
             <Text style={styles.showText}>选择活动类型</Text>
           </View>
           <KeyboardAwareScrollView>
-            <View style={{flexDirection:'row',}}>
-            {this.renderTypes(0,1)}
+            <View style={{flexDirection: 'row',}}>
+              {this.renderTypes(0, 1)}
 
             </View>
-            <View style={{flexDirection:'row',}}>
-              {this.renderTypes(2,4)}
+            <View style={{flexDirection: 'row',}}>
+              {this.renderTypes(2, 4)}
 
             </View>
             {this.renderSubmitButton()}

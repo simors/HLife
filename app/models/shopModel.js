@@ -1,7 +1,7 @@
 /**
  * Created by zachary on 2016/12/20.
  */
-import {Map, List, Record,Set} from 'immutable'
+import {Map, List, Record, Set} from 'immutable'
 import AV from 'leancloud-storage'
 import * as numberUtils from '../util/numberUtils'
 import * as locSelector from '../selector/locSelector'
@@ -18,9 +18,9 @@ export const ShopRecord = Record({
   contactNumber2: undefined, //店铺联系电话（备用电话）
   certification: '',
   targetShopCategory: {}, //店铺所属分类信息
-  geo:[], //店铺地理坐标
-  geoCity:undefined, //店铺地理坐标对应城市名
-  geoDistrict:'', //店铺地理坐标对应区名
+  geo: [], //店铺地理坐标
+  geoCity: undefined, //店铺地理坐标对应城市名
+  geoDistrict: '', //店铺地理坐标对应区名
   geoProvince: undefined,
   geoProvinceCode: undefined,
   geoCityCode: undefined,
@@ -41,19 +41,20 @@ export const ShopRecord = Record({
   nextSkipNum: 0, //分页查询,跳过条数
   status: -1, //0-后台关闭； 1-正常； 2-店主自己关闭
   payment: 0, // 记录店铺注册后是否已完成支付流程，0表示未支付，1表示已支付
-  tenant: 0,  // 记录店铺注册时缴纳的入驻费
+  tenant: 0,  // 记录店铺注册时缴纳的入驻费,
+  commentNum: 0,
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
   static fromLeancloudObject(lcObj, type) {
-    try{
+    try {
       let shopRecord = new ShopRecord()
       let attrs = lcObj.attributes
-      if(type) {
+      if (type) {
         lcObj = attrs[type]
-        if(lcObj) {
+        if (lcObj) {
           attrs = lcObj.attributes
-        }else{
+        } else {
           return shopRecord
         }
       }
@@ -72,7 +73,7 @@ export class ShopInfo extends ShopRecord {
         record.set('status', attrs.status && parseInt(attrs.status))
 
         let targetShopCategory = {}
-        if(attrs.targetShopCategory && attrs.targetShopCategory.attributes) {
+        if (attrs.targetShopCategory && attrs.targetShopCategory.attributes) {
           let targetShopCategoryAttrs = attrs.targetShopCategory.attributes
           targetShopCategory.imageSource = targetShopCategoryAttrs.imageSource
           targetShopCategory.shopCategoryId = targetShopCategoryAttrs.shopCategoryId
@@ -83,7 +84,7 @@ export class ShopInfo extends ShopRecord {
         record.set('targetShopCategory', targetShopCategory)
 
         let owner = {}
-        if(attrs.owner && attrs.owner.attributes) {
+        if (attrs.owner && attrs.owner.attributes) {
           let ownerAttrs = attrs.owner.attributes
           owner.nickname = ownerAttrs.nickname
           owner.avatar = ownerAttrs.avatar
@@ -92,8 +93,8 @@ export class ShopInfo extends ShopRecord {
         record.set('owner', owner)
 
         let containedTag = []
-        if(attrs.containedTag && attrs.containedTag.length) {
-          attrs.containedTag.forEach((item)=>{
+        if (attrs.containedTag && attrs.containedTag.length) {
+          attrs.containedTag.forEach((item)=> {
             let containedTagAttrs = item.attributes
             // console.log('attrs.containedTag.item=====', item)
             let tag = {
@@ -109,12 +110,12 @@ export class ShopInfo extends ShopRecord {
         record.set('containedTag', containedTag)
 
         let containedPromotions = []
-        if(attrs.containedPromotions && attrs.containedPromotions.length) {
+        if (attrs.containedPromotions && attrs.containedPromotions.length) {
           // console.log('attrs.containedPromotions=====', attrs.containedPromotions)
-          attrs.containedPromotions.forEach((promotion)=>{
+          attrs.containedPromotions.forEach((promotion)=> {
             // console.log('promotion==!!!!!!!!===', promotion)
             // console.log('promotion._hasData==!!!!!!!!===', promotion._hasData)
-            if(promotion._hasData) {
+            if (promotion._hasData) {
               let _targetShopLcObj = lcObj
               let promotionRecord = ShopPromotion.fromLeancloudObject(promotion, _targetShopLcObj)
               // console.log('promotionRecord==!!!!!!!!===', promotionRecord)
@@ -128,15 +129,15 @@ export class ShopInfo extends ShopRecord {
         record.set('geo', attrs.geo)
         // console.log('lcObj.userCurGeo===', lcObj.userCurGeo)
         // console.log('attrs.geo===', attrs.geo)
-        if(attrs.geo) {
+        if (attrs.geo) {
           let userCurGeo = locSelector.getGeopoint(store.getState())
           let curGeoPoint = new AV.GeoPoint(userCurGeo)
           let geo = new AV.GeoPoint(attrs.geo)
           let distance = geo.kilometersTo(curGeoPoint)
           let distanceUnit = 'km'
-          if(distance > 1) {
+          if (distance > 1) {
             distance = Number(distance).toFixed(1)
-          }else {
+          } else {
             distance = Number(distance * 1000).toFixed(0)
             distanceUnit = 'm'
           }
@@ -160,15 +161,16 @@ export class ShopInfo extends ShopRecord {
         record.set('tenant', attrs.tenant)
         record.set('createdAt', lcObj.createdAt.valueOf())
         record.set('updatedAt', lcObj.updatedAt.valueOf())
+        record.set('commentNum', attrs.commentNum)
       })
-    }catch(err) {
+    } catch (err) {
       console.log('shopModel.err=======', err)
       throw err
     }
   }
 
   static fromLeancloudApi(lcObj) {
-    try{
+    try {
       let shopRecord = new ShopRecord()
       return shopRecord.withMutations((record) => {
         record.set('id', lcObj.id)
@@ -181,9 +183,9 @@ export class ShopInfo extends ShopRecord {
         record.set('contactNumber2', lcObj.contactNumber2)
         // record.set('certification', lcObj.certification)
         record.set('status', lcObj.status && parseInt(lcObj.status))
-
+        record.set('commentNum', lcObj.commentNum)
         let targetShopCategory = {}
-        if(lcObj.targetShopCategory) {
+        if (lcObj.targetShopCategory) {
           let targetShopCategoryAttrs = lcObj.targetShopCategory
           targetShopCategory.imageSource = targetShopCategoryAttrs.imageSource
           targetShopCategory.shopCategoryId = targetShopCategoryAttrs.shopCategoryId
@@ -194,7 +196,7 @@ export class ShopInfo extends ShopRecord {
         record.set('targetShopCategory', targetShopCategory)
 
         let owner = {}
-        if(lcObj.owner) {
+        if (lcObj.owner) {
           let ownerAttrs = lcObj.owner
           owner.nickname = ownerAttrs.nickname
           owner.avatar = ownerAttrs.avatar
@@ -203,8 +205,8 @@ export class ShopInfo extends ShopRecord {
         record.set('owner', owner)
 
         let containedTag = []
-        if(lcObj.containedTag && lcObj.containedTag.length) {
-          lcObj.containedTag.forEach((containedTagAttrs)=>{
+        if (lcObj.containedTag && lcObj.containedTag.length) {
+          lcObj.containedTag.forEach((containedTagAttrs)=> {
             let tag = {
               id: containedTagAttrs.id,
               name: containedTagAttrs.name,
@@ -218,8 +220,8 @@ export class ShopInfo extends ShopRecord {
         record.set('containedTag', containedTag)
 
         let containedPromotions = []
-        if(lcObj.containedPromotions && lcObj.containedPromotions.length) {
-          lcObj.containedPromotions.forEach((promotion)=>{
+        if (lcObj.containedPromotions && lcObj.containedPromotions.length) {
+          lcObj.containedPromotions.forEach((promotion)=> {
             let promotionRecord = ShopPromotion.fromLeancloudApi(promotion)
             containedPromotions.push(promotionRecord)
           })
@@ -227,15 +229,15 @@ export class ShopInfo extends ShopRecord {
         record.set('containedPromotions', new List(containedPromotions))
 
         record.set('geo', lcObj.geo)
-        if(lcObj.geo) {
+        if (lcObj.geo) {
           let userCurGeo = locSelector.getGeopoint(store.getState())
           let curGeoPoint = new AV.GeoPoint(userCurGeo)
           let geo = new AV.GeoPoint(lcObj.geo)
           let distance = geo.kilometersTo(curGeoPoint)
           let distanceUnit = 'km'
-          if(distance > 1) {
+          if (distance > 1) {
             distance = Number(distance).toFixed(1)
-          }else {
+          } else {
             distance = Number(distance * 1000).toFixed(0)
             distanceUnit = 'm'
           }
@@ -260,7 +262,7 @@ export class ShopInfo extends ShopRecord {
         record.set('createdAt', lcObj.createdAt)
         record.set('updatedAt', lcObj.updatedAt)
       })
-    } catch(err) {
+    } catch (err) {
       console.log(err)
       throw err
     }
@@ -294,7 +296,7 @@ export class ShopPromotion extends ShopPromotionRecord {
   static fromLeancloudObject(lcObj, targetShopLcObj) {
     let shopPromotion = new ShopPromotionRecord()
     let attrs = lcObj.attributes
-    return shopPromotion.withMutations((record)=>{
+    return shopPromotion.withMutations((record)=> {
       // console.log('shopPromotion.lcObj=', lcObj)
       record.set('id', lcObj.id)
       record.set('coverUrl', attrs.coverUrl)
@@ -312,37 +314,37 @@ export class ShopPromotion extends ShopPromotionRecord {
 
       let targetShop = {}
 
-      if(attrs.targetShop) {
+      if (attrs.targetShop) {
         let targetShopAttrs = attrs.targetShop.attributes
         targetShop.id = attrs.targetShop.id
-        if(targetShopLcObj) {
+        if (targetShopLcObj) {
           targetShopAttrs = targetShopLcObj.attributes
           targetShop.id = targetShopLcObj.id
         }
 
-        if(targetShopAttrs) {
+        if (targetShopAttrs) {
           targetShop.shopName = targetShopAttrs.shopName
           targetShop.geoDistrict = targetShopAttrs.geoDistrict
           targetShop.geo = targetShopAttrs.geo
-          if(targetShopAttrs.geo) {
+          if (targetShopAttrs.geo) {
             let userCurGeo = locSelector.getGeopoint(store.getState())
             let curGeoPoint = new AV.GeoPoint(userCurGeo)
             let shopGeoPoint = new AV.GeoPoint(targetShopAttrs.geo)
             let distance = shopGeoPoint.kilometersTo(curGeoPoint)
             let distanceUnit = 'km'
-            if(distance > 1) {
+            if (distance > 1) {
               distance = Number(distance).toFixed(1)
-            }else {
+            } else {
               distance = Number(distance * 1000).toFixed(0)
               distanceUnit = 'm'
             }
             targetShop.distance = distance
             targetShop.distanceUnit = distanceUnit
           }
-    
+
           // console.log('targetShopAttrs----------->>>>>>', targetShopAttrs)
           let targetShopOwner = targetShopAttrs.owner
-          if(targetShopOwner) {
+          if (targetShopOwner) {
             targetShop.owner = {
               id: targetShopOwner.id,
               ...targetShopOwner.attributes
@@ -350,7 +352,7 @@ export class ShopPromotion extends ShopPromotionRecord {
           }
         }
       }
-      
+
       // console.log('targetShop------******----->>>>>>', targetShop)
       record.set('targetShop', targetShop)
 
@@ -387,9 +389,9 @@ export class ShopPromotion extends ShopPromotionRecord {
       if (shopGeoPoint) {
         let distance = shopGeoPoint.kilometersTo(curGeoPoint)
         let distanceUnit = 'km'
-        if(distance > 1) {
+        if (distance > 1) {
           distance = Number(distance).toFixed(1)
-        }else {
+        } else {
           distance = Number(distance * 1000).toFixed(0)
           distanceUnit = 'm'
         }
@@ -422,7 +424,7 @@ export class ShopAnnouncement extends ShopAnnouncementRecord {
   static fromLeancloudObject(lcObj) {
     let shopAnnouncement = new ShopAnnouncementRecord()
     let attrs = lcObj.attributes
-    return shopAnnouncement.withMutations((record)=>{
+    return shopAnnouncement.withMutations((record)=> {
       // console.log('ShopAnnouncement.lcObj=', lcObj)
       record.set('id', lcObj.id)
       record.set('content', attrs.content)
@@ -447,20 +449,20 @@ export const ShopCommentRecord = Record({
   id: undefined, //店铺评论id
   content: '', //评论内容
   blueprints: [], //晒图
-  parentCommentContent : undefined,
-  parentCommentUserName : undefined,
-  parentCommentNickname : undefined,
-  parentCommentId : undefined,
-  replyCommentContent : undefined,
-  replyCommentUserName : undefined,
-  replyCommentNickname : undefined,
-  replyCommentId : undefined,
-  upCount : undefined,
-  authorUsername : undefined,
-  authorNickname : undefined,
-  commentCount : undefined,
-  authorId : undefined,
-  authorAvatar : undefined,
+  parentCommentContent: undefined,
+  parentCommentUserName: undefined,
+  parentCommentNickname: undefined,
+  parentCommentId: undefined,
+  replyCommentContent: undefined,
+  replyCommentUserName: undefined,
+  replyCommentNickname: undefined,
+  replyCommentId: undefined,
+  upCount: undefined,
+  authorUsername: undefined,
+  authorNickname: undefined,
+  commentCount: undefined,
+  authorId: undefined,
+  authorAvatar: undefined,
   shopId: undefined,
   containedReply: [], //回复列表
   containedUps: [], //点赞列表
@@ -478,7 +480,7 @@ export class ShopComment extends ShopCommentRecord {
   static fromLeancloudObject(lcObj) {
     let shopComment = new ShopCommentRecord()
     let attrs = lcObj.attributes
-    return shopComment.withMutations((record)=>{
+    return shopComment.withMutations((record)=> {
       // console.log('shopComment.lcObj=', lcObj)
       record.set('id', lcObj.id)
       record.set('content', attrs.content)
@@ -487,14 +489,14 @@ export class ShopComment extends ShopCommentRecord {
 
       let targetShop = {}
       let targetShopAttrs = attrs.targetShop.attributes
-      if(targetShopAttrs) {
+      if (targetShopAttrs) {
         targetShop.shopName = targetShopAttrs.shopName
       }
       record.set('targetShop', targetShop)
 
       let user = {}
       let userAttrs = attrs.user.attributes
-      if(user) {
+      if (user) {
         user.id = attrs.user.id
         user.nickname = userAttrs.nickname
         user.avatar = userAttrs.avatar
@@ -507,10 +509,10 @@ export class ShopComment extends ShopCommentRecord {
       record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
   }
-  
+
   static fromLeancloudJson(lcJson) {
     let shopComment = new ShopCommentRecord()
-    return shopComment.withMutations((record)=>{
+    return shopComment.withMutations((record)=> {
       record.set('id', lcJson.id)
       record.set('content', lcJson.content)
       record.set('blueprints', lcJson.blueprints)
@@ -529,7 +531,7 @@ export class ShopComment extends ShopCommentRecord {
 
   static fromLeancloudApi(lcJson) {
     let shopComment = new ShopCommentRecord()
-    return shopComment.withMutations((record)=>{
+    return shopComment.withMutations((record)=> {
       record.set('id', lcJson.commentId)
       record.set('shopId', lcJson.shopId)
       record.set('content', lcJson.content)
@@ -577,7 +579,7 @@ export const ShopCommentUp4CloudRecord = Record({
 export class ShopCommentUp4Cloud extends ShopCommentUp4CloudRecord {
   static fromLeancloudJson(lcJson) {
     let ShopCommentUp4Cloud = new ShopCommentUp4CloudRecord()
-    return ShopCommentUp4Cloud.withMutations((record)=>{
+    return ShopCommentUp4Cloud.withMutations((record)=> {
       record.set('id', lcJson.id)
       record.set('status', lcJson.status)
       record.set('user', lcJson.user)
@@ -624,7 +626,7 @@ export class Up extends UpRecord {
   static fromLeancloudApi(lcObj) {
     let up = new UpRecord()
     return up.withMutations((record)=> {
-      for(let key in lcObj) {
+      for (let key in lcObj) {
         record.set(key, lcObj[key])
       }
     })
@@ -685,7 +687,7 @@ export class ShopCommentUp extends ShopCommentUpRecord {
   static fromLeancloudObject(lcObj) {
     let shopCommentUp = new ShopCommentUp()
     let attrs = lcObj.attributes
-    return shopCommentUp.withMutations((record)=>{
+    return shopCommentUp.withMutations((record)=> {
       record.set('id', lcObj.id)
       record.set('status', attrs.status)
 
@@ -715,7 +717,7 @@ export class ShopTag extends ShopTagRecord {
   static fromLeancloudObject(lcObj) {
     let shopTag = new ShopTag()
     let attrs = lcObj.attributes
-    return shopTag.withMutations((record)=>{
+    return shopTag.withMutations((record)=> {
       record.set('id', lcObj.id)
       record.set('name', attrs.name)
       record.set('createdDate', numberUtils.formatLeancloudTime(lcObj.createdAt, 'YYYY-MM-DD'))
@@ -807,7 +809,7 @@ export const ShopGoodPromotionRecord = Record({
   updatedAt: undefined,
   distance: undefined,
   distanceUnit: undefined,
-  goodName:undefined,
+  goodName: undefined,
   startDate: undefined,
   endDate: undefined,
 })
@@ -818,8 +820,8 @@ export class ShopGoodPromotion extends ShopGoodPromotionRecord {
     return shopGoodPromotion.withMutations((record) => {
       record.set('id', lcObj.id)
       record.set('coverPhoto', lcObj.coverPhoto)
-      record.set('startDate', numberUtils.formatLeancloudTime(new Date(lcObj.startDate),'YYYY-MM-DD HH:mm'))
-      record.set('endDate', numberUtils.formatLeancloudTime(new Date(lcObj.endDate),'YYYY-MM-DD HH:mm'))
+      record.set('startDate', numberUtils.formatLeancloudTime(new Date(lcObj.startDate), 'YYYY-MM-DD HH:mm'))
+      record.set('endDate', numberUtils.formatLeancloudTime(new Date(lcObj.endDate), 'YYYY-MM-DD HH:mm'))
       record.set('typeId', lcObj.typeId)
       record.set('type', lcObj.type)
       record.set('goodId', lcObj.goodId)
@@ -827,7 +829,7 @@ export class ShopGoodPromotion extends ShopGoodPromotionRecord {
       record.set('originalPrice', lcObj.originalPrice)
       record.set('promotionPrice', lcObj.promotionPrice)
       record.set('price', lcObj.price)
-      record.set('album', lcObj.album&&lcObj.album.length?new List(lcObj.album):[])
+      record.set('album', lcObj.album && lcObj.album.length ? new List(lcObj.album) : [])
       record.set('detail', lcObj.detail)
       record.set('goodStatus', lcObj.goodStatus)
       record.set('goodName', lcObj.goodName)
@@ -839,21 +841,21 @@ export class ShopGoodPromotion extends ShopGoodPromotionRecord {
       record.set('shopDistrict', lcObj.shopDistrict)
       record.set('createdAt', lcObj.createdAt)
       record.set('updatedAt', lcObj.updatedAt)
-        if(lcObj.geo) {
-          let userCurGeo = locSelector.getGeopoint(store.getState())
-          let curGeoPoint = new AV.GeoPoint(userCurGeo)
-          let shopGeoPoint = new AV.GeoPoint(lcObj.geo)
-          let distance = shopGeoPoint.kilometersTo(curGeoPoint)
-          let distanceUnit = 'km'
-          if(distance > 1) {
-            distance = Number(distance).toFixed(1)
-          }else {
-            distance = Number(distance * 1000).toFixed(0)
-            distanceUnit = 'm'
-          }
-          record.set('distance', distance)
-          record.set('distanceUnit',distanceUnit)
+      if (lcObj.geo) {
+        let userCurGeo = locSelector.getGeopoint(store.getState())
+        let curGeoPoint = new AV.GeoPoint(userCurGeo)
+        let shopGeoPoint = new AV.GeoPoint(lcObj.geo)
+        let distance = shopGeoPoint.kilometersTo(curGeoPoint)
+        let distanceUnit = 'km'
+        if (distance > 1) {
+          distance = Number(distance).toFixed(1)
+        } else {
+          distance = Number(distance * 1000).toFixed(0)
+          distanceUnit = 'm'
         }
+        record.set('distance', distance)
+        record.set('distanceUnit', distanceUnit)
+      }
 
     })
   }
@@ -900,9 +902,9 @@ export const Shop = Record({
   shopList: List(),
   localShopList: List(),
   shopPromotionList: List(),
-  allShopComments:Map(),
-  shopCommentsForComment:Map(),
-  shopCommentsForShop:Map(),
+  allShopComments: Map(),
+  shopCommentsForComment: Map(),
+  shopCommentsForShop: Map(),
   myShopExpriredPromotionList: Map(),
   fetchShopListArrivedLastPage: false,
   shopAnnouncements: Map(),
@@ -911,7 +913,7 @@ export const Shop = Record({
   shopCommentsTotalCounts: Map(),
   userUpShopsInfo: Map(),
   shopTagList: List(),
-  userOwnedShopInfo:Map(),
+  userOwnedShopInfo: Map(),
   shopFollowers: Map(),
   shopFollowersTotalCount: Map(),
   similarShops: Map(),

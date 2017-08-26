@@ -37,16 +37,17 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import Symbol from 'es6-symbol'
-import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import {fetchShopAnnouncements, } from '../../../action/shopAction'
+import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {fetchShopAnnouncements,} from '../../../action/shopAction'
 import MultilineText from '../../common/Input/MultilineText'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import MyShopGoodListForChoose from './MyShopGoodListForChoose'
-import {selectUserOwnedShopInfo,
+import {
+  selectUserOwnedShopInfo,
   selectShopFollowers,
   selectShopFollowersTotalCount,
   selectSimilarShopList,
-  selectShopDetail,selectShopList,
+  selectShopDetail, selectShopList,
   selectGuessYouLikeShopList,
   selectLatestShopAnnouncemment,
   selectUserIsFollowShop,
@@ -56,7 +57,7 @@ import {selectUserOwnedShopInfo,
   selectGoodsList
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
-import {getInputData,getInputFormData} from '../../../selector/inputFormSelector'
+import {getInputData, getInputFormData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -83,41 +84,40 @@ class PublishShopPromotionChooseGood extends Component {
 
     this.state = {
       shouldUploadImage: false,
-      chooseGoodId:undefined,
+      chooseGoodId: undefined,
       hideBottomView: false,
-      goodPrice:0
+      goodPrice: 0
     }
     this.replyInput = null
 
   }
 
   componentWillMount() {
-    InteractionManager.runAfterInteractions(()=>{
+    InteractionManager.runAfterInteractions(()=> {
 
     })
   }
 
 
-
-  unChooseGood(goodInfo){
+  unChooseGood(goodInfo) {
     // this.setState({
     //   chooseGoodId: undefined
     // })
-     chooseGoodInput.data=undefined
+    chooseGoodInput.data = undefined
 
     this.props.inputFormUpdate(chooseGoodInput)
     // this.props.inputFormUpdate()
-    console.log('I  UN CHOOOSE=========?>',chooseGoodInput.data)
+    console.log('I  UN CHOOOSE=========?>', chooseGoodInput.data)
   }
 
-  chooseGood(goodInfo){
-    this.setState({goodPrice:goodInfo.price})
-    chooseGoodInput.data= {text: goodInfo.id}
+  chooseGood(goodInfo) {
+    this.setState({goodPrice: goodInfo.price})
+    chooseGoodInput.data = {text: goodInfo.id}
     this.props.inputFormUpdate(chooseGoodInput)
     // this.setState({
     //   chooseGoodId: goodInfo.id
     // })
-    console.log('I   CHOOOSE=========?>',chooseGoodInput.data)
+    console.log('I   CHOOOSE=========?>', chooseGoodInput.data)
     this.openModel()
   }
 
@@ -133,7 +133,8 @@ class PublishShopPromotionChooseGood extends Component {
       Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
     }
   }
-  componentWillUnmount(){
+
+  componentWillUnmount() {
     if (Platform.OS == 'ios') {
       Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
       Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
@@ -158,8 +159,8 @@ class PublishShopPromotionChooseGood extends Component {
     Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_GOOD()
   }
 
-  renderNoGood(){
-    return(
+  renderNoGood() {
+    return (
       <View>
         <Text style={styles.noGoodText}>暂无商品</Text>
         <View style={styles.addGoodBox}>
@@ -172,9 +173,13 @@ class PublishShopPromotionChooseGood extends Component {
     )
   }
 
-  renderGoodList(){
-    return(
-            <MyShopGoodListForChoose id={this.props.shopId} chooseGoodId={this.props.chooseGoodId} chooseGood={(goodInfo)=>{this.chooseGood(goodInfo)}} unChooseGood={(goodInfo)=>{this.unChooseGood(goodInfo)}}/>
+  renderGoodList() {
+    return (
+      <MyShopGoodListForChoose id={this.props.shopId} chooseGoodId={this.props.chooseGoodId} chooseGood={(goodInfo)=> {
+        this.chooseGood(goodInfo)
+      }} unChooseGood={(goodInfo)=> {
+        this.unChooseGood(goodInfo)
+      }}/>
     )
   }
 
@@ -185,7 +190,7 @@ class PublishShopPromotionChooseGood extends Component {
     else {
       this.setState({
         hideBottomView: true
-      }, ()=>{
+      }, ()=> {
         // console.log('openModel===', this.replyInput)
         if (this.replyInput) {
           this.replyInput.focus()
@@ -205,15 +210,15 @@ class PublishShopPromotionChooseGood extends Component {
     })
   }
 
-  renderGoods(){
-    return this.props.goodList&&this.props.goodList.length?this.renderGoodList():this.renderNoGood()
+  renderGoods() {
+    return this.props.goodList && this.props.goodList.length ? this.renderGoodList() : this.renderNoGood()
     // return this.renderNoGood()
   }
 
-  sendReply(content){
-    if(this.props.chooseGoodId&&this.props.chooseGoodId!=''){
+  sendReply(content) {
+    if (this.props.chooseGoodId && this.props.chooseGoodId != '') {
       this.setState({hideBottomView: false})
-      promotionPriceInput.data= {text: content}
+      promotionPriceInput.data = {text: content}
       this.props.inputFormUpdate(promotionPriceInput)
       Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_TYPE()
     }
@@ -221,9 +226,7 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   render() {
-    let textInputProps={
-
-    }
+    let textInputProps = {}
     return (
       <View style={styles.container}>
         <Header
@@ -240,7 +243,11 @@ class PublishShopPromotionChooseGood extends Component {
             {this.renderGoods()}
           </KeyboardAwareScrollView>
           {this.state.hideBottomView
-            ? <TouchableOpacity style={{position:'absolute',left:0,right:0,bottom:0,top:0,backgroundColor:'rgba(0,0,0,0.5)'}} onPress={()=>{dismissKeyboard()}}>
+            ? <TouchableOpacity
+            style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}
+            onPress={()=> {
+              dismissKeyboard()
+            }}>
             <View style={{flex: 1}}/>
           </TouchableOpacity>
             : null
@@ -276,12 +283,12 @@ const mapStateToProps = (state, ownProps) => {
   let goodList = []
   const isLogin = isUserLogined(state)
 
-  if(userOwnedShopInfo.id) {
+  if (userOwnedShopInfo.id) {
     goodList = selectGoodsList(state, userOwnedShopInfo.id, 1)
   }
-  let chooseGoodId = getInputData(state,chooseGoodInput.formKey,chooseGoodInput.stateKey)
-  let priceInput = getInputData(state,promotionPriceInput.formKey,promotionPriceInput.stateKey)
-  let formData = getInputFormData(state,shopPromotionForm)
+  let chooseGoodId = getInputData(state, chooseGoodInput.formKey, chooseGoodInput.stateKey)
+  let priceInput = getInputData(state, promotionPriceInput.formKey, promotionPriceInput.stateKey)
+  let formData = getInputFormData(state, shopPromotionForm)
 
   return {
     goodList: goodList,
@@ -327,7 +334,7 @@ const styles = StyleSheet.create({
   body: {
     marginTop: normalizeH(64),
     flex: 1,
-    paddingLeft:normalizeW(15),
+    paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15)
   },
   scrollViewStyle: {
@@ -344,25 +351,25 @@ const styles = StyleSheet.create({
     fontSize: em(12),
     color: '#BEBEBE'
   },
-  showTextBox:{
-    paddingTop:normalizeH(15),
+  showTextBox: {
+    paddingTop: normalizeH(15),
     paddingBottom: normalizeH(15)
   },
-  showText:{
-    fontSize:em(15),
-    color:'#5A5A5A'
+  showText: {
+    fontSize: em(15),
+    color: '#5A5A5A'
   },
-  noGoodText:{
+  noGoodText: {
     position: 'absolute',
     left: normalizeW(91),
     top: normalizeH(52),
-    fontFamily:'.PingFangSC-Semibold',
+    fontFamily: '.PingFangSC-Semibold',
     fontSize: em(40),
-    color:'rgba(255,120,25,0.30)',
-    letterSpacing: em(0,48),
+    color: 'rgba(255,120,25,0.30)',
+    letterSpacing: em(0, 48),
     zIndex: 10,
   },
-  addGoodBox:{
+  addGoodBox: {
     position: 'absolute',
     left: normalizeW(108),
     top: normalizeH(128),
@@ -370,8 +377,8 @@ const styles = StyleSheet.create({
     zIndex: 10,
     alignItems: 'center'
   },
-  addGoodText:{
-    fontFamily:'.PingFangSC-Medium',
+  addGoodText: {
+    fontFamily: '.PingFangSC-Medium',
     fontSize: em(15),
     color: '#FF7819',
     letterSpacing: em(0.61),

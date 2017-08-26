@@ -341,7 +341,7 @@ export function fetchPublishTopic(payload, formData) {
       // if (!leanUris || leanUris == '') {
       //   throw new Error('话题发布失败，请重新发布！')
       // }
-      if(leanUris.length!=0){
+      if (leanUris.length != 0) {
         if (formData.topicContent && formData.topicContent.text.length &&
           leanUris && leanUris.length) {
           let contentImgs = leanUris.concat([]).reverse()
@@ -402,46 +402,46 @@ export function fetchUpdateTopic(payload, formData) {
       }
       formData = getInputFormData(getState(), payload.formKey)
     }
-      ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
-        // if (!leanUris || leanUris == '') {
-        //   throw new Error('话题发布失败，请重新发布！')
-        // }
-        if(leanUris.length!=0){
-          if (formData.topicContent && formData.topicContent.text.length &&
-            leanUris && leanUris.length) {
-            let contentImgs = leanUris.concat([]).reverse()
-            formData.topicContent.text.forEach((value) => {
-              if (value.type == 'COMP_IMG' && value.url)
-                value.url = contentImgs.pop()
-            })
-          }
+    ImageUtil.batchUploadImgs2(payload.images).then((leanUris) => {
+      // if (!leanUris || leanUris == '') {
+      //   throw new Error('话题发布失败，请重新发布！')
+      // }
+      if (leanUris.length != 0) {
+        if (formData.topicContent && formData.topicContent.text.length &&
+          leanUris && leanUris.length) {
+          let contentImgs = leanUris.concat([]).reverse()
+          formData.topicContent.text.forEach((value) => {
+            if (value.type == 'COMP_IMG' && value.url)
+              value.url = contentImgs.pop()
+          })
         }
-        let updateTopicPayload = {
-          title: trim(formData.topicName.text),
-          content: JSON.stringify(formData.topicContent.text),
-          abstract: trim(formData.topicContent.abstract),
-          imgGroup: leanUris,
-          categoryId: payload.categoryId,
-          topicId: payload.topicId,
+      }
+      let updateTopicPayload = {
+        title: trim(formData.topicName.text),
+        content: JSON.stringify(formData.topicContent.text),
+        abstract: trim(formData.topicContent.abstract),
+        imgGroup: leanUris,
+        categoryId: payload.categoryId,
+        topicId: payload.topicId,
+      }
+      return lcTopics.updateTopic(updateTopicPayload).then((result) => {
+        if (payload.success) {
+          payload.success()
         }
-        return lcTopics.updateTopic(updateTopicPayload).then((result) => {
-          if (payload.success) {
-            payload.success()
-          }
-          let updateAction = createAction(topicActionTypes.FETCH_UPDATE_TOPIC_SUCCESS)
-          dispatch(updateAction({topic: result}))
-        }).catch((error) => {
-          if (payload.error) {
-            payload.error(error)
-          }
-        })
-      }, (err)=> {
-        throw err
+        let updateAction = createAction(topicActionTypes.FETCH_UPDATE_TOPIC_SUCCESS)
+        dispatch(updateAction({topic: result}))
       }).catch((error) => {
         if (payload.error) {
           payload.error(error)
         }
       })
+    }, (err)=> {
+      throw err
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
 
   }
 }

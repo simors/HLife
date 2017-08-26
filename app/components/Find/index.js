@@ -189,6 +189,7 @@ export class Find extends Component {
         }
       }
     }
+
     if (this.state.selectedTab == 0) {
       payload = {
         type: "pickedTopics",

@@ -108,18 +108,18 @@ export function getShopAnnouncement(payload) {
   let relation = shop.relation('containedAnnouncements')
   let query = relation.query()
   // console.log('getShopAnnouncement.shopId=====', shopId)
-  if(!isRefresh && lastCreatedAt) { //分页查询
+  if (!isRefresh && lastCreatedAt) { //分页查询
     query.lessThan('createdAt', new Date(lastCreatedAt))
   }
   query.addDescending('createdAt')
   query.limit(5)
-  return query.find().then(function(results) {
+  return query.find().then(function (results) {
     // console.log('getShopAnnouncement.results=====', results)
-    results.forEach((result)=>{
+    results.forEach((result)=> {
       shopAnnouncements.push(ShopAnnouncement.fromLeancloudObject(result))
     })
     return new List(shopAnnouncements)
-  }, function(err) {
+  }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -128,9 +128,9 @@ export function getShopAnnouncement(payload) {
 export function deleteShopAnnouncement(payload) {
   let shopAnnouncementId = payload.shopAnnouncementId
   let shopAnnouncement = AV.Object.createWithoutData('ShopAnnouncement', shopAnnouncementId)
-  return shopAnnouncement.destroy().then((success)=>{
+  return shopAnnouncement.destroy().then((success)=> {
     return success
-  }, function(err) {
+  }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -144,13 +144,13 @@ export function fetchUserFollowShops(payload) {
   let currentUser = AV.User.current()
   userId = currentUser.id
 
-  if(payload) {
+  if (payload) {
     userId = payload.userId || currentUser.id
-    if(!payload.isRefresh && payload.lastCreatedAt) {
+    if (!payload.isRefresh && payload.lastCreatedAt) {
       isRefresh = false
       lastCreatedAt = payload.lastCreatedAt
     }
-  }else {
+  } else {
     userId = currentUser.id
   }
 
@@ -159,11 +159,11 @@ export function fetchUserFollowShops(payload) {
   // query.equalTo('user', user)
   let query = new AV.Query('ShopFollower')
   query.equalTo('follower', user)
-  if(!isRefresh) { //分页查询
-    if(lastCreatedAt) {
+  if (!isRefresh) { //分页查询
+    if (lastCreatedAt) {
       query.lessThan('createdAt', new Date(lastCreatedAt))
-    }else {
-      return new Promise((resolve, reject)=>{
+    } else {
+      return new Promise((resolve, reject)=> {
         resolve({
           userId: userId,
           userFollowedShops: new List([])
@@ -174,18 +174,18 @@ export function fetchUserFollowShops(payload) {
   query.addDescending('createdAt')
   query.limit(5)
   // query.include(['followee','followee.targetShopCategory', 'followee.owner', 'followee.containedTag'])
-  query.include(['shop','shop.targetShopCategory', 'shop.owner', 'shop.containedTag', 'shop.containedPromotions'])
+  query.include(['shop', 'shop.targetShopCategory', 'shop.owner', 'shop.containedTag', 'shop.containedPromotions'])
   let userFollowedShops = []
-  return query.find().then(function(results) {
+  return query.find().then(function (results) {
     // console.log('fetchUserFollowShops.results=====', results)
-    results.forEach((result)=>{
+    results.forEach((result)=> {
       userFollowedShops.push(ShopInfo.fromLeancloudObject(result, 'shop'))
     })
     return {
       userId: userId,
       userFollowedShops: new List(userFollowedShops)
     }
-  }, function(err) {
+  }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -200,9 +200,9 @@ export function isFollowedShop(payload) {
   query.equalTo('follower', currentUser)
   query.equalTo('shop', shop)
 
-  return query.first().then((result)=>{
+  return query.first().then((result)=> {
     // console.log('isFollowedShop.result===', result)
-    if(result && result.id) {
+    if (result && result.id) {
       return {
         shopFollowerId: result.id,
         shopId: shopId,
@@ -223,8 +223,8 @@ export function isFollowedShop(payload) {
 
 export function followShop(payload) {
 
-  return isFollowedShop(payload).then((result) =>{
-    if(result && '10001' == result.code) {
+  return isFollowedShop(payload).then((result) => {
+    if (result && '10001' == result.code) {
       return result
     }
 
@@ -242,14 +242,14 @@ export function followShop(payload) {
     // shopFollowee.set('user', currentUser)
     // shopFollowee.set('followee', shop)
 
-    return shopFollower.save().then(function(shopFollowerResult){
+    return shopFollower.save().then(function (shopFollowerResult) {
       //return shopFollowee.save()
       return shopFollowerResult
-    }).then(()=>{
+    }).then(()=> {
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
       // console.log('followShop.shopDetail==', shopDetail)
       // console.log('followShop.currentUser==', currentUser)
-      if(currentUser.id != shopDetail.owner.id) {
+      if (currentUser.id != shopDetail.owner.id) {
         AVUtils.pushByUserList([shopDetail.owner.id], {
           alert: '有新的用户关注了您的店铺,立即查看',
         })
@@ -259,11 +259,11 @@ export function followShop(payload) {
         code: '10002',
         message: '关注成功'
       }
-    }).catch((err) =>{
+    }).catch((err) => {
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
-  }).catch((err) =>{
+  }).catch((err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -271,9 +271,9 @@ export function followShop(payload) {
 
 export function unFollowShop(payload) {
 
-  return isFollowedShop(payload).then((result) =>{
+  return isFollowedShop(payload).then((result) => {
     // console.log('isFollowedShop.result===', result)
-    if(result && '10000' == result.code) {
+    if (result && '10000' == result.code) {
       return result
     }
 
@@ -286,10 +286,10 @@ export function unFollowShop(payload) {
     shopFollower.set('follower', currentUser)
     shopFollower.set('shop', shop)
 
-    return shopFollower.destroy().then(function(shopFollowerResult){
+    return shopFollower.destroy().then(function (shopFollowerResult) {
       // console.log('shopFollowerResult===', shopFollowerResult)
       return shopFollowerResult
-    }).then(()=>{
+    }).then(()=> {
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
       // console.log('followShop.shopDetail==', shopDetail)
       // if(currentUser.id != shopDetail.owner.id) {
@@ -302,12 +302,12 @@ export function unFollowShop(payload) {
         code: '10003',
         message: '取消关注成功'
       }
-    }).catch((err) =>{
+    }).catch((err) => {
       // console.log('fasdfads===>>>>', err)
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })
-  }).catch((err) =>{
+  }).catch((err) => {
     // console.log('zzzzzzz=====', err)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
@@ -332,12 +332,12 @@ export function submitShopComment(payload) {
     commentId: commentId
   }
 
-  return AV.Cloud.run('pubulishShopComment',{payload: params}).then((results) => {
+  return AV.Cloud.run('pubulishShopComment', {payload: params}).then((results) => {
     // console.log('submitShopComment.results=', results)
     let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
     let activeUser = authSelector.activeUserInfo(store.getState())
     // console.log('followShop.shopDetail==', shopDetail)
-    if(activeUser.id != shopDetail.owner.id) {
+    if (activeUser.id != shopDetail.owner.id) {
       AVUtils.pushByUserList([shopDetail.owner.id], {
         alert: `${activeUser.nickname}评论了您的店铺,立即查看`,
         sceneName: 'SHOP_COMMENT_LIST',
@@ -359,7 +359,7 @@ export function fetchShopCommentList(payload) {
   let query = new AV.Query('ShopComment')
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
-  if(!isRefresh && lastCreatedAt) { //分页查询
+  if (!isRefresh && lastCreatedAt) { //分页查询
     query.lessThan('createdAt', new Date(lastCreatedAt))
   }
 
@@ -373,10 +373,10 @@ export function fetchShopCommentList(payload) {
 
   query.addDescending('createdAt')
   query.limit(5) // 最多返回 5 条结果
-  return query.find().then((results)=>{
+  return query.find().then((results)=> {
     // console.log('fetchShopCommentList.results=', results)
     let shopComment = []
-    results.forEach((result)=>{
+    results.forEach((result)=> {
       shopComment.push(ShopComment.fromLeancloudObject(result))
     })
     return new List(shopComment)
@@ -388,9 +388,9 @@ export function fetchShopCommentList(payload) {
 
 
 export function fetchShopCommentListByCloudFunc(payload) {
-  return AV.Cloud.run('hLifeFetchShopCommentList', payload).then((results)=>{
+  return AV.Cloud.run('hLifeFetchShopCommentList', payload).then((results)=> {
     let shopComments = []
-    results.forEach((result)=>{
+    results.forEach((result)=> {
       shopComments.push(ShopComment.fromLeancloudJson(result))
     })
     return new List(shopComments)
@@ -409,7 +409,7 @@ export function fetchShopCommentTotalCount(payload) {
   //执行内嵌查询
   query.matchesQuery('targetShop', innerQuery)
   query.equalTo('status', 1)
-  return query.count().then((results)=>{
+  return query.count().then((results)=> {
     return results
   }, function (err) {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -421,15 +421,15 @@ export function fetchUserUpShopInfo(payload) {
   let shopId = payload.id
   let upType = 'shop'
   let currentUser = AV.User.current()
-  
+
   let query = new AV.Query('Up')
   query.equalTo('targetId', shopId)
   query.equalTo('upType', upType)
   query.equalTo('user', currentUser)
   query.include('user')
-  return query.first().then((result) =>{
+  return query.first().then((result) => {
     let userUpShopInfo = {}
-    if(result && result.attributes) {
+    if (result && result.attributes) {
       userUpShopInfo = Up.fromLeancloudObject(result)
     }
     return userUpShopInfo
@@ -445,14 +445,14 @@ export function userUpShop(payload) {
   let currentUser = AV.User.current()
 
   return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
-    if(!userUpShopInfo || !userUpShopInfo.id) {
+    if (!userUpShopInfo || !userUpShopInfo.id) {
       let Up = AV.Object.extend('Up')
       let up = new Up()
       up.set('targetId', shopId)
       up.set('upType', upType)
       up.set('user', currentUser)
       return up.save()
-    }else if(userUpShopInfo.id && !userUpShopInfo.status) {
+    } else if (userUpShopInfo.id && !userUpShopInfo.status) {
       let up = AV.Object.createWithoutData('Up', userUpShopInfo.id)
       up.set('status', true)
       return up.save()
@@ -462,7 +462,7 @@ export function userUpShop(payload) {
       message: '您已经赞过该店铺了'
     }
   }).then((result) => {
-    if(result && '10007' == result.code) {
+    if (result && '10007' == result.code) {
       return result
     }
     let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
@@ -490,7 +490,7 @@ export function userUnUpShop(payload) {
   let shopId = payload.id
 
   return fetchUserUpShopInfo(payload).then((userUpShopInfo) => {
-    if(userUpShopInfo && userUpShopInfo.id) {
+    if (userUpShopInfo && userUpShopInfo.id) {
       let up = AV.Object.createWithoutData('Up', userUpShopInfo.id)
       up.set('status', false)
       return up.save()
@@ -500,7 +500,7 @@ export function userUnUpShop(payload) {
       message: '您还没有赞过该店铺'
     }
   }).then((result) => {
-    if(result && '10009' == result.code) {
+    if (result && '10009' == result.code) {
       return result
     }
     return {
@@ -521,11 +521,11 @@ export function fetchShopCommentUpedUserList(payload) {
   let query = new AV.Query('ShopCommentUp')
   query.equalTo('targetShopComment', targetShopComment)
   query.include(['user'])
-  return query.find().then((results) =>{
+  return query.find().then((results) => {
     let shopCommentUpedUserList = []
     // console.log('fetchShopCommentUpedUserList...results===========', results)
-    if(results && results.attributes && results.attributes.length) {
-      results.forEach((result)=>{
+    if (results && results.attributes && results.attributes.length) {
+      results.forEach((result)=> {
         shopCommentUpedUserList.push(ShopCommentUp.fromLeancloudObject(result))
       })
     }
@@ -537,10 +537,10 @@ export function fetchShopCommentUpedUserList(payload) {
 }
 
 export function fetchShopCommentUpedUserListByCloudFunc(payload) {
-  return AV.Cloud.run('hLifeFetchShopCommentUpedUserList', payload).then((results)=>{
+  return AV.Cloud.run('hLifeFetchShopCommentUpedUserList', payload).then((results)=> {
     // console.log('hLifeFetchShopCommentUpedUserList.results===', results)
     let shopCommentUpedUsers = []
-    results.forEach((result)=>{
+    results.forEach((result)=> {
       shopCommentUpedUsers.push(ShopCommentUp4Cloud.fromLeancloudJson(result))
     })
     // console.log('hLifeFetchShopCommentUpedUserList.shopCommentUpedUsers===', shopCommentUpedUsers)
@@ -554,7 +554,7 @@ export function fetchShopCommentUpedUserListByCloudFunc(payload) {
 }
 
 export function userUpShopComment(payload) {
-  console.log('hahahahah==>',payload)
+  console.log('hahahahah==>', payload)
   // let shopCommentUpId = payload.shopCommentUpId
   let shopCommentId = payload.shopCommentId
   let shopId = payload.shopId
@@ -564,14 +564,14 @@ export function userUpShopComment(payload) {
     userId: authSelector.activeUserId(store.getState()),
     shopCommentId: payload.shopCommentId
   }
-  return AV.Cloud.run('userUpShopComment',{payload: params}).then((result)=>{
+  return AV.Cloud.run('userUpShopComment', {payload: params}).then((result)=> {
     let shopComment = shopSelector.selectShopCommentInfo(store.getState(), shopId, shopCommentId)
     console.log('result.result==', result)
     let pushUserId = userId
-    if(pushUserId) {
+    if (pushUserId) {
       let activeUser = authSelector.activeUserInfo(store.getState())
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
-      if(activeUser.id != pushUserId) {
+      if (activeUser.id != pushUserId) {
         AVUtils.pushByUserList([pushUserId], {
           alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中点赞了您的评论,立即查看`,
           sceneName: 'SHOP_COMMENT_LIST',
@@ -583,7 +583,7 @@ export function userUpShopComment(payload) {
     }
     // console.log('successs====>',result)
     return result
-  }, (err)=>{
+  }, (err)=> {
     // console.log('err====>',err)
 
     throw err
@@ -597,19 +597,19 @@ export function userUnUpShopComment(payload) {
   let targetShopComment = AV.Object.createWithoutData('ShopComment', shopCommentId)
 
   let shopCommentUp = null
-  if(shopCommentUpId) {
+  if (shopCommentUpId) {
     shopCommentUp = AV.Object.createWithoutData('ShopCommentUp', shopCommentUpId)
     shopCommentUp.set('status', false)
-  }else {
+  } else {
     let ShopCommentUp = AV.Object.extend('ShopCommentUp')
     shopCommentUp = new ShopCommentUp()
     shopCommentUp.set('targetShopComment', targetShopComment)
     shopCommentUp.set('user', currentUser)
     shopCommentUp.set('status', false)
   }
-  return shopCommentUp.save().then((result)=>{
+  return shopCommentUp.save().then((result)=> {
     return result
-  }, (err)=>{
+  }, (err)=> {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })
@@ -627,7 +627,7 @@ export function reply(payload) {
   let shopCommentReply = new ShopCommentReply()
 
   shopCommentReply.set('content', replyContent)
-  if(replyId) {
+  if (replyId) {
     let parentReply = AV.Object.createWithoutData('ShopCommentReply', replyId)
     shopCommentReply.set('parentReply', parentReply)
   }
@@ -636,19 +636,19 @@ export function reply(payload) {
 
   return shopCommentReply.save().then((results) => {
     let pushUserId = ''
-    if(replyId) {
+    if (replyId) {
       let shopCommentReply = shopSelector.selectShopCommentReplyInfo(store.getState(), shopId, replyShopCommentId, replyId)
       pushUserId = shopCommentReply && shopCommentReply.user && shopCommentReply.user.id
-    }else {
+    } else {
       let shopComment = shopSelector.selectShopCommentInfo(store.getState(), shopId, replyShopCommentId)
       pushUserId = shopComment && shopComment.user && shopComment.user.id
     }
-    if(pushUserId) {
+    if (pushUserId) {
       let shopDetail = shopSelector.selectShopDetail(store.getState(), shopId)
       // console.log('reply.pushUserId==', pushUserId)
       let activeUser = authSelector.activeUserInfo(store.getState())
       // console.log('reply.activeUser==', activeUser)
-      if(activeUser.id != pushUserId) {
+      if (activeUser.id != pushUserId) {
         AVUtils.pushByUserList([pushUserId], {
           alert: `${activeUser.nickname}在${shopDetail.shopName}店铺中回复了您的评论,立即查看`,
           sceneName: 'SHOP_COMMENT_LIST',
@@ -674,11 +674,11 @@ export function fetchShopCommentReplyList(payload) {
   let query = new AV.Query('ShopCommentReply')
   query.equalTo('replyShopComment', replyShopComment)
 
-  return query.find().then((results)=>{
+  return query.find().then((results)=> {
     let replyList = []
     // console.log('fetchShopCommentReplyList...results===========', results)
-    if(results && results.length) {
-      results.forEach((result)=>{
+    if (results && results.length) {
+      results.forEach((result)=> {
         replyList.push(ShopCommentReply.fromLeancloudObject(result))
       })
     }
@@ -693,7 +693,7 @@ export function fetchShopCommentReplyList(payload) {
 export function fetchShopCommentReplyListByCloudFunc(payload) {
   let replyShopCommentId = payload.replyShopCommentId
   payload.shopCommentId = replyShopCommentId
-  return AV.Cloud.run('hLifeFetchShopCommentReplyList', payload).then((results)=>{
+  return AV.Cloud.run('hLifeFetchShopCommentReplyList', payload).then((results)=> {
     return results
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -703,11 +703,11 @@ export function fetchShopCommentReplyListByCloudFunc(payload) {
 
 export function fetchShopTags(payload) {
   let query = new AV.Query('ShopTag')
-  return query.find().then((results)=>{
+  return query.find().then((results)=> {
     // console.log('fetchShopTags.results===', results)
     let shopTags = []
-    if(results && results.length) {
-      results.forEach((result)=>{
+    if (results && results.length) {
+      results.forEach((result)=> {
         shopTags.push(ShopTag.fromLeancloudObject(result))
       })
     }
@@ -720,9 +720,9 @@ export function fetchShopTags(payload) {
 }
 
 export function unregistShop(payload) {
-  return AV.Cloud.run('hLifeUnregistShop', payload).then(result=>{
+  return AV.Cloud.run('hLifeUnregistShop', payload).then(result=> {
     return result
-  }, err=>{
+  }, err=> {
     throw err
   })
 }
@@ -731,9 +731,9 @@ export function fetchUserOwnedShopInfo(payload) {
   let query = new AV.Query('Shop')
   let user = null
   let userId = ''
-  if(payload && payload.userId) {
+  if (payload && payload.userId) {
     userId = payload.userId
-  }else {
+  } else {
     userId = authSelector.activeUserId(store.getState())
   }
   user = AV.Object.createWithoutData('_User', userId)
@@ -742,10 +742,10 @@ export function fetchUserOwnedShopInfo(payload) {
   //query.equalTo('status', 1)
   query.include(['owner', 'targetShopCategory', 'containedTag', 'containedPromotions'])
   // console.log('fetchUserOwnedShopInfo.query====', query)
-  return query.first().then((result)=>{
+  return query.first().then((result)=> {
     // console.log('fetchUserOwnedShopInfo.result===', result)
     let shopInfo = {}
-    if(result){
+    if (result) {
       shopInfo = ShopInfo.fromLeancloudObject(result)
     }
     // console.log('shopInfo=====', shopInfo)
@@ -768,8 +768,8 @@ export function fetchAllShopFollowerIds(payload) {
   return query.find().then((results)=> {
     // console.log('fetchShopFollowers.results===', results)
     let shopFollowerIds = []
-    if(results && results.length) {
-      results.forEach((result)=>{
+    if (results && results.length) {
+      results.forEach((result)=> {
         shopFollowerIds.push(result.attributes.follower.id)
       })
     }
@@ -793,9 +793,9 @@ export function fetchShopFollowers(payload) {
   // console.log('hLifeFetchShopFollowers===params=====', params)
   return AV.Cloud.run('hLifeFetchShopFollowers', params).then((result) => {
     // console.log('hLifeFetchShopFollowers===result===', result)
-    if(result.code == 0) {
+    if (result.code == 0) {
       return new List(result.shopFollowers)
-    }else{
+    } else {
       throw result
     }
   }, (err) => {
@@ -810,7 +810,7 @@ export function fetchShopFollowersTotalCount(payload) {
   let query = new AV.Query('ShopFollower')
   let shop = AV.Object.createWithoutData('Shop', shopId)
   query.equalTo('shop', shop)
-  return query.count().then((results)=>{
+  return query.count().then((results)=> {
     // console.log('fetchShopFollowersTotalCount.results===', results)
     return results
   }, function (err) {
@@ -834,13 +834,13 @@ export function fetchSimilarShopList(payload) {
   similarQuery.limit(3)
   similarQuery.equalTo('payment', 1)
   similarQuery.exists('coverUrl')
-  
+
   // notQuery.notEqualTo('objectId', shopId)
   // let andQuery = AV.Query.and(similarQuery, notQuery)
   // andQuery.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   // andQuery.addDescending('createdAt')
   // andQuery.limit(3)
-  
+
   return similarQuery.find().then(function (results) {
     console.log('fetchSimilarShopList.results=', results)
     let shopList = []
@@ -860,13 +860,13 @@ export function fetchGuessYouLikeShopList(payload) {
   query.notEqualTo('objectId', id)
   query.include(['targetShopCategory', 'owner', 'containedTag', 'containedPromotions'])
   let random = Math.random() * 10
-  if(random <= 2) {
+  if (random <= 2) {
     query.addDescending('createdAt')
-  }else if(random <= 5) {
+  } else if (random <= 5) {
     query.addAscending('createdAt')
-  }else if(random <= 7) {
+  } else if (random <= 7) {
     query.addDescending('pv')
-  }else {
+  } else {
     query.addDescending('score')
   }
   // query.addDescending('score')
@@ -903,17 +903,17 @@ export function submitShopPromotion(payload) {
   let promotionDetailInfo = payload.promotionDetailInfo
   let geo = payload.geo
 
-  if(Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
+  if (Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
     promotionDetailInfo = JSON.stringify(promotionDetailInfo)
   }
 
   let shop = AV.Object.createWithoutData('Shop', shopId)
 
   let shopPromotion = null
-  if(shopPromotionId) {
+  if (shopPromotionId) {
     shopPromotion = AV.Object.createWithoutData('ShopPromotion', shopPromotionId)
     shopPromotion.set('status', status)
-  }else {
+  } else {
     let ShopPromotion = AV.Object.extend('ShopPromotion')
     shopPromotion = new ShopPromotion()
   }
@@ -932,14 +932,14 @@ export function submitShopPromotion(payload) {
 
   return shopPromotion.save().then((results) => {
     // console.log('submitShopPromotion===results=', results)
-    if(!shopPromotionId || (shopPromotionId && '1' == status)) {
+    if (!shopPromotionId || (shopPromotionId && '1' == status)) {
       let promotion = AV.Object.createWithoutData('ShopPromotion', results.id)
       shop.addUnique('containedPromotions', [promotion])
       // console.log('shop/////>>>>>>>>>>', shop)
-      return shop.save().then((result)=>{
+      return shop.save().then((result)=> {
         return true
         // console.log('rep---->>>>', rep)
-      }, (error)=>{
+      }, (error)=> {
         return false
         // console.log('error.........>>>>', error)
       })
@@ -988,23 +988,23 @@ export function shopCertification(payload) {
 }
 
 export function fetchShopPromotionMaxNum(payload) {
-  return AV.Cloud.run('hLifeGetShopPromotionMaxNum', payload).then(result=>{
-    if(result && result.errcode == '0') {
+  return AV.Cloud.run('hLifeGetShopPromotionMaxNum', payload).then(result=> {
+    if (result && result.errcode == '0') {
       return result.message
     }
     return 3
-  }, reason=>{
+  }, reason=> {
     return 3
   })
 }
 
 export function fetchShopPromotionDayPay(payload) {
-  return AV.Cloud.run('getShopPromotionDayPay', payload).then(result=>{
-    if(result && result.errcode == '0') {
+  return AV.Cloud.run('getShopPromotionDayPay', payload).then(result=> {
+    if (result && result.errcode == '0') {
       return result.message
     }
     return 3
-  }, reason=>{
+  }, reason=> {
     return 3
   })
 }
@@ -1019,7 +1019,7 @@ export function fetchMyShopExpiredPromotionList(payload) {
   query.include(['targetShop', 'targetShop.owner'])
   query.limit(5) // 最多返回 5 条结果
 
-  if(!isRefresh) { //分页查询
+  if (!isRefresh) { //分页查询
     query.lessThan('updatedAt', lastUpdatedAt)
   }
 
@@ -1051,15 +1051,15 @@ export function updateShopPromotion(payload) {
   let shopPromotionId = payload.shopPromotionId
   let shopPromotion = AV.Object.createWithoutData('ShopPromotion', shopPromotionId)
 
-  if(1 == updateType || 2 == updateType) {
+  if (1 == updateType || 2 == updateType) {
     let status = "2"
-    if(1 == updateType) {
+    if (1 == updateType) {
       status = payload.status + ""
     }
 
     let containedPromotions = payload.containedPromotions
     let containedPromotionObjs = []
-    containedPromotions.forEach((item)=>{
+    containedPromotions.forEach((item)=> {
       let obj = AV.Object.createWithoutData('ShopPromotion', item.id)
       containedPromotionObjs.push(obj)
     })
@@ -1071,10 +1071,10 @@ export function updateShopPromotion(payload) {
     return shopPromotion.save().then((results) => {
       shop.set('containedPromotions', containedPromotionObjs)
       // console.log('shop/////>>>>>>>>>>', shop)
-      return shop.save().then((rep)=>{
+      return shop.save().then((rep)=> {
         // console.log('rep---->>>>', rep)
         return true
-      }, (error)=>{
+      }, (error)=> {
         // console.log('error.........>>>>', error)
         return false
       })
@@ -1082,7 +1082,7 @@ export function updateShopPromotion(payload) {
       // console.log('updateShopPromotion===err=', err)
       return false
     })
-  }else{
+  } else {
     let typeId = payload.typeId + ""
     let type = payload.type
     let typeDesc = payload.typeDesc
@@ -1092,7 +1092,7 @@ export function updateShopPromotion(payload) {
     let originalPrice = payload.originalPrice
     let abstract = payload.abstract
     let promotionDetailInfo = payload.promotionDetailInfo
-    if(Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
+    if (Object.prototype.toString.call(promotionDetailInfo) === '[object Array]') {
       promotionDetailInfo = JSON.stringify(promotionDetailInfo)
     }
 
@@ -1152,7 +1152,7 @@ export function updateShopLocationInfo(payload) {
     ...latlng
   }
   // console.log('hLifeUpdateShopLocationInfo.params=======', params)
-  return AV.Cloud.run('hLifeUpdateShopLocationInfo', params).then((result)=>{
+  return AV.Cloud.run('hLifeUpdateShopLocationInfo', params).then((result)=> {
     // console.log('hLifeUpdateShopLocationInfo.result=======', result)
     return result
   }, (err) => {
@@ -1253,19 +1253,19 @@ export function fetchShopGoodsList(payload) {
 
 export function submitShopGoodPromotion(payload) {
   let params = {
-   payload:{
-     shopId: payload.shopId,
-     abstract: payload.abstract,
-     startDate: payload.startDate,
-     endDate: payload.endDate,
-     goodId: payload.goodId,
-     type: payload.type,
-     price: Number(payload.price),
-     typeId: payload.typeId,
-     typeDes: payload.typeDesc,
-     geo:payload.geo,
-     status: 1,
-   }
+    payload: {
+      shopId: payload.shopId,
+      abstract: payload.abstract,
+      startDate: payload.startDate,
+      endDate: payload.endDate,
+      goodId: payload.goodId,
+      type: payload.type,
+      price: Number(payload.price),
+      typeId: payload.typeId,
+      typeDes: payload.typeDesc,
+      geo: payload.geo,
+      status: 1,
+    }
   }
   return AV.Cloud.run('submitShopPromotion', params).then((goodsInfo)=> {
     return goodsInfo
@@ -1322,7 +1322,7 @@ export function fetchCloseShopGoodPromotions(payload) {
 
 export function closeShopPromotion(payload) {
   let params = {
-    promotionId:payload.promotionId
+    promotionId: payload.promotionId
   }
 
   return AV.Cloud.run('closeShopPromotion', params).then((promotion)=> {
@@ -1363,22 +1363,22 @@ export function getShopperOrders(payload) {
   })
 }
 
-export function fetchAllMyCommentUps(){
+export function fetchAllMyCommentUps() {
   let payload = {
     userId: authSelector.activeUserId(store.getState())
   }
-  return AV.Cloud.run('fetchMyShopCommentsUps',payload).then((ups)=>{
+  return AV.Cloud.run('fetchMyShopCommentsUps', payload).then((ups)=> {
     return ups
-  },(err)=>{
+  }, (err)=> {
     throw(err)
   })
 }
 
-export function fetchShopCommentsByCloud(payload){
-  return AV.Cloud.run('fetchShopComments',payload).then((result)=>{
+export function fetchShopCommentsByCloud(payload) {
+  return AV.Cloud.run('fetchShopComments', payload).then((result)=> {
 
     return result
-  },(err)=>{
+  }, (err)=> {
 
     throw err
   })

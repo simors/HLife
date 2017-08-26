@@ -88,7 +88,7 @@ export default class GoodShow extends Component {
   renderCommonGood() {
     if (this.props.goodInfo) {
       return (
-        <View style={styles.wrapBox} key={this.props.key}>
+        <View style={styles.wrapBox} key={this.props.goodInfo.id}>
           <View style={styles.channelWrap}>
             {this.props.goodInfo.promotionId && this.props.goodInfo.promotionType ? <View style={styles.typeWrap}>
               <Text style={styles.typeText}>{this.props.goodInfo.promotionType}</Text>
@@ -109,6 +109,8 @@ export default class GoodShow extends Component {
   }
 
   renderGoodShow() {
+    // console.log('key======>',this.props.key,this.props.goodInfo.id)
+
     if (this.props.showType && this.props.showType == 'lastGood') {
       return (this.renderLastGood())
     } else {
@@ -119,7 +121,7 @@ export default class GoodShow extends Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View key ={this.props.goodInfo.id} style={{flex: 1}}>
         {this.renderGoodShow()}
       </View>
     )

@@ -289,7 +289,7 @@ export class TopicCommentDetail extends Component {
       case 'COLUMN_1':
         return this.renderTopicContentColumn(lazyHost)
       case 'COLUMN_2':
-        return this.renderTopicCommentsColumn()
+        return this.renderTopicCommentsColumn(lazyHost)
       default:
         return <View />
     }
@@ -332,10 +332,10 @@ export class TopicCommentDetail extends Component {
     )
   }
 
-  renderTopicCommentsColumn() {
+  renderTopicCommentsColumn(lazyHost) {
     if (!this.state.loadComment) {
       return (
-        <LazyloadView host="detailList" style={{flex: 1}}>
+        <LazyloadView host={lazyHost} style={{flex: 1}}>
           <View style={{flexDirection: 'row', padding: 15, paddingTop: 20, backgroundColor: 'white'}}>
             <Text style={styles.titleTxt}>全部回复</Text>
           </View>
