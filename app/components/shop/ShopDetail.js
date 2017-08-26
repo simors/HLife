@@ -1098,21 +1098,24 @@ class ShopDetail extends Component {
     return (
       <View style={{flex: 1}}>
         <View style={styles.body}>
-          <CommonListView
-            name="shopDetail"
-            contentContainerStyle={{backgroundColor: '#F5F5F5'}}
-            dataSource={this.props.ds}
-            renderRow={(rowData, rowId, lazyHost) => this.renderRow(rowData, rowId, lazyHost)}
-            loadNewData={()=> {
-              this.refreshData()
-            }}
-            loadMoreData={()=> {
-              this.loadMoreData(false)
-            }}
-            ref={(listView) => this.listView = listView}
-            onScroll={e => this.handleOnScroll(e)}
-            scrollEventThrottle={80}
-          />
+          <View style={detailWrapStyle}>
+
+            <CommonListView
+              name="shopDetail"
+              contentContainerStyle={{backgroundColor: '#F5F5F5'}}
+              dataSource={this.props.ds}
+              renderRow={(rowData, rowId, lazyHost) => this.renderRow(rowData, rowId, lazyHost)}
+              loadNewData={()=> {
+                this.refreshData()
+              }}
+              loadMoreData={()=> {
+                this.loadMoreData(false)
+              }}
+              ref={(listView) => this.listView = listView}
+              onScroll={e => this.handleOnScroll(e)}
+              scrollEventThrottle={80}
+            />
+          </View>
           {this.renderBottomView()}
         </View>
 
@@ -1320,7 +1323,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   detailWrap: {
-    // marginBottom: 54
+    marginBottom: 54
   },
   contentContainerStyle: {},
   shopHead: {

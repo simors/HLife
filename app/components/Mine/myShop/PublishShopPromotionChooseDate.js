@@ -112,7 +112,7 @@ class PublishShopPromotionChooseDate extends Component {
             mode="datetime"
             PickerStyle={styles.pickerStyle}
             minDate={TODAY_DATE}
-            maxDate=''
+            maxDate='2100-10-10'
             is24Hour={true}
             format='YYYY-MM-DD HH:mm'
             date = {this.props.startDate}
@@ -127,7 +127,7 @@ class PublishShopPromotionChooseDate extends Component {
             mode="datetime"
             PickerStyle={styles.pickerStyle}
             minDate={this.props.startDate?this.props.startDate:undefined}
-            maxDate=''
+            maxDate='2100-10-10'
             format='YYYY-MM-DD HH:mm'
             is24Hour={true}
             date = {this.props.endDate}
@@ -200,8 +200,8 @@ const mapStateToProps = (state, ownProps) => {
   let endDate = getInputData(state, chooseEndDateInput.formKey, chooseEndDateInput.stateKey)
   let countDays = DateDiff(startDate.text,endDate.text)
   // console.log('countDays--->',countDays)
-  // console.log('startDate--->',startDate)
-  // console.log('countDays--->',countDays)
+  console.log('startDate--->',startDate)
+  console.log('countDays--->',countDays)
   return {
     shopId: userOwnedShopInfo.id,
     endDate: endDate.text,

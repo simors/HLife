@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(32),
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 10,
+    zIndex: 100,
   },
   submitBtnText: {
     color: '#FFFFFF',

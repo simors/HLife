@@ -111,12 +111,13 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   chooseGood(goodInfo) {
+    console.log('------------------choosenGoodInfo======>',goodInfo)
     this.setState({goodPrice: goodInfo.price})
     chooseGoodInput.data = {text: goodInfo.id}
     this.props.inputFormUpdate(chooseGoodInput)
-    // this.setState({
-    //   chooseGoodId: goodInfo.id
-    // })
+    this.setState({
+      chooseGoodId: goodInfo.id
+    })
     console.log('I   CHOOOSE=========?>', chooseGoodInput.data)
     this.openModel()
   }
@@ -191,7 +192,7 @@ class PublishShopPromotionChooseGood extends Component {
       this.setState({
         hideBottomView: true
       }, ()=> {
-        // console.log('openModel===', this.replyInput)
+        console.log('openModel===', this.replyInput)
         if (this.replyInput) {
           this.replyInput.focus()
         }
@@ -203,6 +204,12 @@ class PublishShopPromotionChooseGood extends Component {
     }
   }
 
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   hideBottomView: true
+    // })
+  }
+
   onKeyboardWillHide = (e) => {
     // console.log('onKeyboardWillHide')
     this.setState({
@@ -210,6 +217,17 @@ class PublishShopPromotionChooseGood extends Component {
     })
   }
 
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
+  }
   renderGoods() {
     return this.props.goodList && this.props.goodList.length ? this.renderGoodList() : this.renderNoGood()
     // return this.renderNoGood()
