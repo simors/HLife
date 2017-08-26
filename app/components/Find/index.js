@@ -165,7 +165,7 @@ export class Find extends Component {
 
   loadMoreData(isRefresh) {
     if(this.isQuering) {
-      // return
+      return
     }
     this.isQuering = true
 
@@ -263,7 +263,7 @@ export class Find extends Component {
         }
       }
     }
-    console.log('payload.type===>',payload.type)
+    // console.log('payload.type===>',payload.type)
     InteractionManager.runAfterInteractions(() => {
       // this.props.fetchTopics(payload)
       this.props.fetchAllTopics(payload)

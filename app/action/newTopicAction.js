@@ -192,7 +192,6 @@ export function fetchPublishTopicComment(payload, formData) {
 
 export function fetchAllTopics(payload) {
   return (dispath, getState)=> {
-    console.log('payload',payload)
 
     lcTopics.fetchTopicList(payload).then((results)=> {
 
@@ -204,6 +203,7 @@ export function fetchAllTopics(payload) {
         topics.push(topic)
         topicList.push(item.objectId)
       })
+      // console.log('payload',payload)
       // console.log('topicList---==>',topicList)
 
       switch (payload.type) {
