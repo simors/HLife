@@ -1128,9 +1128,13 @@ class ShopDetail extends Component {
 
   renderDetailContent() {
     let shopDetail = this.props.shopDetail
+    let selfStyle = {}
+    if (this.isSelfShop()) {
+      selfStyle = {marginBottom: 0}
+    }
     return (
       <View style={{flex: 1}}>
-        <View style={styles.body}>
+        <View style={[styles.body, selfStyle]}>
           <CommonListView
             name="shopDetail"
             contentContainerStyle={{backgroundColor: '#F5F5F5'}}
