@@ -36,7 +36,7 @@ class BuyGoodsPaySuccess extends Component {
       <View style={styles.container}>
         <Header
           leftType="none"
-          title="商家活动支付成功"
+          title="商品买卖支付成功"
         />
         <View style={styles.body}>
           <ScrollView>
@@ -55,7 +55,7 @@ class BuyGoodsPaySuccess extends Component {
             <CommonButton
               buttonStyle={{marginTop:normalizeH(20), backgroundColor: THEME.base.mainColor}}
               title="返回"
-              onPress={()=>{Actions.pop()}}
+              onPress={()=>{Actions.pop({popNum: 2})}}
             />
           </ScrollView>
         </View>
