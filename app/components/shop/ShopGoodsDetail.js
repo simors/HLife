@@ -495,7 +495,7 @@ class ShopGoodsDetail extends Component {
 
   }
   render() {
-    let lazyHost = "goodsDetail"
+    let lazyHost = "goodsDetail"+this.props.goodInfo.id
     return (
       <View style={styles.containerStyle}>
         {this.renderMainHeader()}
@@ -769,11 +769,11 @@ const styles = StyleSheet.create({
   titleTextStyle:{
     marginLeft:normalizeW(19),
     marginRight:normalizeW(19),
-    marginTop:normalizeH(16),
+    marginTop:normalizeH(10),
     color:'#030303',
     fontSize:em(17),
     fontWeight: 'bold',
-    marginBottom:normalizeH(15),
+    marginBottom:normalizeH(10),
   },
   shopWrap:{
     flex: 1,
@@ -814,6 +814,7 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(7),
     marginBottom: normalizeH(7),
     marginLeft: normalizeW(15),
+    fontSize: em(15),
     color: '#FF7819'
   },
   shopActionSvg:{
@@ -821,7 +822,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingLeft:normalizeW(10),
-    paddingTop: normalizeH(10),
+    // paddingTop: normalizeH(10),
     height:normalizeH(32),
     width:normalizeW(32)
   },
