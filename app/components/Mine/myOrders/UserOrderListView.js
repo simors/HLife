@@ -111,10 +111,10 @@ class UserOrderListView extends Component {
 
   tipsText(order) {
     let orderStatus = order.orderStatus
-    if (!order.receiver || order.receiver == "") {
-      return '请及时取货'
-    }
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
+      if (!order.receiver || order.receiver == "") {
+        return '请及时取货'
+      }
       return '等待卖家发货'
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
       return '已发货'

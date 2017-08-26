@@ -59,10 +59,10 @@ class ShopOrderDetail extends Component {
 
   renderTipsView(order) {
     let orderStatus = order.orderStatus
-    if (!order.receiver || order.receiver == "") {
-      return <Text style={styles.headerTipText}>请联系买家取货</Text>
-    }
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
+      if (!order.receiver || order.receiver == "") {
+        return <Text style={styles.headerTipText}>请联系买家取货</Text>
+      }
       return <Text style={styles.headerTipText}>请及时发货</Text>
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
       return (

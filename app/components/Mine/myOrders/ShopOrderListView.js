@@ -112,10 +112,10 @@ class ShopOrderListView extends Component {
 
   tipsText(order) {
     let orderStatus = order.orderStatus
-    if (!order.receiver || order.receiver == "") {
-      return '请联系买家取货'
-    }
     if (orderStatus == ORDER_STATUS.PAID_FINISHED) {
+      if (!order.receiver || order.receiver == "") {
+        return '请联系买家取货'
+      }
       return '请及时发货'
     } else if (orderStatus == ORDER_STATUS.DELIVER_GOODS) {
       return '已发货，等待买家确认'
