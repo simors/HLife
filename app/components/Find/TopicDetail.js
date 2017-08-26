@@ -931,16 +931,16 @@ const styles = StyleSheet.create({
     borderTopColor: THEME.colors.lighterA,
     backgroundColor: '#f5f5f5',
     flexDirection: 'row',
-    height:50
+    height: normalizeH(50),
   },
   vItem: {
     flex: 1,
     alignSelf:'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    paddingBottom: 3,
-    paddingLeft: 30
+    padding: normalizeW(10),
+    paddingBottom: normalizeH(3),
+    paddingLeft: normalizeW(30),
   },
   vItemTxt: {
     marginTop: 2,
