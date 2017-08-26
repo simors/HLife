@@ -251,7 +251,7 @@ class PublishShopPromotionChooseGood extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="发布公告"
+          title="发布活动"
         />
         <View style={styles.body}>
           <View style={styles.showTextBox}>

@@ -617,8 +617,6 @@ class MyShopIndex extends Component {
   }
 
   render() {
-    // console.log('this.props.shopDetail===', this.props.shopDetail)
-
     let shopDetail = this.props.shopDetail
     let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
 
@@ -627,19 +625,6 @@ class MyShopIndex extends Component {
         {this.renderMainHeader()}
         <View style={styles.body}>
           <View style={styles.detailWrap}>
-
-
-            {/*<TouchableOpacity onPress={()=>{Actions.SHOP_FANS_INDEX({shopId: this.props.shopDetail.id})}}>*/}
-            {/*<View style={styles.followersWrap}>*/}
-            {/*<View style={{flexDirection:'row'}}>*/}
-            {/*<View style={styles.titleLine}/>*/}
-            {/*<Text style={styles.titleTxt}>粉丝·{this.props.shopFollowersTotalCount}</Text>*/}
-            {/*</View>*/}
-            {/*<View style={{flexDirection:'row'}}>*/}
-            {/*{this.renderShopFollowers()}*/}
-            {/*</View>*/}
-            {/*</View>*/}
-            {/*</TouchableOpacity>*/}
             <CommonListView
               name="shopDetail"
               contentContainerStyle={{backgroundColor: '#F5F5F5'}}
@@ -658,7 +643,7 @@ class MyShopIndex extends Component {
           </View>
 
           <View style={styles.shopCommentWrap}>
-            <TouchableOpacity style={{}} onPress={()=> {
+            <TouchableOpacity onPress={()=> {
               this.editShop()
             }}>
               <View style={[styles.vItem]}>
@@ -879,11 +864,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)'
   },
   body: {
-    // marginTop: normalizeH(64),
     flex: 1,
   },
   detailWrap: {
-    marginBottom: 54
+    marginBottom: normalizeH(49),
   },
   contentContainerStyle: {},
   followersWrap: {
@@ -1259,22 +1243,23 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     bottom: 0,
-    borderTopWidth: normalizeBorder(),
+    borderTopWidth: 1,
     borderTopColor: THEME.colors.lighterA,
     backgroundColor: '#fafafa',
     flexDirection: 'row',
+    alignItems: 'center',
+    height: normalizeH(49),
+    width: PAGE_WIDTH,
   },
   vItem: {
     flex: 1,
     alignSelf: 'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
     paddingBottom: 3,
     paddingLeft: 30,
   },
   vItemTxt: {
-    marginTop: 6,
     fontSize: em(10),
     color: '#aaa'
   },
@@ -1283,7 +1268,8 @@ const styles = StyleSheet.create({
   },
   contactedWrap: {
     width: normalizeW(135),
-    backgroundColor: '#FF7819',
+    height: normalizeH(49),
+    backgroundColor: THEME.base.mainColor,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'

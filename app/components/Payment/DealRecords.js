@@ -122,7 +122,7 @@ class DealRecords extends Component {
         <View style={styles.recordItemView}>
           <View style={styles.itemView}>
             <View>
-              <Text style={styles.earnTitle}>店铺活动收益</Text>
+              <Text style={styles.earnTitle}>商品买卖收益</Text>
             </View>
             <View>
               <Text style={styles.earnValue}>+{deal.cost}</Text>
