@@ -559,7 +559,10 @@ export class TopicDetail extends Component {
     this.isQuering = true
 
     let topic = this.props.topic
-    let lastTopicCommentsCreatedAt = this.props.lastTopicCommentsCreatedAt
+    let lastTopicCommentsCreatedAt = undefined
+    if(!isRefresh){
+      lastTopicCommentsCreatedAt = this.props.lastTopicCommentsCreatedAt
+    }
     // console.log('lastTopicCommentsCreatedAt------>', lastTopicCommentsCreatedAt)
 
     let payload = {

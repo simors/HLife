@@ -161,75 +161,75 @@ class PublishShopPromotionSubmit extends Component {
 
 
   }
-  //
-  // renderPaymentModal() {
-  //   return (
-  //     <View>
-  //       <Modal
-  //         visible={this.state.showPayModal}
-  //         transparent={true}
-  //         animationType='fade'
-  //         onRequestClose={()=> {
-  //           this.setState({showPayModal: false})
-  //         }}
-  //       >
-  //         <View
-  //           style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
-  //           <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
-  //             <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
-  //               <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置购买数量</Text>
-  //             </View>
-  //             <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
-  //               <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>数量：</Text>
-  //               <TextInput
-  //                 placeholder='输入数量'
-  //                 underlineColorAndroid="transparent"
-  //                 onChangeText={(text) => this.setState({buyAmount: text})}
-  //                 value={this.state.buyAmount}
-  //                 keyboardType="numeric"
-  //                 maxLength={6}
-  //                 style={{
-  //                   height: normalizeH(42),
-  //                   fontSize: em(17),
-  //                   textAlignVertical: 'center',
-  //                   textAlign: 'right',
-  //                   borderColor: '#0f0f0f',
-  //                   width: normalizeW(80),
-  //                   paddingRight: normalizeW(15),
-  //                 }}
-  //               />
-  //               <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>份</Text>
-  //             </View>
-  //             <View style={{
-  //               width: PAGE_WIDTH - 100,
-  //               height: normalizeH(50),
-  //               padding: 0,
-  //               flexDirection: 'row',
-  //               alignItems: 'center',
-  //               borderTopWidth: 1,
-  //               borderColor: '#F5F5F5'
-  //             }}>
-  //               <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
-  //                 <TouchableOpacity
-  //                   style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
-  //                   onPress={() => this.setState({showPayModal: false})}>
-  //                   <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
-  //                 </TouchableOpacity>
-  //               </View>
-  //               <View style={{flex: 1}}>
-  //                 <TouchableOpacity
-  //                   style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
-  //                   onPress={() => this.onPaymentPress()}>
-  //                   <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
-  //                 </TouchableOpacity>
-  //               </View>
-  //             </View>
-  //           </View>
-  //         </View>
-  //       </Modal>
-  //     </View>
-  //   )
-  // }
+
+  renderPaymentModal() {
+    return (
+      <View>
+        <Modal
+          visible={this.state.showPayModal}
+          transparent={true}
+          animationType='fade'
+          onRequestClose={()=> {
+            this.setState({showPayModal: false})
+          }}
+        >
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+            <View style={{backgroundColor: '#FFF', borderRadius: 10, alignItems: 'center'}}>
+              <View style={{paddingBottom: normalizeH(20), paddingTop: normalizeH(20)}}>
+                <Text style={{fontSize: em(20), color: '#5A5A5A', fontWeight: 'bold'}}>设置购买数量</Text>
+              </View>
+              <View style={{paddingBottom: normalizeH(15), flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: em(17), color: THEME.base.mainColor, paddingRight: 8}}>数量：</Text>
+                <TextInput
+                  placeholder='输入数量'
+                  underlineColorAndroid="transparent"
+                  onChangeText={(text) => this.setState({buyAmount: text})}
+                  value={this.state.buyAmount}
+                  keyboardType="numeric"
+                  maxLength={6}
+                  style={{
+                    height: normalizeH(42),
+                    fontSize: em(17),
+                    textAlignVertical: 'center',
+                    textAlign: 'right',
+                    borderColor: '#0f0f0f',
+                    width: normalizeW(80),
+                    paddingRight: normalizeW(15),
+                  }}
+                />
+                <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>份</Text>
+              </View>
+              <View style={{
+                width: PAGE_WIDTH - 100,
+                height: normalizeH(50),
+                padding: 0,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderTopWidth: 1,
+                borderColor: '#F5F5F5'
+              }}>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: '#F5F5F5'}}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.setState({showPayModal: false})}>
+                    <Text style={{fontSize: em(17), color: '#5A5A5A'}}>取消</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{flex: 1}}>
+                  <TouchableOpacity
+                    style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.onPaymentPress()}>
+                    <Text style={{fontSize: em(17), color: THEME.base.mainColor}}>确定</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    )
+  }
 
   onPaymentPress() {
     this.setState({showPayModal: false})
@@ -308,9 +308,9 @@ class PublishShopPromotionSubmit extends Component {
               <Text style={styles.showInfoText}>{this.props.abstract}</Text>
             </View>
           </KeyboardAwareScrollView>
-          {this.renderSubmitButton()}
         </View>
         {/*{this.renderPaymentModal()}*/}
+        {this.renderSubmitButton()}
 
       </View>
     )
@@ -393,6 +393,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
+    marginBottom: normalizeH(50)
   },
   scrollViewStyle: {
     flex: 1,

@@ -174,21 +174,24 @@ export class Find extends Component {
     let lastCreatedAt = undefined
     let lastUpdatedAt = undefined
     let payload = undefined
-    if (this.props.topics) {
-      if (this.state.selectedTab == 0 || this.state.selectedTab == 1) {
-        let currentTopics = this.props.topics[this.state.selectedTab]
-        if (currentTopics && currentTopics.length) {
-          lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
-          lastUpdatedAt = currentTopics[currentTopics.length - 1].updatedAt
-        }
-      } else {
-        let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
-        if (currentTopics && currentTopics.length) {
-          lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
-          lastUpdatedAt = currentTopics[currentTopics.length - 1].updatedAt
+    if(!isRefresh){
+      if (this.props.topics) {
+        if (this.state.selectedTab == 0 || this.state.selectedTab == 1) {
+          let currentTopics = this.props.topics[this.state.selectedTab]
+          if (currentTopics && currentTopics.length) {
+            lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
+            lastUpdatedAt = currentTopics[currentTopics.length - 1].updatedAt
+          }
+        } else {
+          let currentTopics = this.props.topics[this.props.topicCategories[this.state.selectedTab].objectId]
+          if (currentTopics && currentTopics.length) {
+            lastCreatedAt = currentTopics[currentTopics.length - 1].createdAt
+            lastUpdatedAt = currentTopics[currentTopics.length - 1].updatedAt
+          }
         }
       }
     }
+
 
     if (this.state.selectedTab == 0) {
       payload = {

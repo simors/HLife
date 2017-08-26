@@ -1061,10 +1061,13 @@ class ShopDetail extends Component {
       return
     }
     this.isQuering = true
-
+    let lastCommentsCreatedAt = undefined
+    if(!isRefresh){
+      lastCommentsCreatedAt = this.props.lastCommentsCreatedAt
+    }
     let payload = {
       shopId: this.props.id,
-      lastCreatedAt: this.props.lastCommentsCreatedAt,
+      lastCreatedAt: lastCommentsCreatedAt,
       isRefresh: !!isRefresh,
       nowDate: new Date(),
       more: !isRefresh,

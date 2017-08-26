@@ -24,10 +24,11 @@ export function fetchAllComments(payload) {
     isRefresh: payload.isRefresh,
     lastCreatedAt: payload.lastCreatedAt
   }
+
   return AV.Cloud.run('hlifeTopicFetchComments', params).then((results)=> {
+
     return {comments: results.allComments, commentList: results.commentList}
   }, (err)=> {
-    // console.log('err====>',err)
 
     throw err
   })
@@ -95,7 +96,7 @@ export function publishTopicComments(payload) {
 export function fetchTopicList(payload){
   return AV.Cloud.run('fetchTopicList',{payload:payload}).then((results)=>{
     if(results){
-      console.log('results',results)
+      // console.log('results',results)
      return results
     }
   },(err)=>{
