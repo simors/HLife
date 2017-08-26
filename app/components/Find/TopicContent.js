@@ -97,6 +97,7 @@ export class TopicContent extends Component {
 
   render() {
     let topic = this.props.topic
+    console.log('topic:', topic)
     return (
       <View style={[styles.containerStyle, this.props.containerStyle]}>
         <View style={styles.titleContainerStyle}>
@@ -105,7 +106,7 @@ export class TopicContent extends Component {
           </Text>
           <View style={{flexDirection: 'row', alignItems:'center'}}>
             <Image style={styles.positionStyle} resizeMode='contain' source={require("../../assets/images/writer_loaction.png")}/>
-            <Text style={styles.timeTextStyle}>{(topic.position && topic.position.city) ? topic.position.city : '未知'}</Text>
+            <Text style={styles.timeTextStyle}>{topic.city ? topic.city : '未知'}</Text>
             <Text style={styles.timeTextStyle}>最近编辑  {topic.createdDate}</Text>
           </View>
         </View>
