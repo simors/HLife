@@ -159,23 +159,23 @@ const styles = StyleSheet.create({
   body: {
     marginTop: normalizeH(64),
     flex: 1,
-    marginBottom: 42
+    marginBottom: normalizeH(42)
   },
   shopInfoWrap: {
     flex: 1,
     flexDirection: 'row',
-    padding: 20,
+    padding: normalizeW(20),
     paddingBottom: 15,
     backgroundColor: '#fff',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
   shopInnerIntroWrap: {
-    height: 100,
+    height: normalizeH(100),
   },
   shopPromotionWrap: {
     flex: 1,
-    marginTop: 10,
+    marginTop: normalizeH(10),
     borderTopWidth: normalizeBorder(),
     borderTopColor: '#f5f5f5'
   },
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   },
   shopPromotionContent: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: normalizeW(10)
   },
   shopPromotionContentTxt: {
     color: '#aaaaaa',
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   shopIntroWrap: {
     flex: 1,
-    paddingLeft: 10,
+    paddingLeft: normalizeW(10),
   },
   shopName: {
     marginTop:normalizeH(10),
@@ -235,8 +235,8 @@ const styles = StyleSheet.create({
   },
   shopCategoryPage: {
     flex: 1,
-    padding: 10,
-    paddingBottom: 26,
+    padding: normalizeW(10),
+    paddingBottom: normalizeH(26),
     justifyContent: 'space-between',
   },
   shopCategoryRow: {
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     position: 'absolute',
-    bottom: 10,
+    bottom: normalizeH(10),
     left: 0,
     right: 0,
     backgroundColor: 'transparent',
