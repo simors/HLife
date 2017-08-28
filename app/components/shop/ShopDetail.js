@@ -107,6 +107,7 @@ class ShopDetail extends Component {
     }
     this.replyInput = null
     this.isReplying = false
+    this.isQuering = false
   }
 
   componentWillMount() {
@@ -630,14 +631,12 @@ class ShopDetail extends Component {
   }
 
   onCommentButton(comment) {
-    if (this.isSelfShop()) {
-      Toast.show('不允许评论自家店铺')
-    } else {
+
       this.setState({
         comment: comment
       })
       this.openModel()
-    }
+
   }
 
   openModel(callback) {
@@ -1059,6 +1058,7 @@ class ShopDetail extends Component {
     // dismissKeyboard()
     // console.log('publishCommentSuccesss=========>')
     Toast.show('评论成功', {duration: 1000})
+    this.refreshData()
     this.isReplying = false
   }
 

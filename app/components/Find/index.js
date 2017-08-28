@@ -48,6 +48,7 @@ export class Find extends Component {
     this.state = {
       selectedTab: 0,
     }
+    this.isQuering = false
   }
 
   componentWillMount() {

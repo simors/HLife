@@ -76,6 +76,7 @@ export class TopicDetail extends Component {
     }
     this.replyInput = null
     this.isReplying = false
+    this.isQuering = false
   }
 
   componentWillMount() {
@@ -131,6 +132,7 @@ export class TopicDetail extends Component {
     this.setState({hideBottomView: false})
     // dismissKeyboard()
     // console.log('publishCommentSuccesss=========>')
+    this.refreshData()
     Toast.show('评论成功', {duration: 1000})
     this.isReplying = false
   }
@@ -543,7 +545,7 @@ export class TopicDetail extends Component {
   }
 
   refreshData() {
-    // this.loadMoreData(true)
+    this.loadMoreData(true)
     this.setState({loadComment: false})
   }
 

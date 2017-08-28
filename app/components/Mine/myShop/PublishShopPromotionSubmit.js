@@ -308,9 +308,10 @@ class PublishShopPromotionSubmit extends Component {
               <Text style={styles.showInfoText}>{this.props.abstract}</Text>
             </View>
           </KeyboardAwareScrollView>
+          {this.renderSubmitButton()}
+
         </View>
         {/*{this.renderPaymentModal()}*/}
-        {this.renderSubmitButton()}
 
       </View>
     )
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
-    marginBottom: normalizeH(50)
+    // paddingBottom: normalizeH(50)
   },
   scrollViewStyle: {
     flex: 1,
@@ -418,9 +419,7 @@ const styles = StyleSheet.create({
     color: '#5A5A5A'
   },
   submitBtn: {
-    position:'absolute',
-    left:0,
-    bottom:0,
+    position:'absolute',bottom:0,left:-normalizeW(15),right:0,
     backgroundColor: '#FF7819',
     height: normalizeH(50),
     width: PAGE_WIDTH,
