@@ -789,9 +789,7 @@ function handleFetchMyCommentsUps(state, action) {
 function handleupShopCommentSuccess(state, action) {
   let payload = action.payload
   let team = state.get('myCommentsUps') || new Set()
-  console.log('team==>',team)
-  team.add(payload.up)
-  console.log('team==>',team)
+  team = team.add(payload.up)
   state = state.set('myCommentsUps', team)
   return state
 }

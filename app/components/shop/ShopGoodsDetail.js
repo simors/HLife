@@ -463,6 +463,7 @@ class ShopGoodsDetail extends Component {
   }
 
   renderPriceTitle(){
+    console.log('this.props.goodInfo',this.props.goodInfo)
     if(this.props.goodInfo.promotionPrice&&this.props.goodInfo.promotionType){
       return(
         <View style={styles.priceWrap}>

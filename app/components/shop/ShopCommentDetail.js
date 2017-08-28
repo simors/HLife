@@ -510,7 +510,7 @@ export class ShopCommentDetail extends Component {
         <View style={{flex: 1}}/>
         <TouchableOpacity style={[styles.contactedWrap]} onPress={() => this.commentForComment()}>
           <View style={[styles.contactedBox]}>
-            <CachedImage mutable style={{}} resizeMode='contain' source={require('../../assets/images/none_message.png')}/>
+            <CachedImage mutable style={{}} resizeMode='contain' source={require('../../assets/images/message_24_copy.png')}/>
             <Text style={styles.contactedTxt}>评论</Text>
           </View>
         </TouchableOpacity>
