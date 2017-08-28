@@ -283,6 +283,7 @@ class ShopGoodsDetail extends Component {
                             goods: this.props.goodInfo,
                             shopOwner: this.props.shopDetail.owner.id,
                             shopId: this.props.shopDetail.id,
+                            shopName: this.props.shopDetail.shopName,
                           })}}>
           <Image source={require('../../assets/images/purchase_24.png')}/>
           <Text style={styles.footerBtnTxt}>立即购买</Text>

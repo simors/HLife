@@ -75,7 +75,7 @@ class BuyGoods extends Component {
       title: '购买商品',
       price: shopGoodDetail.price * Number(amount),
       metadata: metadata,
-      subject: '购买汇邻优店商品费用',
+      subject: '购买' + this.props.shopName + '商品费用',
       paySuccessJumpScene: 'BUY_GOODS_OK',
       paySuccessJumpSceneParams: {},
       payErrorJumpBack: true,
