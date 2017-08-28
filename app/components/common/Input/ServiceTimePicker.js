@@ -14,7 +14,6 @@ import {
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import { FormInput } from 'react-native-elements'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -150,7 +149,7 @@ class ServiceTimePicker extends Component {
   render() {
     return (
       <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-        <View style={{justifyContent: 'center'}}>
+        <View style={{height: normalizeH(40),justifyContent: 'center'}}>
           <CascadePicker
             onSubmit={(data) => this.getPickerData(data, true)}
             level={2}
@@ -159,22 +158,13 @@ class ServiceTimePicker extends Component {
             initSelected={this.getBeginSelected()}
             cascade={false}
           >
-            <FormInput
-              editable={this.props.editable}
-              placeholder="上班时间"
-              placeholderTextColor={this.props.placeholderTextColor}
-              maxLength={this.props.maxLength}
-              underlineColorAndroid="transparent"
-              value={this.getBeginTime(this.props.data)}
-              containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
-              inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
-            />
+            <Text style={[styles.defaultInputStyle, this.props.inputStyle]}>{this.getBeginTime(this.props.data)}</Text>
           </CascadePicker>
         </View>
         <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: normalizeW(20), paddingRight: normalizeW(20)}}>
           <Text style={{fontSize: em(17), color: '#5A5A5A'}}>--</Text>
         </View>
-        <View style={{justifyContent: 'center'}}>
+        <View style={{height: normalizeH(40),justifyContent: 'center'}}>
           <CascadePicker
             onSubmit={(data) => this.getPickerData(data, false)}
             level={2}
@@ -183,16 +173,7 @@ class ServiceTimePicker extends Component {
             initSelected={this.getEndSelected()}
             cascade={false}
           >
-            <FormInput
-              editable={this.props.editable}
-              placeholder="打烊时间"
-              placeholderTextColor={this.props.placeholderTextColor}
-              maxLength={this.props.maxLength}
-              underlineColorAndroid="transparent"
-              value={this.getEndTime(this.props.data)}
-              containerStyle={[styles.defaultContainerStyle, this.props.containerStyle]}
-              inputStyle={[styles.defaultInputStyle, this.props.inputStyle]}
-            />
+            <Text style={[styles.defaultInputStyle, this.props.inputStyle]}>{this.getEndTime(this.props.data)}</Text>
           </CascadePicker>
         </View>
       </View>

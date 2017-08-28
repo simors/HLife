@@ -547,23 +547,23 @@ class CompleteShopInfo extends Component {
                 </View>
               </View>
 
-              <View style={styles.inputWrap}>
-                <View style={styles.inputLabelBox}>
-                  <Text style={styles.inputLabel}>备用电话</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <PhoneInput
-                    {...servicePhone2Input}
-                    placeholder="备用电话（选填）"
-                    maxLength={15}
-                    noFormatPhone={true}
-                    outContainerWrap={{borderWidth: 0}}
-                    containerStyle={styles.containerStyle}
-                    inputStyle={styles.inputStyle}
-                    initValue={this.props.userOwnedShopInfo.contactNumber}
-                  />
-                </View>
-              </View>
+              {/*<View style={styles.inputWrap}>*/}
+                {/*<View style={styles.inputLabelBox}>*/}
+                  {/*<Text style={styles.inputLabel}>备用电话</Text>*/}
+                {/*</View>*/}
+                {/*<View style={styles.inputBox}>*/}
+                  {/*<PhoneInput*/}
+                    {/*{...servicePhone2Input}*/}
+                    {/*placeholder="备用电话（选填）"*/}
+                    {/*maxLength={15}*/}
+                    {/*noFormatPhone={true}*/}
+                    {/*outContainerWrap={{borderWidth: 0}}*/}
+                    {/*containerStyle={styles.containerStyle}*/}
+                    {/*inputStyle={styles.inputStyle}*/}
+                    {/*initValue={this.props.userOwnedShopInfo.contactNumber}*/}
+                  {/*/>*/}
+                {/*</View>*/}
+              {/*</View>*/}
 
               <View style={[styles.inputWrap, styles.serviceTimeWrap]}>
                 <View style={styles.inputLabelBox}>
@@ -712,7 +712,7 @@ const styles = StyleSheet.create({
     paddingRight:0,
   },
   inputInnerBox: {
-    height: 50,
+    height: normalizeH(50),
     paddingLeft: normalizeW(14),
     justifyContent: 'center'
   },
@@ -721,7 +721,7 @@ const styles = StyleSheet.create({
     color: '#333'
   },
   inputStyle:{
-    height: 50,
+    height: normalizeH(50),
     fontSize: em(17),
     backgroundColor: '#fff',
     borderWidth: 0,
