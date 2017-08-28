@@ -11,11 +11,15 @@ import {
   Platform,
   TextInput,
   TouchableOpacity,
-  Text
+  Text,
+  Dimensions,
 } from 'react-native'
 
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
+
+const PAGE_WIDTH = Dimensions.get('window').width
+const PAGE_HEIGHT = Dimensions.get('window').height
 
 export default class ToolBarContentPromotion extends Component {
 
@@ -66,18 +70,17 @@ export default class ToolBarContentPromotion extends Component {
 
   render() {
     return (
-      <View style={[styles.container, {height: this.state.height}]}>
-        <Text style={styles.setPriceText}>设置活动价格:</Text>
+      <View style={styles.container}>
+        {/*<Text style={styles.setPriceText}>设置活动价格:</Text>*/}
         <View style={styles.priceBox}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={[styles.priceTitle]}
-            >¥</Text>
+          <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={[styles.priceTitle]}>¥</Text>
             <TextInput
               ref={(input) => {
                 this.refFunc(input)
               }}
-              placeholder=''
-              placeholderTextColor={styles.priceText}
+              placeholder='设置活动价格'
+              placeholderTextColor={[styles.priceText, {color: '#B2B2B2'}]}
               multiline={false}
               numberOfLines={this.props.numberOfLines || 1}
               onChange={this._onChange.bind(this)}
@@ -87,10 +90,10 @@ export default class ToolBarContentPromotion extends Component {
               enablesReturnKeyAutomatically={true}
               underlineColorAndroid="transparent"
               keyboardType={this.props.keyboardType || 'default'}
+              maxLength={10}
               {...this.props.textInputProps}
             />
-            <Text style={[styles.priceTitle]}
-            >元</Text>
+            <Text style={[styles.priceTitle]}>元</Text>
           </View>
           <Text style={styles.originalPriceText}>{'原价' + this.props.price + '元'}</Text>
         </View>
@@ -114,13 +117,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(250,250,250,0.90)'
-  },
-  textInput: {
-    flex: 1,
-    margin: 0,
-    padding: 10,
-    fontSize: em(16),
+    backgroundColor: 'rgba(250,250,250,0.90)',
+    height: normalizeH(49),
+    width: PAGE_WIDTH,
+    justifyContent: 'space-between',
   },
   btnContainer: {
     height: normalizeH(50),
@@ -135,23 +135,23 @@ const styles = StyleSheet.create({
     fontSize: em(16),
   },
   priceBox: {
+    flex: 1,
     flexDirection: 'row',
-    borderBottomWidth: normalizeBorder(1),
-    borderBottomColor: 'rgba(0,0,0,0.30)',
-    padding: normalizeH(7),
-    justifyContent: 'space-between',
-    width: normalizeW(200),
+    alignItems: 'center',
     margin: normalizeH(8),
-    height: normalizeH(34)
   },
   priceText: {
+    flex: 1,
     color: '#FF7819',
     fontSize: em(20),
-    width: normalizeW(100)
+    padding: 0,
+    textAlignVertical: 'center',
   },
   priceTitle: {
     color: '#FF7819',
     fontSize: em(20),
+    marginLeft: normalizeW(10),
+    marginRight: normalizeW(10),
   },
   originalPriceText: {
     fontSize: em(10),

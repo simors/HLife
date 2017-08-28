@@ -20,7 +20,7 @@ import {
   InteractionManager,
   TextInput
 } from 'react-native'
-import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContentPromotion'
+import ToolBarContentPromotion from '../../shop/ShopCommentReply/ToolBarContentPromotion'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
 
@@ -234,6 +234,10 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   sendReply(content) {
+    if (!content || content == "") {
+      Toast.show('请输入商品活动价格')
+      return
+    }
     if (this.props.chooseGoodId && this.props.chooseGoodId != '') {
       this.setState({hideBottomView: false})
       promotionPriceInput.data = {text: content}
@@ -275,7 +279,7 @@ class PublishShopPromotionChooseGood extends Component {
             hideOverlay={true}
           >
             {this.state.hideBottomView
-              ? <ToolBarContent
+              ? <ToolBarContentPromotion
               initValue={this.props.priceInput}
               replyInputRefCallBack={(input)=> {
                 this.replyInput = input
@@ -353,7 +357,8 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(64),
     flex: 1,
     paddingLeft: normalizeW(15),
-    paddingRight: normalizeW(15)
+    paddingRight: normalizeW(15),
+    backgroundColor: '#FFF',
   },
   scrollViewStyle: {
     flex: 1,
