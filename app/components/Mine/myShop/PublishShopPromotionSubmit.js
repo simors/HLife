@@ -88,10 +88,8 @@ class PublishShopPromotionSubmit extends Component {
 
   renderSubmitButton() {
     return(
-      <TouchableOpacity onPress={()=>{this.onButtonPress()}}>
-      <View style={styles.submitBtn}>
+      <TouchableOpacity style={styles.submitBtn} onPress={()=>{this.onButtonPress()}}>
         <Text style={styles.submitBtnText}>确认发布</Text>
-      </View>
         </TouchableOpacity>
     )
 
@@ -271,7 +269,6 @@ class PublishShopPromotionSubmit extends Component {
           title="活动确认"
         />
         <View style={styles.body}>
-          <KeyboardAwareScrollView>
             {this.renderGoodShow()}
             <View style={styles.showInfoWrap}>
                 <Text style={styles.showInfoAbs}>活动类型：</Text>
@@ -307,9 +304,7 @@ class PublishShopPromotionSubmit extends Component {
               <Text style={styles.showInfoAbs}>活动说明</Text>
               <Text style={styles.showInfoText}>{this.props.abstract}</Text>
             </View>
-          </KeyboardAwareScrollView>
           {this.renderSubmitButton()}
-
         </View>
         {/*{this.renderPaymentModal()}*/}
 
@@ -394,7 +389,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
-    // paddingBottom: normalizeH(50)
+    // marginBottom: normalizeH(50)
   },
   scrollViewStyle: {
     flex: 1,
@@ -419,14 +414,13 @@ const styles = StyleSheet.create({
     color: '#5A5A5A'
   },
   submitBtn: {
-    position:'absolute',bottom:0,left:-normalizeW(15),right:0,
+    position:'absolute',bottom:0,left:0,right:0,
     backgroundColor: '#FF7819',
     height: normalizeH(50),
     width: PAGE_WIDTH,
     marginTop: normalizeH(32),
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 100,
   },
   submitBtnText: {
     color: '#FFFFFF',
@@ -482,7 +476,7 @@ const styles = StyleSheet.create({
     width: normalizeW(169),
   },
   channelWrap: {
-    flex: 1,
+    // flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
     height: normalizeH(224),
@@ -495,23 +489,19 @@ const styles = StyleSheet.create({
     backgroundColor:'#F5F5F5'
   },
   channelText: {
-    flex:1,
-    flexDirection:'row',
     marginLeft:normalizeW(10),
-
     marginTop: normalizeH(10),
     width: normalizeW(144),
-    height: normalizeH(12),
+    // height: normalizeH(13),
     fontSize: em(13),
     alignItems: 'flex-start',
     color: '#5A5A5A'
   },
   channelPrice: {
-    flex:1,
     marginBottom: normalizeH(6),
     marginLeft:normalizeW(10),
     width: normalizeW(144),
-    height: 15,
+    // height: normalizeH(17),
     fontSize: em(17),
     color: '#00BE96'
   },
@@ -521,7 +511,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   showInfoWrap:{
-    flex:1,
     flexDirection: 'row',
     marginTop: normalizeH(10)
   },
