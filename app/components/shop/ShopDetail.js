@@ -621,9 +621,11 @@ class ShopDetail extends Component {
             <CachedImage mutable source={avatar} style={styles.ownerAvatar}/>
             <Text style={styles.ownerName}>{this.props.shopDetail.owner.nickname}</Text>
           </View>
-          <Svg key={this.props.shopDetail.owner.objectId} style={{marginRight: normalizeW(15)}} size={normalizeH(32)}
-               color="#FF9D4E"
-               icon='service'/>
+          <TouchableOpacity onPress={() => this.sendPrivateMessage()}>
+            <Svg key={this.props.shopDetail.owner.objectId} style={{marginRight: normalizeW(15)}} size={normalizeH(32)}
+                 color="#FF9D4E"
+                 icon='service'/>
+          </TouchableOpacity>
         </View>
       </View>
     )
