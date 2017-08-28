@@ -22,6 +22,7 @@ import {
 } from 'react-native'
 import ShopCommentListV2 from '../../shop/ShopCommentListV2'
 import CommonListView from '../../common/CommonListView'
+import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -84,6 +85,8 @@ import ActionSheet from 'react-native-actionsheet'
 import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
 import {getShareDomain} from '../../../selector/configSelector'
 import LinearGradient from 'react-native-linear-gradient';
+import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
+
 // import Icon from 'react-native-vector-icons/Ionicons'
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -95,6 +98,7 @@ class MyShopIndex extends Component {
     this.state = {
       modalVisible: false,
       fade: new Animated.Value(0),
+      comment: undefined,
     }
   }
 
@@ -234,6 +238,20 @@ class MyShopIndex extends Component {
     }
   }
 
+  submitSuccessCallback() {
+    this.setState({hideBottomView: false})
+    // dismissKeyboard()
+    // console.log('publishCommentSuccesss=========>')
+    Toast.show('评论成功', {duration: 1000})
+    this.refreshData()
+    this.isReplying = false
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+    this.isReplying = false
+  }
+
   renderSimilarShopList() {
     let similarShopListView = <View/>
     if (this.props.similarShopList.length) {
@@ -266,8 +284,33 @@ class MyShopIndex extends Component {
     return similarShopListView
   }
 
-  onCommentButton() {
-    Toast.show('不允许评论自己的店铺')
+  onCommentButton(comment) {
+
+    this.setState({
+      comment: comment
+    })
+    this.openModel()
+
+  }
+
+  openModel(callback) {
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+    }
+    else {
+      this.setState({
+        hideBottomView: true
+      }, ()=> {
+        // console.log('openModel===', this.replyInput)
+        if (this.replyInput) {
+          this.replyInput.focus()
+        }
+        if (callback && typeof callback == 'function') {
+          callback()
+        }
+      })
+
+    }
   }
 
   renderComments() {
@@ -617,6 +660,27 @@ class MyShopIndex extends Component {
     )
   }
 
+  sendReply(content) {
+    if (this.isReplying) {
+      Toast.show('正在发表评论，请稍后')
+      return
+    }
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+    } else {
+      this.isReplying = true
+      this.props.submitShopComment({
+        content: content,
+        shopId: this.props.shopDetail.id,
+        userId: this.props.currentUser,
+        replyTo: (this.state.comment && this.state.comment.id) ? this.state.comment.authorId : this.props.shopDetail.owner.id,
+        commentId: this.state.comment ? this.state.comment.id : undefined,
+        success: () => this.submitSuccessCallback(),
+        error: (error) => this.submitErrorCallback(error)
+      })
+    }
+  }
+
   render() {
     let shopDetail = this.props.shopDetail
     let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
@@ -667,9 +731,35 @@ class MyShopIndex extends Component {
               <Text style={[styles.contactedTxt]}>商品管理</Text>
             </TouchableOpacity>
           </View>
-
           {this.renderServicePhoneAction()}
         </View>
+        {this.state.hideBottomView
+          ? <TouchableOpacity
+          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}
+          onPress={()=> {
+            dismissKeyboard()
+          }}>
+          <View style={{flex: 1}}/>
+        </TouchableOpacity>
+          : null
+        }
+        <KeyboardAwareToolBar
+          initKeyboardHeight={-normalizeH(50)}
+          hideOverlay={true}
+        >
+          {this.state.hideBottomView
+            ? <ToolBarContent
+            replyInputRefCallBack={(input)=> {
+              this.replyInput = input
+            }}
+            onSend={(content) => {
+              this.sendReply(content)
+            }}
+            placeholder={(this.state.comment) ? "回复 " + this.state.comment.authorNickname + ": " : "回复 楼主: "}
+          />
+            : null
+          }
+        </KeyboardAwareToolBar>
       </View>
     )
   }
@@ -853,7 +943,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchSimilarShopList,
   fetchShareDomain,
   getShopGoodsList,
-  fetchAllComments
+  fetchAllComments,
+  submitShopComment
 
 }, dispatch)
 
