@@ -286,7 +286,7 @@ class ShopGoodsDetail extends Component {
                             shopId: this.props.shopDetail.id,
                             shopName: this.props.shopDetail.shopName,
                           })}}>
-          <Image source={require('../../assets/images/purchase_24.png')}/>
+          <Svg size={normalizeW(32)} icon="purchase_24" />
           <Text style={styles.footerBtnTxt}>立即购买</Text>
         </TouchableOpacity>
       </View>
@@ -719,17 +719,15 @@ const styles = StyleSheet.create({
   },
   footerBtnBox: {
     height: normalizeH(49),
-    flexDirection: 'column',
+    width: normalizeW(135),
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FF7819',
-    paddingTop: normalizeH(8),
-    paddingLeft: normalizeW(25),
-    paddingRight: normalizeW(25),
   },
   footerBtnTxt: {
-    fontSize: em(10),
+    fontSize: em(15),
     color: 'white',
-    marginTop: normalizeH(2)
   },
   footerWrap: {
     position: 'absolute',
@@ -739,7 +737,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: normalizeH(49),
     alignItems: 'center',
-    paddingLeft: 15,
+    paddingLeft: normalizeW(15),
     borderTopWidth: normalizeBorder(),
     borderTopColor: THEME.colors.lighterA,
     backgroundColor: '#f5f5f5',
