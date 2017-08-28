@@ -204,12 +204,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   footerContainer: {
+    marginTop: 10,
     backgroundColor: '#f5f5f5',
     flexDirection: 'row',
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 15,
-    paddingTop: 15,
+    paddingBottom: 10,
+    paddingTop: 10,
     justifyContent: 'center',
     alignItems: 'center'
   },
