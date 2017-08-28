@@ -271,6 +271,7 @@ class PublishShopGood extends Component {
                     textAlignVertical: 'center',
                     borderColor: '#0f0f0f',
                     width: normalizeW(100),
+                    padding: 0,
                   }}
                 />
                 <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>元</Text>
@@ -290,6 +291,7 @@ class PublishShopGood extends Component {
                     textAlignVertical: 'center',
                     borderColor: '#0f0f0f',
                     width: normalizeW(100),
+                    padding: 0,
                   }}
                 />
                 <Text style={{fontSize: em(17), color: '#5A5A5A', paddingLeft: 8}}>元</Text>

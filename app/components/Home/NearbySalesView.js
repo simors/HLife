@@ -77,10 +77,8 @@ class NearbySalesView extends Component {
                   <Text style={styles.itemTitle} numberOfLines={1}>{item.goodName}</Text>
                 </View>
                 <View style={styles.addressTextView}>
-                  <View style={{flexDirection: 'row', width: 180}}>
-                    <Text style={[styles.itemText, {maxWidth: 90}]} numberOfLines={1}>{item.shopName}</Text>
-                    <Text style={styles.itemText}> | </Text>
-                    <Text style={[styles.itemText, {maxWidth: 80}]} numberOfLines={1}>{item.geoDistrict}</Text>
+                  <View style={{flexDirection: 'row', width: normalizeW(180)}}>
+                    <Text style={[styles.itemText, {maxWidth: normalizeW(150)}]} numberOfLines={1}>{item.shopName}</Text>
                   </View>
                   <View>
                     <Text style={styles.itemText}>{item.distance + item.distanceUnit}</Text>

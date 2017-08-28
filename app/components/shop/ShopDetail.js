@@ -404,7 +404,7 @@ class ShopDetail extends Component {
             this.showShopAlbum()
           }} style={{flex: 1}}>
             <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
-                         source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(200))}}>
+                         source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(300))}}>
             </CachedImage>
           </TouchableOpacity>
           {this.state.height < 100 ? this.renderShopLeftHeader() : null}
@@ -926,16 +926,16 @@ class ShopDetail extends Component {
         justifyContent: 'space-between',
         width: PAGE_WIDTH,
         height: normalizeH(115),
-        paddingTop: normalizeH(64)
+        paddingTop: normalizeH(58)
       }}>
         <View style={{flex: 1, marginLeft: normalizeW(15)}}>
           <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
           {this.renderShopTags()}
         </View>
 
-          <View style={styles.shopAbstractLikeWrap}>
-            {this.renderIsFollow()}
-          </View>
+        <View style={styles.shopAbstractLikeWrap}>
+          {this.renderIsFollow()}
+        </View>
       </LinearGradient>
     )
   }
@@ -1433,7 +1433,7 @@ const styles = StyleSheet.create({
   },
   shopAbstractLikeWrap: {
     height: normalizeH(25),
-    width: normalizeW(60),
+    width: normalizeW(65),
     borderRadius: normalizeH(12),
     backgroundColor: '#FF9D4E',
     // flex: 1,
@@ -1887,7 +1887,6 @@ const styles = StyleSheet.create({
     marginLeft: normalizeW(15),
     fontSize: em(15),
     color: '#000000',
-    // fontFamily: 'FZZYJS--GB1-0'
   },
   ownerAvatar: {
     width: normalizeW(32),
@@ -1914,22 +1913,21 @@ const styles = StyleSheet.create({
   },
   shopTagBadge: {
     backgroundColor: 'rgba(245,245,245,0.3)',
-    borderRadius: 2.5,
-    padding: 3,
+    borderRadius: normalizeW(1.5),
+    padding: normalizeW(3),
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: normalizeW(6),
-
   },
   shopTagBadgeTxt: {
     color: '#FFFFFF',
     fontSize: em(11),
-    height: normalizeH(11),
   },
   shopTagBox: {
     flex: 1,
     flexDirection: 'row',
-    marginTop: normalizeH(6),
-    marginBottom: normalizeH(6)
+    alignItems: 'center',
+    marginTop: normalizeH(3),
+    marginBottom: normalizeH(3)
   }
 })
