@@ -51,6 +51,7 @@ class ShopGoodsManage extends Component {
   }
 
   isExceededShopGoodsMaxNum(){
+    return false
   }
 
   onChangeTab(payload) {
