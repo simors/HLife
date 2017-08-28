@@ -107,6 +107,7 @@ class ShopGoodsDetail extends Component {
         top: 0,
         left: 0,
         width: PAGE_WIDTH,
+        height: normalizeH(64),
         zIndex: 10,
       }}
       >
@@ -296,7 +297,6 @@ class ShopGoodsDetail extends Component {
     if (!this.props.isUserLogined) {
       Actions.LOGIN()
     } else {
-      console.log('')
       this.props.fetchUsers({userIds: [this.props.shopDetail.owner.id]})
 
       let payload = {
@@ -306,7 +306,6 @@ class ShopGoodsDetail extends Component {
         title: this.props.goodInfo.goodsName,
         customTopView: this.customTopView()
       }
-      console.log('payload=======>',payload)
       Actions.CHATROOM(payload)
     }
   }
@@ -468,11 +467,11 @@ class ShopGoodsDetail extends Component {
       return(
         <View style={styles.priceWrap}>
           <View style={styles.priceTitleBox}>
-            <Text style={styles.priceTitleText}>{'¥'+this.props.goodInfo.promotionPrice}</Text>
+            <Text style={styles.priceTitleText}>{'¥' + this.props.goodInfo.promotionPrice}</Text>
           </View>
           <View style={styles.priceOriginBox}>
-          <Text style={styles.priceOriginText}>{this.props.goodInfo.originalPrice}</Text>
-            </View>
+            <Text style={styles.priceOriginText}>{this.props.goodInfo.originalPrice}</Text>
+          </View>
           <Text style={styles.pricePromotionText}>{this.props.goodInfo.promotionType}</Text>
 
           <View style={styles.pricePromotionBox}>
@@ -519,7 +518,6 @@ class ShopGoodsDetail extends Component {
           </LazyloadScrollView>
           {this.renderBottomView()}
         </View>
-        {this.renderPaymentModal()}
         {this.renderImageModal()}
 
       </View>
@@ -535,7 +533,6 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   let shareDomain = configSelector.getShareDomain(state)
   let imageList = []
-  console.log('goodInfo===>',ownProps.goodInfo)
 
   if (ownProps.goodInfo.album && ownProps.goodInfo.album.length > 0)
     imageList = ownProps.goodInfo.album.map((item, key)=> {
@@ -860,7 +857,8 @@ const styles = StyleSheet.create({
     backgroundColor:'#FF9d4e',
     height:normalizeH(55),
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   priceTitleBox:{
     marginLeft:normalizeH(15),
@@ -868,7 +866,6 @@ const styles = StyleSheet.create({
   priceTitleText:{
     color: '#FFFFFF',
     fontSize: em(40),
-    marginTop:normalizeH(6)
   },
   priceOriginBox:{
     marginLeft:normalizeH(15),
@@ -876,7 +873,7 @@ const styles = StyleSheet.create({
   priceOriginText:{
     color:'rgba(255,255,255,0.70)',
     fontSize:em(20),
-    marginTop: normalizeH(25),
+    marginTop: normalizeH(15),
     textDecorationLine:'line-through'
   },
   pricePromotionBox:{

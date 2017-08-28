@@ -141,24 +141,6 @@ class ShopGoodsListView extends Component {
     }
   }
 
-  renderMainHeader() {
-    return (
-
-      <Header
-        leftType="icon"
-        leftIconName="ios-arrow-back"
-        leftPress={() => {
-          AVUtils.pop({
-            backSceneName: this.props.backSceneName,
-            backSceneParams: this.props.backSceneParams
-          })
-        }}
-        title="全部商品"
-
-      />
-    )
-  }
-
   renderRows() {
     const imageStyle = {
       flex: 1

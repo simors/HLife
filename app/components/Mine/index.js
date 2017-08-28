@@ -265,7 +265,7 @@ class Mine extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{height: normalizeH(100), backgroundColor: '#FFF'}}></View>
+        <View style={{height: normalizeH(30), backgroundColor: '#FFF'}}></View>
       </View>
     )
   }
