@@ -772,8 +772,8 @@ class ShopDetail extends Component {
   }
 
   handleOnScroll(e) {
-    console.log('e---------->',e)
     let offset = e.nativeEvent.contentOffset?e.nativeEvent.contentOffset.y:0
+    console.log('offset', offset)
     let comHeight = normalizeH(200)
     this.setState({
       height: offset
@@ -868,6 +868,7 @@ class ShopDetail extends Component {
         top: 0,
         left: 0,
         width: PAGE_WIDTH,
+        height: normalizeH(64),
         zIndex: 10,
       }}
       >

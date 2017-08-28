@@ -430,7 +430,8 @@ class MyShopIndex extends Component {
         top: 0,
         left: 0,
         width: PAGE_WIDTH,
-        zIndex: 10,
+        height: normalizeH(64),
+        zIndex: 100,
       }}
       >
         <Header

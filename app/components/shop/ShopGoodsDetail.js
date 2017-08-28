@@ -107,6 +107,7 @@ class ShopGoodsDetail extends Component {
         top: 0,
         left: 0,
         width: PAGE_WIDTH,
+        height: normalizeH(64),
         zIndex: 10,
       }}
       >
