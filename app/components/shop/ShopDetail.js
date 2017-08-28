@@ -404,7 +404,7 @@ class ShopDetail extends Component {
             this.showShopAlbum()
           }} style={{flex: 1}}>
             <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
-                         source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(300))}}>
+                         source={{uri: this.props.shopDetail.coverUrl}}>
             </CachedImage>
           </TouchableOpacity>
           {this.state.height < 100 ? this.renderShopLeftHeader() : null}
@@ -1715,26 +1715,26 @@ const styles = StyleSheet.create({
   shopInfoWrap: {
     flex: 1,
     flexDirection: 'row',
-    padding: 20,
-    paddingBottom: 15,
+    padding: normalizeW(20),
+    paddingBottom: normalizeH(15),
     backgroundColor: '#fff',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
   shopInnerIntroWrap: {
-    height: 80,
+    height: normalizeH(80),
   },
   guessYouLikeIntroWrap: {},
   coverWrap: {
-    width: 80,
-    height: 80
+    width: normalizeW(80),
+    height: normalizeW(80)
   },
   cover: {
     flex: 1
   },
   shopIntroWrap: {
     flex: 1,
-    paddingLeft: 10,
+    paddingLeft: normalizeW(10),
   },
   gylShopName: {
     fontSize: em(17),
@@ -1766,8 +1766,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     // padding: 10,
-    paddingBottom: 3,
-    paddingLeft: 30
+    paddingBottom: normalizeH(3),
+    paddingLeft: normalizeW(30),
   },
   vItemTxt: {
     marginTop: 6,
@@ -1793,17 +1793,6 @@ const styles = StyleSheet.create({
   commentBtnWrap: {
     flex: 1
   },
-  commentBtnBadge: {
-    alignItems: 'center',
-    width: 30,
-    backgroundColor: '#FF9D4E',
-    position: 'absolute',
-    right: 10,
-    top: 6,
-    borderRadius: 10,
-    borderWidth: normalizeBorder(),
-    borderColor: '#FF9D4E'
-  },
   commentBtnBadgeTxt: {
     fontSize: em(9),
     color: '#fff'
@@ -1814,14 +1803,14 @@ const styles = StyleSheet.create({
   },
   shopPromotionWrap: {
     flex: 1,
-    marginTop: 10,
+    marginTop: normalizeH(10),
     borderTopWidth: normalizeBorder(),
     borderTopColor: '#f5f5f5'
   },
   shopPromotionBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: normalizeH(10),
   },
   shopPromotionBadge: {
     backgroundColor: '#F6A623',
@@ -1836,7 +1825,7 @@ const styles = StyleSheet.create({
   },
   shopPromotionContent: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: normalizeW(10)
   },
   shopPromotionContentTxt: {
     color: '#aaaaaa',
@@ -1877,8 +1866,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)',
     flex: 1,
     flexDirection: 'row',
-    borderBottomRightRadius: 50,
-    borderTopRightRadius: 50,
+    borderBottomRightRadius: normalizeW(50),
+    borderTopRightRadius: normalizeW(50),
     alignItems: 'center',
     justifyContent: 'space-between',
 

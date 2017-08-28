@@ -459,18 +459,14 @@ class MyShopIndex extends Component {
         top: normalizeH(185),
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         width: PAGE_WIDTH,
         height: normalizeH(115),
-        paddingTop: normalizeH(64)
+        paddingTop: normalizeH(58)
       }}>
         <View style={{flex: 1, marginLeft: normalizeW(15)}}>
           <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
           {this.renderShopTags()}
-        </View>
-        <View style={{}}>
-          {/*<Svg icon='follow_shop' size={normalizeH(25)} color="#FFFFFF"/>*/}
-          {/*<Text style={styles.shopAbstractLike}>关注</Text>*/}
         </View>
       </LinearGradient>
     )
@@ -514,19 +510,7 @@ class MyShopIndex extends Component {
             }} style={{flex: 1}}>
               {this.props.shopDetail.coverUrl ?
                 <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
-                             source={{uri: getThumbUrl(this.props.shopDetail.coverUrl, PAGE_WIDTH, normalizeH(300))}}>
-                  {/*<View style={{*/}
-                  {/*position: 'absolute',*/}
-                  {/*right: 15,*/}
-                  {/*bottom: 15,*/}
-                  {/*padding: 3,*/}
-                  {/*paddingLeft: 6,*/}
-                  {/*paddingRight: 6,*/}
-                  {/*backgroundColor: 'gray',*/}
-                  {/*borderRadius: 2,*/}
-                  {/*}}>*/}
-                  {/*<Text style={{color: 'white', fontSize: 15}}>{albumLen}</Text>*/}
-                  {/*</View>*/}
+                             source={{uri: this.props.shopDetail.coverUrl}}>
                 </CachedImage> : <Image style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                                         source={require('../../../assets/images/background_shop.png')}/>}
             </TouchableOpacity>
@@ -534,21 +518,6 @@ class MyShopIndex extends Component {
           </View>
 
         </TouchableOpacity>
-        {/*<View style={styles.shopHead}>*/}
-        {/*<View style={styles.shopHeadLeft}>*/}
-        {/*<Text style={styles.shopName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>*/}
-        {/*<View style={styles.shopOtherInfo}>*/}
-        {/*<ScoreShow*/}
-        {/*containerStyle={{flex:1}}*/}
-        {/*score={this.props.shopDetail.score}*/}
-        {/*/>*/}
-        {/*{this.props.shopDetail.pv*/}
-        {/*? <Text style={[styles.distance, styles.pv]}>{this.props.shopDetail.pv}人看过</Text>*/}
-        {/*: null*/}
-        {/*}*/}
-        {/*</View>*/}
-        {/*</View>*/}
-        {/*</View>*/}
 
         <View style={styles.shopXYZWrap}>
           <View style={styles.shopXYZLeft}>
@@ -871,38 +840,11 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(49),
   },
   contentContainerStyle: {},
-  followersWrap: {
-    flex: 1,
-    flexDirection: 'row',
-    padding: 15,
-    paddingLeft: 20,
-    paddingRight: 20,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: THEME.colors.lighterA,
-  },
-  shopHead: {
-    flexDirection: 'row',
-    padding: 12,
-    height: 70,
-    backgroundColor: '#fff',
-    borderBottomWidth: normalizeBorder(),
-    borderBottomColor: THEME.colors.lighterA,
-  },
-  shopHeadLeft: {
-    flex: 1,
-    justifyContent: 'space-between'
-  },
-  shopHeadRight: {
-    justifyContent: 'center',
-    alignItems: 'flex-end'
-  },
   shopXYZWrap: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     marginBottom: 10,
-    marginTop: normalizeH(25)
+    marginTop: normalizeH(10)
   },
   shopXYZLeft: {
     flex: 1,
@@ -916,9 +858,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   titleLine: {
-    width: 3,
+    width: normalizeW(3),
     backgroundColor: '#ff7819',
-    marginRight: 5,
+    marginRight: normalizeW(5),
   },
   titleTxt: {
     color: '#FF7819',
@@ -942,7 +884,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   score: {
-    marginLeft: 5,
+    marginLeft: normalizeW(5),
     color: '#f5a623',
     fontSize: em(12)
   },
@@ -950,20 +892,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: normalizeW(36)
-  },
-  scoreIconGroup: {
-    width: 62,
-    height: 11,
-    backgroundColor: '#d8d8d8'
-  },
-  scoreBackDrop: {
-    height: 11,
-    backgroundColor: '#f5a623'
-  },
-  scoreIcon: {
-    position: 'absolute',
-    left: 0,
-    top: 0
   },
   distance: {
     color: '#8F8E94',
@@ -977,8 +905,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   locationWrap: {
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: normalizeW(10),
+    paddingRight: normalizeW(10),
     backgroundColor: '#fff'
   },
   locationContainer: {
@@ -987,20 +915,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   locationIcon: {
-    marginRight: 10,
+    marginRight: normalizeW(10),
   },
   locationTxtWrap: {
     flex: 1,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 10
+    paddingTop: normalizeH(10),
+    paddingBottom: normalizeH(10),
+    paddingRight: normalizeW(10)
   },
   locationTxt: {
     fontSize: em(17),
     color: '#8f8e94',
   },
   contactNumberWrap: {
-    paddingLeft: 10,
+    paddingLeft: normalizeW(10),
     backgroundColor: '#fff'
   },
   contactNumberContainer: {
@@ -1009,13 +937,13 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   contactNumberIcon: {
-    marginRight: 10,
+    marginRight: normalizeW(10),
   },
   contactNumberTxtWrap: {
     flex: 1,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 10,
+    paddingTop: normalizeH(10),
+    paddingBottom: normalizeH(10),
+    paddingRight: normalizeW(10),
   },
   contactNumberTxt: {
     fontSize: em(17),
@@ -1023,9 +951,9 @@ const styles = StyleSheet.create({
   },
   shopAnnouncementWrap: {
     backgroundColor: 'white',
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
+    padding: normalizeW(10),
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
   },
@@ -1039,52 +967,18 @@ const styles = StyleSheet.create({
     marginRight: normalizeW(15),
   },
   shopAnnouncementCover: {
-    width: 84,
-    height: 84
+    width: normalizeW(84),
+    height: normalizeW(84)
   },
   shopAnnouncementCnt: {
     flex: 1,
     justifyContent: 'space-between'
   },
   shopAnnouncementTitleWrap: {},
-  shopAnnouncementTitle: {
-    fontSize: em(17),
-    color: '#8f8e94',
-    lineHeight: em(26)
-  },
-  shopAnnouncementSubTitleWrap: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  shopAnnouncementIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 5
-  },
-  shopAnnouncementSubTxt: {
-    marginRight: normalizeW(22),
-    fontSize: em(12),
-    color: '#8f8e94'
-  },
-  shopAnnouncementBadge: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  shopAnnouncementBadgeIcon: {
-    width: normalizeW(65),
-    height: normalizeH(20),
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  shopAnnouncementBadgeTxt: {
-    fontSize: em(12),
-    color: '#fff'
-  },
   commentWrap: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
+    paddingTop: normalizeH(10),
     backgroundColor: '#fff'
   },
   commentHead: {
@@ -1105,15 +999,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: THEME.colors.lighterA,
   },
-  commentAvatarBox: {
-    alignItems: 'center'
-  },
-  commentAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginBottom: 10
-  },
   commentAttention: {},
   commentRight: {
     flex: 1,
@@ -1122,14 +1007,6 @@ const styles = StyleSheet.create({
   },
   commentLine: {
     flex: 1,
-  },
-  commentHeadLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: normalizeH(10)
-  },
-  commentFootLine: {
-    marginTop: normalizeH(10)
   },
   commentTitle: {
     fontSize: em(17),
@@ -1182,7 +1059,7 @@ const styles = StyleSheet.create({
     color: "#8f8e94"
   },
   serviceLabel: {
-    marginRight: 10
+    marginRight: normalizeW(10)
   },
   guessYouLikeWrap: {
     marginBottom: normalizeW(10),
@@ -1190,7 +1067,7 @@ const styles = StyleSheet.create({
   guessYouLikeTitleWrap: {
     flexDirection: 'row',
     marginTop: normalizeH(10),
-    paddingLeft: 20,
+    paddingLeft: normalizeW(20),
     paddingTop: normalizeH(15),
     paddingBottom: normalizeH(15),
     borderBottomWidth: normalizeBorder(),
@@ -1204,26 +1081,26 @@ const styles = StyleSheet.create({
   shopInfoWrap: {
     flex: 1,
     flexDirection: 'row',
-    padding: 20,
-    paddingBottom: 15,
+    padding: normalizeW(20),
+    paddingBottom: normalizeH(15),
     backgroundColor: '#fff',
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
   shopInnerIntroWrap: {
-    height: 80,
+    height: normalizeH(80),
   },
   guessYouLikeIntroWrap: {},
   coverWrap: {
-    width: 80,
-    height: 80
+    width: normalizeW(80),
+    height: normalizeW(80)
   },
   cover: {
     flex: 1
   },
   shopIntroWrap: {
     flex: 1,
-    paddingLeft: 10,
+    paddingLeft: normalizeW(10),
   },
   gylShopName: {
     fontSize: em(17),
@@ -1257,8 +1134,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 3,
-    paddingLeft: 30,
+    paddingBottom: normalizeH(3),
+    paddingLeft: normalizeW(30),
   },
   vItemTxt: {
     fontSize: em(10),
@@ -1284,17 +1161,6 @@ const styles = StyleSheet.create({
   commentBtnWrap: {
     flex: 1
   },
-  commentBtnBadge: {
-    alignItems: 'center',
-    width: 30,
-    backgroundColor: '#FF9D4E',
-    position: 'absolute',
-    right: 10,
-    top: 6,
-    borderRadius: 10,
-    borderWidth: normalizeBorder(),
-    borderColor: '#FF9D4E'
-  },
   commentBtnBadgeTxt: {
     fontSize: em(9),
     color: '#fff'
@@ -1305,14 +1171,14 @@ const styles = StyleSheet.create({
   },
   shopPromotionWrap: {
     flex: 1,
-    marginTop: 10,
+    marginTop: normalizeH(10),
     borderTopWidth: normalizeBorder(),
     borderTopColor: '#f5f5f5'
   },
   shopPromotionBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: normalizeH(10),
   },
   shopPromotionBadge: {
     backgroundColor: '#F6A623',
@@ -1327,7 +1193,7 @@ const styles = StyleSheet.create({
   },
   shopPromotionContent: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: normalizeW(10)
   },
   shopPromotionContentTxt: {
     color: '#aaaaaa',
@@ -1343,7 +1209,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: em(12),
     color: '#5A5A5A',
-    paddingLeft: 5,
+    paddingLeft: normalizeW(5),
   },
   headerView: {
     backgroundColor: THEME.base.backgroundColor,
@@ -1385,17 +1251,15 @@ const styles = StyleSheet.create({
   },
   shopTagBadge: {
     backgroundColor: 'rgba(245,245,245,0.3)',
-    borderRadius: 2.5,
-    padding: 3,
+    borderRadius: normalizeW(1.5),
+    padding: normalizeW(3),
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: normalizeW(6),
-
   },
   shopTagBadgeTxt: {
     color: '#FFFFFF',
     fontSize: em(11),
-    height: normalizeH(11),
   },
   shopTagBox: {
     flex: 1,

@@ -272,7 +272,7 @@ class Home extends Component {
               mutable
               style={[{width:PAGE_WIDTH,height: normalizeH(223)}]}
               resizeMode="stretch"
-              source={typeof(image) == 'string' ? {uri: getThumbUrl(image, PAGE_WIDTH, normalizeH(223))} : image}
+              source={typeof(image) == 'string' ? {uri: image} : image}
             />
           </TouchableOpacity>
         )
