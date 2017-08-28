@@ -100,8 +100,6 @@ export default class ShopShow extends Component {
   }
 
   renderShopPromotion(shopInfo) {
-    // console.log('promotion===>',shopInfo.containedPromotions)
-
     let containedPromotions = shopInfo.containedPromotions
     if (containedPromotions && (containedPromotions.length > 0)) {
       let promotion = containedPromotions[0]
@@ -217,7 +215,6 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(10),
   },
   shopName: {
-    // marginTop:normalizeH(5),
     fontSize: em(17),
     color: '#5a5a5a'
   },

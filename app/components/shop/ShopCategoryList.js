@@ -314,10 +314,7 @@ class ShopCategoryList extends Component {
               <Text style={styles.shopName} numberOfLines={1}>{rowData.shopName}</Text>
               <Text style={styles.shopSpecial} numberOfLines={1}>{rowData.ourSpecial}</Text>
 
-              <View style={{flex: 1, justifyContent: 'space-around',marginTop:normalizeH(11)}}>
-                {/*<ScoreShow*/}
-                {/*score={shopInfo.score}*/}
-                {/*/>*/}
+              <View style={{flex: 1, justifyContent: 'space-around',marginTop:normalizeH(5)}}>
                 {this.renderShopPromotion(rowData)}
               </View>
               <View style={styles.subInfoWrap}>
@@ -332,32 +329,34 @@ class ShopCategoryList extends Component {
 
 
   renderShopPromotion(shopInfo) {
-     console.log('promotion===>',shopInfo.containedPromotions)
-
     let containedPromotions = shopInfo.containedPromotions
     if (containedPromotions && (containedPromotions.length > 0)) {
 
       let promotion = containedPromotions[0]
       return (
-        <View style={styles.shopPromotionBox}>
-          <View style={styles.shopPromotionBadge}>
-            <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
+        <View>
+          <View style={styles.shopPromotionBox}>
+            <View style={styles.shopPromotionBadge}>
+              <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
+            </View>
+            {containedPromotions[1] ? <View style={styles.shopPromotionBadge}>
+              <Text style={styles.shopPromotionBadgeTxt}>{containedPromotions[1].type}</Text>
+            </View> : null}
+            {containedPromotions[2] ? <View style={styles.shopPromotionBadge}>
+              <Text style={styles.shopPromotionBadgeTxt}>{containedPromotions[2].type}</Text>
+            </View> : null}
           </View>
-          {containedPromotions[1]?<View style={styles.shopPromotionBadge}>
-            <Text style={styles.shopPromotionBadgeTxt}>{containedPromotions[1].type}</Text>
-          </View>:null}
-          {containedPromotions[2]?<View style={styles.shopPromotionBadge}>
-            <Text style={styles.shopPromotionBadgeTxt}>{containedPromotions[2].type}</Text>
-          </View>:null}
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center', marginTop: normalizeH(5)}}>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <Text style={styles.subTxt}>{shopInfo.geoDistrict && shopInfo.geoDistrict}</Text>
+            </View>
+            {shopInfo.distance &&
+            <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
+            }
           </View>
-          {shopInfo.distance &&
-          <Text style={[styles.subTxt]}>{shopInfo.distance + shopInfo.distanceUnit}</Text>
-          }
         </View>
       )
-    }else{
+    } else{
       return(
         <View style={styles.shopPromotionBox}>
           <View style={{flex: 1, flexDirection: 'row'}}>
@@ -630,14 +629,15 @@ const styles = StyleSheet.create({
   shopInfoWrap: {
     flex: 1,
     flexDirection: 'row',
-    padding: 20,
-    paddingBottom:15,
+    alignItems: 'center',
+    padding: normalizeW(15),
+    paddingBottom: normalizeW(15),
     backgroundColor: '#fff',
-    borderBottomWidth:normalizeBorder(),
+    borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#f5f5f5'
   },
   shopInnerIntroWrap: {
-    height: 100,
+    height: normalizeH(120),
   },
   shopPromotionWrap: {
     flex: 1,
@@ -651,8 +651,8 @@ const styles = StyleSheet.create({
   },
   shopPromotionBadge: {
     backgroundColor: '#F6A623',
-    borderRadius: 2,
-    padding: 3,
+    borderRadius: normalizeW(2),
+    padding: normalizeW(3),
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: normalizeW(6),
@@ -678,16 +678,16 @@ const styles = StyleSheet.create({
   },
   shopIntroWrap: {
     flex: 1,
-    paddingLeft: 10,
+    paddingLeft: normalizeW(10),
   },
   shopName: {
-    marginTop:normalizeH(10),
     fontSize: em(17),
     color: '#5a5a5a'
   },
   subInfoWrap: {
     flexDirection: 'row',
-    marginTop:normalizeH(7)
+    alignItems: 'center',
+    marginTop:normalizeH(5)
   },
   subTxt: {
     marginRight: normalizeW(10),
