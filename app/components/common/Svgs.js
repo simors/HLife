@@ -28,7 +28,9 @@ export default class Svg extends Component {
         svgXmlData={svgXmlData}
         fill={color}
         style={[style,{alignItems: 'center',justifyContent: 'center'}]}
-      />
+      >
+        {this.props.children}
+      </SvgUri>
     )
   }
 }
