@@ -1271,6 +1271,7 @@ const mapStateToProps = (state, ownProps) => {
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   let isFollowedShop = false
   let shopCommentList = selectCommentsForShop(state, ownProps.id)
+  console.log('shopCommentList=======>',shopCommentList)
   if (isUserLogined) {
     isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   }

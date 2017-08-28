@@ -756,17 +756,17 @@ function handlePublishCommentSuccess(state, action) {
     commentList = commentList.insert(0, comment.id)
     state = state.setIn(['shopCommentsForShop', comment.shopId], commentList)
   } else {
-    let topicCommentList = [comment.commentId]
+    let topicCommentList = [comment.id]
     state = state.setIn(['shopCommentsForShop', comment.shopId], new List(topicCommentList))
   }
 
   if (comment.parentCommentId) {
     let ParentCommentList = state.getIn(['shopCommentsForComment', comment.parentCommentId])
     if (ParentCommentList && ParentCommentList.size) {
-      ParentCommentList = ParentCommentList.insert(0, comment.commentId)
+      ParentCommentList = ParentCommentList.insert(0, comment.id)
       state = state.setIn(['shopCommentsForComment', comment.parentCommentId], ParentCommentList)
     } else {
-      let commentCommentList = [comment.commentId]
+      let commentCommentList = [comment.id]
       state = state.setIn(['shopCommentsForComment', comment.parentCommentId], new List(commentCommentList))
     }
   }
