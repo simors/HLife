@@ -134,18 +134,18 @@ class PublishShopPromotionChooseType extends Component {
       if (index >= start && index <= end) {
         if (this.props.chooseTypeId == item.id) {
           return (
-            <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
+            <TouchableWithoutFeedback key={'type_'+item.id} onPress={()=> {
               this.unChooseType(index)
             }}>
               <View style={styles.typeBox}>
                 <Text style={styles.chooseTypeText}>{item.type}</Text>
                 <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} icon="selected_act"/>
-              </View>
+                </View>
             </TouchableWithoutFeedback>
           )
         } else if (index == 3) {
           return (
-            <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
+            <TouchableWithoutFeedback key={'type_'+item.id} onPress={()=> {
               this.changeType(index)
             }}>
               <View style={styles.typeBox}>
@@ -158,7 +158,7 @@ class PublishShopPromotionChooseType extends Component {
           )
         } else {
           return (
-            <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
+            <TouchableWithoutFeedback key={'type_'+item.id} onPress={()=> {
               this.changeType(index)
             }}>
               <View style={styles.typeBox}>
@@ -349,11 +349,19 @@ const styles = StyleSheet.create({
     fontSize: em(20),
     color: '#FF7819',
     letterSpacing: em(0.24),
+    zIndex: 100,
+    position:'relative',
+
+
   },
   unChoose4TypeText: {
     fontSize: em(20),
     color: 'rgba(0,0,0,0.20)',
     letterSpacing: em(0.24),
+    zIndex: 100,
+    position:'relative',
+
+
   },
   chooseTypeText: {
     position:'relative',
