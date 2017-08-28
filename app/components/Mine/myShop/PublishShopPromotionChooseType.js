@@ -133,7 +133,6 @@ class PublishShopPromotionChooseType extends Component {
     let renderType = this.state.types.map((item, index) => {
       if (index >= start && index <= end) {
         if (this.props.chooseTypeId == item.id) {
-          console.log('i m here is choose item', item)
           return (
             <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
               this.unChooseType(index)
@@ -158,7 +157,6 @@ class PublishShopPromotionChooseType extends Component {
             </TouchableWithoutFeedback>
           )
         } else {
-          console.log('i m here is not choose item', item)
           return (
             <TouchableWithoutFeedback key={'type_' + index} onPress={()=> {
               this.changeType(index)
@@ -190,7 +188,7 @@ class PublishShopPromotionChooseType extends Component {
     if (this.props.chooseTypeId != undefined && this.props.chooseTypeId != '') {
       Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_DATE()
     } else {
-      Toast.show('请选择一个类型')
+      Toast.show('请选择一个活动类型')
     }
   }
 
@@ -314,7 +312,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: normalizeW(91),
     top: normalizeH(52),
-    fontFamily: '.PingFangSC-Semibold',
     fontSize: em(40),
     color: 'rgba(255,120,25,0.30)',
     letterSpacing: em(0, 48),
@@ -329,7 +326,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   addGoodText: {
-    fontFamily: '.PingFangSC-Medium',
     fontSize: em(15),
     color: '#FF7819',
     letterSpacing: em(0.61),
@@ -350,24 +346,21 @@ const styles = StyleSheet.create({
     letterSpacing: -em(0.45)
   },
   unChooseTypeText: {
-    fontFamily: '.PingFangSC-Semibold',
     fontSize: em(20),
     color: '#FF7819',
     letterSpacing: em(0.24),
   },
   unChoose4TypeText: {
-    fontFamily: '.PingFangSC-Semibold',
     fontSize: em(20),
     color: 'rgba(0,0,0,0.20)',
     letterSpacing: em(0.24),
   },
   chooseTypeText: {
     position:'relative',
-    fontFamily: '.PingFangSC-Semibold',
     fontSize: em(20),
     color: '#FFFFFF',
     letterSpacing: em(0.24),
-    zIndex: 10
+    zIndex: 100
   },
   typeBox: {
     height: normalizeH(69),
