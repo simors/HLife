@@ -27,11 +27,8 @@ import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
 import {getInputFormData} from '../../selector/inputFormSelector'
 import Symbol from 'es6-symbol'
-import {fetchUserOwnedShopInfo, submitShopPromotion} from '../../action/shopAction'
-import {submitFormData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {submitShopPromotion} from '../../action/shopAction'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
-import CommonTextInput from '../common/Input/CommonTextInput'
-import * as ImageUtil from '../../util/ImageUtil'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import ImageInput from '../common/Input/ImageInput'
@@ -40,7 +37,6 @@ import Loading from '../common/Loading'
 import TimerMixin from 'react-timer-mixin'
 import {fetchShopPromotionDraft,handleDestroyShopPromotionDraft} from '../../action/draftAction'
 import uuid from 'react-native-uuid'
-import * as AVUtils from '../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -133,10 +129,6 @@ class PublishShopPromotion extends Component {
   }
 
   componentWillMount() {
-    InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchUserOwnedShopInfo()
-    })
-
   }
 
   componentDidMount() {
@@ -827,7 +819,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchUserOwnedShopInfo,
   submitShopPromotion,
   handleDestroyShopPromotionDraft,
   fetchShopPromotionDraft

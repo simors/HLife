@@ -25,14 +25,13 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
-import {fetchShopPromotionDetail, fetchUserOwnedShopInfo} from '../../action/shopAction'
+import {fetchShopPromotionDetail} from '../../action/shopAction'
 import {selectShopPromotionDetail} from '../../selector/shopSelector'
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopPromotionCustomTopView from './ChatroomShopPromotionCustomTopView'
 import {fetchUsers} from '../../action/authActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
-import {fetchShareDomain} from '../../action/configAction'
 import {getShareDomain} from '../../selector/configSelector'
 import {SHAREURL} from '../../util/global'
 import {BUY_GOODS} from '../../constants/appConfig'
@@ -54,7 +53,6 @@ class ShopPromotionDetail extends Component {
     InteractionManager.runAfterInteractions(()=>{
       //this.props.fetchUserOwnedShopInfo()
       this.props.fetchShopPromotionDetail({id: this.props.id})
-      this.props.fetchShareDomain()
     })
   }
 
@@ -290,9 +288,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopPromotionDetail,
-  fetchUserOwnedShopInfo,
   fetchUsers,
-  fetchShareDomain
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPromotionDetail)

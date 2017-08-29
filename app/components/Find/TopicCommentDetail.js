@@ -48,14 +48,9 @@ import {
   unLikeTopic,
   fetchTopicLikeUsers,
 } from '../../action/topicActions'
-import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
-import {fetchShareDomain} from '../../action/configAction'
-import {getShareDomain, getTopicCategoriesById} from '../../selector/configSelector'
-import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
-import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
@@ -546,7 +541,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   likeTopic,
   unLikeTopic,
   fetchOtherUserFollowersTotalCount,
-  fetchShareDomain,
   fetchAllComments,
   fetchUpItem,
   fetchPublishTopicComment

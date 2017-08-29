@@ -169,7 +169,6 @@ class CompleteShopInfo extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
-      this.props.fetchUserOwnedShopInfo()
       this.props.fetchShopCategories()
       this.props.fetchShopTags()
     })

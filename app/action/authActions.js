@@ -217,6 +217,7 @@ function handleLoginWithPwd(payload, formData) {
             dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id})),
             dispatch(getCurrentPromoter()),
             dispatch(initMessageClient(payload)),
+            dispatch(fetchAllUserUps()),
             AVUtils.updateDeviceUserInfo({
               userId: user.userInfo.id
             })

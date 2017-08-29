@@ -12,7 +12,7 @@ import {store} from '../store/persistStore'
 import * as Toast from '../components/common/Toast'
 import {updateLocalDeviceToken, updateSystemNotice} from '../action/pushAction'
 import {fetchShopPromotionMaxNum, fetchUserOwnedShopInfo} from '../action/shopAction'
-import {fetchAllProvincesAndCities, fetchAppServicePhone} from '../action/configAction'
+import {fetchAllProvincesAndCities, fetchAppServicePhone, fetchShareDomain} from '../action/configAction'
 import * as lcPush from '../api/leancloud/push'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as pushSelect from '../selector/pushSelector'
@@ -68,10 +68,10 @@ export function appInit() {
   updateProvincesAndCities()
 
   store.dispatch(fetchAppServicePhone())
+  store.dispatch(fetchShareDomain())
   
   if(authSelector.isUserLogined(store.getState())) {
     store.dispatch(fetchShopPromotionMaxNum())
-    store.dispatch(fetchUserOwnedShopInfo())
   }
 }
 

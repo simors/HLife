@@ -23,34 +23,11 @@ import {
 } from 'react-native'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {
-  fetchUserFollowShops,
-  fetchUserOwnedShopInfo,
-  fetchShopDetail,
-  fetchGuessYouLikeShopList,
-  fetchShopAnnouncements,
-  userIsFollowedShop,
-  unFollowShop,
-  followShop,
   submitShopComment,
-  fetchShopCommentList,
-  fetchShopCommentTotalCount,
-  userUpShop,
-  userUnUpShop,
-  fetchUserUpShopInfo,
-  getShopGoodsList,
   fetchAllComments,
   userUpShopComment
 } from '../../action/shopAction'
 import {
-  selectUserOwnedShopInfo,
-  selectShopDetail,
-  selectGuessYouLikeShopList,
-  selectLatestShopAnnouncemment,
-  selectUserIsFollowShop,
-  selectShopComments,
-  selectShopCommentsTotalCount,
-  selectGoodsList,
-  selectCommentsForShop,
   selectCommentsForComment,
   isCommentLiked,
 } from '../../selector/shopSelector'
@@ -66,19 +43,10 @@ import  ToolBarContent from '../shop/ShopCommentReply/ToolBarContent'
 import {fetchOtherUserFollowersTotalCount} from '../../action/authActions'
 import {publishTopicFormData, TOPIC_FORM_SUBMIT_TYPE} from '../../action/topicActions'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
-import * as authSelector from '../../selector/authSelector'
-import Icon from 'react-native-vector-icons/Ionicons'
-import {getCommentsByTopicId,getCommentsByCommentId} from '../../selector/newTopicSelector'
-import {getTopicLikedTotalCount, getTopicComments, isTopicLiked, getTopicLikeUsers} from '../../selector/topicSelector'
 import ShopCommentListV2 from './ShopCommentListV2'
-import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
-import {fetchShareDomain} from '../../action/configAction'
-import {getShareDomain, getTopicCategoriesById} from '../../selector/configSelector'
-import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
 import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
-import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
@@ -564,7 +532,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchTopicCommentsByTopicId,
   publishTopicFormData,
   fetchOtherUserFollowersTotalCount,
-  fetchShareDomain,
   fetchAllComments,
   submitShopComment,
   userUpShopComment

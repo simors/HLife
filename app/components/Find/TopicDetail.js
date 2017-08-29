@@ -37,21 +37,12 @@ import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import * as authSelector from '../../selector/authSelector'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {getCommentsByTopicId,isTopicLiked,getTopicUps} from '../../selector/newTopicSelector'
-import {getTopicLikedTotalCount, getTopicComments, getTopicLikeUsers} from '../../selector/topicSelector'
-import {
-  fetchTopicLikesCount,
-  fetchTopicIsLiked,
-  likeTopic,
-  unLikeTopic,
-  fetchTopicLikeUsers,
-} from '../../action/topicActions'
+import {getTopicComments, getTopicLikeUsers} from '../../selector/topicSelector'
 import ActionSheet from 'react-native-actionsheet'
 import CommonListView from '../common/CommonListView'
-import {fetchShareDomain} from '../../action/configAction'
 import {getShareDomain, getTopicCategoriesById} from '../../selector/configSelector'
 import {REWARD} from '../../constants/appConfig'
 import * as Toast from '../common/Toast'
-import {fetchTopicCommentsByTopicId} from '../../action/topicActions'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
@@ -83,9 +74,6 @@ export class TopicDetail extends Component {
     this.refreshData()
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchTopicDetailInfo({topicId: this.props.topic.objectId, userId: this.props.topic.userId,isRefresh:true})
-    })
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchShareDomain()
     })
     this.setState({
       likeCount: this.props.topic.likeCount
@@ -855,15 +843,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  // fetchTopicCommentsByTopicId,
   publishTopicFormData,
-  // fetchTopicIsLiked,
-  // fetchTopicLikeUsers,
-  // fetchTopicLikesCount,
-  // likeTopic,
-  // unLikeTopic,
-  // fetchOtherUserFollowersTotalCount,
-  fetchShareDomain,
   fetchAllComments,
   fetchUpItem,
   fetchPublishTopicComment,

@@ -3,8 +3,6 @@
  */
 import React, {Component} from 'react'
 import {CachedImage} from "react-native-img-cache"
-import {getThumbUrl} from '../../../util/ImageUtil'
-import ShopCommentList from '../../shop/ShopCommentList'
 import {
   StyleSheet,
   View,
@@ -30,64 +28,40 @@ import {Actions} from 'react-native-router-flux'
 import * as Communications from 'react-native-communications'
 import SendIntentAndroid from 'react-native-send-intent'
 import Header from '../../common/Header'
-import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
 import ScoreShow from '../../common/ScoreShow'
-import ShopPromotionModule from '../../shop/ShopPromotionModule'
 import ShopGoodsList from '../../shop/ShopGoodsList'
 import Svg from '../../common/Svgs'
 import {
-  fetchUserOwnedShopInfo,
   fetchShopFollowers,
   fetchShopFollowersTotalCount,
   fetchSimilarShopList,
   fetchAllComments,
-  fetchShopDetail,
   fetchGuessYouLikeShopList,
-  fetchShopAnnouncements,
-  userIsFollowedShop,
-  followShop,
   submitShopComment,
   fetchShopCommentList,
-  fetchShopCommentTotalCount,
-  userUpShop,
-  userUnUpShop,
-  fetchUserUpShopInfo,
   getShopGoodsList,
 } from '../../../action/shopAction'
-import {followUser, unFollowUser, userIsFollowedTheUser, fetchUserFollowees} from '../../../action/authActions'
+import {fetchUserFollowees} from '../../../action/authActions'
 import {
   selectUserOwnedShopInfo,
   selectShopFollowers,
   selectCommentsForShop,
   selectShopFollowersTotalCount,
   selectSimilarShopList,
-  selectShopDetail,
-  selectShopList,
-  selectGuessYouLikeShopList,
   selectLatestShopAnnouncemment,
-  selectUserIsFollowShop,
   selectShopComments,
-  selectShopCommentsTotalCount,
-  selectUserIsUpedShop,
   selectGoodsList
 } from '../../../selector/shopSelector'
 import * as authSelector from '../../../selector/authSelector'
-import ImageGallery from '../../common/ImageGallery'
-import {PERSONAL_CONVERSATION} from '../../../constants/messageActionTypes'
-import * as numberUtils from '../../../util/numberUtils'
 import Icon from 'react-native-vector-icons/Ionicons'
-import MyShopPromotionModule from './MyShopPromotionModule'
-import {getShareUrl, fetchShareDomain} from '../../../action/configAction'
 import ActionSheet from 'react-native-actionsheet'
 import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
 import {getShareDomain} from '../../../selector/configSelector'
 import LinearGradient from 'react-native-linear-gradient';
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
-
-// import Icon from 'react-native-vector-icons/Ionicons'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -104,24 +78,15 @@ class MyShopIndex extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=> {
-      // lastUpdateTime: payload.lastUpdateTime,})
-      this.props.fetchUserOwnedShopInfo()   // 已在组件外获取了店铺信息，不需要重新获取
       if (this.props.userOwnedShopInfo.id) {
         this.props.getShopGoodsList({shopId: this.props.userOwnedShopInfo.id, status: 1, limit: 6, more: false})
         this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
         this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
-        // this.props.fetchShopCommentList({isRefresh: true, id: this.props.userOwnedShopInfo.id})
         this.refreshData()
-        // this.props.fetchSimilarShopList({
-        //   id: this.props.userOwnedShopInfo.id,
-        //   targetShopCategoryId: this.props.userOwnedShopInfo.targetShopCategory.id
-        // })
-
       }
       if (this.props.isUserLogined) {
         this.props.fetchUserFollowees()
       }
-      this.props.fetchShareDomain()
     })
   }
 
@@ -906,11 +871,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCommentList,
   fetchUserFollowees,
   fetchGuessYouLikeShopList,
-  fetchUserOwnedShopInfo,
   fetchShopFollowers,
   fetchShopFollowersTotalCount,
   fetchSimilarShopList,
-  fetchShareDomain,
   getShopGoodsList,
   fetchAllComments,
   submitShopComment
