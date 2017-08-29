@@ -46,7 +46,6 @@ class NearbySalesView extends Component {
     let promotionsView = <View />
     if(this.props.shopPromotionList && this.props.shopPromotionList.length) {
       promotionsView = this.props.shopPromotionList.map((item, index)=>{
-        console.log('item123123123123',item)
         let goodInfo = {
           id: item.goodId,
           targetShop: item.shopId,

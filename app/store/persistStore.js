@@ -108,13 +108,18 @@ function verifyToken() {
         Actions.SET_MOBILE_PHONE_NUMBER()
       }
     }).then(() => {
-      dispatch(initMessageClient())
-      AVUtils.updateDeviceUserInfo({
-        userId: userInfo.id
+      return Promise.all([
+        dispatch(initMessageClient()),
+        AVUtils.updateDeviceUserInfo({
+          userId: userInfo.id
+        }),
+        dispatch(fetchUserFollowees()),
+        dispatch(getCurrentPromoter()),
+        dispatch(shopAction.fetchUserOwnedShopInfo({userId: userInfo.id}))
+      ]).catch((err) => {
+        console.log('promise error', err)
+        throw err
       })
-      dispatch(fetchUserFollowees())
-      dispatch(getCurrentPromoter())
-      dispatch(shopAction.fetchUserOwnedShopInfo({userId: userInfo.id}))
     }).catch((error) => {
       let logoutAction = createAction(AuthTypes.LOGIN_OUT)
       dispatch(logoutAction({}))

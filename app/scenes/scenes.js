@@ -305,11 +305,6 @@ function tapActions(props) {
         Actions.LOGIN()
       } else {
         Actions.MINE()
-        InteractionManager.runAfterInteractions(()=>{
-          store.dispatch(fetchUserOwnedShopInfo())
-          store.dispatch(getCurrentPromoter({}))
-          // store.dispatch(getPromoterTenant())    // 推广员不再需要缴费
-        })
       }
     })
   } if (props.index == 2) {

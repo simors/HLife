@@ -213,13 +213,14 @@ function handleLoginWithPwd(payload, formData) {
           dispatch(loginAction({...userInfo}))
           return userInfo
         }).then((user) => {
-          dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
-          dispatch(getCurrentPromoter())
-          dispatch(initMessageClient(payload))
-          // console.log('handleLoginWithPwd===', user.userInfo.id)
-          AVUtils.updateDeviceUserInfo({
-            userId: user.userInfo.id
-          })
+          Promise.all([
+            dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id})),
+            dispatch(getCurrentPromoter()),
+            dispatch(initMessageClient(payload)),
+            AVUtils.updateDeviceUserInfo({
+              userId: user.userInfo.id
+            })
+          ])
         }).catch((error) => {
           dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
           if (payload.error) {
@@ -257,16 +258,16 @@ function handleLoginWithWXInfo(payload, formData) {
       return lcPromoter.syncPromoterInfo({userId: userId})
 
     }).then(() => {
-      dispatch(shopAction.fetchUserOwnedShopInfo({userId: userId}))
-      dispatch(getCurrentPromoter())
-      dispatch(initMessageClient(payload))
-      dispatch(fetchAllUserUps())
-
-      AVUtils.updateDeviceUserInfo({
-        userId: userId
-      })
-      lcPromoter.getPromoterQrcode({unionid: loginPayload.wxUserInfo.unionid})
-
+      Promise.all([
+        dispatch(shopAction.fetchUserOwnedShopInfo({userId: userId})),
+        dispatch(getCurrentPromoter()),
+        dispatch(initMessageClient(payload)),
+        dispatch(fetchAllUserUps()),
+        AVUtils.updateDeviceUserInfo({
+          userId: userId
+        }),
+        lcPromoter.getPromoterQrcode({unionid: loginPayload.wxUserInfo.unionid})
+      ])
     }).catch((error) => {
       dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
       if (payload.error) {
@@ -294,16 +295,20 @@ export function loginWithWeixin(payload) {
           dispatch(loginAction({...userInfo}))
           return userInfo
         }).then((user) => {
-          dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id}))
-          dispatch(fetchAllUserUps())
-          dispatch(initMessageClient(payload))
-          AVUtils.updateDeviceUserInfo({
-            userId: user.userInfo.id
-          })
-          return lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
+          return Promise.all([
+            dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id})),
+            dispatch(fetchAllUserUps()),
+            dispatch(initMessageClient(payload)),
+            AVUtils.updateDeviceUserInfo({
+              userId: user.userInfo.id
+            }),
+            lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
+          ])
         }).then(() => {
-          dispatch(getCurrentPromoter())
-          lcPromoter.getPromoterQrcode({unionid: loginPayload.unionid})
+          Promise.all([
+            dispatch(getCurrentPromoter()),
+            lcPromoter.getPromoterQrcode({unionid: loginPayload.unionid})
+          ])
         }).catch((error) => {
           console.log("loginWithWX", error)
           dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
@@ -1201,6 +1206,7 @@ export function fetchUserFollowees(payload) {
       if (payload && payload.error) {
         payload.error(error)
       }
+      throw error
     })
   }
 }

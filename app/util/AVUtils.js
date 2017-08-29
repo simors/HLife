@@ -441,11 +441,7 @@ function queryDeviceTokens(userList = []) {
  */
 export function updateDeviceUserInfo(payload = {}) {
   return new Promise((resolve, reject)=>{
-    // console.log('updateDeviceUserInfo.payload===', payload)
-    // console.log('updateDeviceUserInfo.store.state===', store.getState())
     let deviceToken = pushSelect.selectDeviceToken(store.getState())
-    // deviceToken = '08c323a463de67d23027c9e4bfa19a2e186c58281b21a4b87456abbeec08ac41'
-    // console.log('updateDeviceUserInfo.deviceToken===', deviceToken)
     if(deviceToken) {
       if ( Platform.OS === 'android' ) {
         payload.installationId = deviceToken

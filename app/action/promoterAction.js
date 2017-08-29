@@ -132,6 +132,7 @@ export function getCurrentPromoter(payload) {
       if (payload.error) {
         payload.error(error)
       }
+      throw error
     })
   }
 }
