@@ -750,16 +750,6 @@ function handleSetCommentsForShop(state, action) {
 function handlePublishCommentSuccess(state, action) {
   let payload = action.payload
   let comment = payload.comment
-  console.log('comment=======>',comment)
-  let commentList = state.getIn(['shopCommentsForShop', comment.shopId])
-  if (commentList && commentList.size) {
-    commentList = commentList.insert(0, comment.id)
-    state = state.setIn(['shopCommentsForShop', comment.shopId], commentList)
-  } else {
-    let topicCommentList = [comment.id]
-    state = state.setIn(['shopCommentsForShop', comment.shopId], new List(topicCommentList))
-  }
-
   if (comment.parentCommentId) {
     let ParentCommentList = state.getIn(['shopCommentsForComment', comment.parentCommentId])
     if (ParentCommentList && ParentCommentList.size) {
@@ -768,6 +758,16 @@ function handlePublishCommentSuccess(state, action) {
     } else {
       let commentCommentList = [comment.id]
       state = state.setIn(['shopCommentsForComment', comment.parentCommentId], new List(commentCommentList))
+    }
+  }else{
+
+    let commentList = state.getIn(['shopCommentsForShop', comment.shopId])
+    if (commentList && commentList.size) {
+      commentList = commentList.insert(0, comment.id)
+      state = state.setIn(['shopCommentsForShop', comment.shopId], commentList)
+    } else {
+      let topicCommentList = [comment.id]
+      state = state.setIn(['shopCommentsForShop', comment.shopId], new List(topicCommentList))
     }
   }
   let comments = []
@@ -789,7 +789,11 @@ function handleFetchMyCommentsUps(state, action) {
 function handleupShopCommentSuccess(state, action) {
   let payload = action.payload
   let team = state.get('myCommentsUps') || new Set()
+  console.log('team==>',team)
+  console.log('up==>',team)
+
   team = team.add(payload.up)
+  console.log('team==>',team)
   state = state.set('myCommentsUps', team)
   return state
 }
