@@ -51,6 +51,7 @@ import ArticleViewer from '../common/Input/ArticleViewer'
 import {BUY_GOODS} from '../../constants/appConfig'
 import {LazyloadScrollView} from '../common/Lazyload'
 import Svg from '../common/Svgs'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -65,6 +66,8 @@ class ShopGoodsDetail extends Component {
       buyAmount: '1',
       imgModalShow: false,
       showImg: '',
+      height: 0,
+      page: 1
     }
     this.images = []
 
@@ -173,6 +176,98 @@ class ShopGoodsDetail extends Component {
     )
   }
 
+  renderShopLeftHeader() {
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(9),
+        flex: 1,
+        borderRadius: normalizeH(18)
+      }}
+      >
+        <TouchableOpacity onPress={() => {
+          AVUtils.pop({
+            backSceneName: this.props.backSceneName,
+            backSceneParams: this.props.backSceneParams
+          })
+        }} style={{
+          paddingTop: normalizeH(3),
+          borderRadius: normalizeH(18),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(36),
+          height: normalizeH(36),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Icon name="ios-arrow-back" style={{fontSize: em(28), color: '#FAFAFA'}}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderShopMiddleHeader() {
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(160),
+        flex: 1,
+        borderRadius: normalizeH(18),
+        width: normalizeW(60),
+        height: normalizeH(28),
+
+      }}
+      >
+        <View style={{
+          borderRadius: normalizeH(14),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(60),
+          height: normalizeH(28),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Text style={{fontSize:em(15),color:'#FFFFFF'}}>{this.state.page+'/'+this.props.goodInfo.album.length}</Text>
+       </View>
+      </View>
+    )
+  }
+
+  renderShopRightHeader() {
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(330),
+        flex: 1,
+        borderRadius: normalizeH(18),
+        width: normalizeW(36),
+        height: normalizeH(36)
+      }}
+      >
+        <TouchableOpacity onPress={this.onShare} style={{
+          borderRadius: normalizeH(18),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(36),
+          height: normalizeH(36),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Icon name="md-more" style={{fontSize: em(28), color: '#FAFAFA'}}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   renderBannerColumn() {
      // console.log('this.props.value.album====', this.props.value.album)
 
@@ -208,13 +303,17 @@ class ShopGoodsDetail extends Component {
             renderPage={this._renderPage}
             isLoop={true}
             autoPlay={true}
+            onChangePage={(value)=>{this.setState({page: value+1})}}
           />
+          {this.state.height < 100 ? this.renderShopLeftHeader() : null}
+          {this.state.height < 100 ? this.renderShopMiddleHeader() : null}
+          {this.state.height < 100 ? this.renderShopRightHeader() : null}
         </View>
       )
     }else if(this.props.goodInfo.album && this.props.goodInfo.album.length==1){
       return(
+        <View style={{flex: 1}}>
         <TouchableWithoutFeedback
-          style={{flex: 1}}
           onPress={() => this.toggleModal(!this.state.imgModalShow, this.props.goodInfo.album[0])}
         >
           <CachedImage
@@ -223,13 +322,19 @@ class ShopGoodsDetail extends Component {
             resizeMode="stretch"
             source={typeof(this.props.goodInfo.album[0]) == 'string' ? {uri: this.props.goodInfo.album[0]} : this.props.goodInfo.album[0]}
           />
+
         </TouchableWithoutFeedback>
+          {this.state.height < 100 ? this.renderShopLeftHeader() : null}
+          {this.state.height < 100 ? this.renderShopMiddleHeader() : null}
+          {this.state.height < 100 ? this.renderShopRightHeader() : null}
+          </View>
       )
     }
   }
 
   _renderPage(data: Object, pageID) {
     // console.log('_renderPage.data====', data)
+    // console.log('pageId=============>',pageID)
     return (
       <View style={{flex:1}}>
         {data}
@@ -240,6 +345,9 @@ class ShopGoodsDetail extends Component {
   handleOnScroll(e) {
     let offset = e.nativeEvent.contentOffset.y
     let comHeight = normalizeH(200)
+    this.setState({
+      height: offset
+    })
     if (offset >= 0 && offset < 10) {
       Animated.timing(this.state.fade, {
         toValue: 0,
@@ -492,9 +600,9 @@ class ShopGoodsDetail extends Component {
       )
 
     }
-
-
   }
+
+
   render() {
     let lazyHost = "goodsDetail"+this.props.goodInfo.id
     return (

@@ -63,7 +63,7 @@ class NearbySalesView extends Component {
           promotionType: item.type,
           promotionAbstract: item.abstract
         }
-        // console.log('startDate====>',new Date(item.startDate))
+        console.log('goodInfo====>',goodInfo)
 
         return (
           <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})}}>
