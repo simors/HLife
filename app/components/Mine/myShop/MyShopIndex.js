@@ -497,6 +497,15 @@ class MyShopIndex extends Component {
     )
   }
 
+  renderFollowerNum(){
+    return(
+      <View style={styles.followerNumBox}>
+        <Text style={styles.followerNumText}>{this.props.shopDetail.followerNum>999?'999+':this.props.shopDetail.followerNum}</Text>
+        <Text style={styles.followerNumText}>粉丝数</Text>
+      </View>
+    )
+  }
+
   renderShopAbstract() {
     return (
       <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']} style={{
@@ -505,7 +514,7 @@ class MyShopIndex extends Component {
         top: normalizeH(185),
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         width: PAGE_WIDTH,
         height: normalizeH(115),
         paddingTop: normalizeH(58)
@@ -513,6 +522,9 @@ class MyShopIndex extends Component {
         <View style={{flex: 1, marginLeft: normalizeW(15)}}>
           <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
           {this.renderShopTags()}
+        </View>
+        <View style={{marginRight: normalizeW(15),alignItems:'center',justifyContent:'center'}}>
+          {this.renderFollowerNum()}
         </View>
       </LinearGradient>
     )
@@ -1481,6 +1493,20 @@ const styles = StyleSheet.create({
     fontSize: em(15),
     color: '#FF7819',
     letterSpacing: em(0.61),
-
+  },
+  followerNumBox:{
+    // width:normalizeW(65),
+    // height:normalizeH(20),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:'#FF7819',
+    borderRadius: normalizeH(10),
+    padding: normalizeH(3),
+  },
+  followerNumText:{
+    color: '#FFFFFF',
+    alignItems: 'center',
+    fontSize: em(10),
+    justifyContent: 'center'
   }
 })

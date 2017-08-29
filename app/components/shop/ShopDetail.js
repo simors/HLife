@@ -1931,8 +1931,8 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(3)
   },
   followerNumBox:{
-    width:normalizeW(65),
-    height:normalizeH(20),
+    // width:normalizeW(65),
+    // height:normalizeH(20),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor:'transparent'
