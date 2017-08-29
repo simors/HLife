@@ -17,6 +17,7 @@ import * as AuthTypes from '../constants/authActionTypes'
 import * as AVUtils from '../util/AVUtils'
 import * as shopAction from '../action/shopAction'
 import {getCurrentPromoter} from '../action/promoterAction'
+import {fetchAllUserUps} from '../action/newTopicAction'
 
 
 const shareNative = NativeModules.shareComponent
@@ -115,6 +116,7 @@ function verifyToken() {
         }),
         dispatch(fetchUserFollowees()),
         dispatch(getCurrentPromoter()),
+        dispatch(fetchAllUserUps()),
         dispatch(shopAction.fetchUserOwnedShopInfo({userId: userInfo.id}))
       ]).catch((err) => {
         console.log('promise error', err)

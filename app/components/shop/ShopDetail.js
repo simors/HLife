@@ -26,20 +26,15 @@ import {Actions} from 'react-native-router-flux'
 import * as Communications from 'react-native-communications'
 import SendIntentAndroid from 'react-native-send-intent'
 import Header from '../common/Header'
-import ImageGroupViewer from '../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import THEME from '../../constants/themes/theme1'
 import * as Toast from '../common/Toast'
 import ScoreShow from '../common/ScoreShow'
-import ShopCommentList from './ShopCommentList'
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons'
 
-import ShopPromotionModule from './ShopPromotionModule'
-// import from '../../action/shopAction'
 import {
   fetchUserFollowShops,
-  fetchUserOwnedShopInfo,
   fetchShopDetail,
   fetchGuessYouLikeShopList,
   fetchShopAnnouncements,
@@ -65,30 +60,24 @@ import {
   selectGuessYouLikeShopList,
   selectLatestShopAnnouncemment,
   selectUserIsFollowShop,
-  selectShopComments,
   selectShopCommentsTotalCount,
   selectGoodsList,
   selectCommentsForShop
 } from '../../selector/shopSelector'
 import * as authSelector from '../../selector/authSelector'
 import * as configSelector from '../../selector/configSelector'
-import Comment from '../common/Comment'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import ChatroomShopCustomTopView from './ChatroomShopCustomTopView'
 import ShopCommentListV2 from './ShopCommentListV2'
-import * as numberUtils from '../../util/numberUtils'
 import * as AVUtils from '../../util/AVUtils'
 import ActionSheet from 'react-native-actionsheet'
 import TimerMixin from 'react-timer-mixin'
 import Loading from '../common/Loading'
 import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
-import {fetchShareDomain, fetchAppServicePhone} from '../../action/configAction'
 import ShopGoodsList from './ShopGoodsList'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
-import Svg from '../common/Svgs';
-import svgs from '../../assets/svgs'
-import SvgUri from '../common/react-native-svg-uri'
+import Svg from '../common/Svgs'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -114,12 +103,6 @@ class ShopDetail extends Component {
     this.isFetchingShopDetail = true
     InteractionManager.runAfterInteractions(()=> {
 
-      this.props.getShopGoodsList({
-        shopId: this.props.id,
-        status: 1,
-        limit: 6,
-        // lastUpdateTime: payload.lastUpdateTime,
-      })
       this.props.fetchShopDetail({
         id: this.props.id,
         success: () => {
@@ -129,10 +112,12 @@ class ShopDetail extends Component {
           this.isFetchingShopDetail = false
         }
       })
-      // this.props.fetchShopAnnouncements({id: this.props.id})
 
-
-      this.refreshData()
+      this.props.getShopGoodsList({
+        shopId: this.props.id,
+        status: 1,
+        limit: 6,
+      })
 
       if (this.props.isUserLogined) {
         this.isFetchingUserIsFollowedShop = true
@@ -145,29 +130,9 @@ class ShopDetail extends Component {
             this.isFetchingUserIsFollowedShop = false
           }
         })
-
-        this.isFetchingUserFollowees = true
-        this.props.fetchUserFollowees({
-          success: () => {
-            this.isFetchingUserFollowees = false
-          },
-          error: () => {
-            this.isFetchingUserFollowees = false
-          }
-        })
-        // this.props.fetchUserUpShopInfo({id: this.props.id})
-        this.isFetchingUserOwnedShopInfo = true
-        this.props.fetchUserOwnedShopInfo({
-          success: () => {
-            this.isFetchingUserOwnedShopInfo = false
-          },
-          error: () => {
-            this.isFetchingUserOwnedShopInfo = false
-          }
-        })
       }
-      this.props.fetchShareDomain()
-      // this.props.fetchShopCommentList({id: this.props.shopDetail.id})
+
+      this.refreshData()
     })
   }
 
@@ -195,6 +160,9 @@ class ShopDetail extends Component {
   }
 
   componentWillUnmount(){
+    if (this.loading) {
+      Loading.hide(this.loading)
+    }
     if (Platform.OS == 'ios') {
       Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
       Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
@@ -1280,11 +1248,9 @@ const mapStateToProps = (state, ownProps) => {
   let shopDetail = selectShopDetail(state, ownProps.id)
   let latestShopAnnouncement = selectLatestShopAnnouncemment(state, ownProps.id)
   const isUserLogined = authSelector.isUserLogined(state)
-  // const shopComments = selectShopComments(state, ownProps.id)
   const shopCommentsTotalCount = selectShopCommentsTotalCount(state, ownProps.id)
   let isFollowedShop = false
   let shopCommentList = selectCommentsForShop(state, ownProps.id)
-  console.log('shopCommentList=======>',shopCommentList)
   if (isUserLogined) {
     isFollowedShop = selectUserIsFollowShop(state, ownProps.id)
   }
@@ -1299,13 +1265,11 @@ const mapStateToProps = (state, ownProps) => {
 
   let dataArray = []
   dataArray.push({type: 'SHOP_INFO'})
-  // dataArray.push({type: 'NEARBY_TOPIC'})
   dataArray.push({type: 'SHOP_COMMENTS'})
 
   const guessYouLikeList = selectGuessYouLikeShopList(state)
 
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
-  // console.log('shopCommentList=========>',shopCommentList)
   const appServicePhone = configSelector.selectServicePhone(state)
   const goodList = selectGoodsList(state, ownProps.id, 1)
   let shareDomain = configSelector.getShareDomain(state)
@@ -1321,7 +1285,6 @@ const mapStateToProps = (state, ownProps) => {
     guessYouLikeList: guessYouLikeList,
     isUserLogined: isUserLogined,
     isFollowedShop: isFollowedShop,
-    // shopComments: shopComments,
     shopCommentsTotalCount: shopCommentsTotalCount,
     currentUser: authSelector.activeUserId(state),
     userOwnedShopInfo: userOwnedShopInfo,
@@ -1350,11 +1313,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   userUpShop,
   userUnUpShop,
   fetchGuessYouLikeShopList,
-  fetchUserOwnedShopInfo,
-  fetchAppServicePhone,
   fetchUserFollowShops,
   fetchUsers,
-  fetchShareDomain,
   getShopGoodsList,
   fetchAllComments
 }, dispatch)

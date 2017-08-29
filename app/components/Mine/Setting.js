@@ -59,7 +59,7 @@ class Setting extends Component {
           Toast.show('清除成功，应用重启！')
           setTimeout(() => {
             RNRestart.Restart()
-          }, 1000)
+          }, 3000)
         }
       },
       cancel: {
@@ -178,7 +178,7 @@ class Setting extends Component {
               Toast.show('登出成功')
               setTimeout(() => {
                 RNRestart.Restart()
-              }, 1000)
+              }, 3000)
               // Actions.HOME({type: 'reset'})
             }
           })

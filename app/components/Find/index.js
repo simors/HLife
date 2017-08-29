@@ -20,7 +20,6 @@ import {em, normalizeW, normalizeH} from '../../util/Responsive'
 import {fetchUserFollowees} from '../../action/authActions'
 import {getTopicCategories} from '../../selector/configSelector'
 import {getCity,getProvince} from '../../selector/locSelector'
-import {getTopics, getLocalTopics, getPickedTopics} from '../../selector/topicSelector'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {fetchTopics, likeTopic, unLikeTopic} from '../../action/topicActions'
 import {fetchAllUserUps,fetchAllTopics} from '../../action/newTopicAction'
@@ -58,34 +57,6 @@ export class Find extends Component {
     })
   }
 
-  componentDidMount() {
-    // InteractionManager.runAfterInteractions(() => {
-    //   if (this.state.selectedTab == 0) {
-    //     this.props.fetchTopics({
-    //       type: "pickedTopics",
-    //       isRefresh: true
-    //     })
-    //   }
-    //   else if (this.state.selectedTab == 1) {
-    //     this.props.fetchTopics({
-    //       type: "localTopics",
-    //       isRefresh: true
-    //     })
-    //   } else {
-    //     this.props.fetchTopics({
-    //       type: "topics",
-    //       categoryId: this.props.topicCategories[this.state.selectedTab].objectId,
-    //       isRefresh: true
-    //     })
-    //   }
-    // })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    
-  }
-
-
   shouldComponentUpdate(nextProps, nextState) {
     if (!shallowequal(this.props, nextProps)) {
       return true;
@@ -101,27 +72,6 @@ export class Find extends Component {
     this.setState({selectedTab: index}, ()=>{
       this.refreshTopic()
     })
-    // InteractionManager.runAfterInteractions(() => {
-    //   if (index == 0) {
-    //     this.props.fetchTopics({
-    //       type: "pickedTopics",
-    //       isRefresh: true
-    //     })
-    //   }
-    //   else if (index == 1) {
-    //     this.props.fetchTopics({
-    //       type: "localTopics",
-    //       isRefresh: true
-    //     })
-    //   }
-    //   else {
-    //     this.props.fetchTopics({
-    //       type: "topics",
-    //       categoryId: this.props.topicCategories[index].objectId,
-    //       isRefresh: true
-    //     })
-    //   }
-    // })
   }
 
   onLikeButton(payload) {

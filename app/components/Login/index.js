@@ -25,7 +25,6 @@ import {submitFormData, loginWithWeixin, INPUT_FORM_SUBMIT_TYPE} from '../../act
 import * as Toast from '../common/Toast'
 import CommonButton from '../common/CommonButton'
 import THEME from '../../constants/themes/theme1'
-import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 
 const shareNative = NativeModules.shareComponent
 
@@ -202,7 +201,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
-  fetchUserOwnedShopInfo,
   loginWithWeixin
 }, dispatch)
 

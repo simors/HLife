@@ -30,7 +30,6 @@ import dismissKeyboard from 'react-native-dismiss-keyboard'
 import * as Toast from '../common/Toast'
 import {reply} from '../../action/shopAction'
 import {enterTypedNotify, clearNotifyMsg} from '../../action/messageAction'
-import {fetchUserOwnedShopInfo} from '../../action/shopAction'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as AVUtils from '../../util/AVUtils'
@@ -54,7 +53,6 @@ class ShopNotifyView extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.props.fetchUserOwnedShopInfo()
       this.props.enterTypedNotify({type: msgActionTypes.SHOP_TYPE})
     })
   }
@@ -338,7 +336,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   reply,
   enterTypedNotify,
-  fetchUserOwnedShopInfo,
   clearNotifyMsg
 }, dispatch)
 

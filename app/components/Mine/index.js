@@ -28,16 +28,12 @@ import PromoterIcon from '../common/PromoterIcon'
 import * as authSelector from '../../selector/authSelector'
 import {getShareDomain} from '../../selector/configSelector'
 import {
-  isPromoterPaid,
   activePromoter,
-  getTenantFee,
-  selectPromoterIdentity,
   getPromoterById
 } from '../../selector/promoterSelector'
-import {getCurrentPromoter, getPromoterTenant, getShopTenant} from '../../action/promoterAction'
+import {getShopTenant} from '../../action/promoterAction'
 import {selectUserOwnedShopInfo} from '../../selector/shopSelector'
-import {fetchUserOwnedShopInfo} from '../../action/shopAction'
-import {fetchUserFollowees, bindWithWeixin} from '../../action/authActions'
+import {fetchUserFollowees} from '../../action/authActions'
 import {IDENTITY_SHOPKEEPER, INVITE_SHOP} from '../../constants/appConfig'
 
 const PAGE_WIDTH=Dimensions.get('window').width
