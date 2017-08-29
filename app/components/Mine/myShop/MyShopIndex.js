@@ -99,6 +99,8 @@ class MyShopIndex extends Component {
       modalVisible: false,
       fade: new Animated.Value(0),
       comment: undefined,
+      height:0,
+      page: 1,
     }
   }
 
@@ -446,6 +448,7 @@ class MyShopIndex extends Component {
   handleOnScroll(e) {
     let offset = e.nativeEvent.contentOffset.y
     let comHeight = normalizeH(200)
+    this.setState({height: offset})
     if (offset >= 0 && offset < 10) {
       Animated.timing(this.state.fade, {
         toValue: 0,
@@ -541,6 +544,98 @@ class MyShopIndex extends Component {
     }
   }
 
+  renderShopLeftHeader() {
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(9),
+        flex: 1,
+        borderRadius: normalizeH(18)
+      }}
+      >
+        <TouchableOpacity onPress={() => {
+          AVUtils.pop({
+            backSceneName: this.props.backSceneName,
+            backSceneParams: this.props.backSceneParams
+          })
+        }} style={{
+          paddingTop: normalizeH(3),
+          borderRadius: normalizeH(18),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(36),
+          height: normalizeH(36),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Icon name="ios-arrow-back" style={{fontSize: em(28), color: '#FAFAFA'}}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderShopMiddleHeader() {
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(160),
+        flex: 1,
+        borderRadius: normalizeH(18),
+        width: normalizeW(60),
+        height: normalizeH(28),
+
+      }}
+      >
+        <View style={{
+          borderRadius: normalizeH(14),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(60),
+          height: normalizeH(28),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Text style={{fontSize:em(15),color:'#FFFFFF'}}>{this.state.page+'/'+this.props.goodInfo.album.length}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  renderShopRightHeader() {
+    return (
+      <View style={{
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        opacity: 30,
+        position: 'absolute',
+        top: normalizeH(24),
+        left: normalizeW(330),
+        flex: 1,
+        borderRadius: normalizeH(18),
+        width: normalizeW(36),
+        height: normalizeH(36)
+      }}
+      >
+        <TouchableOpacity onPress={this.onShare} style={{
+          borderRadius: normalizeH(18),
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          width: normalizeW(36),
+          height: normalizeH(36),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Icon name="md-more" style={{fontSize: em(28), color: '#FAFAFA'}}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   renderShopDetail() {
     return (
       <View style={{flex: 1}}>
@@ -557,6 +652,8 @@ class MyShopIndex extends Component {
                 </CachedImage> : <Image style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                                         source={require('../../../assets/images/background_shop.png')}/>}
             </TouchableOpacity>
+            {this.state.height < 100 ? this.renderShopLeftHeader() : null}
+            {this.state.height < 100 ? this.renderShopRightHeader() : null}
             {this.renderShopAbstract()}
           </View>
 
