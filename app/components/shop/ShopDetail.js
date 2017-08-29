@@ -928,22 +928,32 @@ class ShopDetail extends Component {
         height: normalizeH(115),
         paddingTop: normalizeH(58)
       }}>
-        <View style={{flex: 1, marginLeft: normalizeW(15)}}>
+        <View style={{flex: 1,marginLeft:normalizeW(15)}}>
           <Text style={styles.shopAbstractName} numberOfLines={1}>{this.props.shopDetail.shopName}</Text>
           {this.renderShopTags()}
         </View>
 
-        <View style={styles.shopAbstractLikeWrap}>
+        <View style={{flexDirection: 'row',width:normalizeW(125),marginRight: normalizeW(15),alignItems:'center',justifyContent:'center'}}>
+          {this.renderFollowerNum()}
           {this.renderIsFollow()}
         </View>
       </LinearGradient>
     )
   }
 
+  renderFollowerNum(){
+    return(
+      <View style={styles.followerNumBox}>
+        <Text style={styles.followerNumText}>{this.props.shopDetail.followerNum>999?'999+':this.props.shopDetail.followerNum}</Text>
+        <Text style={styles.followerNumText}>粉丝数</Text>
+      </View>
+    )
+  }
+
   renderIsFollow() {
     if (this.props.isFollowedShop) {
       return (
-        <TouchableOpacity onPress={()=> {
+        <TouchableOpacity style={styles.shopAbstractLikeWrap} onPress={()=> {
           this.unFollowShop()
         }}>
         <Text style={styles.shopAbstractLike}>已关注</Text>
@@ -951,7 +961,7 @@ class ShopDetail extends Component {
       )
     } else {
       return (
-        <TouchableOpacity onPress={()=> {
+        <TouchableOpacity style={styles.shopAbstractLikeWrap} onPress={()=> {
           this.followShop()
         }}>
         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
@@ -1436,11 +1446,12 @@ const styles = StyleSheet.create({
     width: normalizeW(65),
     borderRadius: normalizeH(12),
     backgroundColor: '#FF9D4E',
+    // marginRight: normalizeW(15),
     // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: normalizeW(15)
+    // marginRight: normalizeW(15)
   },
   shopOtherInfo: {
     flexDirection: 'row'
@@ -1918,5 +1929,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: normalizeH(3),
     marginBottom: normalizeH(3)
+  },
+  followerNumBox:{
+    width:normalizeW(65),
+    height:normalizeH(20),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:'transparent'
+  },
+  followerNumText:{
+    color: '#FFFFFF',
+    alignItems: 'center',
+    fontSize: em(10),
+    justifyContent: 'center'
   }
 })

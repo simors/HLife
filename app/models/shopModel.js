@@ -43,6 +43,7 @@ export const ShopRecord = Record({
   payment: 0, // 记录店铺注册后是否已完成支付流程，0表示未支付，1表示已支付
   tenant: 0,  // 记录店铺注册时缴纳的入驻费,
   commentNum: 0,
+  followerNum: 0,
 }, 'ShopRecord')
 
 export class ShopInfo extends ShopRecord {
@@ -162,6 +163,8 @@ export class ShopInfo extends ShopRecord {
         record.set('createdAt', lcObj.createdAt.valueOf())
         record.set('updatedAt', lcObj.updatedAt.valueOf())
         record.set('commentNum', attrs.commentNum)
+        record.set('followerNum', attrs.followerNum)
+
       })
     } catch (err) {
       console.log('shopModel.err=======', err)
@@ -181,6 +184,8 @@ export class ShopInfo extends ShopRecord {
         record.set('coverUrl', lcObj.coverUrl)
         record.set('contactNumber', lcObj.contactNumber)
         record.set('contactNumber2', lcObj.contactNumber2)
+        record.set('followerNum', lcObj.followerNum)
+
         // record.set('certification', lcObj.certification)
         record.set('status', lcObj.status && parseInt(lcObj.status))
         record.set('commentNum', lcObj.commentNum)

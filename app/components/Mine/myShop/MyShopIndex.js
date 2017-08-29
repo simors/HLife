@@ -950,6 +950,7 @@ const mapStateToProps = (state, ownProps) => {
   let similarShopList = []
   if (userOwnedShopInfo.id) {
     shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
+    console.log('shopFollowers========>',shopFollowers)
     shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
     latestShopAnnouncement = selectLatestShopAnnouncemment(state, userOwnedShopInfo.id)
     shopComments = selectShopComments(state, userOwnedShopInfo.id)
@@ -964,7 +965,7 @@ const mapStateToProps = (state, ownProps) => {
   if (shopCommentList.commentList && shopCommentList.commentList.length) {
     lastCommentsCreatedAt = shopCommentList.commentList[shopCommentList.commentList.length - 1].createdAt
   }
-  console.log('userOwnedShopInfo===', userOwnedShopInfo)
+  // console.log('userOwnedShopInfo===', userOwnedShopInfo)
   let shareDomain = getShareDomain(state)
   let ds = undefined
   if (ownProps.ds) {
