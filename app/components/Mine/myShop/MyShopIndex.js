@@ -17,10 +17,12 @@ import {
   InteractionManager,
   TextInput,
   Animated,
+  Keyboard
 } from 'react-native'
 import ShopCommentListV2 from '../../shop/ShopCommentListV2'
 import CommonListView from '../../common/CommonListView'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -75,6 +77,7 @@ class MyShopIndex extends Component {
       comment: undefined,
       height:0,
       page: 1,
+      hideBottomView: false
     }
   }
 
@@ -96,6 +99,24 @@ class MyShopIndex extends Component {
     InteractionManager.runAfterInteractions(()=> {
 
     })
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -714,6 +735,7 @@ class MyShopIndex extends Component {
       Toast.show('正在发表评论，请稍后')
       return
     }
+
     if (!this.props.isUserLogined) {
       Actions.LOGIN()
     } else {
@@ -811,6 +833,32 @@ class MyShopIndex extends Component {
         </KeyboardAwareToolBar>
       </View>
     )
+  }
+
+
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   hideBottomView: true
+    // })
+  }
+
+  onKeyboardWillHide = (e) => {
+    console.log('onKeyboardWillHide')
+    this.setState({
+      hideBottomView: false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
   }
 
   makePhoneCall(contactNumber) {

@@ -184,9 +184,6 @@ class PromotionTypeShow extends Component {
   }
 
   render() {
-    console.log('isChoosening=====>',this.props.isChoosen)
-    console.log('this.props.type=====>',this.props.type)
-
     return (
       <View style={{flex:1}}>
     {this.renderType()}

@@ -118,12 +118,30 @@ class PublishShopPromotionChooseType extends Component {
 
   componentDidMount() {
     this.props.initInputForm(chooseTypeInput)
+    if (Platform.OS == 'ios') {
+      Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.addListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this.onKeyboardDidHide)
+    }
   }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=> {
 
     })
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS == 'ios') {
+      Keyboard.removeListener('keyboardWillShow', this.onKeyboardWillShow)
+      Keyboard.removeListener('keyboardWillHide', this.onKeyboardWillHide)
+    } else {
+      Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
+      Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
+
+    }
   }
 
   unChooseType(index) {
@@ -249,7 +267,7 @@ class PublishShopPromotionChooseType extends Component {
   }
 
   onKeyboardWillHide = (e) => {
-    // console.log('onKeyboardWillHide')
+    console.log('onKeyboardWillHide')
     this.setState({
       hideBottomView: false
     })
@@ -386,7 +404,7 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isLogin = isUserLogined(state)
   let chooseTypeId = getInputData(state, chooseTypeInput.formKey, chooseTypeInput.stateKey)
-  console.log('chooseTypeId=============>', chooseTypeId)
+  // console.log('chooseTypeId=============>', chooseTypeId)
 
   return {
     shopId: userOwnedShopInfo.id,
