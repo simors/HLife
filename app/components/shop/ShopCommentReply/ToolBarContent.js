@@ -41,6 +41,9 @@ export default class ToolBarContent extends Component {
     this.setState({
       content: text
     })
+    if(this.props.onChangeText){
+      this.props.onChangeText(text)
+    }
   }
 
   refFunc(input) {

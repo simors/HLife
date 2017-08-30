@@ -20,6 +20,7 @@ import {
 import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
 import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import {isUserLogined, activeUserInfo} from '../../../selector/authSelector'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 import {connect} from 'react-redux'
 import {CachedImage} from "react-native-img-cache"
@@ -27,7 +28,6 @@ import {bindActionCreators} from 'redux'
 import Svg from '../../common/Svgs'
 import {Actions} from 'react-native-router-flux'
 import Header from '../../common/Header'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import ImageInput from '../../common/Input/ImageInput'
 import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
@@ -76,6 +76,7 @@ class PublishShopPromotionChooseType extends Component {
       shouldUploadImage: false,
       chooseTypeId: undefined,
       hideBottomView: false,
+      custName:'',
       types: [
         {
           id: '0',
@@ -180,9 +181,41 @@ class PublishShopPromotionChooseType extends Component {
     return renderType
   }
 
+  openModel(callback) {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    }
+    else {
+      this.setState({
+        hideBottomView: true
+      }, ()=> {
+        if (this.replyInput) {
+          this.replyInput.focus()
+        }
+        if (callback && typeof callback == 'function') {
+          callback()
+        }
+      })
+
+    }
+  }
+
   changeType(index) {
     chooseTypeInput.data = this.state.types[index]
     this.props.inputFormUpdate(chooseTypeInput)
+  }
+
+  chooseCustType(index){
+     let newTypes = this.state.types
+    newTypes[3].type=this.state.custName
+    this.setState({
+      type: newTypes
+    },()=>{
+      chooseTypeInput.data = this.state.types[index]
+      this.props.inputFormUpdate(chooseTypeInput)
+    })
+    this.openModel()
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -209,6 +242,65 @@ class PublishShopPromotionChooseType extends Component {
     )
   }
 
+  onKeyboardWillShow = (e) => {
+    // this.setState({
+    //   hideBottomView: true
+    // })
+  }
+
+  onKeyboardWillHide = (e) => {
+    // console.log('onKeyboardWillHide')
+    this.setState({
+      hideBottomView: false
+    })
+  }
+
+  onKeyboardDidShow = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillShow(e)
+    }
+  }
+
+  onKeyboardDidHide = (e) => {
+    if (Platform.OS === 'android') {
+      this.onKeyboardWillHide(e)
+    }
+  }
+
+  sendReply(){
+    if(this.state.custName&&this.state.custName!=''&&this.state.custName.length<5){
+      let newTypes = this.state.types[3]
+      this.setState({hideBottomView: false})
+      newTypes.type=this.state.custName
+      this.setState({
+        type: newTypes
+      },()=>{
+        chooseTypeInput.data = newTypes
+        this.props.inputFormUpdate(chooseTypeInput)
+        if (this.props.chooseTypeId != undefined && this.props.chooseTypeId != '') {
+          Actions.PUBLISH_SHOP_PROMOTION_CHOOSE_DATE()
+        } else {
+          Toast.show('请选择一个活动类型')
+        }
+      })
+    }else{
+      this.setState({hideBottomView: false})
+      Toast.show('自定义类型不能为空或者大于4个字！')
+
+    }
+
+
+  }
+
+  changeCustName(content){
+    // console.log('content=======>',content)
+    let newTypes = this.state.types
+    newTypes[3].type=content
+    this.setState({custName:content,type:newTypes})
+    // console.log('content=======>',this.state.types[3])
+
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -228,13 +320,13 @@ class PublishShopPromotionChooseType extends Component {
                type = {this.state.types[0]}
                isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[0].id?true:false}
                changeType = {()=>{this.changeType(0) }}
-               unChoosenType = {()=>{this.this.unChooseType(0)}}
+               unChooseType = {()=>{this.unChooseType(0)}}
              />
               <PromotionTypeShow
                 type = {this.state.types[1]}
                 isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[1].id?true:false}
                 changeType = {()=>{this.changeType(1) }}
-                unChoosenType = {()=>{this.this.unChooseType(1)}}
+                unChooseType = {()=>{this.unChooseType(1)}}
               />
 
             </View>
@@ -243,18 +335,48 @@ class PublishShopPromotionChooseType extends Component {
                 type = {this.state.types[2]}
                 isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[2].id?true:false}
                 changeType = {()=>{this.changeType(2) }}
-                unChoosenType = {()=>{this.this.unChooseType(2)}}
+                unChooseType = {()=>{this.unChooseType(2)}}
               />
               <PromotionTypeShow
                 type = {this.state.types[3]}
                 isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[3].id?true:false}
-                changeType = {()=>{this.changeType(3) }}
-                unChoosenType = {()=>{this.this.unChooseType(3)}}
+                changeType = {()=>{this.chooseCustType(3) }}
+                unChooseType = {()=>{this.unChooseType(3)}}
               />
             </View>
             {this.renderSubmitButton()}
           </KeyboardAwareScrollView>
+          {this.state.hideBottomView
+            ? <TouchableOpacity
+            style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}
+            onPress={()=> {
+              dismissKeyboard()
+            }}>
+            <View style={{flex: 1}}/>
+          </TouchableOpacity>
+            : null
+          }
+          <KeyboardAwareToolBar
+            initKeyboardHeight={-normalizeH(50)}
+            hideOverlay={true}
+          >
+            {this.state.hideBottomView
+              ? <ToolBarContent
+              onChangeText={(content)=>this.changeCustName(content)}
+              replyInputRefCallBack={(input)=> {
+                this.replyInput = input
+              }}
+              onSend={(content) => {
+                this.sendReply(content)
+              }}
+              label="下一步"
+              btnContainerStyle={{width:normalizeW(90)}}
+            />
+              : null
+            }
+          </KeyboardAwareToolBar>
         </View>
+
       </View>
     )
   }
@@ -264,7 +386,7 @@ const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   const isLogin = isUserLogined(state)
   let chooseTypeId = getInputData(state, chooseTypeInput.formKey, chooseTypeInput.stateKey)
-  // console.log('chooseTypeId=============>', chooseTypeId.id)
+  console.log('chooseTypeId=============>', chooseTypeId)
 
   return {
     shopId: userOwnedShopInfo.id,

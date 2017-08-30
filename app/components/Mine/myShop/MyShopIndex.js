@@ -1469,8 +1469,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor:'#FF7819',
-    borderRadius: normalizeH(10),
+    borderRadius: normalizeH(5),
     padding: normalizeH(3),
+    paddingLeft:normalizeW(11),
+    paddingRight: normalizeW(11)
   },
   followerNumText:{
     color: '#FFFFFF',

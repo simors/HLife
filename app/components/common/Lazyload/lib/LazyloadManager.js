@@ -74,9 +74,7 @@ class LazyloadManager{
     _name = null;
 
     calculate = ({x, y}) => {
-        console.log('x,y==========>',x,y,this._name)
         let container = containers[this._name];
-        console.log('container==========>',container)
         if(container){
             container.contentOffset = {x, y};
             if (container.count) {
@@ -88,9 +86,6 @@ class LazyloadManager{
                 }
             }
         }
-
-        console.log('hahahahahcontainer==========>',container)
-
 
     };
 

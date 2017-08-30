@@ -120,8 +120,9 @@ class PromotionTypeShow extends Component {
         this.unChooseType()
       }}>
        <View style={styles.typeBox}>
-         <Text style={styles.chooseTypeText}>{type.type}</Text>
-           <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} icon="selected_act"/>
+           <Image style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} source={require('../../../assets/images/selected_act.png')}>
+             <Text style={styles.chooseTypeText}>{type.type}</Text>
+           </Image>
        </View>
       </TouchableWithoutFeedback>
     )
@@ -133,11 +134,9 @@ class PromotionTypeShow extends Component {
           this.changeType()
         }}>
           <View style={styles.typeBox}>
-            <View >
-              <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} icon="unselect_act@2x">
-                <Text style={styles.unChooseTypeText}>{type.type}</Text>
-              </Svg>
-            </View>
+            <Image style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} source={require('../../../assets/images/custom_act.png')}>
+              <Text style={styles.unChooseTypeText}>{type.type}</Text>
+            </Image>
           </View>
         </TouchableWithoutFeedback>
     )
@@ -149,10 +148,9 @@ class PromotionTypeShow extends Component {
           this.changeType()
         }}>
           <View style={styles.typeBox}>
-            <Text style={styles.unChoose4TypeText}>{type.type}</Text>
-            <View style={styles.typeSvg}>
-              <Svg size={normalizeW(165)} height={normalizeH(69)} icon="custom_act"/>
-            </View>
+            <Image style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} source={require('../../../assets/images/unselect_act.png')}>
+              <Text style={styles.unChoose4TypeText}>{type.type}</Text>
+            </Image>
           </View>
         </TouchableWithoutFeedback>
     )
@@ -301,8 +299,6 @@ const styles = StyleSheet.create({
     letterSpacing: em(0.24),
     zIndex: 80,
     position:'relative',
-
-
   },
   unChoose4TypeText: {
     fontSize: em(20),
@@ -330,10 +326,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   typeSvg: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
     height: normalizeH(69),
     width: normalizeW(165),
+    alignItems:'center',
+    justifyContent:'center'
   }
 })
