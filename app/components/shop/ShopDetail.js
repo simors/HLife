@@ -968,6 +968,7 @@ class ShopDetail extends Component {
         <KeyboardAwareToolBar
           initKeyboardHeight={-normalizeH(50)}
           hideOverlay={true}
+          containerStyle={{zIndex: 100}}
         >
           {this.state.hideBottomView
             ? <ToolBarContent
