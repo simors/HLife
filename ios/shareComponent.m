@@ -188,23 +188,15 @@
 - (void)alertWithError:(NSError *)error
   {
     NSString *result = nil;
-    if (!error) {
-      result = [NSString stringWithFormat:@"分享成功"];
+    if (error) {
+      result = [NSString stringWithFormat:@"Share fail with error code: %d\n",(int)error.code];
+      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"share"
+                                                      message:result
+                                                     delegate:nil
+                                            cancelButtonTitle:NSLocalizedString(@"sure", @"确定")
+                                            otherButtonTitles:nil];
+      [alert show];
     }
-    else{
-      if (error) {
-        result = [NSString stringWithFormat:@"Share fail with error code: %d\n",(int)error.code];
-      }
-      else{
-        result = [NSString stringWithFormat:@"分享失败"];
-      }
-    }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"share"
-                                                    message:result
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"sure", @"确定")
-                                          otherButtonTitles:nil];
-    [alert show];
   }
   @end
 
