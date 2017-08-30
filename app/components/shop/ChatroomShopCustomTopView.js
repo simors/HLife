@@ -43,11 +43,6 @@ export default class ChatroomShopCustomTopView extends Component {
           <View style={styles.shopIntroWrap}>
             <View style={styles.shopInnerIntroWrap}>
               <Text style={styles.shopName} numberOfLines={1}>{shopInfo.shopName}</Text>
-              <ScoreShow
-                containerStyle={{flex:1}}
-                score={shopInfo.score}
-                bgColor='grey'
-              />
               <View style={styles.subInfoWrap}>
                 {shopTag &&
                  <Text style={[styles.subTxt]}>{shopTag}</Text>

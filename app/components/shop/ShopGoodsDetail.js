@@ -632,6 +632,7 @@ class ShopGoodsDetail extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  console.log('targetShop=======>',ownProps.goodInfo.targetShop)
   let shopDetail = selectShopDetail(state, ownProps.goodInfo.targetShop)
   const isUserLogined = authSelector.isUserLogined(state)
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
