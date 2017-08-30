@@ -1242,6 +1242,7 @@ export function goodsOffline(payload) {
   let params = {
     goodsId: payload.goodsId,
   }
+  console.log('hahahahahaha=====>'.params)
   return AV.Cloud.run('goodsShopGoodsOffline', params).then((goodsInfo)=> {
     return goodsInfo
   }, (err) => {

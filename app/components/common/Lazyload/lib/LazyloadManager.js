@@ -74,17 +74,24 @@ class LazyloadManager{
     _name = null;
 
     calculate = ({x, y}) => {
+        console.log('x,y==========>',x,y,this._name)
         let container = containers[this._name];
-
-        container.contentOffset = {x, y};
-        if (container.count) {
-            let children = container.children;
-            for (let key in children) {
-                if (children.hasOwnProperty(key)) {
-                    children[key].move(x, y);
+        console.log('container==========>',container)
+        if(container){
+            container.contentOffset = {x, y};
+            if (container.count) {
+                let children = container.children;
+                for (let key in children) {
+                    if (children.hasOwnProperty(key)) {
+                        children[key].move(x, y);
+                    }
                 }
             }
         }
+
+        console.log('hahahahahcontainer==========>',container)
+
+
     };
 
 

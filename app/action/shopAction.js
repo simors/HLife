@@ -858,6 +858,9 @@ export function setShopGoodsOnline(payload) {
           goodsId: onlinePayload.goodsId,
           status: newStatus
         }))
+        if(payload.success){
+          payload.success()
+        }
       } else {
         console.log("goodsOffline fail, goodsInfo:", goodsInfo)
         if (payload.error) {
@@ -879,6 +882,7 @@ export function setShopGoodsOffline(payload) {
       shopId: payload.shopId,
     }
     lcShop.goodsOffline({goodsId: offLinePayload.goodsId}).then((goodsInfo) => {
+      console.log('goodsInfo===>',goodsInfo)
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
         dispatch(updateShopGoodsStatus({
@@ -886,6 +890,9 @@ export function setShopGoodsOffline(payload) {
           goodsId: offLinePayload.goodsId,
           status: newStatus
         }))
+        if(payload.success){
+          payload.success()
+        }
       } else {
         console.log("goodsOffline fail, goodsInfo:", goodsInfo)
         if (payload.error) {
@@ -907,6 +914,7 @@ export function setShopGoodsDelete(payload) {
       shopId: payload.shopId,
     }
     lcShop.goodsDelete({goodsId: deletePayload.goodsId}).then((goodsInfo) => {
+      console.log('goodsInfo===>',goodsInfo)
       if (0 == goodsInfo.errcode) {
         let newStatus = goodsInfo.goodsInfo.status
         dispatch(updateShopGoodsStatus({
@@ -914,6 +922,9 @@ export function setShopGoodsDelete(payload) {
           goodsId: deletePayload.goodsId,
           status: newStatus
         }))
+        if(payload.success){
+          payload.success()
+        }
       } else {
         if (payload.error) {
           payload.error()

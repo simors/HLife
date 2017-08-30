@@ -411,7 +411,13 @@ class MyShopIndex extends Component {
   }
 
   handleOnScroll(e) {
+    // console.log('e=========>',e)
+
     let offset = e.nativeEvent.contentOffset.y
+    // console.log(' e.nativeEvent.contentOffset', e.nativeEvent.contentOffset)
+    //
+    // console.log('offset', offset)
+
     let comHeight = normalizeH(200)
     this.setState({height: offset})
     if (offset >= 0 && offset < 10) {

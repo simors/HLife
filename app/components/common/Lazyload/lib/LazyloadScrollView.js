@@ -87,10 +87,12 @@ class LazyloadScrollView extends Component{
             },
             ReactNative.findNodeHandle(this)
         );
+        console.log('this.manager======>',this._manager)
 
     };
 
     _onScroll = e => {
+        // console.log('e.nativeEvent========<',e.nativeEvent.contentOffset,this.props.name)
         this.props.onScroll && this.props.onScroll(e);
         let {x, y} = e.nativeEvent.contentOffset;
         this.currentPosition = {x, y};

@@ -133,9 +133,10 @@ class PromotionTypeShow extends Component {
           this.changeType()
         }}>
           <View style={styles.typeBox}>
-            <Text style={styles.unChooseTypeText}>{type.type}</Text>
-            <View style={styles.typeSvg}>
-              <Svg size={normalizeW(165)} height={normalizeH(69)} icon="unselect_act@2x"/>
+            <View >
+              <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} icon="unselect_act@2x">
+                <Text style={styles.unChooseTypeText}>{type.type}</Text>
+              </Svg>
             </View>
           </View>
         </TouchableWithoutFeedback>

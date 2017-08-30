@@ -741,8 +741,11 @@ class ShopDetail extends Component {
   }
 
   handleOnScroll(e) {
+    // console.log('e=========>',e)
     let offset = e.nativeEvent.contentOffset?e.nativeEvent.contentOffset.y:0
-    console.log('offset', offset)
+    // console.log(' e.nativeEvent.contentOffset', e.nativeEvent.contentOffset)
+    //
+    // console.log('offset', offset)
     let comHeight = normalizeH(200)
     this.setState({
       height: offset

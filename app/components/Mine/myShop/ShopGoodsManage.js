@@ -147,14 +147,20 @@ class ShopGoodsManage extends Component {
   onSetGoodOffline(GoodId) {
     this.props.setShopGoodsOffline({
       goodsId: GoodId,
-      shopId: this.props.shopId
+      shopId: this.props.shopId,
+      success: ()=>{Toast.show('下架成功')},
+      error: (err)=>{Toast.show(err.message)}
+
+
     })
   }
 
   onSetGoodOnline(GoodId) {
     this.props.setShopGoodsOnline({
       goodsId: GoodId,
-      shopId: this.props.shopId
+      shopId: this.props.shopId,
+      success: ()=>{Toast.show('上架成功')},
+      error: (err)=>{Toast.show(err.message)}
     })
   }
 
@@ -168,7 +174,10 @@ class ShopGoodsManage extends Component {
   onDeleteGood(GoodId) {
     this.props.setShopGoodsDelete({
       goodsId: GoodId,
-      shopId: this.props.shopId
+      shopId: this.props.shopId,
+      success: ()=>{Toast.show('删除成功')},
+      error: (err)=>{Toast.show(err.message)}
+
     })
   }
 
