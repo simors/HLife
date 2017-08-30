@@ -55,6 +55,7 @@ import {
 } from '../../../selector/shopSelector'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
+import PromotionTypeShow from './PromotionTypeShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -139,36 +140,40 @@ class PublishShopPromotionChooseType extends Component {
             }}>
               <View style={styles.typeBox}>
                 <Text style={styles.chooseTypeText}>{item.type}</Text>
-                <Svg style={styles.typeSvg} size={normalizeW(165)} height={normalizeH(69)} icon="selected_act"/>
-                </View>
-            </TouchableWithoutFeedback>
-          )
-        } else if (index == 3) {
-          return (
-            <TouchableWithoutFeedback key={'type_'+item.id} onPress={()=> {
-              this.changeType(index)
-            }}>
-              <View style={styles.typeBox}>
-                <Text style={styles.unChoose4TypeText}>{item.type}</Text>
                 <View style={styles.typeSvg}>
-                  <Svg size={normalizeW(165)} height={normalizeH(69)} icon="custom_act"/>
+                  <Svg size={normalizeW(165)} height={normalizeH(69)} icon="selected_act"/>
                 </View>
               </View>
             </TouchableWithoutFeedback>
           )
         } else {
-          return (
-            <TouchableWithoutFeedback key={'type_'+item.id} onPress={()=> {
-              this.changeType(index)
-            }}>
-              <View style={styles.typeBox}>
-                <Text style={styles.unChooseTypeText}>{item.type}</Text>
-                <View style={styles.typeSvg}>
-                  <Svg size={normalizeW(165)} height={normalizeH(69)} icon="unselect_act@2x"/>
+          if (index == 3) {
+            return (
+              <TouchableWithoutFeedback key={'type_' + item.id} onPress={()=> {
+                this.changeType(index)
+              }}>
+                <View style={styles.typeBox}>
+                  <Text style={styles.unChoose4TypeText}>{item.type}</Text>
+                  <View style={styles.typeSvg}>
+                    <Svg size={normalizeW(165)} height={normalizeH(69)} icon="custom_act"/>
+                  </View>
                 </View>
-              </View>
-            </TouchableWithoutFeedback>
-          )
+              </TouchableWithoutFeedback>
+            )
+          } else {
+            return (
+              <TouchableWithoutFeedback key={'type_' + item.id} onPress={()=> {
+                this.changeType(index)
+              }}>
+                <View style={styles.typeBox}>
+                  <Text style={styles.unChooseTypeText}>{item.type}</Text>
+                  <View style={styles.typeSvg}>
+                    <Svg size={normalizeW(165)} height={normalizeH(69)} icon="unselect_act@2x"/>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            )
+          }
         }
       }
     })
@@ -205,7 +210,6 @@ class PublishShopPromotionChooseType extends Component {
   }
 
   render() {
-
     return (
       <View style={styles.container}>
         <Header
@@ -220,12 +224,33 @@ class PublishShopPromotionChooseType extends Component {
           </View>
           <KeyboardAwareScrollView>
             <View style={{flexDirection: 'row',}}>
-              {this.renderTypes(0, 1)}
+             <PromotionTypeShow
+               type = {this.state.types[0]}
+               isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[0].id?true:false}
+               changeType = {()=>{this.changeType(0) }}
+               unChoosenType = {()=>{this.this.unChooseType(0)}}
+             />
+              <PromotionTypeShow
+                type = {this.state.types[1]}
+                isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[1].id?true:false}
+                changeType = {()=>{this.changeType(1) }}
+                unChoosenType = {()=>{this.this.unChooseType(1)}}
+              />
 
             </View>
             <View style={{flexDirection: 'row',}}>
-              {this.renderTypes(2, 4)}
-
+              <PromotionTypeShow
+                type = {this.state.types[2]}
+                isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[2].id?true:false}
+                changeType = {()=>{this.changeType(2) }}
+                unChoosenType = {()=>{this.this.unChooseType(2)}}
+              />
+              <PromotionTypeShow
+                type = {this.state.types[3]}
+                isChoosen = {this.props.chooseTypeId&&this.props.chooseTypeId==this.state.types[3].id?true:false}
+                changeType = {()=>{this.changeType(3) }}
+                unChoosenType = {()=>{this.this.unChooseType(3)}}
+              />
             </View>
             {this.renderSubmitButton()}
           </KeyboardAwareScrollView>

@@ -143,7 +143,8 @@ class ShopGoodsListView extends Component {
 
   renderRows() {
     const imageStyle = {
-      flex: 1
+      flex: 1,
+      marginLeft: normalizeW(8)
     }
     if (this.props.goodList && this.props.goodList.length) {
       let shopGoodsList = this.props.goodList.map((item, key) => {
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     width: normalizeW(169),
     overflow: 'hidden',
     marginTop: normalizeH(10),
-    marginLeft: normalizeW(7),
+    marginRight: normalizeW(7),
     borderWidth: normalizeBorder(0),
     backgroundColor: '#F5F5F5'
     // marginBottom:normalizeH(10),
@@ -369,7 +370,7 @@ const styles = StyleSheet.create({
     flex:1,
     // marginTop: normalizeH(6),
     width: normalizeW(144),
-    height: 15,
+    height: normalizeH(15),
     fontSize: em(15),
     marginLeft: normalizeW(10),
 
@@ -391,15 +392,15 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.base.backgroundColor,
     // borderBottomWidth: normalizeBorder(),
     // borderBottomColor: THEME.colors.lighterA,
-    width: PAGE_WIDTH,
+    // width: PAGE_WIDTH,
     flexDirection: 'row',
     //  flexWrap: 'wrap',
-    //justifyContent: 'center',
+    justifyContent: 'space-between',
     // borderColor: '#E6E6E6',
     // borderTopWidth: normalizeBorder(1),
     // paddingTop:normalizeH(10),
-    paddingLeft: normalizeH(8),
-    paddingRight: normalizeH(8),
+    // paddingLeft: normalizeH(8),
+    // paddingRight: normalizeH(8),
 
   },
   columnContainer: {
@@ -417,7 +418,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.05)',
-    width: PAGE_WIDTH,
+    // width: PAGE_WIDTH,
   },
   contentContainerStyle: {
     // marginTop: normalizeH(64)

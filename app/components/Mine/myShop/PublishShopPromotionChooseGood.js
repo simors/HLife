@@ -111,14 +111,14 @@ class PublishShopPromotionChooseGood extends Component {
   }
 
   chooseGood(goodInfo) {
-    console.log('------------------choosenGoodInfo======>',goodInfo)
+    // console.log('------------------choosenGoodInfo======>',goodInfo)
     this.setState({goodPrice: goodInfo.price})
     chooseGoodInput.data = {text: goodInfo.id}
     this.props.inputFormUpdate(chooseGoodInput)
     this.setState({
       chooseGoodId: goodInfo.id
     })
-    console.log('I   CHOOOSE=========?>', chooseGoodInput.data)
+    // console.log('I   CHOOOSE=========?>', chooseGoodInput.data)
     this.openModel()
   }
 
@@ -192,7 +192,7 @@ class PublishShopPromotionChooseGood extends Component {
       this.setState({
         hideBottomView: true
       }, ()=> {
-        console.log('openModel===', this.replyInput)
+        // console.log('openModel===', this.replyInput)
         if (this.replyInput) {
           this.replyInput.focus()
         }
