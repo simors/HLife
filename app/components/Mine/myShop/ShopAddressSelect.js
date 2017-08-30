@@ -705,10 +705,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(ShopAddressSelect)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: THEME.base.mainColor,
   },
   body: {
     flex: 1,
-    marginTop: 20,
+    marginTop: normalizeH(20),
   },
   map: {
     width: PAGE_WIDTH,
