@@ -51,18 +51,11 @@ class Chatroom extends Component {
     this.oldChatMessageSoundOpen = global.chatMessageSoundOpen
     global.chatMessageSoundOpen = false
     InteractionManager.runAfterInteractions(() => {
-      // console.log('begin to create conversation:', this.props.name, this.props.members)
-
       this.createConversation((success) => {
         if(success) {
           this.fetchHistoryChatMsgs()
         }
       })
-
-      // this.props.members.forEach((member) => {
-      //   this.props.getUserInfoById({userId: member})
-      // })
-      
     })
   }
 
@@ -72,30 +65,32 @@ class Chatroom extends Component {
   }
 
   createConversation(callback) {
-    this.props.createConversation({
-      members: this.props.members,
-      name: this.props.name,
-      type: this.props.conversationType,
-      success:(result) => {
-        let conversation = result.conversation
-        let conversationId = conversation.id
-        this.props.getLcConversation({
-          conversationId: conversationId,
-          success: (conversation) => {
-            this.conversation = conversation
-            this.createMessagesIterator()
-            callback && callback(true)
-          },
-          error: () => {
-            Toast.show('获取会话失败')
-            callback && callback(false)
-          }
-        })
-      },
-      error: () => {
-        Toast.show('创建会话失败')
-        callback && callback(false)
-      }
+    InteractionManager.runAfterInteractions(() => {
+      this.props.createConversation({
+        members: this.props.members,
+        name: this.props.name,
+        type: this.props.conversationType,
+        success: (result) => {
+          let conversation = result.conversation
+          let conversationId = conversation.id
+          this.props.getLcConversation({
+            conversationId: conversationId,
+            success: (conversation) => {
+              this.conversation = conversation
+              this.createMessagesIterator()
+              callback && callback(true)
+            },
+            error: () => {
+              Toast.show('获取会话失败')
+              callback && callback(false)
+            }
+          })
+        },
+        error: () => {
+          Toast.show('创建会话失败')
+          callback && callback(false)
+        }
+      })
     })
   }
 
@@ -112,11 +107,15 @@ class Chatroom extends Component {
     if(!this.messageIterator) {
       this.createConversation((success) => {
         if(success) {
-          this.fetchHistoryChatMessagesByPaging()
+          InteractionManager.runAfterInteractions(() => {
+            this.fetchHistoryChatMessagesByPaging()
+          })
         }
       })
-    }else {
-      this.fetchHistoryChatMessagesByPaging()
+    } else {
+      InteractionManager.runAfterInteractions(() => {
+        this.fetchHistoryChatMessagesByPaging()
+      })
     }
   }
 
