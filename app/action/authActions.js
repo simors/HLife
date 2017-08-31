@@ -218,6 +218,7 @@ function handleLoginWithPwd(payload, formData) {
             dispatch(getCurrentPromoter()),
             dispatch(initMessageClient(payload)),
             dispatch(fetchAllUserUps()),
+            dispatch(fetchUserFollowees()),
             AVUtils.updateDeviceUserInfo({
               userId: user.userInfo.id
             })
@@ -264,6 +265,7 @@ function handleLoginWithWXInfo(payload, formData) {
         dispatch(getCurrentPromoter()),
         dispatch(initMessageClient(payload)),
         dispatch(fetchAllUserUps()),
+        dispatch(fetchUserFollowees()),
         AVUtils.updateDeviceUserInfo({
           userId: userId
         }),
@@ -300,6 +302,7 @@ export function loginWithWeixin(payload) {
             dispatch(shopAction.fetchUserOwnedShopInfo({userId: user.userInfo.id})),
             dispatch(fetchAllUserUps()),
             dispatch(initMessageClient(payload)),
+            dispatch(fetchUserFollowees()),
             AVUtils.updateDeviceUserInfo({
               userId: user.userInfo.id
             }),
