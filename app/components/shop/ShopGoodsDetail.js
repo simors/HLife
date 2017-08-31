@@ -75,7 +75,9 @@ class ShopGoodsDetail extends Component {
 
   componentDidMount() {
     this.props.goodInfo.album.map((item) => {
-        this.images.push(item)
+      this.images.push(item)
+    })
+    InteractionManager.runAfterInteractions(() => {
       this.props.fetchShopDetail({
         id: this.props.goodInfo.targetShop,
         success: () => {
