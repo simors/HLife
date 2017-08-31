@@ -313,15 +313,19 @@ class ShopGoodsDetail extends Component {
     }else if(this.props.goodInfo.album && this.props.goodInfo.album.length==1){
       return(
         <TouchableWithoutFeedback
-          style={{flex: 1}}
           onPress={() => this.toggleModal(!this.state.imgModalShow, this.props.goodInfo.album[0])}
         >
+          <View       style={{flex: 1}}
+          >
           <CachedImage
             mutable
             style={[{width: PAGE_WIDTH, height: normalizeH(264)}]}
             resizeMode="stretch"
             source={typeof(this.props.goodInfo.album[0]) == 'string' ? {uri: this.props.goodInfo.album[0]} : this.props.goodInfo.album[0]}
           />
+          {this.state.height < 10 ? this.renderShopLeftHeader() : null}
+          {this.state.height < 10 ? this.renderShopRightHeader() : null}
+          </View>
         </TouchableWithoutFeedback>
       )
     }
