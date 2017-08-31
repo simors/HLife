@@ -53,11 +53,11 @@ export default class NearbySalesItem extends Component {
     }
     return (
       <TouchableOpacity key={'promotion_' + index} style={{flex: 1}} onPress={() => {Actions.SHOP_GOODS_DETAIL({goodInfo:goodInfo})}}>
-        <LazyloadView host="homeList" style={styles.saleItemView}>
-          <View style={styles.saleImg}>
+        <View style={styles.saleItemView}>
+          <LazyloadView host="homeList"  style={styles.saleImg} placeholderStyle={styles.saleImg}>
             <CachedImage mutable style={{flex: 1}}
                          source={{uri: getThumbUrl(promotion.coverPhoto, normalizeW(100), normalizeW(100))}}/>
-          </View>
+          </LazyloadView>
           <View style={styles.saleContent}>
             <View>
               <Text style={styles.itemTitle} numberOfLines={1}>{promotion.goodName}</Text>
@@ -97,7 +97,7 @@ export default class NearbySalesItem extends Component {
               </View>
             </View>
           </View>
-        </LazyloadView>
+        </View>
       </TouchableOpacity>
     )
   }
