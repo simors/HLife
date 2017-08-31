@@ -24,6 +24,7 @@ import {
   StatusBar,
   Linking,
   Animated,
+  AsyncStorage,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -326,6 +327,7 @@ class Home extends Component {
 
   renderNearbySalesView() {
     let prompList = this.props.shopPromotionList
+    console.log('prompList', prompList)
     return (
       <View style={{}}>
         <NearbySalesView
@@ -336,12 +338,9 @@ class Home extends Component {
   }
 
   refreshData(payload) {
-    InteractionManager.runAfterInteractions(() => {
-      this.props.fetchBanner({type: 0})
-      this.props.getAllTopicCategories({})
-      this.props.fetchShopCategories()
-    })
-
+    this.props.fetchBanner({type: 0})
+    this.props.getAllTopicCategories({})
+    this.props.fetchShopCategories()
     this.loadMoreData(true)
   }
 
@@ -351,17 +350,18 @@ class Home extends Component {
     }
     this.isQuering = true
 
+    let geoPoint = this.props.geoPoint
     let lastDistance = undefined
     if (isRefresh) {
       lastDistance = undefined
     } else {
-      if (this.props.geoPoint && this.props.lastShopGeo) {
-        lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(this.props.geoPoint)) + 0.001
+      if (geoPoint && this.props.lastShopGeo) {
+        lastDistance = this.props.lastShopGeo.kilometersTo(new AV.GeoPoint(geoPoint)) + 0.001
       }
     }
 
     let payload = {
-      geo: this.props.geoPoint ? [this.props.geoPoint.latitude, this.props.geoPoint.longitude] : [],
+      geo: geoPoint ? [geoPoint.latitude, geoPoint.longitude] : [],
       lastDistance: lastDistance,
       isRefresh: !!isRefresh,
       nowDate: new Date(),
@@ -380,6 +380,18 @@ class Home extends Component {
         this.isQuering = false
         Toast.show(err.message, {duration: 1000})
       }
+    }
+
+    // 第一次加载时，可能geo数据还没有从持久化数据中恢复
+    if (geoPoint.latitude == 0 || geoPoint.longitude == 0) {
+      AsyncStorage.getItem('reduxPersist:CONFIG').then((data) => {
+        let jsonData = JSON.parse(data)
+        let location = jsonData.location
+        geoPoint = {latitude: location.latitude, longitude: location.longitude}
+        payload.geo = geoPoint
+        this.props.getShopPromotion(payload)
+      })
+      return
     }
     this.props.getShopPromotion(payload)
   }
