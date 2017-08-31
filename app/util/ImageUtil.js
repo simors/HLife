@@ -61,6 +61,12 @@ export function openPicker(options) {
       if (defaultOptions.multiple) {
         if (response && response.length) {
           for (let i = 0; i < response.length; i++) {
+            if (!checkIsImage(response[i].path)) {
+              defaultOptions.fail({
+                message: '只支持上传图片'
+              })
+              return
+            }
             if (parseInt(response[i].size) >= 1024 * 1024) {
               defaultOptions.fail({
                 message: '图片尺寸必须小于1M'
@@ -71,6 +77,12 @@ export function openPicker(options) {
           defaultOptions.success(response)
         }
       } else {
+        if (!checkIsImage(response.path)) {
+          defaultOptions.fail({
+            message: '只支持上传图片'
+          })
+          return
+        }
         if (parseInt(response.size) >= 1024 * 1024) {
           defaultOptions.fail({
             message: '图片尺寸必须小于1M'
