@@ -15,6 +15,7 @@ import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import ScoreShow from '../../common/ScoreShow'
+import ShopShow from '../../Local/ShopShow'
 
 class ShopFolloweesView extends Component {
   constructor(props) {

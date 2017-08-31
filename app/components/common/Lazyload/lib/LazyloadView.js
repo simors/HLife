@@ -91,7 +91,9 @@ class LazyloadView extends Component{
     };
 
     measureInWindow = (...args) => {
-        this._root.measureInWindow(...args);
+        if(this._root){
+            this._root.measureInWindow(...args);
+        }
     };
 
     measureLayout = (...args) => {
