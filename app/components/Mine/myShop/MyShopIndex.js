@@ -115,6 +115,7 @@ class MyShopIndex extends Component {
   }
 
   submitErrorCallback(error) {
+    this.setState({hideBottomView: false})
     Toast.show(error.message)
     this.isReplying = false
   }
@@ -260,7 +261,7 @@ class MyShopIndex extends Component {
     if (tags && tags.length) {
       let showTags = tags.map((item, key)=> {
         if (key < 5) {
-          return <View style={styles.shopTagBadge}>
+          return <View key={key} style={styles.shopTagBadge}>
             <Text style={styles.shopTagBadgeTxt}>{item.name}</Text>
           </View>
         }
@@ -500,8 +501,8 @@ class MyShopIndex extends Component {
                 </CachedImage> : <Image style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                                         source={require('../../../assets/images/background_shop.png')}/>}
             </TouchableOpacity>
-            {this.state.height < 100 ? this.renderShopLeftHeader() : null}
-            {this.state.height < 100 ? this.renderShopRightHeader() : null}
+            {this.state.height < 10 ? this.renderShopLeftHeader() : null}
+            {this.state.height < 10 ? this.renderShopRightHeader() : null}
             {this.renderShopAbstract()}
           </View>
 
@@ -597,8 +598,6 @@ class MyShopIndex extends Component {
   }
 
   render() {
-    let shopDetail = this.props.shopDetail
-
     return (
       <View style={styles.container}>
         {this.renderMainHeader()}
@@ -649,7 +648,7 @@ class MyShopIndex extends Component {
         </View>
         {this.state.hideBottomView
           ? <TouchableOpacity
-          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}
+          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)'}}
           onPress={()=> {
             dismissKeyboard()
           }}>
@@ -681,9 +680,6 @@ class MyShopIndex extends Component {
 
 
   onKeyboardWillShow = (e) => {
-    // this.setState({
-    //   hideBottomView: true
-    // })
   }
 
   onKeyboardWillHide = (e) => {
@@ -1287,7 +1283,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: normalizeW(91),
     top: normalizeH(52),
-    fontFamily: '.PingFangSC-Semibold',
     fontSize: em(40),
     color: 'rgba(255,120,25,0.30)',
     letterSpacing: em(0, 48),
@@ -1302,7 +1297,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   addGoodText: {
-    fontFamily: '.PingFangSC-Medium',
     fontSize: em(15),
     color: '#FF7819',
     letterSpacing: em(0.61),

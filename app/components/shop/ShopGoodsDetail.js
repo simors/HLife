@@ -305,9 +305,9 @@ class ShopGoodsDetail extends Component {
             autoPlay={true}
             onChangePage={(value)=>{this.setState({page: value+1})}}
           />
-          {this.state.height < 100 ? this.renderShopLeftHeader() : null}
-          {this.state.height < 100 ? this.renderShopMiddleHeader() : null}
-          {this.state.height < 100 ? this.renderShopRightHeader() : null}
+          {this.state.height < 10 ? this.renderShopLeftHeader() : null}
+          {this.state.height < 10 ? this.renderShopMiddleHeader() : null}
+          {this.state.height < 10 ? this.renderShopRightHeader() : null}
         </View>
       )
     }else if(this.props.goodInfo.album && this.props.goodInfo.album.length==1){
