@@ -35,7 +35,7 @@ class ShopInfoCell extends Component {
     if (!this.props.topicInfo) {
       return <View/>
     }
-    if (this.props.topicInfo.imgGroup.length > 0) {
+    if (this.props.topicInfo.imgGroup && this.props.topicInfo.imgGroup.length > 0) {
       return (
         <Image style={{width: 80, height: 80}} source={{uri: this.props.topicInfo.imgGroup[0]}}></Image>
       )
@@ -47,6 +47,7 @@ class ShopInfoCell extends Component {
     if (!this.props.topicInfo) {
       return <View/>
     }
+    console.log('topicInfo', this.props.topicInfo)
     return (
       <View style={styles.topicView}>
         <TouchableOpacity onPress={() => Actions.TOPIC_DETAIL({topic: this.props.topicInfo})}>
