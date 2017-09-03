@@ -25,6 +25,7 @@ import {Actions} from 'react-native-router-flux'
 import {activeUserId} from '../../selector/authSelector'
 import * as appConfig from '../../constants/appConfig'
 import shallowequal from 'shallowequal'
+import Avatar from '../common/Avatar'
 
 const BASE_PADDING_SIZE = normalizeW(12)
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -73,8 +74,7 @@ export class TopicContent extends Component {
       <View style={styles.introWrapStyle}>
         <View style={{flex:1,flexDirection: 'row',alignItems:'stretch'}}>
           <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>
-            <Image style={styles.avatarStyle}
-                   source={topic.avatar ? {uri: topic.avatar} : require("../../assets/images/default_portrait.png")}/>
+            <Avatar size={normalizeW(44)} src={topic.avatar}/>
           </TouchableOpacity>
           <View style={{flex: 1, justifyContent:'space-between'}}>
             <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: topic.userId})}>

@@ -12,10 +12,21 @@ import Svg from './Svgs'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {CachedImage} from "react-native-img-cache"
 import {getThumbUrl} from '../../util/ImageUtil'
+import shallowequal from 'shallowequal'
 
 export default class Avatar extends Component {
   constructor(props) {
     super(props)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowequal(this.props.src, nextProps.src)) {
+      return true;
+    }
+    if (!shallowequal(this.state, nextState)) {
+      return true;
+    }
+    return false;
   }
 
   render() {

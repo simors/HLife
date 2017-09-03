@@ -22,7 +22,6 @@ import {bindActionCreators} from 'redux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 import {getConversationTime} from '../../util/numberUtils'
-import FollowUser from '../../components/common/FollowUser'
 import {
   fetchTopicLikeUsers,
   fetchTopicLikesCount
@@ -30,6 +29,7 @@ import {
 import {getTopicLikeUsers, getTopicLikedTotalCount} from '../../selector/topicSelector'
 import {getTopicUps} from '../../selector/newTopicSelector'
 import {fetchUpsByTopicId} from '../../action/newTopicAction'
+import Avatar from '../common/Avatar'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -62,9 +62,8 @@ export class LikeUserList extends Component {
       <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})} key={key} style={{borderBottomWidth: normalizeBorder(), borderColor: '#e5e5e5',}}>
         <View style={styles.introWrapStyle}>
           <View style={{flexDirection: 'row', alignItems:'center'}}>
-            <View>
-              <Image style={styles.avatarStyle}
-                     source={value.avatar ? {uri: value.avatar} : require("../../assets/images/default_portrait.png")}/>
+            <View style={{paddingLeft: normalizeW(15)}}>
+              <Avatar size={normalizeW(44)} src={value.avatar}/>
             </View>
             <View style={{flex:1, marginLeft:10}}>
               <View>

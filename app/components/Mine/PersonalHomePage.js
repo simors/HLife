@@ -198,8 +198,7 @@ class PersonalHomePage extends Component {
           }
           {promoterLevelInfo &&
             <View style={styles.promoterLevelBox}>
-              <CachedImage mutable style={styles.promoterLevelIcon} source={promoterLevelInfo.levelMainIcon} />
-              <Text style={styles.promoterLevelName}>{promoterLevelInfo.levelName + '推广员'}</Text>
+              <Text style={styles.promoterLevelName}>{promoterLevelInfo.levelName}</Text>
             </View>
           }
         </View>
