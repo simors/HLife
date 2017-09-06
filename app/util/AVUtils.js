@@ -77,11 +77,11 @@ export function appInit() {
 
 export function getPromoterLevelInfo(level) {
 
-  if(level < 1 || level > 5) {
+  if(level < 1 || level > 13) {
     return null
   }
 
-  const levelName = ['青铜级', '白银级', '黄金级', '钻石级', '皇冠级']
+  const levelName = ['少尉', '中尉', '上尉', '少校', '中校', '上校', '大校', '少将', '中将', '上将', '少帅', '中帅', '大帅']
 
   const levelMainIcon = [
     require('../assets/images/bronze_16.png'),
@@ -100,8 +100,8 @@ export function getPromoterLevelInfo(level) {
 
   return {
     levelName: levelName[level-1],
-    levelMainIcon: levelMainIcon[level-1],
-    levelMainReverseIcon: levelMainReverseIcon[level-1]
+    // levelMainIcon: levelMainIcon[level-1],
+    // levelMainReverseIcon: levelMainReverseIcon[level-1]
   }
 }
 

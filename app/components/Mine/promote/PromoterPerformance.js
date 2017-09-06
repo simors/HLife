@@ -98,7 +98,7 @@ class PromoterPerformance extends Component {
           <View style={[styles.statItemView, {marginLeft: normalizeW(45), borderTopWidth: 1, borderColor: '#F7F7F7'}]}>
             <Text style={styles.earnTip}>收益</Text>
             <View>
-              <Text style={styles.statValue}>¥{promoter.shopEarnings}元</Text>
+              <Text style={styles.statValue}>¥{promoter.shopEarnings.toFixed(2)}元</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -116,7 +116,7 @@ class PromoterPerformance extends Component {
           <View style={[styles.statItemView, {marginLeft: normalizeW(45), borderTopWidth: 1, borderColor: '#F7F7F7'}]}>
             <Text style={styles.earnTip}>收益</Text>
             <View>
-              <Text style={styles.statValue}>¥{promoter.royaltyEarnings}元</Text>
+              <Text style={styles.statValue}>¥{promoter.royaltyEarnings.toFixed(2)}元</Text>
             </View>
           </View>
         </TouchableOpacity>

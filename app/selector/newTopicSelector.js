@@ -150,8 +150,9 @@ export function getTopicUps(state,topicId){
 }
 
 export function getTopicByTopicId(state,topicId){
-  let topic = state.NEWTOPIC.get('allTopics',topicId)
+  let topic = state.NEWTOPIC.getIn(['allTopics',topicId])
   if(topic){
     return topic.toJS()
   }
+  return undefined
 }

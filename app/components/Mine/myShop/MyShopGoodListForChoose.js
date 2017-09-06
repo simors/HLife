@@ -146,14 +146,29 @@ class ShopGoodsListView extends Component {
       flex: 1,
       marginLeft: normalizeW(8)
     }
+
+    // console.log('this.props.goodList============>',this.props.goodList,this.props.goodList.length)
+
     if (this.props.goodList && this.props.goodList.length) {
-      let shopGoodsList = this.props.goodList.map((item, key) => {
-        return (
-          <View key={key} style={imageStyle}>
-            {this.renderColumn(item)}
-          </View>
-        )
+      let shopGoodInfo = []
+      this.props.goodList.forEach((item,key)=>{
+        if(!item.promotionId){
+          shopGoodInfo.push(item)
+        }
       })
+
+      let shopGoodsList = shopGoodInfo.map((item, key) => {
+        if(!item.promotionId){
+          return (
+            <View key={key} style={imageStyle}>
+              {this.renderColumn(item)}
+            </View>
+          )
+        }else{
+          return null
+        }
+      })
+      // console.log('shopGoodList============>',shopGoodsList,shopGoodsList.length)
       return shopGoodsList
     } else {
       return <View/>

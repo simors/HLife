@@ -320,8 +320,8 @@ class ShopDetail extends Component {
                          source={{uri: this.props.shopDetail.coverUrl}}>
             </CachedImage>
           </TouchableOpacity>
-          {this.state.height < 100 ? this.renderShopLeftHeader() : null}
-          {this.state.height < 100 ? this.renderShopRightHeader() : null}
+          {this.state.height < 10 ? this.renderShopLeftHeader() : null}
+          {this.state.height < 10 ? this.renderShopRightHeader() : null}
 
           {this.renderShopAbstract()}
         </View>
@@ -665,7 +665,7 @@ class ShopDetail extends Component {
         left: 0,
         width: PAGE_WIDTH,
         height: normalizeH(64),
-        zIndex: 10,
+        zIndex: 100,
       }}
       >
         <Header
@@ -866,6 +866,7 @@ class ShopDetail extends Component {
   }
 
   submitErrorCallback(error) {
+    this.setState({hideBottomView: false})
     Toast.show(error.message)
     this.isReplying = false
   }
@@ -961,7 +962,7 @@ class ShopDetail extends Component {
 
         {this.state.hideBottomView
           ? <TouchableOpacity
-          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}
+          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)'}}
           onPress={()=> {
             dismissKeyboard()
           }}>
@@ -969,24 +970,24 @@ class ShopDetail extends Component {
         </TouchableOpacity>
           : null
         }
-        <KeyboardAwareToolBar
-          initKeyboardHeight={-normalizeH(50)}
-          hideOverlay={true}
-          containerStyle={{zIndex: 100}}
-        >
-          {this.state.hideBottomView
-            ? <ToolBarContent
-            replyInputRefCallBack={(input)=> {
-              this.replyInput = input
-            }}
-            onSend={(content) => {
-              this.sendReply(content)
-            }}
-            placeholder={(this.state.comment) ? "回复 " + this.state.comment.authorNickname + ": " : "回复 楼主: "}
-          />
-            : null
-          }
-        </KeyboardAwareToolBar>
+        {this.state.hideBottomView ?
+          <KeyboardAwareToolBar
+            initKeyboardHeight={-normalizeH(50)}
+            hideOverlay={true}
+            containerStyle={{zIndex: 100}}
+          >
+            <ToolBarContent
+              replyInputRefCallBack={(input)=> {
+                this.replyInput = input
+              }}
+              onSend={(content) => {
+                this.sendReply(content)
+              }}
+              placeholder={(this.state.comment) ? "回复 " + this.state.comment.authorNickname + ": " : "回复 楼主: "}
+            />
+          </KeyboardAwareToolBar>
+          : null
+        }
         {this.renderServicePhoneAction()}
       </View>
 

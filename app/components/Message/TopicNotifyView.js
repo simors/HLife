@@ -147,6 +147,7 @@ class TopicNotifyView extends Component {
   }
 
   renderNoticeItem(notice) {
+    console.log('notice:', notice)
     return (
       <View style={styles.itemView}>
         <View style={styles.personView}>

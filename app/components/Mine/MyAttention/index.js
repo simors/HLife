@@ -32,6 +32,7 @@ import UserFolloweesView from './UserFolloweesView'
 import ShopFolloweesView from './ShopFolloweesView'
 import * as AVUtils from '../../../util/AVUtils'
 import ScrollableTabView, {ScrollableTabBar} from '../../common/ScrollableTableView'
+import ShopShow from '../../Local/ShopShow'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -208,15 +209,18 @@ class MyAttention extends Component {
     this.props.fetchUserFollowShops(payload)
   }
 
-  renderShopItem(rowData) {
+  renderShopItem(rowData,rowId) {
+    console.log('rowData==========>',rowData,rowId)
     return (
-      <ShopFolloweesView shopInfo={rowData} />
+      <ShopShow shopInfo={rowData} key = {rowData.id} index = {rowId} name='myFollowShop'
+      />
     )
   }
 
   renderShopList() {
     return (
       <CommonListView
+        name='myFollowShop'
         dataSource={this.props.userFollowedShopList}
         renderRow={(rowData, rowId) => this.renderShopItem(rowData, rowId)}
         loadNewData={()=> {

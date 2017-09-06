@@ -143,7 +143,7 @@ export default class ShopShow extends Component {
 
   render() {
     return (
-      <LazyloadView key={'shop_' + this.props.index} host="localShop" placeholderStyle={{height: 200, width: PAGE_WIDTH}}>
+      <LazyloadView key={'shop_' + this.props.index} host={this.props.name?this.props.name:"localShop"} placeholderStyle={{height: 200, width: PAGE_WIDTH}}>
       {this.renderShop(this.props.shopInfo, this.props.index)}
       </LazyloadView>
     )

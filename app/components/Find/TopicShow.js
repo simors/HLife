@@ -25,6 +25,7 @@ import {activeUserId} from '../../selector/authSelector'
 import shallowequal from 'shallowequal'
 import {CachedImage} from "react-native-img-cache"
 import {LazyloadView} from '../common/Lazyload'
+import Avatar from '../common/Avatar'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -138,8 +139,7 @@ export class TopicShow extends Component {
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.topic.userId})}>
                   <LazyloadView host={this.props.lazyHost} style={{height: normalizeH(44), width: normalizeW(44),}}>
-                    <CachedImage mutable style={styles.avatarStyle}
-                           source={this.props.topic.avatar ? {uri: this.props.topic.avatar} : require("../../assets/images/default_portrait.png")}/>
+                    <Avatar size={normalizeW(44)} src={this.props.topic.avatar}/>
                   </LazyloadView>
                 </TouchableOpacity>
                 <View>

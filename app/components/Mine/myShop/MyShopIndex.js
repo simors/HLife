@@ -33,12 +33,10 @@ import Header from '../../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
-import ScoreShow from '../../common/ScoreShow'
 import ShopGoodsList from '../../shop/ShopGoodsList'
 import Svg from '../../common/Svgs'
 import {
   fetchShopFollowers,
-  fetchShopFollowersTotalCount,
   fetchSimilarShopList,
   fetchAllComments,
   fetchGuessYouLikeShopList,
@@ -46,12 +44,10 @@ import {
   fetchShopCommentList,
   getShopGoodsList,
 } from '../../../action/shopAction'
-import {fetchUserFollowees} from '../../../action/authActions'
 import {
   selectUserOwnedShopInfo,
   selectShopFollowers,
   selectCommentsForShop,
-  selectShopFollowersTotalCount,
   selectSimilarShopList,
   selectLatestShopAnnouncemment,
   selectShopComments,
@@ -86,19 +82,12 @@ class MyShopIndex extends Component {
       if (this.props.userOwnedShopInfo.id) {
         this.props.getShopGoodsList({shopId: this.props.userOwnedShopInfo.id, status: 1, limit: 6, more: false})
         this.props.fetchShopFollowers({id: this.props.userOwnedShopInfo.id})
-        this.props.fetchShopFollowersTotalCount({id: this.props.userOwnedShopInfo.id})
         this.refreshData()
-      }
-      if (this.props.isUserLogined) {
-        this.props.fetchUserFollowees()
       }
     })
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(()=> {
-
-    })
     if (Platform.OS == 'ios') {
       Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)
       Keyboard.addListener('keyboardWillHide', this.onKeyboardWillHide)
@@ -115,170 +104,27 @@ class MyShopIndex extends Component {
     } else {
       Keyboard.removeListener('keyboardDidShow', this.onKeyboardDidShow)
       Keyboard.removeListener('keyboardDidHide', this.onKeyboardDidHide)
-
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-
-  }
-
-
-  gotoShopDetailScene(id) {
-    Actions.SHOP_DETAIL({id: id})
-  }
-
-  renderGuessYouLikeList() {
-    let guessYouLikeView = <View/>
-    if (this.props.guessYouLikeList.length) {
-      guessYouLikeView = this.props.guessYouLikeList.map((item, index)=> {
-        // console.log('renderGuessYouLikeList.item***====', item)
-        let shopTag = null
-        if (item.containedTag && item.containedTag.length) {
-          shopTag = item.containedTag[0].name
-        }
-        return (
-          <TouchableOpacity key={'gyl_' + index} onPress={()=> {
-            this.gotoShopDetailScene(item.id)
-          }}>
-            <View style={[styles.shopInfoWrap]}>
-              <View style={styles.coverWrap}>
-                <Image style={styles.cover} source={{uri: item.coverUrl}}/>
-              </View>
-              <View style={styles.shopIntroWrap}>
-                <View style={styles.shopInnerIntroWrap}>
-                  <Text style={styles.shopName} numberOfLines={1}>{item.shopName}</Text>
-                  <ScoreShow
-                    containerStyle={{flex: 1}}
-                    score={item.score}
-                  />
-                  <View style={styles.subInfoWrap}>
-                    {item &&
-                    <Text style={[styles.subTxt]}>{shopTag}</Text>
-                    }
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                      <Text style={styles.subTxt}>{item.geoDistrict && item.geoDistrict}</Text>
-                    </View>
-                    {item.distance &&
-                    <Text style={[styles.subTxt]}>{item.distance + item.distanceUnit}</Text>
-                    }
-                  </View>
-                </View>
-                {this.renderShopPromotion(item)}
-              </View>
-            </View>
-          </TouchableOpacity>
-        )
-      })
-    }
-    return guessYouLikeView
-  }
-
-  renderShopPromotion(shopInfo) {
-    // console.log('renderShopPromotion.shopInfo=**********==', shopInfo)
-    let containedPromotions = shopInfo.containedPromotions
-    if (containedPromotions && containedPromotions.length) {
-      let shopPromotionView = containedPromotions.map((promotion, index)=> {
-        return (
-          <View key={'promotion_' + index} style={styles.shopPromotionBox}>
-            <View style={styles.shopPromotionBadge}>
-              <Text style={styles.shopPromotionBadgeTxt}>{promotion.type}</Text>
-            </View>
-            <View style={styles.shopPromotionContent}>
-              <Text numberOfLines={1} style={styles.shopPromotionContentTxt}>{promotion.typeDesc}</Text>
-            </View>
-          </View>
-        )
-      })
-      return (
-        <View style={styles.shopPromotionWrap}>
-          {shopPromotionView}
-        </View>
-      )
-    }
-    return null
-  }
-
-  renderGuessYouLike() {
-    if (this.props.guessYouLikeList.length) {
-      return (
-        <View style={styles.guessYouLikeWrap}>
-          <View style={styles.guessYouLikeTitleWrap}>
-            <View style={styles.titleLine}/>
-            <Text style={styles.guessYouLikeTitle}>猜你喜欢</Text>
-          </View>
-          {this.renderGuessYouLikeList()}
-        </View>
-      )
-    }
-  }
-
-  renderSimilarShops() {
-    if (this.props.similarShopList.length) {
-      return (
-        <View style={styles.guessYouLikeWrap}>
-          <View style={styles.guessYouLikeTitleWrap}>
-            <Text style={styles.guessYouLikeTitle}>同类店铺</Text>
-          </View>
-          {this.renderSimilarShopList()}
-        </View>
-      )
     }
   }
 
   submitSuccessCallback() {
     this.setState({hideBottomView: false})
-    // dismissKeyboard()
-    // console.log('publishCommentSuccesss=========>')
     Toast.show('评论成功', {duration: 1000})
     this.refreshData()
     this.isReplying = false
   }
 
   submitErrorCallback(error) {
+    this.setState({hideBottomView: false})
     Toast.show(error.message)
     this.isReplying = false
   }
 
-  renderSimilarShopList() {
-    let similarShopListView = <View/>
-    if (this.props.similarShopList.length) {
-      similarShopListView = this.props.similarShopList.map((item, index)=> {
-        return (
-          <TouchableWithoutFeedback key={"similar_shop_" + index} onPress={()=> {
-            Actions.SHOP_DETAIL({id: item.id})
-          }}>
-            <View style={styles.shopInfoWrap}>
-              <View style={styles.coverWrap}>
-                <Image style={styles.cover} source={{uri: item.coverUrl}}/>
-              </View>
-              <View style={[styles.shopIntroWrap]}>
-                <Text style={styles.gylShopName} numberOfLines={1}>{item.shopName}</Text>
-                <ScoreShow
-                  score={item.score}
-                />
-                <View style={styles.subInfoWrap}>
-                  {item.pv
-                    ? <Text style={styles.subTxt}>{item.pv}人看过</Text>
-                    : null
-                  }
-                </View>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        )
-      })
-    }
-    return similarShopListView
-  }
-
   onCommentButton(comment) {
-
     this.setState({
       comment: comment
     })
     this.openModel()
-
   }
 
   openModel(callback) {
@@ -289,7 +135,6 @@ class MyShopIndex extends Component {
       this.setState({
         hideBottomView: true
       }, ()=> {
-        // console.log('openModel===', this.replyInput)
         if (this.replyInput) {
           this.replyInput.focus()
         }
@@ -416,7 +261,7 @@ class MyShopIndex extends Component {
     if (tags && tags.length) {
       let showTags = tags.map((item, key)=> {
         if (key < 5) {
-          return <View style={styles.shopTagBadge}>
+          return <View key={key} style={styles.shopTagBadge}>
             <Text style={styles.shopTagBadgeTxt}>{item.name}</Text>
           </View>
         }
@@ -469,7 +314,7 @@ class MyShopIndex extends Component {
         left: 0,
         width: PAGE_WIDTH,
         height: normalizeH(64),
-        zIndex: 100,
+        zIndex: 10,
       }}
       >
         <Header
@@ -656,8 +501,8 @@ class MyShopIndex extends Component {
                 </CachedImage> : <Image style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                                         source={require('../../../assets/images/background_shop.png')}/>}
             </TouchableOpacity>
-            {this.state.height < 100 ? this.renderShopLeftHeader() : null}
-            {this.state.height < 100 ? this.renderShopRightHeader() : null}
+            {this.state.height < 10 ? this.renderShopLeftHeader() : null}
+            {this.state.height < 10 ? this.renderShopRightHeader() : null}
             {this.renderShopAbstract()}
           </View>
 
@@ -753,9 +598,6 @@ class MyShopIndex extends Component {
   }
 
   render() {
-    let shopDetail = this.props.shopDetail
-    let albumLen = (shopDetail.album && shopDetail.album.length) ? (shopDetail.album.length + 1) : 1
-
     return (
       <View style={styles.container}>
         {this.renderMainHeader()}
@@ -806,7 +648,7 @@ class MyShopIndex extends Component {
         </View>
         {this.state.hideBottomView
           ? <TouchableOpacity
-          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}
+          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.5)'}}
           onPress={()=> {
             dismissKeyboard()
           }}>
@@ -817,6 +659,7 @@ class MyShopIndex extends Component {
         <KeyboardAwareToolBar
           initKeyboardHeight={-normalizeH(50)}
           hideOverlay={true}
+          containerStyle={{zIndex: 100}}
         >
           {this.state.hideBottomView
             ? <ToolBarContent
@@ -837,13 +680,9 @@ class MyShopIndex extends Component {
 
 
   onKeyboardWillShow = (e) => {
-    // this.setState({
-    //   hideBottomView: true
-    // })
   }
 
   onKeyboardWillHide = (e) => {
-    console.log('onKeyboardWillHide')
     this.setState({
       hideBottomView: false
     })
@@ -926,63 +765,19 @@ class MyShopIndex extends Component {
     }
     Actions.SHOP_GOOD_PROMOTION_MANAGE({shopId: this.props.userOwnedShopInfo.id})
   }
-
-  renderShopFollowers() {
-    let shopFollowers = this.props.shopFollowers
-    let shopFollowersTotalCount = this.props.shopFollowersTotalCount
-    // shopFollowersTotalCount = 5
-    // shopFollowers = [{},{},{},{},{}]
-    // console.log('shopFollowersTotalCount====', shopFollowersTotalCount)
-    // console.log('shopFollowers====', shopFollowers)
-    if (shopFollowersTotalCount) {
-      let shopFollowersView = shopFollowers.map((item, index)=> {
-        if (index > 2) {
-          return null
-        }
-        let source = require('../../../assets/images/default_portrait.png')
-        if (item.avatar) {
-          source = {uri: item.avatar}
-        }
-
-        return (
-          <Image
-            key={'shop_follower_' + index}
-            style={{width: 20, height: 20, marginRight: 5, borderRadius: 10}}
-            source={source}
-          />
-        )
-      })
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {shopFollowersView}
-          <Icon
-            name="ios-arrow-forward"
-            style={{marginLeft: 6, color: '#8f8e94', fontSize: 17}}/>
-        </View>
-      )
-    }
-    return (
-      <Text style={{color: '#8f8e94'}}>暂无粉丝,赶紧开始推广吧!</Text>
-    )
-  }
 }
 
 const mapStateToProps = (state, ownProps) => {
   const userOwnedShopInfo = selectUserOwnedShopInfo(state)
-  // console.log('userOwnedShopInfo====', userOwnedShopInfo)
   const isUserLogined = authSelector.isUserLogined(state)
   const userFollowees = authSelector.selectUserFollowees(state)
   let goodList = []
   let shopFollowers = []
-  let shopFollowersTotalCount = 0
   let latestShopAnnouncement = {}
   let shopComments = []
-  let shopCommentsTotalCount = 0
   let similarShopList = []
   if (userOwnedShopInfo.id) {
     shopFollowers = selectShopFollowers(state, userOwnedShopInfo.id)
-    console.log('shopFollowers========>',shopFollowers)
-    shopFollowersTotalCount = selectShopFollowersTotalCount(state, userOwnedShopInfo.id)
     latestShopAnnouncement = selectLatestShopAnnouncemment(state, userOwnedShopInfo.id)
     shopComments = selectShopComments(state, userOwnedShopInfo.id)
     // console.log('shopComments==***==', shopComments)
@@ -1018,7 +813,6 @@ const mapStateToProps = (state, ownProps) => {
     userOwnedShopInfo: userOwnedShopInfo,
     isUserLogined: isUserLogined,
     shopFollowers: shopFollowers,
-    shopFollowersTotalCount: shopFollowersTotalCount,
     latestShopAnnouncement: latestShopAnnouncement,
     shopComments: shopComments,
     userFollowees: userFollowees,
@@ -1033,10 +827,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCommentList,
-  fetchUserFollowees,
   fetchGuessYouLikeShopList,
   fetchShopFollowers,
-  fetchShopFollowersTotalCount,
   fetchSimilarShopList,
   getShopGoodsList,
   fetchAllComments,
@@ -1491,7 +1283,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: normalizeW(91),
     top: normalizeH(52),
-    fontFamily: '.PingFangSC-Semibold',
     fontSize: em(40),
     color: 'rgba(255,120,25,0.30)',
     letterSpacing: em(0, 48),
@@ -1506,7 +1297,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   addGoodText: {
-    fontFamily: '.PingFangSC-Medium',
     fontSize: em(15),
     color: '#FF7819',
     letterSpacing: em(0.61),

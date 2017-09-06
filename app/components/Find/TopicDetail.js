@@ -371,33 +371,21 @@ export class TopicDetail extends Component {
   }
 
   renderHeaderView() {
-    let topic = this.props.topic
-    if (topic.picked || this.props.enableShare) {
-      return (
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
-          title="详情"
-          rightComponent={()=>{
-            return (
-              <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
-                <CachedImage mutable source={require('../../assets/images/active_share.png')}/>
-              </TouchableOpacity>
-            )
-          }}
-        />
-      )
-    } else {
-      return (
-        <Header
-          leftType="icon"
-          leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
-          title="详情"
-        />
-      )
-    }
+    return (
+      <Header
+        leftType="icon"
+        leftIconName="ios-arrow-back"
+        leftPress={() => Actions.pop()}
+        title="详情"
+        rightComponent={()=>{
+          return (
+            <TouchableOpacity onPress={this.onShare} style={{marginRight:10}}>
+              <CachedImage mutable source={require('../../assets/images/active_share.png')}/>
+            </TouchableOpacity>
+          )
+        }}
+      />
+    )
   }
 
   renderTopicLikeUsersView() {
