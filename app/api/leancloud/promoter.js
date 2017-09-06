@@ -277,7 +277,7 @@ export function syncPromoterInfo(payload) {
     return result
   }, (err) => {
     console.log('promoterSyncPromoterInfo', err)
-    // throw err
+    throw err
   })
 }
 
