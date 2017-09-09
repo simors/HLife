@@ -258,7 +258,8 @@ function handleLoginWithWXInfo(payload, formData) {
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...result}))
       return lcPromoter.syncPromoterInfo({userId: userId})
-
+    }).then(() => {
+      return lcPromoter.getPromoterQrcode({unionid: loginPayload.wxUserInfo.unionid})
     }).then(() => {
       Promise.all([
         dispatch(shopAction.fetchUserOwnedShopInfo({userId: userId})),
@@ -268,8 +269,7 @@ function handleLoginWithWXInfo(payload, formData) {
         dispatch(fetchUserFollowees()),
         AVUtils.updateDeviceUserInfo({
           userId: userId
-        }),
-        lcPromoter.getPromoterQrcode({unionid: loginPayload.wxUserInfo.unionid})
+        })
       ])
     }).catch((error) => {
       dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
@@ -309,10 +309,9 @@ export function loginWithWeixin(payload) {
             lcPromoter.syncPromoterInfo({userId: user.userInfo.id})
           ])
         }).then(() => {
-          Promise.all([
-            dispatch(getCurrentPromoter()),
-            lcPromoter.getPromoterQrcode({unionid: loginPayload.unionid})
-          ])
+          return lcPromoter.getPromoterQrcode({unionid: loginPayload.unionid})
+        }).then(() => {
+          dispatch(getCurrentPromoter())
         }).catch((error) => {
           console.log("loginWithWX", error)
           dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
