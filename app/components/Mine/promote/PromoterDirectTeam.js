@@ -92,7 +92,7 @@ class PromoterDirectTeam extends Component {
     return (
       <View>
         <View style={styles.tipView}>
-          <Text style={styles.tipText}>我的邀请者</Text>
+          <Text style={styles.tipText}>我的亲密邻友</Text>
         </View>
         <View>
           <TouchableOpacity style={styles.infoView} onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: upUser.id})}}>
@@ -132,7 +132,7 @@ class PromoterDirectTeam extends Component {
     return (
       <View>
         <View style={[styles.tipView, {flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}]}>
-          <Text style={styles.tipText}>我的一级好友</Text>
+          <Text style={styles.tipText}>我的熟人</Text>
           <Text style={{fontSize: em(15), color: THEME.base.mainColor, paddingLeft: normalizeW(8)}}>{promoter.teamMemNum}</Text>
           <Text style={[styles.tipText, {paddingLeft: normalizeW(8)}]}>人</Text>
         </View>

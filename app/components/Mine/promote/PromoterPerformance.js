@@ -107,7 +107,7 @@ class PromoterPerformance extends Component {
           <View style={styles.statItemView}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Svg size={32} icon="my_team" />
-              <Text style={styles.statTip}>团队成员</Text>
+              <Text style={styles.statTip}>我的邻友</Text>
             </View>
             <View>
               <Text style={styles.statValue}>{promoter.teamMemNum}人</Text>

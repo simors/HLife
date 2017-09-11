@@ -205,7 +205,7 @@ class Mine extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={{paddingRight: normalizeW(31)}} onPress={() => {Actions.PROMOTER_PERFORMANCE()}}>
             <Svg size={32} icon="spread" />
-            <Text style={styles.funBtnText}>推广</Text>
+            <Text style={styles.funBtnText}>邻友</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.menuItemView}>
