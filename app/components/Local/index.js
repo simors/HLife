@@ -41,22 +41,25 @@ import * as Toast from '../common/Toast'
 import * as authSelector from '../../selector/authSelector'
 import * as locSelector from '../../selector/locSelector'
 import MessageBell from '../common/MessageBell'
-import {selectLocalShopList} from '../../selector/shopSelector'
+import {selectLocalShopList, selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {clearShopList, getNearbyShopList,fetchAllMyCommentUps} from '../../action/shopAction'
 import SearchBar from '../common/SearchBar'
-import ScoreShow from '../common/ScoreShow'
 import ViewPager from 'react-native-viewpager'
 import {CachedImage} from "react-native-img-cache"
 import AV from 'leancloud-storage'
-import {LazyloadView} from '../common/Lazyload'
 import {getThumbUrl} from '../../util/ImageUtil'
 import ShopShow from './ShopShow'
+import {IDENTITY_SHOPKEEPER, INVITE_SHOP} from '../../constants/appConfig'
+import {getShopTenant} from '../../action/promoterAction'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 
 class Local extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      showActivityBtn: true,
+    }
   }
 
   componentWillMount() {
@@ -86,6 +89,16 @@ class Local extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+  }
+
+  handleOnScroll(e) {
+    let offset = e.nativeEvent.contentOffset.y
+    let comHeight = normalizeH(159)
+    if (offset >= 0 && offset < comHeight) {
+      this.setState({showActivityBtn: true})
+    } else if (offset >= comHeight) {
+      this.setState({showActivityBtn: false})
+    }
   }
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -248,10 +261,81 @@ class Local extends Component {
     this.props.getNearbyShopList(payload)
   }
 
+  renderShortcutBtn() {
+    let identity = this.props.identity
+    let isUserLogined = this.props.isUserLogined
+    if (!isUserLogined || !identity) return null
+    if (identity.includes(IDENTITY_SHOPKEEPER)) {
+      return this.state.showActivityBtn ? (
+        <TouchableOpacity onPress={this.activityManage} style={styles.activityBtn}>
+          <View style={styles.activityBtnView}>
+            <Text style={{fontSize: em(12), color: '#FFF'}}>促销</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null
+    } else {
+      return this.state.showActivityBtn ? (
+        <TouchableOpacity onPress={() => Actions.SHOPR_EGISTER()} style={styles.activityBtn}>
+          <View style={styles.activityBtnView}>
+            <Text style={{fontSize: em(12), color: '#FFF'}}>开店</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null
+    }
+  }
+
+  activityManage = () => {
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    let activeUserId = this.props.activeUserId
+    let userOwnedShopInfo = this.props.userOwnedShopInfo
+    if(userOwnedShopInfo.status == 1) {
+      if(userOwnedShopInfo.payment == 1) { //已注册，已支付
+        if(!userOwnedShopInfo.coverUrl) {
+          Actions.COMPLETE_SHOP_INFO()
+        }else{
+          Actions.SHOP_GOOD_PROMOTION_MANAGE({shopId: userOwnedShopInfo.id})
+        }
+      }else{//已注册，未支付
+        this.props.getShopTenant({
+          province: userOwnedShopInfo.geoProvince,
+          city: userOwnedShopInfo.geoCity,
+          success: (tenant) =>{
+            Actions.PAYMENT({
+              metadata: {
+                'shopId':userOwnedShopInfo.id,
+                'tenant': tenant,
+                'user': activeUserId,
+                'dealType': INVITE_SHOP
+              },
+              price: tenant,
+              subject: '店铺入驻汇邻优店加盟费',
+              paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
+              paySuccessJumpSceneParams: {
+                shopId: userOwnedShopInfo.id,
+                tenant: tenant,
+              },
+              payErrorJumpScene: 'MINE',
+              payErrorJumpSceneParams: {}
+            })
+          },
+          error: (error)=>{
+            Toast.show('获取加盟费金额失败')
+          }
+        })
+      }
+    } else if (userOwnedShopInfo.status == 0) {
+      Toast.show('您的店铺已被关闭，请与客服联系')
+    } else {
+      Toast.show('您的店铺目前处于异常状态，请联系客服')
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        {/*<StatusBar barStyle="dark-content"/>*/}
         <Header
           leftType="none"
           centerComponent={() => {
@@ -276,10 +360,11 @@ class Local extends Component {
                 this.loadMoreData(false, true)
               }}
               ref={(listView) => this.listView = listView}
+              onScroll={e => this.handleOnScroll(e)}
             />
           </View>
         </View>
-
+        {this.renderShortcutBtn()}
       </View>
     )
   }
@@ -310,6 +395,10 @@ const mapStateToProps = (state, ownProps) => {
   // console.log('shopList==>',shopList)
   let geoPoint = locSelector.getGeopoint(state)
 
+  let activeUserId = authSelector.activeUserId(state)
+  let identity = authSelector.getUserIdentity(state, activeUserId)
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+
   return {
     allShopCategories: allShopCategories,
     ds: ds.cloneWithRows(dataArray),
@@ -317,6 +406,9 @@ const mapStateToProps = (state, ownProps) => {
     shopList: shopList,
     geoPoint: geoPoint,
     lastShopGeo: lastShopGeo,
+    identity: identity,
+    activeUserId: activeUserId,
+    userOwnedShopInfo: userOwnedShopInfo,
   }
 }
 
@@ -324,7 +416,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchShopCategories,
   clearShopList,
   getNearbyShopList,
-  fetchAllMyCommentUps
+  fetchAllMyCommentUps,
+  getShopTenant,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Local)
@@ -440,5 +533,20 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: 'transparent',
   },
-
+  activityBtn: {
+    position: 'absolute',
+    bottom: normalizeH(70),
+    right: normalizeW(30),
+    zIndex: 11,
+  },
+  activityBtnView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: normalizeW(40),
+    height: normalizeW(40),
+    borderRadius: normalizeW(20),
+    overflow: 'hidden',
+    backgroundColor: THEME.base.mainColor,
+    opacity: 0.7,
+  },
 })
