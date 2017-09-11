@@ -25,6 +25,7 @@ import {
   Linking,
   Animated,
   AsyncStorage,
+  TouchableWithoutFeedback,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -43,7 +44,7 @@ import NearbyShopView from './NearbyShopView'
 import NearbySalesView from './NearbySalesView'
 import {getCity, getGeopoint} from '../../selector/locSelector'
 import * as Toast from '../common/Toast'
-import {selectLocalGoodPromotion} from '../../selector/shopSelector'
+import {selectLocalGoodPromotion, selectUserOwnedShopInfo} from '../../selector/shopSelector'
 import {getShopPromotion} from '../../action/shopAction'
 import codePush from 'react-native-code-push'
 import {NativeModules, NativeEventEmitter, DeviceEventEmitter} from 'react-native'
@@ -51,6 +52,8 @@ import {checkUpdate} from '../../api/leancloud/update'
 import Popup from '@zzzkk2009/react-native-popup'
 import ViewPager from '../common/ViewPager'
 import shallowequal from 'shallowequal'
+import {IDENTITY_SHOPKEEPER, INVITE_SHOP} from '../../constants/appConfig'
+import {getShopTenant} from '../../action/promoterAction'
 
 import SearchBar from '../common/SearchBar'
 import {CachedImage} from "react-native-img-cache"
@@ -71,6 +74,7 @@ class Home extends Component {
     super(props)
     this.state = {
       fade: new Animated.Value(0),
+      showActivityBtn: true,
     }
   }
 
@@ -181,16 +185,19 @@ class Home extends Component {
         toValue: 0,
         duration: 100,
       }).start()
+      this.setState({showActivityBtn: true})
     } else if (offset > 10 && offset < comHeight) {
       Animated.timing(this.state.fade, {
         toValue: (offset - 10)/comHeight,
         duration: 100,
       }).start()
+      this.setState({showActivityBtn: true})
     } else if (offset >= comHeight) {
       Animated.timing(this.state.fade, {
         toValue: 1,
         duration: 100,
       }).start()
+      this.setState({showActivityBtn: false})
     }
   }
 
@@ -337,6 +344,78 @@ class Home extends Component {
     )
   }
 
+  activityManage = () => {
+    if (!this.props.isUserLogined) {
+      Actions.LOGIN()
+      return
+    }
+    let activeUserId = this.props.activeUserId
+    let userOwnedShopInfo = this.props.userOwnedShopInfo
+    if(userOwnedShopInfo.status == 1) {
+      if(userOwnedShopInfo.payment == 1) { //已注册，已支付
+        if(!userOwnedShopInfo.coverUrl) {
+          Actions.COMPLETE_SHOP_INFO()
+        }else{
+          Actions.SHOP_GOOD_PROMOTION_MANAGE({shopId: userOwnedShopInfo.id})
+        }
+      }else{//已注册，未支付
+        this.props.getShopTenant({
+          province: userOwnedShopInfo.geoProvince,
+          city: userOwnedShopInfo.geoCity,
+          success: (tenant) =>{
+            Actions.PAYMENT({
+              metadata: {
+                'shopId':userOwnedShopInfo.id,
+                'tenant': tenant,
+                'user': activeUserId,
+                'dealType': INVITE_SHOP
+              },
+              price: tenant,
+              subject: '店铺入驻汇邻优店加盟费',
+              paySuccessJumpScene: 'SHOPR_EGISTER_SUCCESS',
+              paySuccessJumpSceneParams: {
+                shopId: userOwnedShopInfo.id,
+                tenant: tenant,
+              },
+              payErrorJumpScene: 'MINE',
+              payErrorJumpSceneParams: {}
+            })
+          },
+          error: (error)=>{
+            Toast.show('获取加盟费金额失败')
+          }
+        })
+      }
+    } else if (userOwnedShopInfo.status == 0) {
+      Toast.show('您的店铺已被关闭，请与客服联系')
+    } else {
+      Toast.show('您的店铺目前处于异常状态，请联系客服')
+    }
+  }
+
+  renderShortcutBtn() {
+    let identity = this.props.identity
+    let isUserLogined = this.props.isUserLogined
+    if (!isUserLogined || !identity) return null
+    if (identity.includes(IDENTITY_SHOPKEEPER)) {
+      return this.state.showActivityBtn ? (
+        <TouchableOpacity onPress={this.activityManage} style={styles.activityBtn}>
+          <View style={styles.activityBtnView}>
+            <Text style={{fontSize: em(12), color: '#FFF'}}>促销</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null
+    } else {
+      return this.state.showActivityBtn ? (
+        <TouchableOpacity onPress={() => Actions.SHOPR_EGISTER()} style={styles.activityBtn}>
+          <View style={styles.activityBtnView}>
+            <Text style={{fontSize: em(12), color: '#FFF'}}>开店</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null
+    }
+  }
+
   refreshData(payload) {
     this.props.fetchBanner({type: 0})
     this.props.getAllTopicCategories({})
@@ -421,6 +500,7 @@ class Home extends Component {
             />
           </View>
         </View>
+        {this.renderShortcutBtn()}
       </View>
     )
   }
@@ -469,6 +549,11 @@ const mapStateToProps = (state, ownProps) => {
   const allShopCategories = selectShopCategories(state)
   const noUpdateVersion = getNoUpdateVersion(state)
 
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  const isUserLogined = authSelector.isUserLogined(state)
+  let identity = authSelector.getUserIdentity(state, activeUserInfo.id)
+  let activeUserId = authSelector.activeUserId(state)
+
   return {
     banner: banner,
     ds: ds.cloneWithRows(dataArray),
@@ -478,6 +563,10 @@ const mapStateToProps = (state, ownProps) => {
     allShopCategories: allShopCategories,
     noUpdateVersion:noUpdateVersion,
     lastShopGeo: lastShopGeo,
+    userOwnedShopInfo: userOwnedShopInfo,
+    isUserLogined: isUserLogined,
+    identity: identity,
+    activeUserId: activeUserId,
   }
 }
 
@@ -487,7 +576,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   getCurrentLocation,
   fetchShopCategories,
   fetchAppNoUpdate,
-  getShopPromotion
+  getShopPromotion,
+  getShopTenant,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
@@ -511,6 +601,21 @@ const styles = StyleSheet.create({
   },
   moduleSpace: {
     paddingBottom: normalizeH(8),
-  }
-
+  },
+  activityBtn: {
+    position: 'absolute',
+    bottom: normalizeH(70),
+    right: normalizeW(30),
+    zIndex: 11,
+  },
+  activityBtnView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: normalizeW(40),
+    height: normalizeW(40),
+    borderRadius: normalizeW(20),
+    overflow: 'hidden',
+    backgroundColor: THEME.base.mainColor,
+    opacity: 0.7,
+  },
 })
