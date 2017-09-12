@@ -148,7 +148,7 @@ class PublishShopPromotionSubmit extends Component {
             duration: 1500,
             onHidden: () =>{
               // Actions.MY_SHOP_INDEX()
-              Actions.popTo('MY_SHOP_INDEX')
+              Actions.pop({popNum: 5})
             }
           })
         },
