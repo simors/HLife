@@ -19,23 +19,16 @@ import {
   TextInput,
   Modal
 } from 'react-native'
-import ToolBarContent from '../../shop/ShopCommentReply/ToolBarContent'
-import KeyboardAwareToolBar from '../../common/KeyboardAwareToolBar'
 import {isUserLogined, activeUserInfo,activeUserId} from '../../../selector/authSelector'
 import {selectShopPromotionDayPay,selectOpenGoodPromotion} from '../../../selector/shopSelector'
 import {DateDiff} from '../../../util/dateUtils'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import Svg from '../../common/Svgs'
 import {Actions} from 'react-native-router-flux'
 import Header from '../../common/Header'
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import ImageInput from '../../common/Input/ImageInput'
-import ImageGroupViewer from '../../common/Input/ImageGroupViewer'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
 import THEME from '../../../constants/themes/theme1'
 import * as Toast from '../../common/Toast'
-import TextAreaInput from '../../common/Input/TextAreaInput'
 import {getThumbUrl} from '../../../util/ImageUtil'
 import {CachedImage} from "react-native-img-cache"
 import {PUBLISH_PROMOTION} from '../../../constants/appConfig'
@@ -43,10 +36,6 @@ import {PUBLISH_PROMOTION} from '../../../constants/appConfig'
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
 import {fetchShopAnnouncements,submitShopGoodPromotion,fetchShopPromotionDayPay} from '../../../action/shopAction'
-import MultilineText from '../../common/Input/MultilineText'
-import dismissKeyboard from 'react-native-dismiss-keyboard'
-import MyShopGoodListForChoose from './MyShopGoodListForChoose'
-import DateTimeInput from '../../common/Input/DateTimeInput'
 import {
   selectUserOwnedShopInfo,
   selectGoodsById,
@@ -345,7 +334,7 @@ const mapStateToProps = (state, ownProps) => {
     dayPay: dayPay,
     currentUser: currentUser,
     proNum: proNum,
-    sumPay: dayPay*countDays,
+    sumPay: (Number(dayPay) * Number(countDays)).toFixed(2),
   }
 }
 

@@ -23,6 +23,7 @@
     "leancloud-realtime": "^3.3.3",
     "leancloud-realtime-plugin-typed-messages": "^1.0.0",
     "leancloud-storage": "^1.5.3",
+    "mathjs": "^3.16.3",
     "react": "15.4.1",
     "react-addons-shallow-compare": "^15.4.2",
     "react-immutable-render-mixin": "^0.9.7",
