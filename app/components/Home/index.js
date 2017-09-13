@@ -334,7 +334,6 @@ class Home extends Component {
 
   renderNearbySalesView() {
     let prompList = this.props.shopPromotionList
-    console.log('prompList', prompList)
     return (
       <View style={{}}>
         <NearbySalesView

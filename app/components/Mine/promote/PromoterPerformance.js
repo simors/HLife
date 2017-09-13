@@ -80,7 +80,6 @@ class PromoterPerformance extends Component {
 
   renderBodyView() {
     let promoter = this.props.promoter
-    console.log('promoter', promoter)
     if (!promoter) {
       return <View/>
     }

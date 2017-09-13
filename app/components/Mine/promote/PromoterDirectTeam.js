@@ -55,7 +55,7 @@ class PromoterDirectTeam extends Component {
     this.isQuering = true
 
     InteractionManager.runAfterInteractions(()=>{
-      this.props.getMyPromoterTeam({
+      let payload = {
         limit: 10,
         more: !isRefresh,
         lastUpdatedAt: !!isRefresh ? undefined : this.lastUpdatedAt,
@@ -69,7 +69,8 @@ class PromoterDirectTeam extends Component {
         error: (message) => {
           this.isQuering = false
         }
-      })
+      }
+      this.props.getMyPromoterTeam(payload)
     })
   }
 

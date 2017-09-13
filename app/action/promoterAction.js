@@ -233,7 +233,7 @@ export function getMyPromoterTeam(payload) {
         dispatch(setPromoterTeam({promoterId: activePromoter(getState()), team: promoterIds}))
       }
       if (payload.success) {
-        payload.success(team.length == 0)
+        payload.success(team.length < payload.limit)
       }
     }).catch((err) => {
       if (payload.error) {
@@ -276,7 +276,7 @@ export function getPromoterTeamById(payload) {
         dispatch(setPromoterTeam({promoterId: payload.promoterId, team: promoterIds}))
       }
       if (payload.success) {
-        payload.success(team.length == 0)
+        payload.success(team.length < payload.limit)
       }
     }).catch((err) => {
       if (payload.error) {
