@@ -152,13 +152,12 @@ class PromoterDirectTeam extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/*<StatusBar barStyle="dark-content" />*/}
         <Header leftType="icon"
                 leftIconName="ios-arrow-back"
                 leftPress={()=> {
                   Actions.pop()
                 }}
-                title="团队成员"
+                title="我的好友"
                 rightComponent={() => {return this.renderExplainBtn()}}
         />
         <View style={styles.body}>

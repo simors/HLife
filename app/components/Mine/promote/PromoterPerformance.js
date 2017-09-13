@@ -21,6 +21,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import {getPromoterById, activePromoter} from '../../../selector/promoterSelector'
 import PromoterIcon from '../../common/PromoterIcon'
 import Svg from '../../common/Svgs'
+import math from 'mathjs'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -79,6 +80,7 @@ class PromoterPerformance extends Component {
 
   renderBodyView() {
     let promoter = this.props.promoter
+    console.log('promoter', promoter)
     if (!promoter) {
       return <View/>
     }
@@ -110,7 +112,7 @@ class PromoterPerformance extends Component {
               <Text style={styles.statTip}>我的邻友</Text>
             </View>
             <View>
-              <Text style={styles.statValue}>{promoter.teamMemNum}人</Text>
+              <Text style={styles.statValue}>{math.chain(promoter.teamMemNum).add(promoter.level2Num).add(promoter.level3Num).done()}人</Text>
             </View>
           </View>
           <View style={[styles.statItemView, {marginLeft: normalizeW(45), borderTopWidth: 1, borderColor: '#F7F7F7'}]}>

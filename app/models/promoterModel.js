@@ -25,6 +25,8 @@ export const PromoterRecord = Record({
   createdAt: undefined,
   updatedAt: undefined,
   qrcode: undefined,              // 公众号推广二维码
+  level2Num: undefined,
+  level3Num: undefined,
 }, 'PromoterRecord')
 
 export const PromoterStatisticsRecord = Record({
@@ -99,6 +101,8 @@ export class PromoterInfo extends PromoterRecord {
       record.set('createdAt', lcObj.createdAt)
       record.set('updatedAt', lcObj.updatedAt)
       record.set('qrcode', lcObj.qrcode)
+      record.set('level2Num', lcObj.level2Num)
+      record.set('level3Num', lcObj.level3Num)
     })
     return promoter
   }

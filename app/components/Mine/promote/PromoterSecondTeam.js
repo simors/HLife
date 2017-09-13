@@ -147,7 +147,7 @@ class PromoterSecondTeam extends Component {
                 leftPress={()=> {
                   Actions.pop()
                 }}
-                title="二级团队成员"
+                title="我的熟人"
         />
         <View style={styles.body}>
           <CommonListView
