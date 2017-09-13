@@ -162,15 +162,14 @@ class PublishShopPromotionChooseGood extends Component {
 
   renderNoGood() {
     return (
-      <View>
+      <TouchableOpacity onPress={()=> {Actions.PUBLISH_SHOP_GOOD({shopId: this.props.shopId})}}>
         <Text style={styles.noGoodText}>暂无商品</Text>
         <View style={styles.addGoodBox}>
           <Svg size={normalizeH(32)} icon="click_add"/>
           <Text style={styles.addGoodText}>点击添加产品</Text>
-
         </View>
         <CachedImage source={require('../../../assets/images/background_shop_copy.png')}/>
-      </View>
+      </TouchableOpacity>
     )
   }
 
