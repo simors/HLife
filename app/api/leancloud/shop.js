@@ -1291,8 +1291,8 @@ export function submitShopGoodPromotion(payload) {
       status: 1,
     }
   }
-  return AV.Cloud.run('submitShopPromotion', params).then((goodsInfo)=> {
-    return goodsInfo
+  return AV.Cloud.run('submitShopPromotion', params).then((promotionInfo)=> {
+    return promotionInfo
   }, (err) => {
     throw err
   })

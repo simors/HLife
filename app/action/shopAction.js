@@ -1061,6 +1061,9 @@ export function submitShopGood(payload) {
 export function submitShopGoodPromotion(payload) {
   return (dispatch, getState)=> {
     lcShop.submitShopGoodPromotion(payload).then((result)=> {
+      let promotion = ShopGoodPromotion.fromLeancloudApi(result)
+      let updateAction = createAction(ShopActionTypes.PUBLISH_PROMOTION_SUCCESS)
+      dispatch(updateAction({promotion:promotion}))
       if (payload.success) {
         payload.success()
       }

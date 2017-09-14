@@ -35,7 +35,7 @@ import {PUBLISH_PROMOTION} from '../../../constants/appConfig'
 
 import Symbol from 'es6-symbol'
 import {submitFormData, submitInputData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
-import {fetchShopAnnouncements,submitShopGoodPromotion,fetchShopPromotionDayPay} from '../../../action/shopAction'
+import {fetchShopAnnouncements,submitShopGoodPromotion,fetchShopPromotionDayPay,getShopOpenPromotion} from '../../../action/shopAction'
 import {
   selectUserOwnedShopInfo,
   selectGoodsById,
@@ -346,7 +346,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   initInputForm,
   inputFormOnDestroy,
   inputFormUpdate,
-  fetchShopPromotionDayPay
+  fetchShopPromotionDayPay,
+  getShopOpenPromotion
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublishShopPromotionSubmit)
