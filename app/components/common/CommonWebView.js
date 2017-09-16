@@ -47,6 +47,9 @@ export default class CommonWebView extends Component {
           source={this.props.html ? {html: this.props.html} : {uri: this.props.url} }
           scrollEnabled={true}
           automaticallyAdjustContentInsets={true}
+          allowsInlineMediaPlayback={true}
+          domStorageEnabled={true}
+          javaScriptEnabled={true}
           style={{
             flex: 1,
             backgroundColor: 'white'
