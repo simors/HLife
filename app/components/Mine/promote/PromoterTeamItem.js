@@ -19,6 +19,7 @@ import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Respons
 import {userInfoById} from '../../../selector/authSelector'
 import {getConversationTime} from '../../../util/numberUtils'
 import PromoterLevelIcon from './PromoterLevelIcon'
+import math from 'mathjs'
 
 class PromoterTeamItem extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class PromoterTeamItem extends Component {
       return (
         <View style={styles.memNumView}>
           <Image style={{width: normalizeW(18), height: normalizeH(15)}} source={require('../../../assets/images/team_18.png')}/>
-          <Text style={{fontSize: em(15), color: '#5A5A5A', paddingTop: normalizeH(10)}}>{promoter.teamMemNum} 人</Text>
+          <Text style={{fontSize: em(15), color: '#5A5A5A', paddingTop: normalizeH(10)}}>{math.chain(promoter.teamMemNum).add(promoter.level2Num).add(promoter.level3Num).done()} 人</Text>
         </View>
       )
     }
