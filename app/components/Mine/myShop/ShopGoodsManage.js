@@ -32,7 +32,7 @@ import {CachedImage} from "react-native-img-cache"
 import {setShopGoodsOffline, setShopGoodsOnline, setShopGoodsDelete, modifyShopGoods, getShopGoodsList} from '../../../action/shopAction'
 import * as Toast from '../../common/Toast'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {DEFAULT_SHARE_DOMAIN} from '../../../util/global'
+import {MP_CLIENT_DOMAIN} from '../../../util/global'
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -132,8 +132,7 @@ class ShopGoodsManage extends Component {
 
 
   onShare = (goodInfo) => {
-    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + goodInfo.id + '?userId=' + this.props.currentUser:
-    DEFAULT_SHARE_DOMAIN + "goodShare/" + goodInfo.id + '?userId=' + this.props.currentUser
+    let shareUrl = MP_CLIENT_DOMAIN + '/shareGoods/' + this.props.goodInfo.id + '?userId=' + this.props.currentUser
 
     Actions.SHARE({
       title: goodInfo.goodsName || "汇邻优店",

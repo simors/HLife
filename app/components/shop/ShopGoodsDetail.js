@@ -45,7 +45,7 @@ import * as configSelector from '../../selector/configSelector'
 import GoodAlbumShow from './GoodAlbumShow'
 import * as authSelector from '../../selector/authSelector'
 import * as Toast from '../common/Toast'
-import {DEFAULT_SHARE_DOMAIN} from '../../util/global'
+import {MP_CLIENT_DOMAIN} from '../../util/global'
 import {CachedImage} from "react-native-img-cache"
 import ArticleViewer from '../common/Input/ArticleViewer'
 import {BUY_GOODS} from '../../constants/appConfig'
@@ -91,8 +91,7 @@ class ShopGoodsDetail extends Component {
   }
 
   onShare = () => {
-    let shareUrl = this.props.shareDomain ? this.props.shareDomain + "goodShare/" + this.props.goodInfo.id + '?userId=' + this.props.currentUser:
-    DEFAULT_SHARE_DOMAIN + "goodShare/" + this.props.goodInfo.id + '?userId=' + this.props.currentUser
+    let shareUrl = MP_CLIENT_DOMAIN + '/shareGoods/' + this.props.goodInfo.id + '?userId=' + this.props.currentUser
 
     Actions.SHARE({
       title: this.props.goodInfo.goodsName || "汇邻优店",

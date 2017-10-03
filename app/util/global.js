@@ -38,3 +38,12 @@ export const KM_FIN = __DEV__ ? KM_Dev : KM_ENV
 export const DEFAULT_SHARE_DOMAIN = KM_FIN.appId === LC_CONFIG.LC_DEV_APP_ID ?
   'http://hlyd-dev.leanapp.cn/' : KM_FIN.appId === LC_CONFIG.LC_STAGE_APP_ID ?
   'http://hlyd-pre.leanapp.cn/' : 'http://share.xiaojee.cn/'
+
+//微信公众平台配置
+const MP_CLIENT_DOMAIN_DEV = 'http://dev.mp.ngrok.io'
+const MP_CLIENT_DOMAIN_STAGE = 'http://dev.xiaojee.cn:6300'
+const MP_CLIENT_DOMAIN_PRO = 'http://admin.xiaojee.cn:6300'
+
+export const MP_CLIENT_DOMAIN = KM_FIN.appId === LC_CONFIG.LC_DEV_APP_ID ?
+  MP_CLIENT_DOMAIN_DEV : KM_FIN.appId === LC_CONFIG.LC_STAGE_APP_ID ?
+  MP_CLIENT_DOMAIN_STAGE : MP_CLIENT_DOMAIN_PRO
