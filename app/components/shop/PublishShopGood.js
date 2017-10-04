@@ -34,7 +34,7 @@ import ArticleEditor from '../common/Input/ArticleEditor'
 import Symbol from 'es6-symbol'
 import Loading from '../common/Loading'
 import {submitShopGood} from '../../action/shopAction'
-
+import Popup from '@zzzkk2009/react-native-popup'
 
 
 
@@ -122,6 +122,19 @@ class PublishShopGood extends Component {
     if(nextProps.albums) {
       this.albums = nextProps.albums
     }
+  }
+
+  componentDidMount() {
+    Popup.confirm({
+      title: '系统提示',
+      content: '商品上架后，请到活动管理中为商品添加一个促销活动，让更多的人看到此商品吧^_^',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+        }
+      },
+    })
   }
 
   renderArticleEditorToolbar(customStyle) {
