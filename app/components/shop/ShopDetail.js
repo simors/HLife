@@ -316,7 +316,7 @@ class ShopDetail extends Component {
           <TouchableOpacity onPress={()=> {
             this.showShopAlbum()
           }} style={{flex: 1}}>
-            <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
+            <CachedImage mutable resizeMode="stretch" style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                          source={{uri: this.props.shopDetail.coverUrl}}>
             </CachedImage>
           </TouchableOpacity>

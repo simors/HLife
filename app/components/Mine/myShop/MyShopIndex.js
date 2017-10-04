@@ -496,9 +496,9 @@ class MyShopIndex extends Component {
               this.showShopAlbum()
             }} style={{flex: 1}}>
               {this.props.shopDetail.coverUrl ?
-                <CachedImage mutable style={{width: PAGE_WIDTH, height: normalizeH(300)}}
+                <CachedImage mutable resizeMode="stretch" style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                              source={{uri: this.props.shopDetail.coverUrl}}>
-                </CachedImage> : <Image style={{width: PAGE_WIDTH, height: normalizeH(300)}}
+                </CachedImage> : <Image resizeMode="stretch" style={{width: PAGE_WIDTH, height: normalizeH(300)}}
                                         source={require('../../../assets/images/background_shop.png')}/>}
             </TouchableOpacity>
             {this.state.height < 10 ? this.renderShopLeftHeader() : null}
