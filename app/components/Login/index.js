@@ -172,14 +172,10 @@ class Login extends Component {
               <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
             </View>
 
-            <View style={{flexDirection: 'row', width: PAGE_WIDTH, marginTop: normalizeH(224)}}>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: PAGE_WIDTH, marginTop: normalizeH(224)}}>
               <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(20)}} onPress={() => {shareNative.loginWX(this.wxLoginCallback)}}>
                 <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn_weixin.png')}/>
                 <Text style={{fontSize: 17, color: '#09BB07'}}>微信登录</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(15)}} onPress={() => Actions.REGIST()}>
-                <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn.png')}/>
-                <Text style={{fontSize: 17, color: '#FF7819'}}>快速注册</Text>
               </TouchableOpacity>
             </View>
 
