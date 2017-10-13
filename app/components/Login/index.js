@@ -74,7 +74,7 @@ class Login extends PureComponent {
   render() {
     return (
       <View style={styles.container}>
-        <Image style={{flex: 1}} resizeMode="stretch" source={require('../../assets/images/bg_login@2x.png')}>
+        <Image style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}} resizeMode="stretch" source={require('../../assets/images/bg_login@2x.png')}>
           <TouchableOpacity style={styles.toolbarView} onPress={() => Actions.pop()}>
             <Icon name="ios-arrow-back" style={styles.leaveBtn}/>
           </TouchableOpacity>
