@@ -121,7 +121,7 @@ class ShopManageIndex extends Component {
     }else if(2 == index) { //编辑相册
       Actions.UPDATE_SHOP_ALBUM({id: this.props.userOwnedShopInfo.id})
     }else if(3 == index) { //编辑资料
-      Actions.COMPLETE_SHOP_INFO()
+      Actions.COMPLETE_SHOP_COVER()
     }else if(4 == index) { //编辑公告
       Actions.SHOP_ANNOUNCEMENTS_MANAGE({id: this.props.userOwnedShopInfo.id})
     }

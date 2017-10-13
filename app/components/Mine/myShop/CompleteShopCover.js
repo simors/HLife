@@ -28,6 +28,8 @@ import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
+const shopInfoForm = Symbol('shopInfoForm')
+
 class CompleteShopCover extends PureComponent {
   constructor(props) {
     super(props)
@@ -35,16 +37,18 @@ class CompleteShopCover extends PureComponent {
   }
 
   componentDidMount() {
-    Popup.confirm({
-      title: '系统提示',
-      content: '未完善店铺资料将无法在店铺列表中显示',
-      ok: {
-        text: '确定',
-        style: {color: THEME.base.mainColor},
-        callback: ()=> {
-        }
-      },
-    })
+    setTimeout(() => {
+      Popup.confirm({
+        title: '系统提示',
+        content: '未完善店铺资料将无法在店铺列表中显示',
+        ok: {
+          text: '确定',
+          style: {color: THEME.base.mainColor},
+          callback: ()=> {
+          }
+        },
+      })
+    }, 1000)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,10 +61,24 @@ class CompleteShopCover extends PureComponent {
     AVUtils.switchTab('MINE')
   }
 
+  editShopCover(){
+    Popup.confirm({
+      title: '系统提示',
+      content: '不要使用个人二维码作为店铺封面，如有违规店铺将被封闭，敬请遵守平台规则！',
+      ok: {
+        text: '确定',
+        style: {color: THEME.base.mainColor},
+        callback: ()=> {
+        }
+      },
+    })
+    Actions.UPDATE_SHOP_COVER_FOR_EDIT_SHOP({
+      localCoverImgUri: this.localCoverImgUri
+    })
+  }
+
   render() {
-
     const userOwnedShopInfo = this.props.userOwnedShopInfo
-
     let shopCover = require('../../../assets/images/background_shop.png')
     if(userOwnedShopInfo.coverUrl) {
       shopCover = {uri: userOwnedShopInfo.coverUrl}
@@ -75,35 +93,25 @@ class CompleteShopCover extends PureComponent {
           leftType="text"
           leftText="取消"
           leftPress={() => this.goBack()}
-          title="店铺封面"
+          title="上传店铺封面"
           rightType="none"
         />
         <View style={styles.body}>
-          <Image style={{width:PAGE_WIDTH,height:200}} source={shopCover}/>
-          <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,}}>
-            <TouchableOpacity style={{flex:1}} onPress={()=>{this.editShopCover()}}>
-              <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                <Image style={{width:44,height:44}} source={require("../../../assets/images/upload_pic_44_yellow.png")}/>
-                <Text style={{marginTop:15,fontSize:15,color:'#FF7819'}}>上传封面</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={{height:45}} onPress={()=>{this.editShopAlbum()}}>
-              <View
-                style={{
-                  flex:1,
-                  flexDirection:'row',
-                  justifyContent:'flex-end',
-                  alignItems:'center',
-                  backgroundColor:'rgba(245,245,245,0.49)'
-                }}>
-                <Text style={{fontSize:15,color:'#5a5a5a'}}>{`编辑相册·${albumLen}`}</Text>
-                <Icon
-                  name="ios-arrow-forward"
-                  style={{marginLeft:20,marginRight:15,color:'#5a5a5a',fontSize:20}}/>
-              </View>
-            </TouchableOpacity>
-
+          <Image style={{width:PAGE_WIDTH, height: normalizeH(300)}} source={shopCover}>
+            <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,}}>
+              <TouchableOpacity style={{flex:1}} onPress={()=>{this.editShopCover()}}>
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                  <Image style={{width:44,height:44}} source={require("../../../assets/images/upload_pic_44_yellow.png")}/>
+                  <Text style={{marginTop:15,fontSize:15,color:'#FF7819'}}>上传封面</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Image>
+          <View style={styles.tipView}>
+            <Text style={styles.tipText}>点击上方区域，完成店铺封面上传！店铺封面是店铺的脸面，上传漂亮的图片可以给顾客留下好印象哦^_^</Text>
+          </View>
+          <View style={{marginTop: normalizeH(50)}}>
+            <CommonButton title="下一步"/>
           </View>
         </View>
       </View>
@@ -133,5 +141,15 @@ const styles = StyleSheet.create({
   body: {
     marginTop: normalizeH(64),
     flex: 1,
+  },
+  tipView: {
+    marginTop: normalizeH(30),
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
+  },
+  tipText: {
+    fontSize: em(15),
+    color: THEME.base.deepColor,
+    lineHeight: normalizeH(25),
   },
 })

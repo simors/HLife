@@ -76,7 +76,7 @@ class Mine extends Component {
       if(userOwnedShopInfo.status == 1) {
         if(userOwnedShopInfo.payment == 1) { //已注册，已支付
           if(!userOwnedShopInfo.coverUrl) {
-            Actions.COMPLETE_SHOP_INFO()
+            Actions.COMPLETE_SHOP_COVER()
           }else{
             Actions.MY_SHOP_INDEX()
           }

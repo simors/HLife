@@ -38,7 +38,7 @@ class PaymentSuccess extends Component {
     if(!this.props.isUserLogined) {
       Actions.LOGIN()
     }else {
-      Actions.COMPLETE_SHOP_INFO({popNum: 3})
+      Actions.COMPLETE_SHOP_COVER({popNum: 3})
     }
   }
 
