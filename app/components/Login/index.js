@@ -1,30 +1,25 @@
-import React, {Component} from 'react'
+/**
+ * Created by yangyang on 2017/10/13.
+ */
+import React, {PureComponent} from 'react'
 import {
   StyleSheet,
   View,
-  TextInput,
   Text,
   TouchableOpacity,
   Image,
-  Alert,
   Dimensions,
   Platform,
-  ScrollView,
-  StatusBar,
   NativeModules
 } from 'react-native'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Actions} from 'react-native-router-flux'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
-import PhoneInput from '../common/Input/PhoneInput'
-import Header from '../common/Header'
-import PasswordInput from '../common/Input/PasswordInput'
-import Symbol from 'es6-symbol'
-import {submitFormData, loginWithWeixin, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {loginWithWeixin} from '../../action/authActions'
 import * as Toast from '../common/Toast'
-import CommonButton from '../common/CommonButton'
-import THEME from '../../constants/themes/theme1'
+import Icon from 'react-native-vector-icons/Ionicons'
+import Svg from '../common/Svgs'
 
 const shareNative = NativeModules.shareComponent
 
@@ -32,84 +27,14 @@ const shareNative = NativeModules.shareComponent
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
 
-
-let commonForm = Symbol('commonForm')
-const phoneInput = {
-  formKey: commonForm,
-  stateKey: Symbol('phoneInput'),
-  type: "phoneInput"
-}
-const pwdInput = {
-  formKey: commonForm,
-  stateKey: Symbol('passwordInput'),
-  type: "passwordInput"
-}
-
-class Login extends Component {
+class Login extends PureComponent {
   constructor(props) {
     super(props)
     this.wxUserInfo = undefined
-
-  }
-
-  onButtonPress = () => {
-    this.props.submitFormData({
-      formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
-      success: (result) => {
-        if(result.wxAuthed) {
-          Toast.show('登录成功!')
-          if (this.props.goHome) {
-            Actions.HOME()
-          } else {
-            Actions.pop()
-          }
-        } else {
-          shareNative.loginWX(this.phoneLoginCallback)
-        }
-      },
-      error: (error) => {
-        Toast.show(error.message)
-      }
-    })
-  }
-
-  phoneLoginCallback = (errorCode, data) => {
-    let wxUserInfo = {
-      accessToken: data.accessToken,
-      expiration: data.expiration,
-      unionid: data.uid,
-      name: data.name,
-      avatar: data.iconurl,
-    }
-
-    this.wxUserInfo = wxUserInfo
-
-    this.props.submitFormData({
-      formKey: commonForm,
-      submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
-      wxUserInfo: wxUserInfo,
-      success: () => {
-        Toast.show('登录成功!')
-        if (this.props.goHome) {
-          Actions.HOME()
-        } else {
-          Actions.pop()
-        }
-      },
-      error: (error) => {
-        Toast.show(error.message)
-      }
-    })
-  }
-
-  retrievePassword() {
-    Actions.RETRIEVE_PWD()
   }
 
   submitSuccessCallback(userInfo) {
     if(userInfo) {
-      console.log("userInfo:", userInfo)
       if(!userInfo.mobilePhoneNumber || !userInfo.mobilePhoneVerified) {
         Actions.SET_MOBILE_PHONE_NUMBER()
       } else {
@@ -149,46 +74,23 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header 
-          leftType="icon" 
-          leftIconName="ios-arrow-back" 
-          leftPress={() => Actions.pop()}
-          title="登   陆"
-        />
-        <View style={styles.body}>
-          <ScrollView  keyboardDismissMode="on-drag" keyboardShouldPersistTaps={true}>
-            <View style={{marginTop: 30}}>
-              <View style={[styles.inputBox, {paddingLeft: normalizeW(17), paddingRight: normalizeW(17)}]}>
-                <PhoneInput {...phoneInput}
-                            containerStyle={{paddingLeft: normalizeW(0), paddingRight: normalizeW(0)}}
-                            outContainerWrap={{backgroundColor: '#F3F3F3', borderWidth: 0}}/>
-              </View>
-              <View style={styles.inputBox}>
-                <PasswordInput {...pwdInput} placeholder="请输入密码"/>
-              </View>
+        <Image resizeMode="cover" source={require('../../assets/images/bg_login@2x.png')}>
+          <TouchableOpacity style={styles.toolbarView} onPress={() => Actions.pop()}>
+            <Icon name="ios-arrow-back" style={styles.leaveBtn}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.wechatLogin} onPress={() => {shareNative.loginWX(this.wxLoginCallback)}}>
+            <Svg size={32} icon="login_btn_weixin"/>
+            <View style={{backgroundColor: 'transparent', marginLeft: normalizeW(8)}}>
+              <Text style={{fontSize: em(17), color: '#fff'}}>微信登陆</Text>
             </View>
-            <CommonButton title="登   陆" onPress={() => this.onButtonPress()}/>
-            <View style={styles.txtView}>
-              <Text style={styles.forgetPwd} onPress={() => this.retrievePassword()}>忘记密码？</Text>
-            </View>
-
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: PAGE_WIDTH, marginTop: normalizeH(224)}}>
-              <TouchableOpacity style={{flexDirection: 'row', width: normalizeW(160), height: normalizeH(47), alignItems: 'center',backgroundColor: '#F5F5F5', borderRadius: 20, marginLeft: normalizeW(20)}} onPress={() => {shareNative.loginWX(this.wxLoginCallback)}}>
-                <Image style={{width: normalizeW(40), height: normalizeH(47), marginLeft: normalizeW(20), marginRight: normalizeW(6)}} source={require('../../assets/images/login_btn_weixin.png')}/>
-                <Text style={{fontSize: 17, color: '#09BB07'}}>微信登录</Text>
-              </TouchableOpacity>
-            </View>
-
-        </ScrollView>
-        </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.phoneLogin} onPress={() => Actions.PHONE_LOGIN({goHome: true})}>
+            <Text style={{fontSize: em(13), color: '#fff', opacity: 0.5}}>手机号码登陆</Text>
+          </TouchableOpacity>
+        </Image>
       </View>
     )
   }
-
-}
-
-Login.defaultProps = {
-  goHome: false,
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -196,7 +98,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData,
   loginWithWeixin
 }, dispatch)
 
@@ -206,28 +107,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  inputBox: {
-    marginBottom: normalizeW(25)
+  toolbarView: {
+    marginTop: normalizeH(32),
+    paddingLeft: normalizeW(12),
+    backgroundColor: 'transparent',
+    width: normalizeW(50),
   },
-  body: {
-    marginTop: normalizeH(65),
-    flex: 1,
+  leaveBtn: {
+    fontSize: em(28),
+    color: '#FFF',
   },
-  btn: {
-    height: normalizeH(50),
-    marginLeft: normalizeW(17),
-    marginRight: normalizeW(17),
-    backgroundColor: THEME.base.mainColor,
-  },
-  txtView: {
+  wechatLogin: {
+    marginTop: normalizeH(410),
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    marginTop: normalizeH(18),
+    alignItems: 'center',
+    height: normalizeH(45),
   },
-  forgetPwd: {
-    fontSize: em(14),
-    color: THEME.base.deepColor,
-    textAlign: 'center',
-  }
+  phoneLogin: {
+    marginTop: normalizeH(17),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    height: normalizeH(30),
+  },
 })

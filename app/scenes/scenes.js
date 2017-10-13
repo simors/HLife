@@ -7,6 +7,7 @@ import Local from '../components/Local'
 import Find from '../components/Find'
 import Mine from '../components/Mine'
 import Login from '../components/Login'
+import PhoneLogin from '../components/Login/PhoneLogin'
 import Regist from '../components/Login/Regist'
 import NicknameView from '../components/Login/NicknameView'
 import AgreementView from '../components/Login/AgreementView'
@@ -145,6 +146,7 @@ export const scenes = Actions.create(
     <Scene key="root" hideNavBar={true}>
       <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar />
       <Scene key="LOGIN" component={Login} />
+      <Scene key="PHONE_LOGIN" component={PhoneLogin}/>
       <Scene key="REGIST" component={Regist} />
       <Scene key="NICKNAME_VIEW" component={NicknameView} />
       <Scene key="AGREEMENT_VIEW" component={AgreementView} />
