@@ -111,7 +111,7 @@ class CompleteShopCover extends PureComponent {
             <Text style={styles.tipText}>点击上方区域，完成店铺封面上传！店铺封面是店铺的脸面，上传漂亮的图片可以给顾客留下好印象哦^_^</Text>
           </View>
           <View style={{marginTop: normalizeH(50)}}>
-            <CommonButton title="下一步"/>
+            <CommonButton title="下一步" onPress={() => Actions.COMPLETE_SHOP_ABLUM({form: shopInfoForm, cover: this.localCoverImgUri})}/>
           </View>
         </View>
       </View>

@@ -160,16 +160,16 @@ class ImageGroupInput extends Component {
   }
 
   updateImageGroup(options) {
-  this.imgList = this.imgList.concat(options.uris)
-  this.inputChange(this.imgList)
-  //用户拍照或从相册选择了照片
-  if (typeof this.props.getImageList == 'function') {
-    this.props.getImageList(this.imgList)
+    this.imgList = this.imgList.concat(options.uris)
+    this.inputChange(this.imgList)
+    //用户拍照或从相册选择了照片
+    if (typeof this.props.getImageList == 'function') {
+      this.props.getImageList(this.imgList)
+    }
+    if (typeof options.success == 'function') {
+      options.success(options)
+    }
   }
-  if (typeof options.success == 'function') {
-    options.success(options)
-  }
-}
 
   uploadImgs(uris) {
     if (uris && uris.length) {
