@@ -22,6 +22,7 @@ import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
 import {getInputData} from '../../../selector/inputFormSelector'
+import Popup from '@zzzkk2009/react-native-popup'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -30,7 +31,6 @@ class CompleteShopAlbum extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      shouldUploadImages: false,
       cancelState:false,
     }
   }
@@ -41,8 +41,32 @@ class CompleteShopAlbum extends PureComponent {
     })
   }
 
+  jumpNext() {
+    if (!this.localAlbumList || this.localAlbumList.length == 0) {
+      Popup.confirm({
+        title: '系统提示',
+        content: '请添加店铺相册',
+        ok: {
+          text: '确定',
+          style: {color: THEME.base.mainColor},
+          callback: ()=> {
+          }
+        },
+      })
+      return
+    }
+    let payload = {
+      form: this.props.form,
+      inputs: this.props.inputs,
+    }
+    Actions.COMPLETE_SHOP_TYPE_TAGS(payload)
+  }
+
   render() {
     let {albumList, inputs} = this.props
+    if (albumList && albumList.length > 0) {
+      this.localAlbumList = albumList
+    }
     return (
       <View style={styles.container}>
         <Header
@@ -67,7 +91,7 @@ class CompleteShopAlbum extends PureComponent {
             </ScrollView>
           </View>
           <View style={styles.nextBtnView}>
-            <CommonButton title="下一步" />
+            <CommonButton title="下一步" onPress={() => this.jumpNext()}/>
           </View>
         </View>
       </View>
