@@ -15,15 +15,13 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import Symbol from 'es6-symbol'
 import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
-import * as authSelector from '../../../selector/authSelector'
-import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import ImageGroupInput from '../../common/Input/ImageGroupInput'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -35,20 +33,16 @@ class CompleteShopAlbum extends PureComponent {
       shouldUploadImages: false,
       cancelState:false,
     }
-    this.shopAlbumInput = {
-      formKey: this.props.form,
-      stateKey: Symbol('shopAlbumInput'),
-      type: 'shopAlbumInput'
-    }
   }
 
-  updateCancelState(){
+  updateCancelState() {
     this.setState({
       cancelState:!this.state.cancelState
     })
   }
 
   render() {
+    let {albumList, inputs} = this.props
     return (
       <View style={styles.container}>
         <Header
@@ -62,17 +56,13 @@ class CompleteShopAlbum extends PureComponent {
           <View style={{flex: 1, marginTop: normalizeH(10)}}>
             <ScrollView automaticallyAdjustContentInsets={false} style={{flex: 1}}>
               <ImageGroupInput
-                {...this.shopAlbumInput}
+                {...inputs.shopAlbumInput}
                 updateCancelState={()=>{this.updateCancelState()}}
                 cancelState ={this.state.cancelState}
 
                 number={20}
                 imageLineCnt={2}
-                initValue={
-                  this.props.localAlbumList && this.props.localAlbumList.length
-                    ? this.props.localAlbumList
-                    : this.props.userOwnedShopInfo.album
-                }
+                initValue={this.localAlbumList || albumList}
                 getImageList={(imgList)=>{this.localAlbumList = imgList}}
               />
             </ScrollView>
@@ -87,11 +77,11 @@ class CompleteShopAlbum extends PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const isUserLogined = authSelector.isUserLogined(state)
-  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  let {inputs} = ownProps
+  let albumStateKey = inputs.shopAlbumInput.stateKey
+  let inputData = getInputData(state, ownProps.form, albumStateKey)
   return {
-    isUserLogined: isUserLogined,
-    userOwnedShopInfo: userOwnedShopInfo,
+    albumList: inputData.text,
   }
 }
 

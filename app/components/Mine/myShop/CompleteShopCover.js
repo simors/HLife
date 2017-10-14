@@ -15,20 +15,95 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Symbol from 'es6-symbol'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {em, normalizeW, normalizeH} from '../../../util/Responsive'
 import {Actions} from 'react-native-router-flux'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
 import Popup from '@zzzkk2009/react-native-popup'
 import * as AVUtils from '../../../util/AVUtils'
-import * as authSelector from '../../../selector/authSelector'
-import {selectUserOwnedShopInfo} from '../../../selector/shopSelector'
+import ImageInput from '../../common/Input/ImageInput'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
 const shopInfoForm = Symbol('shopInfoForm')
+const coverStateKey = Symbol('shopCoverInput')
+
+const shopCoverInput = {
+  formKey: shopInfoForm,
+  stateKey: coverStateKey,
+  type: 'shopCoverInput'
+}
+
+const shopAlbumInput = {
+  formKey: shopInfoForm,
+  stateKey: Symbol('shopAlbumInput'),
+  type: 'shopAlbumInput'
+}
+
+const serviceTimeInput = {
+  formKey: shopInfoForm,
+  stateKey: Symbol('serviceTimeInput'),
+  type: "serviceTimeInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '服务时间为空'}
+  },
+}
+
+const servicePhoneInput = {
+  formKey: shopInfoForm,
+  stateKey: Symbol('servicePhoneInput'),
+  type: "servicePhoneInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '服务电话为空'}
+  },
+}
+
+const ourSpecialInput = {
+  formKey: shopInfoForm,
+  stateKey: Symbol('ourSpecialInput'),
+  type: 'ourSpecialInput',
+  checkValid: (data)=>{
+    if(data && data.text) {
+      if (data.text.length > 0 && data.text.length <= 100) {
+        return {isVal: true, errMsg: '验证通过'}
+      }else {
+        return {isVal: false, errMsg: '字数必须小于100'}
+      }
+    }else{
+      return {isVal: false, errMsg: '本店特色为空'}
+    }
+  },
+}
+
+const shopCategoryInput = {
+  formKey: shopInfoForm,
+  stateKey: Symbol('shopCategoryInput'),
+  type: "shopCategoryInput",
+  checkValid: (data)=>{
+    if (data && data.text && data.text.length > 0) {
+      return {isVal: true, errMsg: '验证通过'}
+    }
+    return {isVal: false, errMsg: '店铺类型为空'}
+  },
+}
+
+const tagsInput = {
+  formKey: shopInfoForm,
+  stateKey: Symbol('tagsInput'),
+  type: 'tagsInput',
+  checkValid: (data)=>{
+    return {isVal: true, errMsg: '验证通过'}
+  },
+}
 
 class CompleteShopCover extends PureComponent {
   constructor(props) {
@@ -61,32 +136,24 @@ class CompleteShopCover extends PureComponent {
     AVUtils.switchTab('MINE')
   }
 
-  editShopCover(){
-    Popup.confirm({
-      title: '系统提示',
-      content: '不要使用个人二维码作为店铺封面，如有违规店铺将被封闭，敬请遵守平台规则！',
-      ok: {
-        text: '确定',
-        style: {color: THEME.base.mainColor},
-        callback: ()=> {
-        }
+  jumpNext() {
+    let payload = {
+      form: shopInfoForm,
+      inputs: {
+        shopCoverInput: shopCoverInput,
+        shopAlbumInput: shopAlbumInput,
+        serviceTimeInput: serviceTimeInput,
+        servicePhoneInput: servicePhoneInput,
+        ourSpecialInput: ourSpecialInput,
+        shopCategoryInput: shopCategoryInput,
+        tagsInput: tagsInput,
       },
-    })
-    Actions.UPDATE_SHOP_COVER_FOR_EDIT_SHOP({
-      localCoverImgUri: this.localCoverImgUri
-    })
+    }
+    Actions.COMPLETE_SHOP_ABLUM(payload)
   }
 
   render() {
-    const userOwnedShopInfo = this.props.userOwnedShopInfo
-    let shopCover = require('../../../assets/images/background_shop.png')
-    if(userOwnedShopInfo.coverUrl) {
-      shopCover = {uri: userOwnedShopInfo.coverUrl}
-    }
-
-    if(this.localCoverImgUri) {
-      shopCover = {uri: this.localCoverImgUri}
-    }
+    let {coverUrl} = this.props
     return (
       <View style={styles.container}>
         <Header
@@ -97,21 +164,23 @@ class CompleteShopCover extends PureComponent {
           rightType="none"
         />
         <View style={styles.body}>
-          <Image style={{width:PAGE_WIDTH, height: normalizeH(300)}} source={shopCover}>
-            <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,}}>
-              <TouchableOpacity style={{flex:1}} onPress={()=>{this.editShopCover()}}>
-                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                  <Image style={{width:44,height:44}} source={require("../../../assets/images/upload_pic_44_yellow.png")}/>
-                  <Text style={{marginTop:15,fontSize:15,color:'#FF7819'}}>上传封面</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </Image>
+          <ImageInput
+            {...shopCoverInput}
+            containerStyle={{width: PAGE_WIDTH, height: normalizeH(300),borderWidth:0}}
+            addImageBtnStyle={{top:0, left: 0, width: PAGE_WIDTH, height: normalizeH(300)}}
+            choosenImageStyle={{width: PAGE_WIDTH, height: normalizeH(300)}}
+            imageWidth={PAGE_WIDTH*2}
+            imageHeight={normalizeH(300)*2}
+            addImage={require('../../../assets/images/default_upload.png')}
+            closeModalAfterSelectedImg={true}
+            initValue={this.localCoverImgUri || coverUrl}
+            imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
+          />
           <View style={styles.tipView}>
             <Text style={styles.tipText}>点击上方区域，完成店铺封面上传！店铺封面是店铺的脸面，上传漂亮的图片可以给顾客留下好印象哦^_^</Text>
           </View>
           <View style={{marginTop: normalizeH(50)}}>
-            <CommonButton title="下一步" onPress={() => Actions.COMPLETE_SHOP_ABLUM({form: shopInfoForm, cover: this.localCoverImgUri})}/>
+            <CommonButton title="下一步" onPress={() => this.jumpNext()}/>
           </View>
         </View>
       </View>
@@ -120,11 +189,9 @@ class CompleteShopCover extends PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const isUserLogined = authSelector.isUserLogined(state)
-  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
+  let inputData = getInputData(state, shopInfoForm, coverStateKey)
   return {
-    isUserLogined: isUserLogined,
-    userOwnedShopInfo: userOwnedShopInfo
+    coverUrl: inputData.text
   }
 }
 
