@@ -137,6 +137,19 @@ class CompleteShopCover extends PureComponent {
   }
 
   jumpNext() {
+    if (!this.localCoverImgUri || this.localCoverImgUri == "") {
+      Popup.confirm({
+        title: '系统提示',
+        content: '请选择一个图片作为店铺封面',
+        ok: {
+          text: '确定',
+          style: {color: THEME.base.mainColor},
+          callback: ()=> {
+          }
+        },
+      })
+      return
+    }
     let payload = {
       form: shopInfoForm,
       inputs: {

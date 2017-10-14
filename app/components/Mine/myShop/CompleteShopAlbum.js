@@ -59,7 +59,6 @@ class CompleteShopAlbum extends PureComponent {
                 {...inputs.shopAlbumInput}
                 updateCancelState={()=>{this.updateCancelState()}}
                 cancelState ={this.state.cancelState}
-
                 number={20}
                 imageLineCnt={2}
                 initValue={this.localAlbumList || albumList}
