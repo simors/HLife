@@ -128,6 +128,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     justifyContent: 'center',
     borderTopWidth: 1,
-    borderColor: '#B2B2B2',
+    borderColor: '#E9E9E9',
   },
 })

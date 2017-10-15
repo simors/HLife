@@ -19,11 +19,7 @@ import {Actions} from 'react-native-router-flux'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
-import {
-  Option,
-  OptionList,
-  SelectInput
-} from '../../common/CommonSelect'
+import {Option, OptionList, SelectInput} from '../../common/CommonSelect'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import TagsInput from '../../common/Input/TagsInput'
 import ShopTagsSelect from './ShopTagsSelect'
