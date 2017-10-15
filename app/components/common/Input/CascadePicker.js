@@ -274,7 +274,7 @@ export default class CascadePicker extends Component {
           </View>
         </Modal>
 
-        <TouchableOpacity style={{flex: 1}} onPress={() => this.open()}>
+        <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.open()}>
           {this.props.children}
         </TouchableOpacity>
       </View>
@@ -294,6 +294,8 @@ CascadePicker.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pickerContainer: {
     backgroundColor: '#FFF',

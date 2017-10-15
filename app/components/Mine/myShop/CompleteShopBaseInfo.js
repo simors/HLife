@@ -19,14 +19,17 @@ import {Actions} from 'react-native-router-flux'
 import THEME from '../../../constants/themes/theme1'
 import Header from '../../common/Header'
 import CommonButton from '../../common/CommonButton'
-import {getInputData} from '../../../selector/inputFormSelector'
 import {
   Option,
   OptionList,
   SelectInput
 } from '../../common/CommonSelect'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import TagsInput from '../../common/Input/TagsInput'
 import ShopTagsSelect from './ShopTagsSelect'
+import PhoneInput from '../../common/Input/PhoneInput'
+import TextAreaInput from '../../common/Input/TextAreaInput'
+import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
 import {selectShopCategories} from '../../../selector/configSelector'
 import {selectShopTags} from '../../../selector/shopSelector'
 
@@ -130,7 +133,12 @@ class CompleteShopBaseInfo extends Component {
           rightType="none"
         />
         <View style={styles.body}>
-          <View style={{marginTop: normalizeH(0)}}>
+          <KeyboardAwareScrollView
+            automaticallyAdjustContentInsets={false}
+            keyboardShouldPersistTaps={true}
+            keyboardDismissMode="on-drag"
+            style={{flex: 1}}
+          >
             <View style={styles.inputWrap}>
               <View style={styles.inputLabelBox}>
                 <Text style={styles.inputLabel}>店铺类型</Text>
@@ -169,7 +177,55 @@ class CompleteShopBaseInfo extends Component {
                 />
               </View>
             </View>
-          </View>
+
+            <View style={styles.inputWrap}>
+              <View style={styles.inputLabelBox}>
+                <Text style={styles.inputLabel}>服务电话</Text>
+              </View>
+              <View style={styles.inputBox}>
+                <PhoneInput
+                  {...inputs.servicePhoneInput}
+                  placeholder="点击店铺电话号码"
+                  maxLength={15}
+                  noFormatPhone={true}
+                  outContainerWrap={{borderWidth: 0}}
+                  containerStyle={styles.containerStyle}
+                  inputStyle={styles.inputStyle}
+                />
+              </View>
+            </View>
+
+            <View style={[styles.inputWrap, styles.serviceTimeWrap]}>
+              <View style={styles.inputLabelBox}>
+                <Text style={styles.inputLabel}>营业时间</Text>
+              </View>
+              <View style={[styles.inputBox, styles.datePickerBox]}>
+                <ServiceTimePicker
+                  {...inputs.serviceTimeInput}
+                />
+              </View>
+            </View>
+
+            <View style={[styles.inputWrap, styles.ourSpecialWrap, {borderBottomWidth:0}]}>
+              <View style={[styles.inputLabelBox, styles.ourSpecialInputLabelBox]}>
+                <Text style={styles.inputLabel}>本店特色</Text>
+              </View>
+            </View>
+
+            <View style={[styles.inputWrap, styles.inputArea]}>
+              <View style={[styles.inputBox]}>
+                <TextAreaInput
+                  {...inputs.ourSpecialInput}
+                  placeholder={"描述店铺特色、优势「小于100字」"}
+                  clearBtnStyle={{right: 10,top: 30}}
+                  inputStyle={{borderColor: '#bdc6cf', color: '#030303',paddingRight:normalizeW(30)}}
+                  maxLength={110}
+                />
+              </View>
+            </View>
+
+          </KeyboardAwareScrollView>
+
           <View style={styles.nextBtnView}>
             <CommonButton title="提交" />
           </View>
@@ -243,5 +299,36 @@ const styles = StyleSheet.create({
   },
   tagsBox: {
     justifyContent: 'center',
+  },
+  containerStyle: {
+    paddingRight:0,
+  },
+  inputStyle:{
+    height: normalizeH(50),
+    fontSize: em(17),
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    paddingLeft: 0,
+    color: '#333'
+  },
+  datePickerBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: normalizeW(14),
+  },
+  ourSpecialWrap: {
+    paddingTop: 15,
+    paddingBottom: 10,
+    paddingRight: 10,
+  },
+  ourSpecialInputLabelBox: {
+    justifyContent: 'flex-start'
+  },
+  inputArea: {
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
+    paddingTop:0,
+    borderBottomWidth:0,
+    height: normalizeH(120),
   },
 })

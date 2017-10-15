@@ -186,8 +186,6 @@ ServiceTimePicker.defaultProps = {
   maxLength: 32,
   editable: false,
   initValue: "",
-  containerStyle: {flex: 1},
-  inputStyle: {flex: 1},
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -220,13 +218,10 @@ const styles = StyleSheet.create({
     width: normalizeW(100),
   },
   defaultInputStyle: {
-    flex: 1,
     backgroundColor: '#fff',
     borderWidth: 0,
     borderColor: '#E9E9E9',
     fontSize: em(16),
     color: '#030303',
-    textAlignVertical: 'center',
-    textAlign: 'center'
   },
 })
