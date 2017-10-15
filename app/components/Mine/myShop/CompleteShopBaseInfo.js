@@ -28,6 +28,7 @@ import TextAreaInput from '../../common/Input/TextAreaInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
 import {selectShopCategories} from '../../../selector/configSelector'
 import {selectShopTags} from '../../../selector/shopSelector'
+import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -118,7 +119,7 @@ class CompleteShopBaseInfo extends Component {
   }
 
   render() {
-    let {inputs} = this.props
+    let {inputs, serviceTimeInput, servicePhoneInput, ourSpecialInput} = this.props
     return (
       <View style={styles.container}>
         <Header
@@ -145,7 +146,6 @@ class CompleteShopBaseInfo extends Component {
                   {...inputs.shopCategoryInput}
                   show={this.state.selectShow}
                   onPress={(e)=>this._onSelectPress(e)}
-                  style={{}}
                   styleOption={{height:normalizeH(50)}}
                   selectRef="SELECT"
                   overlayPageX={0}
@@ -188,6 +188,7 @@ class CompleteShopBaseInfo extends Component {
                   outContainerWrap={{borderWidth: 0}}
                   containerStyle={styles.containerStyle}
                   inputStyle={styles.inputStyle}
+                  initValue={servicePhoneInput || undefined}
                 />
               </View>
             </View>
@@ -199,6 +200,7 @@ class CompleteShopBaseInfo extends Component {
               <View style={[styles.inputBox, styles.datePickerBox]}>
                 <ServiceTimePicker
                   {...inputs.serviceTimeInput}
+                  initValue={serviceTimeInput || undefined}
                 />
               </View>
             </View>
@@ -217,6 +219,7 @@ class CompleteShopBaseInfo extends Component {
                   clearBtnStyle={{right: 10,top: 30}}
                   inputStyle={{borderColor: '#bdc6cf', color: '#030303',paddingRight:normalizeW(30)}}
                   maxLength={110}
+                  initValue={ourSpecialInput || undefined}
                 />
               </View>
             </View>
@@ -246,11 +249,19 @@ class CompleteShopBaseInfo extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let {inputs} = ownProps
+  let serviceTimeInput = getInputData(state, ownProps.form, inputs.serviceTimeInput.stateKey)
+  let servicePhoneInput = getInputData(state, ownProps.form, inputs.servicePhoneInput.stateKey)
+  let ourSpecialInput = getInputData(state, ownProps.form, inputs.ourSpecialInput.stateKey)
+
   const allShopCategories = selectShopCategories(state)
   const allShopTags = selectShopTags(state)
   return {
     allShopCategories: allShopCategories,
     allShopTags: allShopTags,
+    serviceTimeInput: serviceTimeInput.text,
+    servicePhoneInput: servicePhoneInput.text,
+    ourSpecialInput: ourSpecialInput.text,
   }
 }
 
