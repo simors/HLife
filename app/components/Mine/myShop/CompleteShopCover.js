@@ -101,6 +101,10 @@ const tagsInput = {
   stateKey: Symbol('tagsInput'),
   type: 'tagsInput',
   checkValid: (data)=>{
+    let len = data && data.text ? data.text.length : 0
+    if (len == 0) {
+      return {isVal: false, errMsg: '未选择店铺标签'}
+    }
     return {isVal: true, errMsg: '验证通过'}
   },
 }

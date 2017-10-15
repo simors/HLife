@@ -27,8 +27,14 @@ import PhoneInput from '../../common/Input/PhoneInput'
 import TextAreaInput from '../../common/Input/TextAreaInput'
 import ServiceTimePicker from '../../common/Input/ServiceTimePicker'
 import {selectShopCategories} from '../../../selector/configSelector'
-import {selectShopTags} from '../../../selector/shopSelector'
+import {fetchUserOwnedShopInfo, fetchShopTags} from '../../../action/shopAction'
+import {selectShopTags, selectUserOwnedShopInfo} from '../../../selector/shopSelector'
 import {getInputData} from '../../../selector/inputFormSelector'
+import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../../action/authActions'
+import {fetchShopCategories} from '../../../action/configAction'
+import * as Toast from '../../common/Toast'
+import Loading from '../../common/Loading'
+import * as AVUtils from '../../../util/AVUtils'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -44,6 +50,13 @@ class CompleteShopBaseInfo extends Component {
       selectedShopTags: [],
       shopCategoryContainedTag: [],
     }
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      this.props.fetchShopCategories()
+      this.props.fetchShopTags()
+    })
   }
 
   _onSelectPress(e){
@@ -118,6 +131,37 @@ class CompleteShopBaseInfo extends Component {
     }
   }
 
+  submitShopInfo() {
+    if(this.isSubmiting) {
+      return
+    }
+    this.isSubmiting = true
+    this.loading = Loading.show()
+
+    let {form, userOwnedShopInfo} = this.props
+    this.props.submitFormData({
+      formKey: form,
+      shopId: userOwnedShopInfo.id,
+      submitType: INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO,
+      success: ()=>{
+        this.isSubmiting = false
+        Loading.hide(this.loading)
+        this.props.fetchUserOwnedShopInfo()
+        Toast.show('上传店铺资料成功', {
+          duration: 1500,
+          onHidden: () =>{
+            AVUtils.switchTab('MINE')
+          }
+        })
+      },
+      error: (error)=>{
+        this.isSubmiting = false
+        Loading.hide(this.loading)
+        Toast.show(error.message || '上传店铺资料失败')
+      }
+    })
+  }
+
   render() {
     let {inputs, serviceTimeInput, servicePhoneInput, ourSpecialInput} = this.props
     return (
@@ -153,7 +197,7 @@ class CompleteShopBaseInfo extends Component {
                   optionListHeight={normalizeH(260)}
                   optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
                   defaultText={'点击选择店铺类型'}
-                  defaultValue={0}
+                  defaultValue={undefined}
                   onSelect={this._onSelectShopCategory.bind(this)}>
                   {this.renderShopCategoryOptions()}
                 </SelectInput>
@@ -227,7 +271,7 @@ class CompleteShopBaseInfo extends Component {
           </KeyboardAwareScrollView>
 
           <View style={styles.nextBtnView}>
-            <CommonButton title="提交" />
+            <CommonButton title="提交" onPress={() => this.submitShopInfo()}/>
           </View>
 
           {this.state.shopTagsSelectShow &&
@@ -256,16 +300,23 @@ const mapStateToProps = (state, ownProps) => {
 
   const allShopCategories = selectShopCategories(state)
   const allShopTags = selectShopTags(state)
+
+  const userOwnedShopInfo = selectUserOwnedShopInfo(state)
   return {
     allShopCategories: allShopCategories,
     allShopTags: allShopTags,
     serviceTimeInput: serviceTimeInput.text,
     servicePhoneInput: servicePhoneInput.text,
     ourSpecialInput: ourSpecialInput.text,
+    userOwnedShopInfo,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  submitFormData,
+  fetchUserOwnedShopInfo,
+  fetchShopCategories,
+  fetchShopTags,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(CompleteShopBaseInfo)

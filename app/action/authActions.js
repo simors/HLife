@@ -899,19 +899,15 @@ function handleShopAlbum(payload, formData) {
 
 function handleCompleteShopInfo(payload, formData) {
   return (dispatch, getState) => {
-    let shopCategoryObjectId = ''
-    if (payload.canModifyShopCategory) {
-      shopCategoryObjectId = formData.shopCategoryInput.text
-    }
     let newPayload = {
       shopId: payload.shopId,
-      shopCategoryObjectId: shopCategoryObjectId,
-      album: payload.album,
-      coverUrl: payload.coverUrl,
-      openTime: formData.serviceTimeInput.text,
-      contactNumber: formData.servicePhoneInput.text,
-      contactNumber2: formData.servicePhone2Input ? formData.servicePhone2Input.text : '',
-      ourSpecial: formData.ourSpecialInput.text,
+      shopCategoryObjectId: formData.shopCategoryInput.text || '',
+      album: formData.shopAlbumInput.text || [],
+      coverUrl: formData.shopCoverInput.text || '',
+      openTime: formData.serviceTimeInput.text || '',
+      contactNumber: formData.servicePhoneInput.text || '',
+      contactNumber2: '',
+      ourSpecial: formData.ourSpecialInput.text || '',
       tagIds: formData.tagsInput ? formData.tagsInput.text : '',
     }
     let album = newPayload.album
@@ -954,7 +950,7 @@ function handleCompleteShopInfo(payload, formData) {
 
 function handleEditShopInfo(payload, formData) {
   let shopCategoryObjectId = ''
-    shopCategoryObjectId = formData.shopCategoryInput.text
+  shopCategoryObjectId = formData.shopCategoryInput.text
   return (dispatch, getState) => {
     let newPayload = {
       shopCategoryObjectId: shopCategoryObjectId,
