@@ -59,7 +59,7 @@ class CompleteShopAlbum extends PureComponent {
       form: this.props.form,
       inputs: this.props.inputs,
     }
-    Actions.COMPLETE_SHOP_TYPE_TAGS(payload)
+    Actions.COMPLETE_SHOP_BASE_INFO(payload)
   }
 
   render() {

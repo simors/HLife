@@ -24,7 +24,7 @@ import ShopRegistSuccess from '../components/Mine/myShop/ShopRegistSuccess'
 import CompleteShopInfo from '../components/Mine/myShop/CompleteShopInfo'
 import CompleteShopCover from '../components/Mine/myShop/CompleteShopCover'
 import CompleteShopAlbum from '../components/Mine/myShop/CompleteShopAlbum'
-import CompleteShopTypeTags from '../components/Mine/myShop/CompleteShopTypeTags'
+import CompleteShopBaseInfo from '../components/Mine/myShop/CompleteShopBaseInfo'
 import MyShopIndex from '../components/Mine/myShop/MyShopIndex'
 import EditShop from '../components/Mine/myShop/EditShop'
 import ShopManageIndex from '../components/Mine/myShop/ShopManageIndex'
@@ -165,7 +165,7 @@ export const scenes = Actions.create(
       <Scene key="COMPLETE_SHOP_INFO" component={CompleteShopInfo} />
       <Scene key="COMPLETE_SHOP_COVER" component={CompleteShopCover} />
       <Scene key="COMPLETE_SHOP_ABLUM" component={CompleteShopAlbum}/>
-      <Scene key="COMPLETE_SHOP_TYPE_TAGS" component={CompleteShopTypeTags}/>
+      <Scene key="COMPLETE_SHOP_BASE_INFO" component={CompleteShopBaseInfo}/>
       <Scene key="SHOP_MANAGE_INDEX" component={ShopManageIndex}/>
       <Scene key="SHOP_FANS_INDEX" component={ShopFansIndex}/>
       <Scene key="MY_SHOP_PROMOTION_MANAGE_INDEX" component={MyShopPromotionManageIndex}/>

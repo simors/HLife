@@ -33,7 +33,7 @@ import {selectShopTags} from '../../../selector/shopSelector'
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class CompleteShopTypeTags extends Component {
+class CompleteShopBaseInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -126,7 +126,7 @@ class CompleteShopTypeTags extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="设置店铺类型标签"
+          title="设置店铺基本信息"
           rightType="none"
         />
         <View style={styles.body}>
@@ -204,7 +204,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompleteShopTypeTags)
+export default connect(mapStateToProps, mapDispatchToProps)(CompleteShopBaseInfo)
 
 const styles = StyleSheet.create({
   container: {
