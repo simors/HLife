@@ -1,7 +1,7 @@
 /**
  * Created by yangyang on 2017/10/14.
  */
-import React, {PureComponent} from 'react'
+import React, {Component} from 'react'
 import {
   StyleSheet,
   View,
@@ -26,31 +26,23 @@ import {
   SelectInput
 } from '../../common/CommonSelect'
 import TagsInput from '../../common/Input/TagsInput'
+import ShopTagsSelect from './ShopTagsSelect'
+import {selectShopCategories} from '../../../selector/configSelector'
+import {selectShopTags} from '../../../selector/shopSelector'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
 
-class CompleteShopTypeTags extends PureComponent {
+class CompleteShopTypeTags extends Component {
   constructor(props) {
     super(props)
-    if(Platform.OS == 'ios') {
-      this.state = {
-        selectShow: false,
-        shopTagsSelectShow: false,
-        optionListPos: 179,
-        shopTagsSelectTop: 379,
-        selectedShopTags: [],
-        shopCategoryContainedTag: [],
-      }
-    }else{
-      this.state = {
-        selectShow: false,
-        shopTagsSelectShow: false,
-        optionListPos: 159,
-        shopTagsSelectTop: 359,
-        selectedShopTags: [],
-        shopCategoryContainedTag: [],
-      }
+    this.state = {
+      selectShow: false,
+      shopTagsSelectShow: false,
+      optionListPos: normalizeH(50),
+      shopTagsSelectTop: normalizeH(100),
+      selectedShopTags: [],
+      shopCategoryContainedTag: [],
     }
   }
 
@@ -90,6 +82,42 @@ class CompleteShopTypeTags extends PureComponent {
     })
   }
 
+  onTagPress(tag, selected) {
+    if(selected) {
+      let index = -1
+      for(let i = 0; i < this.state.selectedShopTags.length; i++) {
+        if(this.state.selectedShopTags[i].id == tag.id) {
+          index = i
+          break
+        }
+      }
+      if(index >= 0) {
+        this.state.selectedShopTags.splice(index, 1)
+      }
+    }else {
+      this.state.selectedShopTags.push(tag)
+    }
+    this.setState({
+      selectedShopTags: this.state.selectedShopTags
+    })
+  }
+
+  updateShopCategoryContainedTags(shopCategoryId) {
+    let shopCategoryContainedTag = []
+    if(this.props.allShopCategories && this.props.allShopCategories.length) {
+      for(let i = 0; i < this.props.allShopCategories.length; i++) {
+        let shopCategory = this.props.allShopCategories[i]
+        if(shopCategory.id == shopCategoryId) {
+          shopCategoryContainedTag = shopCategory.containedTag
+          this.setState({
+            shopCategoryContainedTag: shopCategoryContainedTag,
+          })
+          break
+        }
+      }
+    }
+  }
+
   render() {
     let {inputs} = this.props
     return (
@@ -102,7 +130,7 @@ class CompleteShopTypeTags extends PureComponent {
           rightType="none"
         />
         <View style={styles.body}>
-          <View style={{marginTop: normalizeH(50)}}>
+          <View style={{marginTop: normalizeH(0)}}>
             <View style={styles.inputWrap}>
               <View style={styles.inputLabelBox}>
                 <Text style={styles.inputLabel}>店铺类型</Text>
@@ -113,14 +141,14 @@ class CompleteShopTypeTags extends PureComponent {
                   show={this.state.selectShow}
                   onPress={(e)=>this._onSelectPress(e)}
                   style={{}}
-                  styleOption={{height:50}}
+                  styleOption={{height:normalizeH(50)}}
                   selectRef="SELECT"
                   overlayPageX={0}
                   overlayPageY={this.state.optionListPos}
-                  optionListHeight={240}
+                  optionListHeight={normalizeH(260)}
                   optionListRef={()=> this._getOptionList('SHOP_CATEGORY_OPTION_LIST')}
                   defaultText={'点击选择店铺类型'}
-                  defaultValue={1}
+                  defaultValue={0}
                   onSelect={this._onSelectShopCategory.bind(this)}>
                   {this.renderShopCategoryOptions()}
                 </SelectInput>
@@ -143,8 +171,21 @@ class CompleteShopTypeTags extends PureComponent {
             </View>
           </View>
           <View style={styles.nextBtnView}>
-            <CommonButton title="下一步" />
+            <CommonButton title="提交" />
           </View>
+
+          {this.state.shopTagsSelectShow &&
+            <ShopTagsSelect
+              show={this.state.shopTagsSelectShow}
+              containerStyle={{top: this.state.shopTagsSelectTop}}
+              scrollViewStyle={{height: normalizeH(150)}}
+              onOverlayPress={()=>{this.toggleShopTagsSelectShow()}}
+              tags={this.state.shopCategoryContainedTag}
+              selectedTags={this.state.selectedShopTags}
+              onTagPress={(tag, selected)=>{this.onTagPress(tag, selected)}}
+            />
+          }
+          <OptionList ref="SHOP_CATEGORY_OPTION_LIST"/>
         </View>
       </View>
     )
@@ -152,11 +193,11 @@ class CompleteShopTypeTags extends PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let {inputs} = ownProps
-  let albumStateKey = inputs.shopAlbumInput.stateKey
-  let inputData = getInputData(state, ownProps.form, albumStateKey)
+  const allShopCategories = selectShopCategories(state)
+  const allShopTags = selectShopTags(state)
   return {
-    albumList: inputData.text,
+    allShopCategories: allShopCategories,
+    allShopTags: allShopTags,
   }
 }
 
@@ -179,8 +220,6 @@ const styles = StyleSheet.create({
     height: normalizeH(80),
     marginBottom: 0,
     justifyContent: 'center',
-    borderTopWidth: 1,
-    borderColor: '#B2B2B2',
   },
   inputWrap: {
     backgroundColor: '#fff',
@@ -189,6 +228,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: normalizeBorder(),
     borderBottomColor: '#F5F5F5',
     paddingLeft: normalizeW(20),
+    height: normalizeH(50),
   },
   inputLabelBox: {
     justifyContent: 'center',
