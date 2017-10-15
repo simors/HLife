@@ -111,21 +111,6 @@ class CompleteShopCover extends PureComponent {
     this.localCoverImgUri = ''
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      Popup.confirm({
-        title: '系统提示',
-        content: '未完善店铺资料将无法在店铺列表中显示',
-        ok: {
-          text: '确定',
-          style: {color: THEME.base.mainColor},
-          callback: ()=> {
-          }
-        },
-      })
-    }, 1000)
-  }
-
   componentWillReceiveProps(nextProps) {
     if(nextProps.localCoverImgUri) {
       this.localCoverImgUri = nextProps.localCoverImgUri
@@ -190,7 +175,7 @@ class CompleteShopCover extends PureComponent {
             imageSelectedChangeCallback={(localImgUri)=>{this.localCoverImgUri = localImgUri}}
           />
           <View style={styles.tipView}>
-            <Text style={styles.tipText}>点击上方区域，完成店铺封面上传！店铺封面是店铺的脸面，上传漂亮的图片可以给顾客留下好印象哦^_^</Text>
+            <Text style={styles.tipText}>点击上方区域，完成店铺封面上传！店铺封面是店铺的脸面，上传漂亮的图片可以给顾客留下好印象哦^_^未完善店铺资料将无法在店铺列表中显示!</Text>
           </View>
           <View style={{marginTop: normalizeH(50)}}>
             <CommonButton title="下一步" onPress={() => this.jumpNext()}/>

@@ -136,7 +136,8 @@ class CompleteShopBaseInfo extends Component {
           <KeyboardAwareScrollView
             automaticallyAdjustContentInsets={false}
             keyboardShouldPersistTaps={true}
-            keyboardDismissMode="on-drag"
+            scrollEventThrottle={0}
+            keyboardDismissMode="interactive"
             style={{flex: 1}}
           >
             <View style={styles.inputWrap}>
