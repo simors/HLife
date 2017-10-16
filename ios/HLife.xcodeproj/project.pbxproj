@@ -1642,7 +1642,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BAIDU_MAP_KEY = veyQHPX4y1dP7rGVPy5f4yxsLGWA6x19;
+				BAIDU_MAP_KEY = lM541vkXQcRP8poGBgi065mxEZjrVFQB;
 				CODE_SIGN_ENTITLEMENTS = HLife/HLife.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
